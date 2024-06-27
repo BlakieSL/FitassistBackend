@@ -40,23 +40,5 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @NotBlank
-    @Size(min =4, max = 6)
-    @Column(nullable = false, length = 6)
-    private String gender;
 
-    @NotNull
-    private Integer age;
-
-    @NotNull
-    private Double height;
-
-    @NotNull
-    private Double weight;
-
-    @NotNull
-    private Double CalculatedCalories;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles = new HashSet<>();
 }
