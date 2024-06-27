@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: SimpleFullStackProject
+  mail:
+    host: smt.gmail.com
+    port: 587
+    username: petadoptiontoken@gmail.com
+    password: fjdx ekcu liue qcfz
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/full_stack_project
+    username: root
+    password: Artem2005
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
