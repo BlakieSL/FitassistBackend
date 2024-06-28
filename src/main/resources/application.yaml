@@ -26,4 +26,6 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
+jws:
+  sharedKey: ***REMOVED***
 

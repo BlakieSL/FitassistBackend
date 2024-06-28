@@ -29,7 +29,8 @@ public class DailyCart {
     @Column(nullable = false)
     private Integer amount;
 
-    @OneToOne(mappedBy = "dailyCart")
+    @OneToOne
+    @JoinColumn(name = "User_Id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "dailyCartFood", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
