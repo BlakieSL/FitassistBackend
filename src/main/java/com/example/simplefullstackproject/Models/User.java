@@ -1,9 +1,11 @@
 package com.example.simplefullstackproject.Models;
 
+import com.example.simplefullstackproject.Validations.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -34,6 +36,7 @@ public class User {
     @NotBlank
     @Size(max = 50)
     @Email
+    @UniqueEmailDomain(groups = ValidationGroups.Registration.class)
     @Column(nullable = false, length = 50)
     private String email;
 
@@ -65,17 +68,15 @@ public class User {
     @NotNull
     @Positive
     @Column(nullable = false)
-    private Double CalculatedCalories;
+    private Double calculatedCalories;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
-    @OneToOne
-    @JoinColumn(name = "Daily_Cart_Id", nullable = false)
+    @OneToOne(mappedBy = "user")
     private DailyCart dailyCart;
 
-    @OneToOne
-    @JoinColumn(name = "Daily_Activity_Id", nullable = false)
+    @OneToOne(mappedBy = "user")
     private DailyActivity dailyActivity;
 
     @Override
