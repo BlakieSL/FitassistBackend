@@ -26,7 +26,8 @@ public class DailyActivity {
     @Column(nullable = false)
     private LocalDate  date;
 
-    @OneToOne(mappedBy = "dailyActivity")
+    @OneToOne
+    @JoinColumn(name = "User_Id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "dailyCartActivity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
