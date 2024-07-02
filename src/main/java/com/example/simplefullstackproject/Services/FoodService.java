@@ -8,7 +8,9 @@ import com.example.simplefullstackproject.Services.Mappers.FoodDtoMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class FoodService {
@@ -37,6 +39,12 @@ public class FoodService {
         return foodDtoMapper.map(food);
     }
 
+    public List<FoodDto> getFoods(){
+        List<Food> foods = foodRepository.findAll();
+        return foods.stream()
+                .map(foodDtoMapper::map)
+                .collect(Collectors.toList());
+    }
     public FoodDto calculateMacros(int id, CalculateAmountRequest request){
         validationHelper.validate(request);
         Food food = foodRepository.findById(id)

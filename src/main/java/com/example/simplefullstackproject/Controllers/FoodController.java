@@ -20,6 +20,10 @@ public class FoodController {
         this.foodService = foodService;
     }
 
+    @GetMapping("/foods")
+    public ResponseEntity<?> getFoods(){
+        return ResponseEntity.ok(foodService.getFoods());
+    }
     @GetMapping("/food/{id}")
     public ResponseEntity<?> getFoodById(@PathVariable int id){
         try {
