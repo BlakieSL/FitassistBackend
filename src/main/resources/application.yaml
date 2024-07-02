@@ -28,4 +28,3 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
 jws:
   sharedKey: ***REMOVED***
-

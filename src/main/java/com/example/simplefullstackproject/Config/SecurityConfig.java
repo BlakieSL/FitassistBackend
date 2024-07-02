@@ -39,11 +39,17 @@ public class SecurityConfig {
         BearerTokenFilter bearerTokenFilter = new BearerTokenFilter(jwtService);
 
         http.authorizeHttpRequests(request -> request
-                .requestMatchers(mvc.pattern("/api/register")).permitAll()
-                .requestMatchers(mvc.pattern("/api/login")).permitAll()
+                .requestMatchers("/api/register",
+                        "/api/login",
+                        "/register",
+                        "/login" ,
+                        "/script.js",
+                        "style.css",
+                        "/favicon.ico",
+                        "/index").permitAll()
                 .anyRequest().authenticated());
 
-        http.httpBasic(Customizer.withDefaults());
+
         http.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.csrf(AbstractHttpConfigurer::disable);
 
