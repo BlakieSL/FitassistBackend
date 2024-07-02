@@ -3,9 +3,7 @@ package com.example.simplefullstackproject.Models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,6 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "daily_cart")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class DailyCart {
@@ -24,15 +24,10 @@ public class DailyCart {
     @Column(nullable = false)
     private LocalDate date;
 
-    @NotNull
-    @Positive
-    @Column(nullable = false)
-    private Integer amount;
-
     @OneToOne
     @JoinColumn(name = "User_Id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "dailyCartFood", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "dailyCartFood", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<DailyCartFood> dailyCartFoods = new ArrayList<>();
 }

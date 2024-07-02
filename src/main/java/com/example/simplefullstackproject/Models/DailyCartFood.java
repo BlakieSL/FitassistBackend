@@ -3,12 +3,12 @@ package com.example.simplefullstackproject.Models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "daily_cart_food")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class DailyCartFood {
@@ -24,4 +24,8 @@ public class DailyCartFood {
     @ManyToOne
     @JoinColumn(name = "Daily_Cart_Id", nullable = false)
     private DailyCart dailyCartFood;
+
+    @ManyToOne
+    @JoinColumn(name = "Food_Id", nullable = false)
+    private Food food;
 }
