@@ -5,14 +5,16 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "food")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Food {
@@ -45,8 +47,12 @@ public class Food {
     @Column(nullable = false)
     private Double carbohydrates;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @OneToMany(mappedBy = "food", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<DailyCartFood> dailyCartFoods = new ArrayList<>();
 
 }

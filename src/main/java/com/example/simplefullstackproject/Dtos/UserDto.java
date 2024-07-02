@@ -23,5 +23,5 @@ public class UserDto implements Serializable {
     private String email;
     @Size(min = 8, max = 255)
     private String password;
-    private Set<String> roles = new HashSet<>();
+    private Set<String> roles;
 }
