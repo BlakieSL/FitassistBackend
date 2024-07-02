@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header>
+    <nav>
+        <ul class="navbar">
+            <li class="navbar-item">
+                <form class="search-form">
+                    <input type="search" placeholder="Search..." class="search-input" required>
+                    <button type="submit"  class="search-button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </li>
+            <li class="navbar-item">
+                <a href="/static" class="navbar-link">
+                    <i class="fas fa-home"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main layout:fragment="content"></main>
+<script src="/script.js"></script>
+</body>
+</html>
