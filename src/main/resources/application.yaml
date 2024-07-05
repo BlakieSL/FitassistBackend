@@ -28,3 +28,5 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
 jws:
   sharedKey: ***REMOVED***
+server:
+  port: 8000

@@ -42,6 +42,7 @@ public class UserController {
         UserResponse response = userService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
     @GetMapping("/users/{id}")
     public ResponseEntity<?> getUser(@PathVariable Integer id){
         try {
@@ -52,7 +53,7 @@ public class UserController {
         }
     }
 
-    @PatchMapping("users/{id}")
+    @PatchMapping("/users/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Integer id,
                                         @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch,
                                         BindingResult bindingResult){
@@ -78,5 +79,15 @@ public class UserController {
         JsonNode userNode = objectMapper.valueToTree(response);
         JsonNode patchNode = patch.apply(userNode);
         return objectMapper.treeToValue(patchNode, UserUpdateRequest.class);
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Integer id){
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.noContent().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

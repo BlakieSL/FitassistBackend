@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.Auth;
 
+import com.example.simplefullstackproject.Services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,9 +26,9 @@ public class JwtAuthenticationFilter extends HttpFilter {
     private final AuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
     private final AuthenticationSuccessHandler successHandler;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtService jwtService){
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtService jwtService, UserService userService){
         this.authenticationManager = authenticationManager;
-        successHandler = new JwtAuthenticationSuccessHandler(jwtService);
+        successHandler = new JwtAuthenticationSuccessHandler(jwtService, userService);
     }
 
     private record JwtAuthenticationToken(String username, String password){}

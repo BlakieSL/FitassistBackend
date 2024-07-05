@@ -1,76 +1,122 @@
 document.addEventListener('DOMContentLoaded', init);
 
 async function init() {
+    const registerForm = document.getElementById('registerForm');
     const loginForm = document.getElementById('loginForm');
     const foodList = document.getElementById('foodList');
-    const searchForm = document.getElementById('searchForm');
-    const searchInput = document.getElementById('searchInput');
+    const userInfo = document.getElementById('userInfo');
+    const buttons = document.getElementById('buttons');
+
+    if (!getToken() && window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+        window.location.href = '/login';
+        return;
+    }
+
+    if(registerForm){
+        registerForm.addEventListener('submit', async function(event){
+            event.preventDefault();
+            try{
+                await register();
+            } catch(error){
+                document.getElementById('registerError').textContent = 'Error occurred during register. Please try again later.';
+            }
+        });
+    }
 
     if (loginForm) {
         loginForm.addEventListener('submit', async function(event) {
             event.preventDefault();
-
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            await login(username, password);
+            try {
+                await login(event);
+            } catch (error) {
+                document.getElementById('loginError').textContent = 'Error occurred during login. Please try again later.';
+            }
         });
     }
 
     if (foodList) {
-        await fetchFoods();
-
-        if (searchForm) {
-            searchForm.addEventListener('submit', async function(event) {
-                event.preventDefault();
-                const query = searchInput.value;
-                await searchFoods(query);
-            });
-        }
-    }
-
-    // Function to get JWT token from local storage
-    function getToken() {
-        return localStorage.getItem('jwt');
-    }
-
-    // Function to fetch all foods
-    async function fetchFoods() {
         try {
-            const token = getToken();
-            console.log('Fetched Token:', token); // Debugging line
-            if (!token) {
-                throw new Error('No token found');
-            }
-
-            const response = await fetch('/api/foods', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            console.log('Fetch foods response status:', response.status); // Debugging line
-            if (!response.ok) {
-                if (response.status === 401) {
-                    window.location.href = '/login';
-                }
-                throw new Error('Network response was not ok');
-            }
-
-            const data = await response.json();
-            displayFoods(data);
+            await fetchFoods();
         } catch (error) {
-            console.error('Error occurred while fetching food list', error); // Debugging line
-            foodList.innerHTML = ''; // Clear previous content
+            foodList.innerHTML = '';
             const p = document.createElement('p');
             p.textContent = "Error fetching food list";
             foodList.appendChild(p);
         }
     }
 
-    // Function to display foods
+    if (userInfo) {
+        try {
+            await fetchUser();
+        } catch (error) {
+            userInfo.innerHTML = '';
+            const p = document.createElement('p');
+            p.textContent = "Error fetching user info";
+            userInfo.appendChild(p);
+        }
+    }
+
+    if(buttons){
+        const updateUserBtn = document.getElementById('updateUserBtn');
+        const deleteUserBtn = document.getElementById('deleteUserBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        updateUserBtn.addEventListener('click', async function(event){
+            event.preventDefault();
+            try{
+                await updateUser();
+            } catch(error){
+                document.getElementById('buttonsError').textContent = 'Error occurred during update. Please try again later.';
+            }
+        });
+
+        deleteUserBtn.addEventListener('click', async function(event){
+            event.preventDefault();
+            try{
+                await deleteUser();
+            } catch(error){
+                document.getElementById('buttonsError').textContent = 'Error occurred during delete. Please try again later.';
+            }
+        });
+
+        logoutBtn.addEventListener('click', function(event) {
+            console.log('Logout button clicked');
+            logout();
+        });
+    }
+
+    function getToken() {
+        return localStorage.getItem('jwt');
+    }
+
+    function verifyToken(){
+        const token = getToken();
+        if (!token){
+            throw new Error('no token found');
+        }
+        return token;
+    }
+
+    function getUserId() {
+        const token = getToken();
+        if (!token) {
+            throw new Error('No token found');
+        }
+        const payload = jwt_decode(token);
+        return payload.userId;
+    }
+
+    function verifyResponse(response) {
+        if (response.status === 401) {
+            window.location.href = '/login';
+        }
+        if (!response.ok) {
+            throw new Error('Network response was not okay');
+        }
+    }
+
     function displayFoods(foods) {
-        foodList.innerHTML = ''; // Clear previous results
+        foodList.innerHTML = '';
         if (foods.length > 0) {
             foods.forEach(food => {
                 const foodDiv = document.createElement('div');
@@ -79,10 +125,6 @@ async function init() {
                 const foodName = document.createElement('h2');
                 foodName.textContent = food.name;
                 foodDiv.appendChild(foodName);
-
-                const foodId = document.createElement('p');
-                foodId.textContent = `ID: ${food.id}`;
-                foodDiv.appendChild(foodId);
 
                 const foodCalories = document.createElement('p');
                 foodCalories.textContent = `Calories: ${food.calories}`;
@@ -109,28 +151,179 @@ async function init() {
         }
     }
 
-    // Function to handle login
-    async function login(username, password) {
-        try {
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
-            });
-            const data = await response.json();
-            console.log('Login response:', data); // Debugging line
-            if (data.token) {
-                localStorage.setItem('jwt', data.token);
-                console.log('Login successful, redirecting...'); // Debugging line
-                window.location.href = '/index'; // Redirect to the main page
-            } else {
-                document.getElementById('loginError').textContent = 'Login failed. Please check your credentials.';
-            }
-        } catch (error) {
-            document.getElementById('loginError').textContent = 'Error occurred during login. Please try again later.';
-            console.error('Error occurred during login', error); // Debugging line
+    function displayUserInfo(user){
+        userInfo.innerHTML = '';
+        if(userInfo){
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-item';
+
+            const userName = document.createElement('p');
+            userName.textContent = user.name;
+            userDiv.appendChild(userName);
+
+            const userSurname = document.createElement('p');
+            userSurname.textContent = user.surname;
+            userDiv.appendChild(userSurname);
+
+            const userEmail = document.createElement('p');
+            userEmail.textContent = user.email;
+            userDiv.appendChild(userEmail);
+
+            const userGender = document.createElement('p');
+            userGender.textContent = user.gender;
+            userDiv.appendChild(userGender);
+
+            const userAge = document.createElement('p');
+            userAge.textContent = user.age;
+            userDiv.appendChild(userAge);
+
+            const userHeight = document.createElement('p');
+            userHeight.textContent = user.height;
+            userDiv.appendChild(userHeight);
+
+            const userWeight= document.createElement('p');
+            userWeight.textContent = user.weight;
+            userDiv.appendChild(userWeight);
+
+            const userActivityLevel = document.createElement('p');
+            userActivityLevel.textContent = user.activityLevel;
+            userDiv.appendChild(userActivityLevel);
+
+            const userGoal = document.createElement('p');
+            userGoal.textContent = user.goal;
+            userDiv.appendChild(userGoal);
+
+            const userCalories = document.createElement('p');
+            userCalories.textContent = user.calculatedCalories;
+            userDiv.appendChild(userCalories);
+
+            userInfo.appendChild(userDiv);
         }
+        else {
+            const noResults = document.createElement('p');
+            noResults.textContent = 'No results found';
+            userInfo.appendChild(noResults);
+        }
+    }
+
+    function logout(){
+        localStorage.removeItem('jwt');
+        window.location.href='/login';
+    }
+
+    async function login() {
+        const username = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        });
+
+        if(!response.ok){
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        localStorage.setItem('jwt', data.token);
+        window.location.href = '/index';
+
+    }
+
+    async function register(){
+        const name = document.getElementById('name').value;
+        const surname = document.getElementById('surname').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value
+        const gender = document.getElementById('gender').value;
+        const age = document.getElementById('age').value;
+        const height = document.getElementById('height').value;
+        const weight = document.getElementById('weight').value;
+        const activityLevel = document.getElementById('activityLevel').value;
+        const goal = document.getElementById('goal').value;
+
+        const response = await fetch('/api/register',{
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ name, surname, email, password, gender, age, height, weight, activityLevel, goal })
+        });
+
+        if(!response.ok){
+            throw new Error('Network response was not ok');
+        }
+
+        window.location.href = '/login';
+    }
+
+    async function fetchFoods() {
+        const token = verifyToken();
+
+        const response = await fetch('/api/foods', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        verifyResponse(response);
+
+        const data = await response.json();
+        displayFoods(data);
+    }
+
+    async function fetchUser(){
+        const token= verifyToken();
+
+        const response = await fetch(`/api/users/${getUserId()}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        verifyResponse(response);
+
+        const data = await response.json();
+        displayUserInfo(data);
+    }
+
+    async function updateUser(){
+        const token = verifyToken();
+
+        const user = {
+            name: 'Updated Name',
+
+        };
+
+        const response = await fetch(`/api/users/${getUserId()}`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        });
+
+        verifyResponse(response);
+
+        alert('User updated successfully');
+        await fetchUser();
+    }
+
+    async function deleteUser(){
+        const token = verifyToken();
+
+        const response = await fetch(`/api/users/${getUserId()}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        verifyResponse(response);
+
+        alert('User deleted successfully');
+        logout();
     }
 }
