@@ -112,7 +112,7 @@ public class UserService implements UserDetailsService {
         if(!request.getHeight().equals(user.getHeight())){
             user.setHeight(request.getHeight());
         }
-        if(!request.getHeight().equals(user.getHeight())){
+        if(!request.getWeight().equals(user.getWeight())){
             user.setWeight(request.getWeight());
         }
 

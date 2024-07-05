@@ -44,6 +44,9 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(
+                        "/apis.js",
+                        "/utils.js",
+                        "/components.js",
                         "/script.js",
                         "style.css",
                         "/favicon.ico",
