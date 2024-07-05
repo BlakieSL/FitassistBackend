@@ -62,6 +62,13 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new NoSuchElementException("User with id " + id + " not found"));
         return userDtoMapper.map(user);
     }
+
+
+    public Integer getUserIdByEmail(String email){
+        return userRepository.findByEmail(email)
+                .map(User::getId)
+                .orElseThrow(() -> new NoSuchElementException("User with email: " + email + " not found"));
+    }
     @Transactional
     public UserResponse register(UserRequest request){
         validationHelper.validate(request);
@@ -118,5 +125,13 @@ public class UserService implements UserDetailsService {
                 request.getGoal()
         ));
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteUser(Integer id){
+        if (!userRepository.existsById(id)) {
+            throw new NoSuchElementException("User with id: " + id + "not found");
+        }
+        userRepository.deleteById(id);
     }
 }

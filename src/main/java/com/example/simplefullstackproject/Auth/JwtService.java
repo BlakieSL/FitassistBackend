@@ -24,20 +24,21 @@ public class JwtService {
     private final JWSAlgorithm alg = JWSAlgorithm.HS256;
     private final JWSSigner signer;
     private final JWSVerifier verifier;
-    private final int expTime = 360; // 1 hour
+    private final int expTime = 8640; // 24 hour
 
     public JwtService(@Value("${jws.sharedKey}") String sharedKey) throws Exception {
         signer = new MACSigner(sharedKey.getBytes());
         verifier = new MACVerifier(sharedKey.getBytes());
     }
 
-    public String createSignedJWT(String username, List<String> authorities) {
+    public String createSignedJWT(String username, Integer userId, List<String> authorities) {
         JWSHeader header = new JWSHeader(alg);
 
         JWTClaimsSet claimSet = new JWTClaimsSet.Builder()
                 .subject(username)
                 .issueTime(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
                 .expirationTime(Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant()))
+                .claim("userId", userId)
                 .claim("authorities", authorities)
                 .build();
 
@@ -74,12 +75,14 @@ public class JwtService {
 
     public Authentication authentication(SignedJWT signedJWT) {
         String subject;
+        Integer userId;
         List<SimpleGrantedAuthority> authorities;
         try {
             subject = signedJWT.getJWTClaimsSet().getSubject();
+            userId = signedJWT.getJWTClaimsSet().getIntegerClaim("userId");
             authorities = signedJWT.getJWTClaimsSet().getStringListClaim("authorities")
                     .stream().map(SimpleGrantedAuthority::new).toList();
-            return new UsernamePasswordAuthenticationToken(subject, null, authorities);
+            return new CustomAuthenticationToken(subject, userId, null, authorities);
         } catch (ParseException e) {
             throw new JwtAuthenticationException("Missing claims subject or authorities");
         }

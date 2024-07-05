@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.Auth;
 
+import com.example.simplefullstackproject.Services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,18 +14,24 @@ import java.util.List;
 
 public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final JwtService jwtService;
+    private final UserService userService;
 
-    public JwtAuthenticationSuccessHandler(JwtService jwtService){
+    public JwtAuthenticationSuccessHandler(JwtService jwtService, UserService userService) {
         this.jwtService = jwtService;
+        this.userService = userService;
     }
 
-    private record JwtWrapper(String token){ }
+    private record JwtWrapper(String token) {}
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         List<String> authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority).toList();
-        String signedJWT = jwtService.createSignedJWT(authentication.getName(), authorities);
+
+        Integer userId = userService.getUserIdByEmail(authentication.getName());
+
+
+        String signedJWT = jwtService.createSignedJWT(authentication.getName(), userId, authorities);
         new ObjectMapper().writeValue(response.getWriter(), new JwtWrapper(signedJWT));
     }
 }
