@@ -59,7 +59,8 @@ public class SecurityConfig {
                         "/index",
                         "/",
                         "/userInfo",
-                        "/food/{foodId}").permitAll()
+                        "/food/{foodId}",
+                        "/cart").permitAll()
                 .anyRequest().authenticated());
 
 

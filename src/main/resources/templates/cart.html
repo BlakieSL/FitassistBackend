@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Daily Cart</title>
+</head>
+<body>
+<main layout:fragment="content" id="cart">
+    <h1 class="title">Daily Cart</h1>
+    <div id="totalMacros" class="total-macros">
+        <h2>Daily Totals</h2>
+        <p>Total Calories: <span id="totalCalories">0/0</span></p>
+        <p>Total Proteins: <span id="totalProteins">0</span></p>
+        <p>Total Fats: <span id="totalFats">0</span></p>
+        <p>Total Carbs: <span id="totalCarbs">0</span></p>
+        <p>Total Calories Burned: <span id="totalCaloriesBurned">0</span></p>
+        <p></p>
+    </div>
+    <div id="cartFoodList" class="cart-food-list">
+        <h2>Food</h2>
+        <p id="cartFoodListError"></p>
+    </div>
+    <div id="cartActivityList" class="cart-activity-list">
+        <h2>Activity</h2>
+        <p id="cartActivityListError"></p>
+    </div>
+</main>
+</body>
+</html>

@@ -94,6 +94,7 @@ public class DailyCartService {
                     Food food = dailyCartFood.getFood();
                     double factor = (double) dailyCartFood.getAmount()/100;
                     return new FoodDtoResponse(
+                            food.getId(),
                             food.getName(),
                             food.getCalories()*factor,
                             food.getProtein()*factor,
