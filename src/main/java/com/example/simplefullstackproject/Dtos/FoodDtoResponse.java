@@ -14,6 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FoodDtoResponse {
+    Integer id;
     @Size(max = 50)
     @NotBlank
     String name;

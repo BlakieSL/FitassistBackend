@@ -6,10 +6,10 @@
 </head>
 <body>
 <main layout:fragment="content">
-    <div class="title">
-        <h1 id="foodName">Default title</h1>
+    <h1 id="foodName">Default title</h1>
+    <div id="foodDetails" class="foodDetails">
+        <p id="foodDetailsError"></p>
     </div>
-    <div id="foodDetails" class="foodDetails"></div>
     <div id="foodDetailsButtons" class="foodDetailsButtons">
         <input type="number" id="amountGrams" placeholder="Enter grams" required>
         <button id="calculateMacros">Calculate</button>
