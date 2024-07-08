@@ -6,23 +6,21 @@
 </head>
 <body>
 <main layout:fragment="content">
-    <div class="container">
-        <div class="title">
-            <h1>Login</h1>
-        </div>
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="text" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
-        <p id="loginError"></p>
+    <div class="title">
+        <h1>Login</h1>
     </div>
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+    <p id="loginError"></p>
 </main>
 </body>
 </html>

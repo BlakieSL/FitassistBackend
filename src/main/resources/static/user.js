@@ -1,4 +1,3 @@
-// user.js
 import { verifyToken, getUserId, verifyResponse } from './utils.js';
 
 export async function fetchUser() {

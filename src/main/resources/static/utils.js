@@ -1,4 +1,3 @@
-// utils.js
 export function getToken() {
     return localStorage.getItem('jwt');
 }
