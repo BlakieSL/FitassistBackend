@@ -24,6 +24,9 @@
                 </a>
             </li>
             <li class="navbar-item">
+                <a href="/"
+            </li>
+            <li class="navbar-item">
                 <a href="/userInfo" class="navbar-link">
                     <i class="fas fa-user"></i>
                 </a>
@@ -31,12 +34,13 @@
         </ul>
     </nav>
 </header>
-<main layout:fragment="content"></main>
+<main layout:fragment="content" class="container"></main>
 <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+<script type="module" src="/script.js"></script>
 <script type="module" src="/auth.js"></script>
 <script type="module" src="/food.js"></script>
 <script type="module" src="/user.js"></script>
 <script type="module" src="/utils.js"></script>
-<script type="module" src="/script.js"></script>
+<script type="module" src="/cart.js"></script>
 </body>
 </html>
