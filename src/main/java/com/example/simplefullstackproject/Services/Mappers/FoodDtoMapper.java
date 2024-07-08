@@ -16,12 +16,13 @@ public class FoodDtoMapper {
     }
     public FoodDto map(Food food){
         return new FoodDto(
+                food.getId(),
                 food.getName(),
                 food.getCalories(),
                 food.getProtein(),
                 food.getFat(),
                 food.getCarbohydrates(),
-                food.getCategory().getId()
+                food.getCategory().getName()
         );
     }
     public Food map(FoodDto request){
@@ -31,7 +32,7 @@ public class FoodDtoMapper {
         food.setProtein(request.getProtein());
         food.setFat(request.getFat());
         food.setCarbohydrates(request.getCarbohydrates());
-        Category category = categoryRepository.findById(request.getCategoryId())
+        Category category = categoryRepository.findByName(request.getCategoryName())
                 .orElseThrow(() -> new NoSuchElementException("Category not found"));
         food.setCategory(category);
         return food;

@@ -44,11 +44,12 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(
+                        "/script.js",
                         "/auth.js",
                         "/user.js",
                         "/food.js",
                         "/utils.js",
-                        "/script.js",
+                        "/cart.js",
                         "style.css",
                         "/favicon.ico",
                         "/api/register",
@@ -57,7 +58,8 @@ public class SecurityConfig {
                         "/login",
                         "/index",
                         "/",
-                        "/userInfo").permitAll()
+                        "/userInfo",
+                        "/food/{foodId}").permitAll()
                 .anyRequest().authenticated());
 
 

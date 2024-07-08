@@ -1,8 +1,9 @@
 // script.js
 import { login, register, logout } from './auth.js';
 import { fetchUser, updateUser, deleteUser } from './user.js';
-import { fetchFoods } from './food.js';
+import { fetchFoods, fetchFood, calculateMacros } from './food.js';
 import { getToken } from './utils.js';
+import { addToCart } from './cart.js';
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -15,6 +16,8 @@ async function init() {
     const updateModal = document.getElementById('updateModal');
     const updateForm = document.getElementById('updateForm');
     const closeModal = document.querySelector('.close');
+    const food = document.getElementById('foodDetails');
+    const foodDetailsButtons = document.getElementById('foodDetailsButtons');
 
     if (!getToken() && window.location.pathname !== '/login' && window.location.pathname !== '/register') {
         window.location.href = '/login';
@@ -46,6 +49,7 @@ async function init() {
     if (foodList) {
         try {
             await fetchFoods();
+
         } catch (error) {
             foodList.innerHTML = '';
             const p = document.createElement('p');
@@ -117,5 +121,38 @@ async function init() {
         });
 
         logoutBtn.addEventListener('click', logout);
+    }
+
+    if(food){
+        try{
+            await fetchFood();
+        } catch(error){
+            food.innerHTML = '';
+            const p = document.createElement('p');
+            p.textContent = "Error fetching food";
+            food.appendChild(p);
+        }
+    }
+
+    if(foodDetailsButtons){
+        const calculateMacrosBtn = document.getElementById('calculateMacros');
+        const addToCartBtn = document.getElementById('addToCart');
+
+        calculateMacrosBtn.addEventListener('click', async function (event){
+           event.preventDefault();
+           try{
+               await calculateMacros();
+           } catch(error){
+               document.getElementById('buttonsError').textContent = 'Error occurred during calculations. Please try again later.'
+           }
+        });
+        addToCartBtn.addEventListener('click', async function (event){
+           event.preventDefault();
+           try{
+               await addToCart();
+           } catch(error){
+               document.getElementById('buttonsError').textContent = 'Error occurred during adding food to cart. Please try again later.'
+           }
+        });
     }
 }

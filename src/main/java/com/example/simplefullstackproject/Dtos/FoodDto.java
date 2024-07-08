@@ -17,6 +17,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FoodDto implements Serializable {
+    Integer id;
     @Size(max = 50)
     @NotBlank
     String name;
@@ -33,5 +34,5 @@ public class FoodDto implements Serializable {
     @Positive
     Double carbohydrates;
     @NotNull
-    Integer categoryId;
+    String categoryName;
 }

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Food List</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="title">
+        <h1 id="foodName">Default title</h1>
+    </div>
+    <div id="foodDetails" class="foodDetails"></div>
+    <div id="foodDetailsButtons" class="foodDetailsButtons">
+        <input type="number" id="amountGrams" placeholder="Enter grams" required>
+        <button id="calculateMacros">Calculate</button>
+        <button id="addToCart">Add</button>
+        <p id="buttonsError"></p>
+    </div>
+</main>
+</body>
+</html>

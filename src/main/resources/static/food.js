@@ -1,5 +1,5 @@
-// food.js
 import { verifyToken, verifyResponse } from './utils.js';
+const foodId = window.location.pathname.split('/').pop();
 
 export async function fetchFoods() {
     const token = verifyToken();
@@ -16,11 +16,49 @@ export async function fetchFoods() {
     displayFoods(data);
 }
 
+export async function fetchFood(){
+    const token = verifyToken();
+
+    const response = await fetch(`/api/food/${foodId}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    verifyResponse(response);
+
+    const data = await response.json();
+    displayFoodDetails(data);
+}
+
+export async function calculateMacros(){
+    const token = verifyToken();
+    const amount = document.getElementById('amountGrams').value;
+
+    const response = await fetch(`/api/food/${foodId}`, {
+       method: 'POST',
+       headers: {
+           'Authorization': `Bearer ${token}`,
+           'Content-Type': 'application/json'
+       },
+        body: JSON.stringify({amount: parseInt(amount)})
+    });
+
+    verifyResponse(response);
+
+    const data = await response.json();
+    displayFoodDetails(data);
+}
+
 function displayFoods(foods) {
     const foodList = document.getElementById('foodList');
     foodList.innerHTML = '';
     if (foods.length > 0) {
         foods.forEach(food => {
+            const foodLink = document.createElement('a');
+            foodLink.href = `/food/${food.id}`;
+            foodLink.className = 'food-link';
+
             const foodDiv = document.createElement('div');
             foodDiv.className = 'food-item';
 
@@ -32,23 +70,41 @@ function displayFoods(foods) {
             foodCalories.textContent = `Calories: ${food.calories}`;
             foodDiv.appendChild(foodCalories);
 
-            const foodProtein = document.createElement('p');
-            foodProtein.textContent = `Proteins: ${food.protein}`;
-            foodDiv.appendChild(foodProtein);
 
-            const foodFats = document.createElement('p');
-            foodFats.textContent = `Fats: ${food.fat}`;
-            foodDiv.appendChild(foodFats);
-
-            const foodCarbs = document.createElement('p');
-            foodCarbs.textContent = `Carbs: ${food.carbohydrates}`;
-            foodDiv.appendChild(foodCarbs);
-
-            foodList.appendChild(foodDiv);
+            foodLink.appendChild(foodDiv);
+            foodList.appendChild(foodLink);
         });
     } else {
         const noResults = document.createElement('p');
         noResults.textContent = 'No results found';
         foodList.appendChild(noResults);
     }
+}
+
+function displayFoodDetails(food) {
+    const foodName = document.getElementById('foodName');
+    const foodDetails = document.getElementById('foodDetails');
+
+    foodDetails.innerHTML = '';
+    foodName.textContent = food.name;
+
+    const foodCalories = document.createElement('p');
+    foodCalories.textContent = `Calories: ${food.calories}`;
+    foodDetails.appendChild(foodCalories);
+
+    const foodProtein = document.createElement('p');
+    foodProtein.textContent = `Proteins: ${food.protein}`;
+    foodDetails.appendChild(foodProtein);
+
+    const foodFats = document.createElement('p');
+    foodFats.textContent = `Fats: ${food.fat}`;
+    foodDetails.appendChild(foodFats);
+
+    const foodCarbs = document.createElement('p');
+    foodCarbs.textContent = `Carbs: ${food.carbohydrates}`;
+    foodDetails.appendChild(foodCarbs);
+
+    const foodCategory = document.createElement('p');
+    foodCategory.textContent = `Carbs: ${food.categoryName}`;
+    foodDetails.appendChild(foodCategory);
 }
