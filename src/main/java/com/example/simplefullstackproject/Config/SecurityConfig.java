@@ -50,6 +50,7 @@ public class SecurityConfig {
                         "/food.js",
                         "/utils.js",
                         "/cart.js",
+                        "/activity.js",
                         "style.css",
                         "/favicon.ico",
                         "/api/register",
@@ -60,7 +61,9 @@ public class SecurityConfig {
                         "/",
                         "/userInfo",
                         "/food/{foodId}",
-                        "/cart").permitAll()
+                        "/cart",
+                        "/activity/{activityId}",
+                        "/activities").permitAll()
                 .anyRequest().authenticated());
 
 

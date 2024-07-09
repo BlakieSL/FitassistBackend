@@ -4,6 +4,7 @@ import { fetchUser, updateUser, deleteUser } from './user.js';
 import { fetchFoods, fetchFood, calculateMacros } from './food.js';
 import { getToken } from './utils.js';
 import { addToCart, fetchCart  } from './cart.js';
+import { fetchActivities, fetchActivity } from './activity.js';
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -16,8 +17,9 @@ async function init() {
     const updateForm = document.getElementById('updateForm');
     const closeModal = document.querySelector('.close');
     const foodDetails = document.getElementById('foodDetails');
-    const foodDetailsButtons = document.getElementById('foodDetailsButtons');
     const cart = document.getElementById('cart');
+    const activities = document.getElementById('activities');
+    const activityDetails = document.getElementById('activityDetails');
 
     if (!getToken() && window.location.pathname !== '/login' && window.location.pathname !== '/register') {
         window.location.href = '/login';
@@ -49,7 +51,6 @@ async function init() {
     if (foods) {
         try {
             await fetchFoods();
-
         } catch (error) {
             document.getElementById('foodListError').textContent = 'Error occurred during fetching food list';
         }
@@ -140,11 +141,28 @@ async function init() {
             }
         });
     }
+
     if(cart){
         try{
             await fetchCart();
         } catch(error){
             document.getElementById('cartError').textContent = 'Error occurred during fetching cart';
+        }
+    }
+
+    if(activities){
+        try{
+            await fetchActivities();
+        } catch(error){
+            document.getElementById('cartActivityListError').textContent = 'Error occurred during fetching activity list';
+        }
+    }
+
+    if(activityDetails){
+        try{
+            await fetchActivity();
+        } catch(error){
+            document.getElementById('activityDetailsError').textContent = 'Error occurred during fetching activity';
         }
     }
 }
