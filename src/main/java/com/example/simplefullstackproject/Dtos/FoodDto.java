@@ -17,6 +17,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FoodDto implements Serializable {
+    @NotNull
     Integer id;
     @Size(max = 50)
     @NotBlank

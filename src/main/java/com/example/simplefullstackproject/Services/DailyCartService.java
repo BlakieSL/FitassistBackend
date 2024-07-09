@@ -1,13 +1,9 @@
 package com.example.simplefullstackproject.Services;
 
 import com.example.simplefullstackproject.Dtos.DailyCartFoodDto;
-import com.example.simplefullstackproject.Dtos.FoodDto;
 import com.example.simplefullstackproject.Dtos.FoodDtoResponse;
-import com.example.simplefullstackproject.Models.DailyCart;
-import com.example.simplefullstackproject.Models.DailyCartFood;
-import com.example.simplefullstackproject.Models.Food;
-import com.example.simplefullstackproject.Models.User;
-import com.example.simplefullstackproject.Repositories.DailyCartFoodRepository;
+import com.example.simplefullstackproject.Models.*;
+import com.example.simplefullstackproject.Repositories.DailyActivityRepository;
 import com.example.simplefullstackproject.Repositories.DailyCartRepository;
 import com.example.simplefullstackproject.Repositories.FoodRepository;
 import com.example.simplefullstackproject.Repositories.UserRepository;
@@ -25,7 +21,6 @@ public class DailyCartService {
     private final DailyCartRepository dailyCartRepository;
     private final FoodRepository foodRepository;
     private final UserRepository userRepository;
-
 
     public DailyCartService(DailyCartRepository dailyCartRepository,
                             FoodRepository foodRepository,
@@ -47,6 +42,7 @@ public class DailyCartService {
         newDailyCart.setDate(LocalDate.now());
         return dailyCartRepository.save(newDailyCart);
     }
+
     @Transactional
     public void addFoodToCart(Integer userId, DailyCartFoodDto dto) {
         DailyCart dailyCart = getDailyCartByUserId(userId);
@@ -72,17 +68,15 @@ public class DailyCartService {
 
         dailyCartRepository.save(dailyCart);
     }
+
     @Transactional
     public void removeFoodFromCart(Integer userId, Integer foodId){
-        System.out.println("STARTE OF THE METHOD");
         DailyCart dailyCart = getDailyCartByUserId(userId);
-
         DailyCartFood dailyCartFood = dailyCart.getDailyCartFoods().stream()
                 .filter(item -> item.getFood().getId().equals(foodId))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Food with id: " + foodId + " not found"));
         dailyCart.getDailyCartFoods().remove(dailyCartFood);
-        System.out.println("SHOULD BE REMOVED");
         dailyCartRepository.save(dailyCart);
     }
 
@@ -106,4 +100,6 @@ public class DailyCartService {
                 })
                 .collect(Collectors.toList());
     }
+
+
 }

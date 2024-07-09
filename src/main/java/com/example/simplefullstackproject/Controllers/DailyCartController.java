@@ -1,9 +1,7 @@
 package com.example.simplefullstackproject.Controllers;
 
 import com.example.simplefullstackproject.Dtos.DailyCartFoodDto;
-import com.example.simplefullstackproject.Dtos.FoodDto;
 import com.example.simplefullstackproject.Dtos.FoodDtoResponse;
-import com.example.simplefullstackproject.Models.DailyCartFood;
 import com.example.simplefullstackproject.Services.DailyCartService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

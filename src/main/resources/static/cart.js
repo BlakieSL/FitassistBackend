@@ -1,5 +1,4 @@
 import { verifyToken, verifyResponse, getUserId} from './utils.js';
-
 export async function addToCart(){
     const token = verifyToken();
     const amount = document.getElementById('amountGrams').value;
@@ -26,15 +25,21 @@ export async function fetchCartFood(){
             'Authorization': `Bearer ${token}`
         }
     });
-
     verifyResponse(response);
 
+    const response1 = await fetch(`/api/users/${getUserId()}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    verifyResponse(response1);
+
     const data = await response.json();
+    const user = await response1.json();
+
     displayCartFood(data);
-}
-
-async function fetchCartActivity(){
-
+    displayTotalMacros(data, user);
 }
 
 function displayCartFood(foods) {
@@ -58,7 +63,7 @@ function displayCartFood(foods) {
             foodDiv.appendChild(foodCalories);
 
             const amount = document.createElement('p');
-            amount.textContent =   `Amount: ${food.amount}`
+            amount.textContent = `Amount: ${food.amount}`
             foodDiv.appendChild(amount);
 
             foodLink.appendChild(foodDiv);
@@ -68,10 +73,23 @@ function displayCartFood(foods) {
         document.getElementById('cartFoodListError').textContent = 'There is no foods in cart';
     }
 }
-function displayCartActivity(activities){
 
-}
+function displayTotalMacros(foods, user) {
+    let totalCalories = 0;
+    let totalProteins = 0;
+    let totalFats = 0;
+    let totalCarbs = 0;
 
-function displayInfo(){
 
+    foods.forEach(food => {
+        totalCalories += food.calories;
+        totalProteins += food.protein;
+        totalFats += food.fat;
+        totalCarbs += food.carbohydrates;
+    });
+
+    document.getElementById('totalCalories').textContent = `${totalCalories}/${user.calculatedCalories}`;
+    document.getElementById('totalProteins').textContent = `${totalProteins}`;
+    document.getElementById('totalFats').textContent = `${totalFats}`;
+    document.getElementById('totalCarbs').textContent = `${totalCarbs}`;
 }
