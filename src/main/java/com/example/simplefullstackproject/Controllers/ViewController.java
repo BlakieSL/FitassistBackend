@@ -40,5 +40,11 @@ public class ViewController {
     public String displayActivity(@PathVariable("activityId") int activityId){ return "activity"; }
 
     @GetMapping("/activities")
-    public String displayActivities(){ return "activities";}
+    public String displayActivities(){ return "activities"; }
+
+    @GetMapping("/foods/add")
+    public String displayAddFood(){ return "foodAdd"; }
+
+    @GetMapping("/activities/add")
+    public String displayAddActivity(){ return "activityAdd"; }
 }

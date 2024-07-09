@@ -14,7 +14,25 @@ export async function addToCart(){
     });
 
     verifyResponse(response);
-    alert('Food added successfully')
+    alert('Food added successfully');
+}
+
+export async function addToDailyActivity(){
+    const token = verifyToken();
+    const time = document.getElementById('time').value;
+    const activityId = window.location.pathname.split('/').pop();
+
+    const response = await fetch(`/api/dailyActivities/${getUserId()}/add`, {
+       method: 'POST',
+       headers: {
+           'Authorization': `Bearer ${token}`,
+           'Content-Type': 'application/json'
+       },
+       body: JSON.stringify({ id: activityId, time: parseInt(time)})
+    });
+
+    verifyResponse(response);
+    alert('Activity added successfully');
 }
 
 export async function fetchCart(){
