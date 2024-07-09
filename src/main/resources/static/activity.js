@@ -18,7 +18,7 @@ export async function fetchActivities(){
 export async function fetchActivity(){
     const token = verifyToken();
 
-    const response = await fetch(`/api/activities/${activityId}`, {
+    const response = await fetch(`/api/activity/${activityId}`, {
        headers: {
            'Authorization': `Bearer ${token}`
        }
@@ -37,9 +37,9 @@ export async function calculateCaloriesBurned(){
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
-            'ContentType': 'application/json'
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ time: parseInt(time)})
+        body: JSON.stringify({time: parseInt(time)})
     })
     verifyResponse(response);
 
@@ -64,7 +64,7 @@ function displayActivities(activities){
             activityDiv.appendChild(activityName);
 
             const activityCalories = document.createElement('p');
-            activityCalories.textContent = `Calories Burned: ${activity.caloriesPerMinute}`;
+            activityCalories.textContent = `Calories Burned Per Minute: ${activity.caloriesPerMinute}`;
             activityDiv.appendChild(activityCalories);
 
             activityLink.appendChild(activityDiv)
