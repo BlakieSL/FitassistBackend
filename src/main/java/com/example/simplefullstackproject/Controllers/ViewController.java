@@ -35,4 +35,7 @@ public class ViewController {
 
     @GetMapping("/cart")
     public String displayCart(){ return "cart";}
+
+    @GetMapping("/activity/{activityId}")
+    public String displayActivity(@PathVariable("activityId") int activityId){ return "activity"; }
 }

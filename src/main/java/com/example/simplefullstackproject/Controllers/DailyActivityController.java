@@ -20,7 +20,7 @@ public class DailyActivityController {
         this.dailyActivityService = dailyActivityService;
     }
 
-    @GetMapping("dailyActivities/{userId}")
+    @GetMapping("/dailyActivities/{userId}")
     public ResponseEntity<?> getDailyActivities(@PathVariable int userId){
         try{
             List<ActivityDtoResponse> activities = dailyActivityService.getActivitiesInCart(userId);

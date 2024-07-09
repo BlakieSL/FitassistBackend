@@ -3,7 +3,7 @@ import { login, register, logout } from './auth.js';
 import { fetchUser, updateUser, deleteUser } from './user.js';
 import { fetchFoods, fetchFood, calculateMacros } from './food.js';
 import { getToken } from './utils.js';
-import { addToCart, fetchCartFood  } from './cart.js';
+import { addToCart, fetchCart  } from './cart.js';
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -142,7 +142,7 @@ async function init() {
     }
     if(cart){
         try{
-            await fetchCartFood();
+            await fetchCart();
         } catch(error){
             document.getElementById('cartError').textContent = 'Error occurred during fetching cart';
         }

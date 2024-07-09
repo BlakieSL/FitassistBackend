@@ -17,7 +17,7 @@ export async function addToCart(){
     alert('Food added successfully')
 }
 
-export async function fetchCartFood(){
+export async function fetchCart(){
     const token = verifyToken();
 
     const response = await fetch(`/api/cart/${getUserId()}`, {
@@ -27,20 +27,30 @@ export async function fetchCartFood(){
     });
     verifyResponse(response);
 
-    const response1 = await fetch(`/api/users/${getUserId()}`, {
+    const response1 = await fetch(`/api/dailyActivities/${getUserId()}`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
     });
-
     verifyResponse(response1);
 
-    const data = await response.json();
-    const user = await response1.json();
+    const response2 = await fetch(`/api/users/${getUserId()}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    verifyResponse(response2);
 
-    displayCartFood(data);
-    displayTotalMacros(data, user);
+    const foods = await response.json();
+    const activities = await response1.json();
+    const user = await response2.json();
+
+    displayCartFood(foods);
+    displayDailyActivities(activities)
+    displayTotalMacros(foods, activities,user) ;
 }
+
+
 
 function displayCartFood(foods) {
     const foodList = document.getElementById('cartFoodList');
@@ -70,16 +80,48 @@ function displayCartFood(foods) {
             foodList.appendChild(foodLink);
         });
     } else {
-        document.getElementById('cartFoodListError').textContent = 'There is no foods in cart';
+        document.getElementById('cartFoodListError').textContent = 'There are no foods';
     }
 }
 
-function displayTotalMacros(foods, user) {
+function displayDailyActivities(activities) {
+    const activityList = document.getElementById('cartActivityList');
+    activityList.innerHTML = '';
+    if (activities.length > 0) {
+        activities.forEach(activity => {
+            const activityLink = document.createElement('a');
+            activityLink.href = `/activity/${activity.id}`;
+            activityLink.className = 'activity-link';
+
+            const activityDiv = document.createElement('div');
+            activityDiv.className = 'activity-item';
+
+            const activityName = document.createElement('h2');
+            activityName.textContent = activity.name;
+            activityDiv.appendChild(activityName);
+
+            const activityCalories = document.createElement('p');
+            activityCalories.textContent = `Calories Burned: ${activity.caloriesBurn}`;
+            activityDiv.appendChild(activityCalories);
+
+            const activityTime = document.createElement('p');
+            activityCalories.textContent = `Time: ${activity.time}`;
+            activityDiv.appendChild(activityTime);
+
+            activityLink.appendChild(activityDiv)
+            activityList.appendChild(activityLink);
+        });
+    } else {
+        document.getElementById('cartActivityListError').textContent = 'There are no activities';
+    }
+}
+
+function displayTotalMacros(foods, activities,user) {
     let totalCalories = 0;
     let totalProteins = 0;
     let totalFats = 0;
     let totalCarbs = 0;
-
+    let totalCaloriesBurned = 0;
 
     foods.forEach(food => {
         totalCalories += food.calories;
@@ -88,8 +130,13 @@ function displayTotalMacros(foods, user) {
         totalCarbs += food.carbohydrates;
     });
 
+    activities.forEach(activity => {
+       totalCaloriesBurned += activity.caloriesBurn;
+    });
+
     document.getElementById('totalCalories').textContent = `${totalCalories}/${user.calculatedCalories}`;
     document.getElementById('totalProteins').textContent = `${totalProteins}`;
     document.getElementById('totalFats').textContent = `${totalFats}`;
     document.getElementById('totalCarbs').textContent = `${totalCarbs}`;
+    document.getElementById('totalCaloriesBurned').textContent = `${totalCaloriesBurned}`;
 }

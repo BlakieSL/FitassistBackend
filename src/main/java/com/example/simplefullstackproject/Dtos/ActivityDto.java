@@ -13,7 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActivityDto {
-    @NotNull
     Integer id;
     @NotBlank
     String name;
