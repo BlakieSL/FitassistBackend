@@ -45,8 +45,10 @@ public class FoodService {
                 .map(foodDtoMapper::map)
                 .collect(Collectors.toList());
     }
+
     public FoodDto calculateMacros(int id, CalculateAmountRequest request){
         validationHelper.validate(request);
+
         Food food = foodRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Food with id: " + id + " not found"));
 
