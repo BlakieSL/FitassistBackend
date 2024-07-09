@@ -70,7 +70,6 @@ function displayFoods(foods) {
             foodCalories.textContent = `Calories: ${food.calories}`;
             foodDiv.appendChild(foodCalories);
 
-
             foodLink.appendChild(foodDiv);
             foodList.appendChild(foodLink);
         });
