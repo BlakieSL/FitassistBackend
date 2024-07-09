@@ -24,7 +24,6 @@ public class JwtService {
     private final JWSAlgorithm alg = JWSAlgorithm.HS256;
     private final JWSSigner signer;
     private final JWSVerifier verifier;
-    private final int expTime = 8640; // 24 hour
 
     public JwtService(@Value("${jws.sharedKey}") String sharedKey) throws Exception {
         signer = new MACSigner(sharedKey.getBytes());
@@ -37,7 +36,7 @@ public class JwtService {
         JWTClaimsSet claimSet = new JWTClaimsSet.Builder()
                 .subject(username)
                 .issueTime(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-                .expirationTime(Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant()))
+                .expirationTime(Date.from(LocalDateTime.now().plusHours(24).atZone(ZoneId.systemDefault()).toInstant()))
                 .claim("userId", userId)
                 .claim("authorities", authorities)
                 .build();

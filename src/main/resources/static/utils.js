@@ -11,14 +11,13 @@ export function verifyToken() {
 }
 
 export function getUserId() {
-    const token = getToken();
-    if (!token) {
-        throw new Error('No token found');
-    }
-    const payload = jwt_decode(token);
+    const payload = jwt_decode(verifyToken());
     return payload.userId;
 }
-
+export function getUserRole() {
+    const payload = jwt_decode(verifyToken());
+    return  payload.authorities || [];
+}
 export function verifyResponse(response) {
     if (response.status === 401) {
         window.location.href = '/login';

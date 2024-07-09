@@ -2,9 +2,9 @@
 import { login, register, logout } from './auth.js';
 import { fetchUser, updateUser, deleteUser } from './user.js';
 import { fetchFoods, fetchFood, calculateMacros } from './food.js';
-import { getToken } from './utils.js';
-import { addToCart, fetchCart  } from './cart.js';
-import { fetchActivities, fetchActivity } from './activity.js';
+import { getToken, getUserRole } from './utils.js';
+import { addToCart, addToDailyActivity, fetchCart  } from './cart.js';
+import {calculateCaloriesBurned, fetchActivities, fetchActivity} from './activity.js';
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -20,6 +20,22 @@ async function init() {
     const cart = document.getElementById('cart');
     const activities = document.getElementById('activities');
     const activityDetails = document.getElementById('activityDetails');
+
+    let loggedIn = false;
+
+    if (getToken()) {
+        loggedIn = true;
+    }
+
+    if(loggedIn) {
+        const userRoles = getUserRole();
+        console.log(userRoles);
+        if (userRoles.includes('ROLE_ADMIN')) {
+            document.querySelectorAll('.admin-only').forEach(element => {
+                element.style.display = 'block';
+            });
+        }
+    }
 
     if (!getToken() && window.location.pathname !== '/login' && window.location.pathname !== '/register') {
         window.location.href = '/login';
@@ -164,5 +180,24 @@ async function init() {
         } catch(error){
             document.getElementById('activityDetailsError').textContent = 'Error occurred during fetching activity';
         }
+        const calculateCaloriesBurnedBtn = document.getElementById('calculateCaloriesBurned');
+        const addToCartBtn = document.getElementById('addToDailyActivities');
+
+        calculateCaloriesBurnedBtn.addEventListener('click', async function(event){
+           event.preventDefault();
+           try{
+               await calculateCaloriesBurned();
+           } catch(error){
+               document.getElementById('buttonsActivityError').textContent = 'Error occurred during calculations. Please try again later';
+           }
+        });
+        addToCartBtn.addEventListener('click', async function (event){
+            event.preventDefault();
+            try{
+                await addToDailyActivity();
+            } catch(error){
+                document.getElementById('buttonsActivityError').textContent = 'Error occurred during adding activity to daily activities. Please try again later.'
+            }
+        });
     }
 }
