@@ -47,7 +47,7 @@ public class FoodController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-    @PostMapping("foods/add")
+    @PostMapping("/foods/add")
     public ResponseEntity<?> saveFood(@Valid @RequestBody FoodDto foodDto,
                                       BindingResult bindingResult){
         try{
