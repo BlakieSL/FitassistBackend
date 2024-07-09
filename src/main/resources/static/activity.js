@@ -1,4 +1,4 @@
-import { verifyToken, verifyResponse } from './utils.js';
+import { verifyToken, verifyResponse} from './utils.js';
 const activityId = window.location.pathname.split('/').pop();
 
 export async function fetchActivities(){

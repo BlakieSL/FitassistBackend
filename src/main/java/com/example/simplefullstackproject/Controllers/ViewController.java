@@ -38,4 +38,7 @@ public class ViewController {
 
     @GetMapping("/activity/{activityId}")
     public String displayActivity(@PathVariable("activityId") int activityId){ return "activity"; }
+
+    @GetMapping("/activities")
+    public String displayActivities(){ return "activities";}
 }
