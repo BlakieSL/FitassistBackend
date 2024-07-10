@@ -1,10 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Add Activity</title>
 </head>
 <body>
-
+<main layout:fragment="content">
+    <h1>Add Activity</h1>
+    <form id="addActivityForm">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="caloriesPerMinute">Calories Per Minute:</label>
+            <input type="number" id="caloriesPerMinute" name="caloriesPerMinute" class="form-control" step="0.1" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Activity</button>
+    </form>
+    <p id="addActivityError"></p>
+</main>
 </body>
 </html>
