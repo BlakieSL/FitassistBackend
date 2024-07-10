@@ -2,6 +2,7 @@ package com.example.simplefullstackproject.Services;
 
 import com.example.simplefullstackproject.Dtos.CalculateAmountRequest;
 import com.example.simplefullstackproject.Dtos.FoodDto;
+import com.example.simplefullstackproject.Dtos.SearchDtoRequest;
 import com.example.simplefullstackproject.Models.Food;
 import com.example.simplefullstackproject.Repositories.FoodRepository;
 import com.example.simplefullstackproject.Services.Mappers.FoodDtoMapper;
@@ -60,5 +61,12 @@ public class FoodService {
         food.setCarbohydrates(food.getCarbohydrates()*factor);
 
         return foodDtoMapper.map(food);
+    }
+
+    public List<FoodDto> searchFoods(SearchDtoRequest request){
+        List<Food> foods = foodRepository.findByNameContainingIgnoreCase(request.getName());
+        return foods.stream()
+                .map(foodDtoMapper::map)
+                .collect(Collectors.toList());
     }
 }
