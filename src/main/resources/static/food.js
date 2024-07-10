@@ -1,4 +1,5 @@
-import { verifyToken, verifyResponse } from './utils.js';
+import {verifyResponse, verifyToken} from './utils.js';
+
 const foodId = window.location.pathname.split('/').pop();
 
 export async function fetchFoods() {
@@ -49,6 +50,41 @@ export async function calculateMacros(){
     const data = await response.json();
     displayFoodDetails(data);
 }
+
+export async function searchFoods(query){
+    const token = verifyToken();
+
+    const response = await fetch('/api/foods/search', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+       },
+       body: JSON.stringify({name: query})
+    });
+    verifyResponse(response);
+
+    const data = await response.json();
+    displayFoods(data);
+}
+
+export async function fetchSuggestions(query, container) {
+    const token = verifyToken();
+
+    const response = await fetch('/api/foods/search', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: query })
+    });
+    verifyResponse(response);
+
+    const data = await response.json();
+    displaySuggestions(data,container);
+}
+
 
 function displayFoods(foods) {
     const foodList = document.getElementById('foodList');
@@ -106,4 +142,23 @@ function displayFoodDetails(food) {
     const foodCategory = document.createElement('p');
     foodCategory.textContent = `Carbs: ${food.categoryName}`;
     foodDetails.appendChild(foodCategory);
+}
+
+function displaySuggestions(suggestions, container) {
+    container.innerHTML = '';
+    if (suggestions.length > 0) {
+        const ul = document.createElement('ul');
+        ul.className = 'suggestions-list';
+        suggestions.forEach(food => {
+            const li = document.createElement('li');
+            li.className = 'suggestion-item';
+            li.textContent = food.name;
+            li.addEventListener('click', () => {
+                document.getElementById('searchInput').value = food.name;
+                container.innerHTML = '';
+            });
+            ul.appendChild(li);
+        });
+        container.appendChild(ul);
+    }
 }
