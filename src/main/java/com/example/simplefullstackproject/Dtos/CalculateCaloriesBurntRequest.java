@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 public class CalculateCaloriesBurntRequest {
     @NotNull
+    int userId;
+    @NotNull
     @Positive
     int time = 1;
 }

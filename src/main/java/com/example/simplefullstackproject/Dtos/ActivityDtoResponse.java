@@ -21,8 +21,8 @@ public class ActivityDtoResponse {
     String name;
     @NotNull
     @Positive
-    Integer caloriesBurn;
+    int caloriesBurn;
     @NotNull
     @Positive
-    Integer time;
+    int time;
 }

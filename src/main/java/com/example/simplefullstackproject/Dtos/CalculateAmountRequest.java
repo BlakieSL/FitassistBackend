@@ -10,5 +10,5 @@ import lombok.Setter;
 public class CalculateAmountRequest {
     @NotNull
     @Positive
-    private Integer amount = 100;
+    int amount = 100;
 }
