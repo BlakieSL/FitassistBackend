@@ -1,7 +1,7 @@
 // script.js
 import { login, register, logout } from './auth.js';
 import { fetchUser, updateUser, deleteUser } from './user.js';
-import { fetchFoods, fetchFood, calculateMacros } from './food.js';
+import { fetchFoods, fetchFood, calculateMacros, searchFoods, fetchSuggestions } from './food.js';
 import { getToken, getUserRole } from './utils.js';
 import { addToCart, addToDailyActivity, fetchCart  } from './cart.js';
 import {calculateCaloriesBurned, fetchActivities, fetchActivity} from './activity.js';
@@ -20,7 +20,8 @@ async function init() {
     const cart = document.getElementById('cart');
     const activities = document.getElementById('activities');
     const activityDetails = document.getElementById('activityDetails');
-
+    const searchForm = document.getElementById('searchForm');
+    const searchQuery = localStorage.getItem('searchQuery');
     let loggedIn = false;
 
     if (getToken()) {
@@ -66,7 +67,12 @@ async function init() {
 
     if (foods) {
         try {
-            await fetchFoods();
+            if (searchQuery) {
+                await searchFoods(searchQuery);
+                localStorage.removeItem('searchQuery');
+            }else {
+                await fetchFoods();
+            }
         } catch (error) {
             document.getElementById('foodListError').textContent = 'Error occurred during fetching food list';
         }
@@ -197,6 +203,33 @@ async function init() {
                 await addToDailyActivity();
             } catch(error){
                 document.getElementById('buttonsActivityError').textContent = 'Error occurred during adding activity to daily activities. Please try again later.'
+            }
+        });
+    }
+
+    if(searchForm){
+        searchForm.addEventListener('submit', async function(event){
+           event.preventDefault();
+           const query = document.getElementById('searchInput').value;
+           localStorage.setItem('searchQuery', query);
+           window.location.href = '/index';
+        });
+
+        const searchInput = document.getElementById('searchInput');
+        const suggestionsContainer = document.createElement('div');
+        suggestionsContainer.className = 'suggestions-container';
+        searchInput.parentNode.appendChild(suggestionsContainer);
+
+        searchInput.addEventListener('input', async function() {
+            const query = searchInput.value;
+            if (query.length > 1) {
+               try {
+                   await fetchSuggestions(query, suggestionsContainer);
+               } catch(error){
+                   console.log(error);
+               }
+            } else {
+                suggestionsContainer.innerHTML = '';
             }
         });
     }

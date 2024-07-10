@@ -2,6 +2,7 @@ package com.example.simplefullstackproject.Controllers;
 
 import com.example.simplefullstackproject.Dtos.CalculateAmountRequest;
 import com.example.simplefullstackproject.Dtos.FoodDto;
+import com.example.simplefullstackproject.Dtos.SearchDtoRequest;
 import com.example.simplefullstackproject.Models.Food;
 import com.example.simplefullstackproject.Services.FoodService;
 import jakarta.validation.Valid;
@@ -62,5 +63,12 @@ public class FoodController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
+    @PostMapping("/foods/search")
+    public ResponseEntity<?> searchFood(@Valid @RequestBody SearchDtoRequest request,
+                                        BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+        }
+        return ResponseEntity.ok(foodService.searchFoods(request));
+    }
 }
