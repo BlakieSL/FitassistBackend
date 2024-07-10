@@ -1,6 +1,7 @@
 package com.example.simplefullstackproject.Controllers;
 
 import com.example.simplefullstackproject.Dtos.ActivityDto;
+import com.example.simplefullstackproject.Dtos.ActivityDtoResponse;
 import com.example.simplefullstackproject.Dtos.CalculateCaloriesBurntRequest;
 import com.example.simplefullstackproject.Services.ActivityService;
 import jakarta.validation.Valid;
@@ -23,7 +24,7 @@ public class ActivityController {
     public ResponseEntity<?> getActivities(){ return ResponseEntity.ok(activityService.getActivities());}
 
     @GetMapping("/activity/{id}")
-    public ResponseEntity<?> getActivityId(@PathVariable int id){
+    public ResponseEntity<?> getActivityById(@PathVariable int id){
         try{
             ActivityDto activity = activityService.getActivityById(id);
             return ResponseEntity.ok(activity);
@@ -40,7 +41,7 @@ public class ActivityController {
             if(bindingResult.hasErrors()){
                 return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
             }
-            ActivityDto response = activityService.calculateCaloriesBurnt(id, request);
+            ActivityDtoResponse response = activityService.calculateCaloriesBurnt(id, request);
             return ResponseEntity.ok(response);
         } catch(NoSuchElementException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

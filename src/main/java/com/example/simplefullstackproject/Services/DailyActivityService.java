@@ -24,15 +24,18 @@ public class DailyActivityService {
     private final ValidationHelper validationHelper;
     private final ActivityRepository activityRepository;
     private final UserRepository userRepository;
+    private final CalculationsHelper calculationsHelper;
 
     public DailyActivityService(DailyActivityRepository dailyActivityRepository,
                                 UserRepository userRepository,
                                 ActivityRepository activityRepository,
+                                CalculationsHelper calculationsHelper,
                                 ValidationHelper validationHelper){
         this.dailyActivityRepository = dailyActivityRepository;
         this.userRepository = userRepository;
         this.activityRepository = activityRepository;
         this.validationHelper = validationHelper;
+        this.calculationsHelper = calculationsHelper;
     }
 
     private DailyActivity getDailyActivityByUserId(Integer userId){
@@ -87,13 +90,15 @@ public class DailyActivityService {
     public List<ActivityDtoResponse> getActivitiesInCart(Integer userId){
         DailyActivity dailyActivity = getDailyActivityByUserId(userId);
 
+        User user = dailyActivity.getUser();
+
         return dailyActivity.getDailyCartActivities().stream()
                 .map(dailyCartActivity -> {
                     Activity activity = dailyCartActivity.getActivity();
                     return new ActivityDtoResponse(
                             activity.getId(),
                             activity.getName(),
-                            (int) (activity.getCaloriesPerMinute()*dailyCartActivity.getTime()),
+                            (int) (calculationsHelper.calculateCaloriesBurned(dailyCartActivity.getTime(), user.getWeight(), activity.getMet())),
                             dailyCartActivity.getTime()
                     );
                 })

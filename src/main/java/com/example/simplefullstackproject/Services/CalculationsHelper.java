@@ -35,4 +35,8 @@ public class CalculationsHelper {
             default -> tdee;
         };
     }
+
+    public double calculateCaloriesBurned(int time, double weight, double met){
+        return (time * met * weight)/200;
+    }
 }

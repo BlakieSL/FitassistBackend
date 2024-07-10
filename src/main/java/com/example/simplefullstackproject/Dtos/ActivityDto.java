@@ -16,6 +16,6 @@ public class ActivityDto {
     Integer id;
     @NotBlank
     String name;
-    private Double caloriesPerMinute;
-
+    @NotNull
+    double met;
 }

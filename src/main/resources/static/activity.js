@@ -1,4 +1,4 @@
-import { verifyToken, verifyResponse} from './utils.js';
+import { verifyToken, verifyResponse, getUserId } from './utils.js';
 const activityId = window.location.pathname.split('/').pop();
 
 export async function fetchActivities(){
@@ -26,7 +26,7 @@ export async function fetchActivity(){
     verifyResponse(response);
 
     const data = await response.json();
-    displayActivityDetails(data)
+    displayActivityDetails(data, false)
 }
 
 export async function addActivity(){
@@ -59,12 +59,12 @@ export async function calculateCaloriesBurned(){
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({time: parseInt(time)})
+        body: JSON.stringify({userId: parseInt(getUserId()), time: parseInt(time)})
     })
     verifyResponse(response);
 
     const data = await response.json();
-    displayActivityDetails(data);
+    displayActivityDetails(data, true);
 }
 
 function displayActivities(activities){
@@ -83,9 +83,9 @@ function displayActivities(activities){
             activityName.textContent = activity.name;
             activityDiv.appendChild(activityName);
 
-            const activityCalories = document.createElement('p');
-            activityCalories.textContent = `Calories Burned Per Minute: ${activity.caloriesPerMinute}`;
-            activityDiv.appendChild(activityCalories);
+            const met = document.createElement('p');
+            met.textContent = `MET: ${activity.met}`;
+            activityDiv.appendChild(met);
 
             activityLink.appendChild(activityDiv)
             activityList.appendChild(activityLink);
@@ -95,7 +95,7 @@ function displayActivities(activities){
     }
 }
 
-function displayActivityDetails(activity){
+function displayActivityDetails(activity,flag){
     const activityName = document.getElementById('activityName');
     const activityDetails = document.getElementById('activityDetails');
 
@@ -103,6 +103,10 @@ function displayActivityDetails(activity){
     activityName.textContent = activity.name;
 
     const activityCalories = document.createElement('p');
-    activityCalories.textContent = activity.caloriesPerMinute
+    if(flag === true) {
+        activityCalories.textContent = activity.caloriesBurn
+    } else{
+        activityCalories.textContent = activity.met
+    }
     activityDetails.appendChild(activityCalories);
 }

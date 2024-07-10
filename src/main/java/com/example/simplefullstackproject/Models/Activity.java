@@ -30,8 +30,8 @@ public class Activity {
 
     @NotNull
     @Positive
-    @Column(name = "Calories_Per_Minute",nullable = false)
-    private Double caloriesPerMinute;
+    @Column(nullable = false)
+    private Double met;
 
     @OneToMany(mappedBy = "activity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final List<DailyCartActivity> dailyCartActivities = new ArrayList<>();
