@@ -1,9 +1,6 @@
 package com.example.simplefullstackproject.Dtos;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,13 +20,13 @@ public class FoodDtoResponse {
     @Positive
     Double calories;
     @NotNull
-    @Positive
+    @PositiveOrZero
     Double protein;
     @NotNull
-    @Positive
+    @PositiveOrZero
     Double fat;
     @NotNull
-    @Positive
+    @PositiveOrZero
     Double carbohydrates;
     @NotNull
     Integer categoryId;

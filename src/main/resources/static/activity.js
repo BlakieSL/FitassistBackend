@@ -29,6 +29,26 @@ export async function fetchActivity(){
     displayActivityDetails(data)
 }
 
+export async function addActivity(){
+    const token = verifyToken();
+
+    const name = document.getElementById('name').value;
+    const calories = document.getElementById('caloriesPerMinute').value;
+
+    const response = await fetch('/api/activities/add', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({name: name, caloriesPerMinute: parseInt(calories)})
+    });
+    verifyResponse(response);
+
+    alert('Activity added successfully');
+    window.location.href = '/activities';
+}
+
 export async function calculateCaloriesBurned(){
     const token = verifyToken();
     const time = document.getElementById('time').value;

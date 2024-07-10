@@ -1,10 +1,10 @@
 // script.js
 import { login, register, logout } from './auth.js';
 import { fetchUser, updateUser, deleteUser } from './user.js';
-import { fetchFoods, fetchFood, calculateMacros, searchFoods, fetchSuggestions } from './food.js';
+import {fetchFoods, fetchFood, calculateMacros, searchFoods, fetchSuggestions, addFood} from './food.js';
 import { getToken, getUserRole } from './utils.js';
 import { addToCart, addToDailyActivity, fetchCart  } from './cart.js';
-import {calculateCaloriesBurned, fetchActivities, fetchActivity} from './activity.js';
+import {calculateCaloriesBurned, fetchActivities, fetchActivity, addActivity} from './activity.js';
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -21,6 +21,8 @@ async function init() {
     const activities = document.getElementById('activities');
     const activityDetails = document.getElementById('activityDetails');
     const searchForm = document.getElementById('searchForm');
+    const addFoodForm = document.getElementById('addFoodForm');
+    const addActivityForm = document.getElementById('addActivityForm');
     const searchQuery = localStorage.getItem('searchQuery');
     let loggedIn = false;
 
@@ -58,7 +60,7 @@ async function init() {
         loginForm.addEventListener('submit', async function(event) {
             event.preventDefault();
             try {
-                await login(event);
+                await login();
             } catch (error) {
                 document.getElementById('loginError').textContent = 'Error occurred during login. Please try again later.';
             }
@@ -232,5 +234,27 @@ async function init() {
                 suggestionsContainer.innerHTML = '';
             }
         });
+    }
+
+    if(addFoodForm){
+        addFoodForm.addEventListener('submit', async function(event){
+           event.preventDefault();
+           try{
+               await addFood();
+           } catch(error){
+               document.getElementById('addFoodError').textContent = 'Error occurred during adding food. Please try again later.';
+           }
+        });
+    }
+
+    if(addActivityForm){
+        addActivityForm.addEventListener('submit', async function(event){
+            event.preventDefault();
+            try{
+                await addActivity();
+            } catch(error){
+                document.getElementById('addActivityError').textContent = 'Error occurred during adding activity. Please try again later';
+            }
+        })
     }
 }

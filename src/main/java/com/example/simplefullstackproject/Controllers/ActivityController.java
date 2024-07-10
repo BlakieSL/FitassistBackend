@@ -55,7 +55,7 @@ public class ActivityController {
                 return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
             }
             ActivityDto response = activityService.saveActivity(activityDto);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            return ResponseEntity.ok(response);
         } catch (NoSuchElementException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

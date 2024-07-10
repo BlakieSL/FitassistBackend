@@ -44,7 +44,6 @@ export async function calculateMacros(){
        },
         body: JSON.stringify({amount: parseInt(amount)})
     });
-
     verifyResponse(response);
 
     const data = await response.json();
@@ -85,6 +84,36 @@ export async function fetchSuggestions(query, container) {
     displaySuggestions(data,container);
 }
 
+export async function addFood(){
+    const token = verifyToken();
+
+    const name = document.getElementById('name').value;
+    const calories = document.getElementById('calories').value;
+    const protein = document.getElementById('protein').value;
+    const fat = document.getElementById('fat').value;
+    const carbohydrates = document.getElementById('carbohydrates').value;
+    const categoryName= document.getElementById('categoryName').value;
+
+    const response = await fetch('/api/foods/add', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: name,
+            calories: parseInt(calories),
+            protein: parseInt(protein),
+            fat: parseInt(fat),
+            carbohydrates: parseInt(carbohydrates),
+            categoryName: categoryName
+        })
+    });
+    verifyResponse(response);
+
+    alert('Food added successfully');
+    window.location.href = '/index';
+}
 
 function displayFoods(foods) {
     const foodList = document.getElementById('foodList');
