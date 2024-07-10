@@ -1,10 +1,7 @@
 package com.example.simplefullstackproject.Dtos;
 
 import com.example.simplefullstackproject.Models.Category;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.io.Serializable;
@@ -25,13 +22,13 @@ public class FoodDto implements Serializable {
     @Positive
     Double calories;
     @NotNull
-    @Positive
+    @PositiveOrZero
     Double protein;
     @NotNull
-    @Positive
+    @PositiveOrZero
     Double fat;
     @NotNull
-    @Positive
+    @PositiveOrZero
     Double carbohydrates;
     @NotNull
     String categoryName;
