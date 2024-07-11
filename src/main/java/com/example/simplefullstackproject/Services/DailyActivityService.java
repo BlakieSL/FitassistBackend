@@ -2,14 +2,12 @@ package com.example.simplefullstackproject.Services;
 
 import com.example.simplefullstackproject.Dtos.ActivityDtoResponse;
 import com.example.simplefullstackproject.Dtos.DailyActivityDto;
-import com.example.simplefullstackproject.Models.Activity;
-import com.example.simplefullstackproject.Models.DailyActivity;
-import com.example.simplefullstackproject.Models.DailyCartActivity;
-import com.example.simplefullstackproject.Models.User;
+import com.example.simplefullstackproject.Models.*;
 import com.example.simplefullstackproject.Repositories.ActivityRepository;
 import com.example.simplefullstackproject.Repositories.DailyActivityRepository;
 import com.example.simplefullstackproject.Repositories.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -103,5 +101,17 @@ public class DailyActivityService {
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?", zone = "GMT+2")
+    @Transactional
+    public void updateDailyCarts() {
+        List<DailyActivity> dailyActivities = dailyActivityRepository.findAll();
+        LocalDate today = LocalDate.now();
+        for (DailyActivity dailyActivity : dailyActivities) {
+            dailyActivity.setDate(today);
+            dailyActivity.getDailyCartActivities().clear();
+            dailyActivityRepository.save(dailyActivity);
+        }
     }
 }

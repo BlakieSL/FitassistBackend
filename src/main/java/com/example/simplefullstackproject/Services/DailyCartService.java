@@ -8,9 +8,13 @@ import com.example.simplefullstackproject.Repositories.DailyCartRepository;
 import com.example.simplefullstackproject.Repositories.FoodRepository;
 import com.example.simplefullstackproject.Repositories.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -101,5 +105,15 @@ public class DailyCartService {
                 .collect(Collectors.toList());
     }
 
-
+    @Scheduled(cron = "0 0 0 * * ?", zone = "GMT+2")
+    @Transactional
+    public void updateDailyCarts() {
+        List<DailyCart> carts = dailyCartRepository.findAll();
+        LocalDate today = LocalDate.now();
+        for (DailyCart cart : carts) {
+            cart.setDate(today);
+            cart.getDailyCartFoods().clear();
+            dailyCartRepository.save(cart);
+        }
+    }
 }
