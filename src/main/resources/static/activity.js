@@ -33,15 +33,15 @@ export async function addActivity(){
     const token = verifyToken();
 
     const name = document.getElementById('name').value;
-    const calories = document.getElementById('caloriesPerMinute').value;
-
+    const met = document.getElementById('met').value;
+    const categoryName = document.getElementById('categoryName').value
     const response = await fetch('/api/activities/add', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({name: name, caloriesPerMinute: parseInt(calories)})
+        body: JSON.stringify({name: name, met: parseInt(met), categoryName: categoryName})
     });
     verifyResponse(response);
 
@@ -68,11 +68,36 @@ export async function calculateCaloriesBurned(){
 }
 
 export async function populateActivityTypes(){
+    const token = verifyToken();
 
+    const response = await fetch('/api/activityCategories', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    verifyResponse(response);
+
+    const data = await response.json();
+
+    displayActivityCategories(data);
 }
 
-export async function populateSpecificActivities(){
+export async function populateSpecificActivities(activityTypeId) {
+    const token = verifyToken();
+    let data;
+    if(activityTypeId) {
+        const response = await fetch(`/api/activities/${activityTypeId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        verifyResponse(response);
 
+         data = await response.json();
+    }else{
+        data = [];
+    }
+    displaySpecificActivities(data);
 }
 
 function displayActivities(activities){
@@ -118,4 +143,40 @@ function displayActivityDetails(activity,flag){
     }
     activityDetails.appendChild(activityCalories);
 }
+
+function displayActivityCategories(categories){
+    const activityTypeSelect = document.getElementById('activityType');
+    activityTypeSelect.textContent = '';
+
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Select a type';
+    activityTypeSelect.appendChild(defaultOption);
+
+    categories.forEach(category => {
+        console.log(category.name);
+        const option = document.createElement('option');
+        option.value = category.id;
+        option.textContent = category.name;
+        activityTypeSelect.appendChild(option);
+    });
+}
+
+function displaySpecificActivities(activities) {
+    const specificActivitySelect = document.getElementById('specificActivity');
+    specificActivitySelect.textContent = '';
+
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Select an activity';
+    specificActivitySelect.appendChild(defaultOption);
+
+    activities.forEach(activity => {
+        const option = document.createElement('option');
+        option.value = activity.id;
+        option.textContent = activity.name;
+        specificActivitySelect.appendChild(option);
+    });
+}
+
 

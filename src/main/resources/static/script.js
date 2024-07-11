@@ -4,7 +4,7 @@ import { fetchUser, updateUser, deleteUser } from './user.js';
 import {fetchFoods, fetchFood, calculateMacros, searchFoods, fetchSuggestions, addFood} from './food.js';
 import { getToken, getUserRole } from './utils.js';
 import { addToCart, addToDailyActivity, fetchCart  } from './cart.js';
-import {calculateCaloriesBurned, fetchActivities, fetchActivity, addActivity} from './activity.js';
+import {calculateCaloriesBurned, fetchActivities, fetchActivity, addActivity, populateActivityTypes, populateSpecificActivities} from './activity.js';
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -24,8 +24,12 @@ async function init() {
     const addFoodForm = document.getElementById('addFoodForm');
     const addActivityForm = document.getElementById('addActivityForm');
     const calculatorModal = document.getElementById('calculatorModal');
-    const openCalculatorModal = document.getElementById('openCalculatorModal')
+    const openCalculatorModal = document.getElementById('openCalculatorModal');
     const closeCalculatorModal = document.querySelector('.close');
+    const activityTypeSelect = document.getElementById('activityType');
+    const specificActivitySelect = document.getElementById('specificActivity');
+    const selectActivityBtn = document.getElementById('selectActivityBtn');
+    const calculatorError = document.getElementById('calculatorError');
     const searchQuery = localStorage.getItem('searchQuery');
     let loggedIn = false;
 
@@ -264,7 +268,8 @@ async function init() {
     openCalculatorModal.addEventListener('click', async function(event){
        event.preventDefault();
        try{
-
+            calculatorModal.style.display = 'block';
+            await populateActivityTypes();
        } catch(error){
            document.getElementById('calculatorError').textContent = 'Error occurred during fetching activity types for calculations';
        }
@@ -283,16 +288,16 @@ async function init() {
     document.getElementById('activityType').addEventListener('change', async function(event){
        event.preventDefault();
        try{
-
+            await populateSpecificActivities(this.value);
        } catch(error){
            document.getElementById('calculatorError').textContent = 'Error occurred during fetching specific activities for calculations';
        }
     });
 
     document.getElementById('selectActivityBtn').addEventListener('click', function(){
-        const activity = document.getElementById('specificActivity');
+        const activity = document.getElementById('specificActivity').value;
         if(activity){
-            window.location.href = `/activity/${activity.id}`;
+            window.location.href = `/activity/${activity}`;
         } else{
             document.getElementById('calculatorError').textContent = 'Please select an activity'
         }
