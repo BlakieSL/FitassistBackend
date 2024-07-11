@@ -23,6 +23,13 @@ public class ActivityController {
     @GetMapping("/activities")
     public ResponseEntity<?> getActivities(){ return ResponseEntity.ok(activityService.getActivities());}
 
+    @GetMapping("/activityCategories")
+    public ResponseEntity<?> getActivityCategories(){ return ResponseEntity.ok(activityService.getCategories());}
+    @GetMapping("/activities/{categoryId}")
+    public ResponseEntity<?> getActivitiesByCategory(@PathVariable int categoryId){
+        return ResponseEntity.ok(activityService.getActivitiesByCategory(categoryId));
+    }
+
     @GetMapping("/activity/{id}")
     public ResponseEntity<?> getActivityById(@PathVariable int id){
         try{

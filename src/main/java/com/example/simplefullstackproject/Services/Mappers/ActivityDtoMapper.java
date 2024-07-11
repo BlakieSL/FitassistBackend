@@ -1,8 +1,10 @@
 package com.example.simplefullstackproject.Services.Mappers;
 
+import com.example.simplefullstackproject.Dtos.ActivityCategoryDto;
 import com.example.simplefullstackproject.Dtos.ActivityDto;
 import com.example.simplefullstackproject.Dtos.ActivityDtoResponse;
 import com.example.simplefullstackproject.Models.Activity;
+import com.example.simplefullstackproject.Models.ActivityCategory;
 import com.example.simplefullstackproject.Repositories.ActivityCategoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -37,5 +39,9 @@ public class ActivityDtoMapper {
                 .orElseThrow(() -> new NoSuchElementException(
                         "Activity category with name: " + request.getCategoryName() + " not found")));
         return activity;
+    }
+
+    public ActivityCategoryDto map(ActivityCategory request){
+        return new ActivityCategoryDto(request.getId(), request.getName());
     }
 }
