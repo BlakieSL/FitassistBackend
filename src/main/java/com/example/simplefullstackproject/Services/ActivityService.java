@@ -1,10 +1,13 @@
 package com.example.simplefullstackproject.Services;
 
+import com.example.simplefullstackproject.Dtos.ActivityCategoryDto;
 import com.example.simplefullstackproject.Dtos.ActivityDto;
 import com.example.simplefullstackproject.Dtos.ActivityDtoResponse;
 import com.example.simplefullstackproject.Dtos.CalculateCaloriesBurntRequest;
 import com.example.simplefullstackproject.Models.Activity;
+import com.example.simplefullstackproject.Models.ActivityCategory;
 import com.example.simplefullstackproject.Models.User;
+import com.example.simplefullstackproject.Repositories.ActivityCategoryRepository;
 import com.example.simplefullstackproject.Repositories.ActivityRepository;
 import com.example.simplefullstackproject.Repositories.UserRepository;
 import com.example.simplefullstackproject.Services.Mappers.ActivityDtoMapper;
@@ -17,21 +20,24 @@ import java.util.stream.Collectors;
 
 @Service
 public class ActivityService {
-    private final ActivityRepository activityRepository;
     private final ValidationHelper validationHelper;
-    private final ActivityDtoMapper activityDtoMapper;
     private final CalculationsHelper calculationsHelper;
+    private final ActivityDtoMapper activityDtoMapper;
+    private final ActivityRepository activityRepository;
     private final UserRepository userRepository;
-    public ActivityService(ActivityRepository activityRepository,
-                           ValidationHelper validationHelper,
+    private final ActivityCategoryRepository activityCategoryRepository;
+    public ActivityService(ValidationHelper validationHelper,
                            CalculationsHelper calculationsHelper,
                            ActivityDtoMapper activityDtoMapper,
-                           UserRepository userRepository){
-        this.activityRepository = activityRepository;
+                           ActivityRepository activityRepository,
+                           UserRepository userRepository,
+                           ActivityCategoryRepository activityCategoryRepository){
         this.validationHelper = validationHelper;
         this.calculationsHelper = calculationsHelper;
         this.activityDtoMapper = activityDtoMapper;
+        this.activityRepository = activityRepository;
         this.userRepository = userRepository;
+        this.activityCategoryRepository = activityCategoryRepository;
     }
     @Transactional
     public ActivityDto saveActivity(ActivityDto activityDto){
@@ -40,16 +46,33 @@ public class ActivityService {
         Activity activity = activityRepository.save(activityDtoMapper.map(activityDto));
         return activityDtoMapper.map(activity);
     }
+
     public ActivityDto getActivityById(Integer id){
         Activity activity = activityRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Activity with id: " + id + " not found"));
         return activityDtoMapper.map(activity);
     }
+
     public List<ActivityDto> getActivities(){
         List<Activity> activities = activityRepository.findAll();
         return activities.stream()
                 .map(activityDtoMapper::map)
                 .collect(Collectors.toList());
+    }
+
+    public List<ActivityCategoryDto> getCategories(){
+        List<ActivityCategory> categories = activityCategoryRepository.findAll();
+        return categories.stream()
+                .map(activityDtoMapper::map)
+                .collect(Collectors.toList());
+    }
+
+    public List<ActivityDto> getActivitiesByCategory(Integer categoryId){
+        List<Activity> activities = activityRepository.findAllByActivityCategory_Id(categoryId);
+        return activities.stream()
+                .map(activityDtoMapper::map)
+                .collect(Collectors.toList());
+
     }
 
     public ActivityDtoResponse calculateCaloriesBurnt(int id,CalculateCaloriesBurntRequest request){

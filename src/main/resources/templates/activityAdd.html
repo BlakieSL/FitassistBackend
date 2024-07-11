@@ -13,8 +13,27 @@
             <input type="text" id="name" name="name" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="caloriesPerMinute">Calories Per Minute:</label>
-            <input type="number" id="caloriesPerMinute" name="caloriesPerMinute" class="form-control" step="0.1" required>
+            <label for="met">MET:</label>
+            <input type="number" id="met" name="met" class="form-control" step="0.1" required>
+        </div>
+        <div class="form-group">
+            <label for="categoryName">Category Name:</label>
+            <select id="categoryName" name="categoryName" class="form-control" required>
+                <option value="Walking">walking</option>
+                <option value="Running">running</option>
+                <option value="Cycling">cycling</option>
+                <option value="Hiking">hiking</option>
+                <option value="Swimming">swimming</option>
+                <option value="Aerobics">aerobics</option>
+                <option value="Strength Training">strength training</option>
+                <option value="Dancing">dancing</option>
+                <option value="Sports">sports</option>
+                <option value="Household Activities">household activities</option>
+                <option value="Yoga and Stretching">yoga ans stretching</option>
+                <option value="Leisure and Recreation">leisure and recreation</option>
+                <option value="Occupational Activities">occupational activities</option>
+                <option value="Miscellaneous">miscellaneous</option>
+            </select>
         </div>
         <button type="submit" class="btn btn-primary">Add Activity</button>
     </form>
