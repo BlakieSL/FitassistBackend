@@ -35,4 +35,9 @@ public class Activity {
 
     @OneToMany(mappedBy = "activity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final List<DailyCartActivity> dailyCartActivities = new ArrayList<>();
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "activity_category_id", nullable = false)
+    private ActivityCategory activityCategory;
 }
