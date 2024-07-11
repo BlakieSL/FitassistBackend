@@ -30,6 +30,6 @@ public class FoodDto implements Serializable {
     @NotNull
     @PositiveOrZero
     Double carbohydrates;
-    @NotNull
+    @NotBlank
     String categoryName;
 }

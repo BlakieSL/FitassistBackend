@@ -67,6 +67,14 @@ export async function calculateCaloriesBurned(){
     displayActivityDetails(data, true);
 }
 
+export async function populateActivityTypes(){
+
+}
+
+export async function populateSpecificActivities(){
+
+}
+
 function displayActivities(activities){
     const activityList = document.getElementById('activityList');
     activityList.innerHTML = '';
@@ -110,3 +118,4 @@ function displayActivityDetails(activity,flag){
     }
     activityDetails.appendChild(activityCalories);
 }
+

@@ -29,6 +29,11 @@
                 </a>
             </li>
             <li class="navbar-item">
+                <a href="#" class="navbar-link" id="openCalculatorModal">
+                    <i class="fas fa-calculator"></i>
+                </a>
+            </li>
+            <li class="navbar-item">
                 <a href="/cart" class="navbar-link">
                     <i class="fas fa-shopping-cart"></i>
                 </a>
@@ -52,6 +57,18 @@
     </nav>
 </header>
 <main layout:fragment="content" class="container"></main>
+<div id="calculatorModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Calories Burned Calculator</h2>
+        <label for="activityType">Choose activity type:</label>
+        <select id="activityType"></select>
+        <label for="specificActivity">Choose specific activity:</label>
+        <select id="specificActivity"></select>
+        <button id="selectActivityBtn">Select</button>
+        <p id="calculatorError"></p>
+    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
 <script type="module" src="/script.js"></script>
 <script type="module" src="/auth.js"></script>

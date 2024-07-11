@@ -23,6 +23,9 @@ async function init() {
     const searchForm = document.getElementById('searchForm');
     const addFoodForm = document.getElementById('addFoodForm');
     const addActivityForm = document.getElementById('addActivityForm');
+    const calculatorModal = document.getElementById('calculatorModal');
+    const openCalculatorModal = document.getElementById('openCalculatorModal')
+    const closeCalculatorModal = document.querySelector('.close');
     const searchQuery = localStorage.getItem('searchQuery');
     let loggedIn = false;
 
@@ -257,4 +260,41 @@ async function init() {
             }
         })
     }
+
+    openCalculatorModal.addEventListener('click', async function(event){
+       event.preventDefault();
+       try{
+
+       } catch(error){
+           document.getElementById('calculatorError').textContent = 'Error occurred during fetching activity types for calculations';
+       }
+    });
+
+    closeCalculatorModal.addEventListener('click', function(){
+        calculatorModal.style.display = 'none';
+    })
+
+    window.addEventListener('click', function(event) {
+        if (event.target === calculatorModal) {
+            calculatorModal.style.display = 'none';
+        }
+    });
+
+    document.getElementById('activityType').addEventListener('change', async function(event){
+       event.preventDefault();
+       try{
+
+       } catch(error){
+           document.getElementById('calculatorError').textContent = 'Error occurred during fetching specific activities for calculations';
+       }
+    });
+
+    document.getElementById('selectActivityBtn').addEventListener('click', function(){
+        const activity = document.getElementById('specificActivity');
+        if(activity){
+            window.location.href = `/activity/${activity.id}`;
+        } else{
+            document.getElementById('calculatorError').textContent = 'Please select an activity'
+        }
+    });
 }
