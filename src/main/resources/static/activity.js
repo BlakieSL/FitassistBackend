@@ -78,7 +78,6 @@ export async function populateActivityTypes(){
     verifyResponse(response);
 
     const data = await response.json();
-
     displayActivityCategories(data);
 }
 
@@ -154,7 +153,7 @@ function displayActivityCategories(categories){
     activityTypeSelect.appendChild(defaultOption);
 
     categories.forEach(category => {
-        console.log(category.name);
+
         const option = document.createElement('option');
         option.value = category.id;
         option.textContent = category.name;

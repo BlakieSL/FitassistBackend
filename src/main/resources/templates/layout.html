@@ -61,12 +61,18 @@
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Calories Burned Calculator</h2>
-        <label for="activityType">Choose activity type:</label>
-        <select id="activityType"></select>
-        <label for="specificActivity">Choose specific activity:</label>
-        <select id="specificActivity"></select>
-        <button id="selectActivityBtn">Select</button>
-        <p id="calculatorError"></p>
+        <form id="calculatorForm">
+            <div class="form-group">
+                <label for="activityType">Choose activity type:</label>
+                <select id="activityType" class="form-control" required></select>
+            </div>
+            <div>
+                <label for="specificActivity">Choose specific activity:</label>
+                <select id="specificActivity" class="form-control" required></select>
+            </div>
+            <button type="submit" class="btn btn-primary">Select</button>
+            <p id="calculatorError"></p>
+        </form>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>

@@ -23,13 +23,11 @@ async function init() {
     const searchForm = document.getElementById('searchForm');
     const addFoodForm = document.getElementById('addFoodForm');
     const addActivityForm = document.getElementById('addActivityForm');
+
     const calculatorModal = document.getElementById('calculatorModal');
     const openCalculatorModal = document.getElementById('openCalculatorModal');
     const closeCalculatorModal = document.querySelector('.close');
-    const activityTypeSelect = document.getElementById('activityType');
-    const specificActivitySelect = document.getElementById('specificActivity');
-    const selectActivityBtn = document.getElementById('selectActivityBtn');
-    const calculatorError = document.getElementById('calculatorError');
+    const calculatorForm = document.getElementById('calculatorForm');
     const searchQuery = localStorage.getItem('searchQuery');
     let loggedIn = false;
 
@@ -294,7 +292,8 @@ async function init() {
        }
     });
 
-    document.getElementById('selectActivityBtn').addEventListener('click', function(){
+   calculatorForm.addEventListener('submit', function(event) {
+       event.preventDefault();
         const activity = document.getElementById('specificActivity').value;
         if(activity){
             window.location.href = `/activity/${activity}`;
