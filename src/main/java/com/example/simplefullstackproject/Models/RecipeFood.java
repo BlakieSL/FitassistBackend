@@ -3,29 +3,32 @@ package com.example.simplefullstackproject.Models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "daily_cart_activity")
-@Getter
+@Table(name = "recipe_food")
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DailyCartActivity {
+public class RecipeFood {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotNull
     @Positive
-    @Column(nullable = false)
-    private int time;
+    @Column(nullable = true)
+    private int amount;
 
     @ManyToOne
-    @JoinColumn(name = "daily_activity_id", nullable = false)
-    private DailyActivity dailyCartActivity;
+    @JoinColumn(name = "recipe_id", nullable = false)
+    private Recipe recipe;
 
     @ManyToOne
-    @JoinColumn(name = "activity_id", nullable = false)
-    private Activity activity;
+    @JoinColumn(name = "food_id", nullable = false)
+    private Food food;
 }

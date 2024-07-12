@@ -25,7 +25,7 @@ public class DailyCart {
     private LocalDate date;
 
     @OneToOne
-    @JoinColumn(name = "User_Id", nullable = false)
+    @JoinColumn(name = "user_Id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "dailyCartFood", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

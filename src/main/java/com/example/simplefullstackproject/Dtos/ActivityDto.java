@@ -14,12 +14,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActivityDto {
-    Integer id;
+    private Integer id;
     @NotBlank
-    String name;
+    private String name;
     @NotNull
     @Positive
-    double met;
+    private double met;
     @NotBlank
-    String categoryName;
+    private String categoryName;
 }
