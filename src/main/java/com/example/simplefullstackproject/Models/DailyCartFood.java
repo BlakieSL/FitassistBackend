@@ -22,10 +22,10 @@ public class DailyCartFood {
     private int amount;
 
     @ManyToOne
-    @JoinColumn(name = "Daily_Cart_Id", nullable = false)
+    @JoinColumn(name = "daily_cart_id", nullable = false)
     private DailyCart dailyCartFood;
 
     @ManyToOne
-    @JoinColumn(name = "Food_Id", nullable = false)
+    @JoinColumn(name = "food_id", nullable = false)
     private Food food;
 }

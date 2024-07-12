@@ -31,7 +31,7 @@ public class Activity {
     @NotNull
     @Positive
     @Column(nullable = false)
-    private Double met;
+    private double met;
 
     @OneToMany(mappedBy = "activity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final List<DailyCartActivity> dailyCartActivities = new ArrayList<>();

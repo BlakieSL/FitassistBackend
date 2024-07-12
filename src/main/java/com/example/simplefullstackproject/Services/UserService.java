@@ -109,10 +109,10 @@ public class UserService implements UserDetailsService {
         }
         User user = userOptional.get();
 
-        if(!request.getHeight().equals(user.getHeight())){
+        if(!(request.getHeight() == (user.getHeight()))){
             user.setHeight(request.getHeight());
         }
-        if(!request.getWeight().equals(user.getWeight())){
+        if(!(request.getWeight() == (user.getWeight()))){
             user.setWeight(request.getWeight());
         }
 

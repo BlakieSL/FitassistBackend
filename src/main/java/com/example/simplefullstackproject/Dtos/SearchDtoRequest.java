@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 public class SearchDtoRequest {
     @NotBlank
-    String name;
+    private String name;
 }

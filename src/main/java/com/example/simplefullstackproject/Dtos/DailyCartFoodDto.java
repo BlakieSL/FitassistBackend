@@ -12,5 +12,5 @@ public class DailyCartFoodDto {
     private Integer id;
     @NotNull
     @Positive
-    private Integer amount;
+    private int amount;
 }

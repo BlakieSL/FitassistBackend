@@ -17,17 +17,12 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserResponse implements Serializable {
-    @Size(max = 40)
     private String name;
-    @Size(max = 40)
     private String surname;
-    @Size(max = 50)
-    @Email
     private String email;
-    @Size(min = 4, max = 6)
     private String gender;
-    private Integer age;
-    private Double height;
-    private Double weight;
-    private Double calculatedCalories;
+    private int age;
+    private double height;
+    private double weight;
+    private double calculatedCalories;
 }

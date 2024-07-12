@@ -14,22 +14,22 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FoodDto implements Serializable {
-    Integer id;
+    private Integer id;
     @Size(max = 50)
     @NotBlank
-    String name;
+    private String name;
     @NotNull
     @Positive
-    Double calories;
+    private double calories;
     @NotNull
     @PositiveOrZero
-    Double protein;
+    private double protein;
     @NotNull
     @PositiveOrZero
-    Double fat;
+    private double fat;
     @NotNull
     @PositiveOrZero
-    Double carbohydrates;
+    private double carbohydrates;
     @NotBlank
-    String categoryName;
+    private String categoryName;
 }

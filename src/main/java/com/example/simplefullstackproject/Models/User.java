@@ -52,22 +52,22 @@ public class User {
     @NotNull
     @Positive
     @Column(nullable = false)
-    private Integer age;
+    private int age;
 
     @NotNull
     @Positive
     @Column(nullable = false)
-    private Double height;
+    private double height;
 
     @NotNull
     @Positive
     @Column(nullable = false)
-    private Double weight;
+    private double weight;
 
     @NotNull
     @Positive
     @Column(nullable = false)
-    private Double calculatedCalories;
+    private double calculatedCalories;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
@@ -78,4 +78,12 @@ public class User {
     @OneToOne(mappedBy = "user")
     private DailyActivity dailyActivity;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Recipe> recipes = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Exercise> exercises = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Plan> plans = new HashSet<>();
 }

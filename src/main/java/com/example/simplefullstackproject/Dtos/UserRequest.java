@@ -37,13 +37,13 @@ public class UserRequest implements Serializable {
     private String gender;
     @NotNull
     @Positive
-    private Integer age;
+    private int age;
     @NotNull
     @Positive
-    private Double height;
+    private double height;
     @NotNull
     @Positive
-    private Double weight;
+    private double weight;
     @NotBlank
     private String activityLevel;
     @NotBlank
