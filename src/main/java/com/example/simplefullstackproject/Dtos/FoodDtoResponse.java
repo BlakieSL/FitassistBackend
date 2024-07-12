@@ -11,26 +11,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FoodDtoResponse {
-    @NotNull
-    Integer id;
-    @Size(max = 50)
-    @NotBlank
-    String name;
-    @NotNull
-    @Positive
-    Double calories;
-    @NotNull
-    @PositiveOrZero
-    Double protein;
-    @NotNull
-    @PositiveOrZero
-    Double fat;
-    @NotNull
-    @PositiveOrZero
-    Double carbohydrates;
-    @NotNull
-    Integer categoryId;
-    @NotNull
-    @Positive
-    Integer amount;
+    private Integer id;
+    private String name;
+    private double calories;
+    private double protein;
+    private double fat;
+    private double carbohydrates;
+    private Integer categoryId;
+    private int amount;
 }

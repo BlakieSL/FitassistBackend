@@ -15,14 +15,14 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ActivityDtoResponse {
     @NotNull
-    Integer id;
+    private Integer id;
     @Size(max = 50)
     @NotBlank
-    String name;
+    private String name;
     @NotNull
     @Positive
-    int caloriesBurn;
+    private int caloriesBurn;
     @NotNull
     @Positive
-    int time;
+    private int time;
 }

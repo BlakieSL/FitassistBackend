@@ -123,7 +123,9 @@ function displayActivities(activities){
             activityList.appendChild(activityLink);
         });
     } else {
-        document.getElementById('activityListError').textContent = 'There are no activities';
+        const noResults = document.createElement('p');
+        noResults.textContent = 'No results found';
+        activityList.appendChild(noResults);
     }
 }
 

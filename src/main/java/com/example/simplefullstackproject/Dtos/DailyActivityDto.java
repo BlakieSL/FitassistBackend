@@ -13,5 +13,5 @@ public class DailyActivityDto {
     private Integer id;
     @NotNull
     @Positive
-    private Integer time;
+    private int time;
 }

@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,10 +18,10 @@ import java.io.Serializable;
 public class UserUpdateRequest implements Serializable {
     @NotNull
     @Positive
-    private Double height;
+    private double height;
     @NotNull
     @Positive
-    private Double weight;
+    private double weight;
     @NotBlank
     private String activityLevel;
     @NotBlank

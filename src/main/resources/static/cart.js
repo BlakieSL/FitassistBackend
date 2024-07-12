@@ -65,7 +65,7 @@ export async function fetchCart(){
 
     displayCartFood(foods);
     displayDailyActivities(activities)
-    displayTotalMacros(foods, activities,user) ;
+    displayTotalMacros(foods, activities, user) ;
 }
 
 
@@ -98,7 +98,9 @@ function displayCartFood(foods) {
             foodList.appendChild(foodLink);
         });
     } else {
-        document.getElementById('cartFoodListError').textContent = 'There are no foods';
+        const noResults = document.createElement('p');
+        noResults.textContent = 'No results found';
+        foodList.appendChild(noResults);
     }
 }
 
@@ -130,7 +132,9 @@ function displayDailyActivities(activities) {
             activityList.appendChild(activityLink);
         });
     } else {
-        document.getElementById('cartActivityListError').textContent = 'There are no activities';
+        const noResults = document.createElement('p');
+        noResults.textContent = 'No results found';
+        activityList.appendChild(noResults);
     }
 }
 

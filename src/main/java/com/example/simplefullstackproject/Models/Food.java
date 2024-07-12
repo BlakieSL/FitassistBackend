@@ -27,22 +27,22 @@ public class Food {
     @NotNull
     @Positive
     @Column(nullable = false)
-    private Double calories;
+    private double calories;
 
     @NotNull
     @PositiveOrZero
     @Column(nullable = false)
-    private Double protein;
+    private double protein;
 
     @NotNull
     @PositiveOrZero
     @Column(nullable = false)
-    private Double fat;
+    private double fat;
 
     @NotNull
     @PositiveOrZero
     @Column(nullable = false)
-    private Double carbohydrates;
+    private double carbohydrates;
 
     @NotNull
     @ManyToOne
@@ -52,4 +52,6 @@ public class Food {
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<DailyCartFood> dailyCartFoods = new ArrayList<>();
 
+    @OneToMany(mappedBy = "food", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<RecipeFood> recipeFoods = new ArrayList<>();
 }
