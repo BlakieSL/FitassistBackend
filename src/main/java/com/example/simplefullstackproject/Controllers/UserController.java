@@ -1,7 +1,8 @@
 package com.example.simplefullstackproject.Controllers;
 
-import com.example.simplefullstackproject.Auth.JwtService;
-import com.example.simplefullstackproject.Dtos.*;
+import com.example.simplefullstackproject.Dtos.UserRequest;
+import com.example.simplefullstackproject.Dtos.UserResponse;
+import com.example.simplefullstackproject.Dtos.UserUpdateRequest;
 import com.example.simplefullstackproject.Services.UserService;
 import com.example.simplefullstackproject.Validations.ValidationGroups;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,14 +12,11 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -26,6 +24,7 @@ import java.util.NoSuchElementException;
 public class UserController {
     private final UserService userService;
     private final ObjectMapper objectMapper;
+
     public UserController(UserService userService,
                           ObjectMapper objectMapper) {
         this.userService = userService;
@@ -33,9 +32,9 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequest request,
-                                          BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
+    public ResponseEntity<?> registerUser(
+            @Valid @RequestBody UserRequest request, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
 
@@ -44,7 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<?> getUser(@PathVariable Integer id){
+    public ResponseEntity<?> getUser(@PathVariable Integer id) {
         try {
             UserResponse user = userService.getUserById(id);
             return ResponseEntity.ok(user);
@@ -54,11 +53,12 @@ public class UserController {
     }
 
     @PatchMapping("/users/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Integer id,
-                                        @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch,
-                                        BindingResult bindingResult){
-        try{
-            if(bindingResult.hasErrors()){
+    public ResponseEntity<?> updateUser(
+            @PathVariable Integer id,
+            @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch,
+            BindingResult bindingResult) {
+        try {
+            if (bindingResult.hasErrors()) {
                 return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
             }
 
@@ -67,7 +67,7 @@ public class UserController {
 
             userService.updateUser(id, request);
 
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (JsonPatchException | JsonProcessingException e) {
             return ResponseEntity.internalServerError().build();
@@ -75,14 +75,15 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    private UserUpdateRequest applyPatch(UserResponse response, JsonMergePatch patch) throws JsonProcessingException, JsonPatchException{
+    private UserUpdateRequest applyPatch(UserResponse response, JsonMergePatch patch)
+            throws JsonProcessingException, JsonPatchException {
         JsonNode userNode = objectMapper.valueToTree(response);
         JsonNode patchNode = patch.apply(userNode);
         return objectMapper.treeToValue(patchNode, UserUpdateRequest.class);
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Integer id){
+    public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
         try {
             userService.deleteUser(id);
             return ResponseEntity.noContent().build();

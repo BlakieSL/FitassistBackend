@@ -2,8 +2,10 @@ package com.example.simplefullstackproject.Services;
 
 import com.example.simplefullstackproject.Dtos.DailyCartFoodDto;
 import com.example.simplefullstackproject.Dtos.FoodDtoResponse;
-import com.example.simplefullstackproject.Models.*;
-import com.example.simplefullstackproject.Repositories.DailyActivityRepository;
+import com.example.simplefullstackproject.Models.DailyCart;
+import com.example.simplefullstackproject.Models.DailyCartFood;
+import com.example.simplefullstackproject.Models.Food;
+import com.example.simplefullstackproject.Models.User;
 import com.example.simplefullstackproject.Repositories.DailyCartRepository;
 import com.example.simplefullstackproject.Repositories.FoodRepository;
 import com.example.simplefullstackproject.Repositories.UserRepository;
@@ -12,9 +14,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -26,13 +25,15 @@ public class DailyCartService {
     private final FoodRepository foodRepository;
     private final UserRepository userRepository;
 
-    public DailyCartService(DailyCartRepository dailyCartRepository,
-                            FoodRepository foodRepository,
-                            UserRepository userRepository){
+    public DailyCartService(
+            DailyCartRepository dailyCartRepository,
+            FoodRepository foodRepository,
+            UserRepository userRepository) {
         this.dailyCartRepository = dailyCartRepository;
         this.foodRepository = foodRepository;
         this.userRepository = userRepository;
     }
+
     private DailyCart getDailyCartByUserId(Integer userId) {
         return dailyCartRepository.findByUserId(userId)
                 .orElseGet(() -> createNewDailyCartForUser(userId));
@@ -74,7 +75,7 @@ public class DailyCartService {
     }
 
     @Transactional
-    public void removeFoodFromCart(Integer userId, Integer foodId){
+    public void removeFoodFromCart(Integer userId, Integer foodId) {
         DailyCart dailyCart = getDailyCartByUserId(userId);
         DailyCartFood dailyCartFood = dailyCart.getDailyCartFoods().stream()
                 .filter(item -> item.getFood().getId().equals(foodId))
@@ -84,24 +85,24 @@ public class DailyCartService {
         dailyCartRepository.save(dailyCart);
     }
 
-    public List<FoodDtoResponse> getFoodsInCart(Integer userId){
+    public List<FoodDtoResponse> getFoodsInCart(Integer userId) {
         DailyCart dailyCart = getDailyCartByUserId(userId);
 
         return dailyCart.getDailyCartFoods().stream()
-                .map(dailyCartFood -> {
-                    Food food = dailyCartFood.getFood();
-                    double factor = (double) dailyCartFood.getAmount()/100;
-                    return new FoodDtoResponse(
-                            food.getId(),
-                            food.getName(),
-                            food.getCalories()*factor,
-                            food.getProtein()*factor,
-                            food.getFat()*factor,
-                            food.getCarbohydrates()*factor,
-                            food.getCategory().getId(),
-                            dailyCartFood.getAmount()
-                    );
-                })
+                .map(
+                        dailyCartFood -> {
+                            Food food = dailyCartFood.getFood();
+                            double factor = (double) dailyCartFood.getAmount() / 100;
+                            return new FoodDtoResponse(
+                                    food.getId(),
+                                    food.getName(),
+                                    food.getCalories() * factor,
+                                    food.getProtein() * factor,
+                                    food.getFat() * factor,
+                                    food.getCarbohydrates() * factor,
+                                    food.getCategory().getId(),
+                                    dailyCartFood.getAmount());
+                        })
                 .collect(Collectors.toList());
     }
 

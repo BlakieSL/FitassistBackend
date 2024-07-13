@@ -2,12 +2,14 @@ package com.example.simplefullstackproject.Models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Entity
 @Table(name = "daily_activity")
@@ -22,7 +24,7 @@ public class DailyActivity {
 
     @NotNull
     @Column(nullable = false)
-    private LocalDate  date;
+    private LocalDate date;
 
     @OneToOne
     @JoinColumn(name = "user_Id", nullable = false)

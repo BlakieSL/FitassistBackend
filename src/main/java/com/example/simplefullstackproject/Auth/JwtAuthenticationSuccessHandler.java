@@ -21,7 +21,8 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
         this.userService = userService;
     }
 
-    private record JwtWrapper(String token) {}
+    private record JwtWrapper(String token) {
+    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {

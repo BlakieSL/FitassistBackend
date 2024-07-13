@@ -1,11 +1,10 @@
 package com.example.simplefullstackproject.Services;
 
-import com.example.simplefullstackproject.Dtos.UserDto;
-import com.example.simplefullstackproject.Dtos.UserRequest;
-import com.example.simplefullstackproject.Dtos.UserResponse;
-import com.example.simplefullstackproject.Dtos.UserUpdateRequest;
+import com.example.simplefullstackproject.Dtos.*;
+import com.example.simplefullstackproject.Models.Exercise;
 import com.example.simplefullstackproject.Models.Role;
 import com.example.simplefullstackproject.Models.User;
+import com.example.simplefullstackproject.Repositories.ExerciseRepository;
 import com.example.simplefullstackproject.Repositories.RoleRepository;
 import com.example.simplefullstackproject.Repositories.UserRepository;
 import com.example.simplefullstackproject.Services.Mappers.UserDtoMapper;
@@ -15,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -26,21 +26,24 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final ValidationHelper validationHelper;
     private final CalculationsHelper calculationsHelper;
+    private final ExerciseRepository exerciseRepository;
 
     public UserService(UserRepository userRepository,
                        RoleRepository roleRepository,
                        UserDtoMapper userDtoMapper,
                        PasswordEncoder passwordEncoder,
-
+                       ExerciseRepository exerciseRepository,
                        ValidationHelper validationHelper,
                        CalculationsHelper calculationsHelper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userDtoMapper = userDtoMapper;
         this.passwordEncoder = passwordEncoder;
+        this.exerciseRepository = exerciseRepository;
         this.validationHelper = validationHelper;
         this.calculationsHelper = calculationsHelper;
     }
+
     private Optional<UserDto> findUserCredentialsByEmail(String email) {
         return userRepository.findByEmail(email)
                 .map(UserDtoMapper::mapDetails);
@@ -57,20 +60,20 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
     }
 
-    public UserResponse getUserById(Integer id){
+    public UserResponse getUserById(Integer id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User with id " + id + " not found"));
         return userDtoMapper.map(user);
     }
 
-
-    public Integer getUserIdByEmail(String email){
+    public Integer getUserIdByEmail(String email) {
         return userRepository.findByEmail(email)
                 .map(User::getId)
                 .orElseThrow(() -> new NoSuchElementException("User with email: " + email + " not found"));
     }
+
     @Transactional
-    public UserResponse register(UserRequest request){
+    public UserResponse register(UserRequest request) {
         validationHelper.validate(request);
 
         User user = userDtoMapper.map(request);
@@ -99,20 +102,20 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void updateUser(Integer id, UserUpdateRequest request){
+    public void updateUser(Integer id, UserUpdateRequest request) {
         validationHelper.validate(request);
 
         Optional<User> userOptional = userRepository.findById(id);
 
-        if(userOptional.isEmpty()){
+        if (userOptional.isEmpty()) {
             throw new NoSuchElementException("there is no user with id: " + id);
         }
         User user = userOptional.get();
 
-        if(!(request.getHeight() == (user.getHeight()))){
+        if (!(request.getHeight() == (user.getHeight()))) {
             user.setHeight(request.getHeight());
         }
-        if(!(request.getWeight() == (user.getWeight()))){
+        if (!(request.getWeight() == (user.getWeight()))) {
             user.setWeight(request.getWeight());
         }
 
@@ -128,10 +131,11 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void deleteUser(Integer id){
+    public void deleteUser(Integer id) {
         if (!userRepository.existsById(id)) {
             throw new NoSuchElementException("User with id: " + id + "not found");
         }
         userRepository.deleteById(id);
     }
+
 }

@@ -17,18 +17,20 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutType {
+    private static final int NAME_MAX_LENGTH = 50;
+    private static final int DESCRIPTION_MAX_LENGTH = 255;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank
-    @Size(max = 50)
-    @Column(nullable = false, length = 50)
+    @Size(max = NAME_MAX_LENGTH)
+    @Column(nullable = false, length = NAME_MAX_LENGTH)
     private String name;
 
     @NotBlank
-    @Size(max = 255)
-    @Column(nullable = false, length = 255)
+    @Size(max = DESCRIPTION_MAX_LENGTH)
+    @Column(nullable = false)
     private String description;
 
     @OneToMany(mappedBy = "workoutType", cascade = CascadeType.ALL)

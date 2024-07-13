@@ -3,11 +3,12 @@ package com.example.simplefullstackproject.Models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.*;
-import org.hibernate.proxy.HibernateProxy;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -17,15 +18,17 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Role {
+    private static final int MIN_ROLE_NAME_LENGTH = 4;
+    private static final int MAX_ROLE_NAME_LENGTH = 5;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank
-    @Size(min = 4, max = 5)
-    @Column(nullable = false, length = 5)
+    @Size(min = MIN_ROLE_NAME_LENGTH, max = MAX_ROLE_NAME_LENGTH)
+    @Column(nullable = false, length = MAX_ROLE_NAME_LENGTH)
     private String name;
 
     @ManyToMany(mappedBy = "roles")
-    private Set<User> users = new HashSet<>();
+    private final Set<User> users = new HashSet<>();
 }

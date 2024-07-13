@@ -2,7 +2,10 @@ package com.example.simplefullstackproject.Services;
 
 import com.example.simplefullstackproject.Dtos.ActivityDtoResponse;
 import com.example.simplefullstackproject.Dtos.DailyActivityDto;
-import com.example.simplefullstackproject.Models.*;
+import com.example.simplefullstackproject.Models.Activity;
+import com.example.simplefullstackproject.Models.DailyActivity;
+import com.example.simplefullstackproject.Models.DailyCartActivity;
+import com.example.simplefullstackproject.Models.User;
 import com.example.simplefullstackproject.Repositories.ActivityRepository;
 import com.example.simplefullstackproject.Repositories.DailyActivityRepository;
 import com.example.simplefullstackproject.Repositories.UserRepository;
@@ -24,11 +27,12 @@ public class DailyActivityService {
     private final UserRepository userRepository;
     private final CalculationsHelper calculationsHelper;
 
-    public DailyActivityService(DailyActivityRepository dailyActivityRepository,
-                                UserRepository userRepository,
-                                ActivityRepository activityRepository,
-                                CalculationsHelper calculationsHelper,
-                                ValidationHelper validationHelper){
+    public DailyActivityService(
+            DailyActivityRepository dailyActivityRepository,
+            UserRepository userRepository,
+            ActivityRepository activityRepository,
+            CalculationsHelper calculationsHelper,
+            ValidationHelper validationHelper) {
         this.dailyActivityRepository = dailyActivityRepository;
         this.userRepository = userRepository;
         this.activityRepository = activityRepository;
@@ -36,12 +40,12 @@ public class DailyActivityService {
         this.calculationsHelper = calculationsHelper;
     }
 
-    private DailyActivity getDailyActivityByUserId(Integer userId){
+    private DailyActivity getDailyActivityByUserId(Integer userId) {
         return dailyActivityRepository.findByUserId(userId)
                 .orElseGet(() -> createNewDailyActivityForUser(userId));
     }
 
-    private DailyActivity createNewDailyActivityForUser(Integer userId){
+    private DailyActivity createNewDailyActivityForUser(Integer userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User with id: " + userId + " not found"));
         DailyActivity newDailyActivity = new DailyActivity();
@@ -51,7 +55,7 @@ public class DailyActivityService {
     }
 
     @Transactional
-    public void addActivityToDailyActivities(Integer userId, DailyActivityDto dto){
+    public void addActivityToDailyActivities(Integer userId, DailyActivityDto dto) {
         DailyActivity dailyActivity = getDailyActivityByUserId(userId);
 
         Activity activity = activityRepository.findById(dto.getId())
@@ -60,10 +64,10 @@ public class DailyActivityService {
                 .filter(item -> item.getActivity().getId().equals(dto.getId()))
                 .findFirst();
 
-        if(existingDailyCartActivity.isPresent()){
+        if (existingDailyCartActivity.isPresent()) {
             DailyCartActivity dailyCartActivity = existingDailyCartActivity.get();
             dailyCartActivity.setTime(dailyCartActivity.getTime() + dto.getTime());
-        } else{
+        } else {
             DailyCartActivity dailyCartActivity = new DailyCartActivity();
             dailyCartActivity.setDailyCartActivity(dailyActivity);
             dailyCartActivity.setActivity(activity);
@@ -74,7 +78,7 @@ public class DailyActivityService {
     }
 
     @Transactional
-    public void removeActivityFromCart(Integer userId, Integer activityId){
+    public void removeActivityFromCart(Integer userId, Integer activityId) {
         DailyActivity dailyActivity = getDailyActivityByUserId(userId);
         DailyCartActivity dailyCartActivity = dailyActivity.getDailyCartActivities().stream()
                 .filter(item -> item.getActivity().getId().equals(activityId))
@@ -85,7 +89,7 @@ public class DailyActivityService {
     }
 
     @Transactional
-    public List<ActivityDtoResponse> getActivitiesInCart(Integer userId){
+    public List<ActivityDtoResponse> getActivitiesInCart(Integer userId) {
         DailyActivity dailyActivity = getDailyActivityByUserId(userId);
 
         User user = dailyActivity.getUser();

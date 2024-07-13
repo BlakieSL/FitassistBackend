@@ -7,9 +7,4 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ExerciseRepository extends JpaRepository<Exercise, Integer> {
-    @Query("SELECT exercise " +
-            "FROM Exercise exercise " +
-            "JOIN exercise.users users " +
-            "WHERE users.id = :userId")
-    List<Exercise> findByUserId(Integer useId);
 }

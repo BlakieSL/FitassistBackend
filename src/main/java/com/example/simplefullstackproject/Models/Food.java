@@ -2,9 +2,13 @@ package com.example.simplefullstackproject.Models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -15,13 +19,14 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Food {
+    private static final int MAX_NAME_LENGTH = 50;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank
-    @Size(max = 50)
-    @Column(nullable = false, length = 50)
+    @Size(max = MAX_NAME_LENGTH)
+    @Column(nullable = false, length = MAX_NAME_LENGTH)
     private String name;
 
     @NotNull
@@ -53,5 +58,5 @@ public class Food {
     private final List<DailyCartFood> dailyCartFoods = new ArrayList<>();
 
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<RecipeFood> recipeFoods = new ArrayList<>();
+    private final Set<RecipeFood> recipeFoods = new HashSet<>();
 }
