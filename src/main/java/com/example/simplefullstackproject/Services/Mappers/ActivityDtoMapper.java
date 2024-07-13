@@ -13,10 +13,12 @@ import java.util.NoSuchElementException;
 @Service
 public class ActivityDtoMapper {
     private final ActivityCategoryRepository activityCategoryRepository;
-    public ActivityDtoMapper(ActivityCategoryRepository activityCategoryRepository){
+
+    public ActivityDtoMapper(ActivityCategoryRepository activityCategoryRepository) {
         this.activityCategoryRepository = activityCategoryRepository;
     }
-    public ActivityDto map(Activity activity){
+
+    public ActivityDto map(Activity activity) {
         return new ActivityDto(
                 activity.getId(),
                 activity.getName(),
@@ -24,14 +26,14 @@ public class ActivityDtoMapper {
                 activity.getActivityCategory().getName());
     }
 
-    public ActivityDtoResponse mapCalculated(Activity activity){
+    public ActivityDtoResponse mapCalculated(Activity activity) {
         ActivityDtoResponse response = new ActivityDtoResponse();
         response.setId(activity.getId());
         response.setName(activity.getName());
         return response;
     }
 
-    public Activity map(ActivityDto request){
+    public Activity map(ActivityDto request) {
         Activity activity = new Activity();
         activity.setName(request.getName());
         activity.setMet(request.getMet());
@@ -41,7 +43,7 @@ public class ActivityDtoMapper {
         return activity;
     }
 
-    public ActivityCategoryDto map(ActivityCategory request){
+    public ActivityCategoryDto map(ActivityCategory request) {
         return new ActivityCategoryDto(request.getId(), request.getName());
     }
 }

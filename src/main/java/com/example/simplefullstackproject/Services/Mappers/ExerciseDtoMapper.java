@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ExerciseDtoMapper {
-    public ExerciseDto map(Exercise exercise){
+    public ExerciseDto map(Exercise exercise) {
         return new ExerciseDto(
                 exercise.getId(),
                 exercise.getName(),
@@ -14,7 +14,7 @@ public class ExerciseDtoMapper {
         );
     }
 
-    public Exercise map(ExerciseDto request){
+    public Exercise map(ExerciseDto request) {
         Exercise exercise = new Exercise();
         exercise.setName(request.getName());
         exercise.setText(request.getText());

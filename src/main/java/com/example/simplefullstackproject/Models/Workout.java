@@ -1,7 +1,10 @@
 package com.example.simplefullstackproject.Models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,13 +20,14 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Workout {
+    private static final int NAME_MAX_LENGTH = 50;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank
-    @Size(max = 100)
-    @Column(nullable = false, length = 100)
+    @Size(max = NAME_MAX_LENGTH)
+    @Column(nullable = false, length = NAME_MAX_LENGTH)
     private String name;
 
     @NotNull
@@ -31,8 +35,8 @@ public class Workout {
     @Column(nullable = false)
     private int time;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Plan> plans = new HashSet<>();
+    @OneToMany(mappedBy = "workout", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private final Set<WorkoutPlan> workoutPlans = new HashSet<>();
 
     @NotNull
     @ManyToOne

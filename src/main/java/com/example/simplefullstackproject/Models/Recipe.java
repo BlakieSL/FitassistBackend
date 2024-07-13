@@ -2,7 +2,6 @@ package com.example.simplefullstackproject.Models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,31 +20,34 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Recipe {
+    private static final int NAME_MAX_LENGTH = 100;
+    private static final int DESCRIPTION_MAX_LENGTH = 255;
+    private static final int TEXT_MAX_LENGTH = 2000;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank
-    @Size(max=100)
-    @Column(nullable = false, length = 100)
+    @Size(max = NAME_MAX_LENGTH)
+    @Column(nullable = false, length = NAME_MAX_LENGTH)
     private String name;
 
     @NotBlank
-    @Size(max=255)
-    @Column(nullable = false, length = 255)
+    @Size(max = DESCRIPTION_MAX_LENGTH)
+    @Column(nullable = false)
     private String description;
 
     @NotBlank
-    @Size(max=2000)
-    @Column(nullable = false, length = 2000)
+    @Size(max = TEXT_MAX_LENGTH)
+    @Column(nullable = false, length = TEXT_MAX_LENGTH)
     private String text;
 
     @OneToMany(mappedBy = "parentId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Media> media;
+    private final Set<Media> media = new HashSet<>();
 
-    @ManyToMany(mappedBy = "recipes")
-    private Set<User> users = new HashSet<>();
+    @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private final Set<UserRecipe> userRecipes = new HashSet<>();
 
     @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<RecipeFood> recipeFoods = new ArrayList<>();
+    private final Set<RecipeFood> recipeFoods = new HashSet<>();
 }

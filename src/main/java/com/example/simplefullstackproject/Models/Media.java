@@ -16,6 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Media {
+    private static final int TYPE_MAX_LENGTH = 50;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -25,8 +26,8 @@ public class Media {
     private byte[] image;
 
     @NotBlank
-    @Size(max = 50)
-    @Column(nullable = false, length = 50)
+    @Size(max = TYPE_MAX_LENGTH)
+    @Column(nullable = false, length = TYPE_MAX_LENGTH)
     private String type;
 
     @NotNull

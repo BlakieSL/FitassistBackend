@@ -17,12 +17,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActivityCategory {
+    private static final int NAME_MAX_LENGTH = 50;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank
-    @Size(max = 50)
+    @Size(max = NAME_MAX_LENGTH)
     private String name;
 
     @OneToMany(mappedBy = "activityCategory", cascade = CascadeType.ALL)

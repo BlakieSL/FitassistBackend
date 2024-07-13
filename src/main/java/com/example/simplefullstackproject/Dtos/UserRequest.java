@@ -2,7 +2,10 @@ package com.example.simplefullstackproject.Dtos;
 
 import com.example.simplefullstackproject.Validations.*;
 import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 

@@ -12,47 +12,47 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-
-
 @RestController
 @RequestMapping(path = "/api")
 public class DailyCartController {
     private final DailyCartService dailyCartService;
-    public DailyCartController(DailyCartService dailyCartService){
+
+    public DailyCartController(DailyCartService dailyCartService) {
         this.dailyCartService = dailyCartService;
     }
+
     @GetMapping("/cart/{userId}")
-    public ResponseEntity<?> getFoodsInCart(@PathVariable int userId){
-        try{
+    public ResponseEntity<?> getFoodsInCart(@PathVariable int userId) {
+        try {
             List<FoodDtoResponse> foods = dailyCartService.getFoodsInCart(userId);
             return ResponseEntity.ok(foods);
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @PostMapping("/cart/{userId}/add")
-    public ResponseEntity<?> addFoodToCart(@PathVariable int userId,
-                                           @Valid @RequestBody DailyCartFoodDto request,
-                                           BindingResult bindingResult){
-        try{
-            if(bindingResult.hasErrors()){
+    public ResponseEntity<?> addFoodToCart(
+            @PathVariable int userId,
+            @Valid @RequestBody DailyCartFoodDto request,
+            BindingResult bindingResult) {
+        try {
+            if (bindingResult.hasErrors()) {
                 return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
             }
-            dailyCartService.addFoodToCart(userId,request);
+            dailyCartService.addFoodToCart(userId, request);
             return ResponseEntity.ok().build();
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @DeleteMapping("/cart/{userId}/remove/{foodId}")
-    public ResponseEntity<?> removeFoodFromCart(@PathVariable int userId,
-                                                @PathVariable int foodId){
-        try{
-            dailyCartService.removeFoodFromCart(userId,foodId);
+    public ResponseEntity<?> removeFoodFromCart(@PathVariable int userId, @PathVariable int foodId) {
+        try {
+            dailyCartService.removeFoodFromCart(userId, foodId);
             return ResponseEntity.ok().build();
-        } catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }

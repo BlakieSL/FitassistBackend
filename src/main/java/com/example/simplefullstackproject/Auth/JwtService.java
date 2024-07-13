@@ -6,7 +6,6 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -53,9 +52,9 @@ public class JwtService {
     public void verifySignature(SignedJWT signedJWT) {
         try {
             boolean verified = signedJWT.verify(verifier);
-            if(!verified)
+            if (!verified)
                 throw new JwtAuthenticationException("JWT not verified - token: " + signedJWT.serialize());
-        }catch (JOSEException ex){
+        } catch (JOSEException ex) {
             throw new JwtAuthenticationException("JWT not verified - token: " + signedJWT.serialize());
         }
     }
@@ -67,7 +66,7 @@ public class JwtService {
 
             if (expired)
                 throw new JwtAuthenticationException("JWT expired");
-        }catch (ParseException ex){
+        } catch (ParseException ex) {
             throw new JwtAuthenticationException("JWT does not have exp time");
         }
     }

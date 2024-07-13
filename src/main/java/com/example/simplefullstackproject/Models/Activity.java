@@ -1,17 +1,22 @@
 package com.example.simplefullstackproject.Models;
 
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import lombok.*;
-import org.hibernate.proxy.HibernateProxy;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
+/**
+ * Represents an activity entity.
+ */
 @Entity
 @Table(name = "activity")
 @Getter
@@ -19,13 +24,14 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Activity {
+    private static final int NAME_MAX_LENGTH = 50;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank
-    @Size(max = 50)
-    @Column(nullable = false, length = 50)
+    @Size(max = NAME_MAX_LENGTH)
+    @Column(nullable = false, length = NAME_MAX_LENGTH)
     private String name;
 
     @NotNull
@@ -33,11 +39,11 @@ public class Activity {
     @Column(nullable = false)
     private double met;
 
-    @OneToMany(mappedBy = "activity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private final List<DailyCartActivity> dailyCartActivities = new ArrayList<>();
-
     @NotNull
     @ManyToOne
     @JoinColumn(name = "activity_category_id", nullable = false)
     private ActivityCategory activityCategory;
+
+    @OneToMany(mappedBy = "activity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private final List<DailyCartActivity> dailyCartActivities = new ArrayList<>();
 }

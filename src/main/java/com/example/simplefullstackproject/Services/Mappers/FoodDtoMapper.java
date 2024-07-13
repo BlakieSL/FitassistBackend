@@ -11,10 +11,12 @@ import java.util.NoSuchElementException;
 @Service
 public class FoodDtoMapper {
     private final CategoryRepository categoryRepository;
-    public FoodDtoMapper(CategoryRepository categoryRepository){
+
+    public FoodDtoMapper(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
-    public FoodDto map(Food food){
+
+    public FoodDto map(Food food) {
         return new FoodDto(
                 food.getId(),
                 food.getName(),
@@ -25,7 +27,8 @@ public class FoodDtoMapper {
                 food.getCategory().getName()
         );
     }
-    public Food map(FoodDto request){
+
+    public Food map(FoodDto request) {
         Food food = new Food();
         food.setName(request.getName());
         food.setCalories(request.getCalories());

@@ -16,42 +16,44 @@ import java.util.NoSuchElementException;
 @RequestMapping(path = "/api")
 public class DailyActivityController {
     private final DailyActivityService dailyActivityService;
-    public DailyActivityController(DailyActivityService dailyActivityService){
+
+    public DailyActivityController(DailyActivityService dailyActivityService) {
         this.dailyActivityService = dailyActivityService;
     }
 
     @GetMapping("/dailyActivities/{userId}")
-    public ResponseEntity<?> getDailyActivities(@PathVariable int userId){
-        try{
+    public ResponseEntity<?> getDailyActivities(@PathVariable int userId) {
+        try {
             List<ActivityDtoResponse> activities = dailyActivityService.getActivitiesInCart(userId);
             return ResponseEntity.ok(activities);
-        } catch(NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @PostMapping("/dailyActivities/{userId}/add")
-    public ResponseEntity<?> addDailyActivities(@PathVariable int userId,
-                                                @Valid @RequestBody DailyActivityDto request,
-                                                BindingResult bindingResult){
-        try{
-            if(bindingResult.hasErrors()){
+    public ResponseEntity<?> addDailyActivities(
+            @PathVariable int userId,
+            @Valid @RequestBody DailyActivityDto request,
+            BindingResult bindingResult) {
+        try {
+            if (bindingResult.hasErrors()) {
                 return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
             }
-            dailyActivityService.addActivityToDailyActivities(userId,request);
+            dailyActivityService.addActivityToDailyActivities(userId, request);
             return ResponseEntity.ok().build();
-        } catch(NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             return ResponseEntity.ok().build();
         }
     }
 
     @DeleteMapping("/dailyActivities/{userId}/remove/{activityId}")
-    public ResponseEntity<?> removeDailyActivity(@PathVariable int userId,
-                                                 @PathVariable int activityId){
-        try{
+    public ResponseEntity<?> removeDailyActivity(
+            @PathVariable int userId, @PathVariable int activityId) {
+        try {
             dailyActivityService.removeActivityFromCart(userId, activityId);
             return ResponseEntity.ok().build();
-        } catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }

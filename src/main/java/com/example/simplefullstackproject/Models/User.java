@@ -1,14 +1,16 @@
 package com.example.simplefullstackproject.Models;
 
-import com.example.simplefullstackproject.Validations.*;
+import com.example.simplefullstackproject.Validations.UniqueEmailDomain;
+import com.example.simplefullstackproject.Validations.ValidationGroups;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.*;
-import org.hibernate.proxy.HibernateProxy;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
-import java.util.Objects;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -18,35 +20,41 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
+    private static final int NAME_MAX_LENGTH = 40;
+    private static final int EMAIL_MAX_LENGTH = 50;
+    private static final int PASSWORD_MAX_LENGTH = 255;
+    private static final int PASSWORD_MIN_LENGTH = 8;
+    private static final int GENDER_MAX_LENGTH = 6;
+    private static final int GENDER_MIN_LENGTH = 4;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank
-    @Size(max = 40)
-    @Column(nullable = false, length = 40)
+    @Size(max = NAME_MAX_LENGTH)
+    @Column(nullable = false, length = NAME_MAX_LENGTH)
     private String name;
 
     @NotBlank
-    @Size(max = 40)
-    @Column(nullable = false, length = 40)
+    @Size(max = NAME_MAX_LENGTH)
+    @Column(nullable = false, length = NAME_MAX_LENGTH)
     private String surname;
 
     @NotBlank
-    @Size(max = 50)
+    @Size(max = EMAIL_MAX_LENGTH)
     @Email
     @UniqueEmailDomain(groups = ValidationGroups.Registration.class)
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = EMAIL_MAX_LENGTH)
     private String email;
 
     @NotBlank
-    @Size(min = 8, max = 255)
+    @Size(min = PASSWORD_MIN_LENGTH, max = PASSWORD_MAX_LENGTH)
     @Column(nullable = false)
     private String password;
 
     @NotBlank
-    @Size(min =4, max = 6)
-    @Column(nullable = false, length = 6)
+    @Size(min = GENDER_MIN_LENGTH, max = GENDER_MAX_LENGTH)
+    @Column(nullable = false, length = GENDER_MAX_LENGTH)
     private String gender;
 
     @NotNull
@@ -69,9 +77,6 @@ public class User {
     @Column(nullable = false)
     private double calculatedCalories;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles = new HashSet<>();
-
     @OneToOne(mappedBy = "user")
     private DailyCart dailyCart;
 
@@ -79,11 +84,14 @@ public class User {
     private DailyActivity dailyActivity;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Recipe> recipes = new HashSet<>();
+    private final Set<Role> roles = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Exercise> exercises = new HashSet<>();
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private final Set<UserRecipe> userRecipes = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Plan> plans = new HashSet<>();
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private final Set<UserExercise> userExercises = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private final Set<UserPlan> userPlans = new HashSet<>();
 }

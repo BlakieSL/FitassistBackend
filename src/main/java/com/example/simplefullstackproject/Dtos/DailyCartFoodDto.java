@@ -8,9 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DailyCartFoodDto {
-    @NotNull
-    private Integer id;
-    @NotNull
-    @Positive
-    private int amount;
+  @NotNull
+  private Integer id;
+  @NotNull
+  @Positive
+  private int amount;
 }

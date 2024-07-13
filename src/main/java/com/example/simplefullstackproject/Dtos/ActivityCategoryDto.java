@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ActivityCategoryDto {
-    private Integer id;
-    @NotBlank
-    private String name;
+  private Integer id;
+  @NotBlank
+  private String name;
 }
