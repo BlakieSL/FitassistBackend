@@ -10,6 +10,7 @@ public class ExerciseDtoMapper {
         return new ExerciseDto(
                 exercise.getId(),
                 exercise.getName(),
+                exercise.getDescription(),
                 exercise.getText()
         );
     }
@@ -17,6 +18,7 @@ public class ExerciseDtoMapper {
     public Exercise map(ExerciseDto request) {
         Exercise exercise = new Exercise();
         exercise.setName(request.getName());
+        exercise.setDescription(request.getDescription());
         exercise.setText(request.getText());
         return exercise;
     }
