@@ -1,6 +1,7 @@
 package com.example.simplefullstackproject.Dtos;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExerciseDto {
+public class RecipeDto {
     private Integer id;
 
     @NotBlank
@@ -23,6 +24,6 @@ public class ExerciseDto {
     private String description;
 
     @NotBlank
-    @Size(max = 1000)
+    @Size(max = 2000)
     private String text;
 }

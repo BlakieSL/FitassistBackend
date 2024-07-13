@@ -20,17 +20,14 @@ public class ExerciseService {
     private final ValidationHelper validationHelper;
     private final ExerciseDtoMapper exerciseDtoMapper;
     private final ExerciseRepository exerciseRepository;
-    private final UserRepository userRepository;
     private final UserExerciseRepository userExerciseRepository;
     public ExerciseService(ValidationHelper validationHelper,
                            ExerciseDtoMapper exerciseDtoMapper,
                            ExerciseRepository exerciseRepository,
-                           UserRepository userRepository,
                            UserExerciseRepository userExerciseRepository) {
         this.validationHelper = validationHelper;
         this.exerciseDtoMapper = exerciseDtoMapper;
         this.exerciseRepository = exerciseRepository;
-        this.userRepository = userRepository;
         this.userExerciseRepository = userExerciseRepository;
     }
 
