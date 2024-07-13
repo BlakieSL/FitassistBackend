@@ -1,9 +1,5 @@
 package com.example.simplefullstackproject.Dtos;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -15,22 +11,22 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExerciseDto {
-    private static final int MAX_NAME_LENGTH = 100;
-    private static final int MAX_DESCRIPTION_LENGTH = 255;
-    private static final int MAX_TEXT_LENGTH = 1000;
+public class PlanDto {
+    private static final int NAME_MAX_LENGTH = 100;
+    private static final int DESCRIPTION_MAX_LENGTH = 255;
+    private static final int TEXT_MAX_LENGTH = 10000;
 
     private Integer id;
 
     @NotBlank
-    @Size(max = MAX_NAME_LENGTH)
+    @Size(max = NAME_MAX_LENGTH)
     private String name;
 
     @NotBlank
-    @Size(max = MAX_DESCRIPTION_LENGTH)
+    @Size(max = DESCRIPTION_MAX_LENGTH)
     private String description;
 
     @NotBlank
-    @Size(max = MAX_TEXT_LENGTH)
+    @Size(max = TEXT_MAX_LENGTH)
     private String text;
 }
