@@ -24,4 +24,5 @@ public class UserExercise {
     @ManyToOne
     @JoinColumn(name = "exercise_id", nullable = false)
     private Exercise exercise;
+
 }
