@@ -31,11 +31,13 @@ public class UserExerciseService {
 
     @Transactional
     public void addExerciseToUser(Integer exerciseId, Integer userId) {
-        User user = userRepository.findById(userId)
+        User user = userRepository
+                .findById(userId)
                 .orElseThrow(() -> new NoSuchElementException(
                         "User with id: " + userId + " not found"));
 
-        Exercise exercise = exerciseRepository.findById(exerciseId)
+        Exercise exercise = exerciseRepository
+                .findById(exerciseId)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Exercise with id: " + exerciseId + " not found"));
 
@@ -47,7 +49,8 @@ public class UserExerciseService {
 
     @Transactional
     public void deleteExerciseFromUser(Integer exerciseId, Integer userId) {
-        UserExercise userExercise = userExerciseRepository.findByUserIdAndExerciseId(userId, exerciseId)
+        UserExercise userExercise = userExerciseRepository
+                .findByUserIdAndExerciseId(userId, exerciseId)
                 .orElseThrow(() -> new NoSuchElementException(
                         "UserExercise with user id: " + userId +
                                 " and exercise id: " + exerciseId + " not found"));

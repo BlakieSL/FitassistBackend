@@ -49,7 +49,8 @@ public class DailyCartService {
     }
 
     @Transactional
-    public void addFoodToCart(Integer userId, DailyCartFoodDto dto) {
+    public void addFoodToCart(Integer userId, DailyCartFoodDto dto)
+    {
         DailyCart dailyCart = getDailyCartByUserId(userId);
 
         Food food = foodRepository.findById(dto.getId())
