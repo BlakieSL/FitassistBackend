@@ -13,17 +13,14 @@ import java.util.NoSuchElementException;
 
 @Service
 public class UserExerciseService {
-    private final ValidationHelper validationHelper;
     private final UserExerciseRepository userExerciseRepository;
     private final ExerciseRepository exerciseRepository;
     private final UserRepository userRepository;
 
     public UserExerciseService(
-            final ValidationHelper validationHelper,
             final UserExerciseRepository userExerciseRepository,
             final ExerciseRepository exerciseRepository,
             final UserRepository userRepository){
-        this.validationHelper = validationHelper;
         this.userExerciseRepository = userExerciseRepository;
         this.exerciseRepository = exerciseRepository;
         this.userRepository = userRepository;
