@@ -2,14 +2,12 @@ package com.example.simplefullstackproject.Models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -20,25 +18,27 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Exercise {
+    private static final int MAX_NAME_LENGTH = 100;
+    private static final int MAX_TEXT_LENGTH = 1000;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank
-    @Size(max = 100)
-    @Column(nullable = false, length = 100)
+    @Size(max = MAX_NAME_LENGTH)
+    @Column(nullable = false, length = MAX_NAME_LENGTH)
     private String name;
 
     @NotBlank
-    @Size(max = 1000)
-    @Column(nullable = false, length = 1000)
+    @Size(max = MAX_TEXT_LENGTH)
+    @Column(nullable = false, length = MAX_TEXT_LENGTH)
     private String text;
 
     @OneToMany(mappedBy = "parentId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Media> media;
 
-    @ManyToMany(mappedBy = "exercises")
-    private Set<User> users = new HashSet<>();
+    @OneToMany(mappedBy = "exercise", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<UserExercise> user_exercise;
 
     @OneToOne(mappedBy = "exercise")
     private WorkoutSet workoutSet;

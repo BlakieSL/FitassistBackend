@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 
 @Service
-public class ValidationHelper {
+public final class ValidationHelper {
     private final Validator validator;
 
     public ValidationHelper(Validator validator) {

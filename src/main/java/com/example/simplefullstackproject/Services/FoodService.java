@@ -18,36 +18,38 @@ public class FoodService {
     private final FoodRepository foodRepository;
     private final FoodDtoMapper foodDtoMapper;
     private final ValidationHelper validationHelper;
-    public FoodService(FoodRepository foodRepository,
-                       FoodDtoMapper foodDtoMapper,
-                       ValidationHelper validationHelper){
+
+    public FoodService(
+            FoodRepository foodRepository,
+            FoodDtoMapper foodDtoMapper,
+            ValidationHelper validationHelper) {
         this.foodRepository = foodRepository;
         this.foodDtoMapper = foodDtoMapper;
         this.validationHelper = validationHelper;
     }
 
     @Transactional
-    public FoodDto saveFood(FoodDto request){
+    public FoodDto saveFood(FoodDto request) {
         validationHelper.validate(request);
 
         Food food = foodRepository.save(foodDtoMapper.map(request));
         return foodDtoMapper.map(food);
     }
 
-    public FoodDto getFoodById(Integer id){
+    public FoodDto getFoodById(Integer id) {
         Food food = foodRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Food with id: " + id + " not found"));
         return foodDtoMapper.map(food);
     }
 
-    public List<FoodDto> getFoods(){
+    public List<FoodDto> getFoods() {
         List<Food> foods = foodRepository.findAll();
         return foods.stream()
                 .map(foodDtoMapper::map)
                 .collect(Collectors.toList());
     }
 
-    public FoodDto calculateMacros(int id, CalculateAmountRequest request){
+    public FoodDto calculateMacros(int id, CalculateAmountRequest request) {
         validationHelper.validate(request);
 
         Food food = foodRepository.findById(id)
@@ -55,15 +57,15 @@ public class FoodService {
 
         double factor = (double) request.getAmount() / 100;
 
-        food.setCalories(food.getCalories()*factor);
-        food.setProtein(food.getProtein()*factor);
-        food.setFat(food.getFat()*factor);
-        food.setCarbohydrates(food.getCarbohydrates()*factor);
+        food.setCalories(food.getCalories() * factor);
+        food.setProtein(food.getProtein() * factor);
+        food.setFat(food.getFat() * factor);
+        food.setCarbohydrates(food.getCarbohydrates() * factor);
 
         return foodDtoMapper.map(food);
     }
 
-    public List<FoodDto> searchFoods(SearchDtoRequest request){
+    public List<FoodDto> searchFoods(SearchDtoRequest request) {
         List<Food> foods = foodRepository.findByNameContainingIgnoreCase(request.getName());
         return foods.stream()
                 .map(foodDtoMapper::map)

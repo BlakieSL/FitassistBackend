@@ -18,28 +18,31 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Plan {
+    private static final int NAME_MAX_LENGTH = 100;
+    private static final int DESCRIPTION_MAX_LENGTH = 255;
+    private static final int TEXT_MAX_LENGTH = 10000;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank
-    @Size(max = 100)
-    @Column(nullable = false, length = 100)
+    @Size(max = NAME_MAX_LENGTH)
+    @Column(nullable = false, length = NAME_MAX_LENGTH)
     private String name;
 
     @NotBlank
-    @Size(max = 255)
-    @Column(nullable = false, length = 255)
+    @Size(max = DESCRIPTION_MAX_LENGTH)
+    @Column(nullable = false)
     private String description;
 
     @NotBlank
-    @Size(max = 10000)
-    @Column(nullable = false, length = 10000)
+    @Size(max = TEXT_MAX_LENGTH)
+    @Column(nullable = false, length = TEXT_MAX_LENGTH)
     private String text;
 
-    @ManyToMany(mappedBy = "plans")
-    private Set<User> users = new HashSet<>();
+    @OneToMany(mappedBy = "plan", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private final Set<UserPlan> userPlans = new HashSet<>();
 
-    @ManyToMany(mappedBy = "plans")
-    private Set<Workout> workouts = new HashSet<>();
+   @OneToMany(mappedBy = "plan", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private final Set<WorkoutPlan> workoutPlans = new HashSet<>();
 }

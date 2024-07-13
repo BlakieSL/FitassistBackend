@@ -26,18 +26,17 @@ public class JwtAuthenticationFilter extends HttpFilter {
     private final AuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
     private final AuthenticationSuccessHandler successHandler;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtService jwtService, UserService userService){
+    public JwtAuthenticationFilter(
+            AuthenticationManager authenticationManager, JwtService jwtService, UserService userService) {
         this.authenticationManager = authenticationManager;
         successHandler = new JwtAuthenticationSuccessHandler(jwtService, userService);
     }
 
-    private record JwtAuthenticationToken(String username, String password){}
-
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (!defaultRequestMatcher.matches(request)){
+        if (!defaultRequestMatcher.matches(request)) {
             chain.doFilter(request, response);
-        }else{
+        } else {
             try {
                 JwtAuthenticationToken jwtAuthentication = new ObjectMapper().readValue(request.getInputStream(), JwtAuthenticationToken.class);
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(jwtAuthentication.username(), jwtAuthentication.password());
@@ -49,4 +48,6 @@ public class JwtAuthenticationFilter extends HttpFilter {
         }
     }
 
+    private record JwtAuthenticationToken(String username, String password) {
+    }
 }

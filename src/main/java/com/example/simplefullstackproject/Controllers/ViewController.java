@@ -1,8 +1,5 @@
 package com.example.simplefullstackproject.Controllers;
 
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,20 +28,32 @@ public class ViewController {
     }
 
     @GetMapping("/food/{foodId}")
-    public String displayFood(@PathVariable("foodId") int foodId){ return "food";}
+    public String displayFood(@PathVariable("foodId") int foodId) {
+        return "food";
+    }
 
     @GetMapping("/cart")
-    public String displayCart(){ return "cart";}
+    public String displayCart() {
+        return "cart";
+    }
 
     @GetMapping("/activity/{activityId}")
-    public String displayActivity(@PathVariable("activityId") int activityId){ return "activity"; }
+    public String displayActivity(@PathVariable("activityId") int activityId) {
+        return "activity";
+    }
 
     @GetMapping("/activities")
-    public String displayActivities(){ return "activities"; }
+    public String displayActivities() {
+        return "activities";
+    }
 
     @GetMapping("/foods/add")
-    public String displayAddFood(){ return "foodAdd"; }
+    public String displayAddFood() {
+        return "foodAdd";
+    }
 
     @GetMapping("/activities/add")
-    public String displayAddActivity(){ return "activityAdd"; }
+    public String displayAddActivity() {
+        return "activityAdd";
+    }
 }
