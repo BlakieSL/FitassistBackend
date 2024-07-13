@@ -3,5 +3,10 @@ package com.example.simplefullstackproject.Repositories;
 import com.example.simplefullstackproject.Models.UserPlan;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserPlanRepository extends JpaRepository<UserPlan, Integer> {
+import java.util.List;
+import java.util.Optional;
+
+public interface UserPlanRepository extends JpaRepository<UserPlan, Long> {
+    List<UserPlan> findByUserId(Integer userId);
+    Optional<UserPlan> findByUserIdAndPlanId(Integer userId, Integer planId);
 }
