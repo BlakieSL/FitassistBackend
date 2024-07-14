@@ -22,7 +22,7 @@ public class DailyActivityController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<?> getDailyActivities(@PathVariable int userId) {
+    public ResponseEntity<?> getAllDailyActivitiesByUserId(@PathVariable int userId) {
         try {
             List<ActivityDtoResponse> activities = dailyActivityService.getActivitiesInCart(userId);
             return ResponseEntity.ok(activities);
@@ -32,7 +32,7 @@ public class DailyActivityController {
     }
 
     @PostMapping("/{userId}/add")
-    public ResponseEntity<?> addDailyActivities(
+    public ResponseEntity<?> addDailyActivitiesByUserId(
             @PathVariable int userId,
             @Valid @RequestBody DailyActivityDto request,
             BindingResult bindingResult) {

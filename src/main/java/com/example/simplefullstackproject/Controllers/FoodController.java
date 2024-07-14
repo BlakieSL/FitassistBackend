@@ -37,7 +37,7 @@ public class FoodController {
     }
 
     @PostMapping("/{id}/calculate-macros")
-    public ResponseEntity<?> calculateFoodMacros(
+    public ResponseEntity<?> calculateFoodMacrosById(
             @PathVariable int id,
             @Valid @RequestBody CalculateAmountRequest request,
             BindingResult bindingResult) {
@@ -53,7 +53,7 @@ public class FoodController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveFood(
+    public ResponseEntity<?> createFood(
             @Valid @RequestBody FoodDto foodDto, BindingResult bindingResult) {
         try {
             if (bindingResult.hasErrors()) {
