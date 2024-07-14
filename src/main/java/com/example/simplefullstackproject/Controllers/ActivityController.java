@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/activities")
 public class ActivityController {
     private final ActivityService activityService;
 
@@ -21,22 +21,12 @@ public class ActivityController {
         this.activityService = activityService;
     }
 
-    @GetMapping("/activities")
-    public ResponseEntity<?> getActivities() {
+    @GetMapping
+    public ResponseEntity<?> getAllActivities() {
         return ResponseEntity.ok(activityService.getActivities());
     }
 
-    @GetMapping("/activityCategories")
-    public ResponseEntity<?> getActivityCategories() {
-        return ResponseEntity.ok(activityService.getCategories());
-    }
-
-    @GetMapping("/activities/{categoryId}")
-    public ResponseEntity<?> getActivitiesByCategory(@PathVariable int categoryId) {
-        return ResponseEntity.ok(activityService.getActivitiesByCategory(categoryId));
-    }
-
-    @GetMapping("/activity/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getActivityById(@PathVariable int id) {
         try {
             ActivityDto activity = activityService.getActivityById(id);
@@ -46,7 +36,7 @@ public class ActivityController {
         }
     }
 
-    @PostMapping("/activity/{id}")
+    @PostMapping("/{id}/calculate-calories")
     public ResponseEntity<?> calculateCaloriesBurnt(
             @PathVariable int id,
             @Valid @RequestBody CalculateCaloriesBurntRequest request,
@@ -62,7 +52,7 @@ public class ActivityController {
         }
     }
 
-    @PostMapping("/activities/add")
+    @PostMapping
     public ResponseEntity<?> saveActivity(
             @Valid @RequestBody ActivityDto activityDto, BindingResult bindingResult) {
         try {
