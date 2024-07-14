@@ -3,6 +3,7 @@ package com.example.simplefullstackproject.Controllers;
 import com.example.simplefullstackproject.Dtos.ActivityDto;
 import com.example.simplefullstackproject.Dtos.ActivityDtoResponse;
 import com.example.simplefullstackproject.Dtos.CalculateCaloriesBurntRequest;
+import com.example.simplefullstackproject.Exceptions.ValidationException;
 import com.example.simplefullstackproject.Services.ActivityService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,7 @@ public class ActivityController {
             @Valid @RequestBody CalculateCaloriesBurntRequest request,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            throw new ValidationException(bindingResult);
         }
         ActivityDtoResponse response = activityService.calculateCaloriesBurnt(id, request);
         return ResponseEntity.ok(response);
@@ -48,7 +49,7 @@ public class ActivityController {
     public ResponseEntity<?> createActivity(
             @Valid @RequestBody ActivityDto activityDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            throw new ValidationException(bindingResult);
         }
         ActivityDto response = activityService.saveActivity(activityDto);
         return ResponseEntity.ok(response);

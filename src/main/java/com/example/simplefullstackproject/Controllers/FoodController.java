@@ -3,6 +3,7 @@ package com.example.simplefullstackproject.Controllers;
 import com.example.simplefullstackproject.Dtos.CalculateAmountRequest;
 import com.example.simplefullstackproject.Dtos.FoodDto;
 import com.example.simplefullstackproject.Dtos.SearchDtoRequest;
+import com.example.simplefullstackproject.Exceptions.ValidationException;
 import com.example.simplefullstackproject.Services.FoodService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,7 @@ public class FoodController {
             @Valid @RequestBody CalculateAmountRequest request,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            throw new ValidationException(bindingResult);
         }
         FoodDto response = foodService.calculateMacros(id, request);
         return ResponseEntity.ok(response);
@@ -48,7 +49,7 @@ public class FoodController {
     public ResponseEntity<?> createFood(
             @Valid @RequestBody FoodDto foodDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            throw new ValidationException(bindingResult);
         }
 
         FoodDto response = foodService.saveFood(foodDto);
@@ -59,7 +60,7 @@ public class FoodController {
     public ResponseEntity<?> searchFood(
             @Valid @RequestBody SearchDtoRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            throw new ValidationException(bindingResult);
         }
         return ResponseEntity.ok(foodService.searchFoods(request));
     }

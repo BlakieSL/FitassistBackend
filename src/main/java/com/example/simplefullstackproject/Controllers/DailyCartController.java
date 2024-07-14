@@ -2,6 +2,7 @@ package com.example.simplefullstackproject.Controllers;
 
 import com.example.simplefullstackproject.Dtos.DailyCartFoodDto;
 import com.example.simplefullstackproject.Dtos.FoodDtoResponse;
+import com.example.simplefullstackproject.Exceptions.ValidationException;
 import com.example.simplefullstackproject.Services.DailyCartService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class DailyCartController {
             @Valid @RequestBody DailyCartFoodDto request,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            throw new ValidationException(bindingResult);
         }
         dailyCartService.addFoodToCart(userId, request);
         return ResponseEntity.ok().build();

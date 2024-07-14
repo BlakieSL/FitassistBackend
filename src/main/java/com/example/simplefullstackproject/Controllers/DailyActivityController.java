@@ -2,6 +2,7 @@ package com.example.simplefullstackproject.Controllers;
 
 import com.example.simplefullstackproject.Dtos.ActivityDtoResponse;
 import com.example.simplefullstackproject.Dtos.DailyActivityDto;
+import com.example.simplefullstackproject.Exceptions.ValidationException;
 import com.example.simplefullstackproject.Services.DailyActivityService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class DailyActivityController {
             @Valid @RequestBody DailyActivityDto request,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            throw new ValidationException(bindingResult);
         }
         dailyActivityService.addActivityToDailyActivities(userId, request);
         return ResponseEntity.ok().build();
