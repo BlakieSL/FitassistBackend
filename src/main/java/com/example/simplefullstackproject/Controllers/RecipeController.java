@@ -1,6 +1,7 @@
 package com.example.simplefullstackproject.Controllers;
 
 import com.example.simplefullstackproject.Dtos.RecipeDto;
+import com.example.simplefullstackproject.Exceptions.ValidationException;
 import com.example.simplefullstackproject.Models.Recipe;
 import com.example.simplefullstackproject.Services.RecipeService;
 import jakarta.validation.Valid;
@@ -37,7 +38,7 @@ public class RecipeController {
             @Valid @RequestBody RecipeDto recipeDto,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
+            throw new ValidationException(bindingResult);
         }
 
         RecipeDto response = recipeService.save(recipeDto);
