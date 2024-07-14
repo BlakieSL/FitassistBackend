@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.Auth;
 
+import com.example.simplefullstackproject.Exceptions.JwtAuthenticationException;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;

@@ -23,12 +23,8 @@ public class DailyCartController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> getAllFoodsInCartByUserID(@PathVariable int userId) {
-        try {
-            List<FoodDtoResponse> foods = dailyCartService.getFoodsInCart(userId);
-            return ResponseEntity.ok(foods);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        List<FoodDtoResponse> foods = dailyCartService.getFoodsInCart(userId);
+        return ResponseEntity.ok(foods);
     }
 
     @PostMapping("/{userId}/add")
@@ -36,24 +32,16 @@ public class DailyCartController {
             @PathVariable int userId,
             @Valid @RequestBody DailyCartFoodDto request,
             BindingResult bindingResult) {
-        try {
-            if (bindingResult.hasErrors()) {
-                return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
-            }
-            dailyCartService.addFoodToCart(userId, request);
-            return ResponseEntity.ok().build();
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
+        dailyCartService.addFoodToCart(userId, request);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{userId}/remove/{foodId}")
     public ResponseEntity<?> removeFoodFromCart(@PathVariable int userId, @PathVariable int foodId) {
-        try {
-            dailyCartService.removeFoodFromCart(userId, foodId);
-            return ResponseEntity.ok().build();
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        dailyCartService.removeFoodFromCart(userId, foodId);
+        return ResponseEntity.ok().build();
     }
 }

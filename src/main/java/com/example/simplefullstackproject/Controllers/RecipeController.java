@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -21,33 +22,33 @@ public class RecipeController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllRecipes(){
+    public ResponseEntity<?> getAllRecipes() {
         return ResponseEntity.ok(recipeService.getRecipes());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getRecipeById(@PathVariable Integer id){
-        try{
-            RecipeDto recipe = recipeService.getRecipeById(id);
-            return ResponseEntity.ok(recipe);
-        } catch(NoSuchElementException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public ResponseEntity<?> getRecipeById(@PathVariable Integer id) {
+        RecipeDto recipe = recipeService.getRecipeById(id);
+        return ResponseEntity.ok(recipe);
     }
 
     @PostMapping
     public ResponseEntity<?> createRecipe(
             @Valid @RequestBody RecipeDto recipeDto,
-            BindingResult bindingResult){
-        try{
-            if(bindingResult.hasErrors()){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
-            }
-
-            RecipeDto response = recipeService.save(recipeDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch(NoSuchElementException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
         }
+
+        RecipeDto response = recipeService.save(recipeDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @GetMapping("/{userId}/user")
+    public ResponseEntity<List<RecipeDto>> getRecipesByUserId(@PathVariable Integer userId) {
+        List<RecipeDto> recipes = recipeService.getRecipesByUserID(userId);
+        return ResponseEntity.ok(recipes);
+    }
+
+
 }

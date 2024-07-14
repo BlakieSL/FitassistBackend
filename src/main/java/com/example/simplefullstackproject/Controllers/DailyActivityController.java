@@ -23,12 +23,8 @@ public class DailyActivityController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> getAllDailyActivitiesByUserId(@PathVariable int userId) {
-        try {
-            List<ActivityDtoResponse> activities = dailyActivityService.getActivitiesInCart(userId);
-            return ResponseEntity.ok(activities);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        List<ActivityDtoResponse> activities = dailyActivityService.getActivitiesInCart(userId);
+        return ResponseEntity.ok(activities);
     }
 
     @PostMapping("/{userId}/add")
@@ -36,25 +32,17 @@ public class DailyActivityController {
             @PathVariable int userId,
             @Valid @RequestBody DailyActivityDto request,
             BindingResult bindingResult) {
-        try {
-            if (bindingResult.hasErrors()) {
-                return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
-            }
-            dailyActivityService.addActivityToDailyActivities(userId, request);
-            return ResponseEntity.ok().build();
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.ok().build();
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
+        dailyActivityService.addActivityToDailyActivities(userId, request);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{userId}/remove/{activityId}")
     public ResponseEntity<?> removeDailyActivity(
             @PathVariable int userId, @PathVariable int activityId) {
-        try {
-            dailyActivityService.removeActivityFromCart(userId, activityId);
-            return ResponseEntity.ok().build();
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        dailyActivityService.removeActivityFromCart(userId, activityId);
+        return ResponseEntity.ok().build();
     }
 }
