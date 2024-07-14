@@ -28,12 +28,8 @@ public class ActivityController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getActivityById(@PathVariable int id) {
-        try {
-            ActivityDto activity = activityService.getActivityById(id);
-            return ResponseEntity.ok(activity);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        ActivityDto activity = activityService.getActivityById(id);
+        return ResponseEntity.ok(activity);
     }
 
     @PostMapping("/{id}/calculate-calories")
@@ -41,28 +37,20 @@ public class ActivityController {
             @PathVariable int id,
             @Valid @RequestBody CalculateCaloriesBurntRequest request,
             BindingResult bindingResult) {
-        try {
-            if (bindingResult.hasErrors()) {
-                return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
-            }
-            ActivityDtoResponse response = activityService.calculateCaloriesBurnt(id, request);
-            return ResponseEntity.ok(response);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
+        ActivityDtoResponse response = activityService.calculateCaloriesBurnt(id, request);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<?> createActivity(
             @Valid @RequestBody ActivityDto activityDto, BindingResult bindingResult) {
-        try {
-            if (bindingResult.hasErrors()) {
-                return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
-            }
-            ActivityDto response = activityService.saveActivity(activityDto);
-            return ResponseEntity.ok(response);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
+        ActivityDto response = activityService.saveActivity(activityDto);
+        return ResponseEntity.ok(response);
     }
 }

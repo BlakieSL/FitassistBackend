@@ -28,12 +28,8 @@ public class FoodController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getFoodById(@PathVariable int id) {
-        try {
-            FoodDto food = foodService.getFoodById(id);
-            return ResponseEntity.ok(food);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        FoodDto food = foodService.getFoodById(id);
+        return ResponseEntity.ok(food);
     }
 
     @PostMapping("/{id}/calculate-macros")
@@ -41,31 +37,22 @@ public class FoodController {
             @PathVariable int id,
             @Valid @RequestBody CalculateAmountRequest request,
             BindingResult bindingResult) {
-        try {
-            if (bindingResult.hasErrors()) {
-                return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
-            }
-            FoodDto response = foodService.calculateMacros(id, request);
-            return ResponseEntity.ok(response);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
+        FoodDto response = foodService.calculateMacros(id, request);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<?> createFood(
             @Valid @RequestBody FoodDto foodDto, BindingResult bindingResult) {
-        try {
-            if (bindingResult.hasErrors()) {
-                return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
-            }
-
-            FoodDto response = foodService.saveFood(foodDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
+
+        FoodDto response = foodService.saveFood(foodDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/search")
