@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -28,13 +29,13 @@ public class FoodController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getFoodById(@PathVariable int id) {
+    public ResponseEntity<FoodDto> getFoodById(@PathVariable int id) {
         FoodDto food = foodService.getFoodById(id);
         return ResponseEntity.ok(food);
     }
 
     @PostMapping("/{id}/calculate-macros")
-    public ResponseEntity<?> calculateFoodMacrosById(
+    public ResponseEntity<FoodDto> calculateFoodMacrosById(
             @PathVariable int id,
             @Valid @RequestBody CalculateAmountRequest request,
             BindingResult bindingResult) {
@@ -46,7 +47,7 @@ public class FoodController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createFood(
+    public ResponseEntity<FoodDto> createFood(
             @Valid @RequestBody FoodDto foodDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
@@ -57,7 +58,7 @@ public class FoodController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> searchFood(
+    public ResponseEntity<List<FoodDto>> searchFood(
             @Valid @RequestBody SearchDtoRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);

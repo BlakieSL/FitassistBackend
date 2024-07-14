@@ -23,13 +23,13 @@ public class DailyCartController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<?> getAllFoodsInCartByUserID(@PathVariable int userId) {
+    public ResponseEntity<List<FoodDtoResponse>> getAllFoodsInCartByUserID(@PathVariable int userId) {
         List<FoodDtoResponse> foods = dailyCartService.getFoodsInCart(userId);
         return ResponseEntity.ok(foods);
     }
 
     @PostMapping("/{userId}/add")
-    public ResponseEntity<?> addFoodToCartByUserId(
+    public ResponseEntity<Void> addFoodToCartByUserId(
             @PathVariable int userId,
             @Valid @RequestBody DailyCartFoodDto request,
             BindingResult bindingResult) {
@@ -41,7 +41,7 @@ public class DailyCartController {
     }
 
     @DeleteMapping("/{userId}/remove/{foodId}")
-    public ResponseEntity<?> removeFoodFromCart(@PathVariable int userId, @PathVariable int foodId) {
+    public ResponseEntity<Void> removeFoodFromCart(@PathVariable int userId, @PathVariable int foodId) {
         dailyCartService.removeFoodFromCart(userId, foodId);
         return ResponseEntity.ok().build();
     }

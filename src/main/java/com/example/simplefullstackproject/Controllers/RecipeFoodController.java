@@ -27,7 +27,7 @@ public class RecipeFoodController {
     }
 
     @PostMapping("/{recipeId}/add")
-    public ResponseEntity<?> addFoodToRecipe(
+    public ResponseEntity<Void> addFoodToRecipe(
             @PathVariable Integer recipeId,
             @Valid @RequestBody AddFoodRecipeDto request,
             BindingResult bindingResult) {
@@ -39,14 +39,14 @@ public class RecipeFoodController {
     }
 
     @DeleteMapping("/{recipeId}/remove/{foodId}")
-    public ResponseEntity<?> deleteFoodFromRecipe(
+    public ResponseEntity<Void> deleteFoodFromRecipe(
             @PathVariable Integer recipeId, @PathVariable Integer foodId) {
         recipeFoodService.deleteFoodFromRecipe(foodId, recipeId);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{recipeId}/modify/foodId")
-    public ResponseEntity<?> modifyFoodRecipe(
+    public ResponseEntity<Void> modifyFoodRecipe(
             @PathVariable Integer recipeId,
             @PathVariable Integer foodId,
             @Valid @RequestBody JsonMergePatch patch,

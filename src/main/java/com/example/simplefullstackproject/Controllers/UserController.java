@@ -4,6 +4,8 @@ import com.example.simplefullstackproject.Dtos.UserRequest;
 import com.example.simplefullstackproject.Dtos.UserResponse;
 import com.example.simplefullstackproject.Dtos.UserUpdateRequest;
 import com.example.simplefullstackproject.Exceptions.ValidationException;
+import com.example.simplefullstackproject.Services.UserExerciseService;
+import com.example.simplefullstackproject.Services.UserPlanService;
 import com.example.simplefullstackproject.Services.UserRecipeService;
 import com.example.simplefullstackproject.Services.UserService;
 import com.example.simplefullstackproject.Validations.ValidationGroups;
@@ -25,15 +27,23 @@ public class UserController {
     private final UserService userService;
     private final ObjectMapper objectMapper;
     private final UserRecipeService userRecipeService;
-
-    public UserController(UserService userService, ObjectMapper objectMapper, UserRecipeService userRecipeService) {
+    private final UserExerciseService userExerciseService;
+    private final UserPlanService userPlanService;
+    public UserController(
+            UserService userService,
+            ObjectMapper objectMapper,
+            UserRecipeService userRecipeService,
+            UserExerciseService userExerciseService,
+            UserPlanService userPlanService) {
         this.userService = userService;
         this.objectMapper = objectMapper;
         this.userRecipeService = userRecipeService;
+        this.userExerciseService = userExerciseService;
+        this.userPlanService = userPlanService;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequest request, BindingResult bindingResult) {
+    public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody UserRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
@@ -43,13 +53,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Integer id) {
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Integer id) {
         UserResponse user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateUserById(@PathVariable Integer id, @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch, BindingResult bindingResult) throws JsonPatchException, JsonProcessingException {
+    public ResponseEntity<Void> updateUserById(@PathVariable Integer id, @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch, BindingResult bindingResult) throws JsonPatchException, JsonProcessingException {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
@@ -68,20 +78,52 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUserById(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteUserById(@PathVariable Integer id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{userId}/recipes/{recipeId}")
-    public ResponseEntity<?> addRecipeToUser(@PathVariable Integer userId, @PathVariable Integer recipeId) {
+    public ResponseEntity<Void> addRecipeToUser(@PathVariable Integer userId, @PathVariable Integer recipeId) {
         userRecipeService.addRecipeToUser(recipeId, userId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{userId}/recipes/{recipeId}")
-    public ResponseEntity<?> deleteRecipeFromUser(@PathVariable Integer userId, @PathVariable Integer recipeId) {
+    public ResponseEntity<Void> deleteRecipeFromUser(@PathVariable Integer userId, @PathVariable Integer recipeId) {
         userRecipeService.deleteRecipeFromUser(recipeId, userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{userId}/exercises/{exerciseId}/add")
+    public ResponseEntity<Void> addExerciseToUser(
+            @PathVariable Integer userId,
+            @PathVariable Integer exerciseId) {
+        userExerciseService.addExerciseToUser(exerciseId, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping("/{userId}/exercises/{exerciseId}/remove")
+    public ResponseEntity<Void> deleteExerciseFromUser(
+            @PathVariable Integer userId,
+            @PathVariable Integer exerciseId) {
+        userExerciseService.deleteExerciseFromUser(exerciseId, userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{userId}/plans/{planId}")
+    public ResponseEntity<Void> addPlanToUser(
+            @PathVariable Integer userId,
+            @PathVariable Integer planId) {
+        userPlanService.addPlanToUser(planId, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping("/{userId}/plans/{planId}")
+    public ResponseEntity<Void> deletePlanFromUser(
+            @PathVariable Integer userId,
+            @PathVariable Integer planId) {
+        userPlanService.deletePlanFromUser(planId, userId);
         return ResponseEntity.ok().build();
     }
 }

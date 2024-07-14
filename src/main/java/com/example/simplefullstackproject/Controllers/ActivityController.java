@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -23,18 +24,18 @@ public class ActivityController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllActivities() {
+    public ResponseEntity<List<ActivityDto>> getAllActivities() {
         return ResponseEntity.ok(activityService.getActivities());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getActivityById(@PathVariable int id) {
+    public ResponseEntity<ActivityDto> getActivityById(@PathVariable int id) {
         ActivityDto activity = activityService.getActivityById(id);
         return ResponseEntity.ok(activity);
     }
 
     @PostMapping("/{id}/calculate-calories")
-    public ResponseEntity<?> calculateCaloriesBurntById(
+    public ResponseEntity<ActivityDtoResponse> calculateCaloriesBurntById(
             @PathVariable int id,
             @Valid @RequestBody CalculateCaloriesBurntRequest request,
             BindingResult bindingResult) {
@@ -46,7 +47,7 @@ public class ActivityController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createActivity(
+    public ResponseEntity<ActivityDto> createActivity(
             @Valid @RequestBody ActivityDto activityDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);

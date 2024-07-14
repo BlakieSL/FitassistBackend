@@ -23,18 +23,18 @@ public class RecipeController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllRecipes() {
+    public ResponseEntity<List<RecipeDto>> getAllRecipes() {
         return ResponseEntity.ok(recipeService.getRecipes());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getRecipeById(@PathVariable Integer id) {
+    public ResponseEntity<RecipeDto> getRecipeById(@PathVariable Integer id) {
         RecipeDto recipe = recipeService.getRecipeById(id);
         return ResponseEntity.ok(recipe);
     }
 
     @PostMapping
-    public ResponseEntity<?> createRecipe(
+    public ResponseEntity<RecipeDto> createRecipe(
             @Valid @RequestBody RecipeDto recipeDto,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
