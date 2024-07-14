@@ -23,13 +23,13 @@ public class DailyActivityController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<?> getAllDailyActivitiesByUserId(@PathVariable int userId) {
+    public ResponseEntity<List<ActivityDtoResponse>> getAllDailyActivitiesByUserId(@PathVariable int userId) {
         List<ActivityDtoResponse> activities = dailyActivityService.getActivitiesInCart(userId);
         return ResponseEntity.ok(activities);
     }
 
     @PostMapping("/{userId}/add")
-    public ResponseEntity<?> addDailyActivitiesByUserId(
+    public ResponseEntity<Void> addDailyActivitiesByUserId(
             @PathVariable int userId,
             @Valid @RequestBody DailyActivityDto request,
             BindingResult bindingResult) {
@@ -41,7 +41,7 @@ public class DailyActivityController {
     }
 
     @DeleteMapping("/{userId}/remove/{activityId}")
-    public ResponseEntity<?> removeDailyActivity(
+    public ResponseEntity<Void> removeDailyActivity(
             @PathVariable int userId, @PathVariable int activityId) {
         dailyActivityService.removeActivityFromCart(userId, activityId);
         return ResponseEntity.ok().build();
