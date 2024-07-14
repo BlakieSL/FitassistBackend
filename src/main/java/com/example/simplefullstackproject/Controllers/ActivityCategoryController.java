@@ -1,5 +1,8 @@
 package com.example.simplefullstackproject.Controllers;
 
+import com.example.simplefullstackproject.Dtos.ActivityCategoryDto;
+import com.example.simplefullstackproject.Dtos.ActivityDto;
+import com.example.simplefullstackproject.Models.ActivityCategory;
 import com.example.simplefullstackproject.Services.ActivityService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -20,12 +24,12 @@ public class ActivityCategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<?> geAlActivityCategories() {
+    public ResponseEntity<List<ActivityCategoryDto>> geAlActivityCategories() {
         return ResponseEntity.ok(activityService.getCategories());
     }
 
     @GetMapping("/{categoryId}/activities")
-    public ResponseEntity<?> getActivitiesByCategoryId(@PathVariable int categoryId) {
+    public ResponseEntity<List<ActivityDto>> getActivitiesByCategoryId(@PathVariable int categoryId) {
         return ResponseEntity.ok(activityService.getActivitiesByCategory(categoryId));
     }
 }
