@@ -3,6 +3,7 @@ package com.example.simplefullstackproject.Controllers;
 import com.example.simplefullstackproject.Dtos.UserRequest;
 import com.example.simplefullstackproject.Dtos.UserResponse;
 import com.example.simplefullstackproject.Dtos.UserUpdateRequest;
+import com.example.simplefullstackproject.Exceptions.ValidationException;
 import com.example.simplefullstackproject.Services.UserRecipeService;
 import com.example.simplefullstackproject.Services.UserService;
 import com.example.simplefullstackproject.Validations.ValidationGroups;
@@ -34,7 +35,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            throw new ValidationException(bindingResult);
         }
 
         UserResponse response = userService.register(request);
@@ -50,7 +51,7 @@ public class UserController {
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateUserById(@PathVariable Integer id, @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch, BindingResult bindingResult) throws JsonPatchException, JsonProcessingException {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            throw new ValidationException(bindingResult);
         }
 
         UserResponse response = userService.getUserById(id);
