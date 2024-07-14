@@ -20,16 +20,12 @@ public class ActivityCategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<?> geAlltActivityCategories() {
+    public ResponseEntity<?> geAlActivityCategories() {
         return ResponseEntity.ok(activityService.getCategories());
     }
 
     @GetMapping("/{categoryId}/activities")
     public ResponseEntity<?> getActivitiesByCategoryId(@PathVariable int categoryId) {
-        try {
-            return ResponseEntity.ok(activityService.getActivitiesByCategory(categoryId));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        return ResponseEntity.ok(activityService.getActivitiesByCategory(categoryId));
     }
 }
