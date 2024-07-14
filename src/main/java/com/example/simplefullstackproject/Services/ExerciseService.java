@@ -54,11 +54,14 @@ public class ExerciseService {
     }
 
     public List<ExerciseDto> getExercisesByUserID(Integer userId) {
-        List<UserExercise> userExercises = userExerciseRepository.findByUserId(userId);
-        List<Exercise> exercises = userExercises.stream()
+        List<UserExercise> userExercises = userExerciseRepository
+                .findByUserId(userId);
+        List<Exercise> exercises = userExercises
+                .stream()
                 .map(UserExercise::getExercise)
                 .collect(Collectors.toList());
-        return exercises.stream()
+        return exercises
+                .stream()
                 .map(exerciseDtoMapper::map)
                 .collect(Collectors.toList());
     }
