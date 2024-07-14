@@ -37,7 +37,7 @@ public class ActivityController {
     }
 
     @PostMapping("/{id}/calculate-calories")
-    public ResponseEntity<?> calculateCaloriesBurnt(
+    public ResponseEntity<?> calculateCaloriesBurntById(
             @PathVariable int id,
             @Valid @RequestBody CalculateCaloriesBurntRequest request,
             BindingResult bindingResult) {
@@ -53,7 +53,7 @@ public class ActivityController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveActivity(
+    public ResponseEntity<?> createActivity(
             @Valid @RequestBody ActivityDto activityDto, BindingResult bindingResult) {
         try {
             if (bindingResult.hasErrors()) {
