@@ -51,7 +51,6 @@ public class RecipeFoodService {
         recipeFoodRepository.save(recipeFood);
     }
 
-
     @Transactional
     public void deleteFoodFromRecipe(Integer foodId, Integer recipeId) {
         RecipeFood recipeFood = recipeFoodRepository
