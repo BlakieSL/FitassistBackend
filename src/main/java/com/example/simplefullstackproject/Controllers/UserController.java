@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/users")
 public class UserController {
     private final UserService userService;
     private final ObjectMapper objectMapper;
@@ -42,8 +42,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/users/{id}")
-    public ResponseEntity<?> getUser(@PathVariable Integer id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Integer id) {
         try {
             UserResponse user = userService.getUserById(id);
             return ResponseEntity.ok(user);
@@ -52,7 +52,7 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/users/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<?> updateUser(
             @PathVariable Integer id,
             @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch,
@@ -82,7 +82,7 @@ public class UserController {
         return objectMapper.treeToValue(patchNode, UserUpdateRequest.class);
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
         try {
             userService.deleteUser(id);

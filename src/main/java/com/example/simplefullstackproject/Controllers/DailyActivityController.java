@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/daily-activities")
 public class DailyActivityController {
     private final DailyActivityService dailyActivityService;
 
@@ -21,7 +21,7 @@ public class DailyActivityController {
         this.dailyActivityService = dailyActivityService;
     }
 
-    @GetMapping("/dailyActivities/{userId}")
+    @GetMapping("/{userId}")
     public ResponseEntity<?> getDailyActivities(@PathVariable int userId) {
         try {
             List<ActivityDtoResponse> activities = dailyActivityService.getActivitiesInCart(userId);
@@ -31,7 +31,7 @@ public class DailyActivityController {
         }
     }
 
-    @PostMapping("/dailyActivities/{userId}/add")
+    @PostMapping("/{userId}/add")
     public ResponseEntity<?> addDailyActivities(
             @PathVariable int userId,
             @Valid @RequestBody DailyActivityDto request,
@@ -47,7 +47,7 @@ public class DailyActivityController {
         }
     }
 
-    @DeleteMapping("/dailyActivities/{userId}/remove/{activityId}")
+    @DeleteMapping("/{userId}/remove/{activityId}")
     public ResponseEntity<?> removeDailyActivity(
             @PathVariable int userId, @PathVariable int activityId) {
         try {

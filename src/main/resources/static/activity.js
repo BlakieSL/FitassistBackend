@@ -18,7 +18,7 @@ export async function fetchActivities(){
 export async function fetchActivity(){
     const token = verifyToken();
 
-    const response = await fetch(`/api/activity/${activityId}`, {
+    const response = await fetch(`/api/activities/${activityId}`, {
        headers: {
            'Authorization': `Bearer ${token}`
        }
@@ -35,7 +35,7 @@ export async function addActivity(){
     const name = document.getElementById('name').value;
     const met = document.getElementById('met').value;
     const categoryName = document.getElementById('categoryName').value
-    const response = await fetch('/api/activities/add', {
+    const response = await fetch('/api/activities', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -53,7 +53,7 @@ export async function calculateCaloriesBurned(){
     const token = verifyToken();
     const time = document.getElementById('time').value;
 
-    const response = await fetch(`/api/activity/${activityId}`, {
+    const response = await fetch(`/api/activities/${activityId}/calculate-calories`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -70,7 +70,7 @@ export async function calculateCaloriesBurned(){
 export async function populateActivityTypes(){
     const token = verifyToken();
 
-    const response = await fetch('/api/activityCategories', {
+    const response = await fetch('/api/activity-categories', {
         headers: {
             'Authorization': `Bearer ${token}`
         }
@@ -85,7 +85,7 @@ export async function populateSpecificActivities(activityTypeId) {
     const token = verifyToken();
     let data;
     if(activityTypeId) {
-        const response = await fetch(`/api/activities/${activityTypeId}`, {
+        const response = await fetch(`/api/activity-categories/${activityTypeId}/activities`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }

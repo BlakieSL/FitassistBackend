@@ -20,7 +20,7 @@ export async function fetchFoods() {
 export async function fetchFood(){
     const token = verifyToken();
 
-    const response = await fetch(`/api/food/${foodId}`, {
+    const response = await fetch(`/api/foods/${foodId}`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
@@ -36,7 +36,7 @@ export async function calculateMacros(){
     const token = verifyToken();
     const amount = document.getElementById('amountGrams').value;
 
-    const response = await fetch(`/api/food/${foodId}`, {
+    const response = await fetch(`/api/foods/${foodId}/calculate-macros`, {
        method: 'POST',
        headers: {
            'Authorization': `Bearer ${token}`,
@@ -94,7 +94,7 @@ export async function addFood(){
     const carbohydrates = document.getElementById('carbohydrates').value;
     const categoryName= document.getElementById('categoryName').value;
 
-    const response = await fetch('/api/foods/add', {
+    const response = await fetch('/api/foods', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,

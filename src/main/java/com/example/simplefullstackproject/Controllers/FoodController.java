@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/foods")
 public class FoodController {
     private final FoodService foodService;
 
@@ -21,12 +21,12 @@ public class FoodController {
         this.foodService = foodService;
     }
 
-    @GetMapping("/foods")
-    public ResponseEntity<?> getFoods() {
+    @GetMapping
+    public ResponseEntity<?> getAllFoods() {
         return ResponseEntity.ok(foodService.getFoods());
     }
 
-    @GetMapping("/food/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getFoodById(@PathVariable int id) {
         try {
             FoodDto food = foodService.getFoodById(id);
@@ -36,7 +36,7 @@ public class FoodController {
         }
     }
 
-    @PostMapping("/food/{id}")
+    @PostMapping("/{id}/calculate-macros")
     public ResponseEntity<?> calculateFoodMacros(
             @PathVariable int id,
             @Valid @RequestBody CalculateAmountRequest request,
@@ -52,7 +52,7 @@ public class FoodController {
         }
     }
 
-    @PostMapping("/foods/add")
+    @PostMapping
     public ResponseEntity<?> saveFood(
             @Valid @RequestBody FoodDto foodDto, BindingResult bindingResult) {
         try {
@@ -68,7 +68,7 @@ public class FoodController {
         }
     }
 
-    @PostMapping("/foods/search")
+    @PostMapping("/search")
     public ResponseEntity<?> searchFood(
             @Valid @RequestBody SearchDtoRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
