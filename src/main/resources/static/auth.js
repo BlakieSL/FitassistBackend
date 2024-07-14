@@ -3,7 +3,7 @@ export async function login() {
     const username = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    const response = await fetch('/api/login', {
+    const response = await fetch('/api/users/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -32,7 +32,7 @@ export async function register() {
     const activityLevel = document.getElementById('activityLevel').value;
     const goal = document.getElementById('goal').value;
 
-    const response = await fetch('/api/register', {
+    const response = await fetch('/api/users/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, surname, email, password, gender, age, height, weight, activityLevel, goal })

@@ -21,7 +21,7 @@ import java.io.IOException;
 
 public class JwtAuthenticationFilter extends HttpFilter {
 
-    private static final RequestMatcher defaultRequestMatcher = new AntPathRequestMatcher("/api/login", "POST");
+    private static final RequestMatcher defaultRequestMatcher = new AntPathRequestMatcher("/api/users/login", "POST");
     private final AuthenticationManager authenticationManager;
     private final AuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
     private final AuthenticationSuccessHandler successHandler;

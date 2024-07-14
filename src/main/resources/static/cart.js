@@ -22,7 +22,7 @@ export async function addToDailyActivity(){
     const time = document.getElementById('time').value;
     const activityId = window.location.pathname.split('/').pop();
 
-    const response = await fetch(`/api/dailyActivities/${getUserId()}/add`, {
+    const response = await fetch(`/api/daily-activities/${getUserId()}/add`, {
        method: 'POST',
        headers: {
            'Authorization': `Bearer ${token}`,
@@ -45,7 +45,7 @@ export async function fetchCart(){
     });
     verifyResponse(response);
 
-    const response1 = await fetch(`/api/dailyActivities/${getUserId()}`, {
+    const response1 = await fetch(`/api/daily-activities/${getUserId()}`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
