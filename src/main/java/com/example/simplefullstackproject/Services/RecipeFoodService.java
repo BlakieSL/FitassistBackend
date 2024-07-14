@@ -77,4 +77,17 @@ public class RecipeFoodService {
         }
         recipeFoodRepository.save(recipeFood);
     }
+
+    public AddFoodRecipeDto getRecipeFoodByRecipeIdAndFoodId(Integer recipeId, Integer foodId) {
+        RecipeFood recipeFood = recipeFoodRepository
+                .findByRecipeIdAndFoodId(recipeId, foodId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "RecipeFood with recipe id: " + recipeId +
+                                " and food id: " + foodId + " not found"));
+
+        return new AddFoodRecipeDto(
+                recipeFood.getFood().getId(),
+                recipeFood.getAmount()
+        );
+    }
 }
