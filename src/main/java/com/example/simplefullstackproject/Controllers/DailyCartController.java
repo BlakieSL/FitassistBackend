@@ -22,7 +22,7 @@ public class DailyCartController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<?> getFoodsInCart(@PathVariable int userId) {
+    public ResponseEntity<?> getAllFoodsInCartByUserID(@PathVariable int userId) {
         try {
             List<FoodDtoResponse> foods = dailyCartService.getFoodsInCart(userId);
             return ResponseEntity.ok(foods);
@@ -32,7 +32,7 @@ public class DailyCartController {
     }
 
     @PostMapping("/{userId}/add")
-    public ResponseEntity<?> addFoodToCart(
+    public ResponseEntity<?> addFoodToCartByUserId(
             @PathVariable int userId,
             @Valid @RequestBody DailyCartFoodDto request,
             BindingResult bindingResult) {

@@ -53,7 +53,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateUser(
+    public ResponseEntity<?> updateUserById(
             @PathVariable Integer id,
             @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch,
             BindingResult bindingResult) {
@@ -83,7 +83,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteUserById(@PathVariable Integer id) {
         try {
             userService.deleteUser(id);
             return ResponseEntity.noContent().build();
