@@ -1,9 +1,6 @@
 package com.example.simplefullstackproject.Services;
 
-import com.example.simplefullstackproject.Dtos.ActivityCategoryDto;
-import com.example.simplefullstackproject.Dtos.ActivityDto;
-import com.example.simplefullstackproject.Dtos.ActivityDtoResponse;
-import com.example.simplefullstackproject.Dtos.CalculateCaloriesBurntRequest;
+import com.example.simplefullstackproject.Dtos.*;
 import com.example.simplefullstackproject.Models.Activity;
 import com.example.simplefullstackproject.Models.ActivityCategory;
 import com.example.simplefullstackproject.Models.User;
@@ -89,8 +86,15 @@ public class ActivityService {
                         "Activity with id: " + id + " not found"));
         ActivityDtoResponse response = activityDtoMapper.mapCalculated(activity);
         response.setTime(request.getTime());
-        response.setCaloriesBurn((int) calculationsHelper.calculateCaloriesBurned(
+        response.setCaloriesBurned((int) calculationsHelper.calculateCaloriesBurned(
                 response.getTime(), user.getWeight(), activity.getMet()));
         return response;
+    }
+
+    public List<ActivityDto> searchActivities(SearchDtoRequest request){
+        List<Activity> activities = activityRepository.findByNameContainingIgnoreCase(request.getName());
+        return activities.stream()
+                .map(activityDtoMapper::map)
+                .collect(Collectors.toList());
     }
 }

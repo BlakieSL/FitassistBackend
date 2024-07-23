@@ -21,7 +21,12 @@ public class ActivityDtoResponse {
     private String name;
     @NotNull
     @Positive
-    private int caloriesBurn;
+    private double met;
+    @NotBlank
+    private String categoryName;
+    @NotNull
+    @Positive
+    private int caloriesBurned;
     @NotNull
     @Positive
     private int time;

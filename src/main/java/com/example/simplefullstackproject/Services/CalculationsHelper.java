@@ -46,9 +46,12 @@ public final class CalculationsHelper {
         return bmr * activityFactor;
     }
 
-    public double calculateCaloricNeeds(final double weight, final double height,
-                                        final int age, final String gender,
-                                        final String activityLevel, final String goal) {
+    public double calculateCaloricNeeds(final double weight,
+                                        final double height,
+                                        final int age,
+                                        final String gender,
+                                        final String activityLevel,
+                                        final String goal) {
         double bmr = calculateBMR(weight, height, age, gender);
         double tdee = calculateTDEE(bmr, activityLevel);
         return switch (goal.toLowerCase()) {

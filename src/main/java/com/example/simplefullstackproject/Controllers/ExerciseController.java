@@ -1,6 +1,7 @@
 package com.example.simplefullstackproject.Controllers;
 
 import com.example.simplefullstackproject.Dtos.ExerciseDto;
+import com.example.simplefullstackproject.Dtos.SearchDtoRequest;
 import com.example.simplefullstackproject.Exceptions.ValidationException;
 import com.example.simplefullstackproject.Services.ExerciseService;
 import jakarta.validation.Valid;
@@ -46,5 +47,14 @@ public class ExerciseController {
     public ResponseEntity<List<ExerciseDto>> getExercisesByUserId(@PathVariable Integer userId) {
         List<ExerciseDto> exercises = exerciseService.getExercisesByUserID(userId);
         return ResponseEntity.ok(exercises);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<ExerciseDto>> searchExercises(
+            @Valid @RequestBody SearchDtoRequest request, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            throw new ValidationException(bindingResult);
+        }
+        return ResponseEntity.ok(exerciseService.searchExercises(request));
     }
 }
