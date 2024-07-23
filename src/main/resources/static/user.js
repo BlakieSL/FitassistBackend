@@ -1,4 +1,5 @@
 import { verifyToken, getUserId, verifyResponse } from './utils.js';
+import {logout} from "./auth";
 
 export async function fetchUser() {
     const token = verifyToken();

@@ -58,7 +58,7 @@ public class FoodController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<FoodDto>> searchFood(
+    public ResponseEntity<List<FoodDto>> searchFoods(
             @Valid @RequestBody SearchDtoRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);

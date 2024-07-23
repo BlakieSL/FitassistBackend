@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 /**
  * DTO for {@link com.example.simplefullstackproject.Models.User}
@@ -39,8 +40,8 @@ public class UserRequest implements Serializable {
     @NotBlank
     private String gender;
     @NotNull
-    @Positive
-    private int age;
+    @Past
+    private LocalDate birthday;
     @NotNull
     @Positive
     private double height;

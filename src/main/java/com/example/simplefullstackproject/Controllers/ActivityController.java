@@ -3,6 +3,7 @@ package com.example.simplefullstackproject.Controllers;
 import com.example.simplefullstackproject.Dtos.ActivityDto;
 import com.example.simplefullstackproject.Dtos.ActivityDtoResponse;
 import com.example.simplefullstackproject.Dtos.CalculateCaloriesBurntRequest;
+import com.example.simplefullstackproject.Dtos.SearchDtoRequest;
 import com.example.simplefullstackproject.Exceptions.ValidationException;
 import com.example.simplefullstackproject.Services.ActivityService;
 import jakarta.validation.Valid;
@@ -54,5 +55,14 @@ public class ActivityController {
         }
         ActivityDto response = activityService.saveActivity(activityDto);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<ActivityDto>> searchActivities(
+            @Valid @RequestBody SearchDtoRequest request, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            throw new ValidationException(bindingResult);
+        }
+        return ResponseEntity.ok(activityService.searchActivities(request));
     }
 }

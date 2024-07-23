@@ -79,7 +79,7 @@ async function init() {
                 localStorage.removeItem('searchQuery');
             }else {
                 await fetchFoods();
-            }
+            }``
         } catch (error) {
             document.getElementById('foodListError').textContent = 'Error occurred during fetching food list';
         }

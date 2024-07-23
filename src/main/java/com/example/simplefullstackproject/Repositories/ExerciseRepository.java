@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ExerciseRepository extends JpaRepository<Exercise, Integer> {
+    List<Exercise> findByNameContainingIgnoreCase(String name);
 }

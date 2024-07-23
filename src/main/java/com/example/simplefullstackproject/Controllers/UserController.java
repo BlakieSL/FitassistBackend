@@ -41,7 +41,6 @@ public class UserController {
         this.userExerciseService = userExerciseService;
         this.userPlanService = userPlanService;
     }
-
     @PostMapping("/register")
     public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody UserRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

@@ -30,6 +30,8 @@ public class ActivityDtoMapper {
         ActivityDtoResponse response = new ActivityDtoResponse();
         response.setId(activity.getId());
         response.setName(activity.getName());
+        response.setMet(activity.getMet());
+        response.setCategoryName(activity.getActivityCategory().getName());
         return response;
     }
 

@@ -16,9 +16,10 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.io.IOException;
-
+@CrossOrigin(origins = "http://localhost:3000")
 public class JwtAuthenticationFilter extends HttpFilter {
 
     private static final RequestMatcher defaultRequestMatcher = new AntPathRequestMatcher("/api/users/login", "POST");

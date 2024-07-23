@@ -1,6 +1,7 @@
 package com.example.simplefullstackproject.Services;
 
 import com.example.simplefullstackproject.Dtos.ExerciseDto;
+import com.example.simplefullstackproject.Dtos.SearchDtoRequest;
 import com.example.simplefullstackproject.Models.Exercise;
 import com.example.simplefullstackproject.Models.User;
 import com.example.simplefullstackproject.Models.UserExercise;
@@ -62,6 +63,13 @@ public class ExerciseService {
                 .collect(Collectors.toList());
         return exercises
                 .stream()
+                .map(exerciseDtoMapper::map)
+                .collect(Collectors.toList());
+    }
+
+    public List<ExerciseDto> searchExercises(SearchDtoRequest request){
+        List<Exercise> exercises = exerciseRepository.findByNameContainingIgnoreCase(request.getName());
+        return exercises.stream()
                 .map(exerciseDtoMapper::map)
                 .collect(Collectors.toList());
     }
