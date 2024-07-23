@@ -100,6 +100,8 @@ public class DailyActivityService {
                     return new ActivityDtoResponse(
                             activity.getId(),
                             activity.getName(),
+                            activity.getMet(),
+                            activity.getActivityCategory().getName(),
                             (int) (calculationsHelper.calculateCaloriesBurned(dailyCartActivity.getTime(), user.getWeight(), activity.getMet())),
                             dailyCartActivity.getTime()
                     );

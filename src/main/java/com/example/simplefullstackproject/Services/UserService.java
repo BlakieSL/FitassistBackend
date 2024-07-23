@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -81,10 +83,12 @@ public class UserService implements UserDetailsService {
         String hashedPassword = passwordEncoder.encode(request.getPassword());
         user.setPassword(hashedPassword);
 
+        int age = Period.between(user.getBirthday(), LocalDate.now()).getYears();
+
         user.setCalculatedCalories(calculationsHelper.calculateCaloricNeeds(
                 user.getWeight(),
                 user.getHeight(),
-                user.getAge(),
+                age,
                 user.getGender(),
                 request.getActivityLevel(),
                 request.getGoal()));
@@ -119,10 +123,12 @@ public class UserService implements UserDetailsService {
             user.setWeight(request.getWeight());
         }
 
+        int age = Period.between(user.getBirthday(), LocalDate.now()).getYears();
+
         user.setCalculatedCalories(calculationsHelper.calculateCaloricNeeds(
                 user.getWeight(),
                 user.getHeight(),
-                user.getAge(),
+                age,
                 user.getGender(),
                 request.getActivityLevel(),
                 request.getGoal()
