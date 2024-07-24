@@ -4,6 +4,9 @@ import com.example.simplefullstackproject.Dtos.ActivityDtoResponse;
 import com.example.simplefullstackproject.Dtos.DailyActivityDto;
 import com.example.simplefullstackproject.Exceptions.ValidationException;
 import com.example.simplefullstackproject.Services.DailyActivityService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,5 +48,20 @@ public class DailyActivityController {
             @PathVariable int userId, @PathVariable int activityId) {
         dailyActivityService.removeActivityFromCart(userId, activityId);
         return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{userId}/modify-activity/{activityId}")
+    public ResponseEntity<Void> modifyDailyCartActivity(
+            @PathVariable Integer userId,
+            @PathVariable Integer activityId,
+            @Valid @RequestBody JsonMergePatch patch,
+            BindingResult bindingResult
+            ) throws JsonPatchException, JsonProcessingException {
+        if(bindingResult.hasErrors()){
+            throw new ValidationException(bindingResult);
+        }
+
+        dailyActivityService.modifyDailyCartActivities(userId, activityId, patch);
+        return ResponseEntity.noContent().build();
     }
 }

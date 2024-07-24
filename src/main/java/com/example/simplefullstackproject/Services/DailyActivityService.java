@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.Services;
 
+import com.example.simplefullstackproject.Components.JsonPatchHelper;
 import com.example.simplefullstackproject.Dtos.ActivityDtoResponse;
 import com.example.simplefullstackproject.Dtos.DailyActivityDto;
 import com.example.simplefullstackproject.Models.Activity;
@@ -9,6 +10,9 @@ import com.example.simplefullstackproject.Models.User;
 import com.example.simplefullstackproject.Repositories.ActivityRepository;
 import com.example.simplefullstackproject.Repositories.DailyActivityRepository;
 import com.example.simplefullstackproject.Repositories.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -26,18 +30,20 @@ public class DailyActivityService {
     private final ActivityRepository activityRepository;
     private final UserRepository userRepository;
     private final CalculationsHelper calculationsHelper;
-
+    private final JsonPatchHelper jsonPatchHelper;
     public DailyActivityService(
             DailyActivityRepository dailyActivityRepository,
             UserRepository userRepository,
             ActivityRepository activityRepository,
             CalculationsHelper calculationsHelper,
-            ValidationHelper validationHelper) {
+            ValidationHelper validationHelper,
+            JsonPatchHelper jsonPatchHelper) {
         this.dailyActivityRepository = dailyActivityRepository;
         this.userRepository = userRepository;
         this.activityRepository = activityRepository;
         this.validationHelper = validationHelper;
         this.calculationsHelper = calculationsHelper;
+        this.jsonPatchHelper = jsonPatchHelper;
     }
 
     private DailyActivity getDailyActivityByUserId(Integer userId) {
@@ -56,6 +62,8 @@ public class DailyActivityService {
 
     @Transactional
     public void addActivityToDailyActivities(Integer userId, DailyActivityDto dto) {
+        validationHelper.validate(dto);
+
         DailyActivity dailyActivity = getDailyActivityByUserId(userId);
 
         Activity activity = activityRepository.findById(dto.getId())
@@ -120,4 +128,25 @@ public class DailyActivityService {
             dailyActivityRepository.save(dailyActivity);
         }
     }
+
+    @Transactional
+    public void modifyDailyCartActivities(Integer userId, Integer activityId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+        DailyActivity dailyActivity = getDailyActivityByUserId(userId);
+
+        DailyCartActivity dailyCartActivity = dailyActivity.getDailyCartActivities().stream()
+                .filter(item -> item.getActivity().getId().equals(activityId))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Activity with id: " + activityId + " not found in daily cart"));
+
+        DailyActivityDto dailyCartActivityDto = new DailyActivityDto();
+        dailyCartActivityDto.setId(dailyCartActivity.getActivity().getId());
+        dailyCartActivityDto.setTime(dailyCartActivity.getTime());
+
+        DailyActivityDto patchedDailyCartActivityDto = jsonPatchHelper.applyPatch(patch, dailyCartActivityDto, DailyActivityDto.class);
+
+        dailyCartActivity.setTime(patchedDailyCartActivityDto.getTime());
+        dailyActivityRepository.save(dailyActivity);
+    }
+
+
 }

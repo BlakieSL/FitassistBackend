@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class ViewController {
+    /*
 
     @GetMapping("/login")
     public String login() {
@@ -56,4 +57,6 @@ public class ViewController {
     public String displayAddActivity() {
         return "activityAdd";
     }
+
+     */
 }

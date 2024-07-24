@@ -1,7 +1,9 @@
 package com.example.simplefullstackproject.Services;
 
+import com.example.simplefullstackproject.Components.JsonPatchHelper;
 import com.example.simplefullstackproject.Dtos.DailyCartFoodDto;
 import com.example.simplefullstackproject.Dtos.FoodDtoResponse;
+import com.example.simplefullstackproject.Dtos.UserUpdateRequest;
 import com.example.simplefullstackproject.Models.DailyCart;
 import com.example.simplefullstackproject.Models.DailyCartFood;
 import com.example.simplefullstackproject.Models.Food;
@@ -9,10 +11,17 @@ import com.example.simplefullstackproject.Models.User;
 import com.example.simplefullstackproject.Repositories.DailyCartRepository;
 import com.example.simplefullstackproject.Repositories.FoodRepository;
 import com.example.simplefullstackproject.Repositories.UserRepository;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -24,14 +33,19 @@ public class DailyCartService {
     private final DailyCartRepository dailyCartRepository;
     private final FoodRepository foodRepository;
     private final UserRepository userRepository;
-
+    private final ValidationHelper validationHelper;
+    private final JsonPatchHelper jsonPatchHelper;
     public DailyCartService(
             DailyCartRepository dailyCartRepository,
             FoodRepository foodRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            ValidationHelper validationHelper,
+            JsonPatchHelper jsonPatchHelper) {
         this.dailyCartRepository = dailyCartRepository;
         this.foodRepository = foodRepository;
         this.userRepository = userRepository;
+        this.validationHelper = validationHelper;
+        this.jsonPatchHelper = jsonPatchHelper;
     }
 
     private DailyCart getDailyCartByUserId(Integer userId) {
@@ -51,6 +65,7 @@ public class DailyCartService {
     @Transactional
     public void addFoodToCart(Integer userId, DailyCartFoodDto dto)
     {
+        validationHelper.validate(dto);
         DailyCart dailyCart = getDailyCartByUserId(userId);
 
         Food food = foodRepository.findById(dto.getId())
@@ -117,5 +132,24 @@ public class DailyCartService {
             cart.getDailyCartFoods().clear();
             dailyCartRepository.save(cart);
         }
+    }
+
+    @Transactional
+    public void modifyDailyCartFood(Integer userId, Integer foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+        DailyCart dailyCart = getDailyCartByUserId(userId);
+
+        DailyCartFood dailyCartFood = dailyCart.getDailyCartFoods().stream()
+                .filter(item -> item.getFood().getId().equals(foodId))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Food with id: " + foodId + " not found in daily cart"));
+
+        DailyCartFoodDto dailyCartFoodDto = new DailyCartFoodDto();
+        dailyCartFoodDto.setId(dailyCartFood.getFood().getId());
+        dailyCartFoodDto.setAmount(dailyCartFood.getAmount());
+
+        DailyCartFoodDto patchedDailyCartFoodDto = jsonPatchHelper.applyPatch(patch, dailyCartFoodDto, DailyCartFoodDto.class);
+
+        dailyCartFood.setAmount(patchedDailyCartFoodDto.getAmount());
+        dailyCartRepository.save(dailyCart);
     }
 }
