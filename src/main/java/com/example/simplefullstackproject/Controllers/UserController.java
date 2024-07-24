@@ -58,7 +58,8 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateUserById(@PathVariable Integer id, @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch, BindingResult bindingResult) throws JsonPatchException, JsonProcessingException {
+    public ResponseEntity<Void> modifyUserById(@PathVariable Integer id,
+                                               @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch, BindingResult bindingResult) throws JsonPatchException, JsonProcessingException {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }

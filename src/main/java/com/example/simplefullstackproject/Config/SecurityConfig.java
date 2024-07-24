@@ -52,28 +52,8 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(
-                        "/script.js",
-                        "/auth.js",
-                        "/user.js",
-                        "/food.js",
-                        "/utils.js",
-                        "/cart.js",
-                        "/activity.js",
-                        "style.css",
-                        "/favicon.ico",
                         "/api/users/register",
-                        "/api/users/login",
-                        "/register",
-                        "/login",
-                        "/index",
-                        "/",
-                        "/userInfo",
-                        "/food/{foodId}",
-                        "/cart",
-                        "/activity/{activityId}",
-                        "/activities",
-                        "/foods/add",
-                        "/activities/add").permitAll()
+                        "/api/users/login").permitAll()
                 .anyRequest().authenticated());
         http.cors((cors) -> cors
                 .configurationSource(corsConfigurationSource()));

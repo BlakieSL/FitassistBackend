@@ -106,15 +106,11 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void updateUser(Integer id, UserUpdateRequest request) {
+    public void updateUser(Integer userId, UserUpdateRequest request) {
         validationHelper.validate(request);
 
-        Optional<User> userOptional = userRepository.findById(id);
-
-        if (userOptional.isEmpty()) {
-            throw new NoSuchElementException("there is no user with id: " + id);
-        }
-        User user = userOptional.get();
+       User user = userRepository.findById(userId)
+               .orElseThrow(() -> new NoSuchElementException("user with id: " + userId + " not found"));
 
         if (!(request.getHeight() == (user.getHeight()))) {
             user.setHeight(request.getHeight());
