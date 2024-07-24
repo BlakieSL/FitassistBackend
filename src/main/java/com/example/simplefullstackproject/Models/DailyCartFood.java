@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.Models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -26,6 +27,7 @@ public class DailyCartFood {
 
     @ManyToOne
     @JoinColumn(name = "daily_cart_id", nullable = false)
+    @JsonBackReference
     private DailyCart dailyCartFood;
 
     @ManyToOne

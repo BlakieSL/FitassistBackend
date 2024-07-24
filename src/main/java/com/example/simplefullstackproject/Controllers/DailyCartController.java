@@ -54,7 +54,7 @@ public class DailyCartController {
     public ResponseEntity<Void> modifyDailyCartFood(
             @PathVariable Integer userId,
             @PathVariable Integer foodId,
-            @Valid @RequestBody JsonMergePatch patch,
+            @RequestBody JsonMergePatch patch,
             BindingResult bindingResult
             ) throws JsonPatchException, JsonProcessingException {
         if(bindingResult.hasErrors()){

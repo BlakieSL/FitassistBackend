@@ -144,10 +144,12 @@ public class DailyCartService {
                 .orElseThrow(() -> new NoSuchElementException("Food with id: " + foodId + " not found in daily cart"));
 
         DailyCartFoodDto dailyCartFoodDto = new DailyCartFoodDto();
-        dailyCartFoodDto.setId(dailyCartFood.getFood().getId());
+        dailyCartFoodDto.setId(dailyCartFood.getId());
         dailyCartFoodDto.setAmount(dailyCartFood.getAmount());
 
         DailyCartFoodDto patchedDailyCartFoodDto = jsonPatchHelper.applyPatch(patch, dailyCartFoodDto, DailyCartFoodDto.class);
+
+        validationHelper.validate(patchedDailyCartFoodDto);
 
         dailyCartFood.setAmount(patchedDailyCartFoodDto.getAmount());
         dailyCartRepository.save(dailyCart);

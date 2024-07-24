@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.Services;
 
+import com.example.simplefullstackproject.Components.JsonPatchHelper;
 import com.example.simplefullstackproject.Dtos.*;
 import com.example.simplefullstackproject.Models.Exercise;
 import com.example.simplefullstackproject.Models.Role;
@@ -8,6 +9,9 @@ import com.example.simplefullstackproject.Repositories.ExerciseRepository;
 import com.example.simplefullstackproject.Repositories.RoleRepository;
 import com.example.simplefullstackproject.Repositories.UserRepository;
 import com.example.simplefullstackproject.Services.Mappers.UserDtoMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,6 +33,7 @@ public class UserService implements UserDetailsService {
     private final ValidationHelper validationHelper;
     private final CalculationsHelper calculationsHelper;
     private final ExerciseRepository exerciseRepository;
+    private final JsonPatchHelper jsonPatchHelper;
 
     public UserService(UserRepository userRepository,
                        RoleRepository roleRepository,
@@ -36,7 +41,8 @@ public class UserService implements UserDetailsService {
                        PasswordEncoder passwordEncoder,
                        ExerciseRepository exerciseRepository,
                        ValidationHelper validationHelper,
-                       CalculationsHelper calculationsHelper) {
+                       CalculationsHelper calculationsHelper,
+                       JsonPatchHelper jsonPatchHelper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userDtoMapper = userDtoMapper;
@@ -44,6 +50,7 @@ public class UserService implements UserDetailsService {
         this.exerciseRepository = exerciseRepository;
         this.validationHelper = validationHelper;
         this.calculationsHelper = calculationsHelper;
+        this.jsonPatchHelper = jsonPatchHelper;
     }
 
     private Optional<UserDto> findUserCredentialsByEmail(String email) {
@@ -106,33 +113,6 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void updateUser(Integer userId, UserUpdateRequest request) {
-        validationHelper.validate(request);
-
-       User user = userRepository.findById(userId)
-               .orElseThrow(() -> new NoSuchElementException("user with id: " + userId + " not found"));
-
-        if (!(request.getHeight() == (user.getHeight()))) {
-            user.setHeight(request.getHeight());
-        }
-        if (!(request.getWeight() == (user.getWeight()))) {
-            user.setWeight(request.getWeight());
-        }
-
-        int age = Period.between(user.getBirthday(), LocalDate.now()).getYears();
-
-        user.setCalculatedCalories(calculationsHelper.calculateCaloricNeeds(
-                user.getWeight(),
-                user.getHeight(),
-                age,
-                user.getGender(),
-                request.getActivityLevel(),
-                request.getGoal()
-        ));
-        userRepository.save(user);
-    }
-
-    @Transactional
     public void deleteUser(Integer id) {
         if (!userRepository.existsById(id)) {
             throw new NoSuchElementException("User with id: " + id + "not found");
@@ -140,4 +120,37 @@ public class UserService implements UserDetailsService {
         userRepository.deleteById(id);
     }
 
+    @Transactional
+    public void modifyUser(Integer userId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User with id: " + userId + " not found"));
+
+        UserResponse userDto = getUserById(userId);
+        UserUpdateRequest patchedUserUpdateRequest = jsonPatchHelper.applyPatch(patch, userDto, UserUpdateRequest.class);
+
+        validationHelper.validate(patchedUserUpdateRequest);
+
+        updateUserFields(user, patchedUserUpdateRequest);
+
+        int age = Period.between(user.getBirthday(), LocalDate.now()).getYears();
+        user.setCalculatedCalories(calculationsHelper.calculateCaloricNeeds(
+                user.getWeight(),
+                user.getHeight(),
+                age,
+                user.getGender(),
+                patchedUserUpdateRequest.getActivityLevel(),
+                patchedUserUpdateRequest.getGoal()
+        ));
+
+        userRepository.save(user);
+    }
+
+    private void updateUserFields(User user, UserUpdateRequest request) {
+        if (request.getHeight() != user.getHeight()) {
+            user.setHeight(request.getHeight());
+        }
+        if (request.getWeight() != user.getWeight()) {
+            user.setWeight(request.getWeight());
+        }
+    }
 }
