@@ -25,18 +25,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/api/users")
 public class UserController {
     private final UserService userService;
-    private final ObjectMapper objectMapper;
     private final UserRecipeService userRecipeService;
     private final UserExerciseService userExerciseService;
     private final UserPlanService userPlanService;
     public UserController(
             UserService userService,
-            ObjectMapper objectMapper,
             UserRecipeService userRecipeService,
             UserExerciseService userExerciseService,
             UserPlanService userPlanService) {
         this.userService = userService;
-        this.objectMapper = objectMapper;
         this.userRecipeService = userRecipeService;
         this.userExerciseService = userExerciseService;
         this.userPlanService = userPlanService;
@@ -64,17 +61,8 @@ public class UserController {
             throw new ValidationException(bindingResult);
         }
 
-        UserResponse response = userService.getUserById(id);
-        UserUpdateRequest request = applyPatch(response, patch);
-
-        userService.updateUser(id, request);
+        userService.modifyUser(id,patch);
         return ResponseEntity.noContent().build();
-    }
-
-    private UserUpdateRequest applyPatch(UserResponse response, JsonMergePatch patch) throws JsonProcessingException, JsonPatchException {
-        JsonNode userNode = objectMapper.valueToTree(response);
-        JsonNode patchNode = patch.apply(userNode);
-        return objectMapper.treeToValue(patchNode, UserUpdateRequest.class);
     }
 
     @DeleteMapping("/{id}")

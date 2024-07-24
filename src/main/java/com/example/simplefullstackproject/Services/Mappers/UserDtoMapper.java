@@ -3,6 +3,7 @@ package com.example.simplefullstackproject.Services.Mappers;
 import com.example.simplefullstackproject.Dtos.UserDto;
 import com.example.simplefullstackproject.Dtos.UserRequest;
 import com.example.simplefullstackproject.Dtos.UserResponse;
+import com.example.simplefullstackproject.Dtos.UserUpdateRequest;
 import com.example.simplefullstackproject.Models.Role;
 import com.example.simplefullstackproject.Models.User;
 import org.springframework.stereotype.Service;

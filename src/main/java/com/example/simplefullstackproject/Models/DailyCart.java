@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.Models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -31,5 +32,6 @@ public class DailyCart {
     private User user;
 
     @OneToMany(mappedBy = "dailyCartFood", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private final List<DailyCartFood> dailyCartFoods = new ArrayList<>();
 }

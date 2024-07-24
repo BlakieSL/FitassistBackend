@@ -19,7 +19,7 @@ public class JsonPatchHelper {
         this.objectMapper = objectMapper;
     }
 
-    public <T> T applyPatch(JsonMergePatch patch, T targetBean, Class<T> beanClass) throws JsonPatchException, JsonProcessingException {
+    public <T> T applyPatch(JsonMergePatch patch, Object targetBean, Class<T> beanClass) throws JsonPatchException, JsonProcessingException {
         JsonNode targetNode = objectMapper.valueToTree(targetBean);
         JsonNode patchedNode = patch.apply(targetNode);
         return objectMapper.treeToValue(patchedNode, beanClass);
