@@ -34,6 +34,10 @@ public class BearerTokenFilter extends HttpFilter {
             try {
                 signedJwt = SignedJWT.parse(compactJwt);
                 verifyJwt(signedJwt);
+                String tokenType = signedJwt.getJWTClaimsSet().getStringClaim("tokenType");
+                if (!"ACCESS".equals(tokenType)) {
+                    throw new JwtAuthenticationException("Invalid token type for authorization");
+                }
                 setSecurityContext(signedJwt);
                 chain.doFilter(request, response);
             } catch (JwtAuthenticationException e) {

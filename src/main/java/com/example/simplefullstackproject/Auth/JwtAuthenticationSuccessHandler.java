@@ -21,7 +21,7 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
         this.userService = userService;
     }
 
-    private record JwtWrapper(String token) {
+    private record JwtWrapper(String accessToken, String refreshToken) {
     }
 
     @Override
@@ -32,7 +32,8 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
         Integer userId = userService.getUserIdByEmail(authentication.getName());
 
 
-        String signedJWT = jwtService.createSignedJWT(authentication.getName(), userId, authorities);
-        new ObjectMapper().writeValue(response.getWriter(), new JwtWrapper(signedJWT));
+        String accessToken = jwtService.createAccessToken(authentication.getName(), userId, authorities);
+        String refreshToken = jwtService.createRefreshToken(authentication.getName(), userId, authorities);
+        new ObjectMapper().writeValue(response.getWriter(), new JwtWrapper(accessToken, refreshToken));
     }
 }
