@@ -53,7 +53,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(
                         "/api/users/register",
-                        "/api/users/login").permitAll()
+                        "/api/users/login",
+                        "/api/users/refresh-token").permitAll()
                 .anyRequest().authenticated());
         http.cors((cors) -> cors
                 .configurationSource(corsConfigurationSource()));

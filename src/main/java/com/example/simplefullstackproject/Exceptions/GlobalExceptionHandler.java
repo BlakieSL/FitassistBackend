@@ -42,12 +42,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(JsonProcessingException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<String> handleJsonProcessingException(JsonProcessingException e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus. INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<?> handleValidationException(ValidationException e) {
         return ResponseEntity.badRequest().body(e.getBindingResult().getAllErrors());
+    }
+
+    @ExceptionHandler(JwtAuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<String> handleJwtAuthenticationException(JwtAuthenticationException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
