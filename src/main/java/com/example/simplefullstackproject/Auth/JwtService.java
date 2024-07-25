@@ -5,6 +5,7 @@ import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -30,15 +31,16 @@ public class JwtService {
         verifier = new MACVerifier(sharedKey.getBytes());
     }
 
-    public String createSignedJWT(String username, Integer userId, List<String> authorities) {
+    public String createSignedJWT(String username, Integer userId, List<String> authorities, long durationInMinutes) {
         JWSHeader header = new JWSHeader(alg);
 
         JWTClaimsSet claimSet = new JWTClaimsSet.Builder()
                 .subject(username)
                 .issueTime(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-                .expirationTime(Date.from(LocalDateTime.now().plusHours(24).atZone(ZoneId.systemDefault()).toInstant()))
+                .expirationTime(Date.from(LocalDateTime.now().plusMinutes(durationInMinutes).atZone(ZoneId.systemDefault()).toInstant()))
                 .claim("userId", userId)
                 .claim("authorities", authorities)
+                .claim("tokenType", durationInMinutes == 15 ? "ACCESS" : "REFRESH")
                 .build();
 
         SignedJWT signedJWT = new SignedJWT(header, claimSet);
@@ -48,6 +50,14 @@ public class JwtService {
             throw new RuntimeException(e);
         }
         return signedJWT.serialize();
+    }
+
+    public String createAccessToken(String username, Integer userId, List<String> authorities) {
+        return createSignedJWT(username, userId, authorities, 15);
+    }
+
+    public String createRefreshToken(String username, Integer userId, List<String> authorities) {
+        return createSignedJWT(username, userId, authorities, 7 * 24 * 60);
     }
 
     public void verifySignature(SignedJWT signedJWT) {
@@ -84,6 +94,20 @@ public class JwtService {
             return new CustomAuthenticationToken(subject, userId, null, authorities);
         } catch (ParseException e) {
             throw new JwtAuthenticationException("Missing claims subject or authorities");
+        }
+    }
+    public String refreshAccessToken(String refreshToken) {
+        try {
+            SignedJWT signedJWT = (SignedJWT) JWTParser.parse(refreshToken);
+            verifySignature(signedJWT);
+            verifyExpirationTime(signedJWT);
+            return createAccessToken(
+                    signedJWT.getJWTClaimsSet().getSubject(),
+                    signedJWT.getJWTClaimsSet().getIntegerClaim("userId"),
+                    signedJWT.getJWTClaimsSet().getStringListClaim("authorities")
+            );
+        } catch (ParseException e) {
+            throw new JwtAuthenticationException("Invalid refresh token");
         }
     }
 }

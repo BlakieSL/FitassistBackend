@@ -1,8 +1,8 @@
 package com.example.simplefullstackproject.Controllers;
 
-import com.example.simplefullstackproject.Dtos.UserRequest;
-import com.example.simplefullstackproject.Dtos.UserResponse;
-import com.example.simplefullstackproject.Dtos.UserUpdateRequest;
+import com.example.simplefullstackproject.Auth.JwtService;
+import com.example.simplefullstackproject.Dtos.*;
+import com.example.simplefullstackproject.Exceptions.JwtAuthenticationException;
 import com.example.simplefullstackproject.Exceptions.ValidationException;
 import com.example.simplefullstackproject.Services.UserExerciseService;
 import com.example.simplefullstackproject.Services.UserPlanService;
@@ -21,6 +21,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping(path = "/api/users")
 public class UserController {
@@ -28,16 +30,30 @@ public class UserController {
     private final UserRecipeService userRecipeService;
     private final UserExerciseService userExerciseService;
     private final UserPlanService userPlanService;
+    private final JwtService jwtService;
     public UserController(
             UserService userService,
             UserRecipeService userRecipeService,
             UserExerciseService userExerciseService,
-            UserPlanService userPlanService) {
+            UserPlanService userPlanService,
+            JwtService jwtService) {
         this.userService = userService;
         this.userRecipeService = userRecipeService;
         this.userExerciseService = userExerciseService;
         this.userPlanService = userPlanService;
+        this.jwtService = jwtService;
     }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenDtoRequest dtoRequest, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            throw new ValidationException(bindingResult);
+        }
+        String newAccessToken = jwtService.refreshAccessToken(dtoRequest.getRefreshToken());
+        AccessTokenDtoRequest accessTokenDtoRequest = new AccessTokenDtoRequest(newAccessToken);
+        return ResponseEntity.ok(accessTokenDtoRequest);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody UserRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
