@@ -59,4 +59,7 @@ public class Food {
 
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private final Set<RecipeFood> recipeFoods = new HashSet<>();
+
+    @OneToMany(mappedBy = "food", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private final Set<UserFood> userFoods = new HashSet<>();
 }

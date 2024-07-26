@@ -63,8 +63,7 @@ public class DailyCartService {
     }
 
     @Transactional
-    public void addFoodToCart(Integer userId, DailyCartFoodDto dto)
-    {
+    public void addFoodToCart(Integer userId, DailyCartFoodDto dto) {
         validationHelper.validate(dto);
         DailyCart dailyCart = getDailyCartByUserId(userId);
 
