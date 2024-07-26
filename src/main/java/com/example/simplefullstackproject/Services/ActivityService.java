@@ -96,7 +96,7 @@ public class ActivityService {
     }
 
     public List<ActivityDto> searchActivities(SearchDtoRequest request){
-        List<Activity> activities = activityRepository.findByNameContainingIgnoreCase(request.getName());
+        List<Activity> activities = activityRepository.findAllByNameContainingIgnoreCase(request.getName());
         return activities.stream()
                 .map(activityDtoMapper::map)
                 .collect(Collectors.toList());
