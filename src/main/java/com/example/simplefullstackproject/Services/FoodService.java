@@ -1,10 +1,13 @@
 package com.example.simplefullstackproject.Services;
 
 import com.example.simplefullstackproject.Dtos.CalculateAmountRequest;
+import com.example.simplefullstackproject.Dtos.FoodCategoryDto;
 import com.example.simplefullstackproject.Dtos.FoodDto;
 import com.example.simplefullstackproject.Dtos.SearchDtoRequest;
 import com.example.simplefullstackproject.Models.Food;
+import com.example.simplefullstackproject.Models.FoodCategory;
 import com.example.simplefullstackproject.Models.UserFood;
+import com.example.simplefullstackproject.Repositories.FoodCategoryRepository;
 import com.example.simplefullstackproject.Repositories.FoodRepository;
 import com.example.simplefullstackproject.Repositories.UserFoodRepository;
 import com.example.simplefullstackproject.Services.Mappers.FoodDtoMapper;
@@ -21,15 +24,18 @@ public class FoodService {
     private final FoodDtoMapper foodDtoMapper;
     private final ValidationHelper validationHelper;
 
+    private final FoodCategoryRepository foodCategoryRepository;
     private final UserFoodRepository userFoodRepository;
     public FoodService(
             FoodRepository foodRepository,
             FoodDtoMapper foodDtoMapper,
             ValidationHelper validationHelper,
+            FoodCategoryRepository foodCategoryRepository,
             UserFoodRepository userFoodRepository) {
         this.foodRepository = foodRepository;
         this.foodDtoMapper = foodDtoMapper;
         this.validationHelper = validationHelper;
+        this.foodCategoryRepository = foodCategoryRepository;
         this.userFoodRepository = userFoodRepository;
     }
 
@@ -71,7 +77,7 @@ public class FoodService {
     }
 
     public List<FoodDto> searchFoods(SearchDtoRequest request) {
-        List<Food> foods = foodRepository.findByNameContainingIgnoreCase(request.getName());
+        List<Food> foods = foodRepository.findAllByNameContainingIgnoreCase(request.getName());
         return foods.stream()
                 .map(foodDtoMapper::map)
                 .collect(Collectors.toList());
@@ -82,6 +88,21 @@ public class FoodService {
         List<Food> foods = userFoods.stream()
                 .map(UserFood::getFood)
                 .collect(Collectors.toList());
+        return foods.stream()
+                .map(foodDtoMapper::map)
+                .collect(Collectors.toList());
+    }
+
+    public List<FoodCategoryDto> getCategories() {
+        List<FoodCategory> categories = foodCategoryRepository.findAll();
+        return categories.stream()
+                .map(foodDtoMapper::map)
+                .collect(Collectors.toList());
+    }
+
+    public List<FoodDto> getFoodsByCategory(Integer categoryId){
+        List<Food> foods = foodRepository
+                .findAllByFoodCategory_Id(categoryId);
         return foods.stream()
                 .map(foodDtoMapper::map)
                 .collect(Collectors.toList());
