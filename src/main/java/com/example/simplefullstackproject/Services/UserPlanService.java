@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.Services;
 
+import com.example.simplefullstackproject.Exceptions.NotUniqueRecordException;
 import com.example.simplefullstackproject.Models.Plan;
 import com.example.simplefullstackproject.Models.User;
 import com.example.simplefullstackproject.Models.UserPlan;
@@ -31,6 +32,10 @@ public class UserPlanService {
 
     @Transactional
     public void addPlanToUser(Integer planId, Integer userId) {
+        if(userPlanRepository.existsByUserIdAndPlanId(userId,planId)){
+            throw new NotUniqueRecordException(
+                    "User with id: " + userId + " already has plan with id: " + planId);
+        }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException(
                         "User with id: " + userId + " not found"));

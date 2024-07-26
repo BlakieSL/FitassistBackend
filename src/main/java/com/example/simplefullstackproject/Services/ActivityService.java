@@ -4,8 +4,10 @@ import com.example.simplefullstackproject.Dtos.*;
 import com.example.simplefullstackproject.Models.Activity;
 import com.example.simplefullstackproject.Models.ActivityCategory;
 import com.example.simplefullstackproject.Models.User;
+import com.example.simplefullstackproject.Models.UserActivity;
 import com.example.simplefullstackproject.Repositories.ActivityCategoryRepository;
 import com.example.simplefullstackproject.Repositories.ActivityRepository;
+import com.example.simplefullstackproject.Repositories.UserActivityRepository;
 import com.example.simplefullstackproject.Repositories.UserRepository;
 import com.example.simplefullstackproject.Services.Mappers.ActivityDtoMapper;
 import jakarta.transaction.Transactional;
@@ -23,20 +25,22 @@ public class ActivityService {
     private final ActivityRepository activityRepository;
     private final UserRepository userRepository;
     private final ActivityCategoryRepository activityCategoryRepository;
-
+    private final UserActivityRepository userActivityRepository;
     public ActivityService(
             final ValidationHelper validationHelper,
             final CalculationsHelper calculationsHelper,
             final ActivityDtoMapper activityDtoMapper,
             final ActivityRepository activityRepository,
             final UserRepository userRepository,
-            final ActivityCategoryRepository activityCategoryRepository) {
+            final ActivityCategoryRepository activityCategoryRepository,
+            UserActivityRepository userActivityRepository) {
         this.validationHelper = validationHelper;
         this.calculationsHelper = calculationsHelper;
         this.activityDtoMapper = activityDtoMapper;
         this.activityRepository = activityRepository;
         this.userRepository = userRepository;
         this.activityCategoryRepository = activityCategoryRepository;
+        this.userActivityRepository = userActivityRepository;
     }
 
     @Transactional
@@ -93,6 +97,16 @@ public class ActivityService {
 
     public List<ActivityDto> searchActivities(SearchDtoRequest request){
         List<Activity> activities = activityRepository.findByNameContainingIgnoreCase(request.getName());
+        return activities.stream()
+                .map(activityDtoMapper::map)
+                .collect(Collectors.toList());
+    }
+
+    public List<ActivityDto> getActivitiesByUserID(Integer userId) {
+        List<UserActivity> userActivities = userActivityRepository.findByUserId(userId);
+        List<Activity> activities = userActivities.stream()
+                .map(UserActivity::getActivity)
+                .collect(Collectors.toList());
         return activities.stream()
                 .map(activityDtoMapper::map)
                 .collect(Collectors.toList());

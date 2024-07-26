@@ -4,10 +4,7 @@ import com.example.simplefullstackproject.Auth.JwtService;
 import com.example.simplefullstackproject.Dtos.*;
 import com.example.simplefullstackproject.Exceptions.JwtAuthenticationException;
 import com.example.simplefullstackproject.Exceptions.ValidationException;
-import com.example.simplefullstackproject.Services.UserExerciseService;
-import com.example.simplefullstackproject.Services.UserPlanService;
-import com.example.simplefullstackproject.Services.UserRecipeService;
-import com.example.simplefullstackproject.Services.UserService;
+import com.example.simplefullstackproject.Services.*;
 import com.example.simplefullstackproject.Validations.ValidationGroups;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -30,17 +27,23 @@ public class UserController {
     private final UserRecipeService userRecipeService;
     private final UserExerciseService userExerciseService;
     private final UserPlanService userPlanService;
+    private final UserFoodService userFoodService;
+    private final UserActivityService userActivityService;
     private final JwtService jwtService;
     public UserController(
             UserService userService,
             UserRecipeService userRecipeService,
             UserExerciseService userExerciseService,
             UserPlanService userPlanService,
+            UserFoodService userFoodService,
+            UserActivityService userActivityService,
             JwtService jwtService) {
         this.userService = userService;
         this.userRecipeService = userRecipeService;
         this.userExerciseService = userExerciseService;
         this.userPlanService = userPlanService;
+        this.userFoodService = userFoodService;
+        this.userActivityService = userActivityService;
         this.jwtService = jwtService;
     }
 
@@ -99,7 +102,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{userId}/exercises/{exerciseId}/add")
+    @PostMapping("/{userId}/exercises/{exerciseId}")
     public ResponseEntity<Void> addExerciseToUser(
             @PathVariable Integer userId,
             @PathVariable Integer exerciseId) {
@@ -107,7 +110,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/{userId}/exercises/{exerciseId}/remove")
+    @DeleteMapping("/{userId}/exercises/{exerciseId}")
     public ResponseEntity<Void> deleteExerciseFromUser(
             @PathVariable Integer userId,
             @PathVariable Integer exerciseId) {
@@ -130,4 +133,37 @@ public class UserController {
         userPlanService.deletePlanFromUser(planId, userId);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/{userId}/foods/{foodId}")
+    public ResponseEntity<Void> addFoodToUser(
+            @PathVariable Integer userId,
+            @PathVariable Integer foodId) {
+        userFoodService.addFoodToUser(foodId, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping("/{userId}/foods/{foodId}")
+    public ResponseEntity<Void> deleteFoodFromUser(
+            @PathVariable Integer userId,
+            @PathVariable Integer foodId) {
+        userFoodService.deleteFoodFromUser(foodId, userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{userId}/activities/{activityId}")
+    public ResponseEntity<Void> addActivityToUser(
+            @PathVariable Integer userId,
+            @PathVariable Integer activityId) {
+        userActivityService.addActivityToUser(activityId, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping("/{userId}/activities/{activityId}")
+    public ResponseEntity<Void> deleteActivityFromUser(
+            @PathVariable Integer userId,
+            @PathVariable Integer activityId) {
+        userActivityService.deleteActivityFromUser(activityId, userId);
+        return ResponseEntity.ok().build();
+    }
+
 }

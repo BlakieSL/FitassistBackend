@@ -45,11 +45,9 @@ public class RecipeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/{userId}/user")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<List<RecipeDto>> getRecipesByUserId(@PathVariable Integer userId) {
         List<RecipeDto> recipes = recipeService.getRecipesByUserID(userId);
         return ResponseEntity.ok(recipes);
     }
-
-
 }

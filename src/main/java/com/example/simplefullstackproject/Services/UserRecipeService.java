@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.Services;
 
+import com.example.simplefullstackproject.Exceptions.NotUniqueRecordException;
 import com.example.simplefullstackproject.Models.Recipe;
 import com.example.simplefullstackproject.Models.User;
 import com.example.simplefullstackproject.Models.UserRecipe;
@@ -31,6 +32,11 @@ public class UserRecipeService {
 
     @Transactional
     public void addRecipeToUser(Integer recipeId, Integer userId) {
+        if(userRecipeRepository.existsByUserIdAndRecipeId(userId,recipeId)){
+            throw new NotUniqueRecordException(
+                    "User with id: " + userId + " already has recipe with id: " + recipeId);
+        }
+
         User user = userRepository
                 .findById(userId)
                 .orElseThrow(() -> new NoSuchElementException(
