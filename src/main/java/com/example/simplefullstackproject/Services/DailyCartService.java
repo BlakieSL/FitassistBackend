@@ -3,7 +3,6 @@ package com.example.simplefullstackproject.Services;
 import com.example.simplefullstackproject.Components.JsonPatchHelper;
 import com.example.simplefullstackproject.Dtos.DailyCartFoodDto;
 import com.example.simplefullstackproject.Dtos.FoodDtoResponse;
-import com.example.simplefullstackproject.Dtos.UserUpdateRequest;
 import com.example.simplefullstackproject.Models.DailyCart;
 import com.example.simplefullstackproject.Models.DailyCartFood;
 import com.example.simplefullstackproject.Models.Food;
@@ -13,15 +12,12 @@ import com.example.simplefullstackproject.Repositories.FoodRepository;
 import com.example.simplefullstackproject.Repositories.UserRepository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -115,7 +111,7 @@ public class DailyCartService {
                                     food.getProtein() * factor,
                                     food.getFat() * factor,
                                     food.getCarbohydrates() * factor,
-                                    food.getCategory().getId(),
+                                    food.getFoodCategory().getId(),
                                     dailyCartFood.getAmount());
                         })
                 .collect(Collectors.toList());

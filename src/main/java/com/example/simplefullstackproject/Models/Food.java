@@ -51,8 +51,8 @@ public class Food {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @JoinColumn(name = "food_category_id", nullable = false)
+    private FoodCategory foodCategory;
 
     @OneToMany(mappedBy = "food", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<DailyCartFood> dailyCartFoods = new ArrayList<>();

@@ -1,19 +1,20 @@
 package com.example.simplefullstackproject.Services.Mappers;
 
+import com.example.simplefullstackproject.Dtos.FoodCategoryDto;
 import com.example.simplefullstackproject.Dtos.FoodDto;
-import com.example.simplefullstackproject.Models.Category;
+import com.example.simplefullstackproject.Models.FoodCategory;
 import com.example.simplefullstackproject.Models.Food;
-import com.example.simplefullstackproject.Repositories.CategoryRepository;
+import com.example.simplefullstackproject.Repositories.FoodCategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
 
 @Service
 public class FoodDtoMapper {
-    private final CategoryRepository categoryRepository;
+    private final FoodCategoryRepository foodCategoryRepository;
 
-    public FoodDtoMapper(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
+    public FoodDtoMapper(FoodCategoryRepository foodCategoryRepository) {
+        this.foodCategoryRepository = foodCategoryRepository;
     }
 
     public FoodDto map(Food food) {
@@ -24,7 +25,7 @@ public class FoodDtoMapper {
                 food.getProtein(),
                 food.getFat(),
                 food.getCarbohydrates(),
-                food.getCategory().getName()
+                food.getFoodCategory().getName()
         );
     }
 
@@ -35,9 +36,13 @@ public class FoodDtoMapper {
         food.setProtein(request.getProtein());
         food.setFat(request.getFat());
         food.setCarbohydrates(request.getCarbohydrates());
-        Category category = categoryRepository.findByName(request.getCategoryName())
+        FoodCategory foodCategory = foodCategoryRepository.findByName(request.getCategoryName())
                 .orElseThrow(() -> new NoSuchElementException("Category not found"));
-        food.setCategory(category);
+        food.setFoodCategory(foodCategory);
         return food;
+    }
+
+    public FoodCategoryDto map(FoodCategory request){
+        return new FoodCategoryDto(request.getId(), request.getName());
     }
 }
