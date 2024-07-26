@@ -1,9 +1,6 @@
 package com.example.simplefullstackproject.Controllers;
 
-import com.example.simplefullstackproject.Dtos.ActivityDto;
-import com.example.simplefullstackproject.Dtos.ActivityDtoResponse;
-import com.example.simplefullstackproject.Dtos.CalculateCaloriesBurntRequest;
-import com.example.simplefullstackproject.Dtos.SearchDtoRequest;
+import com.example.simplefullstackproject.Dtos.*;
 import com.example.simplefullstackproject.Exceptions.ValidationException;
 import com.example.simplefullstackproject.Services.ActivityService;
 import jakarta.validation.Valid;
@@ -64,5 +61,11 @@ public class ActivityController {
             throw new ValidationException(bindingResult);
         }
         return ResponseEntity.ok(activityService.searchActivities(request));
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<ActivityDto>> getRecipesByUserId(@PathVariable Integer userId) {
+        List<ActivityDto> recipes = activityService.getActivitiesByUserID(userId);
+        return ResponseEntity.ok(recipes);
     }
 }

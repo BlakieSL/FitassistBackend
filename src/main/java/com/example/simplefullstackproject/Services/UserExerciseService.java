@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.Services;
 
+import com.example.simplefullstackproject.Exceptions.NotUniqueRecordException;
 import com.example.simplefullstackproject.Models.Exercise;
 import com.example.simplefullstackproject.Models.User;
 import com.example.simplefullstackproject.Models.UserExercise;
@@ -28,6 +29,11 @@ public class UserExerciseService {
 
     @Transactional
     public void addExerciseToUser(Integer exerciseId, Integer userId) {
+        if(userExerciseRepository.existsByUserIdAndExerciseId(userId,exerciseId)){
+            throw new NotUniqueRecordException(
+                    "User with id: " + userId + " already has exercise with id: " + exerciseId);
+        }
+
         User user = userRepository
                 .findById(userId)
                 .orElseThrow(() -> new NoSuchElementException(

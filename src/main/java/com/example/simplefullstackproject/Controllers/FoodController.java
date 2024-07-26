@@ -2,6 +2,7 @@ package com.example.simplefullstackproject.Controllers;
 
 import com.example.simplefullstackproject.Dtos.CalculateAmountRequest;
 import com.example.simplefullstackproject.Dtos.FoodDto;
+import com.example.simplefullstackproject.Dtos.RecipeDto;
 import com.example.simplefullstackproject.Dtos.SearchDtoRequest;
 import com.example.simplefullstackproject.Exceptions.ValidationException;
 import com.example.simplefullstackproject.Services.FoodService;
@@ -64,5 +65,11 @@ public class FoodController {
             throw new ValidationException(bindingResult);
         }
         return ResponseEntity.ok(foodService.searchFoods(request));
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<FoodDto>> getFoodsByUserId(@PathVariable Integer userId) {
+        List<FoodDto> recipes = foodService.getFoodsByUserID(userId);
+        return ResponseEntity.ok(recipes);
     }
 }
