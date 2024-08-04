@@ -1,0 +1,67 @@
+package com.example.simplefullstackproject.service;
+
+import com.example.simplefullstackproject.exception.NotUniqueRecordException;
+import com.example.simplefullstackproject.helper.ValidationHelper;
+import com.example.simplefullstackproject.model.Recipe;
+import com.example.simplefullstackproject.model.User;
+import com.example.simplefullstackproject.model.UserRecipe;
+import com.example.simplefullstackproject.repository.RecipeRepository;
+import com.example.simplefullstackproject.repository.UserRecipeRepository;
+import com.example.simplefullstackproject.repository.UserRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
+
+@Service
+public class UserRecipeService {
+    private final ValidationHelper validationHelper;
+    private final UserRecipeRepository userRecipeRepository;
+    private final RecipeRepository recipeRepository;
+    private final UserRepository userRepository;
+
+    public UserRecipeService(
+            final ValidationHelper validationHelper,
+            final UserRecipeRepository userRecipeRepository,
+            final RecipeRepository recipeRepository,
+            final UserRepository userRepository){
+        this.validationHelper = validationHelper;
+        this.userRecipeRepository = userRecipeRepository;
+        this.recipeRepository = recipeRepository;
+        this.userRepository = userRepository;
+    }
+
+    @Transactional
+    public void addRecipeToUser(Integer recipeId, Integer userId) {
+        if(userRecipeRepository.existsByUserIdAndRecipeId(userId,recipeId)){
+            throw new NotUniqueRecordException(
+                    "User with id: " + userId + " already has recipe with id: " + recipeId);
+        }
+
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "User with id: " + userId + " not found"));
+
+        Recipe recipe = recipeRepository
+                .findById(recipeId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Recipe with id: " + recipeId + " not found"));
+
+        UserRecipe userRecipe = new UserRecipe();
+        userRecipe.setUser(user);
+        userRecipe.setRecipe(recipe);
+        userRecipeRepository.save(userRecipe);
+    }
+
+    @Transactional
+    public void deleteRecipeFromUser(Integer recipeId, Integer userId) {
+        UserRecipe userRecipe = userRecipeRepository
+                .findByUserIdAndRecipeId(userId, recipeId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "UserRecipe with user id: " + userId +
+                                " and recipe id: " + recipeId + " not found"));
+
+        userRecipeRepository.delete(userRecipe);
+    }
+}
