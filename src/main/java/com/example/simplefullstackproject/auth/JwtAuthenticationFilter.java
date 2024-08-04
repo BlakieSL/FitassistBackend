@@ -1,6 +1,6 @@
 package com.example.simplefullstackproject.auth;
 
-import com.example.simplefullstackproject.services.UserService;
+import com.example.simplefullstackproject.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

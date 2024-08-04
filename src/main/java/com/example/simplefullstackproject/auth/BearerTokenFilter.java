@@ -1,6 +1,6 @@
 package com.example.simplefullstackproject.auth;
 
-import com.example.simplefullstackproject.exceptions.JwtAuthenticationException;
+import com.example.simplefullstackproject.exception.JwtAuthenticationException;
 import com.nimbusds.jwt.SignedJWT;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

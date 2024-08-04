@@ -3,7 +3,7 @@ package com.example.simplefullstackproject.config;
 import com.example.simplefullstackproject.auth.BearerTokenFilter;
 import com.example.simplefullstackproject.auth.JwtAuthenticationFilter;
 import com.example.simplefullstackproject.auth.JwtService;
-import com.example.simplefullstackproject.services.UserService;
+import com.example.simplefullstackproject.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
