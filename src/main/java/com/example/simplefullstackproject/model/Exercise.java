@@ -2,12 +2,14 @@ package com.example.simplefullstackproject.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +41,9 @@ public class Exercise {
     @Size(max = MAX_TEXT_LENGTH)
     @Column(nullable = false, length = MAX_TEXT_LENGTH)
     private String text;
+
+    @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final Set<ExerciseCategoryAssociation> exerciseCategoryAssociations = new HashSet<>();
 
     @OneToMany(mappedBy = "parentId", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Media> media;

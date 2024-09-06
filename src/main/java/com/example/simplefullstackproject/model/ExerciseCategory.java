@@ -12,12 +12,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "activity_category")
+@Table(name = "exercise_category")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ActivityCategory {
+public class ExerciseCategory {
     private static final int NAME_MAX_LENGTH = 50;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +27,6 @@ public class ActivityCategory {
     @Size(max = NAME_MAX_LENGTH)
     private String name;
 
-    @OneToMany(mappedBy = "activityCategory", cascade = CascadeType.REMOVE)
-    private final Set<Activity> activities = new HashSet<>();
+    @OneToMany(mappedBy = "exerciseCategory", cascade = CascadeType.REMOVE)
+    private final Set<ExerciseCategoryAssociation> exerciseCategoryAssociations = new HashSet<>();
 }
