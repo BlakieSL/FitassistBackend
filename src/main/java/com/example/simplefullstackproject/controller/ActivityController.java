@@ -62,7 +62,7 @@ public class ActivityController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ActivitySummaryDto>> getRecipesByUserId(@PathVariable Integer userId) {
+    public ResponseEntity<List<ActivitySummaryDto>> getActivitiesByUserId(@PathVariable Integer userId) {
         List<ActivitySummaryDto> recipes = activityService.getActivitiesByUserID(userId);
         return ResponseEntity.ok(recipes);
     }

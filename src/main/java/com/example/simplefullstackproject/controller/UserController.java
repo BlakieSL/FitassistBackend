@@ -43,7 +43,9 @@ public class UserController {
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenDtoRequest dtoRequest, BindingResult bindingResult) {
+    public ResponseEntity<?> refreshToken(
+            @Valid @RequestBody RefreshTokenDtoRequest dtoRequest,
+            BindingResult bindingResult) {
         if(bindingResult.hasErrors()){
             throw new ValidationException(bindingResult);
         }
@@ -53,7 +55,9 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody UserAdditionDto request, BindingResult bindingResult) {
+    public ResponseEntity<UserResponse> registerUser(
+            @Valid @RequestBody UserAdditionDto request,
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
@@ -63,14 +67,16 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable Integer id) {
+    public ResponseEntity<UserResponse> getUserById(
+            @PathVariable Integer id) {
         UserResponse user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> modifyUserById(@PathVariable Integer id,
-                                               @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch, BindingResult bindingResult) throws JsonPatchException, JsonProcessingException {
+                                               @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch,
+                                               BindingResult bindingResult) throws JsonPatchException, JsonProcessingException {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
@@ -80,19 +86,24 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUserById(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteUserById(
+            @PathVariable Integer id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{userId}/recipes/{recipeId}")
-    public ResponseEntity<Void> addRecipeToUser(@PathVariable Integer userId, @PathVariable Integer recipeId) {
+    public ResponseEntity<Void> addRecipeToUser(
+            @PathVariable Integer userId,
+            @PathVariable Integer recipeId) {
         userRecipeService.addRecipeToUser(recipeId, userId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{userId}/recipes/{recipeId}")
-    public ResponseEntity<Void> deleteRecipeFromUser(@PathVariable Integer userId, @PathVariable Integer recipeId) {
+    public ResponseEntity<Void> deleteRecipeFromUser(
+            @PathVariable Integer userId,
+            @PathVariable Integer recipeId) {
         userRecipeService.deleteRecipeFromUser(recipeId, userId);
         return ResponseEntity.ok().build();
     }
