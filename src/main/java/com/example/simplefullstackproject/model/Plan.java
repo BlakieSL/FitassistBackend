@@ -40,6 +40,9 @@ public class Plan {
     @Column(nullable = false, length = TEXT_MAX_LENGTH)
     private String text;
 
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final Set<PlanCategoryAssociation> planCategoryAssociations = new HashSet<>();
+
     @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE)
     private final Set<UserPlan> userPlans = new HashSet<>();
 
