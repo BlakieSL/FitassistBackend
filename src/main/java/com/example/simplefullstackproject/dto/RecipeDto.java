@@ -29,4 +29,7 @@ public class RecipeDto {
     @NotBlank
     @Size(max = TEXT_MAX_LENGTH)
     private String text;
+
+    @NotBlank
+    private String categoryName;
 }

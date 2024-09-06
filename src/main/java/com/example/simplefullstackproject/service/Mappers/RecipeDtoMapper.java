@@ -1,11 +1,15 @@
 package com.example.simplefullstackproject.service.Mappers;
 
+import com.example.simplefullstackproject.dto.RecipeCategoryDto;
 import com.example.simplefullstackproject.dto.RecipeDto;
 import com.example.simplefullstackproject.model.Recipe;
+import com.example.simplefullstackproject.model.RecipeCategory;
+import com.example.simplefullstackproject.repository.RecipeCategoryRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RecipeDtoMapper {
+    /*
     public RecipeDto map(Recipe recipe) {
         return new RecipeDto(
                 recipe.getId(),
@@ -22,4 +26,7 @@ public class RecipeDtoMapper {
         recipe.setText(request.getText());
         return recipe;
     }
+
+     */
+
 }

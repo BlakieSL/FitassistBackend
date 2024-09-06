@@ -2,6 +2,7 @@ package com.example.simplefullstackproject.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,6 +41,11 @@ public class Recipe {
     @Column(nullable = false, length = TEXT_MAX_LENGTH)
     private String text;
 
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "recipe_category_id", nullable = false)
+    private RecipeCategory recipeCategory;
+
     @OneToMany(mappedBy = "parentId", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<Media> media = new HashSet<>();
 
@@ -48,4 +54,5 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<RecipeFood> recipeFoods = new HashSet<>();
+
 }
