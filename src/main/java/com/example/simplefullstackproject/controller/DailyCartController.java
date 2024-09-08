@@ -1,6 +1,7 @@
 package com.example.simplefullstackproject.controller;
 
 import com.example.simplefullstackproject.dto.DailyCartFoodDto;
+import com.example.simplefullstackproject.dto.DailyCartResponse;
 import com.example.simplefullstackproject.dto.FoodDtoResponse;
 import com.example.simplefullstackproject.exception.ValidationException;
 import com.example.simplefullstackproject.service.DailyCartService;
@@ -22,9 +23,9 @@ public class DailyCartController {
         this.dailyCartService = dailyCartService;
     }
     @GetMapping("/{userId}")
-    public ResponseEntity<List<FoodDtoResponse>> getAllFoodsInCartByUserID(@PathVariable int userId) {
-        List<FoodDtoResponse> foods = dailyCartService.getFoodsInCart(userId);
-        return ResponseEntity.ok(foods);
+    public ResponseEntity<DailyCartResponse> getAllFoodsInCartByUserID(@PathVariable int userId) {
+        DailyCartResponse cart = dailyCartService.getFoodsInCart(userId);
+        return ResponseEntity.ok(cart);
     }
 
     @PostMapping("/{userId}/add")
