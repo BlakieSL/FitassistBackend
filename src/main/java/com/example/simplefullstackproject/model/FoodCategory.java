@@ -27,6 +27,12 @@ public class FoodCategory {
     @Size(max = MAX_NAME_LENGTH)
     private String name;
 
+    @NotBlank
+    private String iconUrl;
+
+    @NotBlank
+    private String gradient;
+
     @OneToMany(mappedBy = "foodCategory", cascade = CascadeType.REMOVE)
     private final Set<Food> foods = new HashSet<>();
 }

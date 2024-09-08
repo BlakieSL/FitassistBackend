@@ -27,6 +27,12 @@ public class RecipeCategory {
     @Size(max = NAME_MAX_LENGTH)
     private String name;
 
+    @NotBlank
+    private String iconUrl;
+
+    @NotBlank
+    private String gradient;
+
     @OneToMany(mappedBy = "recipeCategory", cascade = CascadeType.ALL)
     private final Set<Recipe> recipes = new HashSet<>();
 }

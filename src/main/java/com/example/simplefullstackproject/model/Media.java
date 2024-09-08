@@ -1,9 +1,7 @@
 package com.example.simplefullstackproject.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,19 +14,17 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Media {
-    private static final int TYPE_MAX_LENGTH = 50;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
     @Lob
     @Column(nullable = false)
     private byte[] image;
 
-    @NotBlank
-    @Size(max = TYPE_MAX_LENGTH)
-    @Column(nullable = false, length = TYPE_MAX_LENGTH)
-    private String type;
+    @NotNull
+    private short parentType;
 
     @NotNull
     @Column(name = "parent_id", nullable = false)

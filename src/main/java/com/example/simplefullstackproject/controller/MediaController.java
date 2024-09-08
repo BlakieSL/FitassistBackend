@@ -22,9 +22,9 @@ public class MediaController {
         this.mediaService = mediaService;
     }
 
-    @GetMapping("/parent/{parentId}")
-    public ResponseEntity<List<MediaDto>> getAllMediaForParent(@PathVariable Integer parentId) {
-        List<MediaDto> mediaList = mediaService.findAllMediaForParent(parentId);
+    @GetMapping("/parent/{parentId}/{parentType}")
+    public ResponseEntity<List<MediaDto>> getAllMediaForParent(@PathVariable Integer parentId, @PathVariable short parentType) {
+        List<MediaDto> mediaList = mediaService.findAllMediaForParent(parentId, parentType);
         return ResponseEntity.ok(mediaList);
     }
 
@@ -36,8 +36,8 @@ public class MediaController {
 
     @PostMapping
     public ResponseEntity<MediaDto> createMedia(
-            @Valid @RequestBody AddMediaDto request,
-            BindingResult bindingResult) throws IOException {
+            @Valid @ModelAttribute AddMediaDto request,
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }

@@ -27,6 +27,12 @@ public class ExerciseCategory {
     @Size(max = NAME_MAX_LENGTH)
     private String name;
 
+    @NotBlank
+    private String iconUrl;
+
+    @NotBlank
+    private String gradient;
+
     @OneToMany(mappedBy = "exerciseCategory", cascade = CascadeType.REMOVE)
     private final Set<ExerciseCategoryAssociation> exerciseCategoryAssociations = new HashSet<>();
 }

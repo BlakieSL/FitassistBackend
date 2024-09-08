@@ -9,7 +9,6 @@ import com.example.simplefullstackproject.model.WorkoutType;
 import com.example.simplefullstackproject.repository.WorkoutPlanRepository;
 import com.example.simplefullstackproject.repository.WorkoutRepository;
 import com.example.simplefullstackproject.repository.WorkoutTypeRepository;
-import com.example.simplefullstackproject.service.Mappers.WorkoutDtoMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

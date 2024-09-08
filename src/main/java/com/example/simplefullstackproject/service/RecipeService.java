@@ -11,7 +11,6 @@ import com.example.simplefullstackproject.repository.RecipeCategoryRepository;
 import com.example.simplefullstackproject.repository.RecipeRepository;
 import com.example.simplefullstackproject.repository.UserRecipeRepository;
 import com.example.simplefullstackproject.repository.UserRepository;
-import com.example.simplefullstackproject.service.Mappers.RecipeDtoMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

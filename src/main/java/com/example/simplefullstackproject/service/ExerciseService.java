@@ -13,7 +13,6 @@ import com.example.simplefullstackproject.repository.ExerciseCategoryAssociation
 import com.example.simplefullstackproject.repository.ExerciseCategoryRepository;
 import com.example.simplefullstackproject.repository.ExerciseRepository;
 import com.example.simplefullstackproject.repository.UserExerciseRepository;
-import com.example.simplefullstackproject.service.Mappers.ExerciseDtoMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

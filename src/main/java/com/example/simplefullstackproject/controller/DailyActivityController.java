@@ -1,6 +1,7 @@
 package com.example.simplefullstackproject.controller;
 
 import com.example.simplefullstackproject.dto.ActivityCalculatedDto;
+import com.example.simplefullstackproject.dto.DailyActivitiesResponse;
 import com.example.simplefullstackproject.dto.DailyActivityDto;
 import com.example.simplefullstackproject.exception.ValidationException;
 import com.example.simplefullstackproject.service.DailyActivityService;
@@ -24,8 +25,8 @@ public class DailyActivityController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<ActivityCalculatedDto>> getAllDailyActivitiesByUserId(@PathVariable int userId) {
-        List<ActivityCalculatedDto> activities = dailyActivityService.getActivitiesInCart(userId);
+    public ResponseEntity<DailyActivitiesResponse> getAllDailyActivitiesByUserId(@PathVariable int userId) {
+        DailyActivitiesResponse activities = dailyActivityService.getActivitiesInCart(userId);
         return ResponseEntity.ok(activities);
     }
 

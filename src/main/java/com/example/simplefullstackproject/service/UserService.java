@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -110,6 +111,13 @@ public class UserService implements UserDetailsService {
 
         UserResponse userDto = getUserById(userId);
         UserUpdateRequest patchedUserUpdateRequest = jsonPatchHelper.applyPatch(patch, userDto, UserUpdateRequest.class);
+
+        if(patchedUserUpdateRequest.getOldPassword() != null && patchedUserUpdateRequest.getPassword() != null) {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            if (!passwordEncoder.matches(patchedUserUpdateRequest.getOldPassword(), user.getPassword())) {
+                throw new IllegalArgumentException("Old password does not match");
+            }
+        }
 
         validationHelper.validate(patchedUserUpdateRequest);
 

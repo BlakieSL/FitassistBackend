@@ -1,6 +1,7 @@
 package com.example.simplefullstackproject.service;
 
 import com.example.simplefullstackproject.dto.ActivityCalculatedDto;
+import com.example.simplefullstackproject.dto.DailyActivitiesResponse;
 import com.example.simplefullstackproject.helper.CalculationsHelper;
 import com.example.simplefullstackproject.helper.JsonPatchHelper;
 import com.example.simplefullstackproject.dto.DailyActivityDto;
@@ -98,13 +99,12 @@ public class DailyActivityService {
         dailyActivityRepository.save(dailyActivity);
     }
 
-    @Transactional
-    public List<ActivityCalculatedDto> getActivitiesInCart(Integer userId) {
+    public DailyActivitiesResponse getActivitiesInCart(Integer userId) {
         DailyActivity dailyActivity = getDailyActivityByUserId(userId);
 
         User user = dailyActivity.getUser();
 
-        return dailyActivity.getDailyCartActivities().stream()
+        List<ActivityCalculatedDto> activities = dailyActivity.getDailyCartActivities().stream()
                 .map(dailyCartActivity -> {
                     Activity activity = dailyCartActivity.getActivity();
                     return new ActivityCalculatedDto(
@@ -117,6 +117,8 @@ public class DailyActivityService {
                     );
                 })
                 .collect(Collectors.toList());
+        int totalCaloriesBurned = activities.stream().mapToInt(ActivityCalculatedDto::getCaloriesBurned).sum();
+        return new DailyActivitiesResponse(totalCaloriesBurned, activities);
     }
 
     @Scheduled(cron = "0 0 0 * * ?", zone = "GMT+2")

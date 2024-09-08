@@ -28,6 +28,12 @@ public class PlanCategory {
     @Size(max = NAME_MAX_LENGTH)
     private String name;
 
+    @NotBlank
+    private String iconUrl;
+
+    @NotBlank
+    private String gradient;
+
     @OneToMany(mappedBy = "planCategory", cascade = CascadeType.REMOVE)
     private final Set<PlanCategoryAssociation> planCategoryAssociations = new HashSet<>();
 }

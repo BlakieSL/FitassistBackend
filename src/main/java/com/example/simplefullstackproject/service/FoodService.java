@@ -12,7 +12,6 @@ import com.example.simplefullstackproject.model.UserFood;
 import com.example.simplefullstackproject.repository.FoodCategoryRepository;
 import com.example.simplefullstackproject.repository.FoodRepository;
 import com.example.simplefullstackproject.repository.UserFoodRepository;
-import com.example.simplefullstackproject.service.Mappers.FoodDtoMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

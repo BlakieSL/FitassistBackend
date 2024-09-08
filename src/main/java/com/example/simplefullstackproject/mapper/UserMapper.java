@@ -30,6 +30,7 @@ public abstract class UserMapper {
     private PasswordEncoder passwordEncoder;
 
     //mappings
+
     @Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToRolesNames")
     public abstract UserDto toDetails(User user);
 
@@ -40,6 +41,7 @@ public abstract class UserMapper {
     public abstract User toEntity(UserAdditionDto dto);
 
     @Mapping(target = "calculatedCalories", expression = "java(calculatedCalories(user, request))")
+    @Mapping(target = "password", source = "password", qualifiedByName = "hashPassword")
     public abstract void updateUserFromDto(@MappingTarget User user, UserUpdateRequest request);
 
     //aftermappings
@@ -65,8 +67,8 @@ public abstract class UserMapper {
         user.getRoles().add(role);
     }
 
-
     //helpers
+
     @Named("rolesToRolesNames")
     Set<String> rolesToRolesNames(Set<Role> roles) {
         return roles.stream()

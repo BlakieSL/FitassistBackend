@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.service;
 
+import com.example.simplefullstackproject.dto.DailyCartResponse;
 import com.example.simplefullstackproject.helper.JsonPatchHelper;
 import com.example.simplefullstackproject.dto.DailyCartFoodDto;
 import com.example.simplefullstackproject.dto.FoodDtoResponse;
@@ -97,10 +98,10 @@ public class DailyCartService {
         dailyCartRepository.save(dailyCart);
     }
 
-    public List<FoodDtoResponse> getFoodsInCart(Integer userId) {
+    public DailyCartResponse getFoodsInCart(Integer userId) {
         DailyCart dailyCart = getDailyCartByUserId(userId);
 
-        return dailyCart.getDailyCartFoods().stream()
+        List<FoodDtoResponse> foodDtoResponses = dailyCart.getDailyCartFoods().stream()
                 .map(
                         dailyCartFood -> {
                             Food food = dailyCartFood.getFood();
@@ -116,6 +117,11 @@ public class DailyCartService {
                                     dailyCartFood.getAmount());
                         })
                 .collect(Collectors.toList());
+        double totalCalories = foodDtoResponses.stream().mapToDouble(FoodDtoResponse::getCalories).sum();
+        double totalCarbohydrates = foodDtoResponses.stream().mapToDouble(FoodDtoResponse::getCarbohydrates).sum();
+        double totalProtein = foodDtoResponses.stream().mapToDouble(FoodDtoResponse::getProtein).sum();
+        double totalFat = foodDtoResponses.stream().mapToDouble(FoodDtoResponse::getFat).sum();
+        return new DailyCartResponse(foodDtoResponses, totalCalories, totalCarbohydrates, totalProtein, totalFat);
     }
 
     @Scheduled(cron = "0 0 0 * * ?", zone = "GMT+2")

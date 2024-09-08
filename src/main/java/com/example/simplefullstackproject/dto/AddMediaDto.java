@@ -16,7 +16,7 @@ public class AddMediaDto {
     private MultipartFile image;
 
     @NotNull
-    private String type;
+    private String parentType;
 
     @NotNull
     private Integer parentId;

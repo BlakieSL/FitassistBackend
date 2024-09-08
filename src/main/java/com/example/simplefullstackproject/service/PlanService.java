@@ -12,7 +12,6 @@ import com.example.simplefullstackproject.repository.PlanCategoryAssociationRepo
 import com.example.simplefullstackproject.repository.PlanCategoryRepository;
 import com.example.simplefullstackproject.repository.PlanRepository;
 import com.example.simplefullstackproject.repository.UserPlanRepository;
-import com.example.simplefullstackproject.service.Mappers.PlanDtoMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
