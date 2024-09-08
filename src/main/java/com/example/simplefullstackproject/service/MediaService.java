@@ -8,7 +8,6 @@ import com.example.simplefullstackproject.model.Media;
 import com.example.simplefullstackproject.repository.ExerciseRepository;
 import com.example.simplefullstackproject.repository.MediaRepository;
 import com.example.simplefullstackproject.repository.RecipeRepository;
-import com.example.simplefullstackproject.service.Mappers.MediaDtoMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -38,15 +37,13 @@ public class MediaService {
         this.recipeRepository = recipeRepository;
     }
 
-    @Transactional
-    public List<MediaDto> findAllMediaForParent(Integer parentId) {
-        List<Media> mediaList = mediaRepository.findByParentId(parentId);
+    public List<MediaDto> findAllMediaForParent(Integer parentId, short parentType ) {
+        List<Media> mediaList = mediaRepository.findByParentIdAndParentType(parentId, parentType);
         return mediaList.stream()
                 .map(mediaMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public MediaDto getMediaById(Integer mediaId) {
         Media media = mediaRepository.findById(mediaId)
                 .orElseThrow(() -> new NoSuchElementException(
@@ -55,23 +52,8 @@ public class MediaService {
     }
 
     @Transactional
-    public MediaDto saveMedia(AddMediaDto request) throws IOException {
+    public MediaDto saveMedia(AddMediaDto request) {
         validationHelper.validate(request);
-
-        if ("exercise".equalsIgnoreCase(request.getType())) {
-            exerciseRepository
-                    .findById(request.getParentId())
-                    .orElseThrow(() -> new NoSuchElementException(
-                            "Exercise with id: " + request.getParentId() + " not found"));
-        } else if ("recipe".equalsIgnoreCase(request.getType())) {
-            recipeRepository
-                    .findById(request.getParentId())
-                    .orElseThrow(() -> new NoSuchElementException(
-                            "Recipe with id: " + request.getParentId() + " not found"));
-        } else {
-            throw new IllegalArgumentException(
-                    "Invalid media type: " + request.getType());
-        }
 
         Media savedMedia = mediaRepository.save(mediaMapper.toEntity(request));
         return mediaMapper.toDto(savedMedia);
