@@ -22,7 +22,7 @@ public class MediaController {
         this.mediaService = mediaService;
     }
 
-    @GetMapping("/parent/{parentId}/{parentType}")
+    @GetMapping("/parent/{parentId}/{parentgit Type}")
     public ResponseEntity<List<MediaDto>> getAllMediaForParent(@PathVariable Integer parentId, @PathVariable short parentType) {
         List<MediaDto> mediaList = mediaService.findAllMediaForParent(parentId, parentType);
         return ResponseEntity.ok(mediaList);
