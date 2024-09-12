@@ -14,6 +14,7 @@ public class ActivityCalculatedDto {
     private String name;
     private double met;
     private String categoryName;
+    private int categoryId;
     private int caloriesBurned;
     private int time;
 }

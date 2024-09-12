@@ -1,8 +1,6 @@
 package com.example.simplefullstackproject.controller;
 
-import com.example.simplefullstackproject.dto.CalculateAmountRequest;
-import com.example.simplefullstackproject.dto.FoodDto;
-import com.example.simplefullstackproject.dto.SearchDtoRequest;
+import com.example.simplefullstackproject.dto.*;
 import com.example.simplefullstackproject.exception.ValidationException;
 import com.example.simplefullstackproject.service.FoodService;
 import jakarta.validation.Valid;
@@ -23,7 +21,7 @@ public class FoodController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllFoods() {
+    public ResponseEntity<List<FoodDto>> getAllFoods() {
         return ResponseEntity.ok(foodService.getFoods());
     }
 
@@ -34,25 +32,25 @@ public class FoodController {
     }
 
     @PostMapping("/{id}/calculate-macros")
-    public ResponseEntity<FoodDto> calculateFoodMacrosById(
+    public ResponseEntity<FoodCalculatedDto> calculateFoodMacrosById(
             @PathVariable int id,
             @Valid @RequestBody CalculateAmountRequest request,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
-        FoodDto response = foodService.calculateMacros(id, request);
+        FoodCalculatedDto response = foodService.calculateMacros(id, request);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<FoodDto> createFood(
-            @Valid @RequestBody FoodDto foodDto, BindingResult bindingResult) {
+            @Valid @RequestBody FoodAdditionDto dto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
 
-        FoodDto response = foodService.saveFood(foodDto);
+        FoodDto response = foodService.saveFood(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
