@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.service;
 
+import com.example.simplefullstackproject.dto.PlanAdditionDto;
 import com.example.simplefullstackproject.dto.PlanCategoryDto;
 import com.example.simplefullstackproject.dto.PlanDto;
 import com.example.simplefullstackproject.helper.ValidationHelper;
@@ -43,7 +44,7 @@ public class PlanService {
     }
 
     @Transactional
-    public PlanDto savePlan(PlanDto planDto) {
+    public PlanDto savePlan(PlanAdditionDto planDto) {
         validationHelper.validate(planDto);
         Plan plan = planRepository.save(planMapper.toEntity(planDto));
         return planMapper.toDto(plan);

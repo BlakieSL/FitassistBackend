@@ -1,6 +1,5 @@
 package com.example.simplefullstackproject.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,9 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExerciseCategoryDto {
+public class ExerciseCategoryShortDto {
     private Integer id;
     private String name;
-    private String iconUrl;
-    private String gradient;
 }
