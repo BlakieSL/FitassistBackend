@@ -1,9 +1,6 @@
 package com.example.simplefullstackproject.service;
 
-import com.example.simplefullstackproject.dto.CalculateAmountRequest;
-import com.example.simplefullstackproject.dto.FoodCategoryDto;
-import com.example.simplefullstackproject.dto.FoodDto;
-import com.example.simplefullstackproject.dto.SearchDtoRequest;
+import com.example.simplefullstackproject.dto.*;
 import com.example.simplefullstackproject.helper.ValidationHelper;
 import com.example.simplefullstackproject.mapper.FoodMapper;
 import com.example.simplefullstackproject.model.Food;
@@ -41,7 +38,7 @@ public class FoodService {
     }
 
     @Transactional
-    public FoodDto saveFood(FoodDto request) {
+    public FoodDto saveFood(FoodAdditionDto request) {
         validationHelper.validate(request);
         Food food = foodRepository.save(foodMapper.toEntity(request));
         return foodMapper.toDto(food);
@@ -61,7 +58,7 @@ public class FoodService {
                 .collect(Collectors.toList());
     }
 
-    public FoodDto calculateMacros(int id, CalculateAmountRequest request) {
+    public FoodCalculatedDto calculateMacros(int id, CalculateAmountRequest request) {
         validationHelper.validate(request);
         Food food = foodRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Food with id: " + id + " not found"));

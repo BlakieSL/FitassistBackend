@@ -14,4 +14,5 @@ public class ActivitySummaryDto {
     private String name;
     private double met;
     private String categoryName;
+    private int categoryId;
 }

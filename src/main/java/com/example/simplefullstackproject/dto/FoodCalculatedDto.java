@@ -1,21 +1,15 @@
 package com.example.simplefullstackproject.dto;
 
-import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
-
-/**
- * DTO for {@link com.example.simplefullstackproject.model.Food}
- */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FoodDto implements Serializable {
+public class FoodCalculatedDto {
     private Integer id;
     private String name;
     private double calories;
@@ -24,4 +18,5 @@ public class FoodDto implements Serializable {
     private double carbohydrates;
     private int categoryId;
     private String categoryName;
+    private int amount;
 }

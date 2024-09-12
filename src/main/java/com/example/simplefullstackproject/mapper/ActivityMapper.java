@@ -17,20 +17,25 @@ import java.util.NoSuchElementException;
 @Mapper(componentModel = "spring")
 public abstract class ActivityMapper {
 
-    @Autowired
-    private ActivityCategoryRepository activityCategoryRepository;
+    private final ActivityCategoryRepository activityCategoryRepository;
 
-    @Autowired
-    private CalculationsHelper calculationsHelper;
+    private final CalculationsHelper calculationsHelper;
 
+    public ActivityMapper(ActivityCategoryRepository activityCategoryRepository, CalculationsHelper calculationsHelper) {
+        this.activityCategoryRepository = activityCategoryRepository;
+        this.calculationsHelper = calculationsHelper;
+    }
+
+    @Mapping(target = "categoryName", source = "activityCategory.name")
     @Mapping(target = "categoryName", source = "activityCategory.name")
     public abstract ActivitySummaryDto toSummaryDto(Activity activity);
 
     @Mapping(target = "categoryName", source = "activityCategory.name")
+    @Mapping(target = "categoryName", source = "activityCategory.name")
     public abstract ActivityCalculatedDto toCalculatedDto(Activity activity, @Context User user, @Context int time);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "activityCategory", source = "categoryName", qualifiedByName = "categoryNameToActivityCategory")
+    @Mapping(target = "activityCategory", source = "categoryId", qualifiedByName = "categoryIdToActivityCategory")
     public abstract Activity toEntity(ActivityAdditionDto dto);
 
     @Mapping(target = "id", source = "id")
@@ -43,10 +48,11 @@ public abstract class ActivityMapper {
         dto.setCaloriesBurned(caloriesBurned);
         dto.setTime(time);
     }
-    @Named("categoryNameToActivityCategory")
-    protected ActivityCategory categoryNameToActivityCategory(String categoryName) {
-        return activityCategoryRepository.findByName(categoryName)
+
+    @Named("categoryIdToActivityCategory")
+    protected ActivityCategory categoryIdToActivityCategory(int categoryId) {
+        return activityCategoryRepository.findById(categoryId)
                 .orElseThrow(() -> new NoSuchElementException(
-                        "Activity category with name: " + categoryName + " not found"));
+                        "Activity category with id: " + categoryId + " not found"));
     }
 }
