@@ -36,12 +36,30 @@ public abstract class UserMapper {
 
     public abstract UserResponse toResponse(User user);
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", source = "password", qualifiedByName = "hashPassword")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "calculatedCalories", ignore = true)
+    @Mapping(target = "dailyCart", ignore = true)
+    @Mapping(target = "dailyActivity", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "userRecipes", ignore = true)
+    @Mapping(target = "userExercises", ignore = true)
+    @Mapping(target = "userPlans", ignore = true)
+    @Mapping(target = "userFoods", ignore = true)
+    @Mapping(target = "userActivities", ignore = true)
     public abstract User toEntity(UserAdditionDto dto);
 
     @Mapping(target = "calculatedCalories", expression = "java(calculatedCalories(user, request))")
     @Mapping(target = "password", source = "password", qualifiedByName = "hashPassword")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dailyCart", ignore = true)
+    @Mapping(target = "dailyActivity", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "userRecipes", ignore = true)
+    @Mapping(target = "userExercises", ignore = true)
+    @Mapping(target = "userPlans", ignore = true)
+    @Mapping(target = "userFoods", ignore = true)
+    @Mapping(target = "userActivities", ignore = true)
     public abstract void updateUserFromDto(@MappingTarget User user, UserUpdateRequest request);
 
     //aftermappings
