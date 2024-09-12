@@ -27,6 +27,9 @@ public abstract class PlanMapper {
     public abstract PlanDto toDto(Plan plan);
 
     @Mapping(target = "planCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "userPlans", ignore = true)
+    @Mapping(target = "workoutPlans", ignore = true)
     public abstract Plan toEntity(PlanAdditionDto dto);
 
     public abstract PlanCategoryDto toCategoryDto(PlanCategory planCategory);
