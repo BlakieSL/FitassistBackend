@@ -27,8 +27,11 @@ public abstract class FoodMapper {
     @Mapping(target = "amount", expression = "java((int) (factor * 100))")
     public abstract FoodCalculatedDto toDtoWithFactor(Food food, @Context double factor);
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "foodCategory", source = "categoryId", qualifiedByName = "categoryIdToFoodCategory")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dailyCartFoods", ignore = true)
+    @Mapping(target = "recipeFoods", ignore = true)
+    @Mapping(target = "userFoods", ignore = true)
     public abstract Food toEntity(FoodAdditionDto dto);
 
     public abstract FoodCategoryDto toCategoryDto(FoodCategory foodCategory);

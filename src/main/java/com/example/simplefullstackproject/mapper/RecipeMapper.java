@@ -20,9 +20,14 @@ public abstract class RecipeMapper {
     private RecipeCategoryRepository recipeCategoryRepository;
 
     @Mapping(target = "categoryName", source = "recipeCategory.name")
+    @Mapping(target = "categoryId", source = "recipeCategory.id")
     public abstract RecipeDto toDto(Recipe recipe);
 
     @Mapping(target = "recipeCategory", source = "categoryId", qualifiedByName = "categoryIdToRecipeCategory")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "userRecipes", ignore = true)
+    @Mapping(target = "recipeFoods", ignore = true)
+    @Mapping(target = "media", ignore = true)
     public abstract Recipe toEntity(RecipeAdditionDto dto);
 
     public abstract RecipeCategoryDto toCategoryDto(RecipeCategory recipeCategory);

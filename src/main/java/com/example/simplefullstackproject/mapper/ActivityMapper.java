@@ -23,13 +23,20 @@ public abstract class ActivityMapper {
     private CalculationsHelper calculationsHelper;
 
     @Mapping(target = "categoryName", source = "activityCategory.name")
+    @Mapping(target = "categoryId", source = "activityCategory.id")
     public abstract ActivitySummaryDto toSummaryDto(Activity activity);
 
     @Mapping(target = "categoryName", source = "activityCategory.name")
-
+    @Mapping(target = "categoryId", source = "activityCategory.id")
+    @Mapping(target = "caloriesBurned", ignore = true)
+    @Mapping(target = "time", ignore = true)
     public abstract ActivityCalculatedDto toCalculatedDto(Activity activity, @Context User user, @Context int time);
 
     @Mapping(target = "activityCategory", source = "categoryId", qualifiedByName = "categoryIdToActivityCategory")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dailyCartActivities", ignore = true)
+    @Mapping(target = "userActivities", ignore = true)
+
     public abstract Activity toEntity(ActivityAdditionDto dto);
 
     @Mapping(target = "id", source = "id")
