@@ -12,11 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RecipeCategoryDto {
     private Integer id;
-    @NotBlank
     private String name;
-    @NotBlank
     private String iconUrl;
-
-    @NotBlank
     private String gradient;
 }

@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.controller;
 
+import com.example.simplefullstackproject.dto.PlanAdditionDto;
 import com.example.simplefullstackproject.dto.PlanDto;
 import com.example.simplefullstackproject.service.PlanService;
 import com.example.simplefullstackproject.exception.ValidationException;
@@ -22,7 +23,7 @@ public class PlanController {
 
     @PostMapping
     public ResponseEntity<PlanDto> savePlan(
-            @Valid @RequestBody PlanDto planDto, BindingResult bindingResult) {
+            @Valid @RequestBody PlanAdditionDto planDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }

@@ -15,12 +15,8 @@ import java.util.NoSuchElementException;
 
 @Mapper(componentModel = "spring")
 public abstract class FoodMapper {
-
-    private final FoodCategoryRepository foodCategoryRepository;
-
-    public FoodMapper(FoodCategoryRepository foodCategoryRepository) {
-        this.foodCategoryRepository = foodCategoryRepository;
-    }
+    @Autowired
+    private FoodCategoryRepository foodCategoryRepository;
 
     @Mapping(target = "categoryName", source = "foodCategory.name")
     @Mapping(target = "categoryId", source = "foodCategory.id")
@@ -28,6 +24,7 @@ public abstract class FoodMapper {
 
     @Mapping(target = "categoryName", source = "foodCategory.name")
     @Mapping(target = "categoryId", source = "foodCategory.id")
+    @Mapping(target = "amount", expression = "java((int) (factor * 100))")
     public abstract FoodCalculatedDto toDtoWithFactor(Food food, @Context double factor);
 
     @Mapping(target = "id", ignore = true)

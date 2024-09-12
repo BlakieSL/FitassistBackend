@@ -112,6 +112,7 @@ public class DailyActivityService {
                             activity.getName(),
                             activity.getMet(),
                             activity.getActivityCategory().getName(),
+                            activity.getActivityCategory().getId(),
                             (int) (calculationsHelper.calculateCaloriesBurned(dailyCartActivity.getTime(), user.getWeight(), activity.getMet())),
                             dailyCartActivity.getTime()
                     );
