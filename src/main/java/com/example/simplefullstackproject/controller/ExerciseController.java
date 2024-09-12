@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.controller;
 
+import com.example.simplefullstackproject.dto.ExerciseAdditionDto;
 import com.example.simplefullstackproject.dto.ExerciseDto;
 import com.example.simplefullstackproject.dto.SearchDtoRequest;
 import com.example.simplefullstackproject.exception.ValidationException;
@@ -22,12 +23,12 @@ public class ExerciseController {
     }
 
     @PostMapping
-    public ResponseEntity<ExerciseDto> saveExercise(@Valid @RequestBody ExerciseDto exerciseDto,
+    public ResponseEntity<ExerciseDto> saveExercise(@Valid @RequestBody ExerciseAdditionDto dto,
                                           BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
-        ExerciseDto savedExercise = exerciseService.saveExercise(exerciseDto);
+        ExerciseDto savedExercise = exerciseService.saveExercise(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedExercise);
     }
 

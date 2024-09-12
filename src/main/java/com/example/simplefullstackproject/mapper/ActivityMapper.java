@@ -16,25 +16,19 @@ import java.util.NoSuchElementException;
 
 @Mapper(componentModel = "spring")
 public abstract class ActivityMapper {
+    @Autowired
+    private ActivityCategoryRepository activityCategoryRepository;
 
-    private final ActivityCategoryRepository activityCategoryRepository;
+    @Autowired
+    private CalculationsHelper calculationsHelper;
 
-    private final CalculationsHelper calculationsHelper;
-
-    public ActivityMapper(ActivityCategoryRepository activityCategoryRepository, CalculationsHelper calculationsHelper) {
-        this.activityCategoryRepository = activityCategoryRepository;
-        this.calculationsHelper = calculationsHelper;
-    }
-
-    @Mapping(target = "categoryName", source = "activityCategory.name")
     @Mapping(target = "categoryName", source = "activityCategory.name")
     public abstract ActivitySummaryDto toSummaryDto(Activity activity);
 
     @Mapping(target = "categoryName", source = "activityCategory.name")
-    @Mapping(target = "categoryName", source = "activityCategory.name")
+
     public abstract ActivityCalculatedDto toCalculatedDto(Activity activity, @Context User user, @Context int time);
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "activityCategory", source = "categoryId", qualifiedByName = "categoryIdToActivityCategory")
     public abstract Activity toEntity(ActivityAdditionDto dto);
 

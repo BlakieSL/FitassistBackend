@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.service;
 
+import com.example.simplefullstackproject.dto.ExerciseAdditionDto;
 import com.example.simplefullstackproject.dto.ExerciseCategoryDto;
 import com.example.simplefullstackproject.dto.ExerciseDto;
 import com.example.simplefullstackproject.dto.SearchDtoRequest;
@@ -43,7 +44,7 @@ public class ExerciseService {
     }
 
     @Transactional
-    public ExerciseDto saveExercise(ExerciseDto dto) {
+    public ExerciseDto saveExercise(ExerciseAdditionDto dto) {
         validationHelper.validate(dto);
         Exercise exercise = exerciseRepository.save(exerciseMapper.toEntity(dto));
         return exerciseMapper.toDto(exercise);

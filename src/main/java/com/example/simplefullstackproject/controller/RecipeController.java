@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.controller;
 
+import com.example.simplefullstackproject.dto.RecipeAdditionDto;
 import com.example.simplefullstackproject.dto.RecipeDto;
 import com.example.simplefullstackproject.exception.ValidationException;
 import com.example.simplefullstackproject.service.RecipeService;
@@ -33,7 +34,7 @@ public class RecipeController {
 
     @PostMapping
     public ResponseEntity<RecipeDto> createRecipe(
-            @Valid @RequestBody RecipeDto recipeDto,
+            @Valid @RequestBody RecipeAdditionDto recipeDto,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);

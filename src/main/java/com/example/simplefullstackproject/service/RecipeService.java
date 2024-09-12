@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.service;
 
+import com.example.simplefullstackproject.dto.RecipeAdditionDto;
 import com.example.simplefullstackproject.dto.RecipeCategoryDto;
 import com.example.simplefullstackproject.dto.RecipeDto;
 import com.example.simplefullstackproject.helper.ValidationHelper;
@@ -42,7 +43,7 @@ public class RecipeService {
     }
 
     @Transactional
-    public RecipeDto save(RecipeDto dto) {
+    public RecipeDto save(RecipeAdditionDto dto) {
         validationHelper.validate(dto);
 
         Recipe recipe = recipeRepository.save(recipeMapper.toEntity(dto));
