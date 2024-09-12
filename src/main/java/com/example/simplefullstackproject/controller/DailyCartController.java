@@ -2,7 +2,6 @@ package com.example.simplefullstackproject.controller;
 
 import com.example.simplefullstackproject.dto.DailyCartFoodDto;
 import com.example.simplefullstackproject.dto.DailyCartResponse;
-import com.example.simplefullstackproject.dto.FoodDtoResponse;
 import com.example.simplefullstackproject.exception.ValidationException;
 import com.example.simplefullstackproject.service.DailyCartService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,8 +11,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/cart")

@@ -19,5 +19,5 @@ public class ActivityAdditionDto {
     @Positive
     private double met;
     @NotBlank
-    private String categoryName;
+    private int categoryId;
 }

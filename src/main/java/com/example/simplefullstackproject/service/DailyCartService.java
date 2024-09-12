@@ -3,7 +3,7 @@ package com.example.simplefullstackproject.service;
 import com.example.simplefullstackproject.dto.DailyCartResponse;
 import com.example.simplefullstackproject.helper.JsonPatchHelper;
 import com.example.simplefullstackproject.dto.DailyCartFoodDto;
-import com.example.simplefullstackproject.dto.FoodDtoResponse;
+import com.example.simplefullstackproject.dto.FoodCalculatedDto;
 import com.example.simplefullstackproject.helper.ValidationHelper;
 import com.example.simplefullstackproject.model.DailyCart;
 import com.example.simplefullstackproject.model.DailyCartFood;
@@ -101,12 +101,12 @@ public class DailyCartService {
     public DailyCartResponse getFoodsInCart(Integer userId) {
         DailyCart dailyCart = getDailyCartByUserId(userId);
 
-        List<FoodDtoResponse> foodDtoResponses = dailyCart.getDailyCartFoods().stream()
+        List<FoodCalculatedDto> foods = dailyCart.getDailyCartFoods().stream()
                 .map(
                         dailyCartFood -> {
                             Food food = dailyCartFood.getFood();
                             double factor = (double) dailyCartFood.getAmount() / 100;
-                            return new FoodDtoResponse(
+                            return new FoodCalculatedDto(
                                     food.getId(),
                                     food.getName(),
                                     food.getCalories() * factor,
@@ -114,14 +114,15 @@ public class DailyCartService {
                                     food.getFat() * factor,
                                     food.getCarbohydrates() * factor,
                                     food.getFoodCategory().getId(),
+                                    food.getFoodCategory().getName(),
                                     dailyCartFood.getAmount());
                         })
                 .collect(Collectors.toList());
-        double totalCalories = foodDtoResponses.stream().mapToDouble(FoodDtoResponse::getCalories).sum();
-        double totalCarbohydrates = foodDtoResponses.stream().mapToDouble(FoodDtoResponse::getCarbohydrates).sum();
-        double totalProtein = foodDtoResponses.stream().mapToDouble(FoodDtoResponse::getProtein).sum();
-        double totalFat = foodDtoResponses.stream().mapToDouble(FoodDtoResponse::getFat).sum();
-        return new DailyCartResponse(foodDtoResponses, totalCalories, totalCarbohydrates, totalProtein, totalFat);
+        double totalCalories = foods.stream().mapToDouble(FoodCalculatedDto::getCalories).sum();
+        double totalCarbohydrates = foods.stream().mapToDouble(FoodCalculatedDto::getCarbohydrates).sum();
+        double totalProtein = foods.stream().mapToDouble(FoodCalculatedDto::getProtein).sum();
+        double totalFat = foods.stream().mapToDouble(FoodCalculatedDto::getFat).sum();
+        return new DailyCartResponse(foods, totalCalories, totalCarbohydrates, totalProtein, totalFat);
     }
 
     @Scheduled(cron = "0 0 0 * * ?", zone = "GMT+2")
