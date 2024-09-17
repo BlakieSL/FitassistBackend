@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.service;
 
+import com.example.simplefullstackproject.dto.LikesAndSavedDto;
 import com.example.simplefullstackproject.exception.NotUniqueRecordException;
 import com.example.simplefullstackproject.model.Food;
 import com.example.simplefullstackproject.model.User;
@@ -28,10 +29,12 @@ public class UserFoodService {
     }
 
     @Transactional
-    public void addFoodToUser(Integer foodId, Integer userId) {
-        if(userFoodRepository.existsByUserIdAndFoodId(userId, foodId)){
+    public void saveFoodToUser(int foodId, int userId, short type) {
+        if(userFoodRepository.existsByUserIdAndFoodIdAndType(userId, foodId, type)){
             throw new NotUniqueRecordException(
-                    "User with id: " + userId + " already has food with id: " + foodId);
+                    "User with id: " + userId +
+                            " already has saved food with id: " + foodId +
+                            " and type: " + type);
         }
 
         User user = userRepository
@@ -47,17 +50,29 @@ public class UserFoodService {
         UserFood userFood = new UserFood();
         userFood.setUser(user);
         userFood.setFood(food);
+        userFood.setType(type);
         userFoodRepository.save(userFood);
     }
 
     @Transactional
-    public void deleteFoodFromUser(Integer foodId, Integer userId) {
+    public void deleteSavedFoodFromUser(int foodId, int userId, short type) {
         UserFood userFood = userFoodRepository
-                .findByUserIdAndFoodId(userId, foodId)
+                .findByUserIdAndFoodIdAndType(userId, foodId, type)
                 .orElseThrow(() -> new NoSuchElementException(
                         "UserFood with user id: " + userId +
-                                " and food id: " + foodId + " not found"));
+                                ", food id: " + foodId +
+                                " and type: " + type + "not found"));
 
         userFoodRepository.delete(userFood);
+    }
+
+    public LikesAndSavedDto calculateLikesAndSavesByFoodId(int foodId) {
+        foodRepository.findById(foodId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Food with id: " + foodId + " not found"));
+
+        long saves = userFoodRepository.countByFoodIdAndType(foodId, (short) 1);
+        long likes = userFoodRepository.countByFoodIdAndType(foodId, (short) 2);
+        return new LikesAndSavedDto(likes, saves);
     }
 }

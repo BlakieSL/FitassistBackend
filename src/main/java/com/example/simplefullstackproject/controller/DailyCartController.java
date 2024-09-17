@@ -19,21 +19,23 @@ public class DailyCartController {
     public DailyCartController(DailyCartService dailyCartService) {
         this.dailyCartService = dailyCartService;
     }
+
     @GetMapping("/{userId}")
     public ResponseEntity<DailyCartResponse> getAllFoodsInCartByUserID(@PathVariable int userId) {
         DailyCartResponse cart = dailyCartService.getFoodsInCart(userId);
         return ResponseEntity.ok(cart);
     }
 
-    @PostMapping("/{userId}/add")
+    @PostMapping("/{userId}/add/{foodId}")
     public ResponseEntity<Void> addFoodToCartByUserId(
             @PathVariable int userId,
+            @PathVariable int foodId,
             @Valid @RequestBody DailyCartFoodDto request,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
-        dailyCartService.addFoodToCart(userId, request);
+        dailyCartService.addFoodToCart(userId, foodId, request);
         return ResponseEntity.ok().build();
     }
 
@@ -45,8 +47,8 @@ public class DailyCartController {
 
     @PatchMapping("/{userId}/modify-food/{foodId}")
     public ResponseEntity<Void> modifyDailyCartFood(
-            @PathVariable Integer userId,
-            @PathVariable Integer foodId,
+            @PathVariable int userId,
+            @PathVariable int foodId,
             @RequestBody JsonMergePatch patch,
             BindingResult bindingResult
             ) throws JsonPatchException, JsonProcessingException {

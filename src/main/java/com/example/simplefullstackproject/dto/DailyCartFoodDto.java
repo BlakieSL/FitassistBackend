@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.dto;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
@@ -9,8 +10,7 @@ import lombok.Setter;
 @Setter
 public class DailyCartFoodDto {
   @NotNull
-  private Integer id;
-  @NotNull
   @Positive
+  @Max(value = 1000)
   private int amount;
 }

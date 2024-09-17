@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface WorkoutPlanRepository extends JpaRepository<WorkoutPlan, Integer> {
     List<WorkoutPlan> findByPlanId(int planId);
-    Optional<WorkoutPlan> findByPlanIdAndWorkoutId(Integer planId, Integer workoutId);
+    Optional<WorkoutPlan> findByPlanIdAndWorkoutId(int planId, int workoutId);
 }

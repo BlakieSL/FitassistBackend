@@ -20,7 +20,7 @@ public class Media {
 
     @NotNull
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "mediumblob")
     private byte[] image;
 
     @NotNull

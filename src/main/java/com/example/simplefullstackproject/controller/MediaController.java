@@ -3,6 +3,7 @@ package com.example.simplefullstackproject.controller;
 import com.example.simplefullstackproject.dto.AddMediaDto;
 import com.example.simplefullstackproject.dto.MediaDto;
 import com.example.simplefullstackproject.exception.ValidationException;
+import com.example.simplefullstackproject.model.Media;
 import com.example.simplefullstackproject.service.MediaService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -22,14 +23,25 @@ public class MediaController {
         this.mediaService = mediaService;
     }
 
-    @GetMapping("/parent/{parentId}/{parentgit Type}")
-    public ResponseEntity<List<MediaDto>> getAllMediaForParent(@PathVariable Integer parentId, @PathVariable short parentType) {
-        List<MediaDto> mediaList = mediaService.findAllMediaForParent(parentId, parentType);
+    @GetMapping("/all/{parentId}/{parentType}")
+    public ResponseEntity<List<MediaDto>> getAllMediaForParent(
+            @PathVariable int parentId,
+            @PathVariable short parentType) {
+        List<MediaDto> mediaList = mediaService.getAllMediaForParent(parentId, parentType);
         return ResponseEntity.ok(mediaList);
     }
 
+    @GetMapping("/first/{parentId}/{parentType}")
+    public ResponseEntity<MediaDto> getFirstMediaForParent(
+            @PathVariable int parentId,
+            @PathVariable short parentType) {
+        MediaDto media = mediaService.getFirstMediaForParent(parentId, parentType);
+        return ResponseEntity.ok(media);
+    }
+
     @GetMapping("/{mediaId}")
-    public ResponseEntity<MediaDto> getMediaById(@PathVariable Integer mediaId) {
+    public ResponseEntity<MediaDto> getMediaById(
+            @PathVariable int mediaId) {
         MediaDto media = mediaService.getMediaById(mediaId);
         return ResponseEntity.ok(media);
     }
@@ -45,10 +57,10 @@ public class MediaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @DeleteMapping("/{mediaId}/parent/{parentId}")
+    @DeleteMapping("/{mediaId}")
     public ResponseEntity<Void> removeMediaFromParent(
-            @PathVariable Integer mediaId, @PathVariable Integer parentId) {
-        mediaService.removeMediaFromParent(mediaId, parentId);
+            @PathVariable int mediaId) {
+        mediaService.removeMedia(mediaId);
         return ResponseEntity.ok().build();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.service;
 
+import com.example.simplefullstackproject.dto.LikesAndSavedDto;
 import com.example.simplefullstackproject.exception.NotUniqueRecordException;
 import com.example.simplefullstackproject.helper.ValidationHelper;
 import com.example.simplefullstackproject.model.Plan;
@@ -32,10 +33,12 @@ public class UserPlanService {
     }
 
     @Transactional
-    public void addPlanToUser(Integer planId, Integer userId) {
-        if(userPlanRepository.existsByUserIdAndPlanId(userId,planId)){
+    public void savePlanToUser(int planId, int userId, short type) {
+        if(userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type)){
             throw new NotUniqueRecordException(
-                    "User with id: " + userId + " already has plan with id: " + planId);
+                    "User with id: " + userId +
+                            " already has plan with id: " + planId +
+                            " and type: " + type);
         }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException(
@@ -52,12 +55,24 @@ public class UserPlanService {
     }
 
     @Transactional
-    public void deletePlanFromUser(Integer planId, Integer userId) {
-        UserPlan userPlan = userPlanRepository.findByUserIdAndPlanId(userId, planId)
+    public void deleteSavedPlanFromUser(int planId, int userId, short type) {
+        UserPlan userPlan = userPlanRepository.findByUserIdAndPlanIdAndType(userId, planId, type)
                 .orElseThrow(() -> new NoSuchElementException(
                         "UserPlan with user id: " + userId +
-                                " and plan id: " + planId + " not found"));
+                                ", plan id: " + planId +
+                                " and type: " + type + " not found"));
 
         userPlanRepository.delete(userPlan);
+    }
+
+    public LikesAndSavedDto calculateLikesAndSavesByPlanId(int planId) {
+        planRepository.findById(planId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Plan with id: " + planId + " not found"));
+
+        long saves = userPlanRepository.countByPlanIdAndType(planId, (short) 1);
+        long likes = userPlanRepository.countByPlanIdAndType(planId, (short) 2);
+
+        return new LikesAndSavedDto(likes, saves);
     }
 }

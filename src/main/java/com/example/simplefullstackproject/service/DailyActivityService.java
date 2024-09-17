@@ -49,22 +49,20 @@ public class DailyActivityService {
         this.jsonPatchHelper = jsonPatchHelper;
     }
 
-    private DailyActivity getDailyActivityByUserId(Integer userId) {
-        return dailyActivityRepository.findByUserId(userId)
-                .orElseGet(() -> createNewDailyActivityForUser(userId));
-    }
-
-    private DailyActivity createNewDailyActivityForUser(Integer userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User with id: " + userId + " not found"));
-        DailyActivity newDailyActivity = new DailyActivity();
-        newDailyActivity.setUser(user);
-        newDailyActivity.setDate(LocalDate.now());
-        return dailyActivityRepository.save(newDailyActivity);
+    @Scheduled(cron = "0 0 0 * * ?", zone = "GMT+2")
+    @Transactional
+    public void updateDailyCarts() {
+        List<DailyActivity> dailyActivities = dailyActivityRepository.findAll();
+        LocalDate today = LocalDate.now();
+        for (DailyActivity dailyActivity : dailyActivities) {
+            dailyActivity.setDate(today);
+            dailyActivity.getDailyCartActivities().clear();
+            dailyActivityRepository.save(dailyActivity);
+        }
     }
 
     @Transactional
-    public void addActivityToDailyActivities(Integer userId, DailyActivityDto dto) {
+    public void addActivityToDailyActivities(int userId, DailyActivityDto dto) {
         validationHelper.validate(dto);
 
         DailyActivity dailyActivity = getDailyActivityByUserId(userId);
@@ -89,7 +87,7 @@ public class DailyActivityService {
     }
 
     @Transactional
-    public void removeActivityFromCart(Integer userId, Integer activityId) {
+    public void removeActivityFromCart(int userId, int activityId) {
         DailyActivity dailyActivity = getDailyActivityByUserId(userId);
         DailyCartActivity dailyCartActivity = dailyActivity.getDailyCartActivities().stream()
                 .filter(item -> item.getActivity().getId().equals(activityId))
@@ -99,7 +97,42 @@ public class DailyActivityService {
         dailyActivityRepository.save(dailyActivity);
     }
 
-    public DailyActivitiesResponse getActivitiesInCart(Integer userId) {
+    @Transactional
+    public void modifyDailyCartActivities(int userId, int activityId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+        DailyActivity dailyActivity = getDailyActivityByUserId(userId);
+
+        DailyCartActivity dailyCartActivity = dailyActivity.getDailyCartActivities().stream()
+                .filter(item -> item.getActivity().getId().equals(activityId))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Activity with id: " + activityId + " not found in daily cart"));
+
+        DailyActivityDto dailyCartActivityDto = new DailyActivityDto();
+        dailyCartActivityDto.setId(dailyCartActivity.getActivity().getId());
+        dailyCartActivityDto.setTime(dailyCartActivity.getTime());
+
+        DailyActivityDto patchedDailyCartActivityDto = jsonPatchHelper.applyPatch(patch, dailyCartActivityDto, DailyActivityDto.class);
+
+        dailyCartActivity.setTime(patchedDailyCartActivityDto.getTime());
+        dailyActivityRepository.save(dailyActivity);
+    }
+
+
+
+    private DailyActivity getDailyActivityByUserId(int userId) {
+        return dailyActivityRepository.findByUserId(userId)
+                .orElseGet(() -> createNewDailyActivityForUser(userId));
+    }
+
+    private DailyActivity createNewDailyActivityForUser(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User with id: " + userId + " not found"));
+        DailyActivity newDailyActivity = new DailyActivity();
+        newDailyActivity.setUser(user);
+        newDailyActivity.setDate(LocalDate.now());
+        return dailyActivityRepository.save(newDailyActivity);
+    }
+
+    public DailyActivitiesResponse getActivitiesInCart(int userId) {
         DailyActivity dailyActivity = getDailyActivityByUserId(userId);
 
         User user = dailyActivity.getUser();
@@ -120,36 +153,5 @@ public class DailyActivityService {
                 .collect(Collectors.toList());
         int totalCaloriesBurned = activities.stream().mapToInt(ActivityCalculatedDto::getCaloriesBurned).sum();
         return new DailyActivitiesResponse(totalCaloriesBurned, activities);
-    }
-
-    @Scheduled(cron = "0 0 0 * * ?", zone = "GMT+2")
-    @Transactional
-    public void updateDailyCarts() {
-        List<DailyActivity> dailyActivities = dailyActivityRepository.findAll();
-        LocalDate today = LocalDate.now();
-        for (DailyActivity dailyActivity : dailyActivities) {
-            dailyActivity.setDate(today);
-            dailyActivity.getDailyCartActivities().clear();
-            dailyActivityRepository.save(dailyActivity);
-        }
-    }
-
-    @Transactional
-    public void modifyDailyCartActivities(Integer userId, Integer activityId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
-        DailyActivity dailyActivity = getDailyActivityByUserId(userId);
-
-        DailyCartActivity dailyCartActivity = dailyActivity.getDailyCartActivities().stream()
-                .filter(item -> item.getActivity().getId().equals(activityId))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Activity with id: " + activityId + " not found in daily cart"));
-
-        DailyActivityDto dailyCartActivityDto = new DailyActivityDto();
-        dailyCartActivityDto.setId(dailyCartActivity.getActivity().getId());
-        dailyCartActivityDto.setTime(dailyCartActivity.getTime());
-
-        DailyActivityDto patchedDailyCartActivityDto = jsonPatchHelper.applyPatch(patch, dailyCartActivityDto, DailyActivityDto.class);
-
-        dailyCartActivity.setTime(patchedDailyCartActivityDto.getTime());
-        dailyActivityRepository.save(dailyActivity);
     }
 }

@@ -52,36 +52,6 @@ public class UserService implements UserDetailsService {
         this.jsonPatchHelper = jsonPatchHelper;
     }
 
-    private Optional<UserDto> findUserCredentialsByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .map(userMapper::toDetails);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return findUserCredentialsByEmail(username)
-                .map(dto -> org.springframework.security.core.userdetails.User.builder()
-                        .username(dto.getEmail())
-                        .password(dto.getPassword())
-                        .roles(dto.getRoles().toArray(String[]::new))
-                        .build())
-                .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
-    }
-
-    public UserResponse getUserById(Integer id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
-                        "User with id " + id + " not found"));
-        return userMapper.toResponse(user);
-    }
-
-    public Integer getUserIdByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .map(User::getId)
-                .orElseThrow(() -> new NoSuchElementException(
-                        "User with email: " + email + " not found"));
-    }
-
     @Transactional
     public UserResponse register(UserAdditionDto request) {
         validationHelper.validate(request);
@@ -96,16 +66,16 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void deleteUser(Integer id) {
+    public void deleteUser(int id) {
         User user = userRepository.findById(id)
-                        .orElseThrow(() -> new NoSuchElementException(
-                                "User with id: " + id + " not found"));
+                .orElseThrow(() -> new NoSuchElementException(
+                        "User with id: " + id + " not found"));
         user.getRoles().clear();
         userRepository.delete(user);
     }
 
     @Transactional
-    public void modifyUser(Integer userId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+    public void modifyUser(int userId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User with id: " + userId + " not found"));
 
@@ -125,12 +95,33 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    private void updateUserFields(User user, UserUpdateRequest request) {
-        if (request.getHeight() != user.getHeight()) {
-            user.setHeight(request.getHeight());
-        }
-        if (request.getWeight() != user.getWeight()) {
-            user.setWeight(request.getWeight());
-        }
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return findUserCredentialsByEmail(username)
+                .map(dto -> org.springframework.security.core.userdetails.User.builder()
+                        .username(dto.getEmail())
+                        .password(dto.getPassword())
+                        .roles(dto.getRoles().toArray(String[]::new))
+                        .build())
+                .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
+    }
+
+    private Optional<UserDto> findUserCredentialsByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(userMapper::toDetails);
+    }
+
+    public UserResponse getUserById(int id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "User with id " + id + " not found"));
+        return userMapper.toResponse(user);
+    }
+
+    public int getUserIdByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(User::getId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "User with email: " + email + " not found"));
     }
 }

@@ -52,7 +52,7 @@ public class WorkoutService {
         return workoutMapper.toDto(savedWorkout);
     }
 
-    public WorkoutDto getWorkoutById(Integer id) {
+    public WorkoutDto getWorkoutById(int id) {
         Workout workout = workoutRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Workout with id: " + id + " not found"));
@@ -66,7 +66,7 @@ public class WorkoutService {
                 .collect(Collectors.toList());
     }
 
-    public List<WorkoutDto> getWorkoutsByPlanID(Integer planId) {
+    public List<WorkoutDto> getWorkoutsByPlanID(int planId) {
         List<WorkoutPlan> planWorkouts = workoutPlanRepository
                 .findByPlanId(planId);
         List<Workout> workouts = planWorkouts

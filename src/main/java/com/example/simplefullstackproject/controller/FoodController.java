@@ -3,6 +3,7 @@ package com.example.simplefullstackproject.controller;
 import com.example.simplefullstackproject.dto.*;
 import com.example.simplefullstackproject.exception.ValidationException;
 import com.example.simplefullstackproject.service.FoodService;
+import com.example.simplefullstackproject.service.UserFoodService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,10 @@ import java.util.List;
 @RequestMapping(path = "/api/foods")
 public class FoodController {
     private final FoodService foodService;
-
-    public FoodController(FoodService foodService) {
+    private final UserFoodService userFoodService;
+    public FoodController(FoodService foodService, UserFoodService userFoodService) {
         this.foodService = foodService;
+        this.userFoodService = userFoodService;
     }
 
     @GetMapping
@@ -25,17 +27,36 @@ public class FoodController {
         return ResponseEntity.ok(foodService.getFoods());
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<FoodDto>> getFoodsByUserId(
+            @PathVariable int userId
+    ) {
+        List<FoodDto> recipes = foodService.getFoodsByUserID(userId);
+        return ResponseEntity.ok(recipes);
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<FoodDto> getFoodById(@PathVariable int id) {
+    public ResponseEntity<FoodDto> getFoodById(
+            @PathVariable int id
+    ) {
         FoodDto food = foodService.getFoodById(id);
         return ResponseEntity.ok(food);
+    }
+
+    @GetMapping("/{id}/likes-and-saves")
+    public ResponseEntity<LikesAndSavedDto> getLikesAndSavesFood(
+            @PathVariable int id
+    ) {
+        LikesAndSavedDto dto = userFoodService.calculateLikesAndSavesByFoodId(id);
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/{id}/calculate-macros")
     public ResponseEntity<FoodCalculatedDto> calculateFoodMacrosById(
             @PathVariable int id,
             @Valid @RequestBody CalculateAmountRequest request,
-            BindingResult bindingResult) {
+            BindingResult bindingResult
+    ) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
@@ -45,7 +66,9 @@ public class FoodController {
 
     @PostMapping
     public ResponseEntity<FoodDto> createFood(
-            @Valid @RequestBody FoodAdditionDto dto, BindingResult bindingResult) {
+            @Valid @RequestBody FoodAdditionDto dto,
+            BindingResult bindingResult
+    ) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
@@ -61,11 +84,5 @@ public class FoodController {
             throw new ValidationException(bindingResult);
         }
         return ResponseEntity.ok(foodService.searchFoods(request));
-    }
-
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<FoodDto>> getFoodsByUserId(@PathVariable Integer userId) {
-        List<FoodDto> recipes = foodService.getFoodsByUserID(userId);
-        return ResponseEntity.ok(recipes);
     }
 }

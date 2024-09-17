@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface FoodRepository extends JpaRepository<Food, Integer> {
     List<Food> findAllByNameContainingIgnoreCase(String name);
-    List<Food> findAllByFoodCategory_Id(Integer categoryId);
+    List<Food> findAllByFoodCategory_Id(int categoryId);
 }

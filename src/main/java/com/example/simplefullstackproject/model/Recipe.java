@@ -41,18 +41,12 @@ public class Recipe {
     @Column(nullable = false, length = TEXT_MAX_LENGTH)
     private String text;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "recipe_category_id", nullable = false)
-    private RecipeCategory recipeCategory;
-
-    @OneToMany(mappedBy = "parentId", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private final Set<Media> media = new HashSet<>();
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE)
     private final Set<UserRecipe> userRecipes = new HashSet<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<RecipeFood> recipeFoods = new HashSet<>();
-
 }
