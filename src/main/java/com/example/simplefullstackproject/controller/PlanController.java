@@ -21,18 +21,8 @@ public class PlanController {
         this.planService = planService;
     }
 
-    @PostMapping
-    public ResponseEntity<PlanDto> savePlan(
-            @Valid @RequestBody PlanAdditionDto planDto, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new ValidationException(bindingResult);
-        }
-        PlanDto response = planService.savePlan(planDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
     @GetMapping("/{id}")
-    public ResponseEntity<PlanDto> getPlanById(@PathVariable Integer id) {
+    public ResponseEntity<PlanDto> getPlanById(@PathVariable int id) {
         PlanDto plan = planService.getPlanById(id);
         return ResponseEntity.ok(plan);
     }
@@ -44,8 +34,18 @@ public class PlanController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<PlanDto>> getPlansByUserID(@PathVariable Integer userId) {
+    public ResponseEntity<List<PlanDto>> getPlansByUserID(@PathVariable int userId) {
         List<PlanDto> plans = planService.getPlansByUserID(userId);
         return ResponseEntity.ok(plans);
+    }
+
+    @PostMapping
+    public ResponseEntity<PlanDto> savePlan(
+            @Valid @RequestBody PlanAdditionDto planDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult);
+        }
+        PlanDto response = planService.savePlan(planDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

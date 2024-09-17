@@ -26,8 +26,14 @@ public class RecipeController {
         return ResponseEntity.ok(recipeService.getRecipes());
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<RecipeDto>> getRecipesByUserId(@PathVariable int userId) {
+        List<RecipeDto> recipes = recipeService.getRecipesByUserID(userId);
+        return ResponseEntity.ok(recipes);
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<RecipeDto> getRecipeById(@PathVariable Integer id) {
+    public ResponseEntity<RecipeDto> getRecipeById(@PathVariable int id) {
         RecipeDto recipe = recipeService.getRecipeById(id);
         return ResponseEntity.ok(recipe);
     }
@@ -42,11 +48,5 @@ public class RecipeController {
 
         RecipeDto response = recipeService.save(recipeDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<RecipeDto>> getRecipesByUserId(@PathVariable Integer userId) {
-        List<RecipeDto> recipes = recipeService.getRecipesByUserID(userId);
-        return ResponseEntity.ok(recipes);
     }
 }

@@ -46,31 +46,29 @@ public class DailyCartService {
         this.jsonPatchHelper = jsonPatchHelper;
     }
 
-    private DailyCart getDailyCartByUserId(Integer userId) {
-        return dailyCartRepository.findByUserId(userId)
-                .orElseGet(() -> createNewDailyCartForUser(userId));
-    }
-
-    private DailyCart createNewDailyCartForUser(Integer userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User with id: " + userId + " not found"));
-        DailyCart newDailyCart = new DailyCart();
-        newDailyCart.setUser(user);
-        newDailyCart.setDate(LocalDate.now());
-        return dailyCartRepository.save(newDailyCart);
+    @Scheduled(cron = "0 0 0 * * ?", zone = "GMT+2")
+    @Transactional
+    public void updateDailyCarts() {
+        List<DailyCart> carts = dailyCartRepository.findAll();
+        LocalDate today = LocalDate.now();
+        for (DailyCart cart : carts) {
+            cart.setDate(today);
+            cart.getDailyCartFoods().clear();
+            dailyCartRepository.save(cart);
+        }
     }
 
     @Transactional
-    public void addFoodToCart(Integer userId, DailyCartFoodDto dto) {
+    public void addFoodToCart(int userId, int foodId, DailyCartFoodDto dto) {
         validationHelper.validate(dto);
         DailyCart dailyCart = getDailyCartByUserId(userId);
 
-        Food food = foodRepository.findById(dto.getId())
-                .orElseThrow(() -> new NoSuchElementException("Food with id: " + dto.getId() + " not found"));
+        Food food = foodRepository.findById(foodId)
+                .orElseThrow(() -> new NoSuchElementException("Food with id: " + foodId + " not found"));
 
 
         Optional<DailyCartFood> existingDailyCartFood = dailyCart.getDailyCartFoods().stream()
-                .filter(item -> item.getFood().getId().equals(dto.getId()))
+                .filter(item -> item.getFood().getId().equals(foodId))
                 .findFirst();
 
         if (existingDailyCartFood.isPresent()) {
@@ -88,7 +86,7 @@ public class DailyCartService {
     }
 
     @Transactional
-    public void removeFoodFromCart(Integer userId, Integer foodId) {
+    public void removeFoodFromCart(int userId, int foodId) {
         DailyCart dailyCart = getDailyCartByUserId(userId);
         DailyCartFood dailyCartFood = dailyCart.getDailyCartFoods().stream()
                 .filter(item -> item.getFood().getId().equals(foodId))
@@ -98,7 +96,41 @@ public class DailyCartService {
         dailyCartRepository.save(dailyCart);
     }
 
-    public DailyCartResponse getFoodsInCart(Integer userId) {
+    @Transactional
+    public void modifyDailyCartFood(int userId, int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+        DailyCart dailyCart = getDailyCartByUserId(userId);
+
+        DailyCartFood dailyCartFood = dailyCart.getDailyCartFoods().stream()
+                .filter(item -> item.getFood().getId().equals(foodId))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Food with id: " + foodId + " not found in daily cart"));
+
+        DailyCartFoodDto dailyCartFoodDto = new DailyCartFoodDto();
+        dailyCartFoodDto.setAmount(dailyCartFood.getAmount());
+
+        DailyCartFoodDto patchedDailyCartFoodDto = jsonPatchHelper.applyPatch(patch, dailyCartFoodDto, DailyCartFoodDto.class);
+
+        validationHelper.validate(patchedDailyCartFoodDto);
+
+        dailyCartFood.setAmount(patchedDailyCartFoodDto.getAmount());
+        dailyCartRepository.save(dailyCart);
+    }
+
+    private DailyCart getDailyCartByUserId(int userId) {
+        return dailyCartRepository.findByUserId(userId)
+                .orElseGet(() -> createNewDailyCartForUser(userId));
+    }
+
+    private DailyCart createNewDailyCartForUser(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User with id: " + userId + " not found"));
+        DailyCart newDailyCart = new DailyCart();
+        newDailyCart.setUser(user);
+        newDailyCart.setDate(LocalDate.now());
+        return dailyCartRepository.save(newDailyCart);
+    }
+
+    public DailyCartResponse getFoodsInCart(int userId) {
         DailyCart dailyCart = getDailyCartByUserId(userId);
 
         List<FoodCalculatedDto> foods = dailyCart.getDailyCartFoods().stream()
@@ -123,38 +155,5 @@ public class DailyCartService {
         double totalProtein = foods.stream().mapToDouble(FoodCalculatedDto::getProtein).sum();
         double totalFat = foods.stream().mapToDouble(FoodCalculatedDto::getFat).sum();
         return new DailyCartResponse(foods, totalCalories, totalCarbohydrates, totalProtein, totalFat);
-    }
-
-    @Scheduled(cron = "0 0 0 * * ?", zone = "GMT+2")
-    @Transactional
-    public void updateDailyCarts() {
-        List<DailyCart> carts = dailyCartRepository.findAll();
-        LocalDate today = LocalDate.now();
-        for (DailyCart cart : carts) {
-            cart.setDate(today);
-            cart.getDailyCartFoods().clear();
-            dailyCartRepository.save(cart);
-        }
-    }
-
-    @Transactional
-    public void modifyDailyCartFood(Integer userId, Integer foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
-        DailyCart dailyCart = getDailyCartByUserId(userId);
-
-        DailyCartFood dailyCartFood = dailyCart.getDailyCartFoods().stream()
-                .filter(item -> item.getFood().getId().equals(foodId))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Food with id: " + foodId + " not found in daily cart"));
-
-        DailyCartFoodDto dailyCartFoodDto = new DailyCartFoodDto();
-        dailyCartFoodDto.setId(dailyCartFood.getId());
-        dailyCartFoodDto.setAmount(dailyCartFood.getAmount());
-
-        DailyCartFoodDto patchedDailyCartFoodDto = jsonPatchHelper.applyPatch(patch, dailyCartFoodDto, DailyCartFoodDto.class);
-
-        validationHelper.validate(patchedDailyCartFoodDto);
-
-        dailyCartFood.setAmount(patchedDailyCartFoodDto.getAmount());
-        dailyCartRepository.save(dailyCart);
     }
 }

@@ -20,18 +20,8 @@ public class WorkoutSetController {
         this.workoutSetService = workoutSetService;
     }
 
-    @PostMapping
-    public ResponseEntity<WorkoutSetDto> saveWorkoutSet(
-            @Valid @RequestBody WorkoutSetDto workoutSetDto, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new ValidationException(bindingResult);
-        }
-        WorkoutSetDto response = workoutSetService.saveWorkoutSet(workoutSetDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
     @GetMapping("/{id}")
-    public ResponseEntity<WorkoutSetDto> getWorkoutSetById(@PathVariable Integer id) {
+    public ResponseEntity<WorkoutSetDto> getWorkoutSetById(@PathVariable int id) {
         WorkoutSetDto workoutSet = workoutSetService.getWorkoutSetById(id);
         return ResponseEntity.ok(workoutSet);
     }
@@ -43,14 +33,24 @@ public class WorkoutSetController {
     }
 
     @GetMapping("/workout-type/{workoutTypeId}")
-    public ResponseEntity<List<WorkoutSetDto>> getWorkoutSetsByWorkoutTypeId(@PathVariable Integer workoutTypeId) {
+    public ResponseEntity<List<WorkoutSetDto>> getWorkoutSetsByWorkoutTypeId(@PathVariable int workoutTypeId) {
         List<WorkoutSetDto> workoutSets = workoutSetService.getWorkoutSetsByWorkoutTypeId(workoutTypeId);
         return ResponseEntity.ok(workoutSets);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWorkoutSetById(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteWorkoutSetById(@PathVariable int id) {
         workoutSetService.deleteWorkoutSetById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<WorkoutSetDto> saveWorkoutSet(
+            @Valid @RequestBody WorkoutSetDto workoutSetDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult);
+        }
+        WorkoutSetDto response = workoutSetService.saveWorkoutSet(workoutSetDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

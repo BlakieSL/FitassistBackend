@@ -32,5 +32,5 @@ public class RecipeAdditionDto {
     private String text;
 
     @NotNull
-    private int categoryId;
+    private List<Integer> categoryIds;
 }

@@ -60,7 +60,16 @@ public class WorkoutSetService {
         return workoutSetMapper.toDto(savedWorkoutSet);
     }
 
-    public WorkoutSetDto getWorkoutSetById(Integer id) {
+    @Transactional
+    public void deleteWorkoutSetById(int id) {
+        WorkoutSet workoutSet = workoutSetRepository
+                .findById(id)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "WorkoutSet with id: " + id + " not found"));
+        workoutSetRepository.delete(workoutSet);
+    }
+
+    public WorkoutSetDto getWorkoutSetById(int id) {
         WorkoutSet workoutSet = workoutSetRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "WorkoutSet with id: " + id + " not found"));
@@ -74,20 +83,11 @@ public class WorkoutSetService {
                 .collect(Collectors.toList());
     }
 
-    public List<WorkoutSetDto> getWorkoutSetsByWorkoutTypeId(Integer workoutTypeId) {
+    public List<WorkoutSetDto> getWorkoutSetsByWorkoutTypeId(int workoutTypeId) {
         List<WorkoutSet> workoutSets = workoutSetRepository
                 .findByWorkoutTypeId(workoutTypeId);
         return workoutSets.stream()
                 .map(workoutSetMapper::toDto)
                 .collect(Collectors.toList());
-    }
-
-    @Transactional
-    public void deleteWorkoutSetById(Integer id) {
-        WorkoutSet workoutSet = workoutSetRepository
-                .findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
-                        "WorkoutSet with id: " + id + " not found"));
-        workoutSetRepository.delete(workoutSet);
     }
 }

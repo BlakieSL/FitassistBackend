@@ -7,11 +7,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class MediaDto {
-    private Integer id;
-    private byte[] image;
-    private String parentType;
-    private Integer parentId;
+@NoArgsConstructor
+public class LikesAndSavedDto {
+    private long likes;
+    private long saves;
 }

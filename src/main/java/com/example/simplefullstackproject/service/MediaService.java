@@ -37,20 +37,6 @@ public class MediaService {
         this.recipeRepository = recipeRepository;
     }
 
-    public List<MediaDto> findAllMediaForParent(Integer parentId, short parentType ) {
-        List<Media> mediaList = mediaRepository.findByParentIdAndParentType(parentId, parentType);
-        return mediaList.stream()
-                .map(mediaMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
-    public MediaDto getMediaById(Integer mediaId) {
-        Media media = mediaRepository.findById(mediaId)
-                .orElseThrow(() -> new NoSuchElementException(
-                        "Media with id: " + mediaId + " not found"));
-        return mediaMapper.toDto(media);
-    }
-
     @Transactional
     public MediaDto saveMedia(AddMediaDto request) {
         validationHelper.validate(request);
@@ -60,7 +46,37 @@ public class MediaService {
     }
 
     @Transactional
-    public void removeMediaFromParent(Integer mediaId, Integer parentId) {
+    public void removeMedia(int mediaId) {
+        Media media = mediaRepository.findById(mediaId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Media with id: " + mediaId + " not found"));
+        mediaRepository.delete(media);
+    }
+
+    public List<MediaDto> getAllMediaForParent(int parentId, short parentType ) {
+        List<Media> mediaList = mediaRepository.findByParentIdAndParentType(parentId, parentType);
+        return mediaList.stream()
+                .map(mediaMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public MediaDto getFirstMediaForParent(int parentId, short parentType) {
+        Media media = mediaRepository.findFirstByParentIdAndParentType(parentId, parentType)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "No media found with parentId: " + parentId + " and parentType: " + parentType));
+        return mediaMapper.toDto(media);
+    }
+
+    public MediaDto getMediaById(int mediaId) {
+        Media media = mediaRepository.findById(mediaId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Media with id: " + mediaId + " not found"));
+        return mediaMapper.toDto(media);
+    }
+
+/*
+    @Transactional
+    public void removeMediaFromParent(int mediaId, int parentId) {
         Media media = mediaRepository
                 .findByIdAndParentId(mediaId, parentId)
                 .orElseThrow(() -> new NoSuchElementException(
@@ -68,4 +84,6 @@ public class MediaService {
                                 " not found for parent with id: " + parentId));
         mediaRepository.delete(media);
     }
+
+ */
 }

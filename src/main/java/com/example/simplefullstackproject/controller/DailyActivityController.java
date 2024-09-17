@@ -51,8 +51,8 @@ public class DailyActivityController {
 
     @PatchMapping("/{userId}/modify-activity/{activityId}")
     public ResponseEntity<Void> modifyDailyCartActivity(
-            @PathVariable Integer userId,
-            @PathVariable Integer activityId,
+            @PathVariable int userId,
+            @PathVariable int activityId,
             @Valid @RequestBody JsonMergePatch patch,
             BindingResult bindingResult
             ) throws JsonPatchException, JsonProcessingException {

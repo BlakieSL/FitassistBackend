@@ -44,7 +44,7 @@ public class FoodService {
         return foodMapper.toDto(food);
     }
 
-    public FoodDto getFoodById(Integer id) {
+    public FoodDto getFoodById(int id) {
         Food food = foodRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Food with id: " + id + " not found"));
@@ -73,7 +73,7 @@ public class FoodService {
                 .collect(Collectors.toList());
     }
 
-    public List<FoodDto> getFoodsByUserID(Integer userId) {
+    public List<FoodDto> getFoodsByUserID(int userId) {
         List<UserFood> userFoods = userFoodRepository.findByUserId(userId);
         List<Food> foods = userFoods.stream()
                 .map(UserFood::getFood)
@@ -90,7 +90,7 @@ public class FoodService {
                 .collect(Collectors.toList());
     }
 
-    public List<FoodDto> getFoodsByCategory(Integer categoryId){
+    public List<FoodDto> getFoodsByCategory(int categoryId){
         List<Food> foods = foodRepository
                 .findAllByFoodCategory_Id(categoryId);
         return foods.stream()

@@ -45,9 +45,6 @@ public class Exercise {
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<ExerciseCategoryAssociation> exerciseCategoryAssociations = new HashSet<>();
 
-    @OneToMany(mappedBy = "parentId", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Media> media;
-
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE)
     private Set<UserExercise> user_exercise;
 

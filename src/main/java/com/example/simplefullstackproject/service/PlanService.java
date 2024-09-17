@@ -50,7 +50,7 @@ public class PlanService {
         return planMapper.toDto(plan);
     }
 
-    public PlanDto getPlanById(Integer id) {
+    public PlanDto getPlanById(int id) {
         Plan plan = planRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Plan with id: " + id + " not found"));
@@ -64,7 +64,7 @@ public class PlanService {
                 .collect(Collectors.toList());
     }
 
-    public List<PlanDto> getPlansByUserID(Integer userId) {
+    public List<PlanDto> getPlansByUserID(int userId) {
         List<UserPlan> userPlans = userPlanRepository.findByUserId(userId);
         List<Plan> plans = userPlans.stream()
                 .map(UserPlan::getPlan)
@@ -81,7 +81,7 @@ public class PlanService {
                 .collect(Collectors.toList());
     }
 
-    public List<PlanDto> getPlansByCategory(Integer categoryId) {
+    public List<PlanDto> getPlansByCategory(int categoryId) {
         List<PlanCategoryAssociation> planCategoryAssociations = planCategoryAssociationRepository.findByPlanCategoryId(categoryId);
         List<Plan> plans = planCategoryAssociations.stream()
                 .map(PlanCategoryAssociation::getPlan)

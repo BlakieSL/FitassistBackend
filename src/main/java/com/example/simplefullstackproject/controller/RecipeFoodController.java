@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import com.example.simplefullstackproject.exception.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,45 +27,37 @@ public class RecipeFoodController {
         this.objectMapper = objectMapper;
     }
 
-    @PostMapping("/{recipeId}/add")
+    @PostMapping("/{recipeId}/add/{foodId}")
     public ResponseEntity<Void> addFoodToRecipe(
-            @PathVariable Integer recipeId,
+            @PathVariable int recipeId,
+            @PathVariable int foodId,
             @Valid @RequestBody AddFoodRecipeDto request,
             BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
-        recipeFoodService.addFoodToRecipe(recipeId, request);
+        recipeFoodService.addFoodToRecipe(recipeId, foodId, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{recipeId}/remove/{foodId}")
     public ResponseEntity<Void> deleteFoodFromRecipe(
-            @PathVariable Integer recipeId, @PathVariable Integer foodId) {
+            @PathVariable int recipeId, @PathVariable int foodId) {
         recipeFoodService.deleteFoodFromRecipe(foodId, recipeId);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{recipeId}/modify/foodId")
+    @PatchMapping("/{recipeId}/modify/{foodId}")
     public ResponseEntity<Void> modifyFoodRecipe(
-            @PathVariable Integer recipeId,
-            @PathVariable Integer foodId,
+            @PathVariable int recipeId,
+            @PathVariable int foodId,
             @Valid @RequestBody JsonMergePatch patch,
             BindingResult bindingResult) throws JsonPatchException, JsonProcessingException {
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
 
-        AddFoodRecipeDto existingRecipeFood = recipeFoodService.getRecipeFoodByRecipeIdAndFoodId(recipeId, foodId);
-        AddFoodRecipeDto request = applyPatch(existingRecipeFood, patch);
-
-        recipeFoodService.modifyFoodRecipe(recipeId, request);
+        recipeFoodService.modifyFoodRecipe(recipeId, foodId, patch);
         return ResponseEntity.ok().build();
-    }
-
-    private AddFoodRecipeDto applyPatch(AddFoodRecipeDto existingRecipeFood, JsonMergePatch patch) throws JsonProcessingException, JsonPatchException {
-        JsonNode recipeFoodNode = objectMapper.valueToTree(existingRecipeFood);
-        JsonNode patchedNode = patch.apply(recipeFoodNode);
-        return objectMapper.treeToValue(patchedNode, AddFoodRecipeDto.class);
     }
 }
