@@ -20,18 +20,8 @@ public class WorkoutController {
         this.workoutService = workoutService;
     }
 
-    @PostMapping
-    public ResponseEntity<WorkoutDto> saveWorkout(
-            @Valid @RequestBody WorkoutDto workoutDto, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new ValidationException(bindingResult);
-        }
-        WorkoutDto response = workoutService.saveWorkout(workoutDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
     @GetMapping("/{id}")
-    public ResponseEntity<WorkoutDto> getWorkoutById(@PathVariable Integer id) {
+    public ResponseEntity<WorkoutDto> getWorkoutById(@PathVariable int id) {
         WorkoutDto workout = workoutService.getWorkoutById(id);
         return ResponseEntity.ok(workout);
     }
@@ -43,8 +33,18 @@ public class WorkoutController {
     }
 
     @GetMapping("/plan/{planId}")
-    public ResponseEntity<List<WorkoutDto>> getWorkoutsByPlanID(@PathVariable Integer planId) {
+    public ResponseEntity<List<WorkoutDto>> getWorkoutsByPlanID(@PathVariable int planId) {
         List<WorkoutDto> workouts = workoutService.getWorkoutsByPlanID(planId);
         return ResponseEntity.ok(workouts);
+    }
+
+    @PostMapping
+    public ResponseEntity<WorkoutDto> saveWorkout(
+            @Valid @RequestBody WorkoutDto workoutDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult);
+        }
+        WorkoutDto response = workoutService.saveWorkout(workoutDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

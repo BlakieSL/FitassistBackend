@@ -16,16 +16,16 @@ public class WorkoutPlanController {
 
     @PostMapping("/{planId}/add/{workoutId}")
     public ResponseEntity<Void> addWorkoutToPlan(
-            @PathVariable Integer workoutId,
-            @PathVariable Integer planId) {
+            @PathVariable int workoutId,
+            @PathVariable int planId) {
         workoutPlanService.addWorkoutToPlan(workoutId, planId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{planId}/remove/{workoutId}")
     public ResponseEntity<Void> deleteWorkoutFromPlan(
-            @PathVariable Integer workoutId,
-            @PathVariable Integer planId) {
+            @PathVariable int workoutId,
+            @PathVariable int planId) {
         workoutPlanService.deleteWorkoutFromPlan(workoutId, planId);
         return ResponseEntity.ok().build();
     }

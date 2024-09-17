@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserFoodRepository extends JpaRepository<UserFood, Integer> {
-    boolean existsByUserIdAndFoodId(Integer userId, Integer foodId);
-    Optional<UserFood> findByUserIdAndFoodId(Integer userId, Integer foodId);
-    List<UserFood> findByUserId(Integer userId);
+    boolean existsByUserIdAndFoodIdAndType(int userId, int foodId, short type);
+    Optional<UserFood> findByUserIdAndFoodIdAndType(int userId, int foodId, short type);
+    List<UserFood> findByUserId(int userId);
+    long countByFoodIdAndType(int foodId, short type);
 }

@@ -8,25 +8,29 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "user_food")
+@Table(name = "designation")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserFood {
+@NoArgsConstructor
+public class Designation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "food_id", nullable = false)
-    private Food food;
+    @NotNull
+    @Column(nullable = false)
+    private String tableName;
 
     @NotNull
     @Column(nullable = false)
-    private short type;
+    private String columnName;
+
+    @NotNull
+    @Column(nullable = false)
+    private short shortValue;
+
+    @NotNull
+    @Column(nullable = false)
+    private String description;
 }

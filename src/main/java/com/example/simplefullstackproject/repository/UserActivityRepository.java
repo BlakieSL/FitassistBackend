@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserActivityRepository extends JpaRepository<UserActivity, Integer> {
-    boolean existsByUserIdAndActivityId(Integer userId, Integer activityId);
-    Optional<UserActivity> findByUserIdAndActivityId(Integer userId, Integer activityId);
-    List<UserActivity> findByUserId(Integer userId);
+    boolean existsByUserIdAndActivityIdAndType(int userId, int activityId, short type);
+    Optional<UserActivity> findByUserIdAndActivityIdAndType(int userId, int activityId, short type);
+    List<UserActivity> findByUserId(int userId);
+    long countByActivityIdAndType(int activityId, short type);
 }

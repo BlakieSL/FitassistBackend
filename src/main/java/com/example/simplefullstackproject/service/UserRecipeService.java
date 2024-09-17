@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.service;
 
+import com.example.simplefullstackproject.dto.LikesAndSavedDto;
 import com.example.simplefullstackproject.exception.NotUniqueRecordException;
 import com.example.simplefullstackproject.helper.ValidationHelper;
 import com.example.simplefullstackproject.model.Recipe;
@@ -32,10 +33,12 @@ public class UserRecipeService {
     }
 
     @Transactional
-    public void addRecipeToUser(Integer recipeId, Integer userId) {
-        if(userRecipeRepository.existsByUserIdAndRecipeId(userId,recipeId)){
+    public void saveRecipeToUser(int recipeId, int userId, short type) {
+        if(userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type)){
             throw new NotUniqueRecordException(
-                    "User with id: " + userId + " already has recipe with id: " + recipeId);
+                    "User with id: " + userId +
+                            " already has recipe with id: " + recipeId +
+                            " and type: " + type);
         }
 
         User user = userRepository
@@ -55,13 +58,25 @@ public class UserRecipeService {
     }
 
     @Transactional
-    public void deleteRecipeFromUser(Integer recipeId, Integer userId) {
+    public void deleteSavedRecipeFromUser(int recipeId, int userId, short type) {
         UserRecipe userRecipe = userRecipeRepository
-                .findByUserIdAndRecipeId(userId, recipeId)
+                .findByUserIdAndRecipeIdAndType(userId, recipeId, type)
                 .orElseThrow(() -> new NoSuchElementException(
                         "UserRecipe with user id: " + userId +
-                                " and recipe id: " + recipeId + " not found"));
+                                ", recipe id: " + recipeId +
+                                " and type: " + type + " not found"));
 
         userRecipeRepository.delete(userRecipe);
+    }
+
+    public LikesAndSavedDto calculateLikesAndSavesByRecipeId(int recipeId) {
+        recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Recipe with id: " + recipeId + " not found"));
+
+        long saves = userRecipeRepository.countByRecipeIdAndType(recipeId, (short) 1);
+        long likes = userRecipeRepository.countByRecipeIdAndType(recipeId, (short) 2);
+
+        return new LikesAndSavedDto(likes, saves);
     }
 }

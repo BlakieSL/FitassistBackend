@@ -34,5 +34,5 @@ public class RecipeCategory {
     private String gradient;
 
     @OneToMany(mappedBy = "recipeCategory", cascade = CascadeType.ALL)
-    private final Set<Recipe> recipes = new HashSet<>();
+    private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();
 }

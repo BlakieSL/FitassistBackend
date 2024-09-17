@@ -27,7 +27,7 @@ public class WorkoutPlanService {
     }
 
     @Transactional
-    public void addWorkoutToPlan(Integer workoutId, Integer planId) {
+    public void addWorkoutToPlan(int workoutId, int planId) {
         Plan plan = planRepository
                 .findById(planId)
                 .orElseThrow(() -> new NoSuchElementException(
@@ -45,7 +45,7 @@ public class WorkoutPlanService {
     }
 
     @Transactional
-    public void deleteWorkoutFromPlan(Integer workoutId, Integer planId) {
+    public void deleteWorkoutFromPlan(int workoutId, int planId) {
         WorkoutPlan planWorkout = workoutPlanRepository
                 .findByPlanIdAndWorkoutId(planId, workoutId)
                 .orElseThrow(() -> new NoSuchElementException(

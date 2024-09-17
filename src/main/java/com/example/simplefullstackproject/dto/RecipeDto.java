@@ -18,6 +18,5 @@ public class RecipeDto {
     private String name;
     private String description;
     private String text;
-    private int categoryId;
-    private String categoryName;
+    List<RecipeCategoryShortDto> categories;
 }

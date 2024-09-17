@@ -82,7 +82,7 @@ public class SecurityConfig {
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Allow for all endpoints
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 

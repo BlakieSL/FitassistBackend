@@ -50,7 +50,7 @@ public class ExerciseService {
         return exerciseMapper.toDto(exercise);
     }
 
-    public ExerciseDto getExerciseById(Integer id) {
+    public ExerciseDto getExerciseById(int id) {
         Exercise exercise = exerciseRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Exercise with id: " + id + " not found"));
@@ -64,7 +64,7 @@ public class ExerciseService {
                 .collect(Collectors.toList());
     }
 
-    public List<ExerciseDto> getExercisesByUserID(Integer userId) {
+    public List<ExerciseDto> getExercisesByUserID(int userId) {
         List<UserExercise> userExercises = userExerciseRepository
                 .findByUserId(userId);
         List<Exercise> exercises = userExercises
@@ -91,7 +91,7 @@ public class ExerciseService {
                 .collect(Collectors.toList());
     }
 
-    public List<ExerciseDto> getExercisesByCategory(Integer categoryId) {
+    public List<ExerciseDto> getExercisesByCategory(int categoryId) {
         List<ExerciseCategoryAssociation> exerciseCategoryAssociations = exerciseCategoryAssociationRepository.findByExerciseCategoryId(categoryId);
         List<Exercise> exercises = exerciseCategoryAssociations.stream()
                 .map(ExerciseCategoryAssociation::getExercise)

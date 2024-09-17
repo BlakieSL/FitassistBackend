@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.service;
 
+import com.example.simplefullstackproject.dto.LikesAndSavedDto;
 import com.example.simplefullstackproject.exception.NotUniqueRecordException;
 import com.example.simplefullstackproject.model.Exercise;
 import com.example.simplefullstackproject.model.User;
@@ -28,10 +29,12 @@ public class UserExerciseService {
     }
 
     @Transactional
-    public void addExerciseToUser(Integer exerciseId, Integer userId) {
-        if(userExerciseRepository.existsByUserIdAndExerciseId(userId,exerciseId)){
+    public void saveExerciseToUser(int exerciseId, int userId, short type) {
+        if(userExerciseRepository.existsByUserIdAndExerciseIdAndType(userId, exerciseId, type)){
             throw new NotUniqueRecordException(
-                    "User with id: " + userId + " already has exercise with id: " + exerciseId);
+                    "User with id: " + userId +
+                            " already has exercise with id: " + exerciseId +
+                            " and type: " + type);
         }
 
         User user = userRepository
@@ -51,13 +54,25 @@ public class UserExerciseService {
     }
 
     @Transactional
-    public void deleteExerciseFromUser(Integer exerciseId, Integer userId) {
+    public void deleteSavedExerciseFromUser(int exerciseId, int userId, short type) {
         UserExercise userExercise = userExerciseRepository
-                .findByUserIdAndExerciseId(userId, exerciseId)
+                .findByUserIdAndExerciseIdAndType(userId, exerciseId, type)
                 .orElseThrow(() -> new NoSuchElementException(
                         "UserExercise with user id: " + userId +
-                                " and exercise id: " + exerciseId + " not found"));
+                                ", exercise id: " + exerciseId +
+                                " and type: " + type + " not found"));
 
         userExerciseRepository.delete(userExercise);
+    }
+
+    public LikesAndSavedDto calculateLikesAndSavesByExerciseId(int exerciseId) {
+        exerciseRepository.findById(exerciseId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Exercise with id: " + exerciseId + " not found"));
+
+        long saves = userExerciseRepository.countByExerciseIdAndType(exerciseId, (short) 1);
+        long likes = userExerciseRepository.countByExerciseIdAndType(exerciseId, (short) 2);
+
+        return new LikesAndSavedDto(likes, saves);
     }
 }

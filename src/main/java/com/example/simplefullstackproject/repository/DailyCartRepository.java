@@ -7,9 +7,9 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public interface DailyCartRepository extends JpaRepository<DailyCart, Integer> {
-    Optional<DailyCart> findByUserId(Integer id);
+    Optional<DailyCart> findByUserId(int id);
 
-    Optional<DailyCart> findByUserIdAndDate(Integer id, LocalDate date);
+    Optional<DailyCart> findByUserIdAndDate(int id, LocalDate date);
 
-    void removeDailyCartByUserId(Integer userId);
+    void removeDailyCartByUserId(int userId);
 }

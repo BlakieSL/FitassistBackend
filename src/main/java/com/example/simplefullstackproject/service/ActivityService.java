@@ -29,12 +29,12 @@ public class ActivityService {
     private final ActivityCategoryRepository activityCategoryRepository;
     private final UserActivityRepository userActivityRepository;
     public ActivityService(
-            final ValidationHelper validationHelper,
-            final CalculationsHelper calculationsHelper,
-            final ActivityMapper activityMapper,
-            final ActivityRepository activityRepository,
-            final UserRepository userRepository,
-            final ActivityCategoryRepository activityCategoryRepository,
+            ValidationHelper validationHelper,
+            CalculationsHelper calculationsHelper,
+            ActivityMapper activityMapper,
+            ActivityRepository activityRepository,
+            UserRepository userRepository,
+            ActivityCategoryRepository activityCategoryRepository,
             UserActivityRepository userActivityRepository) {
         this.validationHelper = validationHelper;
         this.calculationsHelper = calculationsHelper;
@@ -46,13 +46,13 @@ public class ActivityService {
     }
 
     @Transactional
-    public ActivitySummaryDto saveActivity(final ActivityAdditionDto dto) {
+    public ActivitySummaryDto saveActivity(ActivityAdditionDto dto) {
         validationHelper.validate(dto);
         Activity activity = activityRepository.save(activityMapper.toEntity(dto));
         return activityMapper.toSummaryDto(activity);
     }
 
-    public ActivitySummaryDto getActivityById(final Integer id) {
+    public ActivitySummaryDto getActivityById(int id) {
         Activity activity = activityRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Activity with id: " + id + " not found"));
@@ -73,7 +73,7 @@ public class ActivityService {
                 .collect(Collectors.toList());
     }
 
-    public List<ActivitySummaryDto> getActivitiesByCategory(final Integer categoryId) {
+    public List<ActivitySummaryDto> getActivitiesByCategory(int categoryId) {
         List<Activity> activities = activityRepository
                 .findAllByActivityCategory_Id(categoryId);
         return activities.stream()
@@ -101,7 +101,7 @@ public class ActivityService {
                 .collect(Collectors.toList());
     }
 
-    public List<ActivitySummaryDto> getActivitiesByUserID(Integer userId) {
+    public List<ActivitySummaryDto> getActivitiesByUserID(int userId) {
         List<UserActivity> userActivities = userActivityRepository.findByUserId(userId);
         List<Activity> activities = userActivities.stream()
                 .map(UserActivity::getActivity)

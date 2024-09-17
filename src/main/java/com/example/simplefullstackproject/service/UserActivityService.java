@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.service;
 
+import com.example.simplefullstackproject.dto.LikesAndSavedDto;
 import com.example.simplefullstackproject.exception.NotUniqueRecordException;
 import com.example.simplefullstackproject.model.Activity;
 import com.example.simplefullstackproject.model.User;
@@ -28,10 +29,12 @@ public class UserActivityService {
     }
 
     @Transactional
-    public void addActivityToUser(Integer activityId, Integer userId) {
-        if(userActivityRepository.existsByUserIdAndActivityId(userId, activityId)){
+    public void saveActivityToUser(int activityId, int userId, short type) {
+        if(userActivityRepository.existsByUserIdAndActivityIdAndType(userId, activityId, type)){
             throw new NotUniqueRecordException(
-                    "User with id: " + userId + " already has activity with id: " + activityId);
+                    "User with id: " + userId +
+                            " already has activity with id: " + activityId +
+                            " and type: " + type);
         }
 
         User user = userRepository
@@ -47,17 +50,29 @@ public class UserActivityService {
         UserActivity userActivity = new UserActivity();
         userActivity.setUser(user);
         userActivity.setActivity(activity);
+        userActivity.setType(type);
         userActivityRepository.save(userActivity);
     }
 
     @Transactional
-    public void deleteActivityFromUser(Integer activityId, Integer userId) {
+    public void deleteSavedActivityFromUser(int activityId, int userId, short type) {
         UserActivity userActivity = userActivityRepository
-                .findByUserIdAndActivityId(userId, activityId)
+                .findByUserIdAndActivityIdAndType(userId, activityId, type)
                 .orElseThrow(() -> new NoSuchElementException(
                         "UserActivity with user id: " + userId +
-                                " and activity id: " + activityId + " not found"));
+                                ", activity id: " + activityId +
+                                " and type: " + type + " not found"));
 
         userActivityRepository.delete(userActivity);
+    }
+
+    public LikesAndSavedDto calculateLikesAndSavesByActivityId(int activityId) {
+        activityRepository.findById(activityId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Activity with id: " + activityId + " not found"));
+
+        long saves = userActivityRepository.countByActivityIdAndType(activityId, (short) 1);
+        long likes = userActivityRepository.countByActivityIdAndType(activityId, (short) 2);
+        return new LikesAndSavedDto(likes, saves);
     }
 }

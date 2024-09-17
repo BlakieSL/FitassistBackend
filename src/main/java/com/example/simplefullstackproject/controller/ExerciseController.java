@@ -22,22 +22,6 @@ public class ExerciseController {
         this.exerciseService = exerciseService;
     }
 
-    @PostMapping
-    public ResponseEntity<ExerciseDto> saveExercise(@Valid @RequestBody ExerciseAdditionDto dto,
-                                          BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new ValidationException(bindingResult);
-        }
-        ExerciseDto savedExercise = exerciseService.saveExercise(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedExercise);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ExerciseDto> getExerciseById(@PathVariable Integer id) {
-        ExerciseDto exercise = exerciseService.getExerciseById(id);
-        return ResponseEntity.ok(exercise);
-    }
-
     @GetMapping
     public ResponseEntity<List<ExerciseDto>> getAllExercises() {
         List<ExerciseDto> exercises = exerciseService.getExercises();
@@ -45,14 +29,34 @@ public class ExerciseController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ExerciseDto>> getExercisesByUserId(@PathVariable Integer userId) {
+    public ResponseEntity<List<ExerciseDto>> getExercisesByUserId(
+            @PathVariable int userId) {
         List<ExerciseDto> exercises = exerciseService.getExercisesByUserID(userId);
         return ResponseEntity.ok(exercises);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ExerciseDto> getExerciseById(
+            @PathVariable int id) {
+        ExerciseDto exercise = exerciseService.getExerciseById(id);
+        return ResponseEntity.ok(exercise);
+    }
+
+    @PostMapping
+    public ResponseEntity<ExerciseDto> saveExercise(
+            @Valid @RequestBody ExerciseAdditionDto dto,
+            BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult);
+        }
+        ExerciseDto savedExercise = exerciseService.saveExercise(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedExercise);
+    }
+
     @PostMapping("/search")
     public ResponseEntity<List<ExerciseDto>> searchExercises(
-            @Valid @RequestBody SearchDtoRequest request, BindingResult bindingResult){
+            @Valid @RequestBody SearchDtoRequest request,
+            BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             throw new ValidationException(bindingResult);
         }

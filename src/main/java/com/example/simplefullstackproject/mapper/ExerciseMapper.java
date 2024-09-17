@@ -28,7 +28,6 @@ public abstract class ExerciseMapper {
 
     @Mapping(target = "exerciseCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "media", ignore = true)
     @Mapping(target = "user_exercise", ignore = true)
     @Mapping(target = "workoutSet", ignore = true)
     public abstract Exercise toEntity(ExerciseAdditionDto dto);

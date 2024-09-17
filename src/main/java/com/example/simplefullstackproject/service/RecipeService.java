@@ -7,11 +7,9 @@ import com.example.simplefullstackproject.helper.ValidationHelper;
 import com.example.simplefullstackproject.mapper.RecipeMapper;
 import com.example.simplefullstackproject.model.Recipe;
 import com.example.simplefullstackproject.model.RecipeCategory;
+import com.example.simplefullstackproject.model.RecipeCategoryAssociation;
 import com.example.simplefullstackproject.model.UserRecipe;
-import com.example.simplefullstackproject.repository.RecipeCategoryRepository;
-import com.example.simplefullstackproject.repository.RecipeRepository;
-import com.example.simplefullstackproject.repository.UserRecipeRepository;
-import com.example.simplefullstackproject.repository.UserRepository;
+import com.example.simplefullstackproject.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -27,19 +25,21 @@ public class RecipeService {
     private final UserRepository userRepository;
     private final UserRecipeRepository userRecipeRepository;
     private final RecipeCategoryRepository recipeCategoryRepository;
+    private final RecipeCategoryAssociationRepository recipeCategoryAssociationRepository;
     public RecipeService(
             ValidationHelper validationHelper,
             RecipeMapper recipeMapper,
             RecipeRepository recipeRepository,
             UserRepository userRepository,
             UserRecipeRepository userRecipeRepository,
-            RecipeCategoryRepository recipeCategoryRepository) {
+            RecipeCategoryRepository recipeCategoryRepository, RecipeCategoryAssociationRepository recipeCategoryAssociationRepository) {
         this.validationHelper = validationHelper;
         this.recipeMapper = recipeMapper;
         this.recipeRepository = recipeRepository;
         this.userRepository = userRepository;
         this.userRecipeRepository = userRecipeRepository;
         this.recipeCategoryRepository = recipeCategoryRepository;
+        this.recipeCategoryAssociationRepository = recipeCategoryAssociationRepository;
     }
 
     @Transactional
@@ -50,7 +50,7 @@ public class RecipeService {
         return recipeMapper.toDto(recipe);
     }
 
-    public RecipeDto getRecipeById(Integer id) {
+    public RecipeDto getRecipeById(int id) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Recipe with id: " + id + " not found"));
@@ -64,7 +64,7 @@ public class RecipeService {
                 .collect(Collectors.toList());
     }
 
-    public List<RecipeDto> getRecipesByUserID(Integer userId) {
+    public List<RecipeDto> getRecipesByUserID(int userId) {
         List<UserRecipe> userRecipes = userRecipeRepository.findByUserId(userId);
         List<Recipe> recipes = userRecipes.stream()
                 .map(UserRecipe::getRecipe)
@@ -81,9 +81,11 @@ public class RecipeService {
                 .collect(Collectors.toList());
     }
 
-    public List<RecipeDto> getRecipesByCategory(Integer categoryId) {
-        List<Recipe> recipes = recipeRepository
-                .findAllByRecipeCategory_Id(categoryId);
+    public List<RecipeDto> getRecipesByCategory(int categoryId) {
+        List<RecipeCategoryAssociation> recipeCategoryAssociations = recipeCategoryAssociationRepository.findByRecipeCategoryId(categoryId);
+        List<Recipe> recipes = recipeCategoryAssociations.stream()
+                .map(RecipeCategoryAssociation::getRecipe)
+                .collect(Collectors.toList());
         return recipes.stream()
                 .map(recipeMapper::toDto)
                 .collect(Collectors.toList());

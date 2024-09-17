@@ -24,6 +24,12 @@ public class ActivityController {
         return ResponseEntity.ok(activityService.getActivities());
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<ActivitySummaryDto>> getActivitiesByUserId(@PathVariable int userId) {
+        List<ActivitySummaryDto> recipes = activityService.getActivitiesByUserID(userId);
+        return ResponseEntity.ok(recipes);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ActivitySummaryDto> getActivityById(@PathVariable int id) {
         ActivitySummaryDto activity = activityService.getActivityById(id);
@@ -59,11 +65,5 @@ public class ActivityController {
             throw new ValidationException(bindingResult);
         }
         return ResponseEntity.ok(activityService.searchActivities(request));
-    }
-
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ActivitySummaryDto>> getActivitiesByUserId(@PathVariable Integer userId) {
-        List<ActivitySummaryDto> recipes = activityService.getActivitiesByUserID(userId);
-        return ResponseEntity.ok(recipes);
     }
 }
