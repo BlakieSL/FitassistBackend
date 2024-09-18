@@ -44,7 +44,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(
-            @PathVariable Integer id) {
+            @PathVariable int id) {
         UserResponse user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
@@ -75,7 +75,7 @@ public class UserController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> modifyUserById(
-            @PathVariable Integer id,
+            @PathVariable int id,
             @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch,
             BindingResult bindingResult) throws JsonPatchException, JsonProcessingException {
         if (bindingResult.hasErrors()) {
@@ -88,15 +88,15 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserById(
-            @PathVariable Integer id) {
+            @PathVariable int id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{userId}/recipes/{recipeId}/type/{typeId}")
     public ResponseEntity<Void> saveRecipeToUser(
-            @PathVariable Integer userId,
-            @PathVariable Integer recipeId,
+            @PathVariable int userId,
+            @PathVariable int recipeId,
             @PathVariable short typeId
     ) {
         userRecipeService.saveRecipeToUser(recipeId, userId, typeId);
@@ -105,8 +105,8 @@ public class UserController {
 
     @DeleteMapping("/{userId}/recipes/{recipeId}/type/{typeId}")
     public ResponseEntity<Void> deleteSavedRecipeFromUser(
-            @PathVariable Integer userId,
-            @PathVariable Integer recipeId,
+            @PathVariable int userId,
+            @PathVariable int recipeId,
             @PathVariable short typeId
     ) {
         userRecipeService.deleteSavedRecipeFromUser(recipeId, userId, typeId);
@@ -115,8 +115,8 @@ public class UserController {
 
     @PostMapping("/{userId}/exercises/{exerciseId}/type/{typeId}")
     public ResponseEntity<Void> saveExerciseToUser(
-            @PathVariable Integer userId,
-            @PathVariable Integer exerciseId,
+            @PathVariable int userId,
+            @PathVariable int exerciseId,
             @PathVariable short typeId
     ) {
         userExerciseService.saveExerciseToUser(exerciseId, userId, typeId);
@@ -125,8 +125,8 @@ public class UserController {
 
     @DeleteMapping("/{userId}/exercises/{exerciseId}/type/{typeId}")
     public ResponseEntity<Void> deleteSavedExerciseFromUser(
-            @PathVariable Integer userId,
-            @PathVariable Integer exerciseId,
+            @PathVariable int userId,
+            @PathVariable int exerciseId,
             @PathVariable short typeId
     ) {
         userExerciseService.deleteSavedExerciseFromUser(exerciseId, userId, typeId);
@@ -135,8 +135,8 @@ public class UserController {
 
     @PostMapping("/{userId}/plans/{planId}/type/{typeId}")
     public ResponseEntity<Void> savePlanToUser(
-            @PathVariable Integer userId,
-            @PathVariable Integer planId,
+            @PathVariable int userId,
+            @PathVariable int planId,
             @PathVariable short typeId) {
         userPlanService.savePlanToUser(planId, userId, typeId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -144,8 +144,8 @@ public class UserController {
 
     @DeleteMapping("/{userId}/plans/{planId}/type/{typeId}")
     public ResponseEntity<Void> deleteSavedPlanFromUser(
-            @PathVariable Integer userId,
-            @PathVariable Integer planId,
+            @PathVariable int userId,
+            @PathVariable int planId,
             @PathVariable short typeId) {
         userPlanService.deleteSavedPlanFromUser(planId, userId, typeId);
         return ResponseEntity.ok().build();
@@ -153,8 +153,8 @@ public class UserController {
 
     @PostMapping("/{userId}/foods/{foodId}/type/{typeId}")
     public ResponseEntity<Void> saveFoodToUser(
-            @PathVariable Integer userId,
-            @PathVariable Integer foodId,
+            @PathVariable int userId,
+            @PathVariable int foodId,
             @PathVariable short typeId
     ) {
         userFoodService.saveFoodToUser(foodId, userId, typeId);
@@ -163,8 +163,8 @@ public class UserController {
 
     @DeleteMapping("/{userId}/foods/{foodId}/type/{typeId}")
     public ResponseEntity<Void> deleteSavedFoodFromUser(
-            @PathVariable Integer userId,
-            @PathVariable Integer foodId,
+            @PathVariable int userId,
+            @PathVariable int foodId,
             @PathVariable short typeId
     ) {
         userFoodService.deleteSavedFoodFromUser(foodId, userId, typeId);
@@ -173,8 +173,8 @@ public class UserController {
 
     @PostMapping("/{userId}/activities/{activityId}/type/{typeId}")
     public ResponseEntity<Void> saveActivityToUser(
-            @PathVariable Integer userId,
-            @PathVariable Integer activityId,
+            @PathVariable int userId,
+            @PathVariable int activityId,
             @PathVariable short typeId
     ) {
         userActivityService.saveActivityToUser(activityId, userId, typeId);
@@ -183,8 +183,8 @@ public class UserController {
 
     @DeleteMapping("/{userId}/activities/{activityId}/type/{typeId}")
     public ResponseEntity<Void> deleteSavedActivityFromUser(
-            @PathVariable Integer userId,
-            @PathVariable Integer activityId,
+            @PathVariable int userId,
+            @PathVariable int activityId,
             @PathVariable short typeId
     ) {
         userActivityService.deleteSavedActivityFromUser(activityId, userId, typeId);

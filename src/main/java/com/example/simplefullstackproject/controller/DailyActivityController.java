@@ -30,15 +30,16 @@ public class DailyActivityController {
         return ResponseEntity.ok(activities);
     }
 
-    @PostMapping("/{userId}/add")
+    @PostMapping("/{userId}/add/{activityId}")
     public ResponseEntity<Void> addDailyActivitiesByUserId(
             @PathVariable int userId,
+            @PathVariable int activityId,
             @Valid @RequestBody DailyActivityDto request,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
-        dailyActivityService.addActivityToDailyActivities(userId, request);
+        dailyActivityService.addActivityToDailyActivities(userId, activityId, request);
         return ResponseEntity.ok().build();
     }
 

@@ -9,8 +9,6 @@ import lombok.Setter;
 @Setter
 public class DailyActivityDto {
     @NotNull
-    private Integer id;
-    @NotNull
     @Positive
     private int time;
 }

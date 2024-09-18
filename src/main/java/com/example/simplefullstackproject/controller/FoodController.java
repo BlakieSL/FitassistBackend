@@ -22,6 +22,14 @@ public class FoodController {
         this.userFoodService = userFoodService;
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<FoodDto> getFoodById(
+            @PathVariable int id
+    ) {
+        FoodDto food = foodService.getFoodById(id);
+        return ResponseEntity.ok(food);
+    }
+
     @GetMapping
     public ResponseEntity<List<FoodDto>> getAllFoods() {
         return ResponseEntity.ok(foodService.getFoods());
@@ -33,14 +41,6 @@ public class FoodController {
     ) {
         List<FoodDto> recipes = foodService.getFoodsByUserID(userId);
         return ResponseEntity.ok(recipes);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<FoodDto> getFoodById(
-            @PathVariable int id
-    ) {
-        FoodDto food = foodService.getFoodById(id);
-        return ResponseEntity.ok(food);
     }
 
     @GetMapping("/{id}/likes-and-saves")
@@ -79,7 +79,9 @@ public class FoodController {
 
     @PostMapping("/search")
     public ResponseEntity<List<FoodDto>> searchFoods(
-            @Valid @RequestBody SearchDtoRequest request, BindingResult bindingResult) {
+            @Valid @RequestBody SearchDtoRequest request,
+            BindingResult bindingResult
+    ) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }

@@ -42,6 +42,31 @@ public class Exercise {
     @Column(nullable = false, length = MAX_TEXT_LENGTH)
     private String text;
 
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "expertise_level_id", nullable = false)
+    private ExpertiseLevel expertiseLevel;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "mechanics_type_id", nullable = false)
+    private MechanicsType mechanicsType;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "force_type_id", nullable = false)
+    private ForceType forceType;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "exercise_equipment_id", nullable = false)
+    private ExerciseEquipment exerciseEquipment;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "exercise_type_id", nullable = false)
+    private ExerciseType exerciseType;
+
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<ExerciseCategoryAssociation> exerciseCategoryAssociations = new HashSet<>();
 

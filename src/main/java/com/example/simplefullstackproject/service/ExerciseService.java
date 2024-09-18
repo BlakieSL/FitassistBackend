@@ -100,5 +100,40 @@ public class ExerciseService {
                 .map(exerciseMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    public List<ExerciseDto> getExercisesByExpertiseLevel(int expertiseLevelId) {
+        List<Exercise> exercises = exerciseRepository.findByExpertiseLevel_Id(expertiseLevelId);
+        return exercises.stream()
+                .map(exerciseMapper::toDto)
+                .collect(Collectors.toList());
+    }
+    
+    public List<ExerciseDto> getExercisesByForceType(int forceTypeId) {
+        List<Exercise> exercises = exerciseRepository.findByForceType_Id(forceTypeId);
+        return exercises.stream()
+                .map(exerciseMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ExerciseDto> getExercisesByMechanicsType(int mechanicsTypeId) {
+        List<Exercise> exercises = exerciseRepository.findByMechanicsType_Id(mechanicsTypeId);
+        return exercises.stream()
+                .map(exerciseMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ExerciseDto> getExercisesByEquipment(int exerciseEquipmentId) {
+        List<Exercise> exercises = exerciseRepository.findByExerciseEquipment_Id(exerciseEquipmentId);
+        return exercises.stream()
+                .map(exerciseMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ExerciseDto> getExercisesByType(int exerciseTypeId) {
+        List<Exercise> exercises = exerciseRepository.findByExerciseType_Id(exerciseTypeId);
+        return exercises.stream()
+                .map(exerciseMapper::toDto)
+                .collect(Collectors.toList());
+    }
 }
 

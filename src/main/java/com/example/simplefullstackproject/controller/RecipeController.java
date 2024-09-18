@@ -1,12 +1,15 @@
 package com.example.simplefullstackproject.controller;
 
+import com.example.simplefullstackproject.dto.LikesAndSavedDto;
 import com.example.simplefullstackproject.dto.RecipeAdditionDto;
 import com.example.simplefullstackproject.dto.RecipeDto;
 import com.example.simplefullstackproject.exception.ValidationException;
 import com.example.simplefullstackproject.service.RecipeService;
+import com.example.simplefullstackproject.service.UserRecipeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +19,16 @@ import java.util.List;
 @RequestMapping(path = "/api/recipes")
 public class RecipeController {
     private final RecipeService recipeService;
-
-    public RecipeController(RecipeService recipeService) {
+    private final UserRecipeService userRecipeService;
+    public RecipeController(RecipeService recipeService, UserRecipeService userRecipeService) {
         this.recipeService = recipeService;
+        this.userRecipeService = userRecipeService;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<RecipeDto> getRecipeById(@PathVariable int id) {
+        RecipeDto recipe = recipeService.getRecipeById(id);
+        return ResponseEntity.ok(recipe);
     }
 
     @GetMapping
@@ -32,10 +42,12 @@ public class RecipeController {
         return ResponseEntity.ok(recipes);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<RecipeDto> getRecipeById(@PathVariable int id) {
-        RecipeDto recipe = recipeService.getRecipeById(id);
-        return ResponseEntity.ok(recipe);
+    @GetMapping("/{id}/likes-and-saves")
+    public ResponseEntity<LikesAndSavedDto> getLikesAndSavesRecipe(
+            @PathVariable int id
+    ) {
+        LikesAndSavedDto dto = userRecipeService.calculateLikesAndSavesByRecipeId(id);
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping
