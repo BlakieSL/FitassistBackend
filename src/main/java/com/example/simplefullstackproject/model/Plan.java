@@ -2,6 +2,7 @@ package com.example.simplefullstackproject.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,6 +40,26 @@ public class Plan {
     @Size(max = TEXT_MAX_LENGTH)
     @Column(nullable = false, length = TEXT_MAX_LENGTH)
     private String text;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "plan_type_id", nullable = false)
+    private PlanType planType;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "plan_duration_id", nullable = false)
+    private PlanDuration planDuration;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "plan_equipment_id", nullable = false)
+    private PlanEquipment planEquipment;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "plan_expertise_level_id", nullable = false)
+    private PlanExpertiseLevel planExpertiseLevel;
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<PlanCategoryAssociation> planCategoryAssociations = new HashSet<>();

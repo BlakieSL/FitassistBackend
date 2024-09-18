@@ -25,8 +25,32 @@ public class PlanCategoryController {
         return ResponseEntity.ok(planService.getCategories());
     }
 
-    @GetMapping("/{categoryId}/plans")
+    @GetMapping("/{categoryId}/categories")
     public ResponseEntity<List<PlanDto>> getPlansByCategoryId(@PathVariable int categoryId) {
         return ResponseEntity.ok(planService.getPlansByCategory(categoryId));
+    }
+
+    @GetMapping("/{typeId}/type")
+    public ResponseEntity<List<PlanDto>> getPlansByType(@PathVariable int typeId) {
+        List<PlanDto> plans = planService.getPlansByType(typeId);
+        return ResponseEntity.ok(plans);
+    }
+
+    @GetMapping("/{durationId}/duration")
+    public ResponseEntity<List<PlanDto>> getPlansByDuration(@PathVariable int durationId) {
+        List<PlanDto> plans = planService.getPlansByDuration(durationId);
+        return ResponseEntity.ok(plans);
+    }
+
+    @GetMapping("/{equipmentId}/equipment")
+    public ResponseEntity<List<PlanDto>> getPlansByEquipment(@PathVariable int equipmentId) {
+        List<PlanDto> plans = planService.getPlansByEquipment(equipmentId);
+        return ResponseEntity.ok(plans);
+    }
+
+    @GetMapping("/{expertiseLevelId}/expertise-level")
+    public ResponseEntity<List<PlanDto>> getPlansByExpertiseLevel(@PathVariable int expertiseLevelId) {
+        List<PlanDto> plans = planService.getPlansByExpertiseLevel(expertiseLevelId);
+        return ResponseEntity.ok(plans);
     }
 }

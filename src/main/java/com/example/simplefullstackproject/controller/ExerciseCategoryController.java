@@ -25,8 +25,48 @@ public class ExerciseCategoryController {
         return ResponseEntity.ok(exerciseService.getCategories());
     }
 
-    @GetMapping("/{categoryId}/exercises")
+    @GetMapping("/{categoryId}/categories")
     public ResponseEntity<List<ExerciseDto>> getExercisesByCategoryId(@PathVariable int categoryId){
         return ResponseEntity.ok(exerciseService.getExercisesByCategory(categoryId));
+    }
+
+    @GetMapping("/{expertiseLevelId}/expertise-level")
+    public ResponseEntity<List<ExerciseDto>> getExercisesByExpertiseLevel(
+            @PathVariable int expertiseLevelId
+    ) {
+        List<ExerciseDto> exercises = exerciseService.getExercisesByExpertiseLevel(expertiseLevelId);
+        return ResponseEntity.ok(exercises);
+    }
+
+    @GetMapping("/{forceTypeId}/force-type")
+    public ResponseEntity<List<ExerciseDto>> getExercisesByForceType(
+            @PathVariable int forceTypeId
+    ) {
+        List<ExerciseDto> exercises = exerciseService.getExercisesByForceType(forceTypeId);
+        return ResponseEntity.ok(exercises);
+    }
+
+    @GetMapping("/{mechanicsTypeId}/mechanics-type")
+    public ResponseEntity<List<ExerciseDto>> getExercisesByMechanicsType(
+            @PathVariable int mechanicsTypeId
+    ) {
+        List<ExerciseDto> exercises = exerciseService.getExercisesByMechanicsType(mechanicsTypeId);
+        return ResponseEntity.ok(exercises);
+    }
+
+    @GetMapping("/{exerciseEquipmentId}/equipment")
+    public ResponseEntity<List<ExerciseDto>> getExercisesByEquipment(
+            @PathVariable int exerciseEquipmentId
+    ) {
+        List<ExerciseDto> exercises = exerciseService.getExercisesByEquipment(exerciseEquipmentId);
+        return ResponseEntity.ok(exercises);
+    }
+
+    @GetMapping("/{exerciseTypeId}/type")
+    public ResponseEntity<List<ExerciseDto>> getExercisesByType(
+            @PathVariable int exerciseTypeId
+    ) {
+        List<ExerciseDto> exercises = exerciseService.getExercisesByType(exerciseTypeId);
+        return ResponseEntity.ok(exercises);
     }
 }
