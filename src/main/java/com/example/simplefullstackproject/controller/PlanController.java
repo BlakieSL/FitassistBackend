@@ -1,9 +1,11 @@
 package com.example.simplefullstackproject.controller;
 
+import com.example.simplefullstackproject.dto.LikesAndSavedDto;
 import com.example.simplefullstackproject.dto.PlanAdditionDto;
 import com.example.simplefullstackproject.dto.PlanDto;
 import com.example.simplefullstackproject.service.PlanService;
 import com.example.simplefullstackproject.exception.ValidationException;
+import com.example.simplefullstackproject.service.UserPlanService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +18,16 @@ import java.util.List;
 @RequestMapping("/api/plans")
 public class PlanController {
     private final PlanService planService;
-
-    public PlanController(PlanService planService) {
+    private final UserPlanService userPlanService;
+    public PlanController(PlanService planService, UserPlanService userPlanService) {
         this.planService = planService;
+        this.userPlanService = userPlanService;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PlanDto> getPlanById(@PathVariable int id) {
+    public ResponseEntity<PlanDto> getPlanById(
+            @PathVariable int id
+    ) {
         PlanDto plan = planService.getPlanById(id);
         return ResponseEntity.ok(plan);
     }
@@ -34,14 +39,26 @@ public class PlanController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<PlanDto>> getPlansByUserID(@PathVariable int userId) {
+    public ResponseEntity<List<PlanDto>> getPlansByUserID(
+            @PathVariable int userId
+    ) {
         List<PlanDto> plans = planService.getPlansByUserID(userId);
         return ResponseEntity.ok(plans);
     }
 
+    @GetMapping("/{id}/likes-and-saves")
+    public ResponseEntity<LikesAndSavedDto> getLikesAndSavesPlan(
+            @PathVariable int id
+    ) {
+        LikesAndSavedDto dto = userPlanService.calculateLikesAndSavesByPlanId(id);
+        return ResponseEntity.ok(dto);
+    }
+
     @PostMapping
     public ResponseEntity<PlanDto> savePlan(
-            @Valid @RequestBody PlanAdditionDto planDto, BindingResult bindingResult) {
+            @Valid @RequestBody PlanAdditionDto planDto,
+            BindingResult bindingResult
+    ) {
         if (bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
