@@ -18,5 +18,10 @@ public class ExerciseDto {
     private String name;
     private String description;
     private String text;
+    private ExerciseCategoryShortDto expertiseLevel;
+    private ExerciseCategoryShortDto mechanicsType;
+    private ExerciseCategoryShortDto forceType;
+    private ExerciseCategoryShortDto exerciseEquipment;
+    private ExerciseCategoryShortDto exerciseType;
     private List<ExerciseCategoryShortDto> categories;
 }

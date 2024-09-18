@@ -110,4 +110,15 @@ public class ActivityService {
                 .map(activityMapper::toSummaryDto)
                 .collect(Collectors.toList());
     }
+
+    public ActivityMetDto getAverageMet() {
+        List<Activity> activities = activityRepository.findAll();
+
+        double averageMet = activities.stream()
+                .mapToDouble(Activity::getMet)
+                .average()
+                .orElse(0.0);
+
+        return new ActivityMetDto(averageMet);
+    }
 }

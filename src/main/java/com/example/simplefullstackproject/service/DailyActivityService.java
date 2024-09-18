@@ -62,15 +62,15 @@ public class DailyActivityService {
     }
 
     @Transactional
-    public void addActivityToDailyActivities(int userId, DailyActivityDto dto) {
+    public void addActivityToDailyActivities(int userId, Integer activityId, DailyActivityDto dto) {
         validationHelper.validate(dto);
 
         DailyActivity dailyActivity = getDailyActivityByUserId(userId);
 
-        Activity activity = activityRepository.findById(dto.getId())
-                .orElseThrow(() -> new NoSuchElementException("Activity with id: " + dto.getId() + " not found"));
+        Activity activity = activityRepository.findById(activityId)
+                .orElseThrow(() -> new NoSuchElementException("Activity with id: " + activityId + " not found"));
         Optional<DailyCartActivity> existingDailyCartActivity = dailyActivity.getDailyCartActivities().stream()
-                .filter(item -> item.getActivity().getId().equals(dto.getId()))
+                .filter(item -> item.getActivity().getId().equals(activityId))
                 .findFirst();
 
         if (existingDailyCartActivity.isPresent()) {
@@ -107,7 +107,6 @@ public class DailyActivityService {
                 .orElseThrow(() -> new NoSuchElementException("Activity with id: " + activityId + " not found in daily cart"));
 
         DailyActivityDto dailyCartActivityDto = new DailyActivityDto();
-        dailyCartActivityDto.setId(dailyCartActivity.getActivity().getId());
         dailyCartActivityDto.setTime(dailyCartActivity.getTime());
 
         DailyActivityDto patchedDailyCartActivityDto = jsonPatchHelper.applyPatch(patch, dailyCartActivityDto, DailyActivityDto.class);

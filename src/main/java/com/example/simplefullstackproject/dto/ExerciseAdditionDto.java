@@ -32,5 +32,19 @@ public class ExerciseAdditionDto {
     private String text;
 
     @NotNull
+    private int expertiseLevelId;
+
+    @NotNull
+    private int mechanicsTypeId;
+
+    @NotNull
+    private int forceTypeId;
+
+    @NotNull
+    private int exerciseEquipmentId;
+
+    @NotNull
+    private int exerciseTypeId;
+
     private List<Integer> categoryIds;
 }
