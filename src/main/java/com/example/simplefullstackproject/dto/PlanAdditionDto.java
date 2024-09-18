@@ -32,5 +32,16 @@ public class PlanAdditionDto {
     private String text;
 
     @NotNull
+    private int planTypeId;
+
+    @NotNull
+    private int planDurationId;
+
+    @NotNull
+    private int planEquipmentId;
+
+    @NotNull
+    private int planExpertiseLevelId;
+
     private List<Integer> categoryIds;
 }

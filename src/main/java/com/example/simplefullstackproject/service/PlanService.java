@@ -90,4 +90,32 @@ public class PlanService {
                 .map(planMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    public List<PlanDto> getPlansByType(int planTypeId) {
+        List<Plan> plans = planRepository.findByPlanType_Id(planTypeId);
+        return plans.stream()
+                .map(planMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<PlanDto> getPlansByDuration(int planDurationId) {
+        List<Plan> plans = planRepository.findByPlanDuration_Id(planDurationId);
+        return plans.stream()
+                .map(planMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<PlanDto> getPlansByEquipment(int planEquipmentId) {
+        List<Plan> plans = planRepository.findByPlanEquipment_Id(planEquipmentId);
+        return plans.stream()
+                .map(planMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<PlanDto> getPlansByExpertiseLevel(int planExpertiseLevelId) {
+        List<Plan> plans = planRepository.findByPlanExpertiseLevel_Id(planExpertiseLevelId);
+        return plans.stream()
+                .map(planMapper::toDto)
+                .collect(Collectors.toList());
+    }
 }
