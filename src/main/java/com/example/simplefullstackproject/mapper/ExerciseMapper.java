@@ -1,9 +1,6 @@
 package com.example.simplefullstackproject.mapper;
 
-import com.example.simplefullstackproject.dto.ExerciseAdditionDto;
-import com.example.simplefullstackproject.dto.ExerciseCategoryDto;
-import com.example.simplefullstackproject.dto.ExerciseCategoryShortDto;
-import com.example.simplefullstackproject.dto.ExerciseDto;
+import com.example.simplefullstackproject.dto.*;
 import com.example.simplefullstackproject.model.*;
 import com.example.simplefullstackproject.repository.*;
 import org.mapstruct.Mapper;
@@ -58,6 +55,11 @@ public abstract class ExerciseMapper {
 
     public abstract ExerciseCategoryDto toCategoryDto(ExerciseCategory exerciseCategory);
 
+    public abstract ExerciseInstructionDto toInstructionDto(ExerciseInstruction exerciseInstruction);
+
+    public abstract ExerciseTipDto toTipDto(ExerciseTip exerciseTip);
+
+
     @Named("mapCategoryIdsToAssociations")
     protected Set<ExerciseCategoryAssociation> mapCategoryIdsToAssociations(List<Integer> categoryIds) {
         if (categoryIds == null) {
@@ -84,7 +86,8 @@ public abstract class ExerciseMapper {
         return associations.stream()
                 .map(association -> new ExerciseCategoryShortDto(
                         association.getExerciseCategory().getId(),
-                        association.getExerciseCategory().getName()))
+                        association.getExerciseCategory().getName(),
+                        association.getPriority()))
                 .toList();
     }
 

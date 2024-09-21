@@ -1,6 +1,7 @@
 package com.example.simplefullstackproject.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,4 +25,8 @@ public class ExerciseCategoryAssociation {
     @ManyToOne
     @JoinColumn(name = "exercise_category_id", nullable = false)
     private ExerciseCategory exerciseCategory;
+
+    @NotNull
+    @Column(nullable = false)
+    private int priority;
 }

@@ -1,5 +1,6 @@
 package com.example.simplefullstackproject.dto;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -30,6 +31,9 @@ public class ExerciseAdditionDto {
     @NotBlank
     @Size(max = MAX_TEXT_LENGTH)
     private String text;
+
+    @NotNull
+    private Double score;
 
     @NotNull
     private int expertiseLevelId;
