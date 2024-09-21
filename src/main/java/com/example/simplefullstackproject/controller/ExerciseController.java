@@ -1,13 +1,11 @@
 package com.example.simplefullstackproject.controller;
 
-import com.example.simplefullstackproject.dto.ExerciseAdditionDto;
-import com.example.simplefullstackproject.dto.ExerciseDto;
-import com.example.simplefullstackproject.dto.LikesAndSavedDto;
-import com.example.simplefullstackproject.dto.SearchDtoRequest;
+import com.example.simplefullstackproject.dto.*;
 import com.example.simplefullstackproject.exception.ValidationException;
 import com.example.simplefullstackproject.service.ExerciseService;
 import com.example.simplefullstackproject.service.UserExerciseService;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -55,6 +53,21 @@ public class ExerciseController {
         return ResponseEntity.ok(dto);
     }
 
+    @GetMapping("/{id}/instructions")
+    public ResponseEntity<List<ExerciseInstructionDto>> getAllInstructionsByExerciseId(
+            @PathVariable int id
+    ) {
+        List<ExerciseInstructionDto> instructions = exerciseService.getExerciseInstructions(id);
+        return ResponseEntity.ok(instructions);
+    }
+
+    @GetMapping("/{id}/tips")
+    public ResponseEntity<List<ExerciseTipDto>> getAllTipsByExerciseId(
+            @PathVariable int id
+    ) {
+        List<ExerciseTipDto> tips = exerciseService.getExerciseTips(id);
+        return  ResponseEntity.ok(tips);
+    }
     @PostMapping
     public ResponseEntity<ExerciseDto> saveExercise(
             @Valid @RequestBody ExerciseAdditionDto dto,

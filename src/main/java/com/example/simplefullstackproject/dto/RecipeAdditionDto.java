@@ -32,5 +32,8 @@ public class RecipeAdditionDto {
     private String text;
 
     @NotNull
+    private Double score;
+
+    @NotNull
     private List<Integer> categoryIds;
 }

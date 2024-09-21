@@ -41,6 +41,10 @@ public class Recipe {
     @Column(nullable = false, length = TEXT_MAX_LENGTH)
     private String text;
 
+    @NotNull
+    @Column(nullable = false)
+    private Double score;
+
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();
 

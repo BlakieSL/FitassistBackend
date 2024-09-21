@@ -42,6 +42,10 @@ public class Plan {
     private String text;
 
     @NotNull
+    @Column(nullable = false)
+    private Double score;
+
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "plan_type_id", nullable = false)
     private PlanType planType;

@@ -10,7 +10,8 @@ import java.util.Optional;
 
 public interface MediaRepository extends JpaRepository<Media, Integer> {
     List<Media> findByParentIdAndParentType(int parentId, short parentType);
-    @Query("SELECT m FROM Media m WHERE m.parentId = :parentId AND m.parentType = :parentType ORDER BY m.id ASC")
-    Optional<Media> findFirstByParentIdAndParentType(@Param("parentId") int parentId, @Param("parentType") short parentType);
+    Optional<Media> findFirstByParentIdAndParentTypeOrderByIdAsc(@Param("parentId") int parentId, @Param("parentType") short parentType);
+
+
     Optional<Media> findByIdAndParentId(int id, int parentId);
 }

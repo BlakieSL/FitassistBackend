@@ -32,6 +32,9 @@ public class PlanAdditionDto {
     private String text;
 
     @NotNull
+    private Double score;
+
+    @NotNull
     private int planTypeId;
 
     @NotNull

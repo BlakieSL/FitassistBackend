@@ -61,7 +61,7 @@ public class MediaService {
     }
 
     public MediaDto getFirstMediaForParent(int parentId, short parentType) {
-        Media media = mediaRepository.findFirstByParentIdAndParentType(parentId, parentType)
+        Media media = mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(parentId, parentType)
                 .orElseThrow(() -> new NoSuchElementException(
                         "No media found with parentId: " + parentId + " and parentType: " + parentType));
         return mediaMapper.toDto(media);
