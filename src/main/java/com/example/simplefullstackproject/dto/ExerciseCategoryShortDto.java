@@ -12,4 +12,10 @@ import lombok.Setter;
 public class ExerciseCategoryShortDto {
     private Integer id;
     private String name;
+    private int priority; // should be used only for exerciseCategoryAssociation
+
+    public ExerciseCategoryShortDto(Integer id, String name){
+        this.id=id;
+        this.name=name;
+    }
 }

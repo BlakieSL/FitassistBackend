@@ -1,19 +1,10 @@
 package com.example.simplefullstackproject.service;
 
-import com.example.simplefullstackproject.dto.ExerciseAdditionDto;
-import com.example.simplefullstackproject.dto.ExerciseCategoryDto;
-import com.example.simplefullstackproject.dto.ExerciseDto;
-import com.example.simplefullstackproject.dto.SearchDtoRequest;
+import com.example.simplefullstackproject.dto.*;
 import com.example.simplefullstackproject.helper.ValidationHelper;
 import com.example.simplefullstackproject.mapper.ExerciseMapper;
-import com.example.simplefullstackproject.model.Exercise;
-import com.example.simplefullstackproject.model.ExerciseCategory;
-import com.example.simplefullstackproject.model.ExerciseCategoryAssociation;
-import com.example.simplefullstackproject.model.UserExercise;
-import com.example.simplefullstackproject.repository.ExerciseCategoryAssociationRepository;
-import com.example.simplefullstackproject.repository.ExerciseCategoryRepository;
-import com.example.simplefullstackproject.repository.ExerciseRepository;
-import com.example.simplefullstackproject.repository.UserExerciseRepository;
+import com.example.simplefullstackproject.model.*;
+import com.example.simplefullstackproject.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -29,18 +20,22 @@ public class ExerciseService {
     private final UserExerciseRepository userExerciseRepository;
     private final ExerciseCategoryRepository exerciseCategoryRepository;
     private final ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository;
+    private final ExerciseInstructionRepository exerciseInstructionRepository;
+    private final ExerciseTipRepository exerciseTipRepository;
     public ExerciseService(ValidationHelper validationHelper,
                            ExerciseMapper exerciseMapper,
                            ExerciseRepository exerciseRepository,
                            UserExerciseRepository userExerciseRepository,
                            ExerciseCategoryRepository exerciseCategoryRepository,
-                           ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository) {
+                           ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository, ExerciseInstructionRepository exerciseInstructionRepository, ExerciseTipRepository exerciseTipRepository) {
         this.validationHelper = validationHelper;
         this.exerciseMapper = exerciseMapper;
         this.exerciseRepository = exerciseRepository;
         this.userExerciseRepository = userExerciseRepository;
         this.exerciseCategoryRepository = exerciseCategoryRepository;
         this.exerciseCategoryAssociationRepository = exerciseCategoryAssociationRepository;
+        this.exerciseInstructionRepository = exerciseInstructionRepository;
+        this.exerciseTipRepository = exerciseTipRepository;
     }
 
     @Transactional
@@ -133,6 +128,20 @@ public class ExerciseService {
         List<Exercise> exercises = exerciseRepository.findByExerciseType_Id(exerciseTypeId);
         return exercises.stream()
                 .map(exerciseMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ExerciseInstructionDto> getExerciseInstructions(int exerciseId) {
+        List<ExerciseInstruction> instructions = exerciseInstructionRepository.getAllByExerciseId(exerciseId);
+        return instructions.stream()
+                .map(exerciseMapper::toInstructionDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ExerciseTipDto> getExerciseTips(int exerciseId) {
+     List<ExerciseTip> tips = exerciseTipRepository.getAllByExerciseId(exerciseId);
+        return tips.stream()
+                .map(exerciseMapper::toTipDto)
                 .collect(Collectors.toList());
     }
 }

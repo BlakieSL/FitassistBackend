@@ -2,6 +2,7 @@ package com.example.simplefullstackproject.dto;
 
 import com.example.simplefullstackproject.model.Plan;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class PlanDto {
     private String name;
     private String description;
     private String text;
+    private Double score;
     private PlanCategoryShortDto planType;
     private PlanCategoryShortDto planDuration;
     private PlanCategoryShortDto planEquipment;

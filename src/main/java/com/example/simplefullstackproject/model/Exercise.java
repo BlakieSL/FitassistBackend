@@ -43,6 +43,10 @@ public class Exercise {
     private String text;
 
     @NotNull
+    @Column(nullable = false)
+    private Double score;
+
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "expertise_level_id", nullable = false)
     private ExpertiseLevel expertiseLevel;
@@ -66,6 +70,12 @@ public class Exercise {
     @ManyToOne
     @JoinColumn(name = "exercise_type_id", nullable = false)
     private ExerciseType exerciseType;
+
+    @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final Set<ExerciseInstruction> exerciseInstructions = new HashSet<>();
+
+    @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final Set<ExerciseTip> exerciseTips = new HashSet<>();
 
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<ExerciseCategoryAssociation> exerciseCategoryAssociations = new HashSet<>();
