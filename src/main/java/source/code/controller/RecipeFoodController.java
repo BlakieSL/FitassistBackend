@@ -46,7 +46,7 @@ public class RecipeFoodController {
             @Valid @RequestBody JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException {
 
-        recipeFoodService.modifyFoodRecipe(recipeId, foodId, patch);
+        recipeFoodService.updateFoodRecipe(recipeId, foodId, patch);
         return ResponseEntity.ok().build();
     }
 }

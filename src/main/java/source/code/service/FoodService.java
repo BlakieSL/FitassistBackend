@@ -43,53 +43,60 @@ public class FoodService {
     }
 
     @Transactional
-    public FoodResponseDto saveFood(FoodCreateDto request) {
+    public FoodResponseDto createFood(FoodCreateDto request) {
         validationHelper.validate(request);
         Food food = foodRepository.save(foodMapper.toEntity(request));
+
         return foodMapper.toDto(food);
     }
 
-    public FoodResponseDto getFoodById(int id) {
+    public FoodResponseDto getFood(int id) {
         Food food = foodRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Food with id: " + id + " not found"));
+
         return foodMapper.toDto(food);
     }
 
-    public List<FoodResponseDto> getFoods() {
+    public List<FoodResponseDto> getAllFoods() {
         List<Food> foods = foodRepository.findAll();
+
         return foods.stream()
                 .map(foodMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public FoodCalculatedMacrosResponseDto calculateMacros(int id, CalculateFoodMacrosRequestDto request) {
+    public FoodCalculatedMacrosResponseDto calculateFoodMacros(int id, CalculateFoodMacrosRequestDto request) {
         validationHelper.validate(request);
         Food food = foodRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Food with id: " + id + " not found"));
         double factor = (double) request.getAmount() / 100;
+
         return foodMapper.toDtoWithFactor(food, factor);
     }
 
     public List<FoodResponseDto> searchFoods(SearchRequestDto request) {
         List<Food> foods = foodRepository.findAllByNameContainingIgnoreCase(request.getName());
+
         return foods.stream()
                 .map(foodMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<FoodResponseDto> getFoodsByUserID(int userId) {
+    public List<FoodResponseDto> getFoodsByUser(int userId) {
         List<UserFood> userFoods = userFoodRepository.findByUserId(userId);
         List<Food> foods = userFoods.stream()
                 .map(UserFood::getFood)
                 .collect(Collectors.toList());
+
         return foods.stream()
                 .map(foodMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<FoodCategoryResponseDto> getCategories() {
+    public List<FoodCategoryResponseDto> getAllCategories() {
         List<FoodCategory> categories = foodCategoryRepository.findAll();
+
         return categories.stream()
                 .map(foodMapper::toCategoryDto)
                 .collect(Collectors.toList());
@@ -98,6 +105,7 @@ public class FoodService {
     public List<FoodResponseDto> getFoodsByCategory(int categoryId){
         List<Food> foods = foodRepository
                 .findAllByFoodCategory_Id(categoryId);
+
         return foods.stream()
                 .map(foodMapper::toDto)
                 .collect(Collectors.toList());

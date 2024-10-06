@@ -20,25 +20,25 @@ public class WorkoutController {
 
     @GetMapping("/{id}")
     public ResponseEntity<WorkoutDto> getWorkout(@PathVariable int id) {
-        WorkoutDto workout = workoutService.getWorkoutById(id);
+        WorkoutDto workout = workoutService.getWorkout(id);
         return ResponseEntity.ok(workout);
     }
 
     @GetMapping
     public ResponseEntity<List<WorkoutDto>> getAllWorkouts() {
-        List<WorkoutDto> workouts = workoutService.getWorkouts();
+        List<WorkoutDto> workouts = workoutService.getAllWorkouts();
         return ResponseEntity.ok(workouts);
     }
 
     @GetMapping("/plan/{planId}")
     public ResponseEntity<List<WorkoutDto>> getWorkoutsByPlan(@PathVariable int planId) {
-        List<WorkoutDto> workouts = workoutService.getWorkoutsByPlanID(planId);
+        List<WorkoutDto> workouts = workoutService.getWorkoutsByPlan(planId);
         return ResponseEntity.ok(workouts);
     }
 
     @PostMapping
     public ResponseEntity<WorkoutDto> createWorkout(@Valid @RequestBody WorkoutDto workoutDto) {
-        WorkoutDto response = workoutService.saveWorkout(workoutDto);
+        WorkoutDto response = workoutService.createWorkout(workoutDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

@@ -22,7 +22,7 @@ public class FoodCategoryController {
 
     @GetMapping
     public ResponseEntity<List<FoodCategoryResponseDto>> getAllFoodCategories() {
-        return ResponseEntity.ok(foodService.getCategories());
+        return ResponseEntity.ok(foodService.getAllCategories());
     }
 
     @GetMapping("/{categoryId}/foods")

@@ -65,7 +65,7 @@ public class UserExerciseService {
         userExerciseRepository.delete(userExercise);
     }
 
-    public LikesAndSavesResponseDto calculateLikesAndSavesByExerciseId(int exerciseId) {
+    public LikesAndSavesResponseDto calculateExerciseLikesAndSaves(int exerciseId) {
         exerciseRepository.findById(exerciseId)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Exercise with id: " + exerciseId + " not found"));

@@ -22,7 +22,7 @@ public class PlanCategoryController {
 
     @GetMapping
     public ResponseEntity<List<PlanCategoryResponseDto>> getAllPlanCategories() {
-        return ResponseEntity.ok(planService.getCategories());
+        return ResponseEntity.ok(planService.getAllCategories());
     }
 
     @GetMapping("/{categoryId}/categories")

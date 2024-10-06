@@ -27,7 +27,7 @@ public class WorkoutPlanService {
     }
 
     @Transactional
-    public void addWorkoutToPlan(int workoutId, int planId) {
+    public void saveWorkoutToPlan(int workoutId, int planId) {
         Plan plan = planRepository
                 .findById(planId)
                 .orElseThrow(() -> new NoSuchElementException(

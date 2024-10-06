@@ -45,7 +45,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> getUser(@PathVariable int id) {
-        UserResponseDto user = userService.getUserById(id);
+        UserResponseDto user = userService.getUser(id);
         return ResponseEntity.ok(user);
     }
 
@@ -68,7 +68,7 @@ public class UserController {
             @Validated(ValidationGroups.Registration.class)
             @RequestBody JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
 
-        userService.modifyUser(id,patch);
+        userService.updateUser(id,patch);
         return ResponseEntity.noContent().build();
     }
 

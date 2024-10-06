@@ -16,7 +16,7 @@ public class WorkoutPlanController {
 
     @PostMapping("/{planId}/add/{workoutId}")
     public ResponseEntity<Void> addWorkoutToPlan(@PathVariable int workoutId, @PathVariable int planId) {
-        workoutPlanService.addWorkoutToPlan(workoutId, planId);
+        workoutPlanService.saveWorkoutToPlan(workoutId, planId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

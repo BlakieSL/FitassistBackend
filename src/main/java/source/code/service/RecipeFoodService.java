@@ -70,7 +70,7 @@ public class RecipeFoodService {
     }
 
     @Transactional
-    public void modifyFoodRecipe(int recipeId, int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+    public void updateFoodRecipe(int recipeId, int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
         RecipeFood recipeFood = recipeFoodRepository
                 .findByRecipeIdAndFoodId(recipeId, foodId)
                 .orElseThrow(() -> new NoSuchElementException(
