@@ -2,7 +2,7 @@ package source.code.mapper;
 
 import source.code.dto.response.FoodResponseDto;
 import source.code.dto.request.FoodCreateDto;
-import source.code.dto.response.FoodCalculatedResponseDto;
+import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.FoodCategoryResponseDto;
 import source.code.model.Food;
 import source.code.model.FoodCategory;
@@ -24,7 +24,7 @@ public abstract class FoodMapper {
     @Mapping(target = "categoryName", source = "foodCategory.name")
     @Mapping(target = "categoryId", source = "foodCategory.id")
     @Mapping(target = "amount", expression = "java((int) (factor * 100))")
-    public abstract FoodCalculatedResponseDto toDtoWithFactor(Food food, @Context double factor);
+    public abstract FoodCalculatedMacrosResponseDto toDtoWithFactor(Food food, @Context double factor);
 
     @Mapping(target = "foodCategory", source = "categoryId", qualifiedByName = "categoryIdToFoodCategory")
     @Mapping(target = "id", ignore = true)
@@ -36,7 +36,7 @@ public abstract class FoodMapper {
     public abstract FoodCategoryResponseDto toCategoryDto(FoodCategory foodCategory);
 
     @AfterMapping
-    protected void calculateMacros(@MappingTarget FoodCalculatedResponseDto dto, @Context double factor) {
+    protected void calculateMacros(@MappingTarget FoodCalculatedMacrosResponseDto dto, @Context double factor) {
         dto.setCalories(dto.getCalories() * factor);
         dto.setProtein(dto.getProtein() * factor);
         dto.setFat(dto.getFat() * factor);

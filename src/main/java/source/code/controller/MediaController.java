@@ -32,7 +32,7 @@ public class MediaController {
     }
 
     @GetMapping("/{mediaId}")
-    public ResponseEntity<MediaResponseDto> getMediaById(@PathVariable int mediaId) {
+    public ResponseEntity<MediaResponseDto> getMedia(@PathVariable int mediaId) {
         MediaResponseDto media = mediaService.getMediaById(mediaId);
         return ResponseEntity.ok(media);
     }

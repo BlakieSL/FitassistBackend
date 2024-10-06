@@ -3,7 +3,7 @@ package source.code.service;
 import source.code.dto.request.CalculateFoodMacrosRequestDto;
 import source.code.dto.request.FoodCreateDto;
 import source.code.dto.request.SearchRequestDto;
-import source.code.dto.response.FoodCalculatedResponseDto;
+import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.FoodCategoryResponseDto;
 import source.code.dto.response.FoodResponseDto;
 import source.code.helper.ValidationHelper;
@@ -63,7 +63,7 @@ public class FoodService {
                 .collect(Collectors.toList());
     }
 
-    public FoodCalculatedResponseDto calculateMacros(int id, CalculateFoodMacrosRequestDto request) {
+    public FoodCalculatedMacrosResponseDto calculateMacros(int id, CalculateFoodMacrosRequestDto request) {
         validationHelper.validate(request);
         Food food = foodRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Food with id: " + id + " not found"));

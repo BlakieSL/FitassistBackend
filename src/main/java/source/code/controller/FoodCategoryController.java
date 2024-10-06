@@ -26,7 +26,7 @@ public class FoodCategoryController {
     }
 
     @GetMapping("/{categoryId}/foods")
-    public ResponseEntity<List<FoodResponseDto>> getFoodsByCategoryId(@PathVariable int categoryId) {
+    public ResponseEntity<List<FoodResponseDto>> getFoodsByCategory(@PathVariable int categoryId) {
         return ResponseEntity.ok(foodService.getFoodsByCategory(categoryId));
     }
 }

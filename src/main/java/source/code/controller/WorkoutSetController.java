@@ -19,31 +19,31 @@ public class WorkoutSetController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<WorkoutSetDto> getWorkoutSetById(@PathVariable int id) {
+    public ResponseEntity<WorkoutSetDto> getWorkoutSet(@PathVariable int id) {
         WorkoutSetDto workoutSet = workoutSetService.getWorkoutSetById(id);
         return ResponseEntity.ok(workoutSet);
     }
 
     @GetMapping
-    public ResponseEntity<List<WorkoutSetDto>> getWorkoutSets() {
+    public ResponseEntity<List<WorkoutSetDto>> getAllWorkoutSets() {
         List<WorkoutSetDto> workoutSets = workoutSetService.getWorkoutSets();
         return ResponseEntity.ok(workoutSets);
     }
 
     @GetMapping("/workout-type/{workoutTypeId}")
-    public ResponseEntity<List<WorkoutSetDto>> getWorkoutSetsByWorkoutTypeId(@PathVariable int workoutTypeId) {
+    public ResponseEntity<List<WorkoutSetDto>> getWorkoutSetsByWorkoutType(@PathVariable int workoutTypeId) {
         List<WorkoutSetDto> workoutSets = workoutSetService.getWorkoutSetsByWorkoutTypeId(workoutTypeId);
         return ResponseEntity.ok(workoutSets);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWorkoutSetById(@PathVariable int id) {
+    public ResponseEntity<Void> deleteWorkoutSetBy(@PathVariable int id) {
         workoutSetService.deleteWorkoutSetById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping
-    public ResponseEntity<WorkoutSetDto> saveWorkoutSet(@Valid @RequestBody WorkoutSetDto workoutSetDto) {
+    public ResponseEntity<WorkoutSetDto> createWorkoutSet(@Valid @RequestBody WorkoutSetDto workoutSetDto) {
         WorkoutSetDto response = workoutSetService.saveWorkoutSet(workoutSetDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

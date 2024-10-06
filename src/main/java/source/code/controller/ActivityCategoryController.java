@@ -21,12 +21,12 @@ public class ActivityCategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ActivityCategoryResponseDto>> geAlActivityCategories() {
+    public ResponseEntity<List<ActivityCategoryResponseDto>> getAllActivityCategories() {
         return ResponseEntity.ok(activityService.getCategories());
     }
 
     @GetMapping("/{categoryId}/activities")
-    public ResponseEntity<List<ActivitySummaryResponseDto>> getActivitiesByCategoryId(@PathVariable int categoryId) {
+    public ResponseEntity<List<ActivitySummaryResponseDto>> getActivitiesByCategory(@PathVariable int categoryId) {
         return ResponseEntity.ok(activityService.getActivitiesByCategory(categoryId));
     }
 }

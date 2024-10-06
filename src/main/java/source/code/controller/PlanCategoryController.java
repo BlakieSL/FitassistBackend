@@ -26,7 +26,7 @@ public class PlanCategoryController {
     }
 
     @GetMapping("/{categoryId}/categories")
-    public ResponseEntity<List<PlanResponseDto>> getPlansByCategoryId(@PathVariable int categoryId) {
+    public ResponseEntity<List<PlanResponseDto>> getPlansByCategory(@PathVariable int categoryId) {
         return ResponseEntity.ok(planService.getPlansByCategory(categoryId));
     }
 

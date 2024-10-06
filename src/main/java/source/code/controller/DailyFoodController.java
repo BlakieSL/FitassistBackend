@@ -19,13 +19,13 @@ public class DailyFoodController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<DailyFoodsResponseDto> getAllFoodsInCartByUserID(@PathVariable int userId) {
+    public ResponseEntity<DailyFoodsResponseDto> getAllFoodsInCartByUser(@PathVariable int userId) {
         DailyFoodsResponseDto cart = dailyFoodService.getFoodsInCart(userId);
         return ResponseEntity.ok(cart);
     }
 
     @PostMapping("/{userId}/add/{foodId}")
-    public ResponseEntity<Void> addFoodToCartByUserId(
+    public ResponseEntity<Void> addDailyFoodToUser(
             @PathVariable int userId,
             @PathVariable int foodId,
             @Valid @RequestBody DailyCartFoodCreateDto request) {
@@ -35,13 +35,13 @@ public class DailyFoodController {
     }
 
     @DeleteMapping("/{userId}/remove/{foodId}")
-    public ResponseEntity<Void> removeFoodFromCart(@PathVariable int userId, @PathVariable int foodId) {
+    public ResponseEntity<Void> removeFoodFromDailyCartFood(@PathVariable int userId, @PathVariable int foodId) {
         dailyFoodService.removeFoodFromCart(userId, foodId);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{userId}/modify-food/{foodId}")
-    public ResponseEntity<Void> modifyDailyCartFood(
+    public ResponseEntity<Void> updateDailyCartFood(
             @PathVariable int userId,
             @PathVariable int foodId,
             @RequestBody JsonMergePatch patch)

@@ -26,7 +26,7 @@ public class ExerciseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ExerciseResponseDto> getExerciseById(@PathVariable int id) {
+    public ResponseEntity<ExerciseResponseDto> getExercise(@PathVariable int id) {
         ExerciseResponseDto exercise = exerciseService.getExerciseById(id);
         return ResponseEntity.ok(exercise);
     }
@@ -38,30 +38,30 @@ public class ExerciseController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ExerciseResponseDto>> getExercisesByUserId(@PathVariable int userId) {
+    public ResponseEntity<List<ExerciseResponseDto>> getExercisesByUser(@PathVariable int userId) {
         List<ExerciseResponseDto> exercises = exerciseService.getExercisesByUserID(userId);
         return ResponseEntity.ok(exercises);
     }
 
     @GetMapping("/{id}/likes-and-saves")
-    public ResponseEntity<LikesAndSavesResponseDto> getLikesAndSavesExercise(@PathVariable int id) {
+    public ResponseEntity<LikesAndSavesResponseDto> getExerciseLikesAndSaves(@PathVariable int id) {
         LikesAndSavesResponseDto dto = userExerciseService.calculateLikesAndSavesByExerciseId(id);
         return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/{id}/instructions")
-    public ResponseEntity<List<ExerciseInstructionResponseDto>> getAllInstructionsByExerciseId(@PathVariable int id) {
+    public ResponseEntity<List<ExerciseInstructionResponseDto>> getAllInstructionsByExercise(@PathVariable int id) {
         List<ExerciseInstructionResponseDto> instructions = exerciseService.getExerciseInstructions(id);
         return ResponseEntity.ok(instructions);
     }
 
     @GetMapping("/{id}/tips")
-    public ResponseEntity<List<ExerciseTipResponseDto>> getAllTipsByExerciseId(@PathVariable int id) {
+    public ResponseEntity<List<ExerciseTipResponseDto>> getAllTipsByExercise(@PathVariable int id) {
         List<ExerciseTipResponseDto> tips = exerciseService.getExerciseTips(id);
         return  ResponseEntity.ok(tips);
     }
     @PostMapping
-    public ResponseEntity<ExerciseResponseDto> saveExercise(@Valid @RequestBody ExerciseCreateDto dto) {
+    public ResponseEntity<ExerciseResponseDto> createExercise(@Valid @RequestBody ExerciseCreateDto dto) {
         ExerciseResponseDto savedExercise = exerciseService.saveExercise(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedExercise);
     }

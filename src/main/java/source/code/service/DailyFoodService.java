@@ -3,7 +3,7 @@ package source.code.service;
 import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.helper.JsonPatchHelper;
 import source.code.dto.request.DailyCartFoodCreateDto;
-import source.code.dto.response.FoodCalculatedResponseDto;
+import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.helper.ValidationHelper;
 import source.code.model.DailyFood;
 import source.code.model.DailyCartFood;
@@ -133,12 +133,12 @@ public class DailyFoodService {
     public DailyFoodsResponseDto getFoodsInCart(int userId) {
         DailyFood dailyFood = getDailyCartByUserId(userId);
 
-        List<FoodCalculatedResponseDto> foods = dailyFood.getDailyCartFoods().stream()
+        List<FoodCalculatedMacrosResponseDto> foods = dailyFood.getDailyCartFoods().stream()
                 .map(
                         dailyCartFood -> {
                             Food food = dailyCartFood.getFood();
                             double factor = (double) dailyCartFood.getAmount() / 100;
-                            return new FoodCalculatedResponseDto(
+                            return new FoodCalculatedMacrosResponseDto(
                                     food.getId(),
                                     food.getName(),
                                     food.getCalories() * factor,
@@ -150,10 +150,10 @@ public class DailyFoodService {
                                     dailyCartFood.getAmount());
                         })
                 .collect(Collectors.toList());
-        double totalCalories = foods.stream().mapToDouble(FoodCalculatedResponseDto::getCalories).sum();
-        double totalCarbohydrates = foods.stream().mapToDouble(FoodCalculatedResponseDto::getCarbohydrates).sum();
-        double totalProtein = foods.stream().mapToDouble(FoodCalculatedResponseDto::getProtein).sum();
-        double totalFat = foods.stream().mapToDouble(FoodCalculatedResponseDto::getFat).sum();
+        double totalCalories = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getCalories).sum();
+        double totalCarbohydrates = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getCarbohydrates).sum();
+        double totalProtein = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getProtein).sum();
+        double totalFat = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getFat).sum();
         return new DailyFoodsResponseDto(foods, totalCalories, totalCarbohydrates, totalProtein, totalFat);
     }
 }

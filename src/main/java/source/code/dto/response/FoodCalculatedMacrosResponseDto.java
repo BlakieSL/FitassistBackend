@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FoodCalculatedResponseDto {
+public class FoodCalculatedMacrosResponseDto {
     private Integer id;
     private String name;
     private double calories;

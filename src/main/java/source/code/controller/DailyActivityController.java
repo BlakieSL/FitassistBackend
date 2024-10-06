@@ -20,13 +20,13 @@ public class DailyActivityController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<DailyActivitiesResponseDto> getAllDailyActivitiesByUserId(@PathVariable int userId) {
+    public ResponseEntity<DailyActivitiesResponseDto> getAllDailyActivitiesByUser(@PathVariable int userId) {
         DailyActivitiesResponseDto activities = dailyActivityService.getActivitiesInCart(userId);
         return ResponseEntity.ok(activities);
     }
 
     @PostMapping("/{userId}/add/{activityId}")
-    public ResponseEntity<Void> addDailyActivitiesByUserId(
+    public ResponseEntity<Void> addDailyActivityToUser(
             @PathVariable int userId,
             @PathVariable int activityId,
             @Valid @RequestBody DailyCartActivityCreateDto request) {
@@ -36,13 +36,13 @@ public class DailyActivityController {
     }
 
     @DeleteMapping("/{userId}/remove/{activityId}")
-    public ResponseEntity<Void> removeDailyActivity(@PathVariable int userId, @PathVariable int activityId) {
+    public ResponseEntity<Void> removeActivityFromDailyCartActivity(@PathVariable int userId, @PathVariable int activityId) {
         dailyActivityService.removeActivityFromCart(userId, activityId);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{userId}/modify-activity/{activityId}")
-    public ResponseEntity<Void> modifyDailyCartActivity(
+    public ResponseEntity<Void> updateDailyCartActivity(
             @PathVariable int userId,
             @PathVariable int activityId,
             @Valid @RequestBody JsonMergePatch patch)
