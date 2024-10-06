@@ -10,20 +10,21 @@ import source.code.repository.MediaRepository;
 import source.code.repository.RecipeRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import source.code.service.interfaces.MediaService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
-public class MediaService {
+public class MediaServiceImpl implements MediaService {
     private final ValidationHelper validationHelper;
     private final MediaRepository mediaRepository;
     private final MediaMapper mediaMapper;
     private final ExerciseRepository exerciseRepository;
     private final RecipeRepository recipeRepository;
 
-    public MediaService(
+    public MediaServiceImpl(
             final ValidationHelper validationHelper,
             final MediaRepository mediaRepository,
             final MediaMapper mediaMapper,

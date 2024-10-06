@@ -1,6 +1,6 @@
 package source.code.auth;
 
-import source.code.service.UserService;
+import source.code.service.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,11 +14,11 @@ import java.util.List;
 
 public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final JwtService jwtService;
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
-    public JwtAuthenticationSuccessHandler(JwtService jwtService, UserService userService) {
+    public JwtAuthenticationSuccessHandler(JwtService jwtService, UserServiceImpl userServiceImpl) {
         this.jwtService = jwtService;
-        this.userService = userService;
+        this.userServiceImpl = userServiceImpl;
     }
 
     private record JwtWrapper(String accessToken, String refreshToken) {
@@ -29,7 +29,7 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
         List<String> authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority).toList();
 
-        Integer userId = userService.getUserIdByEmail(authentication.getName());
+        Integer userId = userServiceImpl.getUserIdByEmail(authentication.getName());
 
 
         String accessToken = jwtService.createAccessToken(authentication.getName(), userId, authorities);

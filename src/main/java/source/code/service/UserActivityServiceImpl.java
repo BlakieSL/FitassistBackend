@@ -10,16 +10,17 @@ import source.code.repository.UserActivityRepository;
 import source.code.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import source.code.service.interfaces.UserActivityService;
 
 import java.util.NoSuchElementException;
 
 @Service
-public class UserActivityService {
+public class UserActivityServiceImpl implements UserActivityService {
     private final UserActivityRepository userActivityRepository;
     private final ActivityRepository activityRepository;
     private final UserRepository userRepository;
 
-    public UserActivityService(
+    public UserActivityServiceImpl(
             final UserActivityRepository userActivityRepository,
             final ActivityRepository activityRepository,
             final UserRepository userRepository){

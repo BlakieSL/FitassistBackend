@@ -12,13 +12,14 @@ import source.code.model.UserRecipe;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import source.code.repository.*;
+import source.code.service.interfaces.RecipeService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
-public class RecipeService {
+public class RecipeServiceImpl implements RecipeService {
     private final ValidationHelper validationHelper;
     private final RecipeMapper recipeMapper;
     private final RecipeRepository recipeRepository;
@@ -26,7 +27,7 @@ public class RecipeService {
     private final UserRecipeRepository userRecipeRepository;
     private final RecipeCategoryRepository recipeCategoryRepository;
     private final RecipeCategoryAssociationRepository recipeCategoryAssociationRepository;
-    public RecipeService(
+    public RecipeServiceImpl(
             ValidationHelper validationHelper,
             RecipeMapper recipeMapper,
             RecipeRepository recipeRepository,

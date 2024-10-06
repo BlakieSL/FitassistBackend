@@ -10,16 +10,17 @@ import source.code.repository.UserFoodRepository;
 import source.code.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import source.code.service.interfaces.UserFoodService;
 
 import java.util.NoSuchElementException;
 
 @Service
-public class UserFoodService {
+public class UserFoodServiceImpl implements UserFoodService {
     private final UserFoodRepository userFoodRepository;
     private final FoodRepository foodRepository;
     private final UserRepository userRepository;
 
-    public UserFoodService(
+    public UserFoodServiceImpl(
             final UserFoodRepository userFoodRepository,
             final FoodRepository foodRepository,
             final UserRepository userRepository){

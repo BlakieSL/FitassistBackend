@@ -7,11 +7,12 @@ import source.code.dto.response.ActivityAverageMetResponseDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.ActivitySummaryResponseDto;
 import source.code.dto.response.LikesAndSavesResponseDto;
-import source.code.service.ActivityService;
-import source.code.service.UserActivityService;
+
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import source.code.service.interfaces.ActivityService;
+import source.code.service.interfaces.UserActivityService;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class ActivityController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ActivitySummaryResponseDto> getActivity(@PathVariable int id) {
-        ActivitySummaryResponseDto activity = activityService.getActivity(id);
+        ActivitySummaryResponseDto activity =  activityService.getActivity(id);
         return ResponseEntity.ok(activity);
     }
 
@@ -38,7 +39,7 @@ public class ActivityController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ActivitySummaryResponseDto>> getActivitiesByUser(@PathVariable int userId) {
-        List<ActivitySummaryResponseDto> recipes = activityService.getActivitiesByUser(userId);
+        List<ActivitySummaryResponseDto> recipes =  activityService.getActivitiesByUser(userId);
         return ResponseEntity.ok(recipes);
     }
 
@@ -50,24 +51,24 @@ public class ActivityController {
 
     @GetMapping("/met")
     public ResponseEntity<ActivityAverageMetResponseDto> getAverageMet(){
-        ActivityAverageMetResponseDto dto = activityService.getAverageMet();
+        ActivityAverageMetResponseDto dto =  activityService.getAverageMet();
         return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/{id}/calculate-calories")
     public ResponseEntity<ActivityCalculatedResponseDto> calculateActivityCaloriesBurned(@PathVariable int id, @Valid @RequestBody CalculateActivityCaloriesRequestDto request) {
-        ActivityCalculatedResponseDto response = activityService.calculateCaloriesBurned(id, request);
+        ActivityCalculatedResponseDto response =  activityService.calculateCaloriesBurned(id, request);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<ActivitySummaryResponseDto> createActivity(@Valid @RequestBody ActivityCreateDto dto) {
-        ActivitySummaryResponseDto response = activityService.createActivity(dto);
+        ActivitySummaryResponseDto response =  activityService.createActivity(dto);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/search")
     public ResponseEntity<List<ActivitySummaryResponseDto>> searchActivities(@Valid @RequestBody SearchRequestDto request){
-        return ResponseEntity.ok(activityService.searchActivities(request));
+        return ResponseEntity.ok( activityService.searchActivities(request));
     }
 }

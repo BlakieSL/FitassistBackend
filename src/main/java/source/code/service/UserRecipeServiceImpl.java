@@ -11,17 +11,18 @@ import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import source.code.service.interfaces.UserRecipeService;
 
 import java.util.NoSuchElementException;
 
 @Service
-public class UserRecipeService {
+public class UserRecipeServiceImpl implements UserRecipeService {
     private final ValidationHelper validationHelper;
     private final UserRecipeRepository userRecipeRepository;
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
 
-    public UserRecipeService(
+    public UserRecipeServiceImpl(
             final ValidationHelper validationHelper,
             final UserRecipeRepository userRecipeRepository,
             final RecipeRepository recipeRepository,

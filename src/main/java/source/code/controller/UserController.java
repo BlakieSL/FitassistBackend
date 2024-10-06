@@ -5,6 +5,7 @@ import source.code.dto.response.AccessTokenResponseDto;
 import source.code.dto.request.RefreshTokenRequestDto;
 import source.code.dto.request.UserCreateDto;
 import source.code.dto.response.UserResponseDto;
+import source.code.service.interfaces.*;
 import source.code.validation.ValidationGroups;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
@@ -14,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import source.code.service.*;
 
 @RestController
 @RequestMapping(path = "/api/users")
@@ -29,8 +29,8 @@ public class UserController {
     public UserController(
             UserService userService,
             UserRecipeService userRecipeService,
-            UserExerciseService userExerciseService,
-            UserPlanService userPlanService,
+            UserExerciseService userExerciseService, 
+            UserPlanService userPlanService, 
             UserFoodService userFoodService,
             UserActivityService userActivityService,
             JwtService jwtService) {
