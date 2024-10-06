@@ -1,8 +1,8 @@
 package source.code.service;
 
-import source.code.dto.RecipeAdditionDto;
-import source.code.dto.RecipeCategoryDto;
-import source.code.dto.RecipeDto;
+import source.code.dto.request.RecipeCreateDto;
+import source.code.dto.response.RecipeCategoryResponseDto;
+import source.code.dto.response.RecipeResponseDto;
 import source.code.helper.ValidationHelper;
 import source.code.mapper.RecipeMapper;
 import source.code.model.Recipe;
@@ -43,28 +43,28 @@ public class RecipeService {
     }
 
     @Transactional
-    public RecipeDto save(RecipeAdditionDto dto) {
+    public RecipeResponseDto save(RecipeCreateDto dto) {
         validationHelper.validate(dto);
 
         Recipe recipe = recipeRepository.save(recipeMapper.toEntity(dto));
         return recipeMapper.toDto(recipe);
     }
 
-    public RecipeDto getRecipeById(int id) {
+    public RecipeResponseDto getRecipeById(int id) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Recipe with id: " + id + " not found"));
         return recipeMapper.toDto(recipe);
     }
 
-    public List<RecipeDto> getRecipes() {
+    public List<RecipeResponseDto> getRecipes() {
         List<Recipe> recipes = recipeRepository.findAll();
         return recipes.stream()
                 .map(recipeMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<RecipeDto> getRecipesByUserID(int userId) {
+    public List<RecipeResponseDto> getRecipesByUserID(int userId) {
         List<UserRecipe> userRecipes = userRecipeRepository.findByUserId(userId);
         List<Recipe> recipes = userRecipes.stream()
                 .map(UserRecipe::getRecipe)
@@ -74,14 +74,14 @@ public class RecipeService {
                 .collect(Collectors.toList());
     }
 
-    public List<RecipeCategoryDto> getCategories() {
+    public List<RecipeCategoryResponseDto> getCategories() {
         List<RecipeCategory> categories = recipeCategoryRepository.findAll();
         return categories.stream()
                 .map(recipeMapper::toCategoryDto)
                 .collect(Collectors.toList());
     }
 
-    public List<RecipeDto> getRecipesByCategory(int categoryId) {
+    public List<RecipeResponseDto> getRecipesByCategory(int categoryId) {
         List<RecipeCategoryAssociation> recipeCategoryAssociations = recipeCategoryAssociationRepository.findByRecipeCategoryId(categoryId);
         List<Recipe> recipes = recipeCategoryAssociations.stream()
                 .map(RecipeCategoryAssociation::getRecipe)

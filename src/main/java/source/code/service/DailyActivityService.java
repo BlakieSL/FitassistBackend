@@ -1,10 +1,10 @@
 package source.code.service;
 
-import source.code.dto.ActivityCalculatedDto;
-import source.code.dto.DailyActivitiesResponse;
+import source.code.dto.response.ActivityCalculatedResponseDto;
+import source.code.dto.response.DailyActivitiesResponseDto;
 import source.code.helper.CalculationsHelper;
 import source.code.helper.JsonPatchHelper;
-import source.code.dto.DailyActivityDto;
+import source.code.dto.request.DailyCartActivityCreateDto;
 import source.code.helper.ValidationHelper;
 import source.code.model.Activity;
 import source.code.model.DailyActivity;
@@ -62,7 +62,7 @@ public class DailyActivityService {
     }
 
     @Transactional
-    public void addActivityToDailyActivities(int userId, Integer activityId, DailyActivityDto dto) {
+    public void addActivityToDailyActivities(int userId, Integer activityId, DailyCartActivityCreateDto dto) {
         validationHelper.validate(dto);
 
         DailyActivity dailyActivity = getDailyActivityByUserId(userId);
@@ -106,10 +106,10 @@ public class DailyActivityService {
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Activity with id: " + activityId + " not found in daily cart"));
 
-        DailyActivityDto dailyCartActivityDto = new DailyActivityDto();
+        DailyCartActivityCreateDto dailyCartActivityDto = new DailyCartActivityCreateDto();
         dailyCartActivityDto.setTime(dailyCartActivity.getTime());
 
-        DailyActivityDto patchedDailyCartActivityDto = jsonPatchHelper.applyPatch(patch, dailyCartActivityDto, DailyActivityDto.class);
+        DailyCartActivityCreateDto patchedDailyCartActivityDto = jsonPatchHelper.applyPatch(patch, dailyCartActivityDto, DailyCartActivityCreateDto.class);
 
         dailyCartActivity.setTime(patchedDailyCartActivityDto.getTime());
         dailyActivityRepository.save(dailyActivity);
@@ -125,21 +125,19 @@ public class DailyActivityService {
     private DailyActivity createNewDailyActivityForUser(int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User with id: " + userId + " not found"));
-        DailyActivity newDailyActivity = new DailyActivity();
-        newDailyActivity.setUser(user);
-        newDailyActivity.setDate(LocalDate.now());
+        DailyActivity newDailyActivity = new DailyActivity(user, LocalDate.now());
         return dailyActivityRepository.save(newDailyActivity);
     }
 
-    public DailyActivitiesResponse getActivitiesInCart(int userId) {
+    public DailyActivitiesResponseDto getActivitiesInCart(int userId) {
         DailyActivity dailyActivity = getDailyActivityByUserId(userId);
 
         User user = dailyActivity.getUser();
 
-        List<ActivityCalculatedDto> activities = dailyActivity.getDailyCartActivities().stream()
+        List<ActivityCalculatedResponseDto> activities = dailyActivity.getDailyCartActivities().stream()
                 .map(dailyCartActivity -> {
                     Activity activity = dailyCartActivity.getActivity();
-                    return new ActivityCalculatedDto(
+                    return new ActivityCalculatedResponseDto(
                             activity.getId(),
                             activity.getName(),
                             activity.getMet(),
@@ -150,7 +148,7 @@ public class DailyActivityService {
                     );
                 })
                 .collect(Collectors.toList());
-        int totalCaloriesBurned = activities.stream().mapToInt(ActivityCalculatedDto::getCaloriesBurned).sum();
-        return new DailyActivitiesResponse(totalCaloriesBurned, activities);
+        int totalCaloriesBurned = activities.stream().mapToInt(ActivityCalculatedResponseDto::getCaloriesBurned).sum();
+        return new DailyActivitiesResponseDto(totalCaloriesBurned, activities);
     }
 }

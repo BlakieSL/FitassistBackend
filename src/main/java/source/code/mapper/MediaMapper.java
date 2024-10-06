@@ -1,7 +1,7 @@
 package source.code.mapper;
 
-import source.code.dto.AddMediaDto;
-import source.code.dto.MediaDto;
+import source.code.dto.request.MediaCreateDto;
+import source.code.dto.response.MediaResponseDto;
 import source.code.exception.FileProcessingException;
 import source.code.model.Media;
 import org.mapstruct.Mapper;
@@ -13,11 +13,11 @@ import java.io.IOException;
 
 @Mapper(componentModel = "spring")
 public interface MediaMapper {
-    MediaDto toDto(Media media);
+    MediaResponseDto toDto(Media media);
 
     @Mapping(target = "image", source = "image", qualifiedByName = "multipartFileToBytes")
     @Mapping(target = "id", ignore = true)
-    Media toEntity(AddMediaDto dto);
+    Media toEntity(MediaCreateDto dto);
 
     @Named("multipartFileToBytes")
     static byte[] multipartFileToBytes(MultipartFile file)  {

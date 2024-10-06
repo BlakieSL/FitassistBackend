@@ -1,11 +1,10 @@
 package source.code.controller;
 
 import source.code.auth.JwtService;
-import source.code.dto.AccessTokenDtoRequest;
-import source.code.dto.RefreshTokenDtoRequest;
-import source.code.dto.UserAdditionDto;
-import source.code.dto.UserResponse;
-import source.code.exception.ValidationException;
+import source.code.dto.response.AccessTokenResponseDto;
+import source.code.dto.request.RefreshTokenRequestDto;
+import source.code.dto.request.UserCreateDto;
+import source.code.dto.response.UserResponseDto;
 import source.code.validation.ValidationGroups;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
@@ -13,7 +12,6 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import source.code.service.*;
@@ -46,21 +44,21 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable int id) {
-        UserResponse user = userService.getUserById(id);
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable int id) {
+        UserResponseDto user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenDtoRequest dtoRequest) {
+    public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequestDto dtoRequest) {
         String newAccessToken = jwtService.refreshAccessToken(dtoRequest.getRefreshToken());
-        AccessTokenDtoRequest accessTokenDtoRequest = new AccessTokenDtoRequest(newAccessToken);
-        return ResponseEntity.ok(accessTokenDtoRequest);
+        AccessTokenResponseDto accessTokenResponseDto = new AccessTokenResponseDto(newAccessToken);
+        return ResponseEntity.ok(accessTokenResponseDto);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody UserAdditionDto request) {
-        UserResponse response = userService.register(request);
+    public ResponseEntity<UserResponseDto> registerUser(@Valid @RequestBody UserCreateDto request) {
+        UserResponseDto response = userService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

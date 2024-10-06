@@ -1,9 +1,9 @@
 package source.code.mapper;
 
-import source.code.dto.UserAdditionDto;
-import source.code.dto.UserDto;
-import source.code.dto.UserResponse;
-import source.code.dto.UserUpdateRequest;
+import source.code.dto.request.UserCreateDto;
+import source.code.dto.other.UserCredentialsDto;
+import source.code.dto.response.UserResponseDto;
+import source.code.dto.request.UserUpdateDto;
 import source.code.model.Role;
 import source.code.model.User;
 import source.code.repository.RoleRepository;
@@ -32,9 +32,9 @@ public abstract class UserMapper {
     //mappings
 
     @Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToRolesNames")
-    public abstract UserDto toDetails(User user);
+    public abstract UserCredentialsDto toDetails(User user);
 
-    public abstract UserResponse toResponse(User user);
+    public abstract UserResponseDto toResponse(User user);
 
     @Mapping(target = "password", source = "password", qualifiedByName = "hashPassword")
     @Mapping(target = "id", ignore = true)
@@ -47,7 +47,7 @@ public abstract class UserMapper {
     @Mapping(target = "userPlans", ignore = true)
     @Mapping(target = "userFoods", ignore = true)
     @Mapping(target = "userActivities", ignore = true)
-    public abstract User toEntity(UserAdditionDto dto);
+    public abstract User toEntity(UserCreateDto dto);
 
     @Mapping(target = "calculatedCalories", expression = "java(calculatedCalories(user, request))")
     @Mapping(target = "password", source = "password", qualifiedByName = "hashPassword")
@@ -60,11 +60,11 @@ public abstract class UserMapper {
     @Mapping(target = "userPlans", ignore = true)
     @Mapping(target = "userFoods", ignore = true)
     @Mapping(target = "userActivities", ignore = true)
-    public abstract void updateUserFromDto(@MappingTarget User user, UserUpdateRequest request);
+    public abstract void updateUserFromDto(@MappingTarget User user, UserUpdateDto request);
 
     //aftermappings
 
-    public void setCalculatedCalories(User user, UserAdditionDto dto) {
+    public void setCalculatedCalories(User user, UserCreateDto dto) {
         int age = Period.between(dto.getBirthday(), LocalDate.now()).getYears();
         user.setCalculatedCalories(calculationsHelper.calculateCaloricNeeds(
                 dto.getWeight(),
@@ -99,7 +99,7 @@ public abstract class UserMapper {
         return passwordEncoder.encode(password);
     }
 
-    double calculatedCalories(User user, UserUpdateRequest request) {
+    double calculatedCalories(User user, UserUpdateDto request) {
         int age = Period.between(user.getBirthday(), LocalDate.now()).getYears();
         return calculationsHelper.calculateCaloricNeeds(
                 user.getWeight(),

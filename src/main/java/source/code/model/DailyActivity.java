@@ -34,4 +34,9 @@ public class DailyActivity {
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true)
     private final List<DailyCartActivity> dailyCartActivities = new ArrayList<>();
+
+    public DailyActivity(User user, LocalDate date) {
+        this.user = user;
+        this.date = date;
+    }
 }

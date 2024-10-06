@@ -1,7 +1,7 @@
 package source.code.controller;
 
-import source.code.dto.RecipeCategoryDto;
-import source.code.dto.RecipeDto;
+import source.code.dto.response.RecipeCategoryResponseDto;
+import source.code.dto.response.RecipeResponseDto;
 import source.code.service.RecipeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,12 +20,12 @@ public class RecipeCategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<RecipeCategoryDto>> getAllRecipeCategories() {
+    public ResponseEntity<List<RecipeCategoryResponseDto>> getAllRecipeCategories() {
         return ResponseEntity.ok(recipeService.getCategories());
     }
 
     @GetMapping("/{categoryId}/recipes")
-    public ResponseEntity<List<RecipeDto>> getRecipesByCategoryId(@PathVariable int categoryId) {
+    public ResponseEntity<List<RecipeResponseDto>> getRecipesByCategoryId(@PathVariable int categoryId) {
         return ResponseEntity.ok(recipeService.getRecipesByCategory(categoryId));
     }
 }

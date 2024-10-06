@@ -1,15 +1,13 @@
 package source.code.controller;
 
-import source.code.dto.LikesAndSavedDto;
-import source.code.dto.PlanAdditionDto;
-import source.code.dto.PlanDto;
+import source.code.dto.response.LikesAndSavesResponseDto;
+import source.code.dto.request.PlanCreateDto;
+import source.code.dto.response.PlanResponseDto;
 import source.code.service.PlanService;
-import source.code.exception.ValidationException;
 import source.code.service.UserPlanService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,32 +23,32 @@ public class PlanController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PlanDto> getPlanById(@PathVariable int id) {
-        PlanDto plan = planService.getPlanById(id);
+    public ResponseEntity<PlanResponseDto> getPlanById(@PathVariable int id) {
+        PlanResponseDto plan = planService.getPlanById(id);
         return ResponseEntity.ok(plan);
     }
 
     @GetMapping
-    public ResponseEntity<List<PlanDto>> getPlans() {
-        List<PlanDto> plans = planService.getPlans();
+    public ResponseEntity<List<PlanResponseDto>> getPlans() {
+        List<PlanResponseDto> plans = planService.getPlans();
         return ResponseEntity.ok(plans);
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<PlanDto>> getPlansByUserID(@PathVariable int userId) {
-        List<PlanDto> plans = planService.getPlansByUserID(userId);
+    public ResponseEntity<List<PlanResponseDto>> getPlansByUserID(@PathVariable int userId) {
+        List<PlanResponseDto> plans = planService.getPlansByUserID(userId);
         return ResponseEntity.ok(plans);
     }
 
     @GetMapping("/{id}/likes-and-saves")
-    public ResponseEntity<LikesAndSavedDto> getLikesAndSavesPlan(@PathVariable int id) {
-        LikesAndSavedDto dto = userPlanService.calculateLikesAndSavesByPlanId(id);
+    public ResponseEntity<LikesAndSavesResponseDto> getLikesAndSavesPlan(@PathVariable int id) {
+        LikesAndSavesResponseDto dto = userPlanService.calculateLikesAndSavesByPlanId(id);
         return ResponseEntity.ok(dto);
     }
 
     @PostMapping
-    public ResponseEntity<PlanDto> savePlan(@Valid @RequestBody PlanAdditionDto planDto) {
-        PlanDto response = planService.savePlan(planDto);
+    public ResponseEntity<PlanResponseDto> savePlan(@Valid @RequestBody PlanCreateDto planDto) {
+        PlanResponseDto response = planService.savePlan(planDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

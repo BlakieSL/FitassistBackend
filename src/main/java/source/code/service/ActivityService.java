@@ -1,6 +1,12 @@
 package source.code.service;
 
-import source.code.dto.*;
+import source.code.dto.request.ActivityCreateDto;
+import source.code.dto.request.CalculateActivityCaloriesRequestDto;
+import source.code.dto.request.SearchRequestDto;
+import source.code.dto.response.ActivityAverageMetResponseDto;
+import source.code.dto.response.ActivityCalculatedResponseDto;
+import source.code.dto.response.ActivityCategoryResponseDto;
+import source.code.dto.response.ActivitySummaryResponseDto;
 import source.code.helper.CalculationsHelper;
 import source.code.helper.ValidationHelper;
 import source.code.mapper.ActivityMapper;
@@ -46,34 +52,34 @@ public class ActivityService {
     }
 
     @Transactional
-    public ActivitySummaryDto saveActivity(ActivityAdditionDto dto) {
+    public ActivitySummaryResponseDto saveActivity(ActivityCreateDto dto) {
         validationHelper.validate(dto);
         Activity activity = activityRepository.save(activityMapper.toEntity(dto));
         return activityMapper.toSummaryDto(activity);
     }
 
-    public ActivitySummaryDto getActivityById(int id) {
+    public ActivitySummaryResponseDto getActivityById(int id) {
         Activity activity = activityRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Activity with id: " + id + " not found"));
         return activityMapper.toSummaryDto(activity);
     }
 
-    public List<ActivitySummaryDto> getActivities() {
+    public List<ActivitySummaryResponseDto> getActivities() {
         List<Activity> activities = activityRepository.findAll();
         return activities.stream()
                 .map(activityMapper::toSummaryDto)
                 .collect(Collectors.toList());
     }
 
-    public List<ActivityCategoryDto> getCategories() {
+    public List<ActivityCategoryResponseDto> getCategories() {
         List<ActivityCategory> categories = activityCategoryRepository.findAll();
         return categories.stream()
                 .map(activityMapper::toCategoryDto)
                 .collect(Collectors.toList());
     }
 
-    public List<ActivitySummaryDto> getActivitiesByCategory(int categoryId) {
+    public List<ActivitySummaryResponseDto> getActivitiesByCategory(int categoryId) {
         List<Activity> activities = activityRepository
                 .findAllByActivityCategory_Id(categoryId);
         return activities.stream()
@@ -81,8 +87,7 @@ public class ActivityService {
                 .collect(Collectors.toList());
     }
 
-    public ActivityCalculatedDto calculateCaloriesBurnt(
-            final int id, final CalculateCaloriesBurntRequest request) {
+    public ActivityCalculatedResponseDto calculateCaloriesBurnt(final int id, final CalculateActivityCaloriesRequestDto request) {
         validationHelper.validate(request);
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new NoSuchElementException(
@@ -90,18 +95,18 @@ public class ActivityService {
         Activity activity = activityRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Activity with id: " + id + " not found"));
-        ActivityCalculatedDto response = activityMapper.toCalculatedDto(activity, user, request.getTime());
+        ActivityCalculatedResponseDto response = activityMapper.toCalculatedDto(activity, user, request.getTime());
         return response;
     }
 
-    public List<ActivitySummaryDto> searchActivities(SearchDtoRequest request){
+    public List<ActivitySummaryResponseDto> searchActivities(SearchRequestDto request){
         List<Activity> activities = activityRepository.findAllByNameContainingIgnoreCase(request.getName());
         return activities.stream()
                 .map(activityMapper::toSummaryDto)
                 .collect(Collectors.toList());
     }
 
-    public List<ActivitySummaryDto> getActivitiesByUserID(int userId) {
+    public List<ActivitySummaryResponseDto> getActivitiesByUserID(int userId) {
         List<UserActivity> userActivities = userActivityRepository.findByUserId(userId);
         List<Activity> activities = userActivities.stream()
                 .map(UserActivity::getActivity)
@@ -111,7 +116,7 @@ public class ActivityService {
                 .collect(Collectors.toList());
     }
 
-    public ActivityMetDto getAverageMet() {
+    public ActivityAverageMetResponseDto getAverageMet() {
         List<Activity> activities = activityRepository.findAll();
 
         double averageMet = activities.stream()
@@ -119,6 +124,6 @@ public class ActivityService {
                 .average()
                 .orElse(0.0);
 
-        return new ActivityMetDto(averageMet);
+        return new ActivityAverageMetResponseDto(averageMet);
     }
 }
