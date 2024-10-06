@@ -1,7 +1,7 @@
 package source.code.controller;
 
-import source.code.dto.ActivityCategoryDto;
-import source.code.dto.ActivitySummaryDto;
+import source.code.dto.response.ActivitySummaryResponseDto;
+import source.code.dto.response.ActivityCategoryResponseDto;
 import source.code.service.ActivityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,12 +21,12 @@ public class ActivityCategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ActivityCategoryDto>> geAlActivityCategories() {
+    public ResponseEntity<List<ActivityCategoryResponseDto>> geAlActivityCategories() {
         return ResponseEntity.ok(activityService.getCategories());
     }
 
     @GetMapping("/{categoryId}/activities")
-    public ResponseEntity<List<ActivitySummaryDto>> getActivitiesByCategoryId(@PathVariable int categoryId) {
+    public ResponseEntity<List<ActivitySummaryResponseDto>> getActivitiesByCategoryId(@PathVariable int categoryId) {
         return ResponseEntity.ok(activityService.getActivitiesByCategory(categoryId));
     }
 }

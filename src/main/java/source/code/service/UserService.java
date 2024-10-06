@@ -1,9 +1,9 @@
 package source.code.service;
 
-import source.code.dto.UserAdditionDto;
-import source.code.dto.UserDto;
-import source.code.dto.UserResponse;
-import source.code.dto.UserUpdateRequest;
+import source.code.dto.request.UserCreateDto;
+import source.code.dto.other.UserCredentialsDto;
+import source.code.dto.response.UserResponseDto;
+import source.code.dto.request.UserUpdateDto;
 import source.code.helper.CalculationsHelper;
 import source.code.helper.JsonPatchHelper;
 import source.code.helper.ValidationHelper;
@@ -56,7 +56,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public UserResponse register(UserAdditionDto request) {
+    public UserResponseDto register(UserCreateDto request) {
         validationHelper.validate(request);
 
         User user = userMapper.toEntity(request);
@@ -82,19 +82,19 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User with id: " + userId + " not found"));
 
-        UserResponse userDto = getUserById(userId);
-        UserUpdateRequest patchedUserUpdateRequest = jsonPatchHelper.applyPatch(patch, userDto, UserUpdateRequest.class);
+        UserResponseDto userDto = getUserById(userId);
+        UserUpdateDto patchedUserUpdateDto = jsonPatchHelper.applyPatch(patch, userDto, UserUpdateDto.class);
 
-        if(patchedUserUpdateRequest.getOldPassword() != null && patchedUserUpdateRequest.getPassword() != null) {
+        if(patchedUserUpdateDto.getOldPassword() != null && patchedUserUpdateDto.getPassword() != null) {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            if (!passwordEncoder.matches(patchedUserUpdateRequest.getOldPassword(), user.getPassword())) {
+            if (!passwordEncoder.matches(patchedUserUpdateDto.getOldPassword(), user.getPassword())) {
                 throw new IllegalArgumentException("Old password does not match");
             }
         }
 
-        validationHelper.validate(patchedUserUpdateRequest);
+        validationHelper.validate(patchedUserUpdateDto);
 
-        userMapper.updateUserFromDto(user, patchedUserUpdateRequest);
+        userMapper.updateUserFromDto(user, patchedUserUpdateDto);
         userRepository.save(user);
     }
 
@@ -109,12 +109,12 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
     }
 
-    private Optional<UserDto> findUserCredentialsByEmail(String email) {
+    private Optional<UserCredentialsDto> findUserCredentialsByEmail(String email) {
         return userRepository.findByEmail(email)
                 .map(userMapper::toDetails);
     }
 
-    public UserResponse getUserById(int id) {
+    public UserResponseDto getUserById(int id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "User with id " + id + " not found"));

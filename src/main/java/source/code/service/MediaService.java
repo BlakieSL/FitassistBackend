@@ -1,7 +1,7 @@
 package source.code.service;
 
-import source.code.dto.AddMediaDto;
-import source.code.dto.MediaDto;
+import source.code.dto.request.MediaCreateDto;
+import source.code.dto.response.MediaResponseDto;
 import source.code.helper.ValidationHelper;
 import source.code.mapper.MediaMapper;
 import source.code.model.Media;
@@ -37,7 +37,7 @@ public class MediaService {
     }
 
     @Transactional
-    public MediaDto saveMedia(AddMediaDto request) {
+    public MediaResponseDto saveMedia(MediaCreateDto request) {
         validationHelper.validate(request);
 
         Media savedMedia = mediaRepository.save(mediaMapper.toEntity(request));
@@ -52,21 +52,21 @@ public class MediaService {
         mediaRepository.delete(media);
     }
 
-    public List<MediaDto> getAllMediaForParent(int parentId, short parentType ) {
+    public List<MediaResponseDto> getAllMediaForParent(int parentId, short parentType ) {
         List<Media> mediaList = mediaRepository.findByParentIdAndParentType(parentId, parentType);
         return mediaList.stream()
                 .map(mediaMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public MediaDto getFirstMediaForParent(int parentId, short parentType) {
+    public MediaResponseDto getFirstMediaForParent(int parentId, short parentType) {
         Media media = mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(parentId, parentType)
                 .orElseThrow(() -> new NoSuchElementException(
                         "No media found with parentId: " + parentId + " and parentType: " + parentType));
         return mediaMapper.toDto(media);
     }
 
-    public MediaDto getMediaById(int mediaId) {
+    public MediaResponseDto getMediaById(int mediaId) {
         Media media = mediaRepository.findById(mediaId)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Media with id: " + mediaId + " not found"));

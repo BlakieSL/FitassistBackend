@@ -1,6 +1,6 @@
 package source.code.service;
 
-import source.code.dto.AddFoodRecipeDto;
+import source.code.dto.request.RecipeFoodCreateDto;
 import source.code.helper.JsonPatchHelper;
 import source.code.helper.ValidationHelper;
 import source.code.model.Food;
@@ -38,7 +38,7 @@ public class RecipeFoodService {
     }
 
     @Transactional
-    public void addFoodToRecipe(int recipeId, int foodId, AddFoodRecipeDto request) {
+    public void addFoodToRecipe(int recipeId, int foodId, RecipeFoodCreateDto request) {
         validationHelper.validate(request);
 
         Recipe recipe = recipeRepository
@@ -76,11 +76,11 @@ public class RecipeFoodService {
                 .orElseThrow(() -> new NoSuchElementException(
                         "RecipeFood with recipe id: " + recipeId + " and food id: " + foodId + " not found"));
 
-        AddFoodRecipeDto existingRecipeFoodDto = new AddFoodRecipeDto(
+        RecipeFoodCreateDto existingRecipeFoodDto = new RecipeFoodCreateDto(
                 recipeFood.getAmount()
         );
 
-        AddFoodRecipeDto patchedDto = jsonPatchHelper.applyPatch(patch, existingRecipeFoodDto, AddFoodRecipeDto.class);
+        RecipeFoodCreateDto patchedDto = jsonPatchHelper.applyPatch(patch, existingRecipeFoodDto, RecipeFoodCreateDto.class);
 
         validationHelper.validate(patchedDto);
 

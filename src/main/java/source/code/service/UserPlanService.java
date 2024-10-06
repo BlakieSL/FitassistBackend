@@ -1,6 +1,6 @@
 package source.code.service;
 
-import source.code.dto.LikesAndSavedDto;
+import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.helper.ValidationHelper;
 import source.code.model.Plan;
@@ -65,7 +65,7 @@ public class UserPlanService {
         userPlanRepository.delete(userPlan);
     }
 
-    public LikesAndSavedDto calculateLikesAndSavesByPlanId(int planId) {
+    public LikesAndSavesResponseDto calculateLikesAndSavesByPlanId(int planId) {
         planRepository.findById(planId)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Plan with id: " + planId + " not found"));
@@ -73,6 +73,6 @@ public class UserPlanService {
         long saves = userPlanRepository.countByPlanIdAndType(planId, (short) 1);
         long likes = userPlanRepository.countByPlanIdAndType(planId, (short) 2);
 
-        return new LikesAndSavedDto(likes, saves);
+        return new LikesAndSavesResponseDto(likes, saves);
     }
 }

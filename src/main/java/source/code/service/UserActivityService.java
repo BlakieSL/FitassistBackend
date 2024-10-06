@@ -1,6 +1,6 @@
 package source.code.service;
 
-import source.code.dto.LikesAndSavedDto;
+import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.model.Activity;
 import source.code.model.User;
@@ -66,13 +66,13 @@ public class UserActivityService {
         userActivityRepository.delete(userActivity);
     }
 
-    public LikesAndSavedDto calculateLikesAndSavesByActivityId(int activityId) {
+    public LikesAndSavesResponseDto calculateLikesAndSavesByActivityId(int activityId) {
         activityRepository.findById(activityId)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Activity with id: " + activityId + " not found"));
 
         long saves = userActivityRepository.countByActivityIdAndType(activityId, (short) 1);
         long likes = userActivityRepository.countByActivityIdAndType(activityId, (short) 2);
-        return new LikesAndSavedDto(likes, saves);
+        return new LikesAndSavesResponseDto(likes, saves);
     }
 }

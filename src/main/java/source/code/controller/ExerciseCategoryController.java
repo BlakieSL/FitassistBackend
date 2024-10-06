@@ -1,7 +1,7 @@
 package source.code.controller;
 
-import source.code.dto.ExerciseCategoryDto;
-import source.code.dto.ExerciseDto;
+import source.code.dto.response.ExerciseResponseDto;
+import source.code.dto.response.ExerciseCategoryResponseDto;
 import source.code.service.ExerciseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,42 +21,42 @@ public class ExerciseCategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ExerciseCategoryDto>> getAllExerciseCategories() {
+    public ResponseEntity<List<ExerciseCategoryResponseDto>> getAllExerciseCategories() {
         return ResponseEntity.ok(exerciseService.getCategories());
     }
 
     @GetMapping("/{categoryId}/categories")
-    public ResponseEntity<List<ExerciseDto>> getExercisesByCategoryId(@PathVariable int categoryId){
+    public ResponseEntity<List<ExerciseResponseDto>> getExercisesByCategoryId(@PathVariable int categoryId){
         return ResponseEntity.ok(exerciseService.getExercisesByCategory(categoryId));
     }
 
     @GetMapping("/{expertiseLevelId}/expertise-level")
-    public ResponseEntity<List<ExerciseDto>> getExercisesByExpertiseLevel(@PathVariable int expertiseLevelId) {
-        List<ExerciseDto> exercises = exerciseService.getExercisesByExpertiseLevel(expertiseLevelId);
+    public ResponseEntity<List<ExerciseResponseDto>> getExercisesByExpertiseLevel(@PathVariable int expertiseLevelId) {
+        List<ExerciseResponseDto> exercises = exerciseService.getExercisesByExpertiseLevel(expertiseLevelId);
         return ResponseEntity.ok(exercises);
     }
 
     @GetMapping("/{forceTypeId}/force-type")
-    public ResponseEntity<List<ExerciseDto>> getExercisesByForceType(@PathVariable int forceTypeId) {
-        List<ExerciseDto> exercises = exerciseService.getExercisesByForceType(forceTypeId);
+    public ResponseEntity<List<ExerciseResponseDto>> getExercisesByForceType(@PathVariable int forceTypeId) {
+        List<ExerciseResponseDto> exercises = exerciseService.getExercisesByForceType(forceTypeId);
         return ResponseEntity.ok(exercises);
     }
 
     @GetMapping("/{mechanicsTypeId}/mechanics-type")
-    public ResponseEntity<List<ExerciseDto>> getExercisesByMechanicsType(@PathVariable int mechanicsTypeId) {
-        List<ExerciseDto> exercises = exerciseService.getExercisesByMechanicsType(mechanicsTypeId);
+    public ResponseEntity<List<ExerciseResponseDto>> getExercisesByMechanicsType(@PathVariable int mechanicsTypeId) {
+        List<ExerciseResponseDto> exercises = exerciseService.getExercisesByMechanicsType(mechanicsTypeId);
         return ResponseEntity.ok(exercises);
     }
 
     @GetMapping("/{exerciseEquipmentId}/equipment")
-    public ResponseEntity<List<ExerciseDto>> getExercisesByEquipment(@PathVariable int exerciseEquipmentId) {
-        List<ExerciseDto> exercises = exerciseService.getExercisesByEquipment(exerciseEquipmentId);
+    public ResponseEntity<List<ExerciseResponseDto>> getExercisesByEquipment(@PathVariable int exerciseEquipmentId) {
+        List<ExerciseResponseDto> exercises = exerciseService.getExercisesByEquipment(exerciseEquipmentId);
         return ResponseEntity.ok(exercises);
     }
 
     @GetMapping("/{exerciseTypeId}/type")
-    public ResponseEntity<List<ExerciseDto>> getExercisesByType(@PathVariable int exerciseTypeId) {
-        List<ExerciseDto> exercises = exerciseService.getExercisesByType(exerciseTypeId);
+    public ResponseEntity<List<ExerciseResponseDto>> getExercisesByType(@PathVariable int exerciseTypeId) {
+        List<ExerciseResponseDto> exercises = exerciseService.getExercisesByType(exerciseTypeId);
         return ResponseEntity.ok(exercises);
     }
 }

@@ -1,7 +1,7 @@
 package source.code.controller;
 
-import source.code.dto.PlanCategoryDto;
-import source.code.dto.PlanDto;
+import source.code.dto.response.PlanCategoryResponseDto;
+import source.code.dto.response.PlanResponseDto;
 import source.code.service.PlanService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,36 +21,36 @@ public class PlanCategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PlanCategoryDto>> getAllPlanCategories() {
+    public ResponseEntity<List<PlanCategoryResponseDto>> getAllPlanCategories() {
         return ResponseEntity.ok(planService.getCategories());
     }
 
     @GetMapping("/{categoryId}/categories")
-    public ResponseEntity<List<PlanDto>> getPlansByCategoryId(@PathVariable int categoryId) {
+    public ResponseEntity<List<PlanResponseDto>> getPlansByCategoryId(@PathVariable int categoryId) {
         return ResponseEntity.ok(planService.getPlansByCategory(categoryId));
     }
 
     @GetMapping("/{typeId}/type")
-    public ResponseEntity<List<PlanDto>> getPlansByType(@PathVariable int typeId) {
-        List<PlanDto> plans = planService.getPlansByType(typeId);
+    public ResponseEntity<List<PlanResponseDto>> getPlansByType(@PathVariable int typeId) {
+        List<PlanResponseDto> plans = planService.getPlansByType(typeId);
         return ResponseEntity.ok(plans);
     }
 
     @GetMapping("/{durationId}/duration")
-    public ResponseEntity<List<PlanDto>> getPlansByDuration(@PathVariable int durationId) {
-        List<PlanDto> plans = planService.getPlansByDuration(durationId);
+    public ResponseEntity<List<PlanResponseDto>> getPlansByDuration(@PathVariable int durationId) {
+        List<PlanResponseDto> plans = planService.getPlansByDuration(durationId);
         return ResponseEntity.ok(plans);
     }
 
     @GetMapping("/{equipmentId}/equipment")
-    public ResponseEntity<List<PlanDto>> getPlansByEquipment(@PathVariable int equipmentId) {
-        List<PlanDto> plans = planService.getPlansByEquipment(equipmentId);
+    public ResponseEntity<List<PlanResponseDto>> getPlansByEquipment(@PathVariable int equipmentId) {
+        List<PlanResponseDto> plans = planService.getPlansByEquipment(equipmentId);
         return ResponseEntity.ok(plans);
     }
 
     @GetMapping("/{expertiseLevelId}/expertise-level")
-    public ResponseEntity<List<PlanDto>> getPlansByExpertiseLevel(@PathVariable int expertiseLevelId) {
-        List<PlanDto> plans = planService.getPlansByExpertiseLevel(expertiseLevelId);
+    public ResponseEntity<List<PlanResponseDto>> getPlansByExpertiseLevel(@PathVariable int expertiseLevelId) {
+        List<PlanResponseDto> plans = planService.getPlansByExpertiseLevel(expertiseLevelId);
         return ResponseEntity.ok(plans);
     }
 }
