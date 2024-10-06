@@ -1,13 +1,11 @@
 package source.code.controller;
 
-import source.code.dto.AddMediaDto;
-import source.code.dto.MediaDto;
-import source.code.exception.ValidationException;
+import source.code.dto.request.MediaCreateDto;
+import source.code.dto.response.MediaResponseDto;
 import source.code.service.MediaService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,26 +20,26 @@ public class MediaController {
     }
 
     @GetMapping("/all/{parentId}/{parentType}")
-    public ResponseEntity<List<MediaDto>> getAllMediaForParent(@PathVariable int parentId, @PathVariable short parentType) {
-        List<MediaDto> mediaList = mediaService.getAllMediaForParent(parentId, parentType);
+    public ResponseEntity<List<MediaResponseDto>> getAllMediaForParent(@PathVariable int parentId, @PathVariable short parentType) {
+        List<MediaResponseDto> mediaList = mediaService.getAllMediaForParent(parentId, parentType);
         return ResponseEntity.ok(mediaList);
     }
 
     @GetMapping("/first/{parentId}/{parentType}")
-    public ResponseEntity<MediaDto> getFirstMediaForParent(@PathVariable int parentId, @PathVariable short parentType) {
-        MediaDto media = mediaService.getFirstMediaForParent(parentId, parentType);
+    public ResponseEntity<MediaResponseDto> getFirstMediaForParent(@PathVariable int parentId, @PathVariable short parentType) {
+        MediaResponseDto media = mediaService.getFirstMediaForParent(parentId, parentType);
         return ResponseEntity.ok(media);
     }
 
     @GetMapping("/{mediaId}")
-    public ResponseEntity<MediaDto> getMediaById(@PathVariable int mediaId) {
-        MediaDto media = mediaService.getMediaById(mediaId);
+    public ResponseEntity<MediaResponseDto> getMediaById(@PathVariable int mediaId) {
+        MediaResponseDto media = mediaService.getMediaById(mediaId);
         return ResponseEntity.ok(media);
     }
 
     @PostMapping
-    public ResponseEntity<MediaDto> createMedia(@Valid @ModelAttribute AddMediaDto request) {
-        MediaDto response = mediaService.saveMedia(request);
+    public ResponseEntity<MediaResponseDto> createMedia(@Valid @ModelAttribute MediaCreateDto request) {
+        MediaResponseDto response = mediaService.saveMedia(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

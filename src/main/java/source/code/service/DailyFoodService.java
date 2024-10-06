@@ -1,9 +1,9 @@
 package source.code.service;
 
-import source.code.dto.DailyCartResponse;
+import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.helper.JsonPatchHelper;
-import source.code.dto.DailyFoodDto;
-import source.code.dto.FoodCalculatedDto;
+import source.code.dto.request.DailyCartFoodCreateDto;
+import source.code.dto.response.FoodCalculatedResponseDto;
 import source.code.helper.ValidationHelper;
 import source.code.model.DailyFood;
 import source.code.model.DailyCartFood;
@@ -59,7 +59,7 @@ public class DailyFoodService {
     }
 
     @Transactional
-    public void addFoodToCart(int userId, int foodId, DailyFoodDto dto) {
+    public void addFoodToCart(int userId, int foodId, DailyCartFoodCreateDto dto) {
         validationHelper.validate(dto);
         DailyFood dailyFood = getDailyCartByUserId(userId);
 
@@ -105,14 +105,14 @@ public class DailyFoodService {
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Food with id: " + foodId + " not found in daily cart"));
 
-        DailyFoodDto dailyFoodDto = new DailyFoodDto();
-        dailyFoodDto.setAmount(dailyCartFood.getAmount());
+        DailyCartFoodCreateDto dailyCartFoodCreateDto = new DailyCartFoodCreateDto();
+        dailyCartFoodCreateDto.setAmount(dailyCartFood.getAmount());
 
-        DailyFoodDto patchedDailyFoodDto = jsonPatchHelper.applyPatch(patch, dailyFoodDto, DailyFoodDto.class);
+        DailyCartFoodCreateDto patchedDailyCartFoodCreateDto = jsonPatchHelper.applyPatch(patch, dailyCartFoodCreateDto, DailyCartFoodCreateDto.class);
 
-        validationHelper.validate(patchedDailyFoodDto);
+        validationHelper.validate(patchedDailyCartFoodCreateDto);
 
-        dailyCartFood.setAmount(patchedDailyFoodDto.getAmount());
+        dailyCartFood.setAmount(patchedDailyCartFoodCreateDto.getAmount());
         dailyFoodRepository.save(dailyFood);
     }
 
@@ -130,15 +130,15 @@ public class DailyFoodService {
         return dailyFoodRepository.save(newDailyFood);
     }
 
-    public DailyCartResponse getFoodsInCart(int userId) {
+    public DailyFoodsResponseDto getFoodsInCart(int userId) {
         DailyFood dailyFood = getDailyCartByUserId(userId);
 
-        List<FoodCalculatedDto> foods = dailyFood.getDailyCartFoods().stream()
+        List<FoodCalculatedResponseDto> foods = dailyFood.getDailyCartFoods().stream()
                 .map(
                         dailyCartFood -> {
                             Food food = dailyCartFood.getFood();
                             double factor = (double) dailyCartFood.getAmount() / 100;
-                            return new FoodCalculatedDto(
+                            return new FoodCalculatedResponseDto(
                                     food.getId(),
                                     food.getName(),
                                     food.getCalories() * factor,
@@ -150,10 +150,10 @@ public class DailyFoodService {
                                     dailyCartFood.getAmount());
                         })
                 .collect(Collectors.toList());
-        double totalCalories = foods.stream().mapToDouble(FoodCalculatedDto::getCalories).sum();
-        double totalCarbohydrates = foods.stream().mapToDouble(FoodCalculatedDto::getCarbohydrates).sum();
-        double totalProtein = foods.stream().mapToDouble(FoodCalculatedDto::getProtein).sum();
-        double totalFat = foods.stream().mapToDouble(FoodCalculatedDto::getFat).sum();
-        return new DailyCartResponse(foods, totalCalories, totalCarbohydrates, totalProtein, totalFat);
+        double totalCalories = foods.stream().mapToDouble(FoodCalculatedResponseDto::getCalories).sum();
+        double totalCarbohydrates = foods.stream().mapToDouble(FoodCalculatedResponseDto::getCarbohydrates).sum();
+        double totalProtein = foods.stream().mapToDouble(FoodCalculatedResponseDto::getProtein).sum();
+        double totalFat = foods.stream().mapToDouble(FoodCalculatedResponseDto::getFat).sum();
+        return new DailyFoodsResponseDto(foods, totalCalories, totalCarbohydrates, totalProtein, totalFat);
     }
 }

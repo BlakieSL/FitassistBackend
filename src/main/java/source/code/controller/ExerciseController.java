@@ -1,13 +1,16 @@
 package source.code.controller;
 
-import source.code.dto.*;
-import source.code.exception.ValidationException;
+import source.code.dto.request.ExerciseCreateDto;
+import source.code.dto.request.SearchRequestDto;
+import source.code.dto.response.ExerciseInstructionResponseDto;
+import source.code.dto.response.ExerciseResponseDto;
+import source.code.dto.response.ExerciseTipResponseDto;
+import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.service.ExerciseService;
 import source.code.service.UserExerciseService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,48 +26,48 @@ public class ExerciseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ExerciseDto> getExerciseById(@PathVariable int id) {
-        ExerciseDto exercise = exerciseService.getExerciseById(id);
+    public ResponseEntity<ExerciseResponseDto> getExerciseById(@PathVariable int id) {
+        ExerciseResponseDto exercise = exerciseService.getExerciseById(id);
         return ResponseEntity.ok(exercise);
     }
 
     @GetMapping
-    public ResponseEntity<List<ExerciseDto>> getAllExercises() {
-        List<ExerciseDto> exercises = exerciseService.getExercises();
+    public ResponseEntity<List<ExerciseResponseDto>> getAllExercises() {
+        List<ExerciseResponseDto> exercises = exerciseService.getExercises();
         return ResponseEntity.ok(exercises);
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ExerciseDto>> getExercisesByUserId(@PathVariable int userId) {
-        List<ExerciseDto> exercises = exerciseService.getExercisesByUserID(userId);
+    public ResponseEntity<List<ExerciseResponseDto>> getExercisesByUserId(@PathVariable int userId) {
+        List<ExerciseResponseDto> exercises = exerciseService.getExercisesByUserID(userId);
         return ResponseEntity.ok(exercises);
     }
 
     @GetMapping("/{id}/likes-and-saves")
-    public ResponseEntity<LikesAndSavedDto> getLikesAndSavesExercise(@PathVariable int id) {
-        LikesAndSavedDto dto = userExerciseService.calculateLikesAndSavesByExerciseId(id);
+    public ResponseEntity<LikesAndSavesResponseDto> getLikesAndSavesExercise(@PathVariable int id) {
+        LikesAndSavesResponseDto dto = userExerciseService.calculateLikesAndSavesByExerciseId(id);
         return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/{id}/instructions")
-    public ResponseEntity<List<ExerciseInstructionDto>> getAllInstructionsByExerciseId(@PathVariable int id) {
-        List<ExerciseInstructionDto> instructions = exerciseService.getExerciseInstructions(id);
+    public ResponseEntity<List<ExerciseInstructionResponseDto>> getAllInstructionsByExerciseId(@PathVariable int id) {
+        List<ExerciseInstructionResponseDto> instructions = exerciseService.getExerciseInstructions(id);
         return ResponseEntity.ok(instructions);
     }
 
     @GetMapping("/{id}/tips")
-    public ResponseEntity<List<ExerciseTipDto>> getAllTipsByExerciseId(@PathVariable int id) {
-        List<ExerciseTipDto> tips = exerciseService.getExerciseTips(id);
+    public ResponseEntity<List<ExerciseTipResponseDto>> getAllTipsByExerciseId(@PathVariable int id) {
+        List<ExerciseTipResponseDto> tips = exerciseService.getExerciseTips(id);
         return  ResponseEntity.ok(tips);
     }
     @PostMapping
-    public ResponseEntity<ExerciseDto> saveExercise(@Valid @RequestBody ExerciseAdditionDto dto) {
-        ExerciseDto savedExercise = exerciseService.saveExercise(dto);
+    public ResponseEntity<ExerciseResponseDto> saveExercise(@Valid @RequestBody ExerciseCreateDto dto) {
+        ExerciseResponseDto savedExercise = exerciseService.saveExercise(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedExercise);
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<ExerciseDto>> searchExercises(@Valid @RequestBody SearchDtoRequest request){
+    public ResponseEntity<List<ExerciseResponseDto>> searchExercises(@Valid @RequestBody SearchRequestDto request){
         return ResponseEntity.ok(exerciseService.searchExercises(request));
     }
 }

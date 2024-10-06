@@ -1,15 +1,13 @@
 package source.code.controller;
 
-import source.code.dto.LikesAndSavedDto;
-import source.code.dto.RecipeAdditionDto;
-import source.code.dto.RecipeDto;
-import source.code.exception.ValidationException;
+import source.code.dto.response.LikesAndSavesResponseDto;
+import source.code.dto.request.RecipeCreateDto;
+import source.code.dto.response.RecipeResponseDto;
 import source.code.service.RecipeService;
 import source.code.service.UserRecipeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,31 +23,31 @@ public class RecipeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RecipeDto> getRecipeById(@PathVariable int id) {
-        RecipeDto recipe = recipeService.getRecipeById(id);
+    public ResponseEntity<RecipeResponseDto> getRecipeById(@PathVariable int id) {
+        RecipeResponseDto recipe = recipeService.getRecipeById(id);
         return ResponseEntity.ok(recipe);
     }
 
     @GetMapping
-    public ResponseEntity<List<RecipeDto>> getAllRecipes() {
+    public ResponseEntity<List<RecipeResponseDto>> getAllRecipes() {
         return ResponseEntity.ok(recipeService.getRecipes());
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<RecipeDto>> getRecipesByUserId(@PathVariable int userId) {
-        List<RecipeDto> recipes = recipeService.getRecipesByUserID(userId);
+    public ResponseEntity<List<RecipeResponseDto>> getRecipesByUserId(@PathVariable int userId) {
+        List<RecipeResponseDto> recipes = recipeService.getRecipesByUserID(userId);
         return ResponseEntity.ok(recipes);
     }
 
     @GetMapping("/{id}/likes-and-saves")
-    public ResponseEntity<LikesAndSavedDto> getLikesAndSavesRecipe(@PathVariable int id) {
-        LikesAndSavedDto dto = userRecipeService.calculateLikesAndSavesByRecipeId(id);
+    public ResponseEntity<LikesAndSavesResponseDto> getLikesAndSavesRecipe(@PathVariable int id) {
+        LikesAndSavesResponseDto dto = userRecipeService.calculateLikesAndSavesByRecipeId(id);
         return ResponseEntity.ok(dto);
     }
 
     @PostMapping
-    public ResponseEntity<RecipeDto> createRecipe(@Valid @RequestBody RecipeAdditionDto recipeDto) {
-        RecipeDto response = recipeService.save(recipeDto);
+    public ResponseEntity<RecipeResponseDto> createRecipe(@Valid @RequestBody RecipeCreateDto recipeDto) {
+        RecipeResponseDto response = recipeService.save(recipeDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

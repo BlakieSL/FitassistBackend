@@ -1,6 +1,6 @@
 package source.code.service;
 
-import source.code.dto.LikesAndSavedDto;
+import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.model.Food;
 import source.code.model.User;
@@ -66,13 +66,13 @@ public class UserFoodService {
         userFoodRepository.delete(userFood);
     }
 
-    public LikesAndSavedDto calculateLikesAndSavesByFoodId(int foodId) {
+    public LikesAndSavesResponseDto calculateLikesAndSavesByFoodId(int foodId) {
         foodRepository.findById(foodId)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Food with id: " + foodId + " not found"));
 
         long saves = userFoodRepository.countByFoodIdAndType(foodId, (short) 1);
         long likes = userFoodRepository.countByFoodIdAndType(foodId, (short) 2);
-        return new LikesAndSavedDto(likes, saves);
+        return new LikesAndSavesResponseDto(likes, saves);
     }
 }

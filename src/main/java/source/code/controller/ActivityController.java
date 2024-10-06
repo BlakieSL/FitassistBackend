@@ -1,6 +1,12 @@
 package source.code.controller;
 
-import source.code.dto.*;
+import source.code.dto.request.ActivityCreateDto;
+import source.code.dto.request.CalculateActivityCaloriesRequestDto;
+import source.code.dto.request.SearchRequestDto;
+import source.code.dto.response.ActivityAverageMetResponseDto;
+import source.code.dto.response.ActivityCalculatedResponseDto;
+import source.code.dto.response.ActivitySummaryResponseDto;
+import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.service.ActivityService;
 import source.code.service.UserActivityService;
 import jakarta.validation.Valid;
@@ -20,48 +26,48 @@ public class ActivityController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ActivitySummaryDto> getActivityById(@PathVariable int id) {
-        ActivitySummaryDto activity = activityService.getActivityById(id);
+    public ResponseEntity<ActivitySummaryResponseDto> getActivityById(@PathVariable int id) {
+        ActivitySummaryResponseDto activity = activityService.getActivityById(id);
         return ResponseEntity.ok(activity);
     }
 
     @GetMapping
-    public ResponseEntity<List<ActivitySummaryDto>> getAllActivities() {
+    public ResponseEntity<List<ActivitySummaryResponseDto>> getAllActivities() {
         return ResponseEntity.ok(activityService.getActivities());
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ActivitySummaryDto>> getActivitiesByUserId(@PathVariable int userId) {
-        List<ActivitySummaryDto> recipes = activityService.getActivitiesByUserID(userId);
+    public ResponseEntity<List<ActivitySummaryResponseDto>> getActivitiesByUserId(@PathVariable int userId) {
+        List<ActivitySummaryResponseDto> recipes = activityService.getActivitiesByUserID(userId);
         return ResponseEntity.ok(recipes);
     }
 
     @GetMapping("/{id}/likes-and-saves")
-    public ResponseEntity<LikesAndSavedDto> getLikesAndSavedActivity(@PathVariable int id) {
-        LikesAndSavedDto dto = userActivityService.calculateLikesAndSavesByActivityId(id);
+    public ResponseEntity<LikesAndSavesResponseDto> getLikesAndSavedActivity(@PathVariable int id) {
+        LikesAndSavesResponseDto dto = userActivityService.calculateLikesAndSavesByActivityId(id);
         return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/met")
-    public ResponseEntity<ActivityMetDto> getAverageMet(){
-        ActivityMetDto dto = activityService.getAverageMet();
+    public ResponseEntity<ActivityAverageMetResponseDto> getAverageMet(){
+        ActivityAverageMetResponseDto dto = activityService.getAverageMet();
         return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/{id}/calculate-calories")
-    public ResponseEntity<ActivityCalculatedDto> calculateCaloriesBurntById(@PathVariable int id, @Valid @RequestBody CalculateCaloriesBurntRequest request) {
-        ActivityCalculatedDto response = activityService.calculateCaloriesBurnt(id, request);
+    public ResponseEntity<ActivityCalculatedResponseDto> calculateCaloriesBurntById(@PathVariable int id, @Valid @RequestBody CalculateActivityCaloriesRequestDto request) {
+        ActivityCalculatedResponseDto response = activityService.calculateCaloriesBurnt(id, request);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<ActivitySummaryDto> createActivity(@Valid @RequestBody ActivityAdditionDto dto) {
-        ActivitySummaryDto response = activityService.saveActivity(dto);
+    public ResponseEntity<ActivitySummaryResponseDto> createActivity(@Valid @RequestBody ActivityCreateDto dto) {
+        ActivitySummaryResponseDto response = activityService.saveActivity(dto);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<ActivitySummaryDto>> searchActivities(@Valid @RequestBody SearchDtoRequest request){
+    public ResponseEntity<List<ActivitySummaryResponseDto>> searchActivities(@Valid @RequestBody SearchRequestDto request){
         return ResponseEntity.ok(activityService.searchActivities(request));
     }
 }

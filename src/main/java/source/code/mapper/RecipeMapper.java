@@ -1,9 +1,9 @@
 package source.code.mapper;
 
-import source.code.dto.RecipeAdditionDto;
-import source.code.dto.RecipeCategoryDto;
-import source.code.dto.RecipeCategoryShortDto;
-import source.code.dto.RecipeDto;
+import source.code.dto.request.RecipeCreateDto;
+import source.code.dto.response.RecipeCategoryResponseDto;
+import source.code.dto.other.RecipeCategoryShortDto;
+import source.code.dto.response.RecipeResponseDto;
 import source.code.model.Recipe;
 import source.code.model.RecipeCategory;
 import source.code.model.RecipeCategoryAssociation;
@@ -24,15 +24,15 @@ public abstract class RecipeMapper {
     private RecipeCategoryRepository recipeCategoryRepository;
 
     @Mapping(target = "categories", source = "recipeCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryShortDto")
-    public abstract RecipeDto toDto(Recipe recipe);
+    public abstract RecipeResponseDto toDto(Recipe recipe);
 
     @Mapping(target = "recipeCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userRecipes", ignore = true)
     @Mapping(target = "recipeFoods", ignore = true)
-    public abstract Recipe toEntity(RecipeAdditionDto dto);
+    public abstract Recipe toEntity(RecipeCreateDto dto);
 
-    public abstract RecipeCategoryDto toCategoryDto(RecipeCategory recipeCategory);
+    public abstract RecipeCategoryResponseDto toCategoryDto(RecipeCategory recipeCategory);
 
     @Named("mapCategoryIdsToAssociations")
     protected Set<RecipeCategoryAssociation> mapCategoryIdsToAssociations(List<Integer> categoryIds) {

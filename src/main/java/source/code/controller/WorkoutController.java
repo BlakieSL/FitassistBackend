@@ -2,11 +2,9 @@ package source.code.controller;
 
 import source.code.dto.WorkoutDto;
 import source.code.service.WorkoutService;
-import source.code.exception.ValidationException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

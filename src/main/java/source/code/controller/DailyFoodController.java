@@ -1,15 +1,13 @@
 package source.code.controller;
 
-import source.code.dto.DailyFoodDto;
-import source.code.dto.DailyCartResponse;
-import source.code.exception.ValidationException;
+import source.code.dto.request.DailyCartFoodCreateDto;
+import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.service.DailyFoodService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,8 +19,8 @@ public class DailyFoodController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<DailyCartResponse> getAllFoodsInCartByUserID(@PathVariable int userId) {
-        DailyCartResponse cart = dailyFoodService.getFoodsInCart(userId);
+    public ResponseEntity<DailyFoodsResponseDto> getAllFoodsInCartByUserID(@PathVariable int userId) {
+        DailyFoodsResponseDto cart = dailyFoodService.getFoodsInCart(userId);
         return ResponseEntity.ok(cart);
     }
 
@@ -30,7 +28,7 @@ public class DailyFoodController {
     public ResponseEntity<Void> addFoodToCartByUserId(
             @PathVariable int userId,
             @PathVariable int foodId,
-            @Valid @RequestBody DailyFoodDto request) {
+            @Valid @RequestBody DailyCartFoodCreateDto request) {
 
         dailyFoodService.addFoodToCart(userId, foodId, request);
         return ResponseEntity.ok().build();

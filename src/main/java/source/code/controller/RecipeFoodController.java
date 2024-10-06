@@ -1,16 +1,14 @@
 package source.code.controller;
 
-import source.code.dto.AddFoodRecipeDto;
+import source.code.dto.request.RecipeFoodCreateDto;
 import source.code.service.RecipeFoodService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
-import source.code.exception.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,7 +27,7 @@ public class RecipeFoodController {
     public ResponseEntity<Void> addFoodToRecipe(
             @PathVariable int recipeId,
             @PathVariable int foodId,
-            @Valid @RequestBody AddFoodRecipeDto request) {
+            @Valid @RequestBody RecipeFoodCreateDto request) {
 
         recipeFoodService.addFoodToRecipe(recipeId, foodId, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();

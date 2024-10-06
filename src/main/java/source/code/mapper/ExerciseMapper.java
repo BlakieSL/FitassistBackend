@@ -4,7 +4,12 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.*;
+import source.code.dto.other.ExerciseCategoryShortDto;
+import source.code.dto.request.ExerciseCreateDto;
+import source.code.dto.response.ExerciseCategoryResponseDto;
+import source.code.dto.response.ExerciseInstructionResponseDto;
+import source.code.dto.response.ExerciseResponseDto;
+import source.code.dto.response.ExerciseTipResponseDto;
 import source.code.model.*;
 import source.code.repository.*;
 
@@ -40,7 +45,7 @@ public abstract class ExerciseMapper {
     @Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceToShortDto")
     @Mapping(target = "exerciseEquipment", source = "exerciseEquipment", qualifiedByName = "mapEquipmentToShortDto")
     @Mapping(target = "exerciseType", source = "exerciseType", qualifiedByName = "mapTypeToShortDto")
-    public abstract ExerciseDto toDto(Exercise exercise);
+    public abstract ExerciseResponseDto toDto(Exercise exercise);
 
     @Mapping(target = "exerciseCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
     @Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevel")
@@ -51,13 +56,13 @@ public abstract class ExerciseMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user_exercise", ignore = true)
     @Mapping(target = "workoutSet", ignore = true)
-    public abstract Exercise toEntity(ExerciseAdditionDto dto);
+    public abstract Exercise toEntity(ExerciseCreateDto dto);
 
-    public abstract ExerciseCategoryDto toCategoryDto(ExerciseCategory exerciseCategory);
+    public abstract ExerciseCategoryResponseDto toCategoryDto(ExerciseCategory exerciseCategory);
 
-    public abstract ExerciseInstructionDto toInstructionDto(ExerciseInstruction exerciseInstruction);
+    public abstract ExerciseInstructionResponseDto toInstructionDto(ExerciseInstruction exerciseInstruction);
 
-    public abstract ExerciseTipDto toTipDto(ExerciseTip exerciseTip);
+    public abstract ExerciseTipResponseDto toTipDto(ExerciseTip exerciseTip);
 
 
     @Named("mapCategoryIdsToAssociations")

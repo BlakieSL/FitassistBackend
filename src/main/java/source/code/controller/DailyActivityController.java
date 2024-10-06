@@ -1,15 +1,13 @@
 package source.code.controller;
 
-import source.code.dto.DailyActivitiesResponse;
-import source.code.dto.DailyActivityDto;
-import source.code.exception.ValidationException;
+import source.code.dto.response.DailyActivitiesResponseDto;
+import source.code.dto.request.DailyCartActivityCreateDto;
 import source.code.service.DailyActivityService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,8 +20,8 @@ public class DailyActivityController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<DailyActivitiesResponse> getAllDailyActivitiesByUserId(@PathVariable int userId) {
-        DailyActivitiesResponse activities = dailyActivityService.getActivitiesInCart(userId);
+    public ResponseEntity<DailyActivitiesResponseDto> getAllDailyActivitiesByUserId(@PathVariable int userId) {
+        DailyActivitiesResponseDto activities = dailyActivityService.getActivitiesInCart(userId);
         return ResponseEntity.ok(activities);
     }
 
@@ -31,7 +29,7 @@ public class DailyActivityController {
     public ResponseEntity<Void> addDailyActivitiesByUserId(
             @PathVariable int userId,
             @PathVariable int activityId,
-            @Valid @RequestBody DailyActivityDto request) {
+            @Valid @RequestBody DailyCartActivityCreateDto request) {
 
         dailyActivityService.addActivityToDailyActivities(userId, activityId, request);
         return ResponseEntity.ok().build();
