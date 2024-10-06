@@ -2,13 +2,13 @@ package source.code.controller;
 
 import source.code.dto.request.DailyCartFoodCreateDto;
 import source.code.dto.response.DailyFoodsResponseDto;
-import source.code.service.DailyFoodService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import source.code.service.interfaces.DailyFoodService;
 
 @RestController
 @RequestMapping(path = "/api/cart")

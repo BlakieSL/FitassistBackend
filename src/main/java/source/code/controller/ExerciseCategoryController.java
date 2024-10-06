@@ -2,12 +2,12 @@ package source.code.controller;
 
 import source.code.dto.response.ExerciseResponseDto;
 import source.code.dto.response.ExerciseCategoryResponseDto;
-import source.code.service.ExerciseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import source.code.service.interfaces.ExerciseService;
 
 import java.util.List;
 

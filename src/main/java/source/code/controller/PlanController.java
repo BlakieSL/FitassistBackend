@@ -3,12 +3,12 @@ package source.code.controller;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.dto.request.PlanCreateDto;
 import source.code.dto.response.PlanResponseDto;
-import source.code.service.PlanService;
-import source.code.service.UserPlanService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import source.code.service.interfaces.PlanService;
+import source.code.service.interfaces.UserPlanService;
 
 import java.util.List;
 

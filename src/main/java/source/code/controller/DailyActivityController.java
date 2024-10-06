@@ -2,13 +2,13 @@ package source.code.controller;
 
 import source.code.dto.response.DailyActivitiesResponseDto;
 import source.code.dto.request.DailyCartActivityCreateDto;
-import source.code.service.DailyActivityService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import source.code.service.interfaces.DailyActivityService;
 
 @RestController
 @RequestMapping(path = "/api/daily-activities")

@@ -11,24 +11,25 @@ import source.code.repository.WorkoutRepository;
 import source.code.repository.WorkoutTypeRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import source.code.service.interfaces.WorkoutService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
-public class WorkoutService {
+public class WorkoutServiceImpl implements WorkoutService {
     private final ValidationHelper validationHelper;
     private final WorkoutMapper workoutMapper;
     private final WorkoutRepository workoutRepository;
     private final WorkoutPlanRepository workoutPlanRepository;
     private final WorkoutTypeRepository workoutTypeRepository;
 
-    public WorkoutService(ValidationHelper validationHelper,
-                          WorkoutMapper workoutMapper,
-                          WorkoutRepository workoutRepository,
-                          WorkoutPlanRepository workoutPlanRepository,
-                          WorkoutTypeRepository workoutTypeRepository) {
+    public WorkoutServiceImpl(ValidationHelper validationHelper,
+                              WorkoutMapper workoutMapper,
+                              WorkoutRepository workoutRepository,
+                              WorkoutPlanRepository workoutPlanRepository,
+                              WorkoutTypeRepository workoutTypeRepository) {
         this.validationHelper = validationHelper;
         this.workoutMapper = workoutMapper;
         this.workoutRepository = workoutRepository;

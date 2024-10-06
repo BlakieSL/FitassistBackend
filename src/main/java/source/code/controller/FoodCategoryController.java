@@ -2,12 +2,13 @@ package source.code.controller;
 
 import source.code.dto.response.FoodResponseDto;
 import source.code.dto.response.FoodCategoryResponseDto;
-import source.code.service.FoodService;
+import source.code.service.FoodServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import source.code.service.interfaces.FoodService;
 
 import java.util.List;
 

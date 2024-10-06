@@ -20,13 +20,14 @@ import source.code.repository.UserActivityRepository;
 import source.code.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import source.code.service.interfaces.ActivityService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
-public class ActivityService {
+public class ActivityServiceImpl implements ActivityService {
     private final ValidationHelper validationHelper;
     private final CalculationsHelper calculationsHelper;
     private final ActivityMapper activityMapper;
@@ -34,7 +35,7 @@ public class ActivityService {
     private final UserRepository userRepository;
     private final ActivityCategoryRepository activityCategoryRepository;
     private final UserActivityRepository userActivityRepository;
-    public ActivityService(
+    public ActivityServiceImpl(
             ValidationHelper validationHelper,
             CalculationsHelper calculationsHelper,
             ActivityMapper activityMapper,

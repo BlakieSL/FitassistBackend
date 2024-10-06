@@ -3,7 +3,7 @@ package source.code.config;
 import source.code.auth.BearerTokenFilter;
 import source.code.auth.JwtAuthenticationFilter;
 import source.code.auth.JwtService;
-import source.code.service.UserService;
+import source.code.service.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -27,11 +27,11 @@ import java.util.Arrays;
 @Configuration
 public class SecurityConfig {
     private final JwtService jwtService;
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
-    public SecurityConfig(JwtService jwtService, @Lazy UserService userService) {
+    public SecurityConfig(JwtService jwtService, @Lazy UserServiceImpl userServiceImpl) {
         this.jwtService = jwtService;
-        this.userService = userService;
+        this.userServiceImpl = userServiceImpl;
     }
 
     @Bean
@@ -46,7 +46,7 @@ public class SecurityConfig {
             AuthenticationManagerBuilder authenticationManagerBuilder)
             throws Exception {
         AuthenticationManager authenticationManager = authenticationManagerBuilder.getOrBuild();
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtService, userService);
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtService, userServiceImpl);
 
         BearerTokenFilter bearerTokenFilter = new BearerTokenFilter(jwtService);
 
