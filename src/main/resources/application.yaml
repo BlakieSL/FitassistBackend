@@ -2,7 +2,7 @@ spring:
   application:
     name: SimpleFullStackProject
   mail:
-    host: smt.gmail.com
+    host: smtp.gmail.com
     port: 587
     username: petadoptiontoken@gmail.com
     password: fjdx ekcu liue qcfz
