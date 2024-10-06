@@ -3,7 +3,7 @@ package source.code.controller;
 import source.code.dto.request.CalculateFoodMacrosRequestDto;
 import source.code.dto.request.FoodCreateDto;
 import source.code.dto.request.SearchRequestDto;
-import source.code.dto.response.FoodCalculatedResponseDto;
+import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.FoodResponseDto;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.service.FoodService;
@@ -26,7 +26,7 @@ public class FoodController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FoodResponseDto> getFoodById(@PathVariable int id) {
+    public ResponseEntity<FoodResponseDto> getFood(@PathVariable int id) {
         FoodResponseDto food = foodService.getFoodById(id);
         return ResponseEntity.ok(food);
     }
@@ -37,20 +37,20 @@ public class FoodController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<FoodResponseDto>> getFoodsByUserId(@PathVariable int userId) {
+    public ResponseEntity<List<FoodResponseDto>> getFoodsByUser(@PathVariable int userId) {
         List<FoodResponseDto> recipes = foodService.getFoodsByUserID(userId);
         return ResponseEntity.ok(recipes);
     }
 
     @GetMapping("/{id}/likes-and-saves")
-    public ResponseEntity<LikesAndSavesResponseDto> getLikesAndSavesFood(@PathVariable int id) {
+    public ResponseEntity<LikesAndSavesResponseDto> getFoodLikesAndSaves(@PathVariable int id) {
         LikesAndSavesResponseDto dto = userFoodService.calculateLikesAndSavesByFoodId(id);
         return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/{id}/calculate-macros")
-    public ResponseEntity<FoodCalculatedResponseDto> calculateFoodMacrosById(@PathVariable int id, @Valid @RequestBody CalculateFoodMacrosRequestDto request) {
-        FoodCalculatedResponseDto response = foodService.calculateMacros(id, request);
+    public ResponseEntity<FoodCalculatedMacrosResponseDto> calculateFoodMacros(@PathVariable int id, @Valid @RequestBody CalculateFoodMacrosRequestDto request) {
+        FoodCalculatedMacrosResponseDto response = foodService.calculateMacros(id, request);
         return ResponseEntity.ok(response);
     }
 

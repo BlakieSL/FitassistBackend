@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDto> getUserById(@PathVariable int id) {
+    public ResponseEntity<UserResponseDto> getUser(@PathVariable int id) {
         UserResponseDto user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
@@ -63,7 +63,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> modifyUserById(
+    public ResponseEntity<Void> updateUser(
             @PathVariable int id,
             @Validated(ValidationGroups.Registration.class)
             @RequestBody JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
@@ -73,7 +73,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUserById(@PathVariable int id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
