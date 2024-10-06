@@ -59,9 +59,9 @@ public class DailyFoodService {
     }
 
     @Transactional
-    public void addFoodToCart(int userId, int foodId, DailyCartFoodCreateDto dto) {
+    public void addFoodToDailyCartFood(int userId, int foodId, DailyCartFoodCreateDto dto) {
         validationHelper.validate(dto);
-        DailyFood dailyFood = getDailyCartByUserId(userId);
+        DailyFood dailyFood = getDailyFoodByUser(userId);
 
         Food food = foodRepository.findById(foodId)
                 .orElseThrow(() -> new NoSuchElementException("Food with id: " + foodId + " not found"));
@@ -86,8 +86,8 @@ public class DailyFoodService {
     }
 
     @Transactional
-    public void removeFoodFromCart(int userId, int foodId) {
-        DailyFood dailyFood = getDailyCartByUserId(userId);
+    public void removeFoodFromDailyCartFood(int userId, int foodId) {
+        DailyFood dailyFood = getDailyFoodByUser(userId);
         DailyCartFood dailyCartFood = dailyFood.getDailyCartFoods().stream()
                 .filter(item -> item.getFood().getId().equals(foodId))
                 .findFirst()
@@ -97,8 +97,8 @@ public class DailyFoodService {
     }
 
     @Transactional
-    public void modifyDailyCartFood(int userId, int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
-        DailyFood dailyFood = getDailyCartByUserId(userId);
+    public void updateDailyCartFood(int userId, int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+        DailyFood dailyFood = getDailyFoodByUser(userId);
 
         DailyCartFood dailyCartFood = dailyFood.getDailyCartFoods().stream()
                 .filter(item -> item.getFood().getId().equals(foodId))
@@ -116,7 +116,7 @@ public class DailyFoodService {
         dailyFoodRepository.save(dailyFood);
     }
 
-    private DailyFood getDailyCartByUserId(int userId) {
+    private DailyFood getDailyFoodByUser(int userId) {
         return dailyFoodRepository.findByUserId(userId)
                 .orElseGet(() -> createNewDailyCartForUser(userId));
     }
@@ -130,8 +130,8 @@ public class DailyFoodService {
         return dailyFoodRepository.save(newDailyFood);
     }
 
-    public DailyFoodsResponseDto getFoodsInCart(int userId) {
-        DailyFood dailyFood = getDailyCartByUserId(userId);
+    public DailyFoodsResponseDto getFoodsFromDailyCartFood(int userId) {
+        DailyFood dailyFood = getDailyFoodByUser(userId);
 
         List<FoodCalculatedMacrosResponseDto> foods = dailyFood.getDailyCartFoods().stream()
                 .map(

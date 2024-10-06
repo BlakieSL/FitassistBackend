@@ -21,7 +21,7 @@ public class RecipeCategoryController {
 
     @GetMapping
     public ResponseEntity<List<RecipeCategoryResponseDto>> getAllRecipeCategories() {
-        return ResponseEntity.ok(recipeService.getCategories());
+        return ResponseEntity.ok(recipeService.getAllCategories());
     }
 
     @GetMapping("/{categoryId}/recipes")

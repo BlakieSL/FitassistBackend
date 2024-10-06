@@ -37,7 +37,7 @@ public class WorkoutSetService {
     }
 
     @Transactional
-    public WorkoutSetDto saveWorkoutSet(WorkoutSetDto workoutSetDto) {
+    public WorkoutSetDto createWorkoutSet(WorkoutSetDto workoutSetDto) {
         validationHelper.validate(workoutSetDto);
 
         WorkoutType workoutType = workoutTypeRepository
@@ -61,7 +61,7 @@ public class WorkoutSetService {
     }
 
     @Transactional
-    public void deleteWorkoutSetById(int id) {
+    public void deleteWorkoutSet(int id) {
         WorkoutSet workoutSet = workoutSetRepository
                 .findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
@@ -69,21 +69,21 @@ public class WorkoutSetService {
         workoutSetRepository.delete(workoutSet);
     }
 
-    public WorkoutSetDto getWorkoutSetById(int id) {
+    public WorkoutSetDto getWorkoutSet(int id) {
         WorkoutSet workoutSet = workoutSetRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "WorkoutSet with id: " + id + " not found"));
         return workoutSetMapper.toDto(workoutSet);
     }
 
-    public List<WorkoutSetDto> getWorkoutSets() {
+    public List<WorkoutSetDto> getAllWorkoutSets() {
         List<WorkoutSet> workoutSets = workoutSetRepository.findAll();
         return workoutSets.stream()
                 .map(workoutSetMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<WorkoutSetDto> getWorkoutSetsByWorkoutTypeId(int workoutTypeId) {
+    public List<WorkoutSetDto> getWorkoutSetsByWorkoutType(int workoutTypeId) {
         List<WorkoutSet> workoutSets = workoutSetRepository
                 .findByWorkoutTypeId(workoutTypeId);
         return workoutSets.stream()

@@ -33,19 +33,19 @@ public class MediaController {
 
     @GetMapping("/{mediaId}")
     public ResponseEntity<MediaResponseDto> getMedia(@PathVariable int mediaId) {
-        MediaResponseDto media = mediaService.getMediaById(mediaId);
+        MediaResponseDto media = mediaService.getMedia(mediaId);
         return ResponseEntity.ok(media);
     }
 
     @PostMapping
     public ResponseEntity<MediaResponseDto> createMedia(@Valid @ModelAttribute MediaCreateDto request) {
-        MediaResponseDto response = mediaService.saveMedia(request);
+        MediaResponseDto response = mediaService.createMedia(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/{mediaId}")
     public ResponseEntity<Void> removeMediaFromParent(@PathVariable int mediaId) {
-        mediaService.removeMedia(mediaId);
+        mediaService.deleteMedia(mediaId);
         return ResponseEntity.ok().build();
     }
 }

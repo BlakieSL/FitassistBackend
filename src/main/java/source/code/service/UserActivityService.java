@@ -66,13 +66,14 @@ public class UserActivityService {
         userActivityRepository.delete(userActivity);
     }
 
-    public LikesAndSavesResponseDto calculateLikesAndSavesByActivityId(int activityId) {
+    public LikesAndSavesResponseDto calculateActivityLikesAndSaves(int activityId) {
         activityRepository.findById(activityId)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Activity with id: " + activityId + " not found"));
 
         long saves = userActivityRepository.countByActivityIdAndType(activityId, (short) 1);
         long likes = userActivityRepository.countByActivityIdAndType(activityId, (short) 2);
+
         return new LikesAndSavesResponseDto(likes, saves);
     }
 }

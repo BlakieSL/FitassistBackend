@@ -22,7 +22,7 @@ public class ActivityCategoryController {
 
     @GetMapping
     public ResponseEntity<List<ActivityCategoryResponseDto>> getAllActivityCategories() {
-        return ResponseEntity.ok(activityService.getCategories());
+        return ResponseEntity.ok(activityService.getAllCategories());
     }
 
     @GetMapping("/{categoryId}/activities")

@@ -24,31 +24,31 @@ public class PlanController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PlanResponseDto> getPlan(@PathVariable int id) {
-        PlanResponseDto plan = planService.getPlanById(id);
+        PlanResponseDto plan = planService.getPlan(id);
         return ResponseEntity.ok(plan);
     }
 
     @GetMapping
     public ResponseEntity<List<PlanResponseDto>> getAllPlans() {
-        List<PlanResponseDto> plans = planService.getPlans();
+        List<PlanResponseDto> plans = planService.getAllPlans();
         return ResponseEntity.ok(plans);
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<PlanResponseDto>> getPlansByUser(@PathVariable int userId) {
-        List<PlanResponseDto> plans = planService.getPlansByUserID(userId);
+        List<PlanResponseDto> plans = planService.getPlansByUser(userId);
         return ResponseEntity.ok(plans);
     }
 
     @GetMapping("/{id}/likes-and-saves")
     public ResponseEntity<LikesAndSavesResponseDto> getPlanLikesAndSaves(@PathVariable int id) {
-        LikesAndSavesResponseDto dto = userPlanService.calculateLikesAndSavesByPlanId(id);
+        LikesAndSavesResponseDto dto = userPlanService.calculatePlanLikesAndSaves(id);
         return ResponseEntity.ok(dto);
     }
 
     @PostMapping
     public ResponseEntity<PlanResponseDto> createPlan(@Valid @RequestBody PlanCreateDto planDto) {
-        PlanResponseDto response = planService.savePlan(planDto);
+        PlanResponseDto response = planService.createPlan(planDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

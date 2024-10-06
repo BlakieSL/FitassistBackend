@@ -44,27 +44,27 @@ public class ExerciseService {
     }
 
     @Transactional
-    public ExerciseResponseDto saveExercise(ExerciseCreateDto dto) {
+    public ExerciseResponseDto createExercise(ExerciseCreateDto dto) {
         validationHelper.validate(dto);
         Exercise exercise = exerciseRepository.save(exerciseMapper.toEntity(dto));
         return exerciseMapper.toDto(exercise);
     }
 
-    public ExerciseResponseDto getExerciseById(int id) {
+    public ExerciseResponseDto getExercise(int id) {
         Exercise exercise = exerciseRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Exercise with id: " + id + " not found"));
         return exerciseMapper.toDto(exercise);
     }
 
-    public List<ExerciseResponseDto> getExercises() {
+    public List<ExerciseResponseDto> getAllExercises() {
         List<Exercise> exercises = exerciseRepository.findAll();
         return exercises.stream()
                 .map(exerciseMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<ExerciseResponseDto> getExercisesByUserID(int userId) {
+    public List<ExerciseResponseDto> getExercisesByUser(int userId) {
         List<UserExercise> userExercises = userExerciseRepository
                 .findByUserId(userId);
         List<Exercise> exercises = userExercises
@@ -84,7 +84,7 @@ public class ExerciseService {
                 .collect(Collectors.toList());
     }
 
-    public List<ExerciseCategoryResponseDto> getCategories() {
+    public List<ExerciseCategoryResponseDto> getAllCategories() {
         List<ExerciseCategory> categories = exerciseCategoryRepository.findAll();
         return categories.stream()
                 .map(exerciseMapper::toCategoryDto)

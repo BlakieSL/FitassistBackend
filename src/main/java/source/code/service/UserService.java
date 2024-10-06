@@ -78,11 +78,11 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void modifyUser(int userId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+    public void updateUser(int userId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User with id: " + userId + " not found"));
 
-        UserResponseDto userDto = getUserById(userId);
+        UserResponseDto userDto = getUser(userId);
         UserUpdateDto patchedUserUpdateDto = jsonPatchHelper.applyPatch(patch, userDto, UserUpdateDto.class);
 
         if(patchedUserUpdateDto.getOldPassword() != null && patchedUserUpdateDto.getPassword() != null) {
@@ -114,7 +114,7 @@ public class UserService implements UserDetailsService {
                 .map(userMapper::toDetails);
     }
 
-    public UserResponseDto getUserById(int id) {
+    public UserResponseDto getUser(int id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "User with id " + id + " not found"));

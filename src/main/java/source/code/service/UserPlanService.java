@@ -65,7 +65,7 @@ public class UserPlanService {
         userPlanRepository.delete(userPlan);
     }
 
-    public LikesAndSavesResponseDto calculateLikesAndSavesByPlanId(int planId) {
+    public LikesAndSavesResponseDto calculatePlanLikesAndSaves(int planId) {
         planRepository.findById(planId)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Plan with id: " + planId + " not found"));

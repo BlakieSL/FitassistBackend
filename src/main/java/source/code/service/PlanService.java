@@ -44,38 +44,43 @@ public class PlanService {
     }
 
     @Transactional
-    public PlanResponseDto savePlan(PlanCreateDto planDto) {
+    public PlanResponseDto createPlan(PlanCreateDto planDto) {
         validationHelper.validate(planDto);
         Plan plan = planRepository.save(planMapper.toEntity(planDto));
+
         return planMapper.toDto(plan);
     }
 
-    public PlanResponseDto getPlanById(int id) {
+    public PlanResponseDto getPlan(int id) {
         Plan plan = planRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Plan with id: " + id + " not found"));
+
         return planMapper.toDto(plan);
     }
 
-    public List<PlanResponseDto> getPlans() {
+    public List<PlanResponseDto> getAllPlans() {
         List<Plan> plans = planRepository.findAll();
+
         return plans.stream()
                 .map(planMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<PlanResponseDto> getPlansByUserID(int userId) {
+    public List<PlanResponseDto> getPlansByUser(int userId) {
         List<UserPlan> userPlans = userPlanRepository.findByUserId(userId);
         List<Plan> plans = userPlans.stream()
                 .map(UserPlan::getPlan)
                 .collect(Collectors.toList());
+
         return plans.stream()
                 .map(planMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<PlanCategoryResponseDto> getCategories() {
+    public List<PlanCategoryResponseDto> getAllCategories() {
         List<PlanCategory> categories = planCategoryRepository.findAll();
+
         return categories.stream()
                 .map(planMapper::toCategoryDto)
                 .collect(Collectors.toList());
@@ -86,6 +91,7 @@ public class PlanService {
         List<Plan> plans = planCategoryAssociations.stream()
                 .map(PlanCategoryAssociation::getPlan)
                 .collect(Collectors.toList());
+
         return plans.stream()
                 .map(planMapper::toDto)
                 .collect(Collectors.toList());
@@ -93,6 +99,7 @@ public class PlanService {
 
     public List<PlanResponseDto> getPlansByType(int planTypeId) {
         List<Plan> plans = planRepository.findByPlanType_Id(planTypeId);
+
         return plans.stream()
                 .map(planMapper::toDto)
                 .collect(Collectors.toList());
@@ -100,6 +107,7 @@ public class PlanService {
 
     public List<PlanResponseDto> getPlansByDuration(int planDurationId) {
         List<Plan> plans = planRepository.findByPlanDuration_Id(planDurationId);
+
         return plans.stream()
                 .map(planMapper::toDto)
                 .collect(Collectors.toList());
@@ -107,6 +115,7 @@ public class PlanService {
 
     public List<PlanResponseDto> getPlansByEquipment(int planEquipmentId) {
         List<Plan> plans = planRepository.findByPlanEquipment_Id(planEquipmentId);
+
         return plans.stream()
                 .map(planMapper::toDto)
                 .collect(Collectors.toList());
@@ -114,6 +123,7 @@ public class PlanService {
 
     public List<PlanResponseDto> getPlansByExpertiseLevel(int planExpertiseLevelId) {
         List<Plan> plans = planRepository.findByPlanExpertiseLevel_Id(planExpertiseLevelId);
+
         return plans.stream()
                 .map(planMapper::toDto)
                 .collect(Collectors.toList());
