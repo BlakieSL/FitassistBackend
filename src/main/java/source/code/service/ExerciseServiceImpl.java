@@ -12,13 +12,14 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import source.code.model.*;
 import source.code.repository.*;
+import source.code.service.interfaces.ExerciseService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
-public class ExerciseService {
+public class ExerciseServiceImpl implements ExerciseService {
     private final ValidationHelper validationHelper;
     private final ExerciseMapper exerciseMapper;
     private final ExerciseRepository exerciseRepository;
@@ -27,12 +28,12 @@ public class ExerciseService {
     private final ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository;
     private final ExerciseInstructionRepository exerciseInstructionRepository;
     private final ExerciseTipRepository exerciseTipRepository;
-    public ExerciseService(ValidationHelper validationHelper,
-                           ExerciseMapper exerciseMapper,
-                           ExerciseRepository exerciseRepository,
-                           UserExerciseRepository userExerciseRepository,
-                           ExerciseCategoryRepository exerciseCategoryRepository,
-                           ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository, ExerciseInstructionRepository exerciseInstructionRepository, ExerciseTipRepository exerciseTipRepository) {
+    public ExerciseServiceImpl(ValidationHelper validationHelper,
+                               ExerciseMapper exerciseMapper,
+                               ExerciseRepository exerciseRepository,
+                               UserExerciseRepository userExerciseRepository,
+                               ExerciseCategoryRepository exerciseCategoryRepository,
+                               ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository, ExerciseInstructionRepository exerciseInstructionRepository, ExerciseTipRepository exerciseTipRepository) {
         this.validationHelper = validationHelper;
         this.exerciseMapper = exerciseMapper;
         this.exerciseRepository = exerciseRepository;

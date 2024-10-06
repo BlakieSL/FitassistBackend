@@ -19,6 +19,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import source.code.service.interfaces.DailyFoodService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,13 +28,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class DailyFoodService {
+public class DailyFoodServiceImpl implements DailyFoodService {
     private final ValidationHelper validationHelper;
     private final JsonPatchHelper jsonPatchHelper;
     private final DailyFoodRepository dailyFoodRepository;
     private final FoodRepository foodRepository;
     private final UserRepository userRepository;
-    public DailyFoodService(
+    public DailyFoodServiceImpl(
             DailyFoodRepository dailyFoodRepository,
             FoodRepository foodRepository,
             UserRepository userRepository,

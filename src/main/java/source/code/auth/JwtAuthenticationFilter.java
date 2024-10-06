@@ -1,6 +1,6 @@
 package source.code.auth;
 
-import source.code.service.UserService;
+import source.code.service.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,9 +26,9 @@ public class JwtAuthenticationFilter extends HttpFilter {
     private final AuthenticationSuccessHandler successHandler;
 
     public JwtAuthenticationFilter(
-            AuthenticationManager authenticationManager, JwtService jwtService, UserService userService) {
+            AuthenticationManager authenticationManager, JwtService jwtService, UserServiceImpl userServiceImpl) {
         this.authenticationManager = authenticationManager;
-        successHandler = new JwtAuthenticationSuccessHandler(jwtService, userService);
+        successHandler = new JwtAuthenticationSuccessHandler(jwtService, userServiceImpl);
     }
 
     @Override

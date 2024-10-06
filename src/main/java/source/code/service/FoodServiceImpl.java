@@ -16,20 +16,21 @@ import source.code.repository.FoodRepository;
 import source.code.repository.UserFoodRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import source.code.service.interfaces.FoodService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
-public class FoodService {
+public class FoodServiceImpl implements FoodService {
     private final FoodRepository foodRepository;
     private final FoodMapper foodMapper;
     private final ValidationHelper validationHelper;
 
     private final FoodCategoryRepository foodCategoryRepository;
     private final UserFoodRepository userFoodRepository;
-    public FoodService(
+    public FoodServiceImpl(
             FoodRepository foodRepository,
             FoodMapper foodMapper,
             ValidationHelper validationHelper,

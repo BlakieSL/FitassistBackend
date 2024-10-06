@@ -2,11 +2,12 @@ package source.code.controller;
 
 import source.code.dto.request.MediaCreateDto;
 import source.code.dto.response.MediaResponseDto;
-import source.code.service.MediaService;
+import source.code.service.MediaServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import source.code.service.interfaces.MediaService;
 
 import java.util.List;
 

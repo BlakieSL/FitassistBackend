@@ -6,12 +6,12 @@ import source.code.dto.response.ExerciseInstructionResponseDto;
 import source.code.dto.response.ExerciseResponseDto;
 import source.code.dto.response.ExerciseTipResponseDto;
 import source.code.dto.response.LikesAndSavesResponseDto;
-import source.code.service.ExerciseService;
-import source.code.service.UserExerciseService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import source.code.service.interfaces.ExerciseService;
+import source.code.service.interfaces.UserExerciseService;
 
 import java.util.List;
 

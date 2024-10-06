@@ -11,17 +11,18 @@ import source.code.repository.UserPlanRepository;
 import source.code.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import source.code.service.interfaces.UserPlanService;
 
 import java.util.NoSuchElementException;
 
 @Service
-public class UserPlanService {
+public class UserPlanServiceImpl implements UserPlanService {
     private final ValidationHelper validationHelper;
     private final UserPlanRepository userPlanRepository;
     private final PlanRepository planRepository;
     private final UserRepository userRepository;
 
-    public UserPlanService(
+    public UserPlanServiceImpl(
             final ValidationHelper validationHelper,
             final UserPlanRepository userPlanRepository,
             final PlanRepository planRepository,

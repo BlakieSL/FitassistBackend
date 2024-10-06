@@ -6,12 +6,12 @@ import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.FoodResponseDto;
 import source.code.dto.response.LikesAndSavesResponseDto;
-import source.code.service.FoodService;
-import source.code.service.UserFoodService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import source.code.service.interfaces.FoodService;
+import source.code.service.interfaces.UserFoodService;
 
 import java.util.List;
 

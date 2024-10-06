@@ -15,13 +15,14 @@ import source.code.repository.PlanRepository;
 import source.code.repository.UserPlanRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import source.code.service.interfaces.PlanService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
-public class PlanService {
+public class PlanServiceImpl implements PlanService {
     private final ValidationHelper validationHelper;
     private final PlanMapper planMapper;
     private final PlanRepository planRepository;
@@ -29,12 +30,12 @@ public class PlanService {
     private final PlanCategoryRepository planCategoryRepository;
     private final PlanCategoryAssociationRepository planCategoryAssociationRepository;
 
-    public PlanService(ValidationHelper validationHelper,
-                       PlanMapper planMapper,
-                       PlanRepository planRepository,
-                       UserPlanRepository userPlanRepository,
-                       PlanCategoryRepository planCategoryRepository,
-                       PlanCategoryAssociationRepository planCategoryAssociationRepository) {
+    public PlanServiceImpl(ValidationHelper validationHelper,
+                           PlanMapper planMapper,
+                           PlanRepository planRepository,
+                           UserPlanRepository userPlanRepository,
+                           PlanCategoryRepository planCategoryRepository,
+                           PlanCategoryAssociationRepository planCategoryAssociationRepository) {
         this.validationHelper = validationHelper;
         this.planMapper = planMapper;
         this.planRepository = planRepository;

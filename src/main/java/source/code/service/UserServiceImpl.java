@@ -22,12 +22,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import source.code.service.interfaces.UserService;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;
@@ -37,14 +38,14 @@ public class UserService implements UserDetailsService {
     private final ExerciseRepository exerciseRepository;
     private final JsonPatchHelper jsonPatchHelper;
 
-    public UserService(UserRepository userRepository,
-                       RoleRepository roleRepository,
-                       UserMapper userMapper,
-                       PasswordEncoder passwordEncoder,
-                       ExerciseRepository exerciseRepository,
-                       ValidationHelper validationHelper,
-                       CalculationsHelper calculationsHelper,
-                       JsonPatchHelper jsonPatchHelper) {
+    public UserServiceImpl(UserRepository userRepository,
+                           RoleRepository roleRepository,
+                           UserMapper userMapper,
+                           PasswordEncoder passwordEncoder,
+                           ExerciseRepository exerciseRepository,
+                           ValidationHelper validationHelper,
+                           CalculationsHelper calculationsHelper,
+                           JsonPatchHelper jsonPatchHelper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userMapper = userMapper;
@@ -98,7 +99,6 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return findUserCredentialsByEmail(username)
                 .map(dto -> org.springframework.security.core.userdetails.User.builder()

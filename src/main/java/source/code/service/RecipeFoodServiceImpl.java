@@ -14,18 +14,19 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import source.code.service.interfaces.RecipeFoodService;
 
 import java.util.NoSuchElementException;
 
 @Service
-public class RecipeFoodService {
+public class RecipeFoodServiceImpl implements RecipeFoodService {
     private final ValidationHelper validationHelper;
     private final RecipeFoodRepository recipeFoodRepository;
     private final FoodRepository foodRepository;
     private final RecipeRepository recipeRepository;
     private final JsonPatchHelper jsonPatchHelper;
 
-    public RecipeFoodService(
+    public RecipeFoodServiceImpl(
             final ValidationHelper validationHelper,
             final RecipeFoodRepository recipeFoodRepository,
             final FoodRepository foodRepository,

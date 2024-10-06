@@ -8,16 +8,17 @@ import source.code.repository.WorkoutPlanRepository;
 import source.code.repository.WorkoutRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import source.code.service.interfaces.WorkoutPlanService;
 
 import java.util.NoSuchElementException;
 
 @Service
-public class WorkoutPlanService {
+public class WorkoutPlanServiceImpl implements WorkoutPlanService {
     private final WorkoutPlanRepository workoutPlanRepository;
     private final WorkoutRepository workoutRepository;
     private final PlanRepository planRepository;
 
-    public WorkoutPlanService(
+    public WorkoutPlanServiceImpl(
             final WorkoutPlanRepository workoutPlanRepository,
             final WorkoutRepository workoutRepository,
             final PlanRepository planRepository) {
