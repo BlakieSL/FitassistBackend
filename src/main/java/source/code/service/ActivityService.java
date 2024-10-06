@@ -52,27 +52,27 @@ public class ActivityService {
     }
 
     @Transactional
-    public ActivitySummaryResponseDto saveActivity(ActivityCreateDto dto) {
+    public ActivitySummaryResponseDto createActivity(ActivityCreateDto dto) {
         validationHelper.validate(dto);
         Activity activity = activityRepository.save(activityMapper.toEntity(dto));
         return activityMapper.toSummaryDto(activity);
     }
 
-    public ActivitySummaryResponseDto getActivityById(int id) {
+    public ActivitySummaryResponseDto getActivity(int id) {
         Activity activity = activityRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Activity with id: " + id + " not found"));
         return activityMapper.toSummaryDto(activity);
     }
 
-    public List<ActivitySummaryResponseDto> getActivities() {
+    public List<ActivitySummaryResponseDto> getAllActivities() {
         List<Activity> activities = activityRepository.findAll();
         return activities.stream()
                 .map(activityMapper::toSummaryDto)
                 .collect(Collectors.toList());
     }
 
-    public List<ActivityCategoryResponseDto> getCategories() {
+    public List<ActivityCategoryResponseDto> getAllCategories() {
         List<ActivityCategory> categories = activityCategoryRepository.findAll();
         return categories.stream()
                 .map(activityMapper::toCategoryDto)
@@ -87,7 +87,7 @@ public class ActivityService {
                 .collect(Collectors.toList());
     }
 
-    public ActivityCalculatedResponseDto calculateCaloriesBurnt(final int id, final CalculateActivityCaloriesRequestDto request) {
+    public ActivityCalculatedResponseDto calculateCaloriesBurned(final int id, final CalculateActivityCaloriesRequestDto request) {
         validationHelper.validate(request);
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new NoSuchElementException(
@@ -106,7 +106,7 @@ public class ActivityService {
                 .collect(Collectors.toList());
     }
 
-    public List<ActivitySummaryResponseDto> getActivitiesByUserID(int userId) {
+    public List<ActivitySummaryResponseDto> getActivitiesByUser(int userId) {
         List<UserActivity> userActivities = userActivityRepository.findByUserId(userId);
         List<Activity> activities = userActivities.stream()
                 .map(UserActivity::getActivity)

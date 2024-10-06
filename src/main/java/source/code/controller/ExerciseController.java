@@ -27,25 +27,25 @@ public class ExerciseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ExerciseResponseDto> getExercise(@PathVariable int id) {
-        ExerciseResponseDto exercise = exerciseService.getExerciseById(id);
+        ExerciseResponseDto exercise = exerciseService.getExercise(id);
         return ResponseEntity.ok(exercise);
     }
 
     @GetMapping
     public ResponseEntity<List<ExerciseResponseDto>> getAllExercises() {
-        List<ExerciseResponseDto> exercises = exerciseService.getExercises();
+        List<ExerciseResponseDto> exercises = exerciseService.getAllExercises();
         return ResponseEntity.ok(exercises);
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ExerciseResponseDto>> getExercisesByUser(@PathVariable int userId) {
-        List<ExerciseResponseDto> exercises = exerciseService.getExercisesByUserID(userId);
+        List<ExerciseResponseDto> exercises = exerciseService.getExercisesByUser(userId);
         return ResponseEntity.ok(exercises);
     }
 
     @GetMapping("/{id}/likes-and-saves")
     public ResponseEntity<LikesAndSavesResponseDto> getExerciseLikesAndSaves(@PathVariable int id) {
-        LikesAndSavesResponseDto dto = userExerciseService.calculateLikesAndSavesByExerciseId(id);
+        LikesAndSavesResponseDto dto = userExerciseService.calculateExerciseLikesAndSaves(id);
         return ResponseEntity.ok(dto);
     }
 
@@ -62,7 +62,7 @@ public class ExerciseController {
     }
     @PostMapping
     public ResponseEntity<ExerciseResponseDto> createExercise(@Valid @RequestBody ExerciseCreateDto dto) {
-        ExerciseResponseDto savedExercise = exerciseService.saveExercise(dto);
+        ExerciseResponseDto savedExercise = exerciseService.createExercise(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedExercise);
     }
 

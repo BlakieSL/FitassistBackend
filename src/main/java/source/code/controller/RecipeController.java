@@ -24,30 +24,30 @@ public class RecipeController {
 
     @GetMapping("/{id}")
     public ResponseEntity<RecipeResponseDto> getRecipe(@PathVariable int id) {
-        RecipeResponseDto recipe = recipeService.getRecipeById(id);
+        RecipeResponseDto recipe = recipeService.getRecipe(id);
         return ResponseEntity.ok(recipe);
     }
 
     @GetMapping
     public ResponseEntity<List<RecipeResponseDto>> getAllRecipes() {
-        return ResponseEntity.ok(recipeService.getRecipes());
+        return ResponseEntity.ok(recipeService.getAllRecipes());
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<RecipeResponseDto>> getRecipesByUser(@PathVariable int userId) {
-        List<RecipeResponseDto> recipes = recipeService.getRecipesByUserID(userId);
+        List<RecipeResponseDto> recipes = recipeService.getRecipesByUser(userId);
         return ResponseEntity.ok(recipes);
     }
 
     @GetMapping("/{id}/likes-and-saves")
     public ResponseEntity<LikesAndSavesResponseDto> getRecipeLikesAndSaves(@PathVariable int id) {
-        LikesAndSavesResponseDto dto = userRecipeService.calculateLikesAndSavesByRecipeId(id);
+        LikesAndSavesResponseDto dto = userRecipeService.calculateRecipeLikesAndSaves(id);
         return ResponseEntity.ok(dto);
     }
 
     @PostMapping
     public ResponseEntity<RecipeResponseDto> createRecipe(@Valid @RequestBody RecipeCreateDto recipeDto) {
-        RecipeResponseDto response = recipeService.save(recipeDto);
+        RecipeResponseDto response = recipeService.createRecipe(recipeDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

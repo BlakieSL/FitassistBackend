@@ -22,7 +22,7 @@ public class ExerciseCategoryController {
 
     @GetMapping
     public ResponseEntity<List<ExerciseCategoryResponseDto>> getAllExerciseCategories() {
-        return ResponseEntity.ok(exerciseService.getCategories());
+        return ResponseEntity.ok(exerciseService.getAllCategories());
     }
 
     @GetMapping("/{categoryId}/categories")

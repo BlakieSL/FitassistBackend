@@ -37,7 +37,7 @@ public class MediaService {
     }
 
     @Transactional
-    public MediaResponseDto saveMedia(MediaCreateDto request) {
+    public MediaResponseDto createMedia(MediaCreateDto request) {
         validationHelper.validate(request);
 
         Media savedMedia = mediaRepository.save(mediaMapper.toEntity(request));
@@ -45,7 +45,7 @@ public class MediaService {
     }
 
     @Transactional
-    public void removeMedia(int mediaId) {
+    public void deleteMedia(int mediaId) {
         Media media = mediaRepository.findById(mediaId)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Media with id: " + mediaId + " not found"));
@@ -66,23 +66,10 @@ public class MediaService {
         return mediaMapper.toDto(media);
     }
 
-    public MediaResponseDto getMediaById(int mediaId) {
+    public MediaResponseDto getMedia(int mediaId) {
         Media media = mediaRepository.findById(mediaId)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Media with id: " + mediaId + " not found"));
         return mediaMapper.toDto(media);
     }
-
-/*
-    @Transactional
-    public void removeMediaFromParent(int mediaId, int parentId) {
-        Media media = mediaRepository
-                .findByIdAndParentId(mediaId, parentId)
-                .orElseThrow(() -> new NoSuchElementException(
-                        "Media with id: " + mediaId +
-                                " not found for parent with id: " + parentId));
-        mediaRepository.delete(media);
-    }
-
- */
 }

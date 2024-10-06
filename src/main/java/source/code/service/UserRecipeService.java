@@ -69,7 +69,7 @@ public class UserRecipeService {
         userRecipeRepository.delete(userRecipe);
     }
 
-    public LikesAndSavesResponseDto calculateLikesAndSavesByRecipeId(int recipeId) {
+    public LikesAndSavesResponseDto calculateRecipeLikesAndSaves(int recipeId) {
         recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Recipe with id: " + recipeId + " not found"));

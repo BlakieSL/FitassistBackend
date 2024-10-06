@@ -27,24 +27,24 @@ public class ActivityController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ActivitySummaryResponseDto> getActivity(@PathVariable int id) {
-        ActivitySummaryResponseDto activity = activityService.getActivityById(id);
+        ActivitySummaryResponseDto activity = activityService.getActivity(id);
         return ResponseEntity.ok(activity);
     }
 
     @GetMapping
     public ResponseEntity<List<ActivitySummaryResponseDto>> getAllActivities() {
-        return ResponseEntity.ok(activityService.getActivities());
+        return ResponseEntity.ok(activityService.getAllActivities());
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ActivitySummaryResponseDto>> getActivitiesByUser(@PathVariable int userId) {
-        List<ActivitySummaryResponseDto> recipes = activityService.getActivitiesByUserID(userId);
+        List<ActivitySummaryResponseDto> recipes = activityService.getActivitiesByUser(userId);
         return ResponseEntity.ok(recipes);
     }
 
     @GetMapping("/{id}/likes-and-saves")
     public ResponseEntity<LikesAndSavesResponseDto> getActivityLikesAndSaves(@PathVariable int id) {
-        LikesAndSavesResponseDto dto = userActivityService.calculateLikesAndSavesByActivityId(id);
+        LikesAndSavesResponseDto dto = userActivityService.calculateActivityLikesAndSaves(id);
         return ResponseEntity.ok(dto);
     }
 
@@ -56,13 +56,13 @@ public class ActivityController {
 
     @PostMapping("/{id}/calculate-calories")
     public ResponseEntity<ActivityCalculatedResponseDto> calculateActivityCaloriesBurned(@PathVariable int id, @Valid @RequestBody CalculateActivityCaloriesRequestDto request) {
-        ActivityCalculatedResponseDto response = activityService.calculateCaloriesBurnt(id, request);
+        ActivityCalculatedResponseDto response = activityService.calculateCaloriesBurned(id, request);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<ActivitySummaryResponseDto> createActivity(@Valid @RequestBody ActivityCreateDto dto) {
-        ActivitySummaryResponseDto response = activityService.saveActivity(dto);
+        ActivitySummaryResponseDto response = activityService.createActivity(dto);
         return ResponseEntity.ok(response);
     }
 

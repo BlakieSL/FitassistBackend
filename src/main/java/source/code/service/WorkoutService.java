@@ -37,7 +37,7 @@ public class WorkoutService {
     }
 
     @Transactional
-    public WorkoutDto saveWorkout(WorkoutDto dto) {
+    public WorkoutDto createWorkout(WorkoutDto dto) {
         validationHelper.validate(dto);
 
         WorkoutType workoutType = workoutTypeRepository
@@ -52,21 +52,21 @@ public class WorkoutService {
         return workoutMapper.toDto(savedWorkout);
     }
 
-    public WorkoutDto getWorkoutById(int id) {
+    public WorkoutDto getWorkout(int id) {
         Workout workout = workoutRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Workout with id: " + id + " not found"));
         return workoutMapper.toDto(workout);
     }
 
-    public List<WorkoutDto> getWorkouts() {
+    public List<WorkoutDto> getAllWorkouts() {
         List<Workout> workouts = workoutRepository.findAll();
         return workouts.stream()
                 .map(workoutMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<WorkoutDto> getWorkoutsByPlanID(int planId) {
+    public List<WorkoutDto> getWorkoutsByPlan(int planId) {
         List<WorkoutPlan> planWorkouts = workoutPlanRepository
                 .findByPlanId(planId);
         List<Workout> workouts = planWorkouts

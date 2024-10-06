@@ -66,7 +66,7 @@ public class UserFoodService {
         userFoodRepository.delete(userFood);
     }
 
-    public LikesAndSavesResponseDto calculateLikesAndSavesByFoodId(int foodId) {
+    public LikesAndSavesResponseDto calculateFoodLikesAndSaves(int foodId) {
         foodRepository.findById(foodId)
                 .orElseThrow(() -> new NoSuchElementException(
                         "Food with id: " + foodId + " not found"));

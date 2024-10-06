@@ -62,10 +62,10 @@ public class DailyActivityService {
     }
 
     @Transactional
-    public void addActivityToDailyActivities(int userId, Integer activityId, DailyCartActivityCreateDto dto) {
+    public void addActivityToDailyCartActivity(int userId, Integer activityId, DailyCartActivityCreateDto dto) {
         validationHelper.validate(dto);
 
-        DailyActivity dailyActivity = getDailyActivityByUserId(userId);
+        DailyActivity dailyActivity = getDailyActivityByUser(userId);
 
         Activity activity = activityRepository.findById(activityId)
                 .orElseThrow(() -> new NoSuchElementException("Activity with id: " + activityId + " not found"));
@@ -87,8 +87,8 @@ public class DailyActivityService {
     }
 
     @Transactional
-    public void removeActivityFromCart(int userId, int activityId) {
-        DailyActivity dailyActivity = getDailyActivityByUserId(userId);
+    public void removeActivityFromDailyCartActivity(int userId, int activityId) {
+        DailyActivity dailyActivity = getDailyActivityByUser(userId);
         DailyCartActivity dailyCartActivity = dailyActivity.getDailyCartActivities().stream()
                 .filter(item -> item.getActivity().getId().equals(activityId))
                 .findFirst()
@@ -98,8 +98,8 @@ public class DailyActivityService {
     }
 
     @Transactional
-    public void modifyDailyCartActivities(int userId, int activityId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
-        DailyActivity dailyActivity = getDailyActivityByUserId(userId);
+    public void updateDailyCartActivity(int userId, int activityId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+        DailyActivity dailyActivity = getDailyActivityByUser(userId);
 
         DailyCartActivity dailyCartActivity = dailyActivity.getDailyCartActivities().stream()
                 .filter(item -> item.getActivity().getId().equals(activityId))
@@ -115,9 +115,7 @@ public class DailyActivityService {
         dailyActivityRepository.save(dailyActivity);
     }
 
-
-
-    private DailyActivity getDailyActivityByUserId(int userId) {
+    private DailyActivity getDailyActivityByUser(int userId) {
         return dailyActivityRepository.findByUserId(userId)
                 .orElseGet(() -> createNewDailyActivityForUser(userId));
     }
@@ -129,8 +127,8 @@ public class DailyActivityService {
         return dailyActivityRepository.save(newDailyActivity);
     }
 
-    public DailyActivitiesResponseDto getActivitiesInCart(int userId) {
-        DailyActivity dailyActivity = getDailyActivityByUserId(userId);
+    public DailyActivitiesResponseDto getActivitiesFromDailyCartActivity(int userId) {
+        DailyActivity dailyActivity = getDailyActivityByUser(userId);
 
         User user = dailyActivity.getUser();
 

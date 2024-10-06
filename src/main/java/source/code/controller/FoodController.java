@@ -27,36 +27,36 @@ public class FoodController {
 
     @GetMapping("/{id}")
     public ResponseEntity<FoodResponseDto> getFood(@PathVariable int id) {
-        FoodResponseDto food = foodService.getFoodById(id);
+        FoodResponseDto food = foodService.getFood(id);
         return ResponseEntity.ok(food);
     }
 
     @GetMapping
     public ResponseEntity<List<FoodResponseDto>> getAllFoods() {
-        return ResponseEntity.ok(foodService.getFoods());
+        return ResponseEntity.ok(foodService.getAllFoods());
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<FoodResponseDto>> getFoodsByUser(@PathVariable int userId) {
-        List<FoodResponseDto> recipes = foodService.getFoodsByUserID(userId);
+        List<FoodResponseDto> recipes = foodService.getFoodsByUser(userId);
         return ResponseEntity.ok(recipes);
     }
 
     @GetMapping("/{id}/likes-and-saves")
     public ResponseEntity<LikesAndSavesResponseDto> getFoodLikesAndSaves(@PathVariable int id) {
-        LikesAndSavesResponseDto dto = userFoodService.calculateLikesAndSavesByFoodId(id);
+        LikesAndSavesResponseDto dto = userFoodService.calculateFoodLikesAndSaves(id);
         return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/{id}/calculate-macros")
     public ResponseEntity<FoodCalculatedMacrosResponseDto> calculateFoodMacros(@PathVariable int id, @Valid @RequestBody CalculateFoodMacrosRequestDto request) {
-        FoodCalculatedMacrosResponseDto response = foodService.calculateMacros(id, request);
+        FoodCalculatedMacrosResponseDto response = foodService.calculateFoodMacros(id, request);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<FoodResponseDto> createFood(@Valid @RequestBody FoodCreateDto dto) {
-        FoodResponseDto response = foodService.saveFood(dto);
+        FoodResponseDto response = foodService.createFood(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
