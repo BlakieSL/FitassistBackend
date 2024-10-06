@@ -26,7 +26,7 @@ public class ExerciseCategoryController {
     }
 
     @GetMapping("/{categoryId}/categories")
-    public ResponseEntity<List<ExerciseResponseDto>> getExercisesByCategoryId(@PathVariable int categoryId){
+    public ResponseEntity<List<ExerciseResponseDto>> getExercisesByCategory(@PathVariable int categoryId){
         return ResponseEntity.ok(exerciseService.getExercisesByCategory(categoryId));
     }
 

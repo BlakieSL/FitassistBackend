@@ -40,7 +40,7 @@ public class RecipeFoodController {
     }
 
     @PatchMapping("/{recipeId}/modify/{foodId}")
-    public ResponseEntity<Void> modifyFoodRecipe(
+    public ResponseEntity<Void> updateFoodRecipe(
             @PathVariable int recipeId,
             @PathVariable int foodId,
             @Valid @RequestBody JsonMergePatch patch)

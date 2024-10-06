@@ -23,7 +23,7 @@ public class RecipeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RecipeResponseDto> getRecipeById(@PathVariable int id) {
+    public ResponseEntity<RecipeResponseDto> getRecipe(@PathVariable int id) {
         RecipeResponseDto recipe = recipeService.getRecipeById(id);
         return ResponseEntity.ok(recipe);
     }
@@ -34,13 +34,13 @@ public class RecipeController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<RecipeResponseDto>> getRecipesByUserId(@PathVariable int userId) {
+    public ResponseEntity<List<RecipeResponseDto>> getRecipesByUser(@PathVariable int userId) {
         List<RecipeResponseDto> recipes = recipeService.getRecipesByUserID(userId);
         return ResponseEntity.ok(recipes);
     }
 
     @GetMapping("/{id}/likes-and-saves")
-    public ResponseEntity<LikesAndSavesResponseDto> getLikesAndSavesRecipe(@PathVariable int id) {
+    public ResponseEntity<LikesAndSavesResponseDto> getRecipeLikesAndSaves(@PathVariable int id) {
         LikesAndSavesResponseDto dto = userRecipeService.calculateLikesAndSavesByRecipeId(id);
         return ResponseEntity.ok(dto);
     }
