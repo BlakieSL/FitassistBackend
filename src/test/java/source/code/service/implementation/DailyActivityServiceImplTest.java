@@ -122,8 +122,47 @@ public class DailyActivityServiceImplTest {
 
     @Test
     void addActivityToDailyCartActivity_shouldUpdateTime_whenActivityExistsInDailyCart() {
+        // Arrange
+        int userId = 1;
+        int activityId = 1;
+        int existingTime = 15;
+        int newTime = 30;
+        DailyCartActivityCreateDto dto = new DailyCartActivityCreateDto(newTime);
 
+        User user = new User();
+        user.setId(userId);
+
+        Activity activity = new Activity();
+        activity.setId(activityId);
+
+        DailyCartActivity existingDailyCartActivity = new DailyCartActivity();
+        existingDailyCartActivity.setActivity(activity);
+        existingDailyCartActivity.setTime(existingTime);
+
+        DailyActivity dailyActivity = new DailyActivity();
+        dailyActivity.setUser(user);
+        dailyActivity.getDailyCartActivities().add(existingDailyCartActivity);
+
+        existingDailyCartActivity.setDailyCartActivity(dailyActivity);
+
+        when(dailyActivityRepository.findByUserId(userId)).thenReturn(Optional.of(dailyActivity));
+        when(activityRepository.findById(activityId)).thenReturn(Optional.of(activity));
+
+        // Act
+        dailyActivityService.addActivityToDailyCartActivity(userId, activityId, dto);
+
+        // Assert
+        verify(validationHelper, times(1)).validate(dto);
+        verify(dailyActivityRepository, times(1)).save(dailyActivity);
+        assertEquals(1, dailyActivity.getDailyCartActivities().size());
+
+        DailyCartActivity updatedActivity = dailyActivity.getDailyCartActivities().get(0);
+        assertEquals(activity, updatedActivity.getActivity());
+        assertEquals(newTime, updatedActivity.getTime());
+        assertEquals(dailyActivity, updatedActivity.getDailyCartActivity());
     }
+
+
 
     @Test
     void addActivityToDailyCartActivity_shouldThrowException_whenValidationFails() {
