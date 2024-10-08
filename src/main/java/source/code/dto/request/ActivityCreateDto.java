@@ -18,6 +18,6 @@ public class ActivityCreateDto {
     @NotNull
     @Positive
     private double met;
-    @NotBlank
+    @NotNull
     private int categoryId;
 }

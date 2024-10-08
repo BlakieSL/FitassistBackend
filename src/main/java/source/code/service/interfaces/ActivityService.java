@@ -6,27 +6,27 @@ import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ActivityAverageMetResponseDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.ActivityCategoryResponseDto;
-import source.code.dto.response.ActivitySummaryResponseDto;
+import source.code.dto.response.ActivityResponseDto;
 
 import java.util.List;
 
 
 public interface ActivityService {
-    ActivitySummaryResponseDto createActivity(ActivityCreateDto dto);
+    ActivityResponseDto createActivity(ActivityCreateDto dto);
 
-    ActivitySummaryResponseDto getActivity(int id);
+    ActivityResponseDto getActivity(int id);
 
-    List<ActivitySummaryResponseDto> getAllActivities();
+    List<ActivityResponseDto> getAllActivities();
 
     List<ActivityCategoryResponseDto> getAllCategories();
 
-    List<ActivitySummaryResponseDto> getActivitiesByCategory(int categoryId);
+    List<ActivityResponseDto> getActivitiesByCategory(int categoryId);
 
     ActivityCalculatedResponseDto calculateCaloriesBurned(int id, CalculateActivityCaloriesRequestDto request);
 
-    List<ActivitySummaryResponseDto> searchActivities(SearchRequestDto request);
+    List<ActivityResponseDto> searchActivities(SearchRequestDto request);
 
-    List<ActivitySummaryResponseDto> getActivitiesByUser(int userId);
+    List<ActivityResponseDto> getActivitiesByUser(int userId);
 
     ActivityAverageMetResponseDto getAverageMet();
 }
