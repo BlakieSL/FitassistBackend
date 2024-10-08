@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ActivitySummaryResponseDto {
+public class ActivityResponseDto {
     private Integer id;
     private String name;
     private double met;
