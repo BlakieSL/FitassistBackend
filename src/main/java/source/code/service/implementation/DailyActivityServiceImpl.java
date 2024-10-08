@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import source.code.service.declaration.DailyActivityService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -75,16 +76,35 @@ public class DailyActivityServiceImpl implements DailyActivityService {
                 .findFirst();
 
         if (existingDailyCartActivity.isPresent()) {
-            DailyCartActivity dailyCartActivity = existingDailyCartActivity.get();
-            dailyCartActivity.setTime(dailyCartActivity.getTime() + dto.getTime());
+            updateDailyActivityTime(existingDailyCartActivity.get(), dto.getTime());
         } else {
-            DailyCartActivity dailyCartActivity = new DailyCartActivity();
-            dailyCartActivity.setDailyCartActivity(dailyActivity);
-            dailyCartActivity.setActivity(activity);
-            dailyCartActivity.setTime(dto.getTime());
-            dailyActivity.getDailyCartActivities().add(dailyCartActivity);
+            DailyCartActivity dailyCartActivity = createNewDailyCartActivity();
+            setDailyCartActivityValues(dailyCartActivity, dailyActivity, activity,dto.getTime());
+            saveDailyCartActivity(dailyActivity, dailyCartActivity);
         }
         dailyActivityRepository.save(dailyActivity);
+    }
+    private DailyActivity getDailyActivityByUser(int userId) {
+        return dailyActivityRepository.findByUserId(userId)
+                .orElseGet(() -> createNewDailyActivityForUser(userId));
+    }
+    private void updateDailyActivityTime(DailyCartActivity dailyCartActivity, int time) {
+        dailyCartActivity.setTime(time);
+    }
+
+    private DailyCartActivity createNewDailyCartActivity() {
+        return new DailyCartActivity();
+
+    }
+
+    private void setDailyCartActivityValues(DailyCartActivity dailyCartActivity, DailyActivity dailyActivity, Activity activity, int time) {
+        dailyCartActivity.setDailyCartActivity(dailyActivity);
+        dailyCartActivity.setActivity(activity);
+        dailyCartActivity.setTime(time);
+    }
+
+    private void saveDailyCartActivity(DailyActivity dailyActivity, DailyCartActivity dailyCartActivity) {
+        dailyActivity.getDailyCartActivities().add(dailyCartActivity);
     }
 
     @Transactional
@@ -116,12 +136,8 @@ public class DailyActivityServiceImpl implements DailyActivityService {
         dailyActivityRepository.save(dailyActivity);
     }
 
-    private DailyActivity getDailyActivityByUser(int userId) {
-        return dailyActivityRepository.findByUserId(userId)
-                .orElseGet(() -> createNewDailyActivityForUser(userId));
-    }
-
-    private DailyActivity createNewDailyActivityForUser(int userId) {
+    @Transactional
+    public DailyActivity createNewDailyActivityForUser(int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User with id: " + userId + " not found"));
         DailyActivity newDailyActivity = new DailyActivity(user, LocalDate.now());
