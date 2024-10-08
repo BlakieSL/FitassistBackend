@@ -7,16 +7,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.request.ActivityCreateDto;
 import source.code.dto.request.CalculateActivityCaloriesRequestDto;
+import source.code.dto.request.SearchRequestDto;
+import source.code.dto.response.ActivityAverageMetResponseDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.ActivityCategoryResponseDto;
 import source.code.dto.response.ActivityResponseDto;
 import source.code.helper.CalculationsHelper;
 import source.code.helper.ValidationHelper;
 import source.code.mapper.ActivityMapper;
-import source.code.model.Activity;
-import source.code.model.ActivityCategory;
-import source.code.model.Role;
-import source.code.model.User;
+import source.code.model.*;
 import source.code.repository.ActivityCategoryRepository;
 import source.code.repository.ActivityRepository;
 import source.code.repository.UserActivityRepository;
@@ -113,7 +112,6 @@ public class ActivityServiceImplTest {
         NoSuchElementException exception = assertThrows(NoSuchElementException.class,
                 () -> activityService.getActivity(activityId));
 
-        System.out.println(exception.getMessage());
         assertEquals("Activity with id: " + activityId + " not found", exception.getMessage());
         verify(activityRepository, times(1)).findById(activityId);
         verifyNoInteractions(activityMapper);
@@ -310,4 +308,254 @@ public class ActivityServiceImplTest {
         verifyNoInteractions(userRepository, activityRepository, activityMapper);
     }
 
+    @Test
+    void calculateCaloriesBurned_shouldThrowException_whenUserNotFound() {
+        // Arrange
+        int activityId = 1;
+        int userId = 1;
+        CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto(userId, 30);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class,
+                () -> activityService.calculateCaloriesBurned(activityId, request));
+
+        assertEquals("User with id: " + userId + " not found", exception.getMessage());
+        verify(validationHelper, times(1)).validate(request);
+        verify(userRepository, times(1)).findById(userId);
+        verifyNoInteractions(activityRepository, activityMapper);
+    }
+
+    @Test
+    void calculateCaloriesBurned_shouldThrowException_whenActivityNotFound() {
+        // Arrange
+        int activityId = 1;
+        int userId = 1;
+        CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto(userId, 30);
+
+        User user = new User(
+                1,
+                "John",
+                "Doe",
+                "john.doe@example.com",
+                "StrongPassword123",
+                "Male",
+                LocalDate.of(1990, 1, 1),
+                175.0,
+                70.0,
+                2000.0,
+                "Lose weight",
+                "Moderate",
+                null,
+                null);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(activityRepository.findById(activityId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class,
+                () -> activityService.calculateCaloriesBurned(activityId, request));
+
+        assertEquals("Activity with id: " + activityId + " not found", exception.getMessage());
+        verify(validationHelper, times(1)).validate(request);
+        verify(userRepository, times(1)).findById(userId);
+        verify(activityRepository, times(1)).findById(activityId);
+        verifyNoInteractions(activityMapper);
+    }
+
+    @Test
+    void searchActivities_shouldReturnActivityResponseDto_whenActivitiesFound() {
+        String searchName = "run";
+        SearchRequestDto request = new SearchRequestDto(searchName);
+
+        int activityCategoryId = 1;
+        String activityCategoryName = "Running";
+        ActivityCategory activityCategory = new ActivityCategory(activityCategoryId, activityCategoryName, "icon", "gradient");
+
+        Activity activity1 = new Activity(1, "Running", 1.1, activityCategory);
+        Activity activity2 = new Activity(2, "Morning Run", 1.2, activityCategory);
+        List<Activity> activities = List.of(activity1, activity2);
+
+        ActivityResponseDto dto1 = new ActivityResponseDto(1, "Running", 1.1, "Running", 1);
+        ActivityResponseDto dto2 = new ActivityResponseDto(2, "Morning Run", 1.2, "Running", 1);
+        List<ActivityResponseDto> expectedDtos = List.of(dto1, dto2);
+
+        when(activityRepository.findAllByNameContainingIgnoreCase(searchName)).thenReturn(activities);
+        when(activityMapper.toResponseDto(activity1)).thenReturn(dto1);
+        when(activityMapper.toResponseDto(activity2)).thenReturn(dto2);
+
+        // Act
+        List<ActivityResponseDto> result = activityService.searchActivities(request);
+
+        // Assert
+        assertEquals(expectedDtos, result);
+        verify(activityRepository, times(1)).findAllByNameContainingIgnoreCase(searchName);
+        verify(activityMapper, times(1)).toResponseDto(activity1);
+        verify(activityMapper, times(1)).toResponseDto(activity2);
+    }
+
+    @Test
+    void searchActivities_shouldReturnEmptyList_whenActivitiesNotFound() {
+        String searchName = "nonexistent";
+        SearchRequestDto request = new SearchRequestDto(searchName);
+
+        when(activityRepository.findAllByNameContainingIgnoreCase(searchName)).thenReturn(Collections.emptyList());
+
+        // Act
+        List<ActivityResponseDto> result = activityService.searchActivities(request);
+
+        // Assert
+        assertTrue(result.isEmpty());
+        verify(activityRepository, times(1)).findAllByNameContainingIgnoreCase(searchName);
+        verifyNoInteractions(activityMapper);
+    }
+
+    @Test
+    void getActivitiesByUser_shouldReturnActivities_whenActivitiesFound() {
+        // Arrange
+        User user = new User(
+                1,
+                "John",
+                "Doe",
+                "john.doe@example.com",
+                "StrongPassword123",
+                "Male",
+                LocalDate.of(1990, 1, 1),
+                175.0,
+                70.0,
+                2000.0,
+                "Lose weight",
+                "Moderate",
+                null,
+                null);
+
+        int categoryId = 1;
+        ActivityCategory activityCategory = new ActivityCategory(
+                categoryId,
+                "CategoryName",
+                "icon",
+                "gradient");
+
+        Activity activity1 = new Activity(
+                1,
+                "Running",
+                1.1,
+                activityCategory);
+        Activity activity2 = new Activity(
+                2,
+                "Running",
+                1.1,
+                activityCategory);
+
+        UserActivity userActivity1 = new UserActivity(
+                1,
+                user,
+                activity1,
+                (short) 1);
+        UserActivity userActivity2 = new UserActivity(
+                2,
+                user,
+                activity2,
+                (short) 2);
+        List<UserActivity> userActivities = List.of(userActivity1, userActivity2);
+
+        ActivityResponseDto dto1 = new ActivityResponseDto(1, "Running", 1.1, "CategoryName", categoryId);
+        ActivityResponseDto dto2 = new ActivityResponseDto(2, "Running", 1.1, "CategoryName", categoryId);
+        List<ActivityResponseDto> expectedDtos = List.of(dto1, dto2);
+
+        when(userActivityRepository.findByUserId(user.getId())).thenReturn(userActivities);
+        when(activityMapper.toResponseDto(userActivity1.getActivity())).thenReturn(dto1);
+        when(activityMapper.toResponseDto(userActivity2.getActivity())).thenReturn(dto2);
+
+        // Act
+        List<ActivityResponseDto> result = activityService.getActivitiesByUser(user.getId());
+
+        // Assert
+        assertEquals(expectedDtos, result);
+        verify(userActivityRepository, times(1)).findByUserId(user.getId());
+        verify(activityMapper, times(1)).toResponseDto(userActivity1.getActivity());
+        verify(activityMapper, times(1)).toResponseDto(userActivity2.getActivity());
+    }
+
+    @Test
+    void getActivitiesByUser_shouldReturnEmptyList_whenActivitiesNotFound() {
+        // Arrange
+        User user = new User(
+                1,
+                "John",
+                "Doe",
+                "john.doe@example.com",
+                "StrongPassword123",
+                "Male",
+                LocalDate.of(1990, 1, 1),
+                175.0,
+                70.0,
+                2000.0,
+                "Lose weight",
+                "Moderate",
+                null,
+                null);
+
+        when(userActivityRepository.findByUserId(user.getId())).thenReturn(Collections.emptyList());
+
+        // Act
+        List<ActivityResponseDto> result = activityService.getActivitiesByUser(user.getId());
+
+        // Assert
+        assertTrue(result.isEmpty());
+        verify(userActivityRepository, times(1)).findByUserId(user.getId());
+        verifyNoInteractions(activityMapper);
+    }
+
+    @Test
+    void getAverageMet_shouldReturnActivityAverageMetResponseDto_whenActivitiesFound() {
+        int categoryId = 1;
+        ActivityCategory activityCategory = new ActivityCategory(
+                categoryId,
+                "CategoryName",
+                "icon",
+                "gradient");
+
+        Activity activity1 = new Activity(
+                1,
+                "Running",
+                1.1,
+                activityCategory);
+        Activity activity2 = new Activity(
+                2,
+                "Running",
+                1.1,
+                activityCategory);
+        Activity activity3 = new Activity(
+                3,
+                "Running",
+                1.1,
+                activityCategory);
+        List<Activity> activities = List.of(activity1, activity2, activity3);
+
+        when(activityRepository.findAll()).thenReturn(activities);
+
+        double expectedAverage = (1.1 + 1.1 + 1.1) / 3;
+
+        // Act
+        ActivityAverageMetResponseDto result = activityService.getAverageMet();
+
+        // Assert
+        assertEquals(expectedAverage, result.getMet());
+        verify(activityRepository, times(1)).findAll();
+    }
+
+    @Test
+    void getAverageMet_shouldReturnZero_whenActivitiesNotFound() {
+        // Arrange
+        when(activityRepository.findAll()).thenReturn(Collections.emptyList());
+
+        // Act
+        ActivityAverageMetResponseDto result = activityService.getAverageMet();
+
+        // Assert
+        assertEquals(0.0, result.getMet());
+        verify(activityRepository, times(1)).findAll();
+    }
 }
