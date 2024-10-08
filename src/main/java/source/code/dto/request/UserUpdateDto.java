@@ -3,7 +3,12 @@ package source.code.dto.request;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
-import source.code.validation.*;
+import source.code.validation.email.UniqueEmailDomain;
+import source.code.validation.password.PasswordDigitsDomain;
+import source.code.validation.password.PasswordLowercaseDomain;
+import source.code.validation.password.PasswordSpecialDomain;
+import source.code.validation.password.PasswordUppercaseDomain;
+
 import java.time.LocalDate;
 
 @Getter

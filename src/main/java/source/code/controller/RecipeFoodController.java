@@ -9,7 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.service.interfaces.RecipeFoodService;
+import source.code.service.declaration.RecipeFoodService;
 
 @RestController
 @RequestMapping("/api/recipe-food")

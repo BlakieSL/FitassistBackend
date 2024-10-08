@@ -8,7 +8,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.service.interfaces.DailyActivityService;
+import source.code.service.declaration.DailyActivityService;
 
 @RestController
 @RequestMapping(path = "/api/daily-activities")
