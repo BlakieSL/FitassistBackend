@@ -17,10 +17,10 @@ import source.code.repository.UserRepository;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -119,7 +119,6 @@ public class DailyActivityServiceImplTest {
         assertEquals(dailyActivity, addedActivity.getDailyCartActivity());
     }
 
-
     @Test
     void addActivityToDailyCartActivity_shouldUpdateTime_whenActivityExistsInDailyCart() {
         // Arrange
@@ -162,15 +161,54 @@ public class DailyActivityServiceImplTest {
         assertEquals(dailyActivity, updatedActivity.getDailyCartActivity());
     }
 
-
-
     @Test
     void addActivityToDailyCartActivity_shouldThrowException_whenValidationFails() {
+        // Arrange
+        int userId = 1;
+        int activityId = 1;
+        int time = 30;
+        DailyCartActivityCreateDto dto = new DailyCartActivityCreateDto(time);
 
+        doThrow(new IllegalArgumentException("Validation failed")).when(validationHelper).validate(dto);
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                dailyActivityService.addActivityToDailyCartActivity(userId, activityId, dto)
+        );
+
+        assertEquals("Validation failed", exception.getMessage());
+        verify(validationHelper, times(1)).validate(dto);
+        verify(dailyActivityRepository, never()).save(any());
     }
+
 
     @Test
     void addActivityToDailyCartActivity_shouldThrowException_whenActivityNotFound() {
+        // Arrange
+        int userId = 1;
+        int activityId = 1;
+        int time = 30;
+        DailyCartActivityCreateDto dto = new DailyCartActivityCreateDto(time);
 
+        User user = new User();
+        user.setId(userId);
+
+        DailyActivity dailyActivity = new DailyActivity();
+        dailyActivity.setUser(user);
+        dailyActivity.getDailyCartActivities().clear();
+
+        when(dailyActivityRepository.findByUserId(userId)).thenReturn(Optional.of(dailyActivity));
+        when(activityRepository.findById(activityId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () ->
+                dailyActivityService.addActivityToDailyCartActivity(userId, activityId, dto)
+        );
+
+        assertEquals("Activity with id: " + activityId + " not found", exception.getMessage());
+        verify(validationHelper, times(1)).validate(dto);
+        verify(activityRepository, times(1)).findById(activityId);
+        verify(dailyActivityRepository, never()).save(any());
     }
+
 }
