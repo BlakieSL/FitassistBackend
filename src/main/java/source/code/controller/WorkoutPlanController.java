@@ -1,10 +1,9 @@
 package source.code.controller;
 
-import source.code.service.WorkoutPlanServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.service.interfaces.WorkoutPlanService;
+import source.code.service.declaration.WorkoutPlanService;
 
 @RestController
 @RequestMapping("/api/workout-plans")

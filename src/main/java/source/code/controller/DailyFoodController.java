@@ -8,7 +8,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.service.interfaces.DailyFoodService;
+import source.code.service.declaration.DailyFoodService;
 
 @RestController
 @RequestMapping(path = "/api/cart")
