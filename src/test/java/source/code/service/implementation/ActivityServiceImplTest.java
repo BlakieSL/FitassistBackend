@@ -32,8 +32,6 @@ public class ActivityServiceImplTest {
     @Mock
     private ValidationHelper validationHelper;
     @Mock
-    private CalculationsHelper calculationsHelper;
-    @Mock
     private ActivityMapper activityMapper;
     @Mock
     private ActivityRepository activityRepository;

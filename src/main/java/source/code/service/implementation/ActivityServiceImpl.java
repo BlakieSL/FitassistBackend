@@ -7,7 +7,6 @@ import source.code.dto.response.ActivityAverageMetResponseDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.ActivityCategoryResponseDto;
 import source.code.dto.response.ActivityResponseDto;
-import source.code.helper.CalculationsHelper;
 import source.code.helper.ValidationHelper;
 import source.code.mapper.ActivityMapper;
 import source.code.model.Activity;
@@ -29,7 +28,6 @@ import java.util.stream.Collectors;
 @Service
 public class ActivityServiceImpl implements ActivityService {
     private final ValidationHelper validationHelper;
-    private final CalculationsHelper calculationsHelper;
     private final ActivityMapper activityMapper;
     private final ActivityRepository activityRepository;
     private final UserRepository userRepository;
@@ -37,14 +35,12 @@ public class ActivityServiceImpl implements ActivityService {
     private final UserActivityRepository userActivityRepository;
     public ActivityServiceImpl(
             ValidationHelper validationHelper,
-            CalculationsHelper calculationsHelper,
             ActivityMapper activityMapper,
             ActivityRepository activityRepository,
             UserRepository userRepository,
             ActivityCategoryRepository activityCategoryRepository,
             UserActivityRepository userActivityRepository) {
         this.validationHelper = validationHelper;
-        this.calculationsHelper = calculationsHelper;
         this.activityMapper = activityMapper;
         this.activityRepository = activityRepository;
         this.userRepository = userRepository;
