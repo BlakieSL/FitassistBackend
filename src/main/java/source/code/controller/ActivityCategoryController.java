@@ -1,8 +1,7 @@
 package source.code.controller;
 
-import source.code.dto.response.ActivitySummaryResponseDto;
+import source.code.dto.response.ActivityResponseDto;
 import source.code.dto.response.ActivityCategoryResponseDto;
-import source.code.service.ActivityServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +26,7 @@ public class ActivityCategoryController {
     }
 
     @GetMapping("/{categoryId}/activities")
-    public ResponseEntity<List<ActivitySummaryResponseDto>> getActivitiesByCategory(@PathVariable int categoryId) {
+    public ResponseEntity<List<ActivityResponseDto>> getActivitiesByCategory(@PathVariable int categoryId) {
         return ResponseEntity.ok(activityService.getActivitiesByCategory(categoryId));
     }
 }

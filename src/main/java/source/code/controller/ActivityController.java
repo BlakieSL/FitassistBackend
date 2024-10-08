@@ -5,7 +5,7 @@ import source.code.dto.request.CalculateActivityCaloriesRequestDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ActivityAverageMetResponseDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
-import source.code.dto.response.ActivitySummaryResponseDto;
+import source.code.dto.response.ActivityResponseDto;
 import source.code.dto.response.LikesAndSavesResponseDto;
 
 import jakarta.validation.Valid;
@@ -27,19 +27,19 @@ public class ActivityController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ActivitySummaryResponseDto> getActivity(@PathVariable int id) {
-        ActivitySummaryResponseDto activity =  activityService.getActivity(id);
+    public ResponseEntity<ActivityResponseDto> getActivity(@PathVariable int id) {
+        ActivityResponseDto activity =  activityService.getActivity(id);
         return ResponseEntity.ok(activity);
     }
 
     @GetMapping
-    public ResponseEntity<List<ActivitySummaryResponseDto>> getAllActivities() {
+    public ResponseEntity<List<ActivityResponseDto>> getAllActivities() {
         return ResponseEntity.ok(activityService.getAllActivities());
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ActivitySummaryResponseDto>> getActivitiesByUser(@PathVariable int userId) {
-        List<ActivitySummaryResponseDto> recipes =  activityService.getActivitiesByUser(userId);
+    public ResponseEntity<List<ActivityResponseDto>> getActivitiesByUser(@PathVariable int userId) {
+        List<ActivityResponseDto> recipes =  activityService.getActivitiesByUser(userId);
         return ResponseEntity.ok(recipes);
     }
 
@@ -62,13 +62,13 @@ public class ActivityController {
     }
 
     @PostMapping
-    public ResponseEntity<ActivitySummaryResponseDto> createActivity(@Valid @RequestBody ActivityCreateDto dto) {
-        ActivitySummaryResponseDto response =  activityService.createActivity(dto);
+    public ResponseEntity<ActivityResponseDto> createActivity(@Valid @RequestBody ActivityCreateDto dto) {
+        ActivityResponseDto response =  activityService.createActivity(dto);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<ActivitySummaryResponseDto>> searchActivities(@Valid @RequestBody SearchRequestDto request){
+    public ResponseEntity<List<ActivityResponseDto>> searchActivities(@Valid @RequestBody SearchRequestDto request){
         return ResponseEntity.ok( activityService.searchActivities(request));
     }
 }

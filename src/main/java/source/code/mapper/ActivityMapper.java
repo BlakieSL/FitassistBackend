@@ -3,7 +3,7 @@ package source.code.mapper;
 import source.code.dto.response.ActivityCategoryResponseDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.request.ActivityCreateDto;
-import source.code.dto.response.ActivitySummaryResponseDto;
+import source.code.dto.response.ActivityResponseDto;
 import source.code.model.Activity;
 import source.code.model.ActivityCategory;
 import source.code.model.User;
@@ -24,7 +24,7 @@ public abstract class ActivityMapper {
 
     @Mapping(target = "categoryName", source = "activityCategory.name")
     @Mapping(target = "categoryId", source = "activityCategory.id")
-    public abstract ActivitySummaryResponseDto toSummaryDto(Activity activity);
+    public abstract ActivityResponseDto toResponseDto(Activity activity);
 
     @Mapping(target = "categoryName", source = "activityCategory.name")
     @Mapping(target = "categoryId", source = "activityCategory.id")
