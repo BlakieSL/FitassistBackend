@@ -11,8 +11,8 @@ import source.code.dto.response.LikesAndSavesResponseDto;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.service.interfaces.ActivityService;
-import source.code.service.interfaces.UserActivityService;
+import source.code.service.declaration.ActivityService;
+import source.code.service.declaration.UserActivityService;
 
 import java.util.List;
 

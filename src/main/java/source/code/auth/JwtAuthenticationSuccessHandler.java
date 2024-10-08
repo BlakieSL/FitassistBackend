@@ -1,6 +1,6 @@
 package source.code.auth;
 
-import source.code.service.UserServiceImpl;
+import source.code.service.implementation.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

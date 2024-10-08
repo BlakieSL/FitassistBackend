@@ -5,7 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.validation.*;
+import source.code.validation.email.UniqueEmailDomain;
+import source.code.validation.password.PasswordDigitsDomain;
+import source.code.validation.password.PasswordLowercaseDomain;
+import source.code.validation.password.PasswordSpecialDomain;
+import source.code.validation.password.PasswordUppercaseDomain;
 
 import java.time.LocalDate;
 

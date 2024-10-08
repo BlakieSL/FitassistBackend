@@ -3,7 +3,7 @@ package source.code.config;
 import source.code.auth.BearerTokenFilter;
 import source.code.auth.JwtAuthenticationFilter;
 import source.code.auth.JwtService;
-import source.code.service.UserServiceImpl;
+import source.code.service.implementation.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;

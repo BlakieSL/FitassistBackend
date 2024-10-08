@@ -1,6 +1,6 @@
 package source.code.model;
 
-import source.code.validation.UniqueEmailDomain;
+import source.code.validation.email.UniqueEmailDomain;
 import source.code.validation.ValidationGroups;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
