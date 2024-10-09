@@ -1,5 +1,8 @@
 package source.code.service.implementation;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -181,7 +184,6 @@ public class DailyActivityServiceImplTest {
         verify(dailyActivityRepository, never()).save(any());
     }
 
-
     @Test
     void addActivityToDailyCartActivity_shouldThrowException_whenActivityNotFound() {
         // Arrange
@@ -211,4 +213,109 @@ public class DailyActivityServiceImplTest {
         verify(dailyActivityRepository, never()).save(any());
     }
 
+    @Test
+    void removeActivityFromDailyActivity_shouldRemoveDailyCartActivity_whenDailyCartActivityFound() {
+        // Arrange
+        int userId = 1;
+        int activityId = 1;
+
+        User user = new User();
+        user.setId(userId);
+
+        Activity activity = new Activity();
+        activity.setId(activityId);
+
+        DailyCartActivity dailyCartActivity = new DailyCartActivity();
+        dailyCartActivity.setActivity(activity);
+
+        DailyActivity dailyActivity = new DailyActivity();
+        dailyActivity.setUser(user);
+        dailyActivity.getDailyCartActivities().add(dailyCartActivity);
+        dailyCartActivity.setDailyCartActivity(dailyActivity);
+
+        when(dailyActivityRepository.findByUserId(userId)).thenReturn(Optional.of(dailyActivity));
+
+        // Act
+        dailyActivityService.removeActivityFromDailyActivity(userId, activityId);
+
+        // Assert
+        verify(dailyActivityRepository, times(1)).findByUserId(userId);
+        verify(dailyActivityRepository, times(1)).save(dailyActivity);
+        assertTrue(dailyActivity.getDailyCartActivities().isEmpty());
+    }
+
+    @Test
+    void removeActivityFromDailyActivity_shouldThrowException_whenDailyCartActivityNotFound() {
+        // Arrange
+        int userId = 1;
+        int activityId = 1;
+        int nonExistentActivityId = 2;
+
+        User user = new User();
+        user.setId(userId);
+
+        Activity activity = new Activity();
+        activity.setId(activityId);
+
+        DailyCartActivity dailyCartActivity = new DailyCartActivity();
+        dailyCartActivity.setActivity(activity);
+
+        DailyActivity dailyActivity = new DailyActivity();
+        dailyActivity.setUser(user);
+        dailyActivity.getDailyCartActivities().add(dailyCartActivity);
+        dailyCartActivity.setDailyCartActivity(dailyActivity);
+
+        when(dailyActivityRepository.findByUserId(userId)).thenReturn(Optional.of(dailyActivity));
+
+        // Act & Assert
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () ->
+                dailyActivityService.removeActivityFromDailyActivity(userId, nonExistentActivityId)
+        );
+
+        assertEquals("Activity with id: " + nonExistentActivityId + " not found", exception.getMessage());
+        verify(dailyActivityRepository, times(1)).findByUserId(userId);
+        verify(dailyActivityRepository, never()).save(any());
+    }
+
+    @Test
+    void updateDailyCartActivity_shouldUpdateDailyCartActivity_whenPatched() throws JsonPatchException, JsonProcessingException {
+        // Arrange
+        int userId = 1;
+        int activityId = 1;
+        int existingTime = 20;
+        int newTime = 30;
+
+        User user = new User();
+        user.setId(userId);
+
+        Activity activity = new Activity();
+        activity.setId(activityId);
+
+        DailyCartActivity dailyCartActivity = new DailyCartActivity();
+        dailyCartActivity.setActivity(activity);
+        dailyCartActivity.setTime(existingTime);
+
+        DailyActivity dailyActivity = new DailyActivity();
+        dailyActivity.setUser(user);
+        dailyActivity.getDailyCartActivities().add(dailyCartActivity);
+
+        DailyCartActivityCreateDto dto = new DailyCartActivityCreateDto();
+        dto.setTime(existingTime);
+
+        DailyCartActivityCreateDto patchedDto = new DailyCartActivityCreateDto();
+        patchedDto.setTime(newTime);
+
+        JsonMergePatch patch = mock(JsonMergePatch.class);
+        when(dailyActivityRepository.findByUserId(userId)).thenReturn(Optional.of(dailyActivity));
+        when(jsonPatchHelper.applyPatch(eq(patch), any(DailyCartActivityCreateDto.class), eq(DailyCartActivityCreateDto.class)))
+                .thenReturn(patchedDto);
+        // Act
+        dailyActivityService.updateDailyCartActivity(userId, activityId, patch);
+
+        // Assert
+        verify(dailyActivityRepository, times(1)).findByUserId(userId);
+        verify(jsonPatchHelper, times(1)).applyPatch(eq(patch), any(DailyCartActivityCreateDto.class), eq(DailyCartActivityCreateDto.class));
+        verify(dailyActivityRepository, times(1)).save(dailyActivity);
+        assertEquals(newTime, dailyCartActivity.getTime());
+    }
 }
