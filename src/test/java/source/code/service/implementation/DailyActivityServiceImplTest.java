@@ -3,6 +3,7 @@ package source.code.service.implementation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,23 +44,77 @@ public class DailyActivityServiceImplTest {
     @InjectMocks
     private DailyActivityServiceImpl dailyActivityService;
 
+    private User user1;
+    private User user2;
+    private Activity activity1;
+    private Activity activity2;
+    private DailyActivity dailyActivity1;
+    private DailyActivity dailyActivity2;
+    private DailyCartActivity dailyCartActivity1;
+    private DailyCartActivity dailyCartActivity2;
+    private DailyCartActivityCreateDto createDto;
+    @BeforeEach
+    void setup() {
+        user1 = createUser(1);
+        user2 = createUser(2);
+
+        activity1 = createActivity(1);
+        activity2 = createActivity(2);
+
+        dailyActivity1 = createDailyActivity(1, user1);
+        dailyActivity2 = createDailyActivity(2, user2);
+
+        dailyCartActivity1 = createDailyCartActivity(1, activity1, dailyActivity1);
+        dailyCartActivity2 = createDailyCartActivity(2, activity2, dailyActivity2);
+
+        dailyActivity1.getDailyCartActivities().add(dailyCartActivity1);
+        dailyActivity2.getDailyCartActivities().add(dailyCartActivity2);
+
+        createDto = createDailyCartActivityCreateDto(30);
+    }
+
+    private User createUser(int id) {
+        User user = new User();
+        user.setId(id);
+        return user;
+    }
+
+    private Activity createActivity(int id) {
+        Activity activity = new Activity();
+        activity.setId(id);
+        return  activity;
+    }
+
+    private DailyActivity createDailyActivity(int id, User user) {
+        DailyActivity dailyActivity = new DailyActivity();
+        dailyActivity.setId(id);
+        dailyActivity.setUser(user);
+        return dailyActivity;
+    }
+
+    private DailyCartActivity createDailyCartActivity(int id, Activity activity, DailyActivity dailyActivity) {
+        DailyCartActivity dailyCartActivity = new DailyCartActivity();
+        dailyCartActivity.setId(id);
+        dailyCartActivity.setActivity(activity);
+        dailyCartActivity.setDailyActivity(dailyActivity);
+        return dailyCartActivity;
+    }
+
+    private DailyCartActivityCreateDto createDailyCartActivityCreateDto(int time) {
+        return new DailyCartActivityCreateDto(time);
+    }
+
     @Test
     void updateDailyCarts_shouldUpdateActivities_whenActivitiesExist() {
-        // Arrange
+        //Arrange
         LocalDate today = LocalDate.now();
-        DailyActivity dailyActivity1 = new DailyActivity();
-        dailyActivity1.setId(1);
-        dailyActivity1.setDate(today.minusDays(1));
-        dailyActivity1.getDailyCartActivities().add(new DailyCartActivity());
+        dailyActivity1.setDate(today);
+        dailyActivity1.getDailyCartActivities().clear();
 
-        DailyActivity dailyActivity2 = new DailyActivity();
-        dailyActivity2.setId(2);
-        dailyActivity2.setDate(today.minusDays(2));
-        dailyActivity2.getDailyCartActivities().add(new DailyCartActivity());
+        dailyActivity2.setDate(today);
+        dailyActivity2.getDailyCartActivities().clear();
 
-        List<DailyActivity> dailyActivities = List.of(dailyActivity1, dailyActivity2);
-
-        when(dailyActivityRepository.findAll()).thenReturn(dailyActivities);
+        when(dailyActivityRepository.findAll()).thenReturn(List.of(dailyActivity1, dailyActivity2));
 
         // Act
         dailyActivityService.updateDailyCarts();
@@ -90,232 +145,129 @@ public class DailyActivityServiceImplTest {
     @Test
     void addActivityToDailyCartActivity_shouldAddActivityToDailyCartActivity_whenActivityDoesNotExistInDailyCart() {
         // Arrange
-        int userId = 1;
-        int activityId = 1;
-        int time = 30;
-        DailyCartActivityCreateDto dto = new DailyCartActivityCreateDto(time);
-
-        User user = new User();
-        user.setId(userId);
-
-        DailyActivity dailyActivity = new DailyActivity();
-        dailyActivity.setUser(user);
-        dailyActivity.getDailyCartActivities().clear();
-
-        Activity activity = new Activity();
-        activity.setId(activityId);
-
-        when(dailyActivityRepository.findByUserId(userId)).thenReturn(Optional.of(dailyActivity));
-        when(activityRepository.findById(activityId)).thenReturn(Optional.of(activity));
+        when(dailyActivityRepository.findByUserId(user1.getId())).thenReturn(Optional.of(dailyActivity1));
+        when(activityRepository.findById(activity1.getId())).thenReturn(Optional.of(activity1));
 
         // Act
-        dailyActivityService.addActivityToDailyCartActivity(userId, activityId, dto);
+        dailyActivityService.addActivityToDailyCartActivity(user1.getId(), activity1.getId(), createDto);
 
         // Assert
-        verify(validationHelper, times(1)).validate(dto);
-        verify(dailyActivityRepository, times(1)).save(dailyActivity);
-        assertEquals(1, dailyActivity.getDailyCartActivities().size());
+        verify(validationHelper, times(1)).validate(createDto);
+        verify(dailyActivityRepository, times(1)).save(dailyActivity1);
 
-        DailyCartActivity addedActivity = dailyActivity.getDailyCartActivities().get(0);
-        assertEquals(activity, addedActivity.getActivity());
-        assertEquals(time, addedActivity.getTime());
-        assertEquals(dailyActivity, addedActivity.getDailyCartActivity());
+        assertEquals(1, dailyActivity1.getDailyCartActivities().size());
+
+        DailyCartActivity addedActivity = dailyActivity1.getDailyCartActivities().get(0);
+        assertEquals(activity1, addedActivity.getActivity());
+        assertEquals(createDto.getTime(), addedActivity.getTime());
+        assertEquals(dailyActivity1, addedActivity.getDailyActivity());
     }
 
     @Test
     void addActivityToDailyCartActivity_shouldUpdateTime_whenActivityExistsInDailyCart() {
         // Arrange
-        int userId = 1;
-        int activityId = 1;
         int existingTime = 15;
-        int newTime = 30;
-        DailyCartActivityCreateDto dto = new DailyCartActivityCreateDto(newTime);
+        dailyCartActivity1.setTime(existingTime);
 
-        User user = new User();
-        user.setId(userId);
-
-        Activity activity = new Activity();
-        activity.setId(activityId);
-
-        DailyCartActivity existingDailyCartActivity = new DailyCartActivity();
-        existingDailyCartActivity.setActivity(activity);
-        existingDailyCartActivity.setTime(existingTime);
-
-        DailyActivity dailyActivity = new DailyActivity();
-        dailyActivity.setUser(user);
-        dailyActivity.getDailyCartActivities().add(existingDailyCartActivity);
-
-        existingDailyCartActivity.setDailyCartActivity(dailyActivity);
-
-        when(dailyActivityRepository.findByUserId(userId)).thenReturn(Optional.of(dailyActivity));
-        when(activityRepository.findById(activityId)).thenReturn(Optional.of(activity));
+        when(dailyActivityRepository.findByUserId(user1.getId())).thenReturn(Optional.of(dailyActivity1));
+        when(activityRepository.findById(activity1.getId())).thenReturn(Optional.of(activity1));
 
         // Act
-        dailyActivityService.addActivityToDailyCartActivity(userId, activityId, dto);
+        dailyActivityService.addActivityToDailyCartActivity(user1.getId(), activity1.getId(), createDto);
 
         // Assert
-        verify(validationHelper, times(1)).validate(dto);
-        verify(dailyActivityRepository, times(1)).save(dailyActivity);
-        assertEquals(1, dailyActivity.getDailyCartActivities().size());
+        verify(validationHelper, times(1)).validate(createDto);
+        verify(dailyActivityRepository, times(1)).save(dailyActivity1);
+        assertEquals(1, dailyActivity1.getDailyCartActivities().size());
 
-        DailyCartActivity updatedActivity = dailyActivity.getDailyCartActivities().get(0);
-        assertEquals(activity, updatedActivity.getActivity());
-        assertEquals(newTime, updatedActivity.getTime());
-        assertEquals(dailyActivity, updatedActivity.getDailyCartActivity());
+        DailyCartActivity updatedActivity = dailyActivity1.getDailyCartActivities().get(0);
+        assertEquals(activity1, updatedActivity.getActivity());
+        assertEquals(createDto.getTime(), updatedActivity.getTime());
+        assertEquals(dailyActivity1, updatedActivity.getDailyActivity());
     }
 
     @Test
     void addActivityToDailyCartActivity_shouldThrowException_whenValidationFails() {
         // Arrange
-        int userId = 1;
-        int activityId = 1;
-        int time = 30;
-        DailyCartActivityCreateDto dto = new DailyCartActivityCreateDto(time);
-
-        doThrow(new IllegalArgumentException("Validation failed")).when(validationHelper).validate(dto);
+        doThrow(new IllegalArgumentException("Validation failed")).when(validationHelper).validate(createDto);
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                dailyActivityService.addActivityToDailyCartActivity(userId, activityId, dto)
-        );
+                dailyActivityService.addActivityToDailyCartActivity(user1.getId(), activity1.getId(), createDto));
 
         assertEquals("Validation failed", exception.getMessage());
-        verify(validationHelper, times(1)).validate(dto);
+        verify(validationHelper, times(1)).validate(createDto);
         verify(dailyActivityRepository, never()).save(any());
     }
 
     @Test
     void addActivityToDailyCartActivity_shouldThrowException_whenActivityNotFound() {
         // Arrange
-        int userId = 1;
-        int activityId = 1;
-        int time = 30;
-        DailyCartActivityCreateDto dto = new DailyCartActivityCreateDto(time);
-
-        User user = new User();
-        user.setId(userId);
-
-        DailyActivity dailyActivity = new DailyActivity();
-        dailyActivity.setUser(user);
-        dailyActivity.getDailyCartActivities().clear();
-
-        when(dailyActivityRepository.findByUserId(userId)).thenReturn(Optional.of(dailyActivity));
-        when(activityRepository.findById(activityId)).thenReturn(Optional.empty());
+        dailyActivity1.getDailyCartActivities().clear();
+        when(dailyActivityRepository.findByUserId(user1.getId())).thenReturn(Optional.of(dailyActivity1));
+        when(activityRepository.findById(activity1.getId())).thenReturn(Optional.empty());
 
         // Act & Assert
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () ->
-                dailyActivityService.addActivityToDailyCartActivity(userId, activityId, dto)
-        );
+                dailyActivityService.addActivityToDailyCartActivity(user1.getId(), activity1.getId(), createDto));
 
-        assertEquals("Activity with id: " + activityId + " not found", exception.getMessage());
-        verify(validationHelper, times(1)).validate(dto);
-        verify(activityRepository, times(1)).findById(activityId);
+        assertEquals("Activity with id: " + activity1.getId() + " not found", exception.getMessage());
+        verify(validationHelper, times(1)).validate(createDto);
+        verify(activityRepository, times(1)).findById(activity1.getId());
         verify(dailyActivityRepository, never()).save(any());
     }
 
     @Test
     void removeActivityFromDailyActivity_shouldRemoveDailyCartActivity_whenDailyCartActivityFound() {
         // Arrange
-        int userId = 1;
-        int activityId = 1;
-
-        User user = new User();
-        user.setId(userId);
-
-        Activity activity = new Activity();
-        activity.setId(activityId);
-
-        DailyCartActivity dailyCartActivity = new DailyCartActivity();
-        dailyCartActivity.setActivity(activity);
-
-        DailyActivity dailyActivity = new DailyActivity();
-        dailyActivity.setUser(user);
-        dailyActivity.getDailyCartActivities().add(dailyCartActivity);
-        dailyCartActivity.setDailyCartActivity(dailyActivity);
-
-        when(dailyActivityRepository.findByUserId(userId)).thenReturn(Optional.of(dailyActivity));
+        when(dailyActivityRepository.findByUserId(user1.getId())).thenReturn(Optional.of(dailyActivity1));
 
         // Act
-        dailyActivityService.removeActivityFromDailyActivity(userId, activityId);
+        dailyActivityService.removeActivityFromDailyActivity(user1.getId(), activity1.getId());
 
         // Assert
-        verify(dailyActivityRepository, times(1)).findByUserId(userId);
-        verify(dailyActivityRepository, times(1)).save(dailyActivity);
-        assertTrue(dailyActivity.getDailyCartActivities().isEmpty());
+        verify(dailyActivityRepository, times(1)).findByUserId(user1.getId());
+        verify(dailyActivityRepository, times(1)).save(dailyActivity1);
+        assertTrue(dailyActivity1.getDailyCartActivities().isEmpty());
     }
 
     @Test
     void removeActivityFromDailyActivity_shouldThrowException_whenDailyCartActivityNotFound() {
         // Arrange
-        int userId = 1;
-        int activityId = 1;
-        int nonExistentActivityId = 2;
-
-        User user = new User();
-        user.setId(userId);
-
-        Activity activity = new Activity();
-        activity.setId(activityId);
-
-        DailyCartActivity dailyCartActivity = new DailyCartActivity();
-        dailyCartActivity.setActivity(activity);
-
-        DailyActivity dailyActivity = new DailyActivity();
-        dailyActivity.setUser(user);
-        dailyActivity.getDailyCartActivities().add(dailyCartActivity);
-        dailyCartActivity.setDailyCartActivity(dailyActivity);
-
-        when(dailyActivityRepository.findByUserId(userId)).thenReturn(Optional.of(dailyActivity));
+        int nonExistentActivityId = 11;
+        when(dailyActivityRepository.findByUserId(user1.getId())).thenReturn(Optional.of(dailyActivity1));
 
         // Act & Assert
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () ->
-                dailyActivityService.removeActivityFromDailyActivity(userId, nonExistentActivityId)
+                dailyActivityService.removeActivityFromDailyActivity(user1.getId(), nonExistentActivityId)
         );
 
         assertEquals("Activity with id: " + nonExistentActivityId + " not found", exception.getMessage());
-        verify(dailyActivityRepository, times(1)).findByUserId(userId);
+        verify(dailyActivityRepository, times(1)).findByUserId(user1.getId());
         verify(dailyActivityRepository, never()).save(any());
     }
 
     @Test
     void updateDailyCartActivity_shouldUpdateDailyCartActivity_whenPatched() throws JsonPatchException, JsonProcessingException {
         // Arrange
-        int userId = 1;
-        int activityId = 1;
-        int existingTime = 20;
         int newTime = 30;
-
-        User user = new User();
-        user.setId(userId);
-
-        Activity activity = new Activity();
-        activity.setId(activityId);
-
-        DailyCartActivity dailyCartActivity = new DailyCartActivity();
-        dailyCartActivity.setActivity(activity);
-        dailyCartActivity.setTime(existingTime);
-
-        DailyActivity dailyActivity = new DailyActivity();
-        dailyActivity.setUser(user);
-        dailyActivity.getDailyCartActivities().add(dailyCartActivity);
-
-        DailyCartActivityCreateDto dto = new DailyCartActivityCreateDto();
-        dto.setTime(existingTime);
+        dailyCartActivity1.setTime(20);
 
         DailyCartActivityCreateDto patchedDto = new DailyCartActivityCreateDto();
         patchedDto.setTime(newTime);
 
         JsonMergePatch patch = mock(JsonMergePatch.class);
-        when(dailyActivityRepository.findByUserId(userId)).thenReturn(Optional.of(dailyActivity));
+        when(dailyActivityRepository.findByUserId(user1.getId())).thenReturn(Optional.of(dailyActivity1));
         when(jsonPatchHelper.applyPatch(eq(patch), any(DailyCartActivityCreateDto.class), eq(DailyCartActivityCreateDto.class)))
                 .thenReturn(patchedDto);
+
         // Act
-        dailyActivityService.updateDailyCartActivity(userId, activityId, patch);
+        dailyActivityService.updateDailyCartActivity(user1.getId(), activity1.getId(), patch);
 
         // Assert
-        verify(dailyActivityRepository, times(1)).findByUserId(userId);
+        verify(dailyActivityRepository, times(1)).findByUserId(user1.getId());
         verify(jsonPatchHelper, times(1)).applyPatch(eq(patch), any(DailyCartActivityCreateDto.class), eq(DailyCartActivityCreateDto.class));
-        verify(dailyActivityRepository, times(1)).save(dailyActivity);
-        assertEquals(newTime, dailyCartActivity.getTime());
+        verify(dailyActivityRepository, times(1)).save(dailyActivity1);
+        assertEquals(newTime, dailyCartActivity1.getTime());
     }
 }

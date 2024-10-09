@@ -30,7 +30,7 @@ public class DailyActivity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "dailyCartActivity",
+    @OneToMany(mappedBy = "dailyActivity",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true)
     private final List<DailyCartActivity> dailyCartActivities = new ArrayList<>();
