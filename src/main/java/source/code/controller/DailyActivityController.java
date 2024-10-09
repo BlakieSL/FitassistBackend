@@ -37,7 +37,7 @@ public class DailyActivityController {
 
     @DeleteMapping("/{userId}/remove/{activityId}")
     public ResponseEntity<Void> removeActivityFromDailyCartActivity(@PathVariable int userId, @PathVariable int activityId) {
-        dailyActivityService.removeActivityFromDailyCartActivity(userId, activityId);
+        dailyActivityService.removeActivityFromDailyActivity(userId, activityId);
         return ResponseEntity.ok().build();
     }
 
