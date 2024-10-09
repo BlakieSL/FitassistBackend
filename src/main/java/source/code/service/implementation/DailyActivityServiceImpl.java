@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import source.code.service.declaration.DailyActivityService;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -100,7 +99,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     }
 
     private void setDailyCartActivityValues(DailyCartActivity dailyCartActivity, DailyActivity dailyActivity, Activity activity, int time) {
-        dailyCartActivity.setDailyCartActivity(dailyActivity);
+        dailyCartActivity.setDailyActivity(dailyActivity);
         dailyCartActivity.setActivity(activity);
         dailyCartActivity.setTime(time);
     }

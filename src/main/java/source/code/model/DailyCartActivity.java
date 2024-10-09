@@ -26,7 +26,7 @@ public class DailyCartActivity {
 
     @ManyToOne
     @JoinColumn(name = "daily_activity_id", nullable = false)
-    private DailyActivity dailyCartActivity;
+    private DailyActivity dailyActivity;
 
     @ManyToOne
     @JoinColumn(name = "activity_id", nullable = false)
