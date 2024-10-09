@@ -84,10 +84,12 @@ public class DailyActivityServiceImpl implements DailyActivityService {
         }
         dailyActivityRepository.save(dailyActivity);
     }
+
     private DailyActivity getDailyActivityByUser(int userId) {
         return dailyActivityRepository.findByUserId(userId)
                 .orElseGet(() -> createNewDailyActivityForUser(userId));
     }
+
     private void updateDailyActivityTime(DailyCartActivity dailyCartActivity, int time) {
         dailyCartActivity.setTime(time);
     }
@@ -108,7 +110,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     }
 
     @Transactional
-    public void removeActivityFromDailyCartActivity(int userId, int activityId) {
+    public void removeActivityFromDailyActivity(int userId, int activityId) {
         DailyActivity dailyActivity = getDailyActivityByUser(userId);
         DailyCartActivity dailyCartActivity = dailyActivity.getDailyCartActivities().stream()
                 .filter(item -> item.getActivity().getId().equals(activityId))
