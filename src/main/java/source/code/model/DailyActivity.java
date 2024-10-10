@@ -33,7 +33,7 @@ public class DailyActivity {
     @OneToMany(mappedBy = "dailyActivity",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true)
-    private final List<DailyCartActivity> dailyCartActivities = new ArrayList<>();
+    private final List<DailyActivityItem> dailyActivityItems = new ArrayList<>();
 
     public DailyActivity(User user, LocalDate date) {
         this.user = user;

@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DailyCartActivityCreateDto {
+public class DailyActivityItemCreateDto {
     @NotNull
     @Positive
     private int time;

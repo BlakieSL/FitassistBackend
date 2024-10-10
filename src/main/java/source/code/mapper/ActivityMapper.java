@@ -34,9 +34,8 @@ public abstract class ActivityMapper {
 
     @Mapping(target = "activityCategory", source = "categoryId", qualifiedByName = "categoryIdToActivityCategory")
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "dailyCartActivities", ignore = true)
+    @Mapping(target = "dailyActivityItems", ignore = true)
     @Mapping(target = "userActivities", ignore = true)
-
     public abstract Activity toEntity(ActivityCreateDto dto);
 
     @Mapping(target = "id", source = "id")
