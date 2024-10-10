@@ -28,6 +28,7 @@ public abstract class DailyActivityMapper {
             @MappingTarget ActivityCalculatedResponseDto responseDto,
             DailyActivityItem dailyActivityItem,
             double userWeight) {
+
         double calories = calculationsHelper.calculateCaloriesBurned(
                 dailyActivityItem.getTime(),
                 userWeight,
