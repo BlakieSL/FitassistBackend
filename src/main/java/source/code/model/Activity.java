@@ -45,4 +45,18 @@ public class Activity {
 
     @OneToMany(mappedBy = "activity", cascade = CascadeType.REMOVE)
     private final Set<UserActivity> userActivities = new HashSet<>();
+
+    public static Activity createWithIdNameMet(int id, String name, double met) {
+        Activity activity = new Activity();
+        activity.setId(id);
+        activity.setName(name);
+        activity.setMet(met);
+        return activity;
+    }
+
+    public static Activity createWithId(int id) {
+        Activity activity = new Activity();
+        activity.setId(id);
+        return activity;
+    }
 }
