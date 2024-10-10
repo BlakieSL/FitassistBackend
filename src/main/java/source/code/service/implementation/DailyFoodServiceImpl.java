@@ -5,6 +5,7 @@ import source.code.helper.JsonPatchHelper;
 import source.code.dto.request.DailyFoodItemCreateDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.helper.ValidationHelper;
+import source.code.mapper.DailyFoodMapper;
 import source.code.model.DailyFood;
 import source.code.model.DailyFoodItem;
 import source.code.model.Food;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 public class DailyFoodServiceImpl implements DailyFoodService {
     private final ValidationHelper validationHelper;
     private final JsonPatchHelper jsonPatchHelper;
+    private final DailyFoodMapper dailyFoodMapper;
     private final DailyFoodRepository dailyFoodRepository;
     private final FoodRepository foodRepository;
     private final UserRepository userRepository;
@@ -39,12 +41,13 @@ public class DailyFoodServiceImpl implements DailyFoodService {
             FoodRepository foodRepository,
             UserRepository userRepository,
             ValidationHelper validationHelper,
-            JsonPatchHelper jsonPatchHelper) {
+            JsonPatchHelper jsonPatchHelper, DailyFoodMapper dailyFoodMapper) {
         this.dailyFoodRepository = dailyFoodRepository;
         this.foodRepository = foodRepository;
         this.userRepository = userRepository;
         this.validationHelper = validationHelper;
         this.jsonPatchHelper = jsonPatchHelper;
+        this.dailyFoodMapper = dailyFoodMapper;
     }
 
     @Scheduled(cron = "0 0 0 * * ?", zone = "GMT+2")
@@ -135,21 +138,8 @@ public class DailyFoodServiceImpl implements DailyFoodService {
         DailyFood dailyFood = getDailyFoodByUser(userId);
 
         List<FoodCalculatedMacrosResponseDto> foods = dailyFood.getDailyFoodItems().stream()
-                .map(
-                        dailyFoodItem -> {
-                            Food food = dailyFoodItem.getFood();
-                            double factor = (double) dailyFoodItem.getAmount() / 100;
-                            return new FoodCalculatedMacrosResponseDto(
-                                    food.getId(),
-                                    food.getName(),
-                                    food.getCalories() * factor,
-                                    food.getProtein() * factor,
-                                    food.getFat() * factor,
-                                    food.getCarbohydrates() * factor,
-                                    food.getFoodCategory().getId(),
-                                    food.getFoodCategory().getName(),
-                                    dailyFoodItem.getAmount());
-                        })
+                .map(dailyFoodItem -> dailyFoodMapper
+                        .toFoodCalculatedMacrosResponseDto(dailyFoodItem))
                 .collect(Collectors.toList());
         double totalCalories = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getCalories).sum();
         double totalCarbohydrates = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getCarbohydrates).sum();
