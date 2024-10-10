@@ -1,5 +1,6 @@
 package source.code.service.implementation;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,69 +42,154 @@ public class ActivityServiceImplTest {
     private ActivityCategoryRepository activityCategoryRepository;
     @Mock
     private UserActivityRepository userActivityRepository;
+    private ActivityCategory activityCategory1;
+    private ActivityCategory activityCategory2;
+    private ActivityCategoryResponseDto activityCategoryResponseDto1;
+    private ActivityCategoryResponseDto activityCategoryResponseDto2;
+    private Activity activity1;
+    private Activity activity2;
+    private ActivityCreateDto createDto1;
+    private ActivityCreateDto createDto2;
+    private ActivityResponseDto responseDto1;
+    private ActivityResponseDto responseDto2;
+    private User user1;
+    private User user2;
+    private UserActivity userActivity1;
+    private UserActivity userActivity2;
     @InjectMocks
     private ActivityServiceImpl activityService;
+    @BeforeEach
+    void setup() {
+        activityCategory1 = createActivityCategory(1, "ActivityCategoryName1");
+        activityCategory2 = createActivityCategory(2, "ActivityCategoryName2");
+
+        activityCategoryResponseDto1 = createActivityCategoryResponseDto(activityCategory1.getId(), activityCategory1.getName());
+        activityCategoryResponseDto2 = createActivityCategoryResponseDto(activityCategory2.getId(), activityCategory2.getName());
+
+        activity1 = createActivity(1, "ActivityName1", 1.1);
+        activity1.setActivityCategory(activityCategory1);
+
+        activity2 = createActivity(2, "ActivityName2", 2.2);
+        activity2.setActivityCategory(activityCategory2);
+
+        createDto1 = createActivityCreateDto(activity1.getName(), activity1.getMet(), activity1.getActivityCategory().getId());
+        createDto2 = createActivityCreateDto(activity2.getName(), activity2.getMet(), activity2.getActivityCategory().getId());
+
+        responseDto1 = createActivityResponseDto(activity1.getId(), activity1.getActivityCategory().getName(), activity1.getActivityCategory().getId());
+        responseDto2 = createActivityResponseDto(activity2.getId(), activity2.getActivityCategory().getName(), activity2.getActivityCategory().getId());
+
+        user1 = createUser(1);
+        user2 = createUser(2);
+
+        userActivity1 = createUserActivity(1, user1, activity1, (short)1);
+        userActivity2 = createUserActivity(2, user2, activity2, (short)2);
+    }
+
+    private ActivityCategory createActivityCategory(int id, String name) {
+        ActivityCategory category = new ActivityCategory();
+        category.setId(id);
+        category.setName(name);
+        return category;
+    }
+
+    private ActivityCategoryResponseDto createActivityCategoryResponseDto(int id, String name){
+        ActivityCategoryResponseDto activityCategoryResponseDto = new ActivityCategoryResponseDto();
+        activityCategoryResponseDto.setId(id);
+        activityCategoryResponseDto.setName(name);
+        return activityCategoryResponseDto;
+    }
+
+    private Activity createActivity(int id, String name, double met) {
+        Activity activity = new Activity();
+        activity.setId(id);
+        activity.setName(name);
+        activity.setMet(met);
+        return  activity;
+    }
+
+    private ActivityCreateDto createActivityCreateDto(String name, double met, int categoryId ) {
+        return new ActivityCreateDto(name, met, categoryId);
+    }
+
+    private ActivityResponseDto createActivityResponseDto(int id, String categoryName, int categoryId) {
+        ActivityResponseDto activityResponseDto = new ActivityResponseDto();
+        activityResponseDto.setId(id);
+        activityResponseDto.setCategoryName(categoryName);
+        activityResponseDto.setCategoryId(categoryId);
+        return activityResponseDto;
+    }
+
+    private User createUser(int id) {
+        User user = new User();
+        user.setId(id);
+        return user;
+    }
+
+    private UserActivity createUserActivity(int id, User user, Activity activity, short type) {
+        return new UserActivity(id, user, activity, type);
+    }
 
     @Test
     void createActivity_shouldReturnActivityResponseDto_whenValidationPassed() {
         // Arrange
-        ActivityCreateDto dto = new ActivityCreateDto();
-        Activity activity = new Activity();
-        ActivityResponseDto responseDto = new ActivityResponseDto();
-
-        doNothing().when(validationHelper).validate(dto);
-        when(activityMapper.toEntity(dto)).thenReturn(activity);
-        when(activityRepository.save(activity)).thenReturn(activity);
-        when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
+        doNothing().when(validationHelper).validate(createDto1);
+        when(activityMapper.toEntity(createDto1)).thenReturn(activity1);
+        when(activityRepository.save(activity1)).thenReturn(activity1);
+        when(activityMapper.toResponseDto(activity1)).thenReturn(responseDto1);
 
         // Act
-        ActivityResponseDto result = activityService.createActivity(dto);
+        ActivityResponseDto result = activityService.createActivity(createDto1);
+
         // Assert
-        verify(validationHelper).validate(dto);
-        verify(activityRepository).save(activity);
-        verify(activityMapper).toEntity(dto);
-        verify(activityMapper).toResponseDto(activity);
+        verify(validationHelper, times(1)).validate(createDto1);
+        verify(activityRepository, times(1)).save(activity1);
+        verify(activityMapper, times(1)).toEntity(createDto1);
+        verify(activityMapper, times(1)).toResponseDto(activity1);
+
+        assertNotNull(result);
+        assertEquals(responseDto1.getId(), result.getId());
+        assertEquals(responseDto1.getCategoryName(), result.getCategoryName());
+        assertEquals(responseDto1.getCategoryId(), result.getCategoryId());
     }
 
     @Test
     void createActivity_shouldThrowException_whenValidationFails() {
         // Arrange
-        ActivityCreateDto dto = new ActivityCreateDto();
 
-        doThrow(new IllegalArgumentException("Invalid activity data")).when(validationHelper).validate(dto);
+        doThrow(new IllegalArgumentException("Invalid activity data")).when(validationHelper).validate(createDto1);
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> activityService.createActivity(dto));
+                () -> activityService.createActivity(createDto1));
 
         assertEquals("Invalid activity data", exception.getMessage());
-        verify(validationHelper, times(1)).validate(dto);
+        verify(validationHelper, times(1)).validate(createDto1);
         verifyNoInteractions(activityRepository, activityMapper);
     }
 
     @Test
     void getActivity_shouldReturnActivityResponse_whenActivityFound() {
         //Arrange
-        int activityId = 1;
-        Activity activity = new Activity();
-        ActivityResponseDto responseDto = new ActivityResponseDto();
-
-        when(activityRepository.findById(activityId)).thenReturn(Optional.of(activity));
-        when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
+        int activityId = activity1.getId();
+        when(activityRepository.findById(activityId)).thenReturn(Optional.of(activity1));
+        when(activityMapper.toResponseDto(activity1)).thenReturn(responseDto1);
 
         //Act
         ActivityResponseDto result = activityService.getActivity(activityId);
 
         //Assert
         verify(activityRepository, times(1)).findById(activityId);
-        verify(activityMapper, times(1)).toResponseDto(activity);
+        verify(activityMapper, times(1)).toResponseDto(activity1);
+        assertEquals(responseDto1, result);
+        assertEquals(responseDto1.getId(), result.getId());
+        assertEquals(responseDto1.getCategoryName(), result.getCategoryName());
+        assertEquals(responseDto1.getCategoryId(), result.getCategoryId());
     }
 
     @Test
     void getActivity_shouldNotMap_whenActivityNotFound() {
         // Arrange
-        int activityId = 1;
-
+        int activityId = activity1.getId();
         when(activityRepository.findById(activityId)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -117,177 +203,145 @@ public class ActivityServiceImplTest {
 
     @Test
     void getAllActivities_shouldReturnAllActivities_whenActivitiesFound() {
-        ActivityCategory activityCategory = new ActivityCategory(1, "testName", "testIcon", "testGradient");
-        Activity activity1 = new Activity(1, "Running", 1.1, activityCategory);
-        Activity activity2 = new Activity(2, "Walking", 1.2, activityCategory);
+        // Assert
         List<Activity> activities = List.of(activity1, activity2);
-
-        ActivityResponseDto dto1 = new ActivityResponseDto(1, "Running", 1.1, "testName", 1);
-        ActivityResponseDto dto2 = new ActivityResponseDto(2, "Walking", 1.2, "testName", 1);
-        List<ActivityResponseDto> expectedDtos = List.of(dto1, dto2);
+        List<ActivityResponseDto> expectedDtos = List.of(responseDto1, responseDto2);
 
         when(activityRepository.findAll()).thenReturn(activities);
-        when(activityMapper.toResponseDto(activity1)).thenReturn(dto1);
-        when(activityMapper.toResponseDto(activity2)).thenReturn(dto2);
+        when(activityMapper.toResponseDto(activity1)).thenReturn(responseDto1);
+        when(activityMapper.toResponseDto(activity2)).thenReturn(responseDto2);
 
         // Act
         List<ActivityResponseDto> result = activityService.getAllActivities();
 
         // Assert
-        assertEquals(expectedDtos, result);
         verify(activityRepository, times(1)).findAll();
         verify(activityMapper, times(1)).toResponseDto(activity1);
         verify(activityMapper, times(1)).toResponseDto(activity2);
+        assertEquals(expectedDtos, result);
+        assertEquals(expectedDtos.get(0).getId(), result.get(0).getId());
+        assertEquals(expectedDtos.get(1).getId(), result.get(1).getId());
     }
 
     @Test
     void getAllActivities_shouldReturnEmptyList_whenActivityNotFound() {
+        // Arrange
         when(activityRepository.findAll()).thenReturn(Collections.emptyList());
 
         // Act
         List<ActivityResponseDto> result = activityService.getAllActivities();
 
         // Assert
-        assertTrue(result.isEmpty());
         verify(activityRepository, times(1)).findAll();
         verifyNoInteractions(activityMapper);
+        assertTrue(result.isEmpty());
     }
 
     @Test
     void getAllCategories_shouldReturnAllCategories_whenCategoriesFound() {
         // Arrange
-        ActivityCategory category1 = new ActivityCategory(1, "Cardio", "icon1", "gradient1");
-        ActivityCategory category2 = new ActivityCategory(2, "Strength", "icon2", "gradient2");
-        List<ActivityCategory> categories = List.of(category1, category2);
-
-        ActivityCategoryResponseDto dto1 = new ActivityCategoryResponseDto(1, "Cardio", "icon1", "gradient1");
-        ActivityCategoryResponseDto dto2 = new ActivityCategoryResponseDto(2, "Strength", "icon2", "gradient2");
-        List<ActivityCategoryResponseDto> expectedDtos = List.of(dto1, dto2);
+        List<ActivityCategory> categories = List.of(activityCategory1, activityCategory2);
+        List<ActivityCategoryResponseDto> expectedDtos = List.of(activityCategoryResponseDto1, activityCategoryResponseDto2);
 
         when(activityCategoryRepository.findAll()).thenReturn(categories);
-        when(activityMapper.toCategoryDto(category1)).thenReturn(dto1);
-        when(activityMapper.toCategoryDto(category2)).thenReturn(dto2);
+        when(activityMapper.toCategoryDto(activityCategory1)).thenReturn(activityCategoryResponseDto1);
+        when(activityMapper.toCategoryDto(activityCategory2)).thenReturn(activityCategoryResponseDto2);
 
         // Act
         List<ActivityCategoryResponseDto> result = activityService.getAllCategories();
 
         // Assert
-        assertEquals(expectedDtos, result);
         verify(activityCategoryRepository, times(1)).findAll();
-        verify(activityMapper, times(1)).toCategoryDto(category1);
-        verify(activityMapper, times(1)).toCategoryDto(category2);
+        verify(activityMapper, times(1)).toCategoryDto(activityCategory1);
+        verify(activityMapper, times(1)).toCategoryDto(activityCategory2);
+        assertEquals(expectedDtos, result);
+        assertEquals(expectedDtos.get(0).getId(), result.get(0).getId());
+        assertEquals(expectedDtos.get(1).getId(), result.get(1).getId());
     }
 
     @Test
     void getAllCategories_shouldReturnEmptyList_whenCategoryNotFound() {
+        // Arrange
         when(activityCategoryRepository.findAll()).thenReturn(Collections.emptyList());
 
         //Act
         List<ActivityCategoryResponseDto> result = activityService.getAllCategories();
 
         //Assert
-        assertTrue(result.isEmpty());
         verify(activityCategoryRepository, times(1)).findAll();
         verifyNoInteractions(activityMapper);
+        assertTrue(result.isEmpty());
     }
 
     @Test
     void getActivitiesByCategory_shouldReturnActivities_whenActivitiesFound() {
         // Arrange
-        int categoryId = 1;
-        ActivityCategory activityCategory = new ActivityCategory(categoryId, "CategoryName", "icon", "gradient");
-        Activity activity1 = new Activity(1, "Running", 1.1, activityCategory);
-        Activity activity2 = new Activity(2, "Walking", 1.2, activityCategory);
-        List<Activity> activities = List.of(activity1, activity2);
-
-        ActivityResponseDto dto1 = new ActivityResponseDto(1, "Running", 1.1, "CategoryName", categoryId);
-        ActivityResponseDto dto2 = new ActivityResponseDto(2, "Walking", 1.2, "CategoryName", categoryId);
-        List<ActivityResponseDto> expectedDtos = List.of(dto1, dto2);
+        int categoryId = activityCategory1.getId();
+        List<Activity> activities = List.of(activity1);
+        List<ActivityResponseDto> expectedDtos = List.of(responseDto1);
 
         when(activityRepository.findAllByActivityCategory_Id(categoryId)).thenReturn(activities);
-        when(activityMapper.toResponseDto(activity1)).thenReturn(dto1);
-        when(activityMapper.toResponseDto(activity2)).thenReturn(dto2);
+        when(activityMapper.toResponseDto(activity1)).thenReturn(responseDto1);
 
         // Act
         List<ActivityResponseDto> result = activityService.getActivitiesByCategory(categoryId);
 
         // Assert
-        assertEquals(expectedDtos, result);
         verify(activityRepository, times(1)).findAllByActivityCategory_Id(categoryId);
         verify(activityMapper, times(1)).toResponseDto(activity1);
-        verify(activityMapper, times(1)).toResponseDto(activity2);
+        assertEquals(expectedDtos, result);
+        assertEquals(expectedDtos.get(0).getId(), result.get(0).getId());
     }
 
     @Test
     void getActivitiesByCategory_shouldReturnEmptyList_whenNoActivitiesFound() {
         // Arrange
-        int categoryId = 1;
+        int categoryId = 100;
         when(activityRepository.findAllByActivityCategory_Id(categoryId)).thenReturn(Collections.emptyList());
 
         // Act
         List<ActivityResponseDto> result = activityService.getActivitiesByCategory(categoryId);
 
         // Assert
-        assertTrue(result.isEmpty());
         verify(activityRepository, times(1)).findAllByActivityCategory_Id(categoryId);
         verifyNoInteractions(activityMapper);
+        assertTrue(result.isEmpty());
     }
 
     @Test
     void calculateCaloriesBurned_shouldReturnCalculatedResponse_whenValidationPassed() {
         // Arrange
-        int activityCategoryId = 1;
-        String activityCategoryName = "Running";
-        ActivityCategory activityCategory = new ActivityCategory(activityCategoryId, activityCategoryName, "icon", "gradient");
+        int userId = user1.getId();
+        int activityId = activity1.getId();
+        int randomTime = 30;
+        int randomCaloriesBurned = 50;
 
-        int activityId = 1;
-        String activityName = "Running";
-        double met = 1.1;
-
-        int userId = 1;
-        int time = 30;
-
-        int caloriesBurned = 50;
-
-        CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto(userId, time);
-        User user = new User(
-                1,
-                "John",
-                "Doe",
-                "john.doe@example.com",
-                "StrongPassword123",
-                "Male",
-                LocalDate.of(1990, 1, 1),
-                175.0,
-                70.0,
-                2000.0,
-                "Lose weight",
-                "Moderate",
-                null,
-                null);
-        Activity activity = new Activity(activityId, activityName, met, activityCategory);
+        CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto(userId, randomTime);
         ActivityCalculatedResponseDto expectedResponse = new ActivityCalculatedResponseDto(
-                activityId,
-                activityName,
-                met,
-                activityCategoryName,
-                activityCategoryId,
-                caloriesBurned,
-                time);
+                activity1.getId(),
+                activity1.getName(),
+                activity1.getMet(),
+                activity1.getActivityCategory().getName(),
+                activity1.getActivityCategory().getId(),
+                randomCaloriesBurned,
+                randomTime);
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(activityRepository.findById(activityId)).thenReturn(Optional.of(activity));
-        when(activityMapper.toCalculatedDto(activity, user, time)).thenReturn(expectedResponse);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user1));
+        when(activityRepository.findById(activityId)).thenReturn(Optional.of(activity1));
+        when(activityMapper.toCalculatedDto(activity1, user1, randomTime)).thenReturn(expectedResponse);
 
         // Act
         ActivityCalculatedResponseDto result = activityService.calculateCaloriesBurned(activityId, request);
 
         // Assert
-        assertEquals(expectedResponse, result);
         verify(validationHelper, times(1)).validate(request);
         verify(userRepository, times(1)).findById(userId);
         verify(activityRepository, times(1)).findById(activityId);
-        verify(activityMapper, times(1)).toCalculatedDto(activity, user, time);
+        verify(activityMapper, times(1)).toCalculatedDto(activity1, user1, randomTime);
+        assertEquals(expectedResponse, result);
+        assertEquals(expectedResponse.getId(), result.getId());
+        assertEquals(expectedResponse.getCaloriesBurned(), result.getCaloriesBurned());
+        assertEquals(expectedResponse.getTime(), result.getTime());
     }
 
     @Test
@@ -301,16 +355,16 @@ public class ActivityServiceImplTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> activityService.calculateCaloriesBurned(1, request));
 
-        assertEquals("Invalid request", exception.getMessage());
         verify(validationHelper, times(1)).validate(request);
         verifyNoInteractions(userRepository, activityRepository, activityMapper);
+        assertEquals("Invalid request", exception.getMessage());
     }
 
     @Test
     void calculateCaloriesBurned_shouldThrowException_whenUserNotFound() {
         // Arrange
-        int activityId = 1;
-        int userId = 1;
+        int activityId = activity1.getId();
+        int userId = user1.getId();
         CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto(userId, 30);
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
@@ -319,47 +373,31 @@ public class ActivityServiceImplTest {
         NoSuchElementException exception = assertThrows(NoSuchElementException.class,
                 () -> activityService.calculateCaloriesBurned(activityId, request));
 
-        assertEquals("User with id: " + userId + " not found", exception.getMessage());
         verify(validationHelper, times(1)).validate(request);
         verify(userRepository, times(1)).findById(userId);
         verifyNoInteractions(activityRepository, activityMapper);
+        assertEquals("User with id: " + userId + " not found", exception.getMessage());
     }
 
     @Test
     void calculateCaloriesBurned_shouldThrowException_whenActivityNotFound() {
         // Arrange
-        int activityId = 1;
-        int userId = 1;
+        int activityId = activity1.getId();
+        int userId = user1.getId();
         CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto(userId, 30);
 
-        User user = new User(
-                1,
-                "John",
-                "Doe",
-                "john.doe@example.com",
-                "StrongPassword123",
-                "Male",
-                LocalDate.of(1990, 1, 1),
-                175.0,
-                70.0,
-                2000.0,
-                "Lose weight",
-                "Moderate",
-                null,
-                null);
-
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user1));
         when(activityRepository.findById(activityId)).thenReturn(Optional.empty());
 
         // Act & Assert
         NoSuchElementException exception = assertThrows(NoSuchElementException.class,
                 () -> activityService.calculateCaloriesBurned(activityId, request));
 
-        assertEquals("Activity with id: " + activityId + " not found", exception.getMessage());
         verify(validationHelper, times(1)).validate(request);
         verify(userRepository, times(1)).findById(userId);
         verify(activityRepository, times(1)).findById(activityId);
         verifyNoInteractions(activityMapper);
+        assertEquals("Activity with id: " + activityId + " not found", exception.getMessage());
     }
 
     @Test
@@ -367,34 +405,28 @@ public class ActivityServiceImplTest {
         String searchName = "run";
         SearchRequestDto request = new SearchRequestDto(searchName);
 
-        int activityCategoryId = 1;
-        String activityCategoryName = "Running";
-        ActivityCategory activityCategory = new ActivityCategory(activityCategoryId, activityCategoryName, "icon", "gradient");
-
-        Activity activity1 = new Activity(1, "Running", 1.1, activityCategory);
-        Activity activity2 = new Activity(2, "Morning Run", 1.2, activityCategory);
         List<Activity> activities = List.of(activity1, activity2);
-
-        ActivityResponseDto dto1 = new ActivityResponseDto(1, "Running", 1.1, "Running", 1);
-        ActivityResponseDto dto2 = new ActivityResponseDto(2, "Morning Run", 1.2, "Running", 1);
-        List<ActivityResponseDto> expectedDtos = List.of(dto1, dto2);
+        List<ActivityResponseDto> expectedDtos = List.of(responseDto1, responseDto2);
 
         when(activityRepository.findAllByNameContainingIgnoreCase(searchName)).thenReturn(activities);
-        when(activityMapper.toResponseDto(activity1)).thenReturn(dto1);
-        when(activityMapper.toResponseDto(activity2)).thenReturn(dto2);
+        when(activityMapper.toResponseDto(activity1)).thenReturn(responseDto1);
+        when(activityMapper.toResponseDto(activity2)).thenReturn(responseDto2);
 
         // Act
         List<ActivityResponseDto> result = activityService.searchActivities(request);
 
         // Assert
-        assertEquals(expectedDtos, result);
         verify(activityRepository, times(1)).findAllByNameContainingIgnoreCase(searchName);
         verify(activityMapper, times(1)).toResponseDto(activity1);
         verify(activityMapper, times(1)).toResponseDto(activity2);
+        assertEquals(expectedDtos, result);
+        assertEquals(expectedDtos.get(0).getId(), result.get(0).getId());
+        assertEquals(expectedDtos.get(1).getId(), result.get(1).getId());
     }
 
     @Test
     void searchActivities_shouldReturnEmptyList_whenActivitiesNotFound() {
+        // Assert
         String searchName = "nonexistent";
         SearchRequestDto request = new SearchRequestDto(searchName);
 
@@ -404,74 +436,29 @@ public class ActivityServiceImplTest {
         List<ActivityResponseDto> result = activityService.searchActivities(request);
 
         // Assert
-        assertTrue(result.isEmpty());
         verify(activityRepository, times(1)).findAllByNameContainingIgnoreCase(searchName);
         verifyNoInteractions(activityMapper);
+        assertTrue(result.isEmpty());
     }
 
     @Test
     void getActivitiesByUser_shouldReturnActivities_whenActivitiesFound() {
         // Arrange
-        User user = new User(
-                1,
-                "John",
-                "Doe",
-                "john.doe@example.com",
-                "StrongPassword123",
-                "Male",
-                LocalDate.of(1990, 1, 1),
-                175.0,
-                70.0,
-                2000.0,
-                "Lose weight",
-                "Moderate",
-                null,
-                null);
+        int userId = user1.getId();
 
-        int categoryId = 1;
-        ActivityCategory activityCategory = new ActivityCategory(
-                categoryId,
-                "CategoryName",
-                "icon",
-                "gradient");
-
-        Activity activity1 = new Activity(
-                1,
-                "Running",
-                1.1,
-                activityCategory);
-        Activity activity2 = new Activity(
-                2,
-                "Running",
-                1.1,
-                activityCategory);
-
-        UserActivity userActivity1 = new UserActivity(
-                1,
-                user,
-                activity1,
-                (short) 1);
-        UserActivity userActivity2 = new UserActivity(
-                2,
-                user,
-                activity2,
-                (short) 2);
         List<UserActivity> userActivities = List.of(userActivity1, userActivity2);
+        List<ActivityResponseDto> expectedDtos = List.of(responseDto1, responseDto2);
 
-        ActivityResponseDto dto1 = new ActivityResponseDto(1, "Running", 1.1, "CategoryName", categoryId);
-        ActivityResponseDto dto2 = new ActivityResponseDto(2, "Running", 1.1, "CategoryName", categoryId);
-        List<ActivityResponseDto> expectedDtos = List.of(dto1, dto2);
-
-        when(userActivityRepository.findByUserId(user.getId())).thenReturn(userActivities);
-        when(activityMapper.toResponseDto(userActivity1.getActivity())).thenReturn(dto1);
-        when(activityMapper.toResponseDto(userActivity2.getActivity())).thenReturn(dto2);
+        when(userActivityRepository.findByUserId(userId)).thenReturn(userActivities);
+        when(activityMapper.toResponseDto(userActivity1.getActivity())).thenReturn(responseDto1);
+        when(activityMapper.toResponseDto(userActivity2.getActivity())).thenReturn(responseDto2);
 
         // Act
-        List<ActivityResponseDto> result = activityService.getActivitiesByUser(user.getId());
+        List<ActivityResponseDto> result = activityService.getActivitiesByUser(userId);
 
         // Assert
         assertEquals(expectedDtos, result);
-        verify(userActivityRepository, times(1)).findByUserId(user.getId());
+        verify(userActivityRepository, times(1)).findByUserId(userId);
         verify(activityMapper, times(1)).toResponseDto(userActivity1.getActivity());
         verify(activityMapper, times(1)).toResponseDto(userActivity2.getActivity());
     }
@@ -479,69 +466,35 @@ public class ActivityServiceImplTest {
     @Test
     void getActivitiesByUser_shouldReturnEmptyList_whenActivitiesNotFound() {
         // Arrange
-        User user = new User(
-                1,
-                "John",
-                "Doe",
-                "john.doe@example.com",
-                "StrongPassword123",
-                "Male",
-                LocalDate.of(1990, 1, 1),
-                175.0,
-                70.0,
-                2000.0,
-                "Lose weight",
-                "Moderate",
-                null,
-                null);
+        int userId = user1.getId();
 
-        when(userActivityRepository.findByUserId(user.getId())).thenReturn(Collections.emptyList());
+        when(userActivityRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
 
         // Act
-        List<ActivityResponseDto> result = activityService.getActivitiesByUser(user.getId());
+        List<ActivityResponseDto> result = activityService.getActivitiesByUser(userId);
 
         // Assert
         assertTrue(result.isEmpty());
-        verify(userActivityRepository, times(1)).findByUserId(user.getId());
+        verify(userActivityRepository, times(1)).findByUserId(userId);
         verifyNoInteractions(activityMapper);
     }
 
     @Test
     void getAverageMet_shouldReturnActivityAverageMetResponseDto_whenActivitiesFound() {
-        int categoryId = 1;
-        ActivityCategory activityCategory = new ActivityCategory(
-                categoryId,
-                "CategoryName",
-                "icon",
-                "gradient");
+        int categoryId = activityCategory1.getId();
 
-        Activity activity1 = new Activity(
-                1,
-                "Running",
-                1.1,
-                activityCategory);
-        Activity activity2 = new Activity(
-                2,
-                "Running",
-                1.1,
-                activityCategory);
-        Activity activity3 = new Activity(
-                3,
-                "Running",
-                1.1,
-                activityCategory);
-        List<Activity> activities = List.of(activity1, activity2, activity3);
+        List<Activity> activities = List.of(activity1, activity2);
 
         when(activityRepository.findAll()).thenReturn(activities);
 
-        double expectedAverage = (1.1 + 1.1 + 1.1) / 3;
+        double expectedAverage = (activity1.getMet() + activity2.getMet()) / 2;
 
         // Act
         ActivityAverageMetResponseDto result = activityService.getAverageMet();
 
         // Assert
-        assertEquals(expectedAverage, result.getMet());
         verify(activityRepository, times(1)).findAll();
+        assertEquals(expectedAverage, result.getMet());
     }
 
     @Test
