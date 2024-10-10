@@ -2,11 +2,11 @@ package source.code.service.implementation;
 
 import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.helper.JsonPatchHelper;
-import source.code.dto.request.DailyCartFoodCreateDto;
+import source.code.dto.request.DailyFoodItemCreateDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.helper.ValidationHelper;
 import source.code.model.DailyFood;
-import source.code.model.DailyCartFood;
+import source.code.model.DailyFoodItem;
 import source.code.model.Food;
 import source.code.model.User;
 import source.code.repository.DailyFoodRepository;
@@ -54,13 +54,13 @@ public class DailyFoodServiceImpl implements DailyFoodService {
         LocalDate today = LocalDate.now();
         for (DailyFood cart : carts) {
             cart.setDate(today);
-            cart.getDailyCartFoods().clear();
+            cart.getDailyFoodItems().clear();
             dailyFoodRepository.save(cart);
         }
     }
 
     @Transactional
-    public void addFoodToDailyCartFood(int userId, int foodId, DailyCartFoodCreateDto dto) {
+    public void addFoodToDailyFoodItem(int userId, int foodId, DailyFoodItemCreateDto dto) {
         validationHelper.validate(dto);
         DailyFood dailyFood = getDailyFoodByUser(userId);
 
@@ -68,61 +68,61 @@ public class DailyFoodServiceImpl implements DailyFoodService {
                 .orElseThrow(() -> new NoSuchElementException("Food with id: " + foodId + " not found"));
 
 
-        Optional<DailyCartFood> existingDailyCartFood = dailyFood.getDailyCartFoods().stream()
+        Optional<DailyFoodItem> existingDailyFoodItem = dailyFood.getDailyFoodItems().stream()
                 .filter(item -> item.getFood().getId().equals(foodId))
                 .findFirst();
 
-        if (existingDailyCartFood.isPresent()) {
-            DailyCartFood dailyCartFood = existingDailyCartFood.get();
-            dailyCartFood.setAmount(dailyCartFood.getAmount() + dto.getAmount());
+        if (existingDailyFoodItem.isPresent()) {
+            DailyFoodItem dailyFoodItem = existingDailyFoodItem.get();
+            dailyFoodItem.setAmount(dailyFoodItem.getAmount() + dto.getAmount());
         } else {
-            DailyCartFood dailyCartFood = new DailyCartFood();
-            dailyCartFood.setDailyFoodFood(dailyFood);
-            dailyCartFood.setFood(food);
-            dailyCartFood.setAmount(dto.getAmount());
-            dailyFood.getDailyCartFoods().add(dailyCartFood);
+            DailyFoodItem dailyFoodItem = new DailyFoodItem();
+            dailyFoodItem.setDailyFoodFood(dailyFood);
+            dailyFoodItem.setFood(food);
+            dailyFoodItem.setAmount(dto.getAmount());
+            dailyFood.getDailyFoodItems().add(dailyFoodItem);
         }
 
         dailyFoodRepository.save(dailyFood);
     }
 
     @Transactional
-    public void removeFoodFromDailyCartFood(int userId, int foodId) {
+    public void removeFoodFromDailyFoodItem(int userId, int foodId) {
         DailyFood dailyFood = getDailyFoodByUser(userId);
-        DailyCartFood dailyCartFood = dailyFood.getDailyCartFoods().stream()
+        DailyFoodItem dailyFoodItem = dailyFood.getDailyFoodItems().stream()
                 .filter(item -> item.getFood().getId().equals(foodId))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Food with id: " + foodId + " not found"));
-        dailyFood.getDailyCartFoods().remove(dailyCartFood);
+        dailyFood.getDailyFoodItems().remove(dailyFoodItem);
         dailyFoodRepository.save(dailyFood);
     }
 
     @Transactional
-    public void updateDailyCartFood(int userId, int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+    public void updateDailyFoodItem(int userId, int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
         DailyFood dailyFood = getDailyFoodByUser(userId);
 
-        DailyCartFood dailyCartFood = dailyFood.getDailyCartFoods().stream()
+        DailyFoodItem dailyFoodItem = dailyFood.getDailyFoodItems().stream()
                 .filter(item -> item.getFood().getId().equals(foodId))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Food with id: " + foodId + " not found in daily cart"));
 
-        DailyCartFoodCreateDto dailyCartFoodCreateDto = new DailyCartFoodCreateDto();
-        dailyCartFoodCreateDto.setAmount(dailyCartFood.getAmount());
+        DailyFoodItemCreateDto dailyFoodItemCreateDto = new DailyFoodItemCreateDto();
+        dailyFoodItemCreateDto.setAmount(dailyFoodItem.getAmount());
 
-        DailyCartFoodCreateDto patchedDailyCartFoodCreateDto = jsonPatchHelper.applyPatch(patch, dailyCartFoodCreateDto, DailyCartFoodCreateDto.class);
+        DailyFoodItemCreateDto patchedDailyFoodItemCreateDto = jsonPatchHelper.applyPatch(patch, dailyFoodItemCreateDto, DailyFoodItemCreateDto.class);
 
-        validationHelper.validate(patchedDailyCartFoodCreateDto);
+        validationHelper.validate(patchedDailyFoodItemCreateDto);
 
-        dailyCartFood.setAmount(patchedDailyCartFoodCreateDto.getAmount());
+        dailyFoodItem.setAmount(patchedDailyFoodItemCreateDto.getAmount());
         dailyFoodRepository.save(dailyFood);
     }
 
     private DailyFood getDailyFoodByUser(int userId) {
         return dailyFoodRepository.findByUserId(userId)
-                .orElseGet(() -> createNewDailyCartForUser(userId));
+                .orElseGet(() -> createNewDailyFoodForUser(userId));
     }
 
-    private DailyFood createNewDailyCartForUser(int userId) {
+    private DailyFood createNewDailyFoodForUser(int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User with id: " + userId + " not found"));
         DailyFood newDailyFood = new DailyFood();
@@ -131,14 +131,14 @@ public class DailyFoodServiceImpl implements DailyFoodService {
         return dailyFoodRepository.save(newDailyFood);
     }
 
-    public DailyFoodsResponseDto getFoodsFromDailyCartFood(int userId) {
+    public DailyFoodsResponseDto getFoodsFromDailyFoodItem(int userId) {
         DailyFood dailyFood = getDailyFoodByUser(userId);
 
-        List<FoodCalculatedMacrosResponseDto> foods = dailyFood.getDailyCartFoods().stream()
+        List<FoodCalculatedMacrosResponseDto> foods = dailyFood.getDailyFoodItems().stream()
                 .map(
-                        dailyCartFood -> {
-                            Food food = dailyCartFood.getFood();
-                            double factor = (double) dailyCartFood.getAmount() / 100;
+                        dailyFoodItem -> {
+                            Food food = dailyFoodItem.getFood();
+                            double factor = (double) dailyFoodItem.getAmount() / 100;
                             return new FoodCalculatedMacrosResponseDto(
                                     food.getId(),
                                     food.getName(),
@@ -148,7 +148,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
                                     food.getCarbohydrates() * factor,
                                     food.getFoodCategory().getId(),
                                     food.getFoodCategory().getName(),
-                                    dailyCartFood.getAmount());
+                                    dailyFoodItem.getAmount());
                         })
                 .collect(Collectors.toList());
         double totalCalories = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getCalories).sum();

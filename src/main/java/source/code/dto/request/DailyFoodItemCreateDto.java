@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DailyCartFoodCreateDto {
+public class DailyFoodItemCreateDto {
   @NotNull
   @Positive
   @Max(value = 1000)
