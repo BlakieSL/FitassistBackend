@@ -81,7 +81,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
         if (existingDailyActivityItem.isPresent()) {
             updateDailyActivityTime(existingDailyActivityItem.get(), dto.getTime());
         } else {
-            DailyActivityItem dailyActivityItem = createNewDailyActivityItem();
+            DailyActivityItem dailyActivityItem = new DailyActivityItem();;
             setDailyActivityItemValues(dailyActivityItem, dailyActivity, activity,dto.getTime());
             saveDailyActivityItem(dailyActivity, dailyActivityItem);
         }
@@ -95,10 +95,6 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 
     private void updateDailyActivityTime(DailyActivityItem dailyActivityItem, int time) {
         dailyActivityItem.setTime(time);
-    }
-
-    private DailyActivityItem createNewDailyActivityItem() {
-        return new DailyActivityItem();
     }
 
     private void setDailyActivityItemValues(DailyActivityItem dailyActivityItem, DailyActivity dailyActivity, Activity activity, int time) {
@@ -145,7 +141,8 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     public DailyActivity createNewDailyActivityForUser(int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User with id: " + userId + " not found"));
-        DailyActivity newDailyActivity = new DailyActivity(user, LocalDate.now());
+        DailyActivity newDailyActivity = DailyActivity.createForToday(user);
+
         return dailyActivityRepository.save(newDailyActivity);
     }
 
