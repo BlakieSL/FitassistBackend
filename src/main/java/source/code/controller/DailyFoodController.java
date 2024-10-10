@@ -1,6 +1,6 @@
 package source.code.controller;
 
-import source.code.dto.request.DailyCartFoodCreateDto;
+import source.code.dto.request.DailyFoodItemCreateDto;
 import source.code.dto.response.DailyFoodsResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
@@ -20,7 +20,7 @@ public class DailyFoodController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<DailyFoodsResponseDto> getAllFoodsInCartByUser(@PathVariable int userId) {
-        DailyFoodsResponseDto cart = dailyFoodService.getFoodsFromDailyCartFood(userId);
+        DailyFoodsResponseDto cart = dailyFoodService.getFoodsFromDailyFoodItem(userId);
         return ResponseEntity.ok(cart);
     }
 
@@ -28,15 +28,15 @@ public class DailyFoodController {
     public ResponseEntity<Void> addDailyFoodToUser(
             @PathVariable int userId,
             @PathVariable int foodId,
-            @Valid @RequestBody DailyCartFoodCreateDto request) {
+            @Valid @RequestBody DailyFoodItemCreateDto request) {
 
-        dailyFoodService.addFoodToDailyCartFood(userId, foodId, request);
+        dailyFoodService.addFoodToDailyFoodItem(userId, foodId, request);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{userId}/remove/{foodId}")
     public ResponseEntity<Void> removeFoodFromDailyCartFood(@PathVariable int userId, @PathVariable int foodId) {
-        dailyFoodService.removeFoodFromDailyCartFood(userId, foodId);
+        dailyFoodService.removeFoodFromDailyFoodItem(userId, foodId);
         return ResponseEntity.ok().build();
     }
 
@@ -47,7 +47,7 @@ public class DailyFoodController {
             @RequestBody JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException {
 
-        dailyFoodService.updateDailyCartFood(userId, foodId, patch);
+        dailyFoodService.updateDailyFoodItem(userId, foodId, patch);
         return ResponseEntity.noContent().build();
     }
 }
