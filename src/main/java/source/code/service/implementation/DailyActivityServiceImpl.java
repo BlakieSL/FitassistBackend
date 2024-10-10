@@ -4,11 +4,12 @@ import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.DailyActivitiesResponseDto;
 import source.code.helper.CalculationsHelper;
 import source.code.helper.JsonPatchHelper;
-import source.code.dto.request.DailyCartActivityCreateDto;
+import source.code.dto.request.DailyActivityItemCreateDto;
 import source.code.helper.ValidationHelper;
+import source.code.mapper.DailyActivityMapper;
 import source.code.model.Activity;
 import source.code.model.DailyActivity;
-import source.code.model.DailyCartActivity;
+import source.code.model.DailyActivityItem;
 import source.code.model.User;
 import source.code.repository.ActivityRepository;
 import source.code.repository.DailyActivityRepository;
@@ -32,6 +33,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     private final ValidationHelper validationHelper;
     private final CalculationsHelper calculationsHelper;
     private final JsonPatchHelper jsonPatchHelper;
+    private final DailyActivityMapper dailyActivityMapper;
     private final DailyActivityRepository dailyActivityRepository;
     private final ActivityRepository activityRepository;
     private final UserRepository userRepository;
@@ -41,13 +43,15 @@ public class DailyActivityServiceImpl implements DailyActivityService {
             ActivityRepository activityRepository,
             CalculationsHelper calculationsHelper,
             ValidationHelper validationHelper,
-            JsonPatchHelper jsonPatchHelper) {
+            JsonPatchHelper jsonPatchHelper,
+            DailyActivityMapper dailyActivityMapper) {
         this.dailyActivityRepository = dailyActivityRepository;
         this.userRepository = userRepository;
         this.activityRepository = activityRepository;
         this.validationHelper = validationHelper;
         this.calculationsHelper = calculationsHelper;
         this.jsonPatchHelper = jsonPatchHelper;
+        this.dailyActivityMapper = dailyActivityMapper;
     }
 
     @Scheduled(cron = "0 0 0 * * ?", zone = "GMT+2")
@@ -57,29 +61,29 @@ public class DailyActivityServiceImpl implements DailyActivityService {
         LocalDate today = LocalDate.now();
         for (DailyActivity dailyActivity : dailyActivities) {
             dailyActivity.setDate(today);
-            dailyActivity.getDailyCartActivities().clear();
+            dailyActivity.getDailyActivityItems().clear();
             dailyActivityRepository.save(dailyActivity);
         }
     }
 
     @Transactional
-    public void addActivityToDailyCartActivity(int userId, Integer activityId, DailyCartActivityCreateDto dto) {
+    public void addActivityToDailyActivityItem(int userId, Integer activityId, DailyActivityItemCreateDto dto) {
         validationHelper.validate(dto);
 
         DailyActivity dailyActivity = getDailyActivityByUser(userId);
 
         Activity activity = activityRepository.findById(activityId)
                 .orElseThrow(() -> new NoSuchElementException("Activity with id: " + activityId + " not found"));
-        Optional<DailyCartActivity> existingDailyCartActivity = dailyActivity.getDailyCartActivities().stream()
+        Optional<DailyActivityItem> existingDailyActivityItem = dailyActivity.getDailyActivityItems().stream()
                 .filter(item -> item.getActivity().getId().equals(activityId))
                 .findFirst();
 
-        if (existingDailyCartActivity.isPresent()) {
-            updateDailyActivityTime(existingDailyCartActivity.get(), dto.getTime());
+        if (existingDailyActivityItem.isPresent()) {
+            updateDailyActivityTime(existingDailyActivityItem.get(), dto.getTime());
         } else {
-            DailyCartActivity dailyCartActivity = createNewDailyCartActivity();
-            setDailyCartActivityValues(dailyCartActivity, dailyActivity, activity,dto.getTime());
-            saveDailyCartActivity(dailyActivity, dailyCartActivity);
+            DailyActivityItem dailyActivityItem = createNewDailyActivityItem();
+            setDailyActivityItemValues(dailyActivityItem, dailyActivity, activity,dto.getTime());
+            saveDailyActivityItem(dailyActivity, dailyActivityItem);
         }
         dailyActivityRepository.save(dailyActivity);
     }
@@ -89,51 +93,51 @@ public class DailyActivityServiceImpl implements DailyActivityService {
                 .orElseGet(() -> createNewDailyActivityForUser(userId));
     }
 
-    private void updateDailyActivityTime(DailyCartActivity dailyCartActivity, int time) {
-        dailyCartActivity.setTime(time);
+    private void updateDailyActivityTime(DailyActivityItem dailyActivityItem, int time) {
+        dailyActivityItem.setTime(time);
     }
 
-    private DailyCartActivity createNewDailyCartActivity() {
-        return new DailyCartActivity();
-
+    private DailyActivityItem createNewDailyActivityItem() {
+        return new DailyActivityItem();
     }
 
-    private void setDailyCartActivityValues(DailyCartActivity dailyCartActivity, DailyActivity dailyActivity, Activity activity, int time) {
-        dailyCartActivity.setDailyActivity(dailyActivity);
-        dailyCartActivity.setActivity(activity);
-        dailyCartActivity.setTime(time);
+    private void setDailyActivityItemValues(DailyActivityItem dailyActivityItem, DailyActivity dailyActivity, Activity activity, int time) {
+        dailyActivityItem.setDailyActivity(dailyActivity);
+        dailyActivityItem.setActivity(activity);
+        dailyActivityItem.setTime(time);
     }
 
-    private void saveDailyCartActivity(DailyActivity dailyActivity, DailyCartActivity dailyCartActivity) {
-        dailyActivity.getDailyCartActivities().add(dailyCartActivity);
+    private void saveDailyActivityItem(DailyActivity dailyActivity, DailyActivityItem dailyActivityItem) {
+        dailyActivity.getDailyActivityItems().add(dailyActivityItem);
     }
 
     @Transactional
     public void removeActivityFromDailyActivity(int userId, int activityId) {
         DailyActivity dailyActivity = getDailyActivityByUser(userId);
-        DailyCartActivity dailyCartActivity = dailyActivity.getDailyCartActivities().stream()
+        DailyActivityItem dailyActivityItem = dailyActivity.getDailyActivityItems().stream()
                 .filter(item -> item.getActivity().getId().equals(activityId))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Activity with id: " + activityId + " not found"));
-        dailyActivity.getDailyCartActivities().remove(dailyCartActivity);
+        dailyActivity.getDailyActivityItems().remove(dailyActivityItem);
         dailyActivityRepository.save(dailyActivity);
     }
 
     @Transactional
-    public void updateDailyCartActivity(int userId, int activityId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+    public void updateDailyActivityItem(int userId, int activityId, JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException {
         DailyActivity dailyActivity = getDailyActivityByUser(userId);
 
-        DailyCartActivity dailyCartActivity = dailyActivity.getDailyCartActivities().stream()
+        DailyActivityItem dailyActivityItem = dailyActivity.getDailyActivityItems().stream()
                 .filter(item -> item.getActivity().getId().equals(activityId))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Activity with id: " + activityId + " not found in daily cart"));
 
-        DailyCartActivityCreateDto dailyCartActivityDto = new DailyCartActivityCreateDto();
-        dailyCartActivityDto.setTime(dailyCartActivity.getTime());
+        DailyActivityItemCreateDto dailyActivityItemDto = new DailyActivityItemCreateDto();
+        dailyActivityItemDto.setTime(dailyActivityItem.getTime());
 
-        DailyCartActivityCreateDto patchedDailyCartActivityDto = jsonPatchHelper.applyPatch(patch, dailyCartActivityDto, DailyCartActivityCreateDto.class);
+        DailyActivityItemCreateDto patchedDailyActivityItemDto = jsonPatchHelper.applyPatch(patch, dailyActivityItemDto, DailyActivityItemCreateDto.class);
 
-        dailyCartActivity.setTime(patchedDailyCartActivityDto.getTime());
+        dailyActivityItem.setTime(patchedDailyActivityItemDto.getTime());
         dailyActivityRepository.save(dailyActivity);
     }
 
@@ -145,26 +149,20 @@ public class DailyActivityServiceImpl implements DailyActivityService {
         return dailyActivityRepository.save(newDailyActivity);
     }
 
-    public DailyActivitiesResponseDto getActivitiesFromDailyCartActivity(int userId) {
+    public DailyActivitiesResponseDto getActivitiesFromDailyActivityItem(int userId) {
         DailyActivity dailyActivity = getDailyActivityByUser(userId);
-
         User user = dailyActivity.getUser();
 
-        List<ActivityCalculatedResponseDto> activities = dailyActivity.getDailyCartActivities().stream()
-                .map(dailyCartActivity -> {
-                    Activity activity = dailyCartActivity.getActivity();
-                    return new ActivityCalculatedResponseDto(
-                            activity.getId(),
-                            activity.getName(),
-                            activity.getMet(),
-                            activity.getActivityCategory().getName(),
-                            activity.getActivityCategory().getId(),
-                            (int) (calculationsHelper.calculateCaloriesBurned(dailyCartActivity.getTime(), user.getWeight(), activity.getMet())),
-                            dailyCartActivity.getTime()
-                    );
-                })
+        List<ActivityCalculatedResponseDto> activities = dailyActivity.getDailyActivityItems().stream()
+                .map(dailyActivityItem -> dailyActivityMapper
+                        .toActivityCalculatedResponseDto(dailyActivityItem, user.getWeight()))
                 .collect(Collectors.toList());
-        int totalCaloriesBurned = activities.stream().mapToInt(ActivityCalculatedResponseDto::getCaloriesBurned).sum();
+
+        int totalCaloriesBurned = activities
+                .stream()
+                .mapToInt(ActivityCalculatedResponseDto::getCaloriesBurned)
+                .sum();
+
         return new DailyActivitiesResponseDto(totalCaloriesBurned, activities);
     }
 }

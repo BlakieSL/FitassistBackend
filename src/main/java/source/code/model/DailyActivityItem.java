@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DailyCartActivity {
+public class DailyActivityItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

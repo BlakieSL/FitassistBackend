@@ -41,7 +41,7 @@ public class Activity {
     private ActivityCategory activityCategory;
 
     @OneToMany(mappedBy = "activity", cascade = CascadeType.REMOVE)
-    private final Set<DailyCartActivity> dailyCartActivities = new HashSet<>();
+    private final Set<DailyActivityItem> dailyActivityItems = new HashSet<>();
 
     @OneToMany(mappedBy = "activity", cascade = CascadeType.REMOVE)
     private final Set<UserActivity> userActivities = new HashSet<>();

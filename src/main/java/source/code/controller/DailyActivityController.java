@@ -1,7 +1,7 @@
 package source.code.controller;
 
 import source.code.dto.response.DailyActivitiesResponseDto;
-import source.code.dto.request.DailyCartActivityCreateDto;
+import source.code.dto.request.DailyActivityItemCreateDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
@@ -21,7 +21,7 @@ public class DailyActivityController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<DailyActivitiesResponseDto> getAllDailyActivitiesByUser(@PathVariable int userId) {
-        DailyActivitiesResponseDto activities = dailyActivityService.getActivitiesFromDailyCartActivity(userId);
+        DailyActivitiesResponseDto activities = dailyActivityService.getActivitiesFromDailyActivityItem(userId);
         return ResponseEntity.ok(activities);
     }
 
@@ -29,9 +29,9 @@ public class DailyActivityController {
     public ResponseEntity<Void> addDailyActivityToUser(
             @PathVariable int userId,
             @PathVariable int activityId,
-            @Valid @RequestBody DailyCartActivityCreateDto request) {
+            @Valid @RequestBody DailyActivityItemCreateDto request) {
 
-        dailyActivityService.addActivityToDailyCartActivity(userId, activityId, request);
+        dailyActivityService.addActivityToDailyActivityItem(userId, activityId, request);
         return ResponseEntity.ok().build();
     }
 
@@ -48,7 +48,7 @@ public class DailyActivityController {
             @Valid @RequestBody JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException {
 
-        dailyActivityService.updateDailyCartActivity(userId, activityId, patch);
+        dailyActivityService.updateDailyActivityItem(userId, activityId, patch);
         return ResponseEntity.noContent().build();
     }
 }
