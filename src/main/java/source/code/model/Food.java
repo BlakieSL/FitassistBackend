@@ -53,7 +53,7 @@ public class Food {
     private FoodCategory foodCategory;
 
     @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
-    private final Set<DailyCartFood> dailyCartFoods = new HashSet<>();
+    private final Set<DailyFoodItem> dailyFoodItems = new HashSet<>();
 
     @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
     private final Set<RecipeFood> recipeFoods = new HashSet<>();

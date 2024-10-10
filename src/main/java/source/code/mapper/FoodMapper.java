@@ -28,7 +28,7 @@ public abstract class FoodMapper {
 
     @Mapping(target = "foodCategory", source = "categoryId", qualifiedByName = "categoryIdToFoodCategory")
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "dailyCartFoods", ignore = true)
+    @Mapping(target = "dailyFoodItems", ignore = true)
     @Mapping(target = "recipeFoods", ignore = true)
     @Mapping(target = "userFoods", ignore = true)
     public abstract Food toEntity(FoodCreateDto dto);

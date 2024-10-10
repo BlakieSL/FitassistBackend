@@ -35,5 +35,5 @@ public class DailyFood {
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true)
     @JsonManagedReference
-    private final List<DailyCartFood> dailyCartFoods = new ArrayList<>();
+    private final List<DailyFoodItem> dailyFoodItems = new ArrayList<>();
 }
