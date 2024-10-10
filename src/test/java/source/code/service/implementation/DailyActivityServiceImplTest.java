@@ -92,23 +92,15 @@ public class DailyActivityServiceImplTest {
     }
 
     private ActivityCategory createActivityCategory(int id, String name) {
-        ActivityCategory category = new ActivityCategory();
-        category.setId(id);
-        category.setName(name);
-        return category;
+        return ActivityCategory.createWithIdName(id, name);
     }
 
     private Activity createActivity(int id) {
-        Activity activity = new Activity();
-        activity.setId(id);
-        return  activity;
+        return Activity.createWithId(id);
     }
 
     private DailyActivity createDailyActivity(int id, User user) {
-        DailyActivity dailyActivity = new DailyActivity();
-        dailyActivity.setId(id);
-        dailyActivity.setUser(user);
-        return dailyActivity;
+        return DailyActivity.createWithIdUser(id, user);
     }
 
     private DailyActivityItem createDailyActivityItem(int id, Activity activity, DailyActivity dailyActivity) {

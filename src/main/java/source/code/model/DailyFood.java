@@ -3,10 +3,7 @@ package source.code.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -36,4 +33,11 @@ public class DailyFood {
             orphanRemoval = true)
     @JsonManagedReference
     private final List<DailyFoodItem> dailyFoodItems = new ArrayList<>();
+
+    public static DailyFood createForToday(User user) {
+        DailyFood dailyFood = new DailyFood();
+        dailyFood.setDate(LocalDate.now());
+        dailyFood.setUser(user);
+        return dailyFood;
+    }
 }

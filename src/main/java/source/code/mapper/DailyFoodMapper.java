@@ -4,9 +4,13 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.model.DailyFoodItem;
 import source.code.model.Food;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class DailyFoodMapper {
@@ -33,5 +37,14 @@ public abstract class DailyFoodMapper {
         responseDto.setProtein(food.getProtein() * factor);
         responseDto.setFat(food.getFat() * factor);
         responseDto.setCarbohydrates(food.getCarbohydrates() * factor);
+    }
+
+    public DailyFoodsResponseDto toDailyFoodsResponseDto(List<FoodCalculatedMacrosResponseDto> foods) {
+        double totalCalories = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getCalories).sum();
+        double totalCarbohydrates = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getCarbohydrates).sum();
+        double totalProtein = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getProtein).sum();
+        double totalFat = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getFat).sum();
+
+        return new DailyFoodsResponseDto(foods, totalCalories, totalCarbohydrates, totalProtein, totalFat);
     }
 }

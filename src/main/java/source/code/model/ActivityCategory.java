@@ -35,4 +35,11 @@ public class ActivityCategory {
 
     @OneToMany(mappedBy = "activityCategory", cascade = CascadeType.REMOVE)
     private final Set<Activity> activities = new HashSet<>();
+
+    public static ActivityCategory createWithIdName(int id, String name) {
+        ActivityCategory activityCategory = new ActivityCategory();
+        activityCategory.setId(id);
+        activityCategory.setName(name);
+        return activityCategory;
+    }
 }

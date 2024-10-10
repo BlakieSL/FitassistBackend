@@ -35,8 +35,18 @@ public class DailyActivity {
             orphanRemoval = true)
     private final List<DailyActivityItem> dailyActivityItems = new ArrayList<>();
 
-    public DailyActivity(User user, LocalDate date) {
-        this.user = user;
-        this.date = date;
+    public static DailyActivity createForToday(User user) {
+        DailyActivity dailyActivity = new DailyActivity();
+        dailyActivity.setDate(LocalDate.now());
+        dailyActivity.setUser(user);
+
+        return dailyActivity;
+    }
+
+    public static DailyActivity createWithIdUser(int id, User user) {
+        DailyActivity dailyActivity = new DailyActivity();
+        dailyActivity.setId(id);
+        dailyActivity.setUser(user);
+        return dailyActivity;
     }
 }

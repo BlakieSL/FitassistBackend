@@ -127,10 +127,11 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 
     private DailyFood createNewDailyFoodForUser(int userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User with id: " + userId + " not found"));
-        DailyFood newDailyFood = new DailyFood();
-        newDailyFood.setUser(user);
-        newDailyFood.setDate(LocalDate.now());
+                .orElseThrow(() -> new NoSuchElementException(
+                        "User with id: " + userId + " not found"));
+
+        DailyFood newDailyFood = DailyFood.createForToday(user);
+
         return dailyFoodRepository.save(newDailyFood);
     }
 
@@ -138,13 +139,9 @@ public class DailyFoodServiceImpl implements DailyFoodService {
         DailyFood dailyFood = getDailyFoodByUser(userId);
 
         List<FoodCalculatedMacrosResponseDto> foods = dailyFood.getDailyFoodItems().stream()
-                .map(dailyFoodItem -> dailyFoodMapper
-                        .toFoodCalculatedMacrosResponseDto(dailyFoodItem))
+                .map(dailyFoodMapper::toFoodCalculatedMacrosResponseDto)
                 .collect(Collectors.toList());
-        double totalCalories = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getCalories).sum();
-        double totalCarbohydrates = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getCarbohydrates).sum();
-        double totalProtein = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getProtein).sum();
-        double totalFat = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getFat).sum();
-        return new DailyFoodsResponseDto(foods, totalCalories, totalCarbohydrates, totalProtein, totalFat);
+
+        return dailyFoodMapper.toDailyFoodsResponseDto(foods);
     }
 }
