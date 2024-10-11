@@ -12,10 +12,7 @@ import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.helper.JsonPatchHelper;
 import source.code.helper.ValidationHelper;
 import source.code.mapper.DailyFoodMapper;
-import source.code.model.DailyFood;
-import source.code.model.DailyFoodItem;
-import source.code.model.Food;
-import source.code.model.User;
+import source.code.model.*;
 import source.code.repository.DailyFoodRepository;
 import source.code.repository.FoodRepository;
 import source.code.repository.UserRepository;
@@ -52,7 +49,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 
   @Scheduled(cron = "0 0 0 * * ?", zone = "GMT+2")
   @Transactional
-  public void updateDailyCarts() {
+  public void resetDailyCarts() {
     List<DailyFood> carts = dailyFoodRepository.findAll();
     LocalDate today = LocalDate.now();
     for (DailyFood cart : carts) {
@@ -65,6 +62,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
   @Transactional
   public void addFoodToDailyFoodItem(int userId, int foodId, DailyFoodItemCreateDto dto) {
     validationHelper.validate(dto);
+
     DailyFood dailyFood = getDailyFoodByUser(userId);
 
     Food food = foodRepository.findById(foodId)
@@ -77,19 +75,24 @@ public class DailyFoodServiceImpl implements DailyFoodService {
             .findFirst();
 
     if (existingDailyFoodItem.isPresent()) {
-      DailyFoodItem dailyFoodItem = existingDailyFoodItem.get();
-      dailyFoodItem.setAmount(dailyFoodItem.getAmount() + dto.getAmount());
+      updateDailyFoodItemAmount(existingDailyFoodItem.get(), dto.getAmount());
     } else {
-      DailyFoodItem dailyFoodItem = new DailyFoodItem();
-      dailyFoodItem.setDailyFoodFood(dailyFood);
-      dailyFoodItem.setFood(food);
-      dailyFoodItem.setAmount(dto.getAmount());
+      DailyFoodItem dailyFoodItem = DailyFoodItem
+              .createWithAmountFoodDailyFood(dto.getAmount(), food, dailyFood);
+
       dailyFood.getDailyFoodItems().add(dailyFoodItem);
     }
 
     dailyFoodRepository.save(dailyFood);
   }
 
+  private void updateDailyFoodItemAmount(DailyFoodItem dailyFoodItem, int amount) {
+    dailyFoodItem.setAmount(amount);
+  }
+
+  private  void saveDailyFoodItem(DailyFood dailyFood, DailyFoodItem dailyFoodItem) {
+    dailyFood.getDailyFoodItems().add(dailyFoodItem);
+  }
   @Transactional
   public void removeFoodFromDailyFoodItem(int userId, int foodId) {
     DailyFood dailyFood = getDailyFoodByUser(userId);
