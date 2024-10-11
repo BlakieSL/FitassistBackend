@@ -14,19 +14,30 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRecipe {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "recipie_id", nullable = false)
-    private Recipe recipe;
+  @ManyToOne
+  @JoinColumn(name = "recipie_id", nullable = false)
+  private Recipe recipe;
 
-    @NotNull
-    @Column(nullable = false)
-    private short type;
+  @NotNull
+  @Column(nullable = false)
+  private short type;
+
+  public static UserRecipe createWithUserRecipeType(
+          User user, Recipe recipe, short type) {
+
+    UserRecipe userRecipe = new UserRecipe();
+    userRecipe.setUser(user);
+    userRecipe.setRecipe(recipe);
+    userRecipe.setType(type);
+
+    return userRecipe;
+  }
 }

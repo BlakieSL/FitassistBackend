@@ -19,58 +19,59 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Plan {
-    private static final int NAME_MAX_LENGTH = 100;
-    private static final int DESCRIPTION_MAX_LENGTH = 255;
-    private static final int TEXT_MAX_LENGTH = 10000;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  private static final int NAME_MAX_LENGTH = 100;
+  private static final int DESCRIPTION_MAX_LENGTH = 255;
+  private static final int TEXT_MAX_LENGTH = 10000;
 
-    @NotBlank
-    @Size(max = NAME_MAX_LENGTH)
-    @Column(nullable = false, length = NAME_MAX_LENGTH)
-    private String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @NotBlank
-    @Size(max = DESCRIPTION_MAX_LENGTH)
-    @Column(nullable = false, length = DESCRIPTION_MAX_LENGTH)
-    private String description;
+  @NotBlank
+  @Size(max = NAME_MAX_LENGTH)
+  @Column(nullable = false, length = NAME_MAX_LENGTH)
+  private String name;
 
-    @NotBlank
-    @Size(max = TEXT_MAX_LENGTH)
-    @Column(nullable = false, length = TEXT_MAX_LENGTH)
-    private String text;
+  @NotBlank
+  @Size(max = DESCRIPTION_MAX_LENGTH)
+  @Column(nullable = false, length = DESCRIPTION_MAX_LENGTH)
+  private String description;
 
-    @NotNull
-    @Column(nullable = false)
-    private Double score;
+  @NotBlank
+  @Size(max = TEXT_MAX_LENGTH)
+  @Column(nullable = false, length = TEXT_MAX_LENGTH)
+  private String text;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "plan_type_id", nullable = false)
-    private PlanType planType;
+  @NotNull
+  @Column(nullable = false)
+  private Double score;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "plan_duration_id", nullable = false)
-    private PlanDuration planDuration;
+  @NotNull
+  @ManyToOne
+  @JoinColumn(name = "plan_type_id", nullable = false)
+  private PlanType planType;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "plan_equipment_id", nullable = false)
-    private PlanEquipment planEquipment;
+  @NotNull
+  @ManyToOne
+  @JoinColumn(name = "plan_duration_id", nullable = false)
+  private PlanDuration planDuration;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "plan_expertise_level_id", nullable = false)
-    private PlanExpertiseLevel planExpertiseLevel;
+  @NotNull
+  @ManyToOne
+  @JoinColumn(name = "plan_equipment_id", nullable = false)
+  private PlanEquipment planEquipment;
 
-    @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private final Set<PlanCategoryAssociation> planCategoryAssociations = new HashSet<>();
+  @NotNull
+  @ManyToOne
+  @JoinColumn(name = "plan_expertise_level_id", nullable = false)
+  private PlanExpertiseLevel planExpertiseLevel;
 
-    @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE)
-    private final Set<UserPlan> userPlans = new HashSet<>();
+  @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  private final Set<PlanCategoryAssociation> planCategoryAssociations = new HashSet<>();
 
-    @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private final Set<WorkoutPlan> workoutPlans = new HashSet<>();
+  @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE)
+  private final Set<UserPlan> userPlans = new HashSet<>();
+
+  @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  private final Set<WorkoutPlan> workoutPlans = new HashSet<>();
 }

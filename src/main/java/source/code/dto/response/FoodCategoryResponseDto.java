@@ -11,11 +11,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FoodCategoryResponseDto {
-    private Integer id;
-    @NotBlank
-    private String name;
-    @NotBlank
-    private String iconUrl;
-    @NotBlank
-    private String gradient;
+  private Integer id;
+  @NotBlank
+  private String name;
+  @NotBlank
+  private String iconUrl;
+  @NotBlank
+  private String gradient;
 }

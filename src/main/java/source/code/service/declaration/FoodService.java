@@ -10,12 +10,19 @@ import source.code.dto.response.FoodResponseDto;
 import java.util.List;
 
 public interface FoodService {
-    FoodResponseDto createFood(FoodCreateDto request);
-    FoodResponseDto getFood(int id);
-    List<FoodResponseDto> getAllFoods();
-    FoodCalculatedMacrosResponseDto calculateFoodMacros(int id, CalculateFoodMacrosRequestDto request);
-    List<FoodResponseDto> searchFoods(SearchRequestDto request);
-    List<FoodResponseDto> getFoodsByUser(int userId);
-    List<FoodCategoryResponseDto> getAllCategories();
-    List<FoodResponseDto> getFoodsByCategory(int categoryId);
+  FoodResponseDto createFood(FoodCreateDto request);
+
+  FoodResponseDto getFood(int id);
+
+  List<FoodResponseDto> getAllFoods();
+
+  FoodCalculatedMacrosResponseDto calculateFoodMacros(int id, CalculateFoodMacrosRequestDto request);
+
+  List<FoodResponseDto> searchFoods(SearchRequestDto request);
+
+  List<FoodResponseDto> getFoodsByUser(int userId);
+
+  List<FoodCategoryResponseDto> getAllCategories();
+
+  List<FoodResponseDto> getFoodsByCategory(int categoryId);
 }

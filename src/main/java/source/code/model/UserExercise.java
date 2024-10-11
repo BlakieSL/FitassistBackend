@@ -14,20 +14,30 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserExercise {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "exercise_id", nullable = false)
-    private Exercise exercise;
+  @ManyToOne
+  @JoinColumn(name = "exercise_id", nullable = false)
+  private Exercise exercise;
 
-    @NotNull
-    @Column(nullable = false)
-    private short type;
+  @NotNull
+  @Column(nullable = false)
+  private short type;
 
+  public static UserExercise createWithUserExerciseType(
+          User user, Exercise exercise, short type) {
+
+    UserExercise userExercise = new UserExercise();
+    userExercise.setUser(user);
+    userExercise.setExercise(exercise);
+    userExercise.setType(type);
+
+    return userExercise;
+  }
 }

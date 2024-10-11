@@ -1,10 +1,10 @@
 package source.code.repository;
 
-import source.code.model.ActivityCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
+import source.code.model.ActivityCategory;
 
 import java.util.Optional;
 
 public interface ActivityCategoryRepository extends JpaRepository<ActivityCategory, Integer> {
-    Optional<ActivityCategory> findByName(String name);
+  Optional<ActivityCategory> findByName(String name);
 }

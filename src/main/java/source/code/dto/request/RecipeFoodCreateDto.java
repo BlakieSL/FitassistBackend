@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecipeFoodCreateDto {
-    @NotNull
-    @Positive
-    private int amount = 100;
+  @NotNull
+  @Positive
+  private int amount = 100;
 }

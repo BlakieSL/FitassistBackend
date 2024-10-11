@@ -1,13 +1,17 @@
 package source.code.repository;
 
-import source.code.model.UserRecipe;
 import org.springframework.data.jpa.repository.JpaRepository;
+import source.code.model.UserRecipe;
+
 import java.util.List;
 import java.util.Optional;
 
 public interface UserRecipeRepository extends JpaRepository<UserRecipe, Long> {
-    List<UserRecipe> findByUserId(int userId);
-    Optional<UserRecipe> findByUserIdAndRecipeIdAndType(int userId, int recipeId, short type);
-    boolean existsByUserIdAndRecipeIdAndType(int userId, int recipeId, short type);
-    long countByRecipeIdAndType(int recipeId, short type);
+  List<UserRecipe> findByUserId(int userId);
+
+  Optional<UserRecipe> findByUserIdAndRecipeIdAndType(int userId, int recipeId, short type);
+
+  boolean existsByUserIdAndRecipeIdAndType(int userId, int recipeId, short type);
+
+  long countByRecipeIdAndType(int recipeId, short type);
 }

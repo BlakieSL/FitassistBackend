@@ -14,24 +14,24 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutSet {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @NotNull
-    @Column(nullable = false)
-    private double weight;
+  @NotNull
+  @Column(nullable = false)
+  private double weight;
 
-    @NotNull
-    @Column(nullable = false)
-    private int repetitions;
+  @NotNull
+  @Column(nullable = false)
+  private int repetitions;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "workout_type_id", nullable = false)
-    private WorkoutType workoutType;
+  @NotNull
+  @ManyToOne
+  @JoinColumn(name = "workout_type_id", nullable = false)
+  private WorkoutType workoutType;
 
-    @OneToOne
-    @JoinColumn(name = "exercise_id", nullable = false)
-    private Exercise exercise;
+  @OneToOne
+  @JoinColumn(name = "exercise_id", nullable = false)
+  private Exercise exercise;
 }

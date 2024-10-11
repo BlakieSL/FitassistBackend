@@ -13,10 +13,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecipeResponseDto {
-    private Integer id;
-    private String name;
-    private String description;
-    private String text;
-    private Double score;
-    List<RecipeCategoryShortDto> categories;
+  List<RecipeCategoryShortDto> categories;
+  private Integer id;
+  private String name;
+  private String description;
+  private String text;
+  private Double score;
 }

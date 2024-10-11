@@ -12,9 +12,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DailyFoodsResponseDto {
-    private List<FoodCalculatedMacrosResponseDto> foods;
-    private double totalCalories;
-    private double totalCarbohydrates;
-    private double totalProtein;
-    private double totalFat;
+  private List<FoodCalculatedMacrosResponseDto> foods;
+  private double totalCalories;
+  private double totalCarbohydrates;
+  private double totalProtein;
+  private double totalFat;
 }

@@ -15,39 +15,39 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExerciseCreateDto {
-    private static final int MAX_NAME_LENGTH = 100;
-    private static final int MAX_DESCRIPTION_LENGTH = 255;
-    private static final int MAX_TEXT_LENGTH = 1000;
+  private static final int MAX_NAME_LENGTH = 100;
+  private static final int MAX_DESCRIPTION_LENGTH = 255;
+  private static final int MAX_TEXT_LENGTH = 1000;
 
-    @NotBlank
-    @Size(max = MAX_NAME_LENGTH)
-    private String name;
+  @NotBlank
+  @Size(max = MAX_NAME_LENGTH)
+  private String name;
 
-    @NotBlank
-    @Size(max = MAX_DESCRIPTION_LENGTH)
-    private String description;
+  @NotBlank
+  @Size(max = MAX_DESCRIPTION_LENGTH)
+  private String description;
 
-    @NotBlank
-    @Size(max = MAX_TEXT_LENGTH)
-    private String text;
+  @NotBlank
+  @Size(max = MAX_TEXT_LENGTH)
+  private String text;
 
-    @NotNull
-    private Double score;
+  @NotNull
+  private Double score;
 
-    @NotNull
-    private int expertiseLevelId;
+  @NotNull
+  private int expertiseLevelId;
 
-    @NotNull
-    private int mechanicsTypeId;
+  @NotNull
+  private int mechanicsTypeId;
 
-    @NotNull
-    private int forceTypeId;
+  @NotNull
+  private int forceTypeId;
 
-    @NotNull
-    private int exerciseEquipmentId;
+  @NotNull
+  private int exerciseEquipmentId;
 
-    @NotNull
-    private int exerciseTypeId;
+  @NotNull
+  private int exerciseTypeId;
 
-    private List<Integer> categoryIds;
+  private List<Integer> categoryIds;
 }

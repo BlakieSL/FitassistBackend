@@ -113,9 +113,7 @@ public class ActivityServiceImplTest {
     }
 
     private User createUser(int id) {
-        User user = new User();
-        user.setId(id);
-        return user;
+        return User.createWithId(id);
     }
 
     private UserActivity createUserActivity(int id, User user, Activity activity, short type) {

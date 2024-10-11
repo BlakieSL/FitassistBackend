@@ -14,19 +14,30 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserActivity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "activity_id", nullable = false)
-    private Activity activity;
+  @ManyToOne
+  @JoinColumn(name = "activity_id", nullable = false)
+  private Activity activity;
 
-    @NotNull
-    @Column(nullable = false)
-    private short type;
+  @NotNull
+  @Column(nullable = false)
+  private short type;
+
+  public static UserActivity createWithUserActivityType(
+          User user, Activity activity, short type) {
+
+    UserActivity userActivity = new UserActivity();
+    userActivity.setUser(user);
+    userActivity.setActivity(activity);
+    userActivity.setType(type);
+
+    return userActivity;
+  }
 }

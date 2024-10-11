@@ -13,14 +13,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlanResponseDto {
-    private Integer id;
-    private String name;
-    private String description;
-    private String text;
-    private Double score;
-    private PlanCategoryShortDto planType;
-    private PlanCategoryShortDto planDuration;
-    private PlanCategoryShortDto planEquipment;
-    private PlanCategoryShortDto planExpertiseLevel;
-    private List<PlanCategoryShortDto> categories;
+  private Integer id;
+  private String name;
+  private String description;
+  private String text;
+  private Double score;
+  private PlanCategoryShortDto planType;
+  private PlanCategoryShortDto planDuration;
+  private PlanCategoryShortDto planEquipment;
+  private PlanCategoryShortDto planExpertiseLevel;
+  private List<PlanCategoryShortDto> categories;
 }

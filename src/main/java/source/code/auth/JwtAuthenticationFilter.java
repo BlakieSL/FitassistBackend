@@ -1,6 +1,5 @@
 package source.code.auth;
 
-import source.code.service.implementation.UserServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,37 +15,39 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import source.code.service.implementation.UserServiceImpl;
 
 import java.io.IOException;
+
 public class JwtAuthenticationFilter extends HttpFilter {
 
-    private static final RequestMatcher defaultRequestMatcher = new AntPathRequestMatcher("/api/users/login", "POST");
-    private final AuthenticationManager authenticationManager;
-    private final AuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
-    private final AuthenticationSuccessHandler successHandler;
+  private static final RequestMatcher defaultRequestMatcher = new AntPathRequestMatcher("/api/users/login", "POST");
+  private final AuthenticationManager authenticationManager;
+  private final AuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
+  private final AuthenticationSuccessHandler successHandler;
 
-    public JwtAuthenticationFilter(
-            AuthenticationManager authenticationManager, JwtService jwtService, UserServiceImpl userServiceImpl) {
-        this.authenticationManager = authenticationManager;
-        successHandler = new JwtAuthenticationSuccessHandler(jwtService, userServiceImpl);
-    }
+  public JwtAuthenticationFilter(
+          AuthenticationManager authenticationManager, JwtService jwtService, UserServiceImpl userServiceImpl) {
+    this.authenticationManager = authenticationManager;
+    successHandler = new JwtAuthenticationSuccessHandler(jwtService, userServiceImpl);
+  }
 
-    @Override
-    protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (!defaultRequestMatcher.matches(request)) {
-            chain.doFilter(request, response);
-        } else {
-            try {
-                JwtAuthenticationToken jwtAuthentication = new ObjectMapper().readValue(request.getInputStream(), JwtAuthenticationToken.class);
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(jwtAuthentication.username(), jwtAuthentication.password());
-                Authentication authenticationResult = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-                successHandler.onAuthenticationSuccess(request, response, authenticationResult);
-            } catch (AuthenticationException ex) {
-                failureHandler.onAuthenticationFailure(request, response, ex);
-            }
-        }
+  @Override
+  protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+    if (!defaultRequestMatcher.matches(request)) {
+      chain.doFilter(request, response);
+    } else {
+      try {
+        JwtAuthenticationToken jwtAuthentication = new ObjectMapper().readValue(request.getInputStream(), JwtAuthenticationToken.class);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(jwtAuthentication.username(), jwtAuthentication.password());
+        Authentication authenticationResult = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        successHandler.onAuthenticationSuccess(request, response, authenticationResult);
+      } catch (AuthenticationException ex) {
+        failureHandler.onAuthenticationFailure(request, response, ex);
+      }
     }
+  }
 
-    private record JwtAuthenticationToken(String username, String password) {
-    }
+  private record JwtAuthenticationToken(String username, String password) {
+  }
 }
