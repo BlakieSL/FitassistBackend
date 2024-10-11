@@ -14,18 +14,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WorkoutDto {
-    private static final int NAME_MAX_LENGTH = 50;
+  private static final int NAME_MAX_LENGTH = 50;
 
-    private Integer id;
+  private Integer id;
 
-    @NotBlank
-    @Size(max = NAME_MAX_LENGTH)
-    private String name;
+  @NotBlank
+  @Size(max = NAME_MAX_LENGTH)
+  private String name;
 
-    @NotNull
-    @PositiveOrZero
-    private int time;
+  @NotNull
+  @PositiveOrZero
+  private int time;
 
-    @NotNull
-    private Integer workoutTypeId;
+  @NotNull
+  private Integer workoutTypeId;
 }

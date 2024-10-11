@@ -13,10 +13,10 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 public class UserCredentialsDto implements Serializable {
-    @Size(max = 50)
-    @Email
-    private String email;
-    @Size(min = 8, max = 255)
-    private String password;
-    private Set<String> roles;
+  @Size(max = 50)
+  @Email
+  private String email;
+  @Size(min = 8, max = 255)
+  private String password;
+  private Set<String> roles;
 }

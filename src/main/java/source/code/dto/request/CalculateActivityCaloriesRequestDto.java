@@ -12,9 +12,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CalculateActivityCaloriesRequestDto {
-    @NotNull
-    private Integer userId;
-    @NotNull
-    @Positive
-    private int time = 1;
+  @NotNull
+  private Integer userId;
+  @NotNull
+  @Positive
+  private int time = 1;
 }

@@ -1,7 +1,7 @@
 package source.code.repository;
 
-import source.code.model.ForceType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import source.code.model.ForceType;
 
 public interface ForceTypeRepository extends JpaRepository<ForceType, Integer> {
 }

@@ -8,10 +8,15 @@ import source.code.dto.response.DailyActivitiesResponseDto;
 import source.code.model.DailyActivity;
 
 public interface DailyActivityService {
-    void updateDailyCarts();
-    void addActivityToDailyActivityItem(int userId, Integer activityId, DailyActivityItemCreateDto dto);
-    void removeActivityFromDailyActivity(int userId, int activityId);
-    void updateDailyActivityItem(int userId, int activityId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
-    DailyActivitiesResponseDto getActivitiesFromDailyActivityItem(int userId);
-    DailyActivity createNewDailyActivityForUser(int userId);
+  void updateDailyCarts();
+
+  void addActivityToDailyActivityItem(int userId, Integer activityId, DailyActivityItemCreateDto dto);
+
+  void removeActivityFromDailyActivity(int userId, int activityId);
+
+  void updateDailyActivityItem(int userId, int activityId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+
+  DailyActivitiesResponseDto getActivitiesFromDailyActivityItem(int userId);
+
+  DailyActivity createNewDailyActivityForUser(int userId);
 }

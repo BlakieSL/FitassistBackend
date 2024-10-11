@@ -18,25 +18,25 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutType {
-    private static final int NAME_MAX_LENGTH = 50;
-    private static final int DESCRIPTION_MAX_LENGTH = 255;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  private static final int NAME_MAX_LENGTH = 50;
+  private static final int DESCRIPTION_MAX_LENGTH = 255;
 
-    @NotBlank
-    @Size(max = NAME_MAX_LENGTH)
-    @Column(nullable = false, length = NAME_MAX_LENGTH)
-    private String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @NotBlank
-    @Size(max = DESCRIPTION_MAX_LENGTH)
-    @Column(nullable = false)
-    private String description;
+  @NotBlank
+  @Size(max = NAME_MAX_LENGTH)
+  @Column(nullable = false, length = NAME_MAX_LENGTH)
+  private String name;
 
-    @OneToMany(mappedBy = "workoutType", cascade = CascadeType.REMOVE)
-    private final Set<Workout> workouts = new HashSet<>();
+  @NotBlank
+  @Size(max = DESCRIPTION_MAX_LENGTH)
+  @Column(nullable = false)
+  private String description;
 
-    @OneToMany(mappedBy = "workoutType", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private final Set<WorkoutSet> workoutSets = new HashSet<>();
+  @OneToMany(mappedBy = "workoutType", cascade = CascadeType.REMOVE)
+  private final Set<Workout> workouts = new HashSet<>();
+  @OneToMany(mappedBy = "workoutType", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  private final Set<WorkoutSet> workoutSets = new HashSet<>();
 }

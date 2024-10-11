@@ -13,15 +13,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExerciseResponseDto {
-    private Integer id;
-    private String name;
-    private String description;
-    private String text;
-    private Double score;
-    private ExerciseCategoryShortDto expertiseLevel;
-    private ExerciseCategoryShortDto mechanicsType;
-    private ExerciseCategoryShortDto forceType;
-    private ExerciseCategoryShortDto exerciseEquipment;
-    private ExerciseCategoryShortDto exerciseType;
-    private List<ExerciseCategoryShortDto> categories;
+  private Integer id;
+  private String name;
+  private String description;
+  private String text;
+  private Double score;
+  private ExerciseCategoryShortDto expertiseLevel;
+  private ExerciseCategoryShortDto mechanicsType;
+  private ExerciseCategoryShortDto forceType;
+  private ExerciseCategoryShortDto exerciseEquipment;
+  private ExerciseCategoryShortDto exerciseType;
+  private List<ExerciseCategoryShortDto> categories;
 }

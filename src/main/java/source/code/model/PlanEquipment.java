@@ -17,14 +17,14 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlanEquipment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String name;
+  @NotBlank
+  @Column(nullable = false)
+  private String name;
 
-    @OneToMany(mappedBy = "planEquipment", cascade = CascadeType.REMOVE)
-    private final Set<Plan> plans = new HashSet<>();
+  @OneToMany(mappedBy = "planEquipment", cascade = CascadeType.REMOVE)
+  private final Set<Plan> plans = new HashSet<>();
 }
