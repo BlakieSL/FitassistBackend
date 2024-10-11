@@ -90,10 +90,7 @@ public class ActivityServiceImplTest {
     }
 
     private ActivityCategoryResponseDto createActivityCategoryResponseDto(int id, String name){
-        ActivityCategoryResponseDto activityCategoryResponseDto = new ActivityCategoryResponseDto();
-        activityCategoryResponseDto.setId(id);
-        activityCategoryResponseDto.setName(name);
-        return activityCategoryResponseDto;
+        return ActivityCategoryResponseDto.createWithIdName(id, name);
     }
 
     private Activity createActivity(int id, String name, double met) {
@@ -105,11 +102,7 @@ public class ActivityServiceImplTest {
     }
 
     private ActivityResponseDto createActivityResponseDto(int id, String categoryName, int categoryId) {
-        ActivityResponseDto activityResponseDto = new ActivityResponseDto();
-        activityResponseDto.setId(id);
-        activityResponseDto.setCategoryName(categoryName);
-        activityResponseDto.setCategoryId(categoryId);
-        return activityResponseDto;
+        return ActivityResponseDto.createWithIdCategoryNameCategoryId(id, categoryName, categoryId);
     }
 
     private User createUser(int id) {
