@@ -256,8 +256,7 @@ public class DailyActivityServiceTest {
 
         // Act & Assert
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () ->
-                dailyActivityService.removeActivityFromDailyActivity(user1.getId(), nonExistentActivityId)
-        );
+                dailyActivityService.removeActivityFromDailyActivity(user1.getId(), nonExistentActivityId));
 
         assertEquals("Activity with id: " + nonExistentActivityId + " not found", exception.getMessage());
         verify(dailyActivityRepository, times(1)).findByUserId(user1.getId());
@@ -275,7 +274,10 @@ public class DailyActivityServiceTest {
 
         JsonMergePatch patch = mock(JsonMergePatch.class);
         when(dailyActivityRepository.findByUserId(user1.getId())).thenReturn(Optional.of(dailyActivity1));
-        when(jsonPatchHelper.applyPatch(eq(patch), any(DailyActivityItemCreateDto.class), eq(DailyActivityItemCreateDto.class)))
+        when(jsonPatchHelper.applyPatch(
+                eq(patch),
+                any(DailyActivityItemCreateDto.class),
+                eq(DailyActivityItemCreateDto.class)))
                 .thenReturn(patchedDto);
 
         // Act
@@ -283,13 +285,17 @@ public class DailyActivityServiceTest {
 
         // Assert
         verify(dailyActivityRepository, times(1)).findByUserId(user1.getId());
-        verify(jsonPatchHelper, times(1)).applyPatch(eq(patch), any(DailyActivityItemCreateDto.class), eq(DailyActivityItemCreateDto.class));
+        verify(jsonPatchHelper, times(1)).applyPatch(
+                eq(patch),
+                any(DailyActivityItemCreateDto.class),
+                eq(DailyActivityItemCreateDto.class));
         verify(dailyActivityRepository, times(1)).save(dailyActivity1);
         assertEquals(newTime, dailyActivityItem1.getTime());
     }
 
     @Test
-    void updateDailyActivityItem_shouldThrowException_whenDailyActivityItemNotFound() throws JsonPatchException, JsonProcessingException {
+    void updateDailyActivityItem_shouldThrowException_whenDailyActivityItemNotFound()
+            throws JsonPatchException, JsonProcessingException {
         //Arrange
         clearDailyActivity(dailyActivity1);
         when(dailyActivityRepository.findByUserId(user1.getId())).thenReturn(Optional.of(dailyActivity1));
@@ -337,34 +343,25 @@ public class DailyActivityServiceTest {
     @Test
     void getActivitiesFromDailyActivityItem_shouldGetDailyActivitiesResponseDto_whenUserAndActivitiesFound() {
         // Arrange
-        ActivityCalculatedResponseDto responseDto = new ActivityCalculatedResponseDto(
-                activity1.getId(),
-                activity1.getName(),
-                activity1.getMet(),
-                activity1.getActivityCategory().getName(),
-                activity1.getActivityCategory().getId(),
-                300,
-                dailyActivityItem1.getTime());
+        ActivityCalculatedResponseDto activityCalculatedDto = ActivityCalculatedResponseDto
+                .createWithId(activity1.getId(), dailyActivityItem1.getTime());
+
 
         when(dailyActivityRepository.findByUserId(user1.getId())).thenReturn(Optional.of(dailyActivity1));
-        when(dailyActivityMapper.toActivityCalculatedResponseDto(dailyActivityItem1, user1.getWeight())).thenReturn(responseDto);
+        when(dailyActivityMapper.toActivityCalculatedResponseDto(dailyActivityItem1, user1.getWeight())).thenReturn(activityCalculatedDto);
 
         // Act
         DailyActivitiesResponseDto result = dailyActivityService.getActivitiesFromDailyActivityItem(user1.getId());
 
         // Assert
-        assertNotNull(result);
-        assertEquals(responseDto.getCaloriesBurned(), result.getTotalCaloriesBurned());
+        verify(dailyActivityRepository, times(1)).findByUserId(user1.getId());
+        verify(dailyActivityMapper, times(1)).toActivityCalculatedResponseDto(dailyActivityItem1, user1.getWeight());
         assertEquals(1, result.getActivities().size());
 
         ActivityCalculatedResponseDto resultActivity = result.getActivities().get(0);
-        assertEquals(responseDto.getId(), resultActivity.getId());
-        assertEquals(responseDto.getName(), resultActivity.getName());
-        assertEquals(responseDto.getMet(), resultActivity.getMet());
-
-        verify(dailyActivityRepository, times(1)).findByUserId(user1.getId());
-        verify(dailyActivityMapper, times(1)).toActivityCalculatedResponseDto(dailyActivityItem1, user1.getWeight());
-    }
+        assertEquals(activityCalculatedDto.getId(), resultActivity.getId());
+        assertEquals(activityCalculatedDto.getTime(), resultActivity.getTime());
+      }
 
     @Test
     void getActivitiesFromDailyActivityItem_shouldGetZeroTotalCaloriesBurnedAndEmptyActivities_whenNoActivitiesFound() {
@@ -377,11 +374,10 @@ public class DailyActivityServiceTest {
         DailyActivitiesResponseDto result = dailyActivityService.getActivitiesFromDailyActivityItem(user1.getId());
 
         // Assert
-        assertNotNull(result);
+        verify(dailyActivityRepository, times(1)).findByUserId(user1.getId());
+        verify(dailyActivityMapper, never()).toActivityCalculatedResponseDto(any(), anyDouble());
         assertEquals(0, result.getTotalCaloriesBurned());
         assertTrue(result.getActivities().isEmpty());
 
-        verify(dailyActivityRepository, times(1)).findByUserId(user1.getId());
-        verify(dailyActivityMapper, never()).toActivityCalculatedResponseDto(any(), anyDouble());
     }
 }

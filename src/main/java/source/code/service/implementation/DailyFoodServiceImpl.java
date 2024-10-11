@@ -134,12 +134,12 @@ public class DailyFoodServiceImpl implements DailyFoodService {
   }
 
   private DailyFood getDailyFoodByUser(int userId) {
-
     return dailyFoodRepository.findByUserId(userId)
             .orElseGet(() -> createNewDailyFoodForUser(userId));
   }
 
-  private DailyFood createNewDailyFoodForUser(int userId) {
+  @Transactional
+  public DailyFood createNewDailyFoodForUser(int userId) {
     User user = userRepository.findById(userId)
             .orElseThrow(() -> new NoSuchElementException(
                     "User with id: " + userId + " not found"));

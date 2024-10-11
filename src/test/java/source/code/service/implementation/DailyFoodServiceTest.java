@@ -1,5 +1,8 @@
 package source.code.service.implementation;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -7,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.request.DailyFoodItemCreateDto;
+import source.code.dto.response.DailyFoodsResponseDto;
+import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.helper.JsonPatchHelper;
 import source.code.helper.ValidationHelper;
 import source.code.mapper.DailyFoodMapper;
@@ -227,5 +232,165 @@ public class DailyFoodServiceTest {
     verify(validationHelper, times(1)).validate(createDto);
     verify(foodRepository, times(1)).findById(foodId);
     verify(dailyFoodRepository, never()).save(any());
+  }
+
+  @Test
+  void removeFoodFromDailyFoodItem_shouldRemove_whenDailyFoodItemFound() {
+    // Arrange
+    int userId = user1.getId();
+    int foodId = food1.getId();
+
+    when(dailyFoodRepository.findByUserId(userId)).thenReturn(Optional.of(dailyFood1));
+
+    // Act
+    dailyFoodService.removeFoodFromDailyFoodItem(userId, foodId);
+
+    // Assert
+    verify(dailyFoodRepository, times(1)).findByUserId(userId);
+    verify(dailyFoodRepository, times(1)).save(dailyFood1);
+    assertTrue(dailyFood1.getDailyFoodItems().isEmpty());
+  }
+
+  @Test
+  void removeFoodFromDailyFoodItem_shouldThrowException_whenDailyFoodItemNotFound() {
+    // Arrange
+    int nonExistingFoodId = 11;
+    int userId = user1.getId();
+
+    when(dailyFoodRepository.findByUserId(userId)).thenReturn(Optional.of(dailyFood1));
+
+    // Act & Assert
+    NoSuchElementException exception = assertThrows(NoSuchElementException.class, () ->
+            dailyFoodService.removeFoodFromDailyFoodItem(userId, nonExistingFoodId));
+
+    assertEquals("Food with id: " + nonExistingFoodId + " not found", exception.getMessage());
+    verify(dailyFoodRepository, times(1)).findByUserId(userId);
+    verify(dailyFoodRepository, never()).save(any());
+  }
+
+  @Test
+  void updateDailyFoodItem_shouldUpdate_whenPatched() throws JsonPatchException, JsonProcessingException {
+    // Arrange
+    int userId = user1.getId();
+    int newAmount = 30;
+    dailyFoodItem1.setAmount(20);
+
+    DailyFoodItemCreateDto patchedDto = new DailyFoodItemCreateDto();
+    patchedDto.setAmount(newAmount);
+
+    JsonMergePatch patch = mock(JsonMergePatch.class);lenient();
+    when(dailyFoodRepository.findByUserId(userId)).thenReturn(Optional.of(dailyFood1));
+    when(jsonPatchHelper.applyPatch(
+            eq(patch),
+            any(DailyFoodItemCreateDto.class),
+            eq(DailyFoodItemCreateDto.class)))
+            .thenReturn(patchedDto);
+
+    // Act
+    dailyFoodService.updateDailyFoodItem(userId, food1.getId(), patch);
+
+    // Assert
+    verify(dailyFoodRepository, times(1)).findByUserId(userId);
+    verify(jsonPatchHelper, times(1)).applyPatch(
+            eq(patch),
+            any(DailyFoodItemCreateDto.class),
+            eq(DailyFoodItemCreateDto.class));
+    verify(dailyFoodRepository, times(1)).save(dailyFood1);
+    assertEquals(newAmount, dailyFoodItem1.getAmount());
+  }
+
+  @Test
+  void updateDailyFoodItem_shouldThrowException_whenDailyFoodItemNotFound()
+          throws JsonPatchException, JsonProcessingException {
+    // Arrange
+    clearDailyFood(dailyFood1);
+    when(dailyFoodRepository.findByUserId(user1.getId())).thenReturn(Optional.of(dailyFood1));
+
+    // Act & Assert
+    NoSuchElementException exception = assertThrows(NoSuchElementException.class, () ->
+            dailyFoodService.updateDailyFoodItem(user1.getId(), food1.getId(), mock(JsonMergePatch.class)));
+
+    assertEquals("Food with id: " + food1.getId() + " not found in daily cart", exception.getMessage());
+    verify(jsonPatchHelper, never()).applyPatch(any(), any(), any());
+    verify(dailyFoodRepository, times(1)).findByUserId(user1.getId());
+  }
+
+  @Test
+  void createNewDailyFoodForUser_shouldCreate_whenUserFound() {
+    // Arrange
+    when(userRepository.findById(user1.getId())).thenReturn(Optional.of(user1));
+    when(dailyFoodRepository.save(any(DailyFood.class))).thenReturn(dailyFood1);
+
+    // Act
+    DailyFood createdDailyFood = dailyFoodService.createNewDailyFoodForUser(user1.getId());
+
+    // Assert
+    assertNotNull(createdDailyFood);
+    assertEquals(user1.getId(), createdDailyFood.getUser().getId());
+    verify(userRepository, times(1)).findById(user1.getId());
+    verify(dailyFoodRepository, times(1)).save(any(DailyFood.class));
+  }
+
+  @Test
+  void createNewDailyFoodForUser_shouldThrowException_whenUserNotFound() {
+    // Arrange
+    int nonExistingUserId = 99;
+    when(userRepository.findById(nonExistingUserId)).thenReturn(Optional.empty());
+
+    // Act & Assert
+    NoSuchElementException exception = assertThrows(NoSuchElementException.class, () ->
+            dailyFoodService.createNewDailyFoodForUser(nonExistingUserId));
+
+    assertEquals("User with id: " + nonExistingUserId + " not found", exception.getMessage());
+    verify(userRepository, times(1)).findById(nonExistingUserId);
+    verify(dailyFoodRepository, never()).save(any(DailyFood.class));
+  }
+
+  @Test
+  void getFoodsFromDailyFoodItem_shouldGetDailyFoodsResponseDto_whenUserAndActivitiesFound() {
+    // Arrange
+    FoodCalculatedMacrosResponseDto responseDto = FoodCalculatedMacrosResponseDto
+            .createWithIdAmount(food1.getId(), dailyFoodItem1.getAmount());
+
+    DailyFoodsResponseDto expectedResult = DailyFoodsResponseDto
+            .createWithFoods(List.of(responseDto));
+
+    when(dailyFoodRepository.findByUserId(user1.getId())).thenReturn(Optional.of(dailyFood1));
+    when(dailyFoodMapper.toFoodCalculatedMacrosResponseDto(dailyFoodItem1)).thenReturn(responseDto);
+    when(dailyFoodMapper.toDailyFoodsResponseDto(List.of(responseDto))).thenReturn(expectedResult);
+
+    // Act
+    DailyFoodsResponseDto result = dailyFoodService.getFoodsFromDailyFoodItem(user1.getId());
+
+    // Assert
+    verify(dailyFoodRepository, times(1)).findByUserId(user1.getId());
+    verify(dailyFoodMapper, times(1)).toFoodCalculatedMacrosResponseDto(dailyFoodItem1);
+    assertEquals(1, result.getFoods().size());
+
+    FoodCalculatedMacrosResponseDto resultFood = result.getFoods().get(0);
+    assertEquals(responseDto.getId(), resultFood.getId());
+    assertEquals(responseDto.getAmount(), resultFood.getAmount());
+  }
+
+  @Test
+  void getFoodsFromDailyFoodItem_shouldGetZeroTotalsAndEmptyFoods_whenNoFoodsFound() {
+    // Arrange
+    dailyFood1.getDailyFoodItems().clear();
+    DailyFoodsResponseDto emptyResponse = DailyFoodsResponseDto
+            .createWithFoods(Collections.emptyList());
+
+    when(dailyFoodRepository.findByUserId(user1.getId())).thenReturn(Optional.of(dailyFood1));
+    when(dailyFoodMapper.toDailyFoodsResponseDto(Collections.emptyList())).thenReturn(emptyResponse);
+    // Act
+    DailyFoodsResponseDto result = dailyFoodService.getFoodsFromDailyFoodItem(user1.getId());
+
+    // Assert
+    verify(dailyFoodRepository, times(1)).findByUserId(user1.getId());
+    verify(dailyFoodMapper, never()).toFoodCalculatedMacrosResponseDto(any());
+    assertEquals(0, result.getTotalCalories());
+    assertEquals(0, result.getTotalFat());
+    assertEquals(0, result.getTotalProtein());
+    assertEquals(0, result.getTotalCarbohydrates());
+
   }
 }
