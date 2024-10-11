@@ -19,4 +19,12 @@ public class FoodCalculatedMacrosResponseDto {
   private int categoryId;
   private String categoryName;
   private int amount;
+
+  public static FoodCalculatedMacrosResponseDto createWithIdAmount(int id, int amount) {
+    FoodCalculatedMacrosResponseDto responseDto = new FoodCalculatedMacrosResponseDto();
+    responseDto.setId(id);
+    responseDto.setAmount(amount);
+
+    return responseDto;
+  }
 }

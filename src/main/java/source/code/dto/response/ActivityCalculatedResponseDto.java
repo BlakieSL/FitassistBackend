@@ -17,4 +17,12 @@ public class ActivityCalculatedResponseDto {
   private int categoryId;
   private int caloriesBurned;
   private int time;
+
+  public static ActivityCalculatedResponseDto createWithId(int id, int time) {
+    ActivityCalculatedResponseDto activityCalculatedResponseDto = new ActivityCalculatedResponseDto();
+    activityCalculatedResponseDto.setId(id);
+    activityCalculatedResponseDto.setTime(time);
+
+    return activityCalculatedResponseDto;
+  }
 }

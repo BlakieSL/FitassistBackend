@@ -17,4 +17,11 @@ public class DailyFoodsResponseDto {
   private double totalCarbohydrates;
   private double totalProtein;
   private double totalFat;
+
+  public static DailyFoodsResponseDto createWithFoods(List<FoodCalculatedMacrosResponseDto> foods){
+    DailyFoodsResponseDto responseDto = new DailyFoodsResponseDto();
+    responseDto.setFoods(foods);
+
+    return  responseDto;
+  }
 }
