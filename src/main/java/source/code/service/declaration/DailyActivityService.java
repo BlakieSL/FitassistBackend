@@ -8,7 +8,7 @@ import source.code.dto.response.DailyActivitiesResponseDto;
 import source.code.model.DailyActivity;
 
 public interface DailyActivityService {
-  void updateDailyCarts();
+  void resetDailyCarts();
 
   void addActivityToDailyActivityItem(int userId, Integer activityId, DailyActivityItemCreateDto dto);
 
