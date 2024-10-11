@@ -60,4 +60,10 @@ public class Food {
 
   @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
   private final Set<UserFood> userFoods = new HashSet<>();
+
+  public static Food createWithId(int id) {
+    Food food = new Food();
+    food.setId(id);
+    return food;
+  }
 }

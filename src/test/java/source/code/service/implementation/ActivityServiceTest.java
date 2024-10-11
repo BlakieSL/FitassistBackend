@@ -13,7 +13,6 @@ import source.code.dto.response.ActivityAverageMetResponseDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.ActivityCategoryResponseDto;
 import source.code.dto.response.ActivityResponseDto;
-import source.code.helper.CalculationsHelper;
 import source.code.helper.ValidationHelper;
 import source.code.mapper.ActivityMapper;
 import source.code.model.*;
@@ -22,14 +21,13 @@ import source.code.repository.ActivityRepository;
 import source.code.repository.UserActivityRepository;
 import source.code.repository.UserRepository;
 
-import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ActivityServiceImplTest {
+public class ActivityServiceTest {
     @Mock
     private ValidationHelper validationHelper;
     @Mock

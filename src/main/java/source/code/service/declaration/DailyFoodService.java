@@ -7,7 +7,7 @@ import source.code.dto.request.DailyFoodItemCreateDto;
 import source.code.dto.response.DailyFoodsResponseDto;
 
 public interface DailyFoodService {
-  void updateDailyCarts();
+  void resetDailyCarts();
 
   void addFoodToDailyFoodItem(int userId, int foodId, DailyFoodItemCreateDto dto);
 

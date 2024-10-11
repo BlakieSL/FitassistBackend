@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class DailyActivityServiceImplTest {
+public class DailyActivityServiceTest {
     @Mock
     private ValidationHelper validationHelper;
     @Mock
@@ -59,7 +59,8 @@ public class DailyActivityServiceImplTest {
     private DailyActivityItem dailyActivityItem1;
     private DailyActivityItem dailyActivityItem2;
     private DailyActivityItemCreateDto createDto;
-    @BeforeEach
+
+      @BeforeEach
     void setup() {
         user1 = createUser(1);
         user2 = createUser(2);
@@ -101,7 +102,10 @@ public class DailyActivityServiceImplTest {
         return DailyActivity.createWithIdUser(id, user);
     }
 
-    private DailyActivityItem createDailyActivityItem(int id, Activity activity, DailyActivity dailyActivity) {
+    private DailyActivityItem createDailyActivityItem(int id,
+                                                      Activity activity,
+                                                      DailyActivity dailyActivity) {
+
         return DailyActivityItem.createWithIdActivityDailyActivity(id, activity, dailyActivity);
     }
 
@@ -113,7 +117,7 @@ public class DailyActivityServiceImplTest {
         dailyActivity.getDailyActivityItems().clear();
     }
     @Test
-    void updateDailyCarts_shouldUpdateActivities_whenActivitiesExist() {
+    void resetDailyCarts_shouldUpdateActivities_whenActivitiesExist() {
         //Arrange
         LocalDate today = LocalDate.now();
         dailyActivity1.setDate(today);
@@ -125,7 +129,7 @@ public class DailyActivityServiceImplTest {
         when(dailyActivityRepository.findAll()).thenReturn(List.of(dailyActivity1, dailyActivity2));
 
         // Act
-        dailyActivityService.updateDailyCarts();
+        dailyActivityService.resetDailyCarts();
 
         // Assert
         verify(dailyActivityRepository, times(1)).findAll();
@@ -138,12 +142,12 @@ public class DailyActivityServiceImplTest {
     }
 
     @Test
-    void updateDailyCarts_shouldDoNothing_whenNoActivitiesExist() {
+    void resetDailyCarts_shouldDoNothing_whenNoActivitiesExist() {
         // Arrange
         when(dailyActivityRepository.findAll()).thenReturn(Collections.emptyList());
 
         // Act
-        dailyActivityService.updateDailyCarts();
+        dailyActivityService.resetDailyCarts();
 
         // Assert
         verify(dailyActivityRepository, times(1)).findAll();
@@ -151,18 +155,19 @@ public class DailyActivityServiceImplTest {
     }
 
     @Test
-    void addActivityToDailyActivityItem_shouldAddActivity_whenActivityDoesNotExistInDailyCart() {
+    void addActivityToDailyActivityItem_shouldAddActivity_whenActivityDoesNotExistInDailyCart(){
         // Arrange
-        when(dailyActivityRepository.findByUserId(user1.getId())).thenReturn(Optional.of(dailyActivity1));
-        when(activityRepository.findById(activity1.getId())).thenReturn(Optional.of(activity1));
+        int userId = user1.getId();
+        int activityId = activity1.getId();
+        when(dailyActivityRepository.findByUserId(userId)).thenReturn(Optional.of(dailyActivity1));
+        when(activityRepository.findById(activityId)).thenReturn(Optional.of(activity1));
 
         // Act
-        dailyActivityService.addActivityToDailyActivityItem(user1.getId(), activity1.getId(), createDto);
+        dailyActivityService.addActivityToDailyActivityItem(userId, activityId, createDto);
 
         // Assert
         verify(validationHelper, times(1)).validate(createDto);
         verify(dailyActivityRepository, times(1)).save(dailyActivity1);
-
         assertEquals(1, dailyActivity1.getDailyActivityItems().size());
 
         DailyActivityItem addedActivity = dailyActivity1.getDailyActivityItems().get(0);
@@ -174,14 +179,16 @@ public class DailyActivityServiceImplTest {
     @Test
     void addActivityToDailyActivityItem_shouldUpdateTime_whenActivityExistsInDailyCart() {
         // Arrange
+        int userId = user1.getId();
+        int activityId = activity1.getId();
         int existingTime = 15;
         dailyActivityItem1.setTime(existingTime);
 
-        when(dailyActivityRepository.findByUserId(user1.getId())).thenReturn(Optional.of(dailyActivity1));
-        when(activityRepository.findById(activity1.getId())).thenReturn(Optional.of(activity1));
+        when(dailyActivityRepository.findByUserId(userId)).thenReturn(Optional.of(dailyActivity1));
+        when(activityRepository.findById(activityId)).thenReturn(Optional.of(activity1));
 
         // Act
-        dailyActivityService.addActivityToDailyActivityItem(user1.getId(), activity1.getId(), createDto);
+        dailyActivityService.addActivityToDailyActivityItem(userId, activityId, createDto);
 
         // Assert
         verify(validationHelper, times(1)).validate(createDto);
@@ -211,17 +218,19 @@ public class DailyActivityServiceImplTest {
     @Test
     void addActivityToDailyActivityItem_shouldThrowException_whenActivityNotFound() {
         // Arrange
+        int userId = user1.getId();
+        int activityId = activity1.getId();
         clearDailyActivity(dailyActivity1);
-        when(dailyActivityRepository.findByUserId(user1.getId())).thenReturn(Optional.of(dailyActivity1));
-        when(activityRepository.findById(activity1.getId())).thenReturn(Optional.empty());
+        when(dailyActivityRepository.findByUserId(userId)).thenReturn(Optional.of(dailyActivity1));
+        when(activityRepository.findById(activityId)).thenReturn(Optional.empty());
 
         // Act & Assert
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () ->
-                dailyActivityService.addActivityToDailyActivityItem(user1.getId(), activity1.getId(), createDto));
+                dailyActivityService.addActivityToDailyActivityItem(userId, activityId, createDto));
 
-        assertEquals("Activity with id: " + activity1.getId() + " not found", exception.getMessage());
+        assertEquals("Activity with id: " + activityId + " not found", exception.getMessage());
         verify(validationHelper, times(1)).validate(createDto);
-        verify(activityRepository, times(1)).findById(activity1.getId());
+        verify(activityRepository, times(1)).findById(activityId);
         verify(dailyActivityRepository, never()).save(any());
     }
 

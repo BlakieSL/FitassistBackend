@@ -57,15 +57,18 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 
   @Scheduled(cron = "0 0 0 * * ?", zone = "GMT+2")
   @Transactional
-  public void updateDailyCarts() {
+  public void resetDailyCarts() {
     List<DailyActivity> dailyActivities = dailyActivityRepository.findAll();
-    LocalDate today = LocalDate.now();
 
     for (DailyActivity dailyActivity : dailyActivities) {
-      dailyActivity.setDate(today);
-      dailyActivity.getDailyActivityItems().clear();
+      resetDailyActivity(dailyActivity);
       dailyActivityRepository.save(dailyActivity);
     }
+  }
+
+  private void resetDailyActivity(DailyActivity dailyActivity) {
+    dailyActivity.setDate(LocalDate.now());
+    dailyActivity.getDailyActivityItems().clear();
   }
 
   @Transactional
@@ -85,13 +88,10 @@ public class DailyActivityServiceImpl implements DailyActivityService {
                     .findFirst();
 
     if (existingDailyActivityItem.isPresent()) {
-      updateDailyActivityTime(existingDailyActivityItem.get(), dto.getTime());
+      updateDailyActivityItemTime(existingDailyActivityItem.get(), dto.getTime());
     } else {
-      DailyActivityItem dailyActivityItem =
-              DailyActivityItem.createWithActivityDailyActivityTime(
-                      activity,
-                      dailyActivity,
-                      dto.getTime());
+      DailyActivityItem dailyActivityItem = DailyActivityItem
+              .createWithActivityDailyActivityTime(activity, dailyActivity, dto.getTime());
 
       saveDailyActivityItem(dailyActivity, dailyActivityItem);
     }
@@ -104,7 +104,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
             .orElseGet(() -> createNewDailyActivityForUser(userId));
   }
 
-  private void updateDailyActivityTime(DailyActivityItem dailyActivityItem, int time) {
+  private void updateDailyActivityItemTime(DailyActivityItem dailyActivityItem, int time) {
     dailyActivityItem.setTime(time);
   }
 
