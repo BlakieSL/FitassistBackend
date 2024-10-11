@@ -174,6 +174,4 @@ public class ExerciseServiceTest {
   void getExerciseTips_shouldReturnEmptyList_whenNoTipsFound() {
 
   }
-
-
 }
