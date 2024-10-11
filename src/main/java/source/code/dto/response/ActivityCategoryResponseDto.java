@@ -12,11 +12,17 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ActivityCategoryResponseDto {
   private Integer id;
-  @NotBlank
   private String name;
-  @NotBlank
   private String iconUrl;
-
-  @NotBlank
   private String gradient;
+
+  public static ActivityCategoryResponseDto createWithIdName(
+          int id, String name) {
+
+    ActivityCategoryResponseDto activityCategoryResponseDto = new ActivityCategoryResponseDto();
+    activityCategoryResponseDto.setId(id);
+    activityCategoryResponseDto.setName(name);
+
+    return activityCategoryResponseDto;
+  }
 }
