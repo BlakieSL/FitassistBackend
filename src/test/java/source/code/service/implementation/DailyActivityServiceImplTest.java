@@ -86,9 +86,7 @@ public class DailyActivityServiceImplTest {
     }
 
     private User createUser(int id) {
-        User user = new User();
-        user.setId(id);
-        return user;
+       return User.createWithId(id);
     }
 
     private ActivityCategory createActivityCategory(int id, String name) {
@@ -104,11 +102,7 @@ public class DailyActivityServiceImplTest {
     }
 
     private DailyActivityItem createDailyActivityItem(int id, Activity activity, DailyActivity dailyActivity) {
-        DailyActivityItem dailyActivityItem = new DailyActivityItem();
-        dailyActivityItem.setId(id);
-        dailyActivityItem.setActivity(activity);
-        dailyActivityItem.setDailyActivity(dailyActivity);
-        return dailyActivityItem;
+        return DailyActivityItem.createWithIdActivityDailyActivity(id, activity, dailyActivity);
     }
 
     private DailyActivityItemCreateDto createDailyActivityItemCreateDto(int time) {

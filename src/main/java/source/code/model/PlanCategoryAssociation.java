@@ -13,15 +13,15 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlanCategoryAssociation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "plan_id", nullable = false)
-    private Plan plan;
+  @ManyToOne
+  @JoinColumn(name = "plan_id", nullable = false)
+  private Plan plan;
 
-    @ManyToOne
-    @JoinColumn(name = "plan_category_id", nullable = false)
-    private PlanCategory planCategory;
+  @ManyToOne
+  @JoinColumn(name = "plan_category_id", nullable = false)
+  private PlanCategory planCategory;
 }

@@ -11,21 +11,21 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FoodCreateDto {
-    @Size(max = 50)
-    @NotBlank
-    private String name;
-    @NotNull
-    @Positive
-    private double calories;
-    @NotNull
-    @PositiveOrZero
-    private double protein;
-    @NotNull
-    @PositiveOrZero
-    private double fat;
-    @NotNull
-    @PositiveOrZero
-    private double carbohydrates;
-    @NotBlank
-    private int categoryId;
+  @Size(max = 50)
+  @NotBlank
+  private String name;
+  @NotNull
+  @Positive
+  private double calories;
+  @NotNull
+  @PositiveOrZero
+  private double protein;
+  @NotNull
+  @PositiveOrZero
+  private double fat;
+  @NotNull
+  @PositiveOrZero
+  private double carbohydrates;
+  @NotBlank
+  private int categoryId;
 }

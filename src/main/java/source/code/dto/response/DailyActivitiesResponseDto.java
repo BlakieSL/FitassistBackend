@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.dto.response.ActivityCalculatedResponseDto;
 
 import java.util.List;
 
@@ -13,6 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DailyActivitiesResponseDto {
-    private int totalCaloriesBurned;
-    List<ActivityCalculatedResponseDto> activities;
+  List<ActivityCalculatedResponseDto> activities;
+  private int totalCaloriesBurned;
 }

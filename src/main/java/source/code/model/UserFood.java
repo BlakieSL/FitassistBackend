@@ -14,19 +14,30 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserFood {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "food_id", nullable = false)
-    private Food food;
+  @ManyToOne
+  @JoinColumn(name = "food_id", nullable = false)
+  private Food food;
 
-    @NotNull
-    @Column(nullable = false)
-    private short type;
+  @NotNull
+  @Column(nullable = false)
+  private short type;
+
+  public static UserFood createWithUserFoodType(
+          User user, Food food, short type) {
+
+    UserFood userFood = new UserFood();
+    userFood.setUser(user);
+    userFood.setFood(food);
+    userFood.setType(type);
+
+    return userFood;
+  }
 }

@@ -17,15 +17,15 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExerciseType {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String name;
+  @NotBlank
+  @Column(nullable = false)
+  private String name;
 
-    @OneToMany(mappedBy = "exerciseType", cascade = CascadeType.REMOVE)
-    private final Set<Exercise> exercises = new HashSet<>();
+  @OneToMany(mappedBy = "exerciseType", cascade = CascadeType.REMOVE)
+  private final Set<Exercise> exercises = new HashSet<>();
 }
 //strength, hypertrophy, cardio, stretching, flexibility

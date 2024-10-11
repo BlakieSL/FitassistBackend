@@ -1,10 +1,10 @@
 package source.code.repository;
 
-import source.code.model.ExerciseTip;
 import org.springframework.data.jpa.repository.JpaRepository;
+import source.code.model.ExerciseTip;
 
 import java.util.List;
 
 public interface ExerciseTipRepository extends JpaRepository<ExerciseTip, Integer> {
-    List<ExerciseTip> getAllByExerciseId(int exerciseId);
+  List<ExerciseTip> getAllByExerciseId(int exerciseId);
 }

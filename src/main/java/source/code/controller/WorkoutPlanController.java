@@ -8,21 +8,21 @@ import source.code.service.declaration.WorkoutPlanService;
 @RestController
 @RequestMapping("/api/workout-plans")
 public class WorkoutPlanController {
-    private final WorkoutPlanService workoutPlanService;
+  private final WorkoutPlanService workoutPlanService;
 
-    public WorkoutPlanController(WorkoutPlanService workoutPlanService) {
-        this.workoutPlanService = workoutPlanService;
-    }
+  public WorkoutPlanController(WorkoutPlanService workoutPlanService) {
+    this.workoutPlanService = workoutPlanService;
+  }
 
-    @PostMapping("/{planId}/add/{workoutId}")
-    public ResponseEntity<Void> addWorkoutToPlan(@PathVariable int workoutId, @PathVariable int planId) {
-        workoutPlanService.saveWorkoutToPlan(workoutId, planId);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+  @PostMapping("/{planId}/add/{workoutId}")
+  public ResponseEntity<Void> addWorkoutToPlan(@PathVariable int workoutId, @PathVariable int planId) {
+    workoutPlanService.saveWorkoutToPlan(workoutId, planId);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
 
-    @DeleteMapping("/{planId}/remove/{workoutId}")
-    public ResponseEntity<Void> deleteWorkoutFromPlan(@PathVariable int workoutId, @PathVariable int planId) {
-        workoutPlanService.deleteWorkoutFromPlan(workoutId, planId);
-        return ResponseEntity.ok().build();
-    }
+  @DeleteMapping("/{planId}/remove/{workoutId}")
+  public ResponseEntity<Void> deleteWorkoutFromPlan(@PathVariable int workoutId, @PathVariable int planId) {
+    workoutPlanService.deleteWorkoutFromPlan(workoutId, planId);
+    return ResponseEntity.ok().build();
+  }
 }

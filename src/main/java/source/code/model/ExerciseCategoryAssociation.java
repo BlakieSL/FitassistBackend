@@ -14,19 +14,28 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExerciseCategoryAssociation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "exercise_id", nullable = false)
-    private Exercise exercise;
+  @ManyToOne
+  @JoinColumn(name = "exercise_id", nullable = false)
+  private Exercise exercise;
 
-    @ManyToOne
-    @JoinColumn(name = "exercise_category_id", nullable = false)
-    private ExerciseCategory exerciseCategory;
+  @ManyToOne
+  @JoinColumn(name = "exercise_category_id", nullable = false)
+  private ExerciseCategory exerciseCategory;
 
-    @NotNull
-    @Column(nullable = false)
-    private int priority;
+  @NotNull
+  @Column(nullable = false)
+  private int priority;
+
+  public static ExerciseCategoryAssociation createWithExerciseCategory(
+          ExerciseCategory exerciseCategory) {
+
+    ExerciseCategoryAssociation exerciseCategoryAssociation = new ExerciseCategoryAssociation();
+    exerciseCategoryAssociation.setExerciseCategory(exerciseCategory);
+
+    return exerciseCategoryAssociation;
+  }
 }

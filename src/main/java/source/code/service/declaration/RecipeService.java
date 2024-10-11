@@ -7,10 +7,15 @@ import source.code.dto.response.RecipeResponseDto;
 import java.util.List;
 
 public interface RecipeService {
-    RecipeResponseDto createRecipe(RecipeCreateDto dto);
-    RecipeResponseDto getRecipe(int id);
-    List<RecipeResponseDto> getAllRecipes();
-    List<RecipeResponseDto> getRecipesByUser(int userId);
-    List<RecipeCategoryResponseDto> getAllCategories();
-    List<RecipeResponseDto> getRecipesByCategory(int categoryId);
+  RecipeResponseDto createRecipe(RecipeCreateDto dto);
+
+  RecipeResponseDto getRecipe(int id);
+
+  List<RecipeResponseDto> getAllRecipes();
+
+  List<RecipeResponseDto> getRecipesByUser(int userId);
+
+  List<RecipeCategoryResponseDto> getAllCategories();
+
+  List<RecipeResponseDto> getRecipesByCategory(int categoryId);
 }

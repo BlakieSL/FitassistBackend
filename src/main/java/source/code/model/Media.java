@@ -14,19 +14,19 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Media {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @NotNull
-    @Lob
-    @Column(nullable = false, columnDefinition = "mediumblob")
-    private byte[] image;
+  @NotNull
+  @Lob
+  @Column(nullable = false, columnDefinition = "mediumblob")
+  private byte[] image;
 
-    @NotNull
-    private short parentType;
+  @NotNull
+  private short parentType;
 
-    @NotNull
-    @Column(name = "parent_id", nullable = false)
-    private Integer parentId;
+  @NotNull
+  @Column(name = "parent_id", nullable = false)
+  private Integer parentId;
 }

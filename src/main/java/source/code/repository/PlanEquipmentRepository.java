@@ -1,7 +1,7 @@
 package source.code.repository;
 
-import source.code.model.PlanEquipment;
 import org.springframework.data.jpa.repository.JpaRepository;
+import source.code.model.PlanEquipment;
 
 public interface PlanEquipmentRepository extends JpaRepository<PlanEquipment, Integer> {
 }

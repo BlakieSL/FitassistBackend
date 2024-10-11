@@ -15,20 +15,20 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExerciseInstruction {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @NotNull
-    @Column(nullable = false)
-    private short number;
+  @NotNull
+  @Column(nullable = false)
+  private short number;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String text;
+  @NotBlank
+  @Column(nullable = false)
+  private String text;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "exercise_id", nullable = false)
-    private Exercise exercise;
+  @NotNull
+  @ManyToOne
+  @JoinColumn(name = "exercise_id", nullable = false)
+  private Exercise exercise;
 }

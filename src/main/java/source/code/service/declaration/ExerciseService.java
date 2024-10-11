@@ -10,19 +10,32 @@ import source.code.dto.response.ExerciseTipResponseDto;
 import java.util.List;
 
 public interface ExerciseService {
-    ExerciseResponseDto createExercise(ExerciseCreateDto dto);
-    ExerciseResponseDto getExercise(int id);
-    List<ExerciseResponseDto> getAllExercises();
-    List<ExerciseResponseDto> getExercisesByUser(int userId);
-    List<ExerciseResponseDto> searchExercises(SearchRequestDto dto);
-    List<ExerciseCategoryResponseDto> getAllCategories();
-    List<ExerciseResponseDto> getExercisesByCategory(int categoryId);
-    List<ExerciseResponseDto> getExercisesByExpertiseLevel(int expertiseLevelId);
-    List<ExerciseResponseDto> getExercisesByForceType(int forceTypeId);
-    List<ExerciseResponseDto> getExercisesByMechanicsType(int mechanicsTypeId);
-    List<ExerciseResponseDto> getExercisesByEquipment(int exerciseEquipmentId);
-    List<ExerciseResponseDto> getExercisesByType(int exerciseTypeId);
-    List<ExerciseInstructionResponseDto> getExerciseInstructions(int exerciseId);
-    List<ExerciseTipResponseDto> getExerciseTips(int exerciseId);
+  ExerciseResponseDto createExercise(ExerciseCreateDto dto);
+
+  ExerciseResponseDto getExercise(int id);
+
+  List<ExerciseResponseDto> getAllExercises();
+
+  List<ExerciseResponseDto> getExercisesByUser(int userId);
+
+  List<ExerciseResponseDto> searchExercises(SearchRequestDto dto);
+
+  List<ExerciseCategoryResponseDto> getAllCategories();
+
+  List<ExerciseResponseDto> getExercisesByCategory(int categoryId);
+
+  List<ExerciseResponseDto> getExercisesByExpertiseLevel(int expertiseLevelId);
+
+  List<ExerciseResponseDto> getExercisesByForceType(int forceTypeId);
+
+  List<ExerciseResponseDto> getExercisesByMechanicsType(int mechanicsTypeId);
+
+  List<ExerciseResponseDto> getExercisesByEquipment(int exerciseEquipmentId);
+
+  List<ExerciseResponseDto> getExercisesByType(int exerciseTypeId);
+
+  List<ExerciseInstructionResponseDto> getExerciseInstructions(int exerciseId);
+
+  List<ExerciseTipResponseDto> getExerciseTips(int exerciseId);
 }
 

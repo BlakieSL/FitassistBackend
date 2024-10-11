@@ -1,10 +1,10 @@
 package source.code.repository;
 
-import source.code.model.WorkoutSet;
 import org.springframework.data.jpa.repository.JpaRepository;
+import source.code.model.WorkoutSet;
 
 import java.util.List;
 
 public interface WorkoutSetRepository extends JpaRepository<WorkoutSet, Integer> {
-    List<WorkoutSet> findByWorkoutTypeId(int  workoutTypeId);
+  List<WorkoutSet> findByWorkoutTypeId(int workoutTypeId);
 }

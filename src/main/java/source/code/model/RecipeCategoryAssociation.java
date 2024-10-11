@@ -13,15 +13,22 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecipeCategoryAssociation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "recipe_id", nullable = false)
-    private Recipe recipe;
+  @ManyToOne
+  @JoinColumn(name = "recipe_id", nullable = false)
+  private Recipe recipe;
 
-    @ManyToOne
-    @JoinColumn(name = "recipe_category_id", nullable = false)
-    private RecipeCategory recipeCategory;
+  @ManyToOne
+  @JoinColumn(name = "recipe_category_id", nullable = false)
+  private RecipeCategory recipeCategory;
+
+  public static RecipeCategoryAssociation createWithRecipeCategory(RecipeCategory recipeCategory) {
+    RecipeCategoryAssociation recipeCategoryAssociation = new RecipeCategoryAssociation();
+    recipeCategoryAssociation.setRecipeCategory(recipeCategory);
+
+    return recipeCategoryAssociation;
+  }
 }

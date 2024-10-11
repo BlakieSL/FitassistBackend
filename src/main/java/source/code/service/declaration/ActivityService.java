@@ -12,21 +12,21 @@ import java.util.List;
 
 
 public interface ActivityService {
-    ActivityResponseDto createActivity(ActivityCreateDto dto);
+  ActivityResponseDto createActivity(ActivityCreateDto dto);
 
-    ActivityResponseDto getActivity(int id);
+  ActivityResponseDto getActivity(int id);
 
-    List<ActivityResponseDto> getAllActivities();
+  List<ActivityResponseDto> getAllActivities();
 
-    List<ActivityCategoryResponseDto> getAllCategories();
+  List<ActivityCategoryResponseDto> getAllCategories();
 
-    List<ActivityResponseDto> getActivitiesByCategory(int categoryId);
+  List<ActivityResponseDto> getActivitiesByCategory(int categoryId);
 
-    ActivityCalculatedResponseDto calculateCaloriesBurned(int id, CalculateActivityCaloriesRequestDto request);
+  ActivityCalculatedResponseDto calculateCaloriesBurned(int id, CalculateActivityCaloriesRequestDto request);
 
-    List<ActivityResponseDto> searchActivities(SearchRequestDto request);
+  List<ActivityResponseDto> searchActivities(SearchRequestDto request);
 
-    List<ActivityResponseDto> getActivitiesByUser(int userId);
+  List<ActivityResponseDto> getActivitiesByUser(int userId);
 
-    ActivityAverageMetResponseDto getAverageMet();
+  ActivityAverageMetResponseDto getAverageMet();
 }

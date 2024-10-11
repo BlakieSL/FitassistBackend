@@ -1,7 +1,7 @@
 package source.code.repository;
 
-import source.code.model.ExpertiseLevel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import source.code.model.ExpertiseLevel;
 
 public interface ExpertiseLevelRepository extends JpaRepository<ExpertiseLevel, Integer> {
 }

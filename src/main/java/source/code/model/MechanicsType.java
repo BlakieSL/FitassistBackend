@@ -1,4 +1,5 @@
 package source.code.model;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -16,14 +17,12 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MechanicsType {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @NotBlank
-    @Column(nullable = false)
-    private String name;
-
-    @OneToMany(mappedBy = "mechanicsType", cascade = CascadeType.REMOVE)
-    private final Set<Exercise> exercises = new HashSet<>();
+  @OneToMany(mappedBy = "mechanicsType", cascade = CascadeType.REMOVE)
+  private final Set<Exercise> exercises = new HashSet<>();
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
+  @NotBlank
+  @Column(nullable = false)
+  private String name;
 }

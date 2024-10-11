@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExerciseInstructionResponseDto {
-    private Integer id;
-    private short number;
-    private String text;
+  private Integer id;
+  private short number;
+  private String text;
 }

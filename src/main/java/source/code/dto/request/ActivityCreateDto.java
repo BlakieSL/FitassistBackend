@@ -13,11 +13,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActivityCreateDto {
-    @NotBlank
-    private String name;
-    @NotNull
-    @Positive
-    private double met;
-    @NotNull
-    private int categoryId;
+  @NotBlank
+  private String name;
+  @NotNull
+  @Positive
+  private double met;
+  @NotNull
+  private int categoryId;
 }

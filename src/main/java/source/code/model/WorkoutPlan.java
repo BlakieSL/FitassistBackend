@@ -13,15 +13,25 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WorkoutPlan {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "workout_id", nullable = false)
-    private Workout workout;
+  @ManyToOne
+  @JoinColumn(name = "workout_id", nullable = false)
+  private Workout workout;
 
-    @ManyToOne
-    @JoinColumn(name = "plan_id", nullable = false)
-    private Plan plan;
+  @ManyToOne
+  @JoinColumn(name = "plan_id", nullable = false)
+  private Plan plan;
+
+  public static WorkoutPlan createWithWorkoutPlan(
+          Workout workout, Plan plan) {
+
+    WorkoutPlan workoutPlan = new WorkoutPlan();
+    workoutPlan.setWorkout(workout);
+    workoutPlan.setPlan(plan);
+
+    return workoutPlan;
+  }
 }

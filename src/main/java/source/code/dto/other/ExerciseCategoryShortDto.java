@@ -10,12 +10,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExerciseCategoryShortDto {
-    private Integer id;
-    private String name;
-    private int priority;
+  private Integer id;
+  private String name;
+  private int priority;
 
-    public ExerciseCategoryShortDto(Integer id, String name){
-        this.id=id;
-        this.name=name;
-    }
+  public ExerciseCategoryShortDto(Integer id, String name) {
+    this.id = id;
+    this.name = name;
+  }
 }
