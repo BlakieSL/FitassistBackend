@@ -51,6 +51,7 @@ public class ExerciseServiceImpl implements ExerciseService {
   public ExerciseResponseDto createExercise(ExerciseCreateDto dto) {
     validationHelper.validate(dto);
     Exercise exercise = exerciseRepository.save(exerciseMapper.toEntity(dto));
+
     return exerciseMapper.toDto(exercise);
   }
 
@@ -58,11 +59,13 @@ public class ExerciseServiceImpl implements ExerciseService {
     Exercise exercise = exerciseRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException(
                     "Exercise with id: " + id + " not found"));
+
     return exerciseMapper.toDto(exercise);
   }
 
   public List<ExerciseResponseDto> getAllExercises() {
     List<Exercise> exercises = exerciseRepository.findAll();
+
     return exercises.stream()
             .map(exerciseMapper::toDto)
             .collect(Collectors.toList());
@@ -71,10 +74,12 @@ public class ExerciseServiceImpl implements ExerciseService {
   public List<ExerciseResponseDto> getExercisesByUser(int userId) {
     List<UserExercise> userExercises = userExerciseRepository
             .findByUserId(userId);
+
     List<Exercise> exercises = userExercises
             .stream()
             .map(UserExercise::getExercise)
             .collect(Collectors.toList());
+
     return exercises
             .stream()
             .map(exerciseMapper::toDto)
