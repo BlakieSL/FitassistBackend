@@ -50,7 +50,10 @@ public class FoodController {
   }
 
   @PostMapping("/{id}/calculate-macros")
-  public ResponseEntity<FoodCalculatedMacrosResponseDto> calculateFoodMacros(@PathVariable int id, @Valid @RequestBody CalculateFoodMacrosRequestDto request) {
+  public ResponseEntity<FoodCalculatedMacrosResponseDto> calculateFoodMacros(
+          @PathVariable int id,
+          @Valid @RequestBody CalculateFoodMacrosRequestDto request) {
+
     FoodCalculatedMacrosResponseDto response = foodService.calculateFoodMacros(id, request);
     return ResponseEntity.ok(response);
   }
@@ -62,7 +65,9 @@ public class FoodController {
   }
 
   @PostMapping("/search")
-  public ResponseEntity<List<FoodResponseDto>> searchFoods(@Valid @RequestBody SearchRequestDto request) {
+  public ResponseEntity<List<FoodResponseDto>> searchFoods(
+          @Valid @RequestBody SearchRequestDto request) {
+
     return ResponseEntity.ok(foodService.searchFoods(request));
   }
 }

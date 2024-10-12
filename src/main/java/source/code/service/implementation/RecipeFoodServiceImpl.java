@@ -52,8 +52,8 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
             .orElseThrow(() -> new NoSuchElementException(
                     "Food with id: " + foodId + " not found"));
 
-    RecipeFood recipeFood =
-            RecipeFood.createWithAmountRecipeFood(request.getAmount(), recipe, food);
+    RecipeFood recipeFood = RecipeFood
+            .createWithAmountRecipeFood(request.getAmount(), recipe, food);
 
     recipeFoodRepository.save(recipeFood);
   }

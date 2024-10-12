@@ -56,7 +56,10 @@ public class ActivityController {
   }
 
   @PostMapping("/{id}/calculate-calories")
-  public ResponseEntity<ActivityCalculatedResponseDto> calculateActivityCaloriesBurned(@PathVariable int id, @Valid @RequestBody CalculateActivityCaloriesRequestDto request) {
+  public ResponseEntity<ActivityCalculatedResponseDto> calculateActivityCaloriesBurned(
+          @PathVariable int id,
+          @Valid @RequestBody CalculateActivityCaloriesRequestDto request) {
+
     ActivityCalculatedResponseDto response = activityService.calculateCaloriesBurned(id, request);
     return ResponseEntity.ok(response);
   }
@@ -68,7 +71,9 @@ public class ActivityController {
   }
 
   @PostMapping("/search")
-  public ResponseEntity<List<ActivityResponseDto>> searchActivities(@Valid @RequestBody SearchRequestDto request) {
+  public ResponseEntity<List<ActivityResponseDto>> searchActivities(
+          @Valid @RequestBody SearchRequestDto request) {
+
     return ResponseEntity.ok(activityService.searchActivities(request));
   }
 }

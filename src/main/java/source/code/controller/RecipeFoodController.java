@@ -34,7 +34,8 @@ public class RecipeFoodController {
   }
 
   @DeleteMapping("/{recipeId}/remove/{foodId}")
-  public ResponseEntity<Void> deleteFoodFromRecipe(@PathVariable int recipeId, @PathVariable int foodId) {
+  public ResponseEntity<Void> deleteFoodFromRecipe(@PathVariable int recipeId,
+                                                   @PathVariable int foodId) {
     recipeFoodService.deleteFoodFromRecipe(foodId, recipeId);
     return ResponseEntity.ok().build();
   }

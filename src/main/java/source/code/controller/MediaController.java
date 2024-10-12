@@ -20,13 +20,16 @@ public class MediaController {
   }
 
   @GetMapping("/all/{parentId}/{parentType}")
-  public ResponseEntity<List<MediaResponseDto>> getAllMediaForParent(@PathVariable int parentId, @PathVariable short parentType) {
+  public ResponseEntity<List<MediaResponseDto>> getAllMediaForParent(@PathVariable int parentId,
+                                                                     @PathVariable short parentType) {
+
     List<MediaResponseDto> mediaList = mediaService.getAllMediaForParent(parentId, parentType);
     return ResponseEntity.ok(mediaList);
   }
 
   @GetMapping("/first/{parentId}/{parentType}")
-  public ResponseEntity<MediaResponseDto> getFirstMediaForParent(@PathVariable int parentId, @PathVariable short parentType) {
+  public ResponseEntity<MediaResponseDto> getFirstMediaForParent(@PathVariable int parentId,
+                                                                 @PathVariable short parentType) {
     MediaResponseDto media = mediaService.getFirstMediaForParent(parentId, parentType);
     return ResponseEntity.ok(media);
   }
@@ -38,7 +41,8 @@ public class MediaController {
   }
 
   @PostMapping
-  public ResponseEntity<MediaResponseDto> createMedia(@Valid @ModelAttribute MediaCreateDto request) {
+  public ResponseEntity<MediaResponseDto> createMedia(
+          @Valid @ModelAttribute MediaCreateDto request) {
     MediaResponseDto response = mediaService.createMedia(request);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }

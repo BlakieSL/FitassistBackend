@@ -21,8 +21,6 @@ public class MediaServiceImpl implements MediaService {
   private final ValidationHelper validationHelper;
   private final MediaRepository mediaRepository;
   private final MediaMapper mediaMapper;
-  private final ExerciseRepository exerciseRepository;
-  private final RecipeRepository recipeRepository;
 
   public MediaServiceImpl(
           final ValidationHelper validationHelper,
@@ -33,8 +31,6 @@ public class MediaServiceImpl implements MediaService {
     this.validationHelper = validationHelper;
     this.mediaRepository = mediaRepository;
     this.mediaMapper = mediaMapper;
-    this.exerciseRepository = exerciseRepository;
-    this.recipeRepository = recipeRepository;
   }
 
   @Transactional
@@ -64,7 +60,8 @@ public class MediaServiceImpl implements MediaService {
   }
 
   public MediaResponseDto getFirstMediaForParent(int parentId, short parentType) {
-    Media media = mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(parentId, parentType)
+    Media media = mediaRepository
+            .findFirstByParentIdAndParentTypeOrderByIdAsc(parentId, parentType)
             .orElseThrow(() -> new NoSuchElementException(
                     "No media found with parentId: " + parentId + " and parentType: " + parentType));
 
