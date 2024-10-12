@@ -36,7 +36,9 @@ public class DailyFoodController {
   }
 
   @DeleteMapping("/{userId}/remove/{foodId}")
-  public ResponseEntity<Void> removeFoodFromDailyCartFood(@PathVariable int userId, @PathVariable int foodId) {
+  public ResponseEntity<Void> removeFoodFromDailyCartFood(@PathVariable int userId,
+                                                          @PathVariable int foodId) {
+
     dailyFoodService.removeFoodFromDailyFoodItem(userId, foodId);
     return ResponseEntity.ok().build();
   }

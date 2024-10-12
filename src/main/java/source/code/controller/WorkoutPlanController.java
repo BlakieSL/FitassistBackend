@@ -15,13 +15,15 @@ public class WorkoutPlanController {
   }
 
   @PostMapping("/{planId}/add/{workoutId}")
-  public ResponseEntity<Void> addWorkoutToPlan(@PathVariable int workoutId, @PathVariable int planId) {
+  public ResponseEntity<Void> addWorkoutToPlan(@PathVariable int workoutId,
+                                               @PathVariable int planId) {
     workoutPlanService.saveWorkoutToPlan(workoutId, planId);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
   @DeleteMapping("/{planId}/remove/{workoutId}")
-  public ResponseEntity<Void> deleteWorkoutFromPlan(@PathVariable int workoutId, @PathVariable int planId) {
+  public ResponseEntity<Void> deleteWorkoutFromPlan(@PathVariable int workoutId,
+                                                    @PathVariable int planId) {
     workoutPlanService.deleteWorkoutFromPlan(workoutId, planId);
     return ResponseEntity.ok().build();
   }
