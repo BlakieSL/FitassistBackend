@@ -1,4 +1,4 @@
-package source.code.controller;
+package source.code.controller.WorkoutPlan;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

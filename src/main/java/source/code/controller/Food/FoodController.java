@@ -1,4 +1,4 @@
-package source.code.controller;
+package source.code.controller.Food;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

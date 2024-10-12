@@ -24,11 +24,11 @@ public class WorkoutSetServiceImpl implements WorkoutSetService {
   private final WorkoutTypeRepository workoutTypeRepository;
   private final ExerciseRepository exerciseRepository;
 
-  public WorkoutSetServiceImpl(ValidationHelper validationHelper,
-                               WorkoutSetMapper workoutSetMapper,
+  public WorkoutSetServiceImpl(WorkoutSetMapper workoutSetMapper,
                                WorkoutSetRepository workoutSetRepository,
                                WorkoutTypeRepository workoutTypeRepository,
                                ExerciseRepository exerciseRepository) {
+
     this.workoutSetMapper = workoutSetMapper;
     this.workoutSetRepository = workoutSetRepository;
     this.workoutTypeRepository = workoutTypeRepository;

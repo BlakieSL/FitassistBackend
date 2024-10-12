@@ -29,8 +29,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class ActivityServiceTest {
     @Mock
-    private ValidationHelper validationHelper;
-    @Mock
     private ActivityMapper activityMapper;
     @Mock
     private ActivityRepository activityRepository;
@@ -112,9 +110,8 @@ public class ActivityServiceTest {
     }
 
     @Test
-    void createActivity_shouldReturnActivityResponseDto_whenValidationPassed() {
+    void createActivity_shouldCreate() {
         // Arrange
-        doNothing().when(validationHelper).validate(createDto1);
         when(activityMapper.toEntity(createDto1)).thenReturn(activity1);
         when(activityRepository.save(activity1)).thenReturn(activity1);
         when(activityMapper.toResponseDto(activity1)).thenReturn(responseDto1);
@@ -123,7 +120,6 @@ public class ActivityServiceTest {
         ActivityResponseDto result = activityService.createActivity(createDto1);
 
         // Assert
-        verify(validationHelper, times(1)).validate(createDto1);
         verify(activityRepository, times(1)).save(activity1);
         verify(activityMapper, times(1)).toEntity(createDto1);
         verify(activityMapper, times(1)).toResponseDto(activity1);
@@ -132,21 +128,6 @@ public class ActivityServiceTest {
         assertEquals(responseDto1.getId(), result.getId());
         assertEquals(responseDto1.getCategoryName(), result.getCategoryName());
         assertEquals(responseDto1.getCategoryId(), result.getCategoryId());
-    }
-
-    @Test
-    void createActivity_shouldThrowException_whenValidationFails() {
-        // Arrange
-
-        doThrow(new IllegalArgumentException("Invalid activity data")).when(validationHelper).validate(createDto1);
-
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> activityService.createActivity(createDto1));
-
-        assertEquals("Invalid activity data", exception.getMessage());
-        verify(validationHelper, times(1)).validate(createDto1);
-        verifyNoInteractions(activityRepository, activityMapper);
     }
 
     @Test
@@ -291,7 +272,7 @@ public class ActivityServiceTest {
     }
 
     @Test
-    void calculateCaloriesBurned_shouldReturnCalculatedResponse_whenValidationPassed() {
+    void calculateCaloriesBurned_shouldCalculateCalories() {
         // Arrange
         int userId = user1.getId();
         int activityId = activity1.getId();
@@ -316,7 +297,6 @@ public class ActivityServiceTest {
         ActivityCalculatedResponseDto result = activityService.calculateCaloriesBurned(activityId, request);
 
         // Assert
-        verify(validationHelper, times(1)).validate(request);
         verify(userRepository, times(1)).findById(userId);
         verify(activityRepository, times(1)).findById(activityId);
         verify(activityMapper, times(1)).toCalculatedDto(activity1, user1, randomTime);
@@ -324,22 +304,6 @@ public class ActivityServiceTest {
         assertEquals(expectedResponse.getId(), result.getId());
         assertEquals(expectedResponse.getCaloriesBurned(), result.getCaloriesBurned());
         assertEquals(expectedResponse.getTime(), result.getTime());
-    }
-
-    @Test
-    void calculateCaloriesBurned_shouldThrowException_whenValidationFails() {
-        // Arrange
-        CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto(1, 30);
-
-        doThrow(new IllegalArgumentException("Invalid request")).when(validationHelper).validate(request);
-
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> activityService.calculateCaloriesBurned(1, request));
-
-        verify(validationHelper, times(1)).validate(request);
-        verifyNoInteractions(userRepository, activityRepository, activityMapper);
-        assertEquals("Invalid request", exception.getMessage());
     }
 
     @Test
@@ -355,7 +319,6 @@ public class ActivityServiceTest {
         NoSuchElementException exception = assertThrows(NoSuchElementException.class,
                 () -> activityService.calculateCaloriesBurned(activityId, request));
 
-        verify(validationHelper, times(1)).validate(request);
         verify(userRepository, times(1)).findById(userId);
         verifyNoInteractions(activityRepository, activityMapper);
         assertEquals("User with id: " + userId + " not found", exception.getMessage());
@@ -375,7 +338,6 @@ public class ActivityServiceTest {
         NoSuchElementException exception = assertThrows(NoSuchElementException.class,
                 () -> activityService.calculateCaloriesBurned(activityId, request));
 
-        verify(validationHelper, times(1)).validate(request);
         verify(userRepository, times(1)).findById(userId);
         verify(activityRepository, times(1)).findById(activityId);
         verifyNoInteractions(activityMapper);
