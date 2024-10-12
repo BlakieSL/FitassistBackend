@@ -59,7 +59,7 @@ public class WorkoutPlanServiceImpl implements WorkoutPlanService {
   @Transactional
   public void deleteWorkoutFromPlan(int workoutId, int planId) {
     WorkoutPlan workoutPlan = workoutPlanRepository
-            .findByWorkoutIdAAndPlanId(workoutId, planId)
+            .findByWorkoutIdAndPlanId(workoutId, planId)
             .orElseThrow(() -> new NoSuchElementException(
                     "PlanWorkout with plan id: " + planId
                             + " and workout id: " + workoutId + " not found"));
