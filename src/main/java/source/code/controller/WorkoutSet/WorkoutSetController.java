@@ -1,4 +1,4 @@
-package source.code.controller;
+package source.code.controller.WorkoutSet;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

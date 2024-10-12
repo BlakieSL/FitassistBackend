@@ -32,10 +32,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class DailyActivityServiceTest {
-    @Mock
-    private ValidationHelper validationHelper;
-    @Mock
-    private CalculationsHelper calculationsHelper;
     @Mock private DailyActivityMapper dailyActivityMapper;
     @Mock
     private JsonPatchHelper jsonPatchHelper;
@@ -166,7 +162,6 @@ public class DailyActivityServiceTest {
         dailyActivityService.addActivityToDailyActivityItem(userId, activityId, createDto);
 
         // Assert
-        verify(validationHelper, times(1)).validate(createDto);
         verify(dailyActivityRepository, times(1)).save(dailyActivity1);
         assertEquals(1, dailyActivity1.getDailyActivityItems().size());
 
@@ -191,7 +186,6 @@ public class DailyActivityServiceTest {
         dailyActivityService.addActivityToDailyActivityItem(userId, activityId, createDto);
 
         // Assert
-        verify(validationHelper, times(1)).validate(createDto);
         verify(dailyActivityRepository, times(1)).save(dailyActivity1);
         assertEquals(1, dailyActivity1.getDailyActivityItems().size());
 
@@ -201,19 +195,6 @@ public class DailyActivityServiceTest {
         assertEquals(dailyActivity1, updatedActivity.getDailyActivity());
     }
 
-    @Test
-    void addActivityToDailyActivityItem_shouldThrowException_whenValidationFails() {
-        // Arrange
-        doThrow(new IllegalArgumentException("Validation failed")).when(validationHelper).validate(createDto);
-
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                dailyActivityService.addActivityToDailyActivityItem(user1.getId(), activity1.getId(), createDto));
-
-        assertEquals("Validation failed", exception.getMessage());
-        verify(validationHelper, times(1)).validate(createDto);
-        verify(dailyActivityRepository, never()).save(any());
-    }
 
     @Test
     void addActivityToDailyActivityItem_shouldThrowException_whenActivityNotFound() {
@@ -229,7 +210,6 @@ public class DailyActivityServiceTest {
                 dailyActivityService.addActivityToDailyActivityItem(userId, activityId, createDto));
 
         assertEquals("Activity with id: " + activityId + " not found", exception.getMessage());
-        verify(validationHelper, times(1)).validate(createDto);
         verify(activityRepository, times(1)).findById(activityId);
         verify(dailyActivityRepository, never()).save(any());
     }

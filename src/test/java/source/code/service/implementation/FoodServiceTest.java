@@ -19,8 +19,6 @@ public class FoodServiceTest {
   @Mock
   private FoodMapper foodMapper;
   @Mock
-  private ValidationHelper validationHelper;
-  @Mock
   private FoodCategoryRepository foodCategoryRepository;
   @Mock
   private UserFoodRepository userFoodRepository;
@@ -33,12 +31,7 @@ public class FoodServiceTest {
   }
 
   @Test
-  void createFood_shouldCreate_whenValidationPassed() {
-
-  }
-
-  @Test
-  void createFood_shouldThrowException_whenValidationFails() {
+  void createFood_shouldCreate() {
 
   }
 
@@ -63,12 +56,7 @@ public class FoodServiceTest {
   }
 
   @Test
-  void calculateFoodMacros_shouldCalculateFoodMacros_whenValidationPassedAndFoodFound() {
-
-  }
-
-  @Test
-  void calculateFoodMacros_shouldThrowException_whenValidationFails() {
+  void calculateFoodMacros_shouldCalculateFoodMacros_whenFoodFound() {
 
   }
 

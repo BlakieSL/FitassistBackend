@@ -10,7 +10,6 @@ import source.code.repository.RecipeRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class RecipeFoodServieTest {
-  private ValidationHelper validationHelper;
   private RecipeFoodRepository recipeFoodRepository;
   private FoodRepository foodRepository;
   private RecipeRepository recipeRepository;
