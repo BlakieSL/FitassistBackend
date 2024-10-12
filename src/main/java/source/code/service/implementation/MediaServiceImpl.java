@@ -4,12 +4,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.MediaCreateDto;
 import source.code.dto.response.MediaResponseDto;
-import source.code.helper.ValidationHelper;
 import source.code.mapper.MediaMapper;
-import source.code.model.Media;
-import source.code.repository.ExerciseRepository;
+import source.code.model.Media.Media;
 import source.code.repository.MediaRepository;
-import source.code.repository.RecipeRepository;
 import source.code.service.declaration.MediaService;
 
 import java.util.List;

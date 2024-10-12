@@ -7,7 +7,7 @@ import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.helper.CalculationsHelper;
-import source.code.model.DailyActivityItem;
+import source.code.model.Activity.DailyActivityItem;
 
 @Mapper(componentModel = "spring")
 public abstract class DailyActivityMapper {

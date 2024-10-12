@@ -6,8 +6,8 @@ import source.code.dto.request.FoodCreateDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.FoodCategoryResponseDto;
 import source.code.dto.response.FoodResponseDto;
-import source.code.model.Food;
-import source.code.model.FoodCategory;
+import source.code.model.Food.Food;
+import source.code.model.Food.FoodCategory;
 import source.code.repository.FoodCategoryRepository;
 
 import java.util.NoSuchElementException;

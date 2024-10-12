@@ -11,8 +11,8 @@ import source.code.dto.request.UserCreateDto;
 import source.code.dto.request.UserUpdateDto;
 import source.code.dto.response.UserResponseDto;
 import source.code.helper.CalculationsHelper;
-import source.code.model.Role;
-import source.code.model.User;
+import source.code.model.User.Role;
+import source.code.model.User.User;
 import source.code.repository.RoleRepository;
 
 import java.time.LocalDate;

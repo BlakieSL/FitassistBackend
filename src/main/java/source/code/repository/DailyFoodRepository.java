@@ -1,7 +1,7 @@
 package source.code.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import source.code.model.DailyFood;
+import source.code.model.Food.DailyFood;
 
 import java.time.LocalDate;
 import java.util.Optional;

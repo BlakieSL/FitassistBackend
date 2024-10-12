@@ -5,12 +5,11 @@ import org.springframework.stereotype.Service;
 import source.code.dto.request.RecipeCreateDto;
 import source.code.dto.response.RecipeCategoryResponseDto;
 import source.code.dto.response.RecipeResponseDto;
-import source.code.helper.ValidationHelper;
 import source.code.mapper.RecipeMapper;
-import source.code.model.Recipe;
-import source.code.model.RecipeCategory;
-import source.code.model.RecipeCategoryAssociation;
-import source.code.model.UserRecipe;
+import source.code.model.Recipe.Recipe;
+import source.code.model.Recipe.RecipeCategory;
+import source.code.model.Recipe.RecipeCategoryAssociation;
+import source.code.model.User.UserRecipe;
 import source.code.repository.*;
 import source.code.service.declaration.RecipeService;
 
@@ -22,20 +21,17 @@ import java.util.stream.Collectors;
 public class RecipeServiceImpl implements RecipeService {
   private final RecipeMapper recipeMapper;
   private final RecipeRepository recipeRepository;
-  private final UserRepository userRepository;
   private final UserRecipeRepository userRecipeRepository;
   private final RecipeCategoryRepository recipeCategoryRepository;
   private final RecipeCategoryAssociationRepository recipeCategoryAssociationRepository;
 
   public RecipeServiceImpl(RecipeMapper recipeMapper,
                            RecipeRepository recipeRepository,
-                           UserRepository userRepository,
                            UserRecipeRepository userRecipeRepository,
                            RecipeCategoryRepository recipeCategoryRepository,
                            RecipeCategoryAssociationRepository recipeCategoryAssociationRepository) {
     this.recipeMapper = recipeMapper;
     this.recipeRepository = recipeRepository;
-    this.userRepository = userRepository;
     this.userRecipeRepository = userRecipeRepository;
     this.recipeCategoryRepository = recipeCategoryRepository;
     this.recipeCategoryAssociationRepository = recipeCategoryAssociationRepository;

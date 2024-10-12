@@ -4,10 +4,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
-import source.code.helper.ValidationHelper;
-import source.code.model.Recipe;
-import source.code.model.User;
-import source.code.model.UserRecipe;
+import source.code.model.Recipe.Recipe;
+import source.code.model.User.User;
+import source.code.model.User.UserRecipe;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
@@ -30,8 +29,8 @@ public class UserRecipeServiceImpl implements UserRecipeService {
   }
 
   @Transactional
-  public void saveRecipeToUser(int recipeId, int userId, short type) {
-    if (userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type)) {
+  public void saveRecipeToUser(int userId, int recipeId, short type) {
+    if (isAlreadySaved(userId, recipeId, type)) {
       throw new NotUniqueRecordException(
               "User with id: " + userId
                       + " already has recipe with id: " + recipeId
@@ -51,6 +50,10 @@ public class UserRecipeServiceImpl implements UserRecipeService {
     UserRecipe userRecipe =
             UserRecipe.createWithUserRecipeType(user, recipe, type);
     userRecipeRepository.save(userRecipe);
+  }
+
+  private boolean isAlreadySaved(int userId, int recipeId, short type) {
+    return userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type);
   }
 
   @Transactional

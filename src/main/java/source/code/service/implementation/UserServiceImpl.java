@@ -7,20 +7,18 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import source.code.dto.other.UserCredentialsDto;
 import source.code.dto.request.UserCreateDto;
 import source.code.dto.request.UserUpdateDto;
 import source.code.dto.response.UserResponseDto;
-import source.code.helper.CalculationsHelper;
 import source.code.helper.JsonPatchHelper;
+import source.code.helper.UserDetailsHelper;
 import source.code.helper.ValidationHelper;
 import source.code.mapper.UserMapper;
-import source.code.model.User;
+import source.code.model.User.User;
 import source.code.repository.ExerciseRepository;
-import source.code.repository.RoleRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.UserService;
 
@@ -32,19 +30,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   private final ValidationHelper validationHelper;
   private final JsonPatchHelper jsonPatchHelper;
   private final UserMapper userMapper;
+  private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
-  private final ExerciseRepository exerciseRepository;
 
   public UserServiceImpl(UserRepository userRepository,
                          UserMapper userMapper,
-                         ExerciseRepository exerciseRepository,
                          ValidationHelper validationHelper,
-                         JsonPatchHelper jsonPatchHelper) {
+                         JsonPatchHelper jsonPatchHelper,
+                         PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.userMapper = userMapper;
-    this.exerciseRepository = exerciseRepository;
     this.validationHelper = validationHelper;
     this.jsonPatchHelper = jsonPatchHelper;
+    this.passwordEncoder = passwordEncoder;
   }
 
   @Transactional
@@ -63,33 +61,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     User user = userRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException(
                     "User with id: " + id + " not found"));
-    user.getRoles().clear();
     userRepository.delete(user);
   }
 
   @Transactional
   public void updateUser(int userId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
-    User user = userRepository.findById(userId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "User with id: " + userId + " not found"));
 
-    UserResponseDto userDto = getUser(userId);
-    UserUpdateDto patchedUserUpdateDto =
-            jsonPatchHelper.applyPatch(
-                    patch,
-                    userDto,
-                    UserUpdateDto.class);
+    User user = getUserOrThrow(userId);
 
-    if (patchedUserUpdateDto.getOldPassword() != null
-            && patchedUserUpdateDto.getPassword() != null) {
+    UserUpdateDto patchedUserUpdateDto = applyPatchToUser(patch, userId);
 
-      BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-      if (!passwordEncoder.matches(patchedUserUpdateDto.getOldPassword(), user.getPassword())) {
-        throw new IllegalArgumentException("Old password does not match");
-      }
-    }
+    validatePasswordIfNeeded(user, patchedUserUpdateDto);
 
     validationHelper.validate(patchedUserUpdateDto);
 
@@ -97,19 +80,44 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     userRepository.save(user);
   }
 
+  private User getUserOrThrow(int userId) {
+    return userRepository.findById(userId)
+            .orElseThrow(() -> new NoSuchElementException(
+                    "User with id: " + userId + " not found"));
+  }
+
+  private UserUpdateDto applyPatchToUser(JsonMergePatch patch, int userId)
+          throws JsonPatchException, JsonProcessingException {
+
+    UserResponseDto userDto = getUser(userId);
+    return jsonPatchHelper.applyPatch(patch, userDto, UserUpdateDto.class);
+  }
+
+  private void validatePasswordIfNeeded(User user, UserUpdateDto dto) {
+    if (isPasswordChangeRequested(dto)) {
+      validateOldPassword(user, dto.getOldPassword());
+    }
+  }
+
+  private boolean isPasswordChangeRequested(UserUpdateDto dto) {
+    return dto.getOldPassword() != null && dto.getPassword() != null;
+  }
+
+  private void validateOldPassword(User user, String oldPassword) {
+    if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+      throw new IllegalArgumentException("Old password does not match");
+    }
+  }
+
+
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return findUserCredentialsByEmail(username)
-            .map(dto -> org.springframework.security.core.userdetails.User.builder()
-                    .username(dto.getEmail())
-                    .password(dto.getPassword())
-                    .roles(dto.getRoles().toArray(String[]::new))
-                    .build())
+            .map(UserDetailsHelper::buildUserDetails)
             .orElseThrow(() -> new UsernameNotFoundException(
                     "User " + username + " not found"));
   }
 
   private Optional<UserCredentialsDto> findUserCredentialsByEmail(String email) {
-
     return userRepository.findByEmail(email).map(userMapper::toDetails);
   }
 

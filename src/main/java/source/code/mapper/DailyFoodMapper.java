@@ -6,8 +6,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
-import source.code.model.DailyFoodItem;
-import source.code.model.Food;
+import source.code.model.Food.DailyFoodItem;
+import source.code.model.Food.Food;
 
 import java.util.List;
 
