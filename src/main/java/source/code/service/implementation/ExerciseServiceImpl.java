@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class ExerciseServiceImpl implements ExerciseService {
-  private final ValidationHelper validationHelper;
   private final ExerciseMapper exerciseMapper;
   private final ExerciseRepository exerciseRepository;
   private final UserExerciseRepository userExerciseRepository;
@@ -29,15 +28,13 @@ public class ExerciseServiceImpl implements ExerciseService {
   private final ExerciseInstructionRepository exerciseInstructionRepository;
   private final ExerciseTipRepository exerciseTipRepository;
 
-  public ExerciseServiceImpl(ValidationHelper validationHelper,
-                             ExerciseMapper exerciseMapper,
+  public ExerciseServiceImpl(ExerciseMapper exerciseMapper,
                              ExerciseRepository exerciseRepository,
                              UserExerciseRepository userExerciseRepository,
                              ExerciseCategoryRepository exerciseCategoryRepository,
                              ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository,
                              ExerciseInstructionRepository exerciseInstructionRepository,
                              ExerciseTipRepository exerciseTipRepository) {
-    this.validationHelper = validationHelper;
     this.exerciseMapper = exerciseMapper;
     this.exerciseRepository = exerciseRepository;
     this.userExerciseRepository = userExerciseRepository;
@@ -49,7 +46,6 @@ public class ExerciseServiceImpl implements ExerciseService {
 
   @Transactional
   public ExerciseResponseDto createExercise(ExerciseCreateDto dto) {
-    validationHelper.validate(dto);
     Exercise exercise = exerciseRepository.save(exerciseMapper.toEntity(dto));
 
     return exerciseMapper.toDto(exercise);

@@ -18,25 +18,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class MediaServiceImpl implements MediaService {
-  private final ValidationHelper validationHelper;
   private final MediaRepository mediaRepository;
   private final MediaMapper mediaMapper;
 
-  public MediaServiceImpl(
-          final ValidationHelper validationHelper,
-          final MediaRepository mediaRepository,
-          final MediaMapper mediaMapper,
-          final ExerciseRepository exerciseRepository,
-          final RecipeRepository recipeRepository) {
-    this.validationHelper = validationHelper;
+  public MediaServiceImpl(MediaRepository mediaRepository, MediaMapper mediaMapper) {
     this.mediaRepository = mediaRepository;
     this.mediaMapper = mediaMapper;
   }
 
   @Transactional
   public MediaResponseDto createMedia(MediaCreateDto request) {
-    validationHelper.validate(request);
-
     Media savedMedia = mediaRepository.save(mediaMapper.toEntity(request));
 
     return mediaMapper.toDto(savedMedia);

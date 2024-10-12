@@ -19,18 +19,15 @@ import java.util.stream.Collectors;
 
 @Service
 public class WorkoutServiceImpl implements WorkoutService {
-  private final ValidationHelper validationHelper;
   private final WorkoutMapper workoutMapper;
   private final WorkoutRepository workoutRepository;
   private final WorkoutPlanRepository workoutPlanRepository;
   private final WorkoutTypeRepository workoutTypeRepository;
 
-  public WorkoutServiceImpl(ValidationHelper validationHelper,
-                            WorkoutMapper workoutMapper,
+  public WorkoutServiceImpl(WorkoutMapper workoutMapper,
                             WorkoutRepository workoutRepository,
                             WorkoutPlanRepository workoutPlanRepository,
                             WorkoutTypeRepository workoutTypeRepository) {
-    this.validationHelper = validationHelper;
     this.workoutMapper = workoutMapper;
     this.workoutRepository = workoutRepository;
     this.workoutPlanRepository = workoutPlanRepository;
@@ -39,8 +36,6 @@ public class WorkoutServiceImpl implements WorkoutService {
 
   @Transactional
   public WorkoutDto createWorkout(WorkoutDto dto) {
-    validationHelper.validate(dto);
-
     WorkoutType workoutType = workoutTypeRepository
             .findById(dto.getWorkoutTypeId())
             .orElseThrow(() -> new NoSuchElementException(

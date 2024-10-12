@@ -34,15 +34,14 @@ public class DailyFoodServiceImpl implements DailyFoodService {
   private final UserRepository userRepository;
 
   public DailyFoodServiceImpl(
-          DailyFoodRepository dailyFoodRepository,
+          ValidationHelper validationHelper, DailyFoodRepository dailyFoodRepository,
           FoodRepository foodRepository,
           UserRepository userRepository,
-          ValidationHelper validationHelper,
           JsonPatchHelper jsonPatchHelper, DailyFoodMapper dailyFoodMapper) {
+    this.validationHelper = validationHelper;
     this.dailyFoodRepository = dailyFoodRepository;
     this.foodRepository = foodRepository;
     this.userRepository = userRepository;
-    this.validationHelper = validationHelper;
     this.jsonPatchHelper = jsonPatchHelper;
     this.dailyFoodMapper = dailyFoodMapper;
   }
@@ -61,8 +60,6 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 
   @Transactional
   public void addFoodToDailyFoodItem(int userId, int foodId, DailyFoodItemCreateDto dto) {
-    validationHelper.validate(dto);
-
     DailyFood dailyFood = getDailyFoodByUser(userId);
 
     Food food = foodRepository.findById(foodId)
@@ -121,8 +118,8 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     DailyFoodItemCreateDto dailyFoodItemCreateDto = new DailyFoodItemCreateDto();
     dailyFoodItemCreateDto.setAmount(dailyFoodItem.getAmount());
 
-    DailyFoodItemCreateDto patchedDailyFoodItemCreateDto =
-            jsonPatchHelper.applyPatch(
+    DailyFoodItemCreateDto patchedDailyFoodItemCreateDto = jsonPatchHelper
+            .applyPatch(
                     patch,
                     dailyFoodItemCreateDto,
                     DailyFoodItemCreateDto.class);
