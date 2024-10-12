@@ -40,8 +40,6 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 
   @Transactional
   public void addFoodToRecipe(int recipeId, int foodId, RecipeFoodCreateDto request) {
-    validationHelper.validate(request);
-
     Recipe recipe = recipeRepository
             .findById(recipeId)
             .orElseThrow(() -> new NoSuchElementException(

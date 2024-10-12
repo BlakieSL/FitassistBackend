@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class RecipeServiceImpl implements RecipeService {
-  private final ValidationHelper validationHelper;
   private final RecipeMapper recipeMapper;
   private final RecipeRepository recipeRepository;
   private final UserRepository userRepository;
@@ -28,15 +27,12 @@ public class RecipeServiceImpl implements RecipeService {
   private final RecipeCategoryRepository recipeCategoryRepository;
   private final RecipeCategoryAssociationRepository recipeCategoryAssociationRepository;
 
-  public RecipeServiceImpl(
-          ValidationHelper validationHelper,
-          RecipeMapper recipeMapper,
-          RecipeRepository recipeRepository,
-          UserRepository userRepository,
-          UserRecipeRepository userRecipeRepository,
-          RecipeCategoryRepository recipeCategoryRepository,
-          RecipeCategoryAssociationRepository recipeCategoryAssociationRepository) {
-    this.validationHelper = validationHelper;
+  public RecipeServiceImpl(RecipeMapper recipeMapper,
+                           RecipeRepository recipeRepository,
+                           UserRepository userRepository,
+                           UserRecipeRepository userRecipeRepository,
+                           RecipeCategoryRepository recipeCategoryRepository,
+                           RecipeCategoryAssociationRepository recipeCategoryAssociationRepository) {
     this.recipeMapper = recipeMapper;
     this.recipeRepository = recipeRepository;
     this.userRepository = userRepository;
@@ -47,8 +43,6 @@ public class RecipeServiceImpl implements RecipeService {
 
   @Transactional
   public RecipeResponseDto createRecipe(RecipeCreateDto dto) {
-    validationHelper.validate(dto);
-
     Recipe recipe = recipeRepository.save(recipeMapper.toEntity(dto));
 
     return recipeMapper.toDto(recipe);

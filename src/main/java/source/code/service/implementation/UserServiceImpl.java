@@ -29,37 +29,26 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
-  private final UserRepository userRepository;
-  private final RoleRepository roleRepository;
-  private final UserMapper userMapper;
-  private final PasswordEncoder passwordEncoder;
   private final ValidationHelper validationHelper;
-  private final CalculationsHelper calculationsHelper;
-  private final ExerciseRepository exerciseRepository;
   private final JsonPatchHelper jsonPatchHelper;
+  private final UserMapper userMapper;
+  private final UserRepository userRepository;
+  private final ExerciseRepository exerciseRepository;
 
   public UserServiceImpl(UserRepository userRepository,
-                         RoleRepository roleRepository,
                          UserMapper userMapper,
-                         PasswordEncoder passwordEncoder,
                          ExerciseRepository exerciseRepository,
                          ValidationHelper validationHelper,
-                         CalculationsHelper calculationsHelper,
                          JsonPatchHelper jsonPatchHelper) {
     this.userRepository = userRepository;
-    this.roleRepository = roleRepository;
     this.userMapper = userMapper;
-    this.passwordEncoder = passwordEncoder;
     this.exerciseRepository = exerciseRepository;
     this.validationHelper = validationHelper;
-    this.calculationsHelper = calculationsHelper;
     this.jsonPatchHelper = jsonPatchHelper;
   }
 
   @Transactional
   public UserResponseDto register(UserCreateDto request) {
-    validationHelper.validate(request);
-
     User user = userMapper.toEntity(request);
     userMapper.setCalculatedCalories(user, request);
     userMapper.addDefaultRole(user);

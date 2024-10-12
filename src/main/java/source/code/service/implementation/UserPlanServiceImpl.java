@@ -17,17 +17,13 @@ import java.util.NoSuchElementException;
 
 @Service
 public class UserPlanServiceImpl implements UserPlanService {
-  private final ValidationHelper validationHelper;
   private final UserPlanRepository userPlanRepository;
   private final PlanRepository planRepository;
   private final UserRepository userRepository;
 
-  public UserPlanServiceImpl(
-          final ValidationHelper validationHelper,
-          final UserPlanRepository userPlanRepository,
-          final PlanRepository planRepository,
-          final UserRepository userRepository) {
-    this.validationHelper = validationHelper;
+  public UserPlanServiceImpl(UserPlanRepository userPlanRepository,
+                             PlanRepository planRepository,
+                             UserRepository userRepository) {
     this.userPlanRepository = userPlanRepository;
     this.planRepository = planRepository;
     this.userRepository = userRepository;
