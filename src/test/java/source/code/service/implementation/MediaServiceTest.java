@@ -13,8 +13,6 @@ import source.code.repository.MediaRepository;
 @ExtendWith(MockitoExtension.class)
 public class MediaServiceTest {
   @Mock
-  private ValidationHelper validationHelper;
-  @Mock
   private MediaRepository mediaRepository;
   @Mock
   private MediaMapper mediaMapper;
@@ -26,12 +24,7 @@ public class MediaServiceTest {
   }
 
   @Test
-  void createMedia_shouldCreate_whenValidationPassed() {
-
-  }
-
-  @Test
-  void createMedia_shouldThrowException_whenValidationFails() {
+  void createMedia_shouldCreate() {
 
   }
 

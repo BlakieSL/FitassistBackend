@@ -13,8 +13,6 @@ import source.code.repository.*;
 @ExtendWith(MockitoExtension.class)
 public class ExerciseServiceTest {
   @Mock
-  private ValidationHelper validationHelper;
-  @Mock
   private ExerciseMapper exerciseMapper;
   @Mock
   private ExerciseRepository exerciseRepository;
@@ -36,12 +34,7 @@ public class ExerciseServiceTest {
   }
 
   @Test
-  void createExercise_shouldCreate_whenValidationPassed() {
-
-  }
-
-  @Test
-  void createExercise_shouldThrowException_whenValidationFails() {
+  void createExercise_shouldCreate() {
 
   }
 

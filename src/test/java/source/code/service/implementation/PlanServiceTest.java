@@ -17,8 +17,6 @@ import source.code.repository.UserPlanRepository;
 @ExtendWith(MockitoExtension.class)
 public class PlanServiceTest {
   @Mock
-  private ValidationHelper validationHelper;
-  @Mock
   private PlanMapper planMapper;
   @Mock
   private PlanRepository planRepository;
@@ -36,12 +34,7 @@ public class PlanServiceTest {
   }
 
   @Test
-  void createPlan_shouldCreate_whenValidationPassed() {
-
-  }
-
-  @Test
-  void createPlan_shouldThrowException_whenValidationFails() {
+  void createPlan_shouldCreate() {
 
   }
 

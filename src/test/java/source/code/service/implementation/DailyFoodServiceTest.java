@@ -166,7 +166,6 @@ public class DailyFoodServiceTest {
     dailyFoodService.addFoodToDailyFoodItem(userId, foodId, createDto);
 
     // Assert
-    verify(validationHelper, times(1)).validate(createDto);
     verify(dailyFoodRepository, times(1)).save(dailyFood1);
     assertEquals(1, dailyFood1.getDailyFoodItems().size());
 
@@ -191,7 +190,6 @@ public class DailyFoodServiceTest {
     dailyFoodService.addFoodToDailyFoodItem(userId, foodId, createDto);
 
     // Assert
-    verify(validationHelper, times(1)).validate(createDto);
     verify(dailyFoodRepository, times(1)).save(dailyFood1);
     assertEquals(1, dailyFood1.getDailyFoodItems().size());
 
@@ -199,20 +197,6 @@ public class DailyFoodServiceTest {
     assertEquals(food1, updatedFood.getFood());
     assertEquals(createDto.getAmount(), updatedFood.getAmount());
     assertEquals(dailyFood1, updatedFood.getDailyFood());
-  }
-
-  @Test
-  void addFoodToDailyFoodItem_shouldThrowException_whenValidationFails() {
-    // Arrange
-    doThrow(new IllegalArgumentException("Validation failed")).when(validationHelper).validate(createDto);
-
-    // Act & Assert
-    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-            dailyFoodService.addFoodToDailyFoodItem(user1.getId(), food1.getId(), createDto));
-
-    assertEquals("Validation failed", exception.getMessage());
-    verify(validationHelper, times(1)).validate(createDto);
-    verify(dailyFoodRepository, never()).save(any());
   }
 
   @Test
@@ -229,7 +213,6 @@ public class DailyFoodServiceTest {
             dailyFoodService.addFoodToDailyFoodItem(userId, foodId, createDto));
 
     assertEquals("Food with id: " + foodId + " not found", exception.getMessage());
-    verify(validationHelper, times(1)).validate(createDto);
     verify(foodRepository, times(1)).findById(foodId);
     verify(dailyFoodRepository, never()).save(any());
   }
@@ -285,6 +268,7 @@ public class DailyFoodServiceTest {
             any(DailyFoodItemCreateDto.class),
             eq(DailyFoodItemCreateDto.class)))
             .thenReturn(patchedDto);
+    doNothing().when(validationHelper).validate(any(DailyFoodItemCreateDto.class));
 
     // Act
     dailyFoodService.updateDailyFoodItem(userId, food1.getId(), patch);
@@ -295,6 +279,7 @@ public class DailyFoodServiceTest {
             eq(patch),
             any(DailyFoodItemCreateDto.class),
             eq(DailyFoodItemCreateDto.class));
+    verify(validationHelper, times(1)).validate(any(DailyFoodItemCreateDto.class));
     verify(dailyFoodRepository, times(1)).save(dailyFood1);
     assertEquals(newAmount, dailyFoodItem1.getAmount());
   }
@@ -312,8 +297,73 @@ public class DailyFoodServiceTest {
 
     assertEquals("Food with id: " + food1.getId() + " not found in daily cart", exception.getMessage());
     verify(jsonPatchHelper, never()).applyPatch(any(), any(), any());
+    verify(validationHelper, never()).validate(any());
     verify(dailyFoodRepository, times(1)).findByUserId(user1.getId());
   }
+
+  @Test
+  void updateDailyFoodItem_shouldThrowException_whenPatchFails()
+          throws JsonPatchException, JsonProcessingException {
+    // Arrange
+    int userId = user1.getId();
+    JsonMergePatch patch = mock(JsonMergePatch.class);
+
+    when(dailyFoodRepository.findByUserId(userId)).thenReturn(Optional.of(dailyFood1));
+
+    when(jsonPatchHelper.applyPatch(
+            eq(patch),
+            any(DailyFoodItemCreateDto.class),
+            eq(DailyFoodItemCreateDto.class)))
+            .thenThrow(new JsonPatchException("Patch failed"));
+
+    // Act & Assert
+    assertThrows(JsonPatchException.class, () ->
+            dailyFoodService.updateDailyFoodItem(userId, food1.getId(), patch)
+    );
+
+    verify(dailyFoodRepository, times(1)).findByUserId(userId);
+    verify(jsonPatchHelper, times(1)).applyPatch(
+            eq(patch),
+            any(DailyFoodItemCreateDto.class),
+            eq(DailyFoodItemCreateDto.class));
+    verify(validationHelper, never()).validate(any());
+    verify(dailyFoodRepository, never()).save(any(DailyFood.class));
+  }
+
+
+  @Test
+  void updateDailyFoodItem_shouldThrowException_whenValidationFails() throws JsonPatchException, JsonProcessingException {
+    // Arrange
+    int userId = user1.getId();
+    JsonMergePatch patch = mock(JsonMergePatch.class);
+
+    DailyFoodItemCreateDto patchedDto = new DailyFoodItemCreateDto();
+    patchedDto.setAmount(-1);
+
+    when(dailyFoodRepository.findByUserId(userId)).thenReturn(Optional.of(dailyFood1));
+    when(jsonPatchHelper.applyPatch(
+            eq(patch),
+            any(DailyFoodItemCreateDto.class),
+            eq(DailyFoodItemCreateDto.class)))
+            .thenReturn(patchedDto);
+
+    doThrow(new IllegalArgumentException("Validation failed"))
+            .when(validationHelper)
+            .validate(any(DailyFoodItemCreateDto.class));
+
+    // Act & Assert
+    assertThrows(IllegalArgumentException.class, () ->
+            dailyFoodService.updateDailyFoodItem(userId, food1.getId(), patch));
+
+    verify(dailyFoodRepository, times(1)).findByUserId(userId);
+    verify(jsonPatchHelper, times(1)).applyPatch(
+            eq(patch),
+            any(DailyFoodItemCreateDto.class),
+            eq(DailyFoodItemCreateDto.class));
+    verify(validationHelper, times(1)).validate(any(DailyFoodItemCreateDto.class));
+    verify(dailyFoodRepository, never()).save(any(DailyFood.class));
+  }
+
 
   @Test
   void createNewDailyFoodForUser_shouldCreate_whenUserFound() {
