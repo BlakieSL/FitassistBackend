@@ -48,10 +48,7 @@ public class WorkoutSetServiceImpl implements WorkoutSetService {
                     "Exercise with id: "
                             + workoutSetDto.getExerciseId() + " not found"));
 
-    WorkoutSet workoutSet = workoutSetMapper.toEntity(workoutSetDto);
-    workoutSet.setWorkoutType(workoutType);
-    workoutSet.setExercise(exercise);
-
+    WorkoutSet workoutSet = workoutSetMapper.toEntity(workoutSetDto, workoutType, exercise);
     WorkoutSet savedWorkoutSet = workoutSetRepository.save(workoutSet);
 
     return workoutSetMapper.toDto(savedWorkoutSet);
