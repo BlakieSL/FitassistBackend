@@ -26,27 +26,22 @@ import java.util.stream.Collectors;
 public class FoodServiceImpl implements FoodService {
   private final FoodRepository foodRepository;
   private final FoodMapper foodMapper;
-  private final ValidationHelper validationHelper;
-
   private final FoodCategoryRepository foodCategoryRepository;
   private final UserFoodRepository userFoodRepository;
 
   public FoodServiceImpl(
           FoodRepository foodRepository,
           FoodMapper foodMapper,
-          ValidationHelper validationHelper,
           FoodCategoryRepository foodCategoryRepository,
           UserFoodRepository userFoodRepository) {
     this.foodRepository = foodRepository;
     this.foodMapper = foodMapper;
-    this.validationHelper = validationHelper;
     this.foodCategoryRepository = foodCategoryRepository;
     this.userFoodRepository = userFoodRepository;
   }
 
   @Transactional
   public FoodResponseDto createFood(FoodCreateDto request) {
-    validationHelper.validate(request);
     Food food = foodRepository.save(foodMapper.toEntity(request));
 
     return foodMapper.toDto(food);
@@ -72,7 +67,6 @@ public class FoodServiceImpl implements FoodService {
           int id,
           CalculateFoodMacrosRequestDto request) {
 
-    validationHelper.validate(request);
     Food food = foodRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException(
                     "Food with id: " + id + " not found"));

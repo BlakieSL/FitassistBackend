@@ -23,20 +23,17 @@ import java.util.stream.Collectors;
 
 @Service
 public class PlanServiceImpl implements PlanService {
-  private final ValidationHelper validationHelper;
   private final PlanMapper planMapper;
   private final PlanRepository planRepository;
   private final UserPlanRepository userPlanRepository;
   private final PlanCategoryRepository planCategoryRepository;
   private final PlanCategoryAssociationRepository planCategoryAssociationRepository;
 
-  public PlanServiceImpl(ValidationHelper validationHelper,
-                         PlanMapper planMapper,
+  public PlanServiceImpl(PlanMapper planMapper,
                          PlanRepository planRepository,
                          UserPlanRepository userPlanRepository,
                          PlanCategoryRepository planCategoryRepository,
                          PlanCategoryAssociationRepository planCategoryAssociationRepository) {
-    this.validationHelper = validationHelper;
     this.planMapper = planMapper;
     this.planRepository = planRepository;
     this.userPlanRepository = userPlanRepository;
@@ -46,7 +43,6 @@ public class PlanServiceImpl implements PlanService {
 
   @Transactional
   public PlanResponseDto createPlan(PlanCreateDto planDto) {
-    validationHelper.validate(planDto);
     Plan plan = planRepository.save(planMapper.toEntity(planDto));
 
     return planMapper.toDto(plan);

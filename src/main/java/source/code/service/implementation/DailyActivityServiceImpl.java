@@ -30,8 +30,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class DailyActivityServiceImpl implements DailyActivityService {
-  private final ValidationHelper validationHelper;
-  private final CalculationsHelper calculationsHelper;
   private final JsonPatchHelper jsonPatchHelper;
   private final DailyActivityMapper dailyActivityMapper;
   private final DailyActivityRepository dailyActivityRepository;
@@ -42,15 +40,11 @@ public class DailyActivityServiceImpl implements DailyActivityService {
           DailyActivityRepository dailyActivityRepository,
           UserRepository userRepository,
           ActivityRepository activityRepository,
-          CalculationsHelper calculationsHelper,
-          ValidationHelper validationHelper,
           JsonPatchHelper jsonPatchHelper,
           DailyActivityMapper dailyActivityMapper) {
     this.dailyActivityRepository = dailyActivityRepository;
     this.userRepository = userRepository;
     this.activityRepository = activityRepository;
-    this.validationHelper = validationHelper;
-    this.calculationsHelper = calculationsHelper;
     this.jsonPatchHelper = jsonPatchHelper;
     this.dailyActivityMapper = dailyActivityMapper;
   }
@@ -74,7 +68,6 @@ public class DailyActivityServiceImpl implements DailyActivityService {
   @Transactional
   public void addActivityToDailyActivityItem(int userId, Integer activityId,
                                              DailyActivityItemCreateDto dto) {
-    validationHelper.validate(dto);
 
     DailyActivity dailyActivity = getDailyActivityByUser(userId);
 

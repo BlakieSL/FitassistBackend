@@ -17,17 +17,13 @@ import java.util.NoSuchElementException;
 
 @Service
 public class UserRecipeServiceImpl implements UserRecipeService {
-  private final ValidationHelper validationHelper;
   private final UserRecipeRepository userRecipeRepository;
   private final RecipeRepository recipeRepository;
   private final UserRepository userRepository;
 
-  public UserRecipeServiceImpl(
-          ValidationHelper validationHelper,
-          UserRecipeRepository userRecipeRepository,
-          RecipeRepository recipeRepository,
-          UserRepository userRepository) {
-    this.validationHelper = validationHelper;
+  public UserRecipeServiceImpl(UserRecipeRepository userRecipeRepository,
+                               RecipeRepository recipeRepository,
+                               UserRepository userRepository) {
     this.userRecipeRepository = userRecipeRepository;
     this.recipeRepository = recipeRepository;
     this.userRepository = userRepository;

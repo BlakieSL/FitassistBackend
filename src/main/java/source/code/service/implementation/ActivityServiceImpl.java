@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class ActivityServiceImpl implements ActivityService {
-  private final ValidationHelper validationHelper;
   private final ActivityMapper activityMapper;
   private final ActivityRepository activityRepository;
   private final UserRepository userRepository;
@@ -35,13 +34,11 @@ public class ActivityServiceImpl implements ActivityService {
   private final UserActivityRepository userActivityRepository;
 
   public ActivityServiceImpl(
-          ValidationHelper validationHelper,
           ActivityMapper activityMapper,
           ActivityRepository activityRepository,
           UserRepository userRepository,
           ActivityCategoryRepository activityCategoryRepository,
           UserActivityRepository userActivityRepository) {
-    this.validationHelper = validationHelper;
     this.activityMapper = activityMapper;
     this.activityRepository = activityRepository;
     this.userRepository = userRepository;
@@ -51,10 +48,32 @@ public class ActivityServiceImpl implements ActivityService {
 
   @Transactional
   public ActivityResponseDto createActivity(ActivityCreateDto dto) {
-    validationHelper.validate(dto);
     Activity activity = activityRepository.save(activityMapper.toEntity(dto));
 
     return activityMapper.toResponseDto(activity);
+  }
+
+  public ActivityCalculatedResponseDto calculateCaloriesBurned(
+          int id,
+          CalculateActivityCaloriesRequestDto request) {
+
+    User user = userRepository.findById(request.getUserId())
+            .orElseThrow(() -> new NoSuchElementException(
+                    "User with id: " + request.getUserId() + " not found"));
+    Activity activity = activityRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException(
+                    "Activity with id: " + id + " not found"));
+
+    return activityMapper.toCalculatedDto(activity, user, request.getTime());
+  }
+
+  public List<ActivityResponseDto> searchActivities(SearchRequestDto request) {
+    List<Activity> activities = activityRepository
+            .findAllByNameContainingIgnoreCase(request.getName());
+
+    return activities.stream()
+            .map(activityMapper::toResponseDto)
+            .collect(Collectors.toList());
   }
 
   public ActivityResponseDto getActivity(int id) {
@@ -89,31 +108,9 @@ public class ActivityServiceImpl implements ActivityService {
             .collect(Collectors.toList());
   }
 
-  public ActivityCalculatedResponseDto calculateCaloriesBurned(int id,
-          CalculateActivityCaloriesRequestDto request) {
-
-    validationHelper.validate(request);
-    User user = userRepository.findById(request.getUserId())
-            .orElseThrow(() -> new NoSuchElementException(
-                    "User with id: " + request.getUserId() + " not found"));
-    Activity activity = activityRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Activity with id: " + id + " not found"));
-
-    return activityMapper.toCalculatedDto(activity, user, request.getTime());
-  }
-
-  public List<ActivityResponseDto> searchActivities(SearchRequestDto request) {
-    List<Activity> activities = activityRepository
-            .findAllByNameContainingIgnoreCase(request.getName());
-
-    return activities.stream()
-            .map(activityMapper::toResponseDto)
-            .collect(Collectors.toList());
-  }
-
   public List<ActivityResponseDto> getActivitiesByUser(int userId) {
     List<UserActivity> userActivities = userActivityRepository.findByUserId(userId);
+
     List<Activity> activities = userActivities.stream()
             .map(UserActivity::getActivity)
             .collect(Collectors.toList());
