@@ -38,11 +38,9 @@ public class WorkoutServiceImpl implements WorkoutService {
     WorkoutType workoutType = workoutTypeRepository
             .findById(dto.getWorkoutTypeId())
             .orElseThrow(() -> new NoSuchElementException(
-                    "Workout type with id: "
-                            + dto.getWorkoutTypeId() + " not found"));
-    Workout workout = workoutMapper.toEntity(dto);
-    workout.setWorkoutType(workoutType);
+                    "Workout type with id: " + dto.getWorkoutTypeId() + " not found"));
 
+    Workout workout = workoutMapper.toEntity(dto, workoutType);
     Workout savedWorkout = workoutRepository.save(workout);
 
     return workoutMapper.toDto(savedWorkout);
@@ -65,9 +63,10 @@ public class WorkoutServiceImpl implements WorkoutService {
   }
 
   public List<WorkoutDto> getWorkoutsByPlan(int planId) {
-    List<WorkoutPlan> planWorkouts = workoutPlanRepository
+    List<WorkoutPlan> workoutPlans = workoutPlanRepository
             .findByPlanId(planId);
-    List<Workout> workouts = planWorkouts
+
+    List<Workout> workouts = workoutPlans
             .stream()
             .map(WorkoutPlan::getWorkout)
             .collect(Collectors.toList());

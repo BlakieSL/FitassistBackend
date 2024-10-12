@@ -6,6 +6,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.RecipeFoodCreateDto;
+import source.code.exception.NotUniqueRecordException;
 import source.code.helper.JsonPatchHelper;
 import source.code.helper.ValidationHelper;
 import source.code.model.Food.Food;
@@ -40,6 +41,12 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 
   @Transactional
   public void addFoodToRecipe(int recipeId, int foodId, RecipeFoodCreateDto request) {
+    if(isAlreadyAdded(recipeId, foodId)) {
+      throw new NotUniqueRecordException(
+              "Recipe with id: " + recipeId
+              + " already has food with id: " + foodId);
+    }
+
     Recipe recipe = recipeRepository
             .findById(recipeId)
             .orElseThrow(() -> new NoSuchElementException(
@@ -54,6 +61,10 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
             .createWithAmountRecipeFood(request.getAmount(), recipe, food);
 
     recipeFoodRepository.save(recipeFood);
+  }
+
+  private boolean isAlreadyAdded(int recipeId, int foodId) {
+    return recipeFoodRepository.existsByRecipeIdAndFoodId(recipeId, foodId);
   }
 
   @Transactional

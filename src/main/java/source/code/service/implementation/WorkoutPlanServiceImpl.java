@@ -2,6 +2,7 @@ package source.code.service.implementation;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import source.code.exception.NotUniqueRecordException;
 import source.code.model.Plan.Plan;
 import source.code.model.Workout.Workout;
 import source.code.model.Workout.WorkoutPlan;
@@ -19,16 +20,22 @@ public class WorkoutPlanServiceImpl implements WorkoutPlanService {
   private final PlanRepository planRepository;
 
   public WorkoutPlanServiceImpl(
-          final WorkoutPlanRepository workoutPlanRepository,
-          final WorkoutRepository workoutRepository,
-          final PlanRepository planRepository) {
+          WorkoutPlanRepository workoutPlanRepository,
+          WorkoutRepository workoutRepository,
+          PlanRepository planRepository) {
     this.workoutPlanRepository = workoutPlanRepository;
     this.workoutRepository = workoutRepository;
     this.planRepository = planRepository;
   }
 
   @Transactional
-  public void saveWorkoutToPlan(int workoutId, int planId) {
+  public void addWorkoutToPlan(int workoutId, int planId) {
+    if(isAlreadyAdded(workoutId, planId)) {
+      throw new NotUniqueRecordException(
+              "Plan with id: " + planId
+              + " already has workout with id: " + workoutId);
+    }
+
     Plan plan = planRepository
             .findById(planId)
             .orElseThrow(() -> new NoSuchElementException(
@@ -39,19 +46,24 @@ public class WorkoutPlanServiceImpl implements WorkoutPlanService {
             .orElseThrow(() -> new NoSuchElementException(
                     "Workout with id: " + workoutId + " not found"));
 
-    WorkoutPlan planWorkout =
-            WorkoutPlan.createWithWorkoutPlan(workout, plan);
+
+    WorkoutPlan planWorkout = WorkoutPlan
+            .createWithWorkoutPlan(workout, plan);
     workoutPlanRepository.save(planWorkout);
+  }
+
+  private boolean isAlreadyAdded(int workoutId, int planId) {
+    return workoutPlanRepository.existsByWorkoutIdAndPlanId(workoutId, planId);
   }
 
   @Transactional
   public void deleteWorkoutFromPlan(int workoutId, int planId) {
-    WorkoutPlan planWorkout = workoutPlanRepository
-            .findByPlanIdAndWorkoutId(planId, workoutId)
+    WorkoutPlan workoutPlan = workoutPlanRepository
+            .findByWorkoutIdAAndPlanId(workoutId, planId)
             .orElseThrow(() -> new NoSuchElementException(
                     "PlanWorkout with plan id: " + planId
                             + " and workout id: " + workoutId + " not found"));
 
-    workoutPlanRepository.delete(planWorkout);
+    workoutPlanRepository.delete(workoutPlan);
   }
 }
