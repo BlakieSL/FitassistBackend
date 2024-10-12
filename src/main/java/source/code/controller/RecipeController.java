@@ -47,7 +47,8 @@ public class RecipeController {
   }
 
   @PostMapping
-  public ResponseEntity<RecipeResponseDto> createRecipe(@Valid @RequestBody RecipeCreateDto recipeDto) {
+  public ResponseEntity<RecipeResponseDto> createRecipe(
+          @Valid @RequestBody RecipeCreateDto recipeDto) {
     RecipeResponseDto response = recipeService.createRecipe(recipeDto);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }

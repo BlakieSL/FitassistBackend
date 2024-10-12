@@ -51,7 +51,8 @@ public class ExerciseController {
   }
 
   @GetMapping("/{id}/instructions")
-  public ResponseEntity<List<ExerciseInstructionResponseDto>> getAllInstructionsByExercise(@PathVariable int id) {
+  public ResponseEntity<List<ExerciseInstructionResponseDto>> getAllInstructionsByExercise(
+          @PathVariable int id) {
     List<ExerciseInstructionResponseDto> instructions = exerciseService.getExerciseInstructions(id);
     return ResponseEntity.ok(instructions);
   }
@@ -69,7 +70,8 @@ public class ExerciseController {
   }
 
   @PostMapping("/search")
-  public ResponseEntity<List<ExerciseResponseDto>> searchExercises(@Valid @RequestBody SearchRequestDto request) {
+  public ResponseEntity<List<ExerciseResponseDto>> searchExercises(
+          @Valid @RequestBody SearchRequestDto request) {
     return ResponseEntity.ok(exerciseService.searchExercises(request));
   }
 }

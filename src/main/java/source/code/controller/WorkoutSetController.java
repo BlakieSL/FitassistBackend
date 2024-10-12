@@ -31,7 +31,8 @@ public class WorkoutSetController {
   }
 
   @GetMapping("/workout-type/{workoutTypeId}")
-  public ResponseEntity<List<WorkoutSetDto>> getWorkoutSetsByWorkoutType(@PathVariable int workoutTypeId) {
+  public ResponseEntity<List<WorkoutSetDto>> getWorkoutSetsByWorkoutType(
+          @PathVariable int workoutTypeId) {
     List<WorkoutSetDto> workoutSets = workoutSetService.getWorkoutSetsByWorkoutType(workoutTypeId);
     return ResponseEntity.ok(workoutSets);
   }
@@ -43,7 +44,8 @@ public class WorkoutSetController {
   }
 
   @PostMapping
-  public ResponseEntity<WorkoutSetDto> createWorkoutSet(@Valid @RequestBody WorkoutSetDto workoutSetDto) {
+  public ResponseEntity<WorkoutSetDto> createWorkoutSet(
+          @Valid @RequestBody WorkoutSetDto workoutSetDto) {
     WorkoutSetDto response = workoutSetService.createWorkoutSet(workoutSetDto);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }

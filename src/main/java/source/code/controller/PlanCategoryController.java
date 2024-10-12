@@ -49,7 +49,8 @@ public class PlanCategoryController {
   }
 
   @GetMapping("/{expertiseLevelId}/expertise-level")
-  public ResponseEntity<List<PlanResponseDto>> getPlansByExpertiseLevel(@PathVariable int expertiseLevelId) {
+  public ResponseEntity<List<PlanResponseDto>> getPlansByExpertiseLevel(
+          @PathVariable int expertiseLevelId) {
     List<PlanResponseDto> plans = planService.getPlansByExpertiseLevel(expertiseLevelId);
     return ResponseEntity.ok(plans);
   }
