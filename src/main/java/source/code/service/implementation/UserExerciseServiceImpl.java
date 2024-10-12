@@ -4,9 +4,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
-import source.code.model.Exercise;
-import source.code.model.User;
-import source.code.model.UserExercise;
+import source.code.model.Exercise.Exercise;
+import source.code.model.User.User;
+import source.code.model.User.UserExercise;
 import source.code.repository.ExerciseRepository;
 import source.code.repository.UserExerciseRepository;
 import source.code.repository.UserRepository;
@@ -30,8 +30,8 @@ public class UserExerciseServiceImpl implements UserExerciseService {
   }
 
   @Transactional
-  public void saveExerciseToUser(int exerciseId, int userId, short type) {
-    if (userExerciseRepository.existsByUserIdAndExerciseIdAndType(userId, exerciseId, type)) {
+  public void saveExerciseToUser(int userId, int exerciseId,  short type) {
+    if (isAlreadySaved(userId, exerciseId, type)) {
       throw new NotUniqueRecordException(
               "User with id: " + userId
                       + " already has exercise with id: " + exerciseId
@@ -51,6 +51,10 @@ public class UserExerciseServiceImpl implements UserExerciseService {
     UserExercise userExercise =
             UserExercise.createWithUserExerciseType(user, exercise, type);
     userExerciseRepository.save(userExercise);
+  }
+
+  private boolean isAlreadySaved(int userId, int exerciseId, short type) {
+    return userExerciseRepository.existsByUserIdAndExerciseIdAndType(userId, exerciseId, type);
   }
 
   @Transactional

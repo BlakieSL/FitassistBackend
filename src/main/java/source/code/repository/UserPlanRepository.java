@@ -1,7 +1,7 @@
 package source.code.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import source.code.model.UserPlan;
+import source.code.model.User.UserPlan;
 
 import java.util.List;
 import java.util.Optional;

@@ -4,9 +4,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
-import source.code.model.Food;
-import source.code.model.User;
-import source.code.model.UserFood;
+import source.code.model.Food.Food;
+import source.code.model.User.User;
+import source.code.model.User.UserFood;
 import source.code.repository.FoodRepository;
 import source.code.repository.UserFoodRepository;
 import source.code.repository.UserRepository;
@@ -30,8 +30,8 @@ public class UserFoodServiceImpl implements UserFoodService {
   }
 
   @Transactional
-  public void saveFoodToUser(int foodId, int userId, short type) {
-    if (userFoodRepository.existsByUserIdAndFoodIdAndType(userId, foodId, type)) {
+  public void saveFoodToUser(int userId, int foodId, short type) {
+    if (isFoodAlreadySaved(userId, foodId, type)) {
       throw new NotUniqueRecordException(
               "User with id: " + userId
                       + " already has saved food with id: " + foodId
@@ -51,6 +51,10 @@ public class UserFoodServiceImpl implements UserFoodService {
     UserFood userFood =
             UserFood.createWithUserFoodType(user, food, type);
     userFoodRepository.save(userFood);
+  }
+
+  private boolean isFoodAlreadySaved(int userId, int foodId, short type) {
+    return userFoodRepository.existsByUserIdAndFoodIdAndType(userId, foodId, type);
   }
 
   @Transactional

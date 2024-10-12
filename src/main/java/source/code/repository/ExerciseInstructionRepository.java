@@ -1,7 +1,7 @@
 package source.code.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import source.code.model.ExerciseInstruction;
+import source.code.model.Exercise.ExerciseInstruction;
 
 import java.util.List;
 

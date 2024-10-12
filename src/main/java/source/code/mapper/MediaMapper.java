@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import source.code.dto.request.MediaCreateDto;
 import source.code.dto.response.MediaResponseDto;
 import source.code.exception.FileProcessingException;
-import source.code.model.Media;
+import source.code.model.Media.Media;
 
 import java.io.IOException;
 

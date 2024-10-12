@@ -8,7 +8,7 @@ import source.code.dto.other.PlanCategoryShortDto;
 import source.code.dto.request.PlanCreateDto;
 import source.code.dto.response.PlanCategoryResponseDto;
 import source.code.dto.response.PlanResponseDto;
-import source.code.model.*;
+import source.code.model.Plan.*;
 import source.code.repository.*;
 
 import java.util.HashSet;

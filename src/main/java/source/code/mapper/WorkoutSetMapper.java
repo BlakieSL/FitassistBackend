@@ -3,7 +3,7 @@ package source.code.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import source.code.dto.WorkoutSetDto;
-import source.code.model.WorkoutSet;
+import source.code.model.Workout.WorkoutSet;
 
 @Mapper(componentModel = "spring")
 public interface WorkoutSetMapper {

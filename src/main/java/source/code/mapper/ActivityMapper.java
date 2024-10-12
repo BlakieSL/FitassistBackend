@@ -7,9 +7,9 @@ import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.ActivityCategoryResponseDto;
 import source.code.dto.response.ActivityResponseDto;
 import source.code.helper.CalculationsHelper;
-import source.code.model.Activity;
-import source.code.model.ActivityCategory;
-import source.code.model.User;
+import source.code.model.Activity.Activity;
+import source.code.model.Activity.ActivityCategory;
+import source.code.model.User.User;
 import source.code.repository.ActivityCategoryRepository;
 
 import java.util.NoSuchElementException;

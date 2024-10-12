@@ -85,7 +85,7 @@ public class UserController {
           @PathVariable int recipeId,
           @PathVariable short typeId) {
 
-    userRecipeService.saveRecipeToUser(recipeId, userId, typeId);
+    userRecipeService.saveRecipeToUser(userId, recipeId, typeId);
     return ResponseEntity.ok().build();
   }
 
@@ -105,7 +105,7 @@ public class UserController {
           @PathVariable int exerciseId,
           @PathVariable short typeId) {
 
-    userExerciseService.saveExerciseToUser(exerciseId, userId, typeId);
+    userExerciseService.saveExerciseToUser(userId, exerciseId, typeId);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
@@ -125,7 +125,7 @@ public class UserController {
           @PathVariable int planId,
           @PathVariable short typeId) {
 
-    userPlanService.savePlanToUser(planId, userId, typeId);
+    userPlanService.savePlanToUser(userId, planId, typeId);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
@@ -155,7 +155,7 @@ public class UserController {
           @PathVariable int foodId,
           @PathVariable short typeId) {
 
-    userFoodService.deleteSavedFoodFromUser(foodId, userId, typeId);
+    userFoodService.deleteSavedFoodFromUser(userId, foodId, typeId);
     return ResponseEntity.ok().build();
   }
 
@@ -165,7 +165,7 @@ public class UserController {
           @PathVariable int activityId,
           @PathVariable short typeId) {
 
-    userActivityService.saveActivityToUser(activityId, userId, typeId);
+    userActivityService.saveActivityToUser(userId, activityId, typeId);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
