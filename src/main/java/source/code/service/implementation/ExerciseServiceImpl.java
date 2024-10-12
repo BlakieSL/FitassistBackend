@@ -8,9 +8,9 @@ import source.code.dto.response.ExerciseCategoryResponseDto;
 import source.code.dto.response.ExerciseInstructionResponseDto;
 import source.code.dto.response.ExerciseResponseDto;
 import source.code.dto.response.ExerciseTipResponseDto;
-import source.code.helper.ValidationHelper;
 import source.code.mapper.ExerciseMapper;
-import source.code.model.*;
+import source.code.model.Exercise.*;
+import source.code.model.User.UserExercise;
 import source.code.repository.*;
 import source.code.service.declaration.ExerciseService;
 

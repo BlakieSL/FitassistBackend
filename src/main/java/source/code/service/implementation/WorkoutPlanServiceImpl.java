@@ -2,9 +2,9 @@ package source.code.service.implementation;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import source.code.model.Plan;
-import source.code.model.Workout;
-import source.code.model.WorkoutPlan;
+import source.code.model.Plan.Plan;
+import source.code.model.Workout.Workout;
+import source.code.model.Workout.WorkoutPlan;
 import source.code.repository.PlanRepository;
 import source.code.repository.WorkoutPlanRepository;
 import source.code.repository.WorkoutRepository;

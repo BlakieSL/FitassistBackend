@@ -8,9 +8,9 @@ import source.code.dto.other.RecipeCategoryShortDto;
 import source.code.dto.request.RecipeCreateDto;
 import source.code.dto.response.RecipeCategoryResponseDto;
 import source.code.dto.response.RecipeResponseDto;
-import source.code.model.Recipe;
-import source.code.model.RecipeCategory;
-import source.code.model.RecipeCategoryAssociation;
+import source.code.model.Recipe.Recipe;
+import source.code.model.Recipe.RecipeCategory;
+import source.code.model.Recipe.RecipeCategoryAssociation;
 import source.code.repository.RecipeCategoryRepository;
 
 import java.util.HashSet;

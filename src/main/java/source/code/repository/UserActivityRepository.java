@@ -1,7 +1,7 @@
 package source.code.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import source.code.model.UserActivity;
+import source.code.model.User.UserActivity;
 
 import java.util.List;
 import java.util.Optional;

@@ -4,10 +4,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
-import source.code.helper.ValidationHelper;
-import source.code.model.Plan;
-import source.code.model.User;
-import source.code.model.UserPlan;
+import source.code.model.Plan.Plan;
+import source.code.model.User.User;
+import source.code.model.User.UserPlan;
 import source.code.repository.PlanRepository;
 import source.code.repository.UserPlanRepository;
 import source.code.repository.UserRepository;
@@ -30,8 +29,8 @@ public class UserPlanServiceImpl implements UserPlanService {
   }
 
   @Transactional
-  public void savePlanToUser(int planId, int userId, short type) {
-    if (userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type)) {
+  public void savePlanToUser(int userId, int planId,  short type) {
+    if (isAlreadySaved(userId, planId, type)) {
       throw new NotUniqueRecordException(
               "User with id: " + userId
                       + " already has plan with id: " + planId
@@ -48,6 +47,10 @@ public class UserPlanServiceImpl implements UserPlanService {
     UserPlan userPlan =
             UserPlan.createWithUserPlanType(user, plan, type);
     userPlanRepository.save(userPlan);
+  }
+
+  private boolean isAlreadySaved(int userId, int planId, short type) {
+    return userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type);
   }
 
   @Transactional

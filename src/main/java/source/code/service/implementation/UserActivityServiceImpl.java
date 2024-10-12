@@ -4,9 +4,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
-import source.code.model.Activity;
-import source.code.model.User;
-import source.code.model.UserActivity;
+import source.code.model.Activity.Activity;
+import source.code.model.User.User;
+import source.code.model.User.UserActivity;
 import source.code.repository.ActivityRepository;
 import source.code.repository.UserActivityRepository;
 import source.code.repository.UserRepository;
@@ -30,8 +30,8 @@ public class UserActivityServiceImpl implements UserActivityService {
   }
 
   @Transactional
-  public void saveActivityToUser(int activityId, int userId, short type) {
-    if (userActivityRepository.existsByUserIdAndActivityIdAndType(userId, activityId, type)) {
+  public void saveActivityToUser(int userId, int activityId, short type) {
+    if (isAlreadySaved(userId, activityId, type)) {
       throw new NotUniqueRecordException(
               "User with id: " + userId
                       + " already has activity with id: " + activityId
@@ -51,6 +51,10 @@ public class UserActivityServiceImpl implements UserActivityService {
     UserActivity userActivity =
             UserActivity.createWithUserActivityType(user, activity, type);
     userActivityRepository.save(userActivity);
+  }
+
+  private boolean isAlreadySaved(int userId, int activityId, short type) {
+    return userActivityRepository.existsByUserIdAndActivityIdAndType(userId, activityId, type);
   }
 
   @Transactional

@@ -1,7 +1,7 @@
 package source.code.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import source.code.model.ActivityCategory;
+import source.code.model.Activity.ActivityCategory;
 
 import java.util.Optional;
 
