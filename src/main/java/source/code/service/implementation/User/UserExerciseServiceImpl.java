@@ -48,8 +48,8 @@ public class UserExerciseServiceImpl implements UserExerciseService {
             .orElseThrow(() -> new NoSuchElementException(
                     "Exercise with id: " + exerciseId + " not found"));
 
-    UserExercise userExercise =
-            UserExercise.createWithUserExerciseType(user, exercise, type);
+    UserExercise userExercise = UserExercise
+            .createWithUserExerciseType(user, exercise, type);
     userExerciseRepository.save(userExercise);
   }
 

@@ -24,4 +24,11 @@ public class ExerciseResponseDto {
   private ExerciseCategoryShortDto exerciseEquipment;
   private ExerciseCategoryShortDto exerciseType;
   private List<ExerciseCategoryShortDto> categories;
+
+  public static ExerciseResponseDto createWithIdAndName(int id, String name) {
+    ExerciseResponseDto responseDto = new ExerciseResponseDto();
+    responseDto.setId(id);
+    responseDto.setName(name);
+    return responseDto;
+  }
 }
