@@ -1,4 +1,4 @@
-package source.code.service.implementation;
+package source.code.service.implementation.Acitivity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;

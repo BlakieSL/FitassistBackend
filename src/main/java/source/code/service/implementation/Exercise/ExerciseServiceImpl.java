@@ -1,4 +1,4 @@
-package source.code.service.implementation;
+package source.code.service.implementation.Exercise;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,7 @@ import source.code.service.declaration.ExerciseService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,23 +26,17 @@ public class ExerciseServiceImpl implements ExerciseService {
   private final UserExerciseRepository userExerciseRepository;
   private final ExerciseCategoryRepository exerciseCategoryRepository;
   private final ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository;
-  private final ExerciseInstructionRepository exerciseInstructionRepository;
-  private final ExerciseTipRepository exerciseTipRepository;
 
   public ExerciseServiceImpl(ExerciseMapper exerciseMapper,
                              ExerciseRepository exerciseRepository,
                              UserExerciseRepository userExerciseRepository,
                              ExerciseCategoryRepository exerciseCategoryRepository,
-                             ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository,
-                             ExerciseInstructionRepository exerciseInstructionRepository,
-                             ExerciseTipRepository exerciseTipRepository) {
+                             ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository) {
     this.exerciseMapper = exerciseMapper;
     this.exerciseRepository = exerciseRepository;
     this.userExerciseRepository = userExerciseRepository;
     this.exerciseCategoryRepository = exerciseCategoryRepository;
     this.exerciseCategoryAssociationRepository = exerciseCategoryAssociationRepository;
-    this.exerciseInstructionRepository = exerciseInstructionRepository;
-    this.exerciseTipRepository = exerciseTipRepository;
   }
 
   @Transactional
@@ -111,61 +106,34 @@ public class ExerciseServiceImpl implements ExerciseService {
             .collect(Collectors.toList());
   }
 
-  public List<ExerciseResponseDto> getExercisesByExpertiseLevel(int expertiseLevelId) {
-    List<Exercise> exercises = exerciseRepository.findByExpertiseLevel_Id(expertiseLevelId);
+  private List<ExerciseResponseDto> getExercisesByField(Function<Exercise, ?> fieldExtractor, int fieldValue) {
+    List<Exercise> exercises = exerciseRepository.findAll().stream()
+            .filter(exercise -> fieldExtractor.apply(exercise).equals(fieldValue))
+            .collect(Collectors.toList());
 
     return exercises.stream()
             .map(exerciseMapper::toDto)
             .collect(Collectors.toList());
+  }
+
+  public List<ExerciseResponseDto> getExercisesByExpertiseLevel(int expertiseLevelId) {
+    return getExercisesByField(Exercise::getExpertiseLevel, expertiseLevelId);
   }
 
   public List<ExerciseResponseDto> getExercisesByForceType(int forceTypeId) {
-    List<Exercise> exercises = exerciseRepository.findByForceType_Id(forceTypeId);
-
-    return exercises.stream()
-            .map(exerciseMapper::toDto)
-            .collect(Collectors.toList());
+    return getExercisesByField(Exercise::getForceType, forceTypeId);
   }
 
   public List<ExerciseResponseDto> getExercisesByMechanicsType(int mechanicsTypeId) {
-    List<Exercise> exercises = exerciseRepository.findByMechanicsType_Id(mechanicsTypeId);
-
-    return exercises.stream()
-            .map(exerciseMapper::toDto)
-            .collect(Collectors.toList());
+    return getExercisesByField(Exercise::getMechanicsType, mechanicsTypeId);
   }
 
   public List<ExerciseResponseDto> getExercisesByEquipment(int exerciseEquipmentId) {
-    List<Exercise> exercises = exerciseRepository.findByExerciseEquipment_Id(exerciseEquipmentId);
-
-    return exercises.stream()
-            .map(exerciseMapper::toDto)
-            .collect(Collectors.toList());
+    return getExercisesByField(Exercise::getExerciseEquipment, exerciseEquipmentId);
   }
 
   public List<ExerciseResponseDto> getExercisesByType(int exerciseTypeId) {
-    List<Exercise> exercises = exerciseRepository.findByExerciseType_Id(exerciseTypeId);
-
-    return exercises.stream()
-            .map(exerciseMapper::toDto)
-            .collect(Collectors.toList());
-  }
-
-  public List<ExerciseInstructionResponseDto> getExerciseInstructions(int exerciseId) {
-    List<ExerciseInstruction> instructions = exerciseInstructionRepository
-            .getAllByExerciseId(exerciseId);
-
-    return instructions.stream()
-            .map(exerciseMapper::toInstructionDto)
-            .collect(Collectors.toList());
-  }
-
-  public List<ExerciseTipResponseDto> getExerciseTips(int exerciseId) {
-    List<ExerciseTip> tips = exerciseTipRepository.getAllByExerciseId(exerciseId);
-
-    return tips.stream()
-            .map(exerciseMapper::toTipDto)
-            .collect(Collectors.toList());
+    return getExercisesByField(Exercise::getExerciseType, exerciseTypeId);
   }
 }
 

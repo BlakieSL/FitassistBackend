@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.repository.PlanRepository;
 import source.code.repository.UserPlanRepository;
 import source.code.repository.UserRepository;
+import source.code.service.implementation.User.UserPlanServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class UserPlanServiceTest {

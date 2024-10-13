@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.repository.ExerciseRepository;
 import source.code.repository.UserExerciseRepository;
 import source.code.repository.UserRepository;
+import source.code.service.implementation.User.UserExerciseServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class UserExerciseServiceTest {
