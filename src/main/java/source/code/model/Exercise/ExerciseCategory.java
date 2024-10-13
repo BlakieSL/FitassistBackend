@@ -36,4 +36,11 @@ public class ExerciseCategory {
 
   @OneToMany(mappedBy = "exerciseCategory", cascade = CascadeType.REMOVE)
   private final Set<ExerciseCategoryAssociation> exerciseCategoryAssociations = new HashSet<>();
+
+  public static ExerciseCategory createWithId(int id) {
+    ExerciseCategory exerciseCategory = new ExerciseCategory();
+    exerciseCategory.setId(id);
+    return exerciseCategory;
+  }
+
 }

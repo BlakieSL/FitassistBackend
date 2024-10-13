@@ -28,4 +28,10 @@ public class MechanicsType {
 
   @OneToMany(mappedBy = "mechanicsType", cascade = CascadeType.REMOVE)
   private final Set<Exercise> exercises = new HashSet<>();
+
+  public static MechanicsType createWithId(int id) {
+    MechanicsType mechanicsType = new MechanicsType();
+    mechanicsType.setId(id);
+    return mechanicsType;
+  }
 }

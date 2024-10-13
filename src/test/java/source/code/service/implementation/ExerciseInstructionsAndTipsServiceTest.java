@@ -14,7 +14,6 @@ import source.code.model.Exercise.ExerciseInstruction;
 import source.code.model.Exercise.ExerciseTip;
 import source.code.repository.ExerciseInstructionRepository;
 import source.code.repository.ExerciseTipRepository;
-import source.code.service.declaration.ExerciseInstructionsAndTipsService;
 import source.code.service.implementation.Exercise.ExerciseInstructionsAndTipsServiceImpl;
 
 import java.util.List;
