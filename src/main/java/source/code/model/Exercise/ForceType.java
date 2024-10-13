@@ -28,4 +28,10 @@ public class ForceType {
 
   @OneToMany(mappedBy = "forceType", cascade = CascadeType.REMOVE)
   private final Set<Exercise> exercises = new HashSet<>();
+
+  public static ForceType createWithId(int id) {
+    ForceType forceType = new ForceType();
+    forceType.setId(id);
+    return forceType;
+  }
 }

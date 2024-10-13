@@ -27,5 +27,11 @@ public class ExerciseType {
 
   @OneToMany(mappedBy = "exerciseType", cascade = CascadeType.REMOVE)
   private final Set<Exercise> exercises = new HashSet<>();
+
+  public static ExerciseType createWithId(int id) {
+    ExerciseType exerciseType = new ExerciseType();
+    exerciseType.setId(id);
+    return exerciseType;
+  }
 }
 //strength, hypertrophy, cardio, stretching, flexibility

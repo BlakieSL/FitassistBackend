@@ -38,4 +38,13 @@ public class ExerciseCategoryAssociation {
 
     return exerciseCategoryAssociation;
   }
+
+  public static ExerciseCategoryAssociation createWithIdAndExerciseAndExerciseCategory(
+          int id, Exercise exercise, ExerciseCategory exerciseCategory) {
+    ExerciseCategoryAssociation association = new ExerciseCategoryAssociation();
+    association.setId(id);
+    association.setExercise(exercise);
+    association.setExerciseCategory(exerciseCategory);
+    return association;
+  }
 }

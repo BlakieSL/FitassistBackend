@@ -27,4 +27,10 @@ public class ExerciseEquipment {
 
   @OneToMany(mappedBy = "exerciseEquipment", cascade = CascadeType.REMOVE)
   private final Set<Exercise> exercises = new HashSet<>();
+
+  public static ExerciseEquipment createWithId(int id) {
+    ExerciseEquipment exerciseEquipment = new ExerciseEquipment();
+    exerciseEquipment.setId(id);
+    return exerciseEquipment;
+  }
 }

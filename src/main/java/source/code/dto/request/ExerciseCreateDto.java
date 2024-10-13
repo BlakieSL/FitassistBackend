@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.model.Exercise.Exercise;
 
 import java.util.List;
 
@@ -50,4 +51,10 @@ public class ExerciseCreateDto {
   private int exerciseTypeId;
 
   private List<Integer> categoryIds;
+
+  public static ExerciseCreateDto createWithName(String name) {
+    ExerciseCreateDto createDto = new ExerciseCreateDto();
+    createDto.setName(name);
+    return createDto;
+  }
 }

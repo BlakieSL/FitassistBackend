@@ -2,10 +2,7 @@ package source.code.model.Exercise;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,4 +24,10 @@ public class ExpertiseLevel {
 
   @OneToMany(mappedBy = "expertiseLevel", cascade = CascadeType.REMOVE)
   private final Set<Exercise> exercises = new HashSet<>();
+
+  public static ExpertiseLevel createWithId(int id){
+    ExpertiseLevel expertiseLevel = new ExpertiseLevel();
+    expertiseLevel.setId(id);
+    return expertiseLevel;
+  }
 }

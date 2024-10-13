@@ -14,4 +14,10 @@ public class ExerciseCategoryResponseDto {
   private String name;
   private String iconUrl;
   private String gradient;
+
+  public static ExerciseCategoryResponseDto createWithId(int id) {
+    ExerciseCategoryResponseDto responseDto = new ExerciseCategoryResponseDto();
+    responseDto.setId(id);
+    return responseDto;
+  }
 }

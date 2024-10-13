@@ -42,7 +42,6 @@ public class ExerciseServiceImpl implements ExerciseService {
   @Transactional
   public ExerciseResponseDto createExercise(ExerciseCreateDto dto) {
     Exercise exercise = exerciseRepository.save(exerciseMapper.toEntity(dto));
-
     return exerciseMapper.toDto(exercise);
   }
 
@@ -50,13 +49,11 @@ public class ExerciseServiceImpl implements ExerciseService {
     Exercise exercise = exerciseRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException(
                     "Exercise with id: " + id + " not found"));
-
     return exerciseMapper.toDto(exercise);
   }
 
   public List<ExerciseResponseDto> getAllExercises() {
     List<Exercise> exercises = exerciseRepository.findAll();
-
     return exercises.stream()
             .map(exerciseMapper::toDto)
             .collect(Collectors.toList());
@@ -106,9 +103,9 @@ public class ExerciseServiceImpl implements ExerciseService {
             .collect(Collectors.toList());
   }
 
-  private List<ExerciseResponseDto> getExercisesByField(Function<Exercise, ?> fieldExtractor, int fieldValue) {
+  private <T> List<ExerciseResponseDto> getExercisesByField(Function<Exercise, T> fieldExtractor, Function<T, Integer> idExtractor, int fieldValue) {
     List<Exercise> exercises = exerciseRepository.findAll().stream()
-            .filter(exercise -> fieldExtractor.apply(exercise).equals(fieldValue))
+            .filter(exercise -> idExtractor.apply(fieldExtractor.apply(exercise)).equals(fieldValue))
             .collect(Collectors.toList());
 
     return exercises.stream()
@@ -116,24 +113,26 @@ public class ExerciseServiceImpl implements ExerciseService {
             .collect(Collectors.toList());
   }
 
+
   public List<ExerciseResponseDto> getExercisesByExpertiseLevel(int expertiseLevelId) {
-    return getExercisesByField(Exercise::getExpertiseLevel, expertiseLevelId);
+    return getExercisesByField(Exercise::getExpertiseLevel, ExpertiseLevel::getId, expertiseLevelId);
   }
 
   public List<ExerciseResponseDto> getExercisesByForceType(int forceTypeId) {
-    return getExercisesByField(Exercise::getForceType, forceTypeId);
+    return getExercisesByField(Exercise::getForceType, ForceType::getId, forceTypeId);
   }
 
   public List<ExerciseResponseDto> getExercisesByMechanicsType(int mechanicsTypeId) {
-    return getExercisesByField(Exercise::getMechanicsType, mechanicsTypeId);
+    return getExercisesByField(Exercise::getMechanicsType, MechanicsType::getId, mechanicsTypeId);
   }
 
   public List<ExerciseResponseDto> getExercisesByEquipment(int exerciseEquipmentId) {
-    return getExercisesByField(Exercise::getExerciseEquipment, exerciseEquipmentId);
+    return getExercisesByField(Exercise::getExerciseEquipment, ExerciseEquipment::getId, exerciseEquipmentId);
   }
 
   public List<ExerciseResponseDto> getExercisesByType(int exerciseTypeId) {
-    return getExercisesByField(Exercise::getExerciseType, exerciseTypeId);
+    return getExercisesByField(Exercise::getExerciseType, ExerciseType::getId, exerciseTypeId);
   }
+
 }
 
