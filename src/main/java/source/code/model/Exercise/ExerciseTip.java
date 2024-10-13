@@ -31,4 +31,11 @@ public class ExerciseTip {
   @ManyToOne
   @JoinColumn(name = "exercise_id", nullable = false)
   private Exercise exercise;
+
+  public static ExerciseTip createWithIdAndExercise(int id, Exercise exercise) {
+    ExerciseTip exerciseTip = new ExerciseTip();
+    exerciseTip.setId(id);
+    exerciseTip.setExercise(exercise);
+    return exerciseTip;
+  }
 }

@@ -10,6 +10,7 @@ import source.code.mapper.WorkoutMapper;
 import source.code.repository.WorkoutPlanRepository;
 import source.code.repository.WorkoutRepository;
 import source.code.repository.WorkoutTypeRepository;
+import source.code.service.implementation.Workout.WorkoutServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class WorkoutServiceTest {

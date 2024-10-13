@@ -13,4 +13,9 @@ public class ExerciseTipResponseDto {
   private Integer id;
   private short number;
   private String text;
+  public static ExerciseTipResponseDto createWithId(int id) {
+    ExerciseTipResponseDto responseDto = new ExerciseTipResponseDto();
+    responseDto.setId(id);
+    return responseDto;
+  }
 }

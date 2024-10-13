@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.repository.FoodRepository;
 import source.code.repository.UserFoodRepository;
 import source.code.repository.UserRepository;
+import source.code.service.implementation.User.UserFoodServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class UserFoodServiceTest {

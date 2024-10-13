@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.repository.ActivityRepository;
 import source.code.repository.UserActivityRepository;
 import source.code.repository.UserRepository;
+import source.code.service.implementation.User.UserActivityServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class UserActivityServiceTest {

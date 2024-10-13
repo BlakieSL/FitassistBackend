@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.repository.PlanRepository;
 import source.code.repository.WorkoutPlanRepository;
 import source.code.repository.WorkoutRepository;
+import source.code.service.implementation.Workout.WorkoutPlanServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class WorkoutPlanServiceTest {

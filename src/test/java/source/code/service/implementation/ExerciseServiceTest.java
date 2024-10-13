@@ -6,9 +6,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import source.code.helper.ValidationHelper;
 import source.code.mapper.ExerciseMapper;
+import source.code.model.Exercise.Exercise;
 import source.code.repository.*;
+import source.code.service.implementation.Exercise.ExerciseServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class ExerciseServiceTest {
@@ -145,26 +146,6 @@ public class ExerciseServiceTest {
 
   @Test
   void getExercisesByType_shouldReturnEmptyLIst_whenNoExercisesFound() {
-
-  }
-
-  @Test
-  void getExerciseInstructions_shouldReturnInstructions_whenInstructionsFound() {
-
-  }
-
-  @Test
-  void getExerciseInstructions_shouldReturnEmptyList_whenNoInstructionsFound() {
-
-  }
-
-  @Test
-  void getExerciseTips_shouldReturnTips_whenTipsFound() {
-
-  }
-
-  @Test
-  void getExerciseTips_shouldReturnEmptyList_whenNoTipsFound() {
 
   }
 }

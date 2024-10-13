@@ -11,6 +11,7 @@ import source.code.repository.RecipeCategoryAssociationRepository;
 import source.code.repository.RecipeCategoryRepository;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;
+import source.code.service.implementation.Recipe.RecipeServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class RecipeServiceTest {

@@ -50,19 +50,6 @@ public class ExerciseController {
     return ResponseEntity.ok(dto);
   }
 
-  @GetMapping("/{id}/instructions")
-  public ResponseEntity<List<ExerciseInstructionResponseDto>> getAllInstructionsByExercise(
-          @PathVariable int id) {
-    List<ExerciseInstructionResponseDto> instructions = exerciseService.getExerciseInstructions(id);
-    return ResponseEntity.ok(instructions);
-  }
-
-  @GetMapping("/{id}/tips")
-  public ResponseEntity<List<ExerciseTipResponseDto>> getAllTipsByExercise(@PathVariable int id) {
-    List<ExerciseTipResponseDto> tips = exerciseService.getExerciseTips(id);
-    return ResponseEntity.ok(tips);
-  }
-
   @PostMapping
   public ResponseEntity<ExerciseResponseDto> createExercise(@Valid @RequestBody ExerciseCreateDto dto) {
     ExerciseResponseDto savedExercise = exerciseService.createExercise(dto);

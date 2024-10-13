@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import source.code.repository.*;
+import source.code.service.implementation.Workout.WorkoutPlanServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class RecipeFoodServieTest {

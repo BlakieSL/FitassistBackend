@@ -22,6 +22,7 @@ import source.code.model.User.User;
 import source.code.repository.ActivityRepository;
 import source.code.repository.DailyActivityRepository;
 import source.code.repository.UserRepository;
+import source.code.service.implementation.Acitivity.DailyActivityServiceImpl;
 
 import java.time.LocalDate;
 import java.util.Collections;

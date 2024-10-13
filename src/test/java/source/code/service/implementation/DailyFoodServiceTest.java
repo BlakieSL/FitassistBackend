@@ -23,6 +23,7 @@ import source.code.model.User.User;
 import source.code.repository.DailyFoodRepository;
 import source.code.repository.FoodRepository;
 import source.code.repository.UserRepository;
+import source.code.service.implementation.Food.DailyFoodServiceImpl;
 
 import java.time.LocalDate;
 import java.util.Collections;

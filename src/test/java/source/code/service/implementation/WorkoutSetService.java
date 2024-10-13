@@ -1,6 +1,5 @@
 package source.code.service.implementation;
 
-import groovy.transform.TailRecursive;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +10,7 @@ import source.code.mapper.WorkoutSetMapper;
 import source.code.repository.ExerciseRepository;
 import source.code.repository.WorkoutSetRepository;
 import source.code.repository.WorkoutTypeRepository;
+import source.code.service.implementation.Workout.WorkoutSetServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class WorkoutSetService {

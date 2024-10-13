@@ -6,9 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import source.code.helper.ValidationHelper;
 import source.code.mapper.MediaMapper;
 import source.code.repository.MediaRepository;
+import source.code.service.implementation.Media.MediaServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class MediaServiceTest {

@@ -1,4 +1,4 @@
-package source.code.service.implementation;
+package source.code.service.implementation.Workout;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
