@@ -13,4 +13,10 @@ public class ExerciseInstructionResponseDto {
   private Integer id;
   private short number;
   private String text;
+
+  public static ExerciseInstructionResponseDto createWithId(int id) {
+    ExerciseInstructionResponseDto responseDto = new ExerciseInstructionResponseDto();
+    responseDto.setId(id);
+    return responseDto;
+  }
 }

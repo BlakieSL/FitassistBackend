@@ -11,6 +11,7 @@ import source.code.helper.JsonPatchHelper;
 import source.code.helper.ValidationHelper;
 import source.code.mapper.UserMapper;
 import source.code.repository.UserRepository;
+import source.code.service.implementation.User.UserServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {

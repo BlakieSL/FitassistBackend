@@ -6,11 +6,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import source.code.helper.ValidationHelper;
 import source.code.mapper.FoodMapper;
 import source.code.repository.FoodCategoryRepository;
 import source.code.repository.FoodRepository;
 import source.code.repository.UserFoodRepository;
+import source.code.service.implementation.Food.FoodServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class FoodServiceTest {

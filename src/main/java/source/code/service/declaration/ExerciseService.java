@@ -34,8 +34,5 @@ public interface ExerciseService {
 
   List<ExerciseResponseDto> getExercisesByType(int exerciseTypeId);
 
-  List<ExerciseInstructionResponseDto> getExerciseInstructions(int exerciseId);
-
-  List<ExerciseTipResponseDto> getExerciseTips(int exerciseId);
 }
 
