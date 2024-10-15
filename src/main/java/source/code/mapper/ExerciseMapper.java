@@ -54,7 +54,7 @@ public abstract class ExerciseMapper {
   @Mapping(target = "exerciseEquipment", source = "exerciseEquipmentId", qualifiedByName = "mapExerciseEquipment")
   @Mapping(target = "exerciseType", source = "exerciseTypeId", qualifiedByName = "mapExerciseType")
   @Mapping(target = "id", ignore = true)
-  @Mapping(target = "user_exercise", ignore = true)
+  @Mapping(target = "userExercises", ignore = true)
   @Mapping(target = "workoutSet", ignore = true)
   public abstract Exercise toEntity(ExerciseCreateDto dto);
 
