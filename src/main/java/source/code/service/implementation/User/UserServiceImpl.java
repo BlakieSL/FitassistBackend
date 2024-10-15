@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   }
 
   private Optional<UserCredentialsDto> findUserCredentialsByEmail(String email) {
-    return userRepository.findByEmail(email).map(userMapper::toDetails);
+    return userRepository.findUserWithRolesByEmail(email).map(userMapper::toDetails);
   }
 
   public UserResponseDto getUser(int id) {
