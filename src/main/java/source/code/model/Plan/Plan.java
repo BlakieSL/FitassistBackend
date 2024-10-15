@@ -68,7 +68,8 @@ public class Plan {
   @JoinColumn(name = "plan_expertise_level_id", nullable = false)
   private PlanExpertiseLevel planExpertiseLevel;
 
-  @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  @OneToMany(mappedBy = "plan",
+          cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
   private final Set<PlanCategoryAssociation> planCategoryAssociations = new HashSet<>();
 
   @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE)

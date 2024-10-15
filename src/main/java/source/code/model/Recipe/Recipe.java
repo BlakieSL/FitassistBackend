@@ -46,10 +46,13 @@ public class Recipe {
   @Column(nullable = false)
   private Double score;
 
-  @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  @OneToMany(mappedBy = "recipe",
+          cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
   private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();
+
   @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE)
   private final Set<UserRecipe> userRecipes = new HashSet<>();
+
   @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private final Set<RecipeFood> recipeFoods = new HashSet<>();
 }
