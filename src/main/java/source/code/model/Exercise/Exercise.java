@@ -77,7 +77,7 @@ public class Exercise {
   private WorkoutSet workoutSet;
 
   @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE)
-  private Set<UserExercise> user_exercise;
+  private final Set<UserExercise> userExercises = new HashSet<>();
 
   @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private final Set<ExerciseInstruction> exerciseInstructions = new HashSet<>();
@@ -85,7 +85,7 @@ public class Exercise {
   @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private final Set<ExerciseTip> exerciseTips = new HashSet<>();
 
-  @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
   private final Set<ExerciseCategoryAssociation> exerciseCategoryAssociations = new HashSet<>();
 
   public static Exercise createWithId(int id) {

@@ -34,7 +34,7 @@ public class DailyFood {
 
   @OneToMany(mappedBy = "dailyFood",
           cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
-          orphanRemoval = true)
+          orphanRemoval = true  )
   @JsonManagedReference
   private final List<DailyFoodItem> dailyFoodItems = new ArrayList<>();
 
