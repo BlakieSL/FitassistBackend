@@ -58,6 +58,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     }
   }
 
+
   private void resetDailyActivity(DailyActivity dailyActivity) {
     dailyActivity.setDate(LocalDate.now());
     dailyActivity.getDailyActivityItems().clear();
@@ -149,6 +150,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 
     return dailyActivityRepository.save(newDailyActivity);
   }
+
 
   public DailyActivitiesResponseDto getActivitiesFromDailyActivityItem(int userId) {
     DailyActivity dailyActivity = getDailyActivityByUser(userId);

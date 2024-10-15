@@ -90,9 +90,6 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     dailyFoodItem.setAmount(amount);
   }
 
-  private  void saveDailyFoodItem(DailyFood dailyFood, DailyFoodItem dailyFoodItem) {
-    dailyFood.getDailyFoodItems().add(dailyFoodItem);
-  }
   @Transactional
   public void removeFoodFromDailyFoodItem(int userId, int foodId) {
     DailyFood dailyFood = getDailyFoodByUser(userId);

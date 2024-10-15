@@ -19,19 +19,22 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DailyActivity {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
+
+  @NotNull
+  @Column(nullable = false)
+  private LocalDate date;
+
+  @OneToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
+
   @OneToMany(mappedBy = "dailyActivity",
           cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
           orphanRemoval = true)
   private final List<DailyActivityItem> dailyActivityItems = new ArrayList<>();
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
-  @NotNull
-  @Column(nullable = false)
-  private LocalDate date;
-  @OneToOne
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user;
 
   public static DailyActivity createForToday(User user) {
     DailyActivity dailyActivity = new DailyActivity();
