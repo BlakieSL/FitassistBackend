@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import source.code.dto.response.PlanCategoryResponseDto;
 import source.code.dto.response.PlanResponseDto;
+import source.code.helper.enumerators.PlanField;
 import source.code.service.declaration.PlanService;
 
 import java.util.List;
@@ -30,28 +31,11 @@ public class PlanCategoryController {
     return ResponseEntity.ok(planService.getPlansByCategory(categoryId));
   }
 
-  @GetMapping("/{typeId}/type")
-  public ResponseEntity<List<PlanResponseDto>> getPlansByType(@PathVariable int typeId) {
-    List<PlanResponseDto> plans = planService.getPlansByType(typeId);
-    return ResponseEntity.ok(plans);
-  }
-
-  @GetMapping("/{durationId}/duration")
-  public ResponseEntity<List<PlanResponseDto>> getPlansByDuration(@PathVariable int durationId) {
-    List<PlanResponseDto> plans = planService.getPlansByDuration(durationId);
-    return ResponseEntity.ok(plans);
-  }
-
-  @GetMapping("/{equipmentId}/equipment")
-  public ResponseEntity<List<PlanResponseDto>> getPlansByEquipment(@PathVariable int equipmentId) {
-    List<PlanResponseDto> plans = planService.getPlansByEquipment(equipmentId);
-    return ResponseEntity.ok(plans);
-  }
-
-  @GetMapping("/{expertiseLevelId}/expertise-level")
-  public ResponseEntity<List<PlanResponseDto>> getPlansByExpertiseLevel(
-          @PathVariable int expertiseLevelId) {
-    List<PlanResponseDto> plans = planService.getPlansByExpertiseLevel(expertiseLevelId);
+  @GetMapping("/field/{field}/{value}")
+  public ResponseEntity<List<PlanResponseDto>> getPlansByField(
+          @PathVariable PlanField field,
+          @PathVariable int value) {
+    List<PlanResponseDto> plans = planService.getPlansByField(field, value);
     return ResponseEntity.ok(plans);
   }
 }

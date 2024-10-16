@@ -1,11 +1,10 @@
 package source.code.service.implementation.Acitivity;
 
 import jakarta.transaction.Transactional;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import source.code.cache.event.Activity.ActivityCreateEvent;
 import source.code.dto.request.ActivityCreateDto;
 import source.code.dto.request.CalculateActivityCaloriesRequestDto;
 import source.code.dto.request.SearchRequestDto;
@@ -31,6 +30,7 @@ import java.util.stream.Collectors;
 @Service
 public class ActivityServiceImpl implements ActivityService {
   private final ActivityMapper activityMapper;
+  private final ApplicationEventPublisher applicationEventPublisher;
   private final ActivityRepository activityRepository;
   private final UserRepository userRepository;
   private final ActivityCategoryRepository activityCategoryRepository;
@@ -38,23 +38,23 @@ public class ActivityServiceImpl implements ActivityService {
 
   public ActivityServiceImpl(
           ActivityMapper activityMapper,
+          ApplicationEventPublisher applicationEventPublisher,
           ActivityRepository activityRepository,
           UserRepository userRepository,
           ActivityCategoryRepository activityCategoryRepository,
           UserActivityRepository userActivityRepository) {
     this.activityMapper = activityMapper;
+    this.applicationEventPublisher = applicationEventPublisher;
     this.activityRepository = activityRepository;
     this.userRepository = userRepository;
     this.activityCategoryRepository = activityCategoryRepository;
     this.userActivityRepository = userActivityRepository;
   }
 
-  @Caching(evict = {
-          @CacheEvict(value = "allActivities", allEntries = true),
-          @CacheEvict(value = "activitiesByCategory", key = "#dto.categoryId")})
   @Transactional
   public ActivityResponseDto createActivity(ActivityCreateDto dto) {
     Activity activity = activityRepository.save(activityMapper.toEntity(dto));
+    applicationEventPublisher.publishEvent(new ActivityCreateEvent(this, dto));
 
     return activityMapper.toResponseDto(activity);
   }

@@ -2,14 +2,14 @@ package source.code.service.implementation.Exercise;
 
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import source.code.cache.event.Exercise.ExerciseCreateEvent;
 import source.code.dto.request.ExerciseCreateDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ExerciseCategoryResponseDto;
-import source.code.dto.response.ExerciseInstructionResponseDto;
 import source.code.dto.response.ExerciseResponseDto;
-import source.code.dto.response.ExerciseTipResponseDto;
-import source.code.helper.ExerciseField;
+import source.code.helper.enumerators.ExerciseField;
 import source.code.mapper.ExerciseMapper;
 import source.code.model.Exercise.*;
 import source.code.model.User.UserExercise;
@@ -24,17 +24,20 @@ import java.util.stream.Collectors;
 @Service
 public class ExerciseServiceImpl implements ExerciseService {
   private final ExerciseMapper exerciseMapper;
+  private final ApplicationEventPublisher applicationEventPublisher;
   private final ExerciseRepository exerciseRepository;
   private final UserExerciseRepository userExerciseRepository;
   private final ExerciseCategoryRepository exerciseCategoryRepository;
   private final ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository;
 
   public ExerciseServiceImpl(ExerciseMapper exerciseMapper,
+                             ApplicationEventPublisher applicationEventPublisher,
                              ExerciseRepository exerciseRepository,
                              UserExerciseRepository userExerciseRepository,
                              ExerciseCategoryRepository exerciseCategoryRepository,
                              ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository) {
     this.exerciseMapper = exerciseMapper;
+    this.applicationEventPublisher = applicationEventPublisher;
     this.exerciseRepository = exerciseRepository;
     this.userExerciseRepository = userExerciseRepository;
     this.exerciseCategoryRepository = exerciseCategoryRepository;
@@ -44,6 +47,8 @@ public class ExerciseServiceImpl implements ExerciseService {
   @Transactional
   public ExerciseResponseDto createExercise(ExerciseCreateDto dto) {
     Exercise exercise = exerciseRepository.save(exerciseMapper.toEntity(dto));
+    applicationEventPublisher.publishEvent(new ExerciseCreateEvent(this, dto));
+
     return exerciseMapper.toDto(exercise);
   }
 
@@ -108,6 +113,7 @@ public class ExerciseServiceImpl implements ExerciseService {
             .collect(Collectors.toList());
   }
 
+  @Cacheable(value = "exercisesByField", key = "#field.name() + '_' + #value")
   public List<ExerciseResponseDto> getExercisesByField(ExerciseField field, int value) {
     switch (field) {
       case EXPERTISE_LEVEL:
@@ -125,7 +131,9 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
   }
 
-  private <T> List<ExerciseResponseDto> getExercisesByField(Function<Exercise, T> fieldExtractor, Function<T, Integer> idExtractor, int fieldValue) {
+  private <T> List<ExerciseResponseDto> getExercisesByField(Function<Exercise, T> fieldExtractor,
+                                                            Function<T, Integer> idExtractor,
+                                                            int fieldValue) {
     List<Exercise> exercises = exerciseRepository.findAll().stream()
             .filter(exercise -> idExtractor.apply(fieldExtractor.apply(exercise)).equals(fieldValue))
             .collect(Collectors.toList());
