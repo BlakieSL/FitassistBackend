@@ -100,7 +100,7 @@ public class ActivityServiceImpl implements ActivityService {
             .collect(Collectors.toList());
   }
 
-  @Cacheable(value = "allCategories")
+  @Cacheable(value = "allActivityCategories")
   public List<ActivityCategoryResponseDto> getAllCategories() {
     List<ActivityCategory> categories = activityCategoryRepository.findAll();
 

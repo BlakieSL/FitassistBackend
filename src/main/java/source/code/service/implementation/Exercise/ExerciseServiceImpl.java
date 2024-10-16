@@ -1,6 +1,7 @@
 package source.code.service.implementation.Exercise;
 
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.ExerciseCreateDto;
 import source.code.dto.request.SearchRequestDto;
@@ -8,6 +9,7 @@ import source.code.dto.response.ExerciseCategoryResponseDto;
 import source.code.dto.response.ExerciseInstructionResponseDto;
 import source.code.dto.response.ExerciseResponseDto;
 import source.code.dto.response.ExerciseTipResponseDto;
+import source.code.helper.ExerciseField;
 import source.code.mapper.ExerciseMapper;
 import source.code.model.Exercise.*;
 import source.code.model.User.UserExercise;
@@ -45,6 +47,15 @@ public class ExerciseServiceImpl implements ExerciseService {
     return exerciseMapper.toDto(exercise);
   }
 
+  public List<ExerciseResponseDto> searchExercises(SearchRequestDto dto) {
+    List<Exercise> exercises = exerciseRepository.findByNameContainingIgnoreCase(dto.getName());
+
+    return exercises.stream()
+            .map(exerciseMapper::toDto)
+            .collect(Collectors.toList());
+  }
+
+  @Cacheable(value = "exercises", key = "#id")
   public ExerciseResponseDto getExercise(int id) {
     Exercise exercise = exerciseRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException(
@@ -52,6 +63,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     return exerciseMapper.toDto(exercise);
   }
 
+  @Cacheable(value = "allExercises")
   public List<ExerciseResponseDto> getAllExercises() {
     List<Exercise> exercises = exerciseRepository.findAll();
     return exercises.stream()
@@ -73,14 +85,7 @@ public class ExerciseServiceImpl implements ExerciseService {
             .collect(Collectors.toList());
   }
 
-  public List<ExerciseResponseDto> searchExercises(SearchRequestDto dto) {
-    List<Exercise> exercises = exerciseRepository.findByNameContainingIgnoreCase(dto.getName());
-
-    return exercises.stream()
-            .map(exerciseMapper::toDto)
-            .collect(Collectors.toList());
-  }
-
+  @Cacheable(value = "allExerciseCategories")
   public List<ExerciseCategoryResponseDto> getAllCategories() {
     List<ExerciseCategory> categories = exerciseCategoryRepository.findAll();
 
@@ -89,6 +94,7 @@ public class ExerciseServiceImpl implements ExerciseService {
             .collect(Collectors.toList());
   }
 
+  @Cacheable(value = "exercisesByCategory", key = "#categoryId")
   public List<ExerciseResponseDto> getExercisesByCategory(int categoryId) {
     List<ExerciseCategoryAssociation> exerciseCategoryAssociations =
             exerciseCategoryAssociationRepository.findByExerciseCategoryId(categoryId);
@@ -102,6 +108,23 @@ public class ExerciseServiceImpl implements ExerciseService {
             .collect(Collectors.toList());
   }
 
+  public List<ExerciseResponseDto> getExercisesByField(ExerciseField field, int value) {
+    switch (field) {
+      case EXPERTISE_LEVEL:
+        return getExercisesByField(Exercise::getExpertiseLevel, ExpertiseLevel::getId, value);
+      case FORCE_TYPE:
+        return getExercisesByField(Exercise::getForceType, ForceType::getId, value);
+      case MECHANICS_TYPE:
+        return getExercisesByField(Exercise::getMechanicsType, MechanicsType::getId, value);
+      case EQUIPMENT:
+        return getExercisesByField(Exercise::getExerciseEquipment, ExerciseEquipment::getId, value);
+      case TYPE:
+        return getExercisesByField(Exercise::getExerciseType, ExerciseType::getId, value);
+      default:
+        throw new IllegalArgumentException("Unknown field: " + field);
+    }
+  }
+
   private <T> List<ExerciseResponseDto> getExercisesByField(Function<Exercise, T> fieldExtractor, Function<T, Integer> idExtractor, int fieldValue) {
     List<Exercise> exercises = exerciseRepository.findAll().stream()
             .filter(exercise -> idExtractor.apply(fieldExtractor.apply(exercise)).equals(fieldValue))
@@ -110,26 +133,6 @@ public class ExerciseServiceImpl implements ExerciseService {
     return exercises.stream()
             .map(exerciseMapper::toDto)
             .collect(Collectors.toList());
-  }
-
-  public List<ExerciseResponseDto> getExercisesByExpertiseLevel(int expertiseLevelId) {
-    return getExercisesByField(Exercise::getExpertiseLevel, ExpertiseLevel::getId, expertiseLevelId);
-  }
-
-  public List<ExerciseResponseDto> getExercisesByForceType(int forceTypeId) {
-    return getExercisesByField(Exercise::getForceType, ForceType::getId, forceTypeId);
-  }
-
-  public List<ExerciseResponseDto> getExercisesByMechanicsType(int mechanicsTypeId) {
-    return getExercisesByField(Exercise::getMechanicsType, MechanicsType::getId, mechanicsTypeId);
-  }
-
-  public List<ExerciseResponseDto> getExercisesByEquipment(int exerciseEquipmentId) {
-    return getExercisesByField(Exercise::getExerciseEquipment, ExerciseEquipment::getId, exerciseEquipmentId);
-  }
-
-  public List<ExerciseResponseDto> getExercisesByType(int exerciseTypeId) {
-    return getExercisesByField(Exercise::getExerciseType, ExerciseType::getId, exerciseTypeId);
   }
 }
 
