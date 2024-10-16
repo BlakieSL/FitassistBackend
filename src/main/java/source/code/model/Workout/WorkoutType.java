@@ -37,6 +37,7 @@ public class WorkoutType {
 
   @OneToMany(mappedBy = "workoutType", cascade = CascadeType.REMOVE)
   private final Set<Workout> workouts = new HashSet<>();
+
   @OneToMany(mappedBy = "workoutType", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private final Set<WorkoutSet> workoutSets = new HashSet<>();
 }
