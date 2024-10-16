@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
@@ -54,6 +55,13 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
     return ResponseEntity.badRequest().body(e.getBindingResult().getAllErrors());
+  }
+
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ResponseEntity<String> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+    String errorMessage = String.format("Invalid value for parameter '%s'. Expected type: %s", e.getName(), e.getRequiredType().getSimpleName());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
   }
 
   @ExceptionHandler(JwtAuthenticationException.class)

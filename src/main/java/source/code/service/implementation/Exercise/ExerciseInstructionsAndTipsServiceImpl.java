@@ -1,5 +1,6 @@
 package source.code.service.implementation.Exercise;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.ExerciseInstructionResponseDto;
 import source.code.dto.response.ExerciseTipResponseDto;
@@ -27,6 +28,7 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
     this.exerciseMapper = exerciseMapper;
   }
 
+  @Cacheable(value = "exerciseInstructions", key = "#exerciseId")
   public List<ExerciseInstructionResponseDto> getExerciseInstructions(int exerciseId) {
     List<ExerciseInstruction> instructions = exerciseInstructionRepository
             .getAllByExerciseId(exerciseId);
@@ -36,6 +38,7 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
             .collect(Collectors.toList());
   }
 
+  @Cacheable(value = "exerciseTips", key = "#exerciseId")
   public List<ExerciseTipResponseDto> getExerciseTips(int exerciseId) {
     List<ExerciseTip> tips = exerciseTipRepository.getAllByExerciseId(exerciseId);
 
