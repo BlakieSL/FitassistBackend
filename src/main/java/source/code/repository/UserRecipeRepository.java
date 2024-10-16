@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface UserRecipeRepository extends JpaRepository<UserRecipe, Long> {
   List<UserRecipe> findByUserId(int userId);
 
+  List<UserRecipe> findByUserIdAndType(int userId, short type);
+
   Optional<UserRecipe> findByUserIdAndRecipeIdAndType(int userId, int recipeId, short type);
 
   boolean existsByUserIdAndRecipeIdAndType(int userId, int recipeId, short type);

@@ -23,7 +23,7 @@ public class DailyActivityController {
   public ResponseEntity<DailyActivitiesResponseDto> getAllDailyActivitiesByUser(
           @PathVariable int userId) {
 
-    DailyActivitiesResponseDto activities = dailyActivityService.getActivitiesFromDailyActivityItem(userId);
+    DailyActivitiesResponseDto activities = dailyActivityService.getActivitiesFromDailyActivity(userId);
     return ResponseEntity.ok(activities);
   }
 

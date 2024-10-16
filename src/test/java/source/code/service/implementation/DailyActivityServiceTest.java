@@ -334,7 +334,7 @@ public class DailyActivityServiceTest {
         when(dailyActivityMapper.toActivityCalculatedResponseDto(dailyActivityItem1, user1.getWeight())).thenReturn(activityCalculatedDto);
 
         // Act
-        DailyActivitiesResponseDto result = dailyActivityService.getActivitiesFromDailyActivityItem(user1.getId());
+        DailyActivitiesResponseDto result = dailyActivityService.getActivitiesFromDailyActivity(user1.getId());
 
         // Assert
         verify(dailyActivityRepository, times(1)).findByUserId(user1.getId());
@@ -354,7 +354,7 @@ public class DailyActivityServiceTest {
         when(dailyActivityRepository.findByUserId(user1.getId())).thenReturn(Optional.of(dailyActivity1));
 
         // Act
-        DailyActivitiesResponseDto result = dailyActivityService.getActivitiesFromDailyActivityItem(user1.getId());
+        DailyActivitiesResponseDto result = dailyActivityService.getActivitiesFromDailyActivity(user1.getId());
 
         // Assert
         verify(dailyActivityRepository, times(1)).findByUserId(user1.getId());

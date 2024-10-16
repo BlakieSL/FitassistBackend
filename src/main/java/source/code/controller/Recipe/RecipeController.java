@@ -3,6 +3,7 @@ package source.code.controller.Recipe;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.RecipeCreateDto;
 import source.code.dto.response.LikesAndSavesResponseDto;
@@ -34,9 +35,10 @@ public class RecipeController {
     return ResponseEntity.ok(recipeService.getAllRecipes());
   }
 
-  @GetMapping("/user/{userId}")
-  public ResponseEntity<List<RecipeResponseDto>> getRecipesByUser(@PathVariable int userId) {
-    List<RecipeResponseDto> recipes = recipeService.getRecipesByUser(userId);
+  @GetMapping("/user/{userId}/type/{type}")
+  public ResponseEntity<List<RecipeResponseDto>> getRecipesByUserAndType(@PathVariable int userId,
+                                                                         @PathVariable short type) {
+    List<RecipeResponseDto> recipes = recipeService.getRecipesByUserAndType(userId, type);
     return ResponseEntity.ok(recipes);
   }
 

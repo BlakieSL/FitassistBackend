@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface UserPlanRepository extends JpaRepository<UserPlan, Long> {
   List<UserPlan> findByUserId(int userId);
 
+  List<UserPlan> findByUserIdAndType(int userId, short type);
+
   Optional<UserPlan> findByUserIdAndPlanIdAndType(int userId, int planId, short type);
 
   boolean existsByUserIdAndPlanIdAndType(int userId, int planId, short type);

@@ -1,6 +1,10 @@
 package source.code.service.implementation.Acitivity;
 
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.ActivityCreateDto;
 import source.code.dto.request.CalculateActivityCaloriesRequestDto;
@@ -45,6 +49,9 @@ public class ActivityServiceImpl implements ActivityService {
     this.userActivityRepository = userActivityRepository;
   }
 
+  @Caching(evict = {
+          @CacheEvict(value = "allActivities", allEntries = true),
+          @CacheEvict(value = "activitiesByCategory", key = "#dto.categoryId")})
   @Transactional
   public ActivityResponseDto createActivity(ActivityCreateDto dto) {
     Activity activity = activityRepository.save(activityMapper.toEntity(dto));
@@ -75,6 +82,7 @@ public class ActivityServiceImpl implements ActivityService {
             .collect(Collectors.toList());
   }
 
+  @Cacheable(value = "activities", key = "#id")
   public ActivityResponseDto getActivity(int id) {
     Activity activity = activityRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException(
@@ -83,6 +91,7 @@ public class ActivityServiceImpl implements ActivityService {
     return activityMapper.toResponseDto(activity);
   }
 
+  @Cacheable(value = "allActivities")
   public List<ActivityResponseDto> getAllActivities() {
     List<Activity> activities = activityRepository.findAll();
 
@@ -91,6 +100,7 @@ public class ActivityServiceImpl implements ActivityService {
             .collect(Collectors.toList());
   }
 
+  @Cacheable(value = "allCategories")
   public List<ActivityCategoryResponseDto> getAllCategories() {
     List<ActivityCategory> categories = activityCategoryRepository.findAll();
 
@@ -99,6 +109,7 @@ public class ActivityServiceImpl implements ActivityService {
             .collect(Collectors.toList());
   }
 
+  @Cacheable(value = "activitiesByCategory", key = "#categoryId")
   public List<ActivityResponseDto> getActivitiesByCategory(int categoryId) {
     List<Activity> activities = activityRepository.findAllByActivityCategory_Id(categoryId);
 
@@ -107,8 +118,8 @@ public class ActivityServiceImpl implements ActivityService {
             .collect(Collectors.toList());
   }
 
-  public List<ActivityResponseDto> getActivitiesByUser(int userId) {
-    List<UserActivity> userActivities = userActivityRepository.findByUserId(userId);
+  public List<ActivityResponseDto> getActivitiesByUserAndType(int userId, short type) {
+    List<UserActivity> userActivities = userActivityRepository.findByUserIdAndType(userId, type);
 
     List<Activity> activities = userActivities.stream()
             .map(UserActivity::getActivity)

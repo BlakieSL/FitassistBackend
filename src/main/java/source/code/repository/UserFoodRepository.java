@@ -13,5 +13,7 @@ public interface UserFoodRepository extends JpaRepository<UserFood, Integer> {
 
   List<UserFood> findByUserId(int userId);
 
+  List<UserFood> findByUserIdAndType(int userId, short type);
+
   long countByFoodIdAndType(int foodId, short type);
 }

@@ -26,7 +26,7 @@ public interface ActivityService {
 
   List<ActivityResponseDto> searchActivities(SearchRequestDto request);
 
-  List<ActivityResponseDto> getActivitiesByUser(int userId);
+  List<ActivityResponseDto> getActivitiesByUserAndType(int userId, short type);
 
   ActivityAverageMetResponseDto getAverageMet();
 }
