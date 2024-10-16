@@ -1,7 +1,10 @@
 package source.code.service.implementation.Food;
 
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import source.code.cache.event.Food.FoodCreateEvent;
 import source.code.dto.request.CalculateFoodMacrosRequestDto;
 import source.code.dto.request.FoodCreateDto;
 import source.code.dto.request.SearchRequestDto;
@@ -23,16 +26,19 @@ import java.util.stream.Collectors;
 
 @Service
 public class FoodServiceImpl implements FoodService {
+  private final ApplicationEventPublisher applicationEventPublisher;
   private final FoodRepository foodRepository;
   private final FoodMapper foodMapper;
   private final FoodCategoryRepository foodCategoryRepository;
   private final UserFoodRepository userFoodRepository;
 
   public FoodServiceImpl(
+          ApplicationEventPublisher applicationEventPublisher,
           FoodRepository foodRepository,
           FoodMapper foodMapper,
           FoodCategoryRepository foodCategoryRepository,
           UserFoodRepository userFoodRepository) {
+    this.applicationEventPublisher = applicationEventPublisher;
     this.foodRepository = foodRepository;
     this.foodMapper = foodMapper;
     this.foodCategoryRepository = foodCategoryRepository;
@@ -42,24 +48,9 @@ public class FoodServiceImpl implements FoodService {
   @Transactional
   public FoodResponseDto createFood(FoodCreateDto request) {
     Food food = foodRepository.save(foodMapper.toEntity(request));
+    applicationEventPublisher.publishEvent(new FoodCreateEvent(this, request));
 
     return foodMapper.toDto(food);
-  }
-
-  public FoodResponseDto getFood(int id) {
-    Food food = foodRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Food with id: " + id + " not found"));
-
-    return foodMapper.toDto(food);
-  }
-
-  public List<FoodResponseDto> getAllFoods() {
-    List<Food> foods = foodRepository.findAll();
-
-    return foods.stream()
-            .map(foodMapper::toDto)
-            .collect(Collectors.toList());
   }
 
   public FoodCalculatedMacrosResponseDto calculateFoodMacros(
@@ -82,6 +73,24 @@ public class FoodServiceImpl implements FoodService {
             .collect(Collectors.toList());
   }
 
+  @Cacheable(value = {"foods"}, key = "#id")
+  public FoodResponseDto getFood(int id) {
+    Food food = foodRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException(
+                    "Food with id: " + id + " not found"));
+
+    return foodMapper.toDto(food);
+  }
+
+  @Cacheable(value = {"allFoods"})
+  public List<FoodResponseDto> getAllFoods() {
+    List<Food> foods = foodRepository.findAll();
+
+    return foods.stream()
+            .map(foodMapper::toDto)
+            .collect(Collectors.toList());
+  }
+
   public List<FoodResponseDto> getFoodsByUserAndType(int userId, short type) {
     List<UserFood> userFoods = userFoodRepository.findByUserIdAndType(userId, type);
 
@@ -94,6 +103,7 @@ public class FoodServiceImpl implements FoodService {
             .collect(Collectors.toList());
   }
 
+  @Cacheable(value = {"allFoodCategories"})
   public List<FoodCategoryResponseDto> getAllCategories() {
     List<FoodCategory> categories = foodCategoryRepository.findAll();
 
@@ -102,6 +112,7 @@ public class FoodServiceImpl implements FoodService {
             .collect(Collectors.toList());
   }
 
+  @Cacheable(value = {"foodsByCategory"}, key = "#categoryId")
   public List<FoodResponseDto> getFoodsByCategory(int categoryId) {
     List<Food> foods = foodRepository
             .findAllByFoodCategory_Id(categoryId);

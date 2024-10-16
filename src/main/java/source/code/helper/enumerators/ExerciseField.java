@@ -1,4 +1,4 @@
-package source.code.helper;
+package source.code.helper.enumerators;
 
 public enum ExerciseField {
   EXPERTISE_LEVEL,
