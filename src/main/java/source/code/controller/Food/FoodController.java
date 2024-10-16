@@ -37,9 +37,10 @@ public class FoodController {
     return ResponseEntity.ok(foodService.getAllFoods());
   }
 
-  @GetMapping("/user/{userId}")
-  public ResponseEntity<List<FoodResponseDto>> getFoodsByUser(@PathVariable int userId) {
-    List<FoodResponseDto> recipes = foodService.getFoodsByUser(userId);
+  @GetMapping("/user/{userId}/type/{type}")
+  public ResponseEntity<List<FoodResponseDto>> getFoodsByUserAndType(@PathVariable int userId,
+                                                                     @PathVariable short type) {
+    List<FoodResponseDto> recipes = foodService.getFoodsByUserAndType(userId, type);
     return ResponseEntity.ok(recipes);
   }
 

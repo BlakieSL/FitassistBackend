@@ -38,3 +38,6 @@ jws:
   sharedKey: ***REMOVED***
 server:
   port: 8000
+logging:
+  level:
+    org.springframework.cache: DEBUG

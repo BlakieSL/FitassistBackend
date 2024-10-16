@@ -20,7 +20,7 @@ public interface FoodService {
 
   List<FoodResponseDto> searchFoods(SearchRequestDto request);
 
-  List<FoodResponseDto> getFoodsByUser(int userId);
+  List<FoodResponseDto> getFoodsByUserAndType(int userId, short type);
 
   List<FoodCategoryResponseDto> getAllCategories();
 

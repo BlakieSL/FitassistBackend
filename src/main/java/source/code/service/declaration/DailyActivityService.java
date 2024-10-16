@@ -16,7 +16,7 @@ public interface DailyActivityService {
 
   void updateDailyActivityItem(int userId, int activityId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-  DailyActivitiesResponseDto getActivitiesFromDailyActivityItem(int userId);
+  DailyActivitiesResponseDto getActivitiesFromDailyActivity(int userId);
 
   DailyActivity createNewDailyActivityForUser(int userId);
 }

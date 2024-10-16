@@ -63,8 +63,8 @@ public class PlanServiceImpl implements PlanService {
             .collect(Collectors.toList());
   }
 
-  public List<PlanResponseDto> getPlansByUser(int userId) {
-    List<UserPlan> userPlans = userPlanRepository.findByUserId(userId);
+  public List<PlanResponseDto> getPlansByUserAndType(int userId, short type) {
+    List<UserPlan> userPlans = userPlanRepository.findByUserIdAndType(userId, type);
     List<Plan> plans = userPlans.stream()
             .map(UserPlan::getPlan)
             .collect(Collectors.toList());

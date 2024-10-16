@@ -91,7 +91,6 @@ public class DailyActivityServiceImpl implements DailyActivityService {
   }
 
   private DailyActivity getDailyActivityByUser(int userId) {
-
     return dailyActivityRepository.findByUserId(userId)
             .orElseGet(() -> createNewDailyActivityForUser(userId));
   }
@@ -152,7 +151,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
   }
 
 
-  public DailyActivitiesResponseDto getActivitiesFromDailyActivityItem(int userId) {
+  public DailyActivitiesResponseDto getActivitiesFromDailyActivity(int userId) {
     DailyActivity dailyActivity = getDailyActivityByUser(userId);
     User user = dailyActivity.getUser();
 
@@ -161,8 +160,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
                     .toActivityCalculatedResponseDto(dailyActivityItem, user.getWeight()))
             .collect(Collectors.toList());
 
-    int totalCaloriesBurned = activities
-            .stream()
+    int totalCaloriesBurned = activities.stream()
             .mapToInt(ActivityCalculatedResponseDto::getCaloriesBurned)
             .sum();
 

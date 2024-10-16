@@ -6,9 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.ExerciseCreateDto;
 import source.code.dto.request.SearchRequestDto;
-import source.code.dto.response.ExerciseInstructionResponseDto;
 import source.code.dto.response.ExerciseResponseDto;
-import source.code.dto.response.ExerciseTipResponseDto;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.service.declaration.ExerciseService;
 import source.code.service.declaration.UserExerciseService;
@@ -38,9 +36,10 @@ public class ExerciseController {
     return ResponseEntity.ok(exercises);
   }
 
-  @GetMapping("/user/{userId}")
-  public ResponseEntity<List<ExerciseResponseDto>> getExercisesByUser(@PathVariable int userId) {
-    List<ExerciseResponseDto> exercises = exerciseService.getExercisesByUser(userId);
+  @GetMapping("/user/{userId}/type/{type}")
+  public ResponseEntity<List<ExerciseResponseDto>> getExercisesByUserAndType(@PathVariable int userId,
+                                                                             @PathVariable short type) {
+    List<ExerciseResponseDto> exercises = exerciseService.getExercisesByUserAndType(userId, type);
     return ResponseEntity.ok(exercises);
   }
 

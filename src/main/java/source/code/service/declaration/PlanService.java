@@ -13,7 +13,7 @@ public interface PlanService {
 
   List<PlanResponseDto> getAllPlans();
 
-  List<PlanResponseDto> getPlansByUser(int userId);
+  List<PlanResponseDto> getPlansByUserAndType(int userId, short type);
 
   List<PlanCategoryResponseDto> getAllCategories();
 

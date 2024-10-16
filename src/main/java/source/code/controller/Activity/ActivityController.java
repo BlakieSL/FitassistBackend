@@ -37,9 +37,10 @@ public class ActivityController {
     return ResponseEntity.ok(activityService.getAllActivities());
   }
 
-  @GetMapping("/user/{userId}")
-  public ResponseEntity<List<ActivityResponseDto>> getActivitiesByUser(@PathVariable int userId) {
-    List<ActivityResponseDto> recipes = activityService.getActivitiesByUser(userId);
+  @GetMapping("/user/{userId}/type/{type}")
+  public ResponseEntity<List<ActivityResponseDto>> getActivitiesByUserAndType(@PathVariable int userId,
+                                                                              @PathVariable short type) {
+    List<ActivityResponseDto> recipes = activityService.getActivitiesByUserAndType(userId, type);
     return ResponseEntity.ok(recipes);
   }
 
