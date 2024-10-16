@@ -135,11 +135,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     return userRepository.findUserWithRolesByEmail(email).map(userMapper::toDetails);
   }
 
-  @Cacheable(value = {"userById"}, key = "#id")
-  public UserResponseDto getUser(int id) {
-    User user = userRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "User with id " + id + " not found"));
+  @Cacheable(value = {"userById"}, key = "#userId")
+  public UserResponseDto getUser(int userId) {
+    User user = getUserOrThrow(userId);
 
     return userMapper.toResponse(user);
   }
