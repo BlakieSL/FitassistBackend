@@ -4,11 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import source.code.cache.event.User.UserDeleteEvent;
+import source.code.cache.event.User.UserRegisterEvent;
+import source.code.cache.event.User.UserUpdateEvent;
 import source.code.dto.other.UserCredentialsDto;
 import source.code.dto.request.UserCreateDto;
 import source.code.dto.request.UserUpdateDto;
@@ -18,7 +23,6 @@ import source.code.helper.UserDetailsHelper;
 import source.code.helper.ValidationHelper;
 import source.code.mapper.UserMapper;
 import source.code.model.User.User;
-import source.code.repository.ExerciseRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.UserService;
 
@@ -27,17 +31,20 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
+  private final ApplicationEventPublisher applicationEventPublisher;
   private final ValidationHelper validationHelper;
   private final JsonPatchHelper jsonPatchHelper;
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
 
-  public UserServiceImpl(UserRepository userRepository,
+  public UserServiceImpl(ApplicationEventPublisher applicationEventPublisher,
+                         UserRepository userRepository,
                          UserMapper userMapper,
                          ValidationHelper validationHelper,
                          JsonPatchHelper jsonPatchHelper,
                          PasswordEncoder passwordEncoder) {
+    this.applicationEventPublisher = applicationEventPublisher;
     this.userRepository = userRepository;
     this.userMapper = userMapper;
     this.validationHelper = validationHelper;
@@ -53,6 +60,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     User savedUser = userRepository.save(user);
 
+    applicationEventPublisher.publishEvent(new UserRegisterEvent(this, request));
+
     return userMapper.toResponse(savedUser);
   }
 
@@ -61,7 +70,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     User user = userRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException(
                     "User with id: " + id + " not found"));
+
     userRepository.delete(user);
+
+    applicationEventPublisher.publishEvent(new UserDeleteEvent(this, user));
   }
 
   @Transactional
@@ -77,7 +89,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     validationHelper.validate(patchedUserUpdateDto);
 
     userMapper.updateUserFromDto(user, patchedUserUpdateDto);
-    userRepository.save(user);
+    User savedUser = userRepository.save(user);
+
+    applicationEventPublisher.publishEvent(new UserUpdateEvent(this, savedUser));
   }
 
   private User getUserOrThrow(int userId) {
@@ -109,7 +123,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
   }
 
-
+  @Cacheable(value = {"userDetails"}, key = "#username")
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return findUserCredentialsByEmail(username)
             .map(UserDetailsHelper::buildUserDetails)
@@ -121,6 +135,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     return userRepository.findUserWithRolesByEmail(email).map(userMapper::toDetails);
   }
 
+  @Cacheable(value = {"userById"}, key = "#id")
   public UserResponseDto getUser(int id) {
     User user = userRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException(
@@ -129,8 +144,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     return userMapper.toResponse(user);
   }
 
+  @Cacheable(value = {"userIdByEmail"}, key = "#email")
   public int getUserIdByEmail(String email) {
-
     return userRepository.findByEmail(email)
             .map(User::getId)
             .orElseThrow(() -> new NoSuchElementException(

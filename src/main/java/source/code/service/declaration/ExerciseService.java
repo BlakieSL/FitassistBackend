@@ -4,7 +4,7 @@ import source.code.dto.request.ExerciseCreateDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ExerciseCategoryResponseDto;
 import source.code.dto.response.ExerciseResponseDto;
-import source.code.helper.ExerciseField;
+import source.code.helper.enumerators.ExerciseField;
 
 import java.util.List;
 

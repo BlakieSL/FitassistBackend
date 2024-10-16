@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import source.code.dto.response.ExerciseCategoryResponseDto;
 import source.code.dto.response.ExerciseResponseDto;
-import source.code.helper.ExerciseField;
+import source.code.helper.enumerators.ExerciseField;
 import source.code.service.declaration.ExerciseService;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class ExerciseCategoryController {
   }
 
   @GetMapping("/field/{field}/{value}")
-  public ResponseEntity<List<ExerciseResponseDto>> getExercisesByFiled(
+  public ResponseEntity<List<ExerciseResponseDto>> getExercisesByField(
           @PathVariable ExerciseField field,
           @PathVariable int value) {
     List<ExerciseResponseDto> exercises = exerciseService.getExercisesByField(field, value);
