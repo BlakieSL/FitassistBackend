@@ -13,7 +13,7 @@ public interface RecipeService {
 
   List<RecipeResponseDto> getAllRecipes();
 
-  List<RecipeResponseDto> getRecipesByUser(int userId);
+  List<RecipeResponseDto> getRecipesByUserAndType(int userId, short type);
 
   List<RecipeCategoryResponseDto> getAllCategories();
 

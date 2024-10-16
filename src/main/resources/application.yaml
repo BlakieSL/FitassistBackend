@@ -38,3 +38,6 @@ jws:
   sharedKey: 1234567890qwertyuiopasdfghjklzxcvbnmaskdjfjasdhfjasdgfoweqryuieqwhzcnxvb32u46832tgdnsabfwry3210478gfdxhzbDSOFY1320486321Thgf9d761328947gdsafhga03128412360gasdfhbgcvnbaskhdfga
 server:
   port: 8000
+logging:
+  level:
+    org.springframework.cache: DEBUG

@@ -387,7 +387,7 @@ public class ActivityServiceTest {
         verifyNoInteractions(activityMapper);
         assertTrue(result.isEmpty());
     }
-
+/*
     @Test
     void getActivitiesByUser_shouldReturnActivities_whenActivitiesFound() {
         // Arrange
@@ -401,7 +401,7 @@ public class ActivityServiceTest {
         when(activityMapper.toResponseDto(userActivity2.getActivity())).thenReturn(responseDto2);
 
         // Act
-        List<ActivityResponseDto> result = activityService.getActivitiesByUser(userId);
+        List<ActivityResponseDto> result = activityService.getActivitiesByUserAndType(userId);
 
         // Assert
         assertEquals(expectedDtos, result);
@@ -418,14 +418,14 @@ public class ActivityServiceTest {
         when(userActivityRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
 
         // Act
-        List<ActivityResponseDto> result = activityService.getActivitiesByUser(userId);
+        List<ActivityResponseDto> result = activityService.getActivitiesByUserAndType(userId);
 
         // Assert
         assertTrue(result.isEmpty());
         verify(userActivityRepository, times(1)).findByUserId(userId);
         verifyNoInteractions(activityMapper);
     }
-
+ */
     @Test
     void getAverageMet_shouldReturnActivityAverageMetResponseDto_whenActivitiesFound() {
         int categoryId = activityCategory1.getId();

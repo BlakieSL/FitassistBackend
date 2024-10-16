@@ -59,9 +59,8 @@ public class ExerciseServiceImpl implements ExerciseService {
             .collect(Collectors.toList());
   }
 
-  public List<ExerciseResponseDto> getExercisesByUser(int userId) {
-    List<UserExercise> userExercises = userExerciseRepository
-            .findByUserId(userId);
+  public List<ExerciseResponseDto> getExercisesByUserAndType(int userId, short type) {
+    List<UserExercise> userExercises = userExerciseRepository.findByUserIdAndType(userId, type);
 
     List<Exercise> exercises = userExercises
             .stream()
@@ -113,7 +112,6 @@ public class ExerciseServiceImpl implements ExerciseService {
             .collect(Collectors.toList());
   }
 
-
   public List<ExerciseResponseDto> getExercisesByExpertiseLevel(int expertiseLevelId) {
     return getExercisesByField(Exercise::getExpertiseLevel, ExpertiseLevel::getId, expertiseLevelId);
   }
@@ -133,6 +131,5 @@ public class ExerciseServiceImpl implements ExerciseService {
   public List<ExerciseResponseDto> getExercisesByType(int exerciseTypeId) {
     return getExercisesByField(Exercise::getExerciseType, ExerciseType::getId, exerciseTypeId);
   }
-
 }
 

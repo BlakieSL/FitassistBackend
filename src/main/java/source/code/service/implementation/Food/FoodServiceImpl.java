@@ -82,8 +82,9 @@ public class FoodServiceImpl implements FoodService {
             .collect(Collectors.toList());
   }
 
-  public List<FoodResponseDto> getFoodsByUser(int userId) {
-    List<UserFood> userFoods = userFoodRepository.findByUserId(userId);
+  public List<FoodResponseDto> getFoodsByUserAndType(int userId, short type) {
+    List<UserFood> userFoods = userFoodRepository.findByUserIdAndType(userId, type);
+
     List<Food> foods = userFoods.stream()
             .map(UserFood::getFood)
             .collect(Collectors.toList());

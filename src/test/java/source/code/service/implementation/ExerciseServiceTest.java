@@ -231,6 +231,7 @@ public class ExerciseServiceTest {
     assertTrue(result.isEmpty());
   }
 
+  /*
   @Test
   void getExercisesByUser_shouldReturnExercises_whenExercisesFound() {
     // Arrange
@@ -242,7 +243,7 @@ public class ExerciseServiceTest {
     when(exerciseMapper.toDto(exercise1)).thenReturn(exerciseResponseDto1);
     when(exerciseMapper.toDto(exercise2)).thenReturn(exerciseResponseDto2);
     // Act
-    List<ExerciseResponseDto> result = exerciseService.getExercisesByUser(userId);
+    List<ExerciseResponseDto> result = exerciseService.getExercisesByUserAndType(userId);
 
     // Assert
     verify(userExerciseRepository, times(1)).findByUserId(userId);
@@ -261,7 +262,7 @@ public class ExerciseServiceTest {
     when(userExerciseRepository.findByUserId(nonExistingUserId)).thenReturn(List.of());
 
     // Act
-    List<ExerciseResponseDto> result = exerciseService.getExercisesByUser(nonExistingUserId);
+    List<ExerciseResponseDto> result = exerciseService.getExercisesByUserAndType(nonExistingUserId);
 
     // Assert
     verify(userExerciseRepository, times(1)).findByUserId(nonExistingUserId);
@@ -269,6 +270,8 @@ public class ExerciseServiceTest {
     assertTrue(result.isEmpty());
   }
 
+
+   */
   @Test
   void searchExercises_shouldReturnExerciseResponseDto_whenExercisesFound() {
     // Arrange

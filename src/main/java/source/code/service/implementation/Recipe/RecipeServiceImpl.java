@@ -60,8 +60,8 @@ public class RecipeServiceImpl implements RecipeService {
             .collect(Collectors.toList());
   }
 
-  public List<RecipeResponseDto> getRecipesByUser(int userId) {
-    List<UserRecipe> userRecipes = userRecipeRepository.findByUserId(userId);
+  public List<RecipeResponseDto> getRecipesByUserAndType(int userId, short type) {
+    List<UserRecipe> userRecipes = userRecipeRepository.findByUserIdAndType(userId, type);
 
     List<Recipe> recipes = userRecipes.stream()
             .map(UserRecipe::getRecipe)

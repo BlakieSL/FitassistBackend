@@ -35,9 +35,10 @@ public class PlanController {
     return ResponseEntity.ok(plans);
   }
 
-  @GetMapping("/user/{userId}")
-  public ResponseEntity<List<PlanResponseDto>> getPlansByUser(@PathVariable int userId) {
-    List<PlanResponseDto> plans = planService.getPlansByUser(userId);
+  @GetMapping("/user/{userId}/type/{type}")
+  public ResponseEntity<List<PlanResponseDto>> getPlansByUserAndType(@PathVariable int userId,
+                                                                     @PathVariable short type) {
+    List<PlanResponseDto> plans = planService.getPlansByUserAndType(userId, type);
     return ResponseEntity.ok(plans);
   }
 
