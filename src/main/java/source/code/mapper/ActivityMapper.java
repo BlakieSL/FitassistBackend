@@ -3,6 +3,7 @@ package source.code.mapper;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.ActivityCreateDto;
+import source.code.dto.request.ActivityUpdateDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.ActivityCategoryResponseDto;
 import source.code.dto.response.ActivityResponseDto;
@@ -41,6 +42,13 @@ public abstract class ActivityMapper {
   @Mapping(target = "id", source = "id")
   @Mapping(target = "name", source = "name")
   public abstract ActivityCategoryResponseDto toCategoryDto(ActivityCategory activityCategory);
+
+  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  @Mapping(target = "activityCategory", source = "categoryId", qualifiedByName = "categoryIdToActivityCategory")
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "dailyActivityItems", ignore = true)
+  @Mapping(target = "userActivities", ignore = true)
+  public abstract void updateActivityFromDto(@MappingTarget Activity activity, ActivityUpdateDto request);
 
   @AfterMapping
   protected void setCaloriesBurned(@MappingTarget ActivityCalculatedResponseDto dto, Activity activity, @Context User user, @Context int time) {
