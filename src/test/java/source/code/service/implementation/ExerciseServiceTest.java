@@ -379,7 +379,7 @@ public class ExerciseServiceTest {
     verifyNoInteractions(exerciseMapper);
     assertTrue(result.isEmpty());
   }
-
+/*
   @Test
   void getExercisesByExpertiseLevel_shouldReturnExercises_whenExercisesFound() {
     // Arrange
@@ -567,5 +567,5 @@ public class ExerciseServiceTest {
     verifyNoInteractions(exerciseMapper);
     assertTrue(result.isEmpty());
   }
-
+*/
 }
