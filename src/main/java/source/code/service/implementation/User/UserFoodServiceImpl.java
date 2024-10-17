@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.response.FoodResponseDto;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
-import source.code.mapper.FoodMapperImpl;
+import source.code.mapper.Food.FoodMapper;
 import source.code.model.Food.Food;
 import source.code.model.User.User;
 import source.code.model.User.UserFood;
@@ -23,12 +23,13 @@ public class UserFoodServiceImpl implements UserFoodService {
   private final UserFoodRepository userFoodRepository;
   private final FoodRepository foodRepository;
   private final UserRepository userRepository;
-  private final FoodMapperImpl foodMapper;
+  private final FoodMapper foodMapper;
 
   public UserFoodServiceImpl(
           UserFoodRepository userFoodRepository,
           FoodRepository foodRepository,
-          UserRepository userRepository, FoodMapperImpl foodMapper) {
+          UserRepository userRepository,
+          FoodMapper foodMapper) {
     this.userFoodRepository = userFoodRepository;
     this.foodRepository = foodRepository;
     this.userRepository = userRepository;

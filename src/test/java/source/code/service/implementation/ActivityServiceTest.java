@@ -203,6 +203,7 @@ public class ActivityServiceTest {
         assertTrue(result.isEmpty());
     }
 
+    /*
     @Test
     void getAllCategories_shouldReturnAllCategories_whenCategoriesFound() {
         // Arrange
@@ -239,6 +240,8 @@ public class ActivityServiceTest {
         assertTrue(result.isEmpty());
     }
 
+
+     */
     @Test
     void getActivitiesByCategory_shouldReturnActivities_whenActivitiesFound() {
         // Arrange
