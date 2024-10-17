@@ -3,7 +3,6 @@ package source.code.cache.listener;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import source.code.cache.event.Plan.Plan;
 import source.code.cache.event.Plan.PlanCreateEvent;
 import source.code.cache.event.Plan.PlanDeleteEvent;
 import source.code.cache.event.Plan.PlanUpdateEvent;
