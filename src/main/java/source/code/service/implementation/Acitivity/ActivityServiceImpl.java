@@ -9,6 +9,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import source.code.cache.event.Activity.ActivityCreateEvent;
+import source.code.cache.event.Activity.ActivityDeleteEvent;
+import source.code.cache.event.Activity.ActivityUpdateEvent;
 import source.code.dto.request.ActivityCreateDto;
 import source.code.dto.request.ActivityUpdateDto;
 import source.code.dto.request.CalculateActivityCaloriesRequestDto;
@@ -84,12 +86,15 @@ public class ActivityServiceImpl implements ActivityService {
     activityMapper.updateActivityFromDto(activity,patchedActivityUpdateDto);
     Activity savedActivity = activityRepository.save(activity);
 
+    applicationEventPublisher.publishEvent(new ActivityUpdateEvent(this, savedActivity));
   }
 
   @Transactional
   public void deleteActivity(int activityId) {
     Activity activity = getActivityOrThrow(activityId);
-    activityRepository.delete(activity);
+    activityRepository.delete(getActivityOrThrow(activityId));
+
+    applicationEventPublisher.publishEvent(new ActivityDeleteEvent(this, activity));
   }
 
   public ActivityCalculatedResponseDto calculateCaloriesBurned(
