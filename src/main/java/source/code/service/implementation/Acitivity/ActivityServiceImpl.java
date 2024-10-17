@@ -78,8 +78,7 @@ public class ActivityServiceImpl implements ActivityService {
   public void updateActivity(int activityId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
     Activity activity = getActivityOrThrow(activityId);
-
-    ActivityUpdateDto patchedActivityUpdateDto = applyPatchToActivity(activityId, patch);
+    ActivityUpdateDto patchedActivityUpdateDto = applyPatchToActivity(activity, patch);
 
     validationHelper.validate(patchedActivityUpdateDto);
 
@@ -182,10 +181,9 @@ public class ActivityServiceImpl implements ActivityService {
                     "Activity with id: " + activityId + " not found"));
   }
 
-  private ActivityUpdateDto applyPatchToActivity(int activityId, JsonMergePatch patch)
+  private ActivityUpdateDto applyPatchToActivity(Activity activity, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
 
-    Activity activity = getActivityOrThrow(activityId);
     ActivityResponseDto responseDto = activityMapper.toResponseDto(activity);
     return jsonPatchHelper.applyPatch(patch, responseDto, ActivityUpdateDto.class);
   }
