@@ -3,6 +3,7 @@ package source.code.model.Exercise;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,6 +46,7 @@ public class Exercise {
   private String text;
 
   @NotNull
+  @Positive
   @Column(nullable = false)
   private Double score;
 
@@ -85,7 +87,8 @@ public class Exercise {
   @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private final Set<ExerciseTip> exerciseTips = new HashSet<>();
 
-  @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
+  @OneToMany(mappedBy = "exercise",
+          cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
   private final Set<ExerciseCategoryAssociation> exerciseCategoryAssociations = new HashSet<>();
 
   public static Exercise createWithId(int id) {

@@ -150,7 +150,7 @@ public class ExerciseServiceTest {
     // Arrange
     when(exerciseMapper.toEntity(createDto1)).thenReturn(exercise1);
     when(exerciseRepository.save(exercise1)).thenReturn(exercise1);
-    when(exerciseMapper.toDto(exercise1)).thenReturn(exerciseResponseDto1);
+    when(exerciseMapper.toResponseDto(exercise1)).thenReturn(exerciseResponseDto1);
 
     // Act
     ExerciseResponseDto result = exerciseService.createExercise(createDto1);
@@ -158,7 +158,7 @@ public class ExerciseServiceTest {
     // Assert
     verify(exerciseMapper, times(1)).toEntity(createDto1);
     verify(exerciseRepository, times(1)).save(exercise1);
-    verify(exerciseMapper, times(1)).toDto(exercise1);
+    verify(exerciseMapper, times(1)).toResponseDto(exercise1);
     assertEquals(exerciseResponseDto1.getId(), result.getId());
     assertEquals(createDto1.getName(), result.getName());
   }
@@ -168,14 +168,14 @@ public class ExerciseServiceTest {
     // Arrange
     int exerciseId = exercise1.getId();
     when(exerciseRepository.findById(exerciseId)).thenReturn(java.util.Optional.of(exercise1));
-    when(exerciseMapper.toDto(exercise1)).thenReturn(exerciseResponseDto1);
+    when(exerciseMapper.toResponseDto(exercise1)).thenReturn(exerciseResponseDto1);
 
     // Act
     ExerciseResponseDto result = exerciseService.getExercise(exerciseId);
 
     // Assert
     verify(exerciseRepository, times(1)).findById(exerciseId);
-    verify(exerciseMapper, times(1)).toDto(exercise1);
+    verify(exerciseMapper, times(1)).toResponseDto(exercise1);
     assertEquals(exerciseResponseDto1, result);
   }
 
@@ -191,7 +191,7 @@ public class ExerciseServiceTest {
 
     assertEquals("Exercise with id: " + exerciseId + " not found", exception.getMessage());
     verify(exerciseRepository, times(1)).findById(exerciseId);
-    verify(exerciseMapper, never()).toDto(any());
+    verify(exerciseMapper, never()).toResponseDto(any());
   }
 
   @Test
@@ -201,17 +201,17 @@ public class ExerciseServiceTest {
     List<ExerciseResponseDto> responseDtos = List.of(exerciseResponseDto1, exerciseResponseDto2, exerciseResponseDto3);
 
     when(exerciseRepository.findAll()).thenReturn(exercises);
-    when(exerciseMapper.toDto(exercise1)).thenReturn(exerciseResponseDto1);
-    when(exerciseMapper.toDto(exercise2)).thenReturn(exerciseResponseDto2);
-    when(exerciseMapper.toDto(exercise3)).thenReturn(exerciseResponseDto3);
+    when(exerciseMapper.toResponseDto(exercise1)).thenReturn(exerciseResponseDto1);
+    when(exerciseMapper.toResponseDto(exercise2)).thenReturn(exerciseResponseDto2);
+    when(exerciseMapper.toResponseDto(exercise3)).thenReturn(exerciseResponseDto3);
     // Act
     List<ExerciseResponseDto> result = exerciseService.getAllExercises();
 
     // Assert
     verify(exerciseRepository, times(1)).findAll();
-    verify(exerciseMapper, times(1)).toDto(exercise1);
-    verify(exerciseMapper, times(1)).toDto(exercise2);
-    verify(exerciseMapper, times(1)).toDto(exercise3);
+    verify(exerciseMapper, times(1)).toResponseDto(exercise1);
+    verify(exerciseMapper, times(1)).toResponseDto(exercise2);
+    verify(exerciseMapper, times(1)).toResponseDto(exercise3);
     assertEquals(responseDtos.get(0).getId(), result.get(0).getId());
     assertEquals(responseDtos.get(1).getId(), result.get(1).getId());
     assertEquals(responseDtos.get(2).getId(), result.get(2).getId());
@@ -279,14 +279,14 @@ public class ExerciseServiceTest {
     SearchRequestDto searchDto = new SearchRequestDto(searchQuery);
 
     when(exerciseRepository.findByNameContainingIgnoreCase(searchQuery)).thenReturn(List.of(exercise1));
-    when(exerciseMapper.toDto(exercise1)).thenReturn(exerciseResponseDto1);
+    when(exerciseMapper.toResponseDto(exercise1)).thenReturn(exerciseResponseDto1);
 
     // Act
     List<ExerciseResponseDto> result = exerciseService.searchExercises(searchDto);
 
     // Assert
     verify(exerciseRepository, times(1)).findByNameContainingIgnoreCase(searchQuery);
-    verify(exerciseMapper, times(1)).toDto(exercise1);
+    verify(exerciseMapper, times(1)).toResponseDto(exercise1);
     assertEquals(1, result.size());
 
     assertEquals(exerciseResponseDto1.getId(), result.get(0).getId());
@@ -353,14 +353,14 @@ public class ExerciseServiceTest {
     // Arrange
     int categoryId = category1.getId();
     when(exerciseCategoryAssociationRepository.findByExerciseCategoryId(categoryId)).thenReturn(List.of(association1));
-    when(exerciseMapper.toDto(exercise1)).thenReturn(exerciseResponseDto1);
+    when(exerciseMapper.toResponseDto(exercise1)).thenReturn(exerciseResponseDto1);
 
     // Act
     List<ExerciseResponseDto> result = exerciseService.getExercisesByCategory(categoryId);
 
     // Assert
     verify(exerciseCategoryAssociationRepository, times(1)).findByExerciseCategoryId(categoryId);
-    verify(exerciseMapper, times(1)).toDto(exercise1);
+    verify(exerciseMapper, times(1)).toResponseDto(exercise1);
     assertEquals(1, result.size());
     assertEquals(exerciseResponseDto1.getId(), result.get(0).getId());
   }
