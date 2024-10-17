@@ -6,6 +6,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
 import source.code.cache.event.Activity.ActivityCategoryCreateEvent;
 import source.code.cache.event.Activity.ActivityCategoryDeleteEvent;
 import source.code.cache.event.Activity.ActivityCategoryUpdateEvent;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+@Service
 public class ActivityCategoryServiceImpl implements ActivityCategoryService {
   private final ApplicationEventPublisher applicationEventPublisher;
   private final ValidationHelper validationHelper;

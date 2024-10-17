@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.response.ActivityResponseDto;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
-import source.code.mapper.ActivityMapperImpl;
+import source.code.mapper.Activity.ActivityMapper;
 import source.code.model.Activity.Activity;
 import source.code.model.User.User;
 import source.code.model.User.UserActivity;
@@ -23,13 +23,13 @@ public class UserActivityServiceImpl implements UserActivityService {
   private final UserActivityRepository userActivityRepository;
   private final ActivityRepository activityRepository;
   private final UserRepository userRepository;
-  private final ActivityMapperImpl activityMapper;
+  private final ActivityMapper activityMapper;
 
   public UserActivityServiceImpl(
           UserActivityRepository userActivityRepository,
           ActivityRepository activityRepository,
           UserRepository userRepository,
-          ActivityMapperImpl activityMapper) {
+          ActivityMapper activityMapper) {
     this.userActivityRepository = userActivityRepository;
     this.activityRepository = activityRepository;
     this.userRepository = userRepository;

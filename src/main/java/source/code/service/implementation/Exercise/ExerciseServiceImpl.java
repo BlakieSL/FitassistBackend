@@ -13,14 +13,12 @@ import source.code.cache.event.Exercise.ExerciseUpdateEvent;
 import source.code.dto.request.ExerciseCreateDto;
 import source.code.dto.request.ExerciseUpdateDto;
 import source.code.dto.request.SearchRequestDto;
-import source.code.dto.response.ExerciseCategoryResponseDto;
 import source.code.dto.response.ExerciseResponseDto;
 import source.code.helper.JsonPatchHelper;
 import source.code.helper.ValidationHelper;
 import source.code.helper.enumerators.ExerciseField;
-import source.code.mapper.ExerciseMapper;
+import source.code.mapper.Exercise.ExerciseMapper;
 import source.code.model.Exercise.*;
-import source.code.model.User.UserExercise;
 import source.code.repository.*;
 import source.code.service.declaration.ExerciseService;
 
@@ -109,15 +107,6 @@ public class ExerciseServiceImpl implements ExerciseService {
     List<Exercise> exercises = exerciseRepository.findAll();
     return exercises.stream()
             .map(exerciseMapper::toResponseDto)
-            .collect(Collectors.toList());
-  }
-
-  @Cacheable(value = "allExerciseCategories")
-  public List<ExerciseCategoryResponseDto> getAllCategories() {
-    List<ExerciseCategory> categories = exerciseCategoryRepository.findAll();
-
-    return categories.stream()
-            .map(exerciseMapper::toCategoryDto)
             .collect(Collectors.toList());
   }
 

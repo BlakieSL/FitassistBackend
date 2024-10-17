@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.response.ExerciseResponseDto;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
-import source.code.mapper.ExerciseMapperImpl;
+import source.code.mapper.Exercise.ExerciseMapper;
 import source.code.model.Exercise.Exercise;
 import source.code.model.User.User;
 import source.code.model.User.UserExercise;
@@ -23,12 +23,13 @@ public class UserExerciseServiceImpl implements UserExerciseService {
   private final UserExerciseRepository userExerciseRepository;
   private final ExerciseRepository exerciseRepository;
   private final UserRepository userRepository;
-  private final ExerciseMapperImpl exerciseMapper;
+  private final ExerciseMapper exerciseMapper;
 
   public UserExerciseServiceImpl(
           UserExerciseRepository userExerciseRepository,
           ExerciseRepository exerciseRepository,
-          UserRepository userRepository, ExerciseMapperImpl exerciseMapper) {
+          UserRepository userRepository,
+          ExerciseMapper exerciseMapper) {
     this.userExerciseRepository = userExerciseRepository;
     this.exerciseRepository = exerciseRepository;
     this.userRepository = userRepository;

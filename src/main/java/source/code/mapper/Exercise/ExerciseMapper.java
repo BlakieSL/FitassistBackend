@@ -1,4 +1,4 @@
-package source.code.mapper;
+package source.code.mapper.Exercise;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +56,6 @@ public abstract class ExerciseMapper {
   @Mapping(target = "userExercises", ignore = true)
   @Mapping(target = "workoutSet", ignore = true)
   public abstract Exercise toEntity(ExerciseCreateDto dto);
-
-  public abstract ExerciseCategoryResponseDto toCategoryDto(ExerciseCategory exerciseCategory);
 
   public abstract ExerciseInstructionResponseDto toInstructionDto(ExerciseInstruction exerciseInstruction);
 

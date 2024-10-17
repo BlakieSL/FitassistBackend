@@ -58,12 +58,6 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     }
   }
 
-
-  private void resetDailyActivity(DailyActivity dailyActivity) {
-    dailyActivity.setDate(LocalDate.now());
-    dailyActivity.getDailyActivityItems().clear();
-  }
-
   @Transactional
   public void addActivityToDailyActivityItem(int userId, Integer activityId,
                                              DailyActivityItemCreateDto dto) {
@@ -88,20 +82,6 @@ public class DailyActivityServiceImpl implements DailyActivityService {
       saveDailyActivityItem(dailyActivity, dailyActivityItem);
     }
     dailyActivityRepository.save(dailyActivity);
-  }
-
-  private DailyActivity getDailyActivityByUser(int userId) {
-    return dailyActivityRepository.findByUserId(userId)
-            .orElseGet(() -> createNewDailyActivityForUser(userId));
-  }
-
-  private void updateDailyActivityItemTime(DailyActivityItem dailyActivityItem, int time) {
-    dailyActivityItem.setTime(time);
-  }
-
-  private void saveDailyActivityItem(DailyActivity dailyActivity,
-                                     DailyActivityItem dailyActivityItem) {
-    dailyActivity.getDailyActivityItems().add(dailyActivityItem);
   }
 
   @Transactional
@@ -165,5 +145,24 @@ public class DailyActivityServiceImpl implements DailyActivityService {
             .sum();
 
     return new DailyActivitiesResponseDto(activities, totalCaloriesBurned);
+  }
+
+  private void resetDailyActivity(DailyActivity dailyActivity) {
+    dailyActivity.setDate(LocalDate.now());
+    dailyActivity.getDailyActivityItems().clear();
+  }
+
+  private DailyActivity getDailyActivityByUser(int userId) {
+    return dailyActivityRepository.findByUserId(userId)
+            .orElseGet(() -> createNewDailyActivityForUser(userId));
+  }
+
+  private void updateDailyActivityItemTime(DailyActivityItem dailyActivityItem, int time) {
+    dailyActivityItem.setTime(time);
+  }
+
+  private void saveDailyActivityItem(DailyActivity dailyActivity,
+                                     DailyActivityItem dailyActivityItem) {
+    dailyActivity.getDailyActivityItems().add(dailyActivityItem);
   }
 }

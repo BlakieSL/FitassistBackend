@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import source.code.dto.response.ExerciseCategoryResponseDto;
 import source.code.dto.response.ExerciseResponseDto;
 import source.code.helper.enumerators.ExerciseField;
+import source.code.service.declaration.ExerciseCategoryService;
 import source.code.service.declaration.ExerciseService;
 
 import java.util.List;
@@ -15,29 +16,14 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/api/exercise-categories")
 public class ExerciseCategoryController {
-  private final ExerciseService exerciseService;
+  private final ExerciseCategoryService exerciseCategoryService;
 
-  public ExerciseCategoryController(ExerciseService exerciseService) {
-    this.exerciseService = exerciseService;
+  public ExerciseCategoryController(ExerciseCategoryService exerciseCategoryService) {
+    this.exerciseCategoryService = exerciseCategoryService;
   }
 
   @GetMapping
   public ResponseEntity<List<ExerciseCategoryResponseDto>> getAllExerciseCategories() {
-    return ResponseEntity.ok(exerciseService.getAllCategories());
-  }
-
-  @GetMapping("/{categoryId}/categories")
-  public ResponseEntity<List<ExerciseResponseDto>> getExercisesByCategory(
-          @PathVariable int categoryId) {
-
-    return ResponseEntity.ok(exerciseService.getExercisesByCategory(categoryId));
-  }
-
-  @GetMapping("/field/{field}/{value}")
-  public ResponseEntity<List<ExerciseResponseDto>> getExercisesByField(
-          @PathVariable ExerciseField field,
-          @PathVariable int value) {
-    List<ExerciseResponseDto> exercises = exerciseService.getExercisesByField(field, value);
-    return ResponseEntity.ok(exercises);
+    return ResponseEntity.ok(exerciseCategoryService.getAllCategories());
   }
 }
