@@ -71,14 +71,14 @@ public class ExerciseServiceImpl implements ExerciseService {
           throws JsonPatchException, JsonProcessingException {
 
     Exercise exercise = getExerciseOrThrow(exerciseId);
-    ExerciseUpdateDto patchedExerciseUpdateDto = applyPatchToExercise(exerciseId, patch);
+    ExerciseUpdateDto patchedExerciseUpdateDto = applyPatchToExercise(exercise, patch);
 
     validationHelper.validate(patchedExerciseUpdateDto);
 
     exerciseMapper.updateExerciseFromDto(exercise, patchedExerciseUpdateDto);
     Exercise savedExercise = exerciseRepository.save(exercise);
 
-    applicationEventPublisher.publishEvent(new ExerciseUpdateEvent(this, exercise));
+    applicationEventPublisher.publishEvent(new ExerciseUpdateEvent(this, savedExercise));
   }
 
   @Transactional
@@ -185,9 +185,9 @@ public class ExerciseServiceImpl implements ExerciseService {
                     "Exercise with id: " + exerciseId + " not found"));
   }
 
-  private ExerciseUpdateDto applyPatchToExercise(int exerciseId, JsonMergePatch patch)
+  private ExerciseUpdateDto applyPatchToExercise(Exercise exercise, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
-    Exercise exercise = getExerciseOrThrow(exerciseId);
+
     ExerciseResponseDto responseDto = exerciseMapper.toResponseDto(exercise);
     return jsonPatchHelper.applyPatch(patch, responseDto, ExerciseUpdateDto.class);
   }
