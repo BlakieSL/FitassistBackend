@@ -6,8 +6,6 @@ import org.springframework.stereotype.Component;
 import source.code.cache.event.Exercise.ExerciseCreateEvent;
 import source.code.cache.event.Exercise.ExerciseDeleteEvent;
 import source.code.cache.event.Exercise.ExerciseUpdateEvent;
-import source.code.dto.request.ExerciseCreateDto;
-import source.code.dto.request.ExerciseUpdateDto;
 import source.code.model.Exercise.Exercise;
 import source.code.model.Exercise.ExerciseCategoryAssociation;
 
@@ -22,10 +20,7 @@ public class ExerciseCacheListener {
   @EventListener
   public void handleExerciseCreate(ExerciseCreateEvent event) {
     Exercise exercise = event.getExercise();
-
-    cacheManager.getCache("allExercises").clear();
-    clearExercisesByFieldCache(exercise);
-    clearExercisesByCategoryCache(exercise);
+    clearCommonCache(exercise);
   }
 
   @EventListener
@@ -42,6 +37,10 @@ public class ExerciseCacheListener {
 
   private void clearCache(Exercise exercise) {
     cacheManager.getCache("exercises").evict(exercise.getId());
+    clearCommonCache(exercise);
+  }
+
+  private void clearCommonCache(Exercise exercise) {
     cacheManager.getCache("allExercises").clear();
     clearExercisesByFieldCache(exercise);
     clearExercisesByCategoryCache(exercise);
