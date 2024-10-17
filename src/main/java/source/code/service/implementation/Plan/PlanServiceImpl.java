@@ -1,12 +1,19 @@
 package source.code.service.implementation.Plan;
 
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import source.code.cache.event.Plan.PlanCreateEvent;
+import source.code.cache.event.Plan.PlanDeleteEvent;
+import source.code.cache.event.Plan.PlanUpdateEvent;
 import source.code.dto.request.PlanCreateDto;
+import source.code.dto.request.PlanUpdateDto;
 import source.code.dto.response.PlanCategoryResponseDto;
 import source.code.dto.response.PlanResponseDto;
+import source.code.helper.JsonPatchHelper;
+import source.code.helper.ValidationHelper;
 import source.code.helper.enumerators.PlanField;
 import source.code.mapper.PlanMapper;
 import source.code.model.Plan.*;
@@ -25,6 +32,8 @@ import java.util.stream.Collectors;
 @Service
 public class PlanServiceImpl implements PlanService {
   private final PlanMapper planMapper;
+  private final JsonPatchHelper jsonPatchHelper;
+  private final ValidationHelper validationHelper;
   private final ApplicationEventPublisher applicationEventPublisher;
   private final PlanRepository planRepository;
   private final UserPlanRepository userPlanRepository;
@@ -32,12 +41,16 @@ public class PlanServiceImpl implements PlanService {
   private final PlanCategoryAssociationRepository planCategoryAssociationRepository;
 
   public PlanServiceImpl(PlanMapper planMapper,
+                         JsonPatchHelper jsonPatchHelper,
+                         ValidationHelper validationHelper,
                          ApplicationEventPublisher applicationEventPublisher,
                          PlanRepository planRepository,
                          UserPlanRepository userPlanRepository,
                          PlanCategoryRepository planCategoryRepository,
                          PlanCategoryAssociationRepository planCategoryAssociationRepository) {
     this.planMapper = planMapper;
+    this.jsonPatchHelper = jsonPatchHelper;
+    this.validationHelper = validationHelper;
     this.applicationEventPublisher = applicationEventPublisher;
     this.planRepository = planRepository;
     this.userPlanRepository = userPlanRepository;
@@ -48,18 +61,36 @@ public class PlanServiceImpl implements PlanService {
   @Transactional
   public PlanResponseDto createPlan(PlanCreateDto request) {
     Plan plan = planRepository.save(planMapper.toEntity(request));
-    applicationEventPublisher.publishEvent(new source.code.cache.event.Plan.Plan.PlanCreateEvent(this, request));
+    applicationEventPublisher.publishEvent(new PlanCreateEvent(this, plan));
 
-    return planMapper.toDto(plan);
+    return planMapper.toResponseDto(plan);
+  }
+
+  @Transactional
+  public void updatePlan(int planId, JsonMergePatch patch) {
+    Plan plan = getPlanOrThrow(planId);
+    PlanUpdateDto patchedPlanUpdateDto = applyPatchToPlan(plan, patch);
+
+    validationHelper.validate(patchedPlanUpdateDto);
+
+    planMapper.updatePlan(plan, patchedPlanUpdateDto);
+    Plan savedPlan = planRepository.save(plan);
+
+    applicationEventPublisher.publishEvent(new PlanUpdateEvent(this, plan));
+  }
+
+  @Transactional
+  public void deletePlan(int planId) {
+    Plan plan = getPlanOrThrow(planId);
+    planRepository.delete(plan);
+
+    applicationEventPublisher.publishEvent(new PlanDeleteEvent(this, plan));
   }
 
   @Cacheable(value = {"plans"}, key = "#id")
   public PlanResponseDto getPlan(int id) {
-    Plan plan = planRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Plan with id: " + id + " not found"));
-
-    return planMapper.toDto(plan);
+    Plan plan = getPlanOrThrow(id);
+    return planMapper.toResponseDto(plan);
   }
 
   @Cacheable(value = {"allPlans"})
@@ -67,7 +98,7 @@ public class PlanServiceImpl implements PlanService {
     List<Plan> plans = planRepository.findAll();
 
     return plans.stream()
-            .map(planMapper::toDto)
+            .map(planMapper::toResponseDto)
             .collect(Collectors.toList());
   }
 
@@ -78,7 +109,7 @@ public class PlanServiceImpl implements PlanService {
             .collect(Collectors.toList());
 
     return plans.stream()
-            .map(planMapper::toDto)
+            .map(planMapper::toResponseDto)
             .collect(Collectors.toList());
   }
 
@@ -100,7 +131,7 @@ public class PlanServiceImpl implements PlanService {
             .collect(Collectors.toList());
 
     return plans.stream()
-            .map(planMapper::toDto)
+            .map(planMapper::toResponseDto)
             .collect(Collectors.toList());
   }
 
@@ -128,7 +159,18 @@ public class PlanServiceImpl implements PlanService {
             .collect(Collectors.toList());
 
     return plans.stream()
-            .map(planMapper::toDto)
+            .map(planMapper::toResponseDto)
             .collect(Collectors.toList());
+  }
+
+  private Plan getPlanOrThrow(int planId) {
+    return planRepository.findById(planId)
+            .orElseThrow(() -> new NoSuchElementException(
+                    "Plan with id: " + planId + " not found"));
+  }
+
+  private PlanUpdateDto applyPatchToPlan (Plan plan, JsonMergePatch patch) {
+    PlanResponseDto responseDto = planMapper.toResponseDto(plan);
+    jsonPatchHelper.applyPatch(patch, responseDto, PlanUpdateDto.class);
   }
 }

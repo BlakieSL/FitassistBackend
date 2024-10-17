@@ -4,7 +4,12 @@ import org.springframework.cache.CacheManager;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import source.code.cache.event.Plan.Plan;
+import source.code.cache.event.Plan.PlanCreateEvent;
+import source.code.cache.event.Plan.PlanDeleteEvent;
+import source.code.cache.event.Plan.PlanUpdateEvent;
 import source.code.dto.request.PlanCreateDto;
+import source.code.model.Plan.Plan;
+import source.code.model.Plan.PlanCategoryAssociation;
 
 @Component
 public class PlanCacheListener {
@@ -15,19 +20,46 @@ public class PlanCacheListener {
   }
 
   @EventListener
-  public void handlePlanCreate(Plan.PlanCreateEvent event) {
-    PlanCreateDto dto = event.getPlanCreateDto();
+  public void handlePlanCreate(PlanCreateEvent event) {
+    Plan plan = event.getPlan();
+    clearCommonCache(plan);
+  }
 
+  @EventListener
+  public void handlePlanUpdate(PlanUpdateEvent event) {
+    Plan plan = event.getPlan();
+    clearCache(plan);
+  }
+
+  @EventListener
+  public void handlePlanDelete(PlanDeleteEvent event) {
+    Plan plan = event.getPlan();
+    clearCache(plan);
+  }
+
+  private void clearCache(Plan plan) {
+    clearCommonCache(plan);
+    cacheManager.getCache("plans").evict(plan.getId());
+  }
+
+  private void clearCommonCache(Plan plan) {
     cacheManager.getCache("allPlans").clear();
+    clearPlansByFieldCache(plan);
+    clearPlansByCategoryCache(plan);
+  }
 
-    cacheManager.getCache("TYPE_" + dto.getPlanTypeId());
-    cacheManager.getCache("DURATION_" + dto.getPlanDurationId());
-    cacheManager.getCache("EQUIPMENT_" + dto.getPlanEquipmentId());
-    cacheManager.getCache("EXPERTISE_LEVEL_" + dto.getPlanExpertiseLevelId());
 
-    if (dto.getCategoryIds() != null) {
-      for (int categoryId : dto.getCategoryIds()) {
-        cacheManager.getCache("plansByCategory").evict(categoryId);
+  private void clearPlansByFieldCache(Plan plan) {
+    cacheManager.getCache("TYPE_" + plan.getPlanType().getId());
+    cacheManager.getCache("DURATION_" + plan.getPlanDuration().getId());
+    cacheManager.getCache("EQUIPMENT_" + plan.getPlanEquipment().getId());
+    cacheManager.getCache("EXPERTISE_LEVEL_" + plan.getPlanExpertiseLevel().getId());
+  }
+
+  private void clearPlansByCategoryCache(Plan plan) {
+    if(plan.getPlanCategoryAssociations() != null) {
+      for(PlanCategoryAssociation association : plan.getPlanCategoryAssociations()) {
+        cacheManager.getCache("plansByCategory").evict(association.getPlanCategory().getId());
       }
     }
   }
