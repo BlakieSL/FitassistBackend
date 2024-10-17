@@ -1,0 +1,16 @@
+package source.code.cache.event.Plan;
+
+import lombok.Getter;
+import org.springframework.context.ApplicationEvent;
+import source.code.dto.request.PlanCreateDto;
+import source.code.model.Plan.Plan;
+
+@Getter
+public class PlanCreateEvent extends ApplicationEvent {
+  private final Plan plan;
+
+  public PlanCreateEvent(Object source, Plan plan) {
+    super(source);
+    this.plan = plan;
+  }
+}

@@ -1,5 +1,6 @@
 package source.code.service.declaration;
 
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.request.PlanCreateDto;
 import source.code.dto.response.PlanCategoryResponseDto;
 import source.code.dto.response.PlanResponseDto;
@@ -9,6 +10,10 @@ import java.util.List;
 
 public interface PlanService {
   PlanResponseDto createPlan(PlanCreateDto planDto);
+
+  void updatePlan(int planId, JsonMergePatch patch);
+
+  void deletePlan(int planId);
 
   PlanResponseDto getPlan(int id);
 

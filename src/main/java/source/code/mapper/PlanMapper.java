@@ -1,11 +1,10 @@
 package source.code.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.other.PlanCategoryShortDto;
 import source.code.dto.request.PlanCreateDto;
+import source.code.dto.request.PlanUpdateDto;
 import source.code.dto.response.PlanCategoryResponseDto;
 import source.code.dto.response.PlanResponseDto;
 import source.code.model.Plan.*;
@@ -34,7 +33,7 @@ public abstract class PlanMapper {
   @Mapping(target = "planDuration", source = "planDuration", qualifiedByName = "mapDurationToShortDto")
   @Mapping(target = "planEquipment", source = "planEquipment", qualifiedByName = "mapEquipmentToShortDto")
   @Mapping(target = "planExpertiseLevel", source = "planExpertiseLevel", qualifiedByName = "mapExpertiseLevelToShortDto")
-  public abstract PlanResponseDto toDto(Plan plan);
+  public abstract PlanResponseDto toResponseDto(Plan plan);
 
   @Mapping(target = "planCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
   @Mapping(target = "planType", source = "planTypeId", qualifiedByName = "mapTypeIdToEntity")
@@ -47,6 +46,17 @@ public abstract class PlanMapper {
   public abstract Plan toEntity(PlanCreateDto dto);
 
   public abstract PlanCategoryResponseDto toCategoryDto(PlanCategory planCategory);
+
+  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  @Mapping(target = "planCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
+  @Mapping(target = "planType", source = "planTypeId", qualifiedByName = "mapTypeIdToEntity")
+  @Mapping(target = "planDuration", source = "planDurationId", qualifiedByName = "mapDurationIdToEntity")
+  @Mapping(target = "planEquipment", source = "planEquipmentId", qualifiedByName = "mapEquipmentIdToEntity")
+  @Mapping(target = "planExpertiseLevel", source = "planExpertiseLevelId", qualifiedByName = "mapExpertiseLevelIdToEntity")
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "userPlans", ignore = true)
+  @Mapping(target = "workoutPlans", ignore = true)
+  public abstract void updatePlan(@MappingTarget Plan plan, PlanUpdateDto planUpdateDto);
 
   @Named("mapCategoryIdsToAssociations")
   protected Set<PlanCategoryAssociation> mapCategoryIdsToAssociations(List<Integer> categoryIds) {
