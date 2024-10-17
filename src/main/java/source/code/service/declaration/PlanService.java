@@ -1,5 +1,7 @@
 package source.code.service.declaration;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.request.PlanCreateDto;
 import source.code.dto.response.PlanCategoryResponseDto;
@@ -11,7 +13,7 @@ import java.util.List;
 public interface PlanService {
   PlanResponseDto createPlan(PlanCreateDto planDto);
 
-  void updatePlan(int planId, JsonMergePatch patch);
+  void updatePlan(int planId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
   void deletePlan(int planId);
 

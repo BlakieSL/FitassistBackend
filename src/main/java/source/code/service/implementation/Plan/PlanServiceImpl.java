@@ -1,5 +1,7 @@
 package source.code.service.implementation.Plan;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
@@ -67,7 +69,8 @@ public class PlanServiceImpl implements PlanService {
   }
 
   @Transactional
-  public void updatePlan(int planId, JsonMergePatch patch) {
+  public void updatePlan(int planId, JsonMergePatch patch)
+          throws JsonPatchException, JsonProcessingException {
     Plan plan = getPlanOrThrow(planId);
     PlanUpdateDto patchedPlanUpdateDto = applyPatchToPlan(plan, patch);
 
@@ -76,7 +79,7 @@ public class PlanServiceImpl implements PlanService {
     planMapper.updatePlan(plan, patchedPlanUpdateDto);
     Plan savedPlan = planRepository.save(plan);
 
-    applicationEventPublisher.publishEvent(new PlanUpdateEvent(this, plan));
+    applicationEventPublisher.publishEvent(new PlanUpdateEvent(this, savedPlan));
   }
 
   @Transactional
@@ -169,8 +172,9 @@ public class PlanServiceImpl implements PlanService {
                     "Plan with id: " + planId + " not found"));
   }
 
-  private PlanUpdateDto applyPatchToPlan (Plan plan, JsonMergePatch patch) {
+  private PlanUpdateDto applyPatchToPlan (Plan plan, JsonMergePatch patch)
+          throws JsonPatchException, JsonProcessingException {
     PlanResponseDto responseDto = planMapper.toResponseDto(plan);
-    jsonPatchHelper.applyPatch(patch, responseDto, PlanUpdateDto.class);
+    return jsonPatchHelper.applyPatch(patch, responseDto, PlanUpdateDto.class);
   }
 }
