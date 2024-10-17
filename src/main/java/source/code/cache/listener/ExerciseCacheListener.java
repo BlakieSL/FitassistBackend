@@ -4,7 +4,12 @@ import org.springframework.cache.CacheManager;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import source.code.cache.event.Exercise.ExerciseCreateEvent;
+import source.code.cache.event.Exercise.ExerciseDeleteEvent;
+import source.code.cache.event.Exercise.ExerciseUpdateEvent;
 import source.code.dto.request.ExerciseCreateDto;
+import source.code.dto.request.ExerciseUpdateDto;
+import source.code.model.Exercise.Exercise;
+import source.code.model.Exercise.ExerciseCategoryAssociation;
 
 @Component
 public class ExerciseCacheListener {
@@ -16,20 +21,49 @@ public class ExerciseCacheListener {
 
   @EventListener
   public void handleExerciseCreate(ExerciseCreateEvent event) {
-    ExerciseCreateDto dto = event.getExerciseCreateDto();
+    Exercise exercise = event.getExercise();
 
     cacheManager.getCache("allExercises").clear();
+    clearExercisesByFieldCache(exercise);
+    clearExercisesByCategoryCache(exercise);
+  }
 
-    cacheManager.getCache("exercisesByField").evict("EXPERTISE_LEVEL_" + dto.getExpertiseLevelId());
-    cacheManager.getCache("exercisesByField").evict("FORCE_TYPE_" + dto.getForceTypeId());
-    cacheManager.getCache("exercisesByField").evict("MECHANICS_TYPE_" + dto.getMechanicsTypeId());
-    cacheManager.getCache("exercisesByField").evict("EQUIPMENT_" + dto.getExerciseEquipmentId());
-    cacheManager.getCache("exercisesByField").evict("TYPE_" + dto.getExerciseTypeId());
+  @EventListener
+  public void handleExerciseUpdate(ExerciseUpdateEvent event) {
+    Exercise exercise = event.getExercise();
+    clearCache(exercise);
+  }
 
+  @EventListener
+  public void handleExerciseDelete(ExerciseDeleteEvent event) {
+    Exercise exercise = event.getExercise();
+    clearCache(exercise);
+  }
 
-    if (dto.getCategoryIds() != null) {
-      for (int categoryId : dto.getCategoryIds()) {
-        cacheManager.getCache("exercisesByCategory").evict(categoryId);
+  private void clearCache(Exercise exercise) {
+    cacheManager.getCache("exercises").evict(exercise.getId());
+    cacheManager.getCache("allExercises").clear();
+    clearExercisesByFieldCache(exercise);
+    clearExercisesByCategoryCache(exercise);
+  }
+
+  private void clearExercisesByFieldCache(Exercise exercise) {
+    cacheManager.getCache("exercisesByField")
+            .evict("EXPERTISE_LEVEL_" + exercise.getExpertiseLevel().getId());
+    cacheManager.getCache("exercisesByField")
+            .evict("FORCE_TYPE_" + exercise.getForceType().getId());
+    cacheManager.getCache("exercisesByField")
+            .evict("MECHANICS_TYPE_" + exercise.getMechanicsType().getId());
+    cacheManager.getCache("exercisesByField")
+            .evict("EQUIPMENT_" + exercise.getExerciseEquipment().getId());
+    cacheManager.getCache("exercisesByField")
+            .evict("TYPE_" + exercise.getExerciseType().getId());
+  }
+
+  private void clearExercisesByCategoryCache(Exercise exercise) {
+    if (exercise.getExerciseCategoryAssociations() != null) {
+      for (ExerciseCategoryAssociation association : exercise.getExerciseCategoryAssociations()) {
+        cacheManager.getCache("exercisesByCategory").evict(association.getExerciseCategory().getId());
       }
     }
   }

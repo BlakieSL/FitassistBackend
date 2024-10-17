@@ -24,16 +24,16 @@ public class UserCacheListener {
   @EventListener
   public void handleUserDelete(UserDeleteEvent event) {
     User user = event.getUser();
-    removeCache(user);
+    clearCache(user);
   }
 
   @EventListener
   public void handleUserUpdate(UserUpdateEvent event) {
     User user = event.getUser();
-    removeCache(user);
+    clearCache(user);
   }
 
-  public void removeCache(User user) {
+  public void clearCache(User user) {
     cacheManager.getCache("userDetails").evict(user.getEmail());
     cacheManager.getCache("userById").evict(user.getId());
     cacheManager.getCache("userIdByEmail").evict(user.getEmail());

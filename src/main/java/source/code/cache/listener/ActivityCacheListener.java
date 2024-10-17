@@ -27,16 +27,16 @@ public class ActivityCacheListener {
   @EventListener
   public void handleActivityUpdate(ActivityUpdateEvent event) {
     Activity activity = event.getActivity();
-    removeCache(activity);
+    clearCache(activity);
   }
 
   @EventListener
   public void handleActivityDelete(ActivityDeleteEvent event) {
     Activity activity = event.getActivity();
-    removeCache(activity);
+    clearCache(activity);
   }
 
-  public void removeCache(Activity activity) {
+  public void clearCache(Activity activity) {
     cacheManager.getCache("activities").evict(activity.getId());
     cacheManager.getCache("allActivities").clear();
     cacheManager.getCache("activitiesByCategory").evict(activity.getActivityCategory().getId());

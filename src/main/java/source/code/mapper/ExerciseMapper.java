@@ -1,11 +1,10 @@
 package source.code.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.other.ExerciseCategoryShortDto;
 import source.code.dto.request.ExerciseCreateDto;
+import source.code.dto.request.ExerciseUpdateDto;
 import source.code.dto.response.ExerciseCategoryResponseDto;
 import source.code.dto.response.ExerciseInstructionResponseDto;
 import source.code.dto.response.ExerciseResponseDto;
@@ -45,7 +44,7 @@ public abstract class ExerciseMapper {
   @Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceToShortDto")
   @Mapping(target = "exerciseEquipment", source = "exerciseEquipment", qualifiedByName = "mapEquipmentToShortDto")
   @Mapping(target = "exerciseType", source = "exerciseType", qualifiedByName = "mapTypeToShortDto")
-  public abstract ExerciseResponseDto toDto(Exercise exercise);
+  public abstract ExerciseResponseDto toResponseDto(Exercise exercise);
 
   @Mapping(target = "exerciseCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
   @Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevel")
@@ -64,6 +63,17 @@ public abstract class ExerciseMapper {
 
   public abstract ExerciseTipResponseDto toTipDto(ExerciseTip exerciseTip);
 
+  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  @Mapping(target = "exerciseCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
+  @Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevel")
+  @Mapping(target = "mechanicsType", source = "mechanicsTypeId", qualifiedByName = "mapMechanicsType")
+  @Mapping(target = "forceType", source = "forceTypeId", qualifiedByName = "mapForceType")
+  @Mapping(target = "exerciseEquipment", source = "exerciseEquipmentId", qualifiedByName = "mapExerciseEquipment")
+  @Mapping(target = "exerciseType", source = "exerciseTypeId", qualifiedByName = "mapExerciseType")
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "userExercises", ignore = true)
+  @Mapping(target = "workoutSet", ignore = true)
+  public abstract void updateExerciseFromDto(@MappingTarget Exercise exercise, ExerciseUpdateDto request);
 
   @Named("mapCategoryIdsToAssociations")
   protected Set<ExerciseCategoryAssociation> mapCategoryIdsToAssociations(List<Integer> categoryIds) {

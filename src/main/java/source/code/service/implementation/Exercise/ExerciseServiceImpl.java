@@ -1,14 +1,22 @@
 package source.code.service.implementation.Exercise;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import source.code.cache.event.Exercise.ExerciseCreateEvent;
+import source.code.cache.event.Exercise.ExerciseDeleteEvent;
+import source.code.cache.event.Exercise.ExerciseUpdateEvent;
 import source.code.dto.request.ExerciseCreateDto;
+import source.code.dto.request.ExerciseUpdateDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ExerciseCategoryResponseDto;
 import source.code.dto.response.ExerciseResponseDto;
+import source.code.helper.JsonPatchHelper;
+import source.code.helper.ValidationHelper;
 import source.code.helper.enumerators.ExerciseField;
 import source.code.mapper.ExerciseMapper;
 import source.code.model.Exercise.*;
@@ -24,6 +32,8 @@ import java.util.stream.Collectors;
 @Service
 public class ExerciseServiceImpl implements ExerciseService {
   private final ExerciseMapper exerciseMapper;
+  private final ValidationHelper validationHelper;
+  private final JsonPatchHelper jsonPatchHelper;
   private final ApplicationEventPublisher applicationEventPublisher;
   private final ExerciseRepository exerciseRepository;
   private final UserExerciseRepository userExerciseRepository;
@@ -31,12 +41,16 @@ public class ExerciseServiceImpl implements ExerciseService {
   private final ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository;
 
   public ExerciseServiceImpl(ExerciseMapper exerciseMapper,
+                             ValidationHelper validationHelper,
+                             JsonPatchHelper jsonPatchHelper,
                              ApplicationEventPublisher applicationEventPublisher,
                              ExerciseRepository exerciseRepository,
                              UserExerciseRepository userExerciseRepository,
                              ExerciseCategoryRepository exerciseCategoryRepository,
                              ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository) {
     this.exerciseMapper = exerciseMapper;
+    this.validationHelper = validationHelper;
+    this.jsonPatchHelper = jsonPatchHelper;
     this.applicationEventPublisher = applicationEventPublisher;
     this.exerciseRepository = exerciseRepository;
     this.userExerciseRepository = userExerciseRepository;
@@ -47,32 +61,54 @@ public class ExerciseServiceImpl implements ExerciseService {
   @Transactional
   public ExerciseResponseDto createExercise(ExerciseCreateDto dto) {
     Exercise exercise = exerciseRepository.save(exerciseMapper.toEntity(dto));
-    applicationEventPublisher.publishEvent(new ExerciseCreateEvent(this, dto));
+    applicationEventPublisher.publishEvent(new ExerciseCreateEvent(this, exercise));
 
-    return exerciseMapper.toDto(exercise);
+    return exerciseMapper.toResponseDto(exercise);
   }
+
+  @Transactional
+  public void updateExercise(int exerciseId, JsonMergePatch patch)
+          throws JsonPatchException, JsonProcessingException {
+
+    Exercise exercise = getExerciseOrThrow(exerciseId);
+    ExerciseUpdateDto patchedExerciseUpdateDto = applyPatchToExercise(exerciseId, patch);
+
+    validationHelper.validate(patchedExerciseUpdateDto);
+
+    exerciseMapper.updateExerciseFromDto(exercise, patchedExerciseUpdateDto);
+    Exercise savedExercise = exerciseRepository.save(exercise);
+
+    applicationEventPublisher.publishEvent(new ExerciseUpdateEvent(this, exercise));
+  }
+
+  @Transactional
+  public void deleteExercise(int exerciseId) {
+    Exercise exercise = getExerciseOrThrow(exerciseId);
+    exerciseRepository.delete(exercise);
+
+    applicationEventPublisher.publishEvent(new ExerciseDeleteEvent(this, exercise));
+  }
+
 
   public List<ExerciseResponseDto> searchExercises(SearchRequestDto dto) {
     List<Exercise> exercises = exerciseRepository.findByNameContainingIgnoreCase(dto.getName());
 
     return exercises.stream()
-            .map(exerciseMapper::toDto)
+            .map(exerciseMapper::toResponseDto)
             .collect(Collectors.toList());
   }
 
   @Cacheable(value = "exercises", key = "#id")
   public ExerciseResponseDto getExercise(int id) {
-    Exercise exercise = exerciseRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Exercise with id: " + id + " not found"));
-    return exerciseMapper.toDto(exercise);
+    Exercise exercise = getExerciseOrThrow(id);
+    return exerciseMapper.toResponseDto(exercise);
   }
 
   @Cacheable(value = "allExercises")
   public List<ExerciseResponseDto> getAllExercises() {
     List<Exercise> exercises = exerciseRepository.findAll();
     return exercises.stream()
-            .map(exerciseMapper::toDto)
+            .map(exerciseMapper::toResponseDto)
             .collect(Collectors.toList());
   }
 
@@ -86,7 +122,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     return exercises
             .stream()
-            .map(exerciseMapper::toDto)
+            .map(exerciseMapper::toResponseDto)
             .collect(Collectors.toList());
   }
 
@@ -109,7 +145,7 @@ public class ExerciseServiceImpl implements ExerciseService {
             .collect(Collectors.toList());
 
     return exercises.stream()
-            .map(exerciseMapper::toDto)
+            .map(exerciseMapper::toResponseDto)
             .collect(Collectors.toList());
   }
 
@@ -139,8 +175,20 @@ public class ExerciseServiceImpl implements ExerciseService {
             .collect(Collectors.toList());
 
     return exercises.stream()
-            .map(exerciseMapper::toDto)
+            .map(exerciseMapper::toResponseDto)
             .collect(Collectors.toList());
   }
-}
 
+  private Exercise getExerciseOrThrow(int exerciseId) {
+    return exerciseRepository.findById(exerciseId)
+            .orElseThrow(() -> new NoSuchElementException(
+                    "Exercise with id: " + exerciseId + " not found"));
+  }
+
+  private ExerciseUpdateDto applyPatchToExercise(int exerciseId, JsonMergePatch patch)
+          throws JsonPatchException, JsonProcessingException {
+    Exercise exercise = getExerciseOrThrow(exerciseId);
+    ExerciseResponseDto responseDto = exerciseMapper.toResponseDto(exercise);
+    return jsonPatchHelper.applyPatch(patch, responseDto, ExerciseUpdateDto.class);
+  }
+}
