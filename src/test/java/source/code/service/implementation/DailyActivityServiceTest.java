@@ -13,7 +13,7 @@ import source.code.dto.request.DailyActivityItemCreateDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.DailyActivitiesResponseDto;
 import source.code.helper.JsonPatchHelper;
-import source.code.mapper.DailyActivityMapper;
+import source.code.mapper.Activity.DailyActivityMapper;
 import source.code.model.Activity.Activity;
 import source.code.model.Activity.ActivityCategory;
 import source.code.model.Activity.DailyActivity;

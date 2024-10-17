@@ -3,7 +3,9 @@ package source.code.service.implementation.User;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.LikesAndSavesResponseDto;
+import source.code.dto.response.RecipeResponseDto;
 import source.code.exception.NotUniqueRecordException;
+import source.code.mapper.RecipeMapperImpl;
 import source.code.model.Recipe.Recipe;
 import source.code.model.User.User;
 import source.code.model.User.UserRecipe;
@@ -12,20 +14,25 @@ import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.UserRecipeService;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class UserRecipeServiceImpl implements UserRecipeService {
   private final UserRecipeRepository userRecipeRepository;
   private final RecipeRepository recipeRepository;
   private final UserRepository userRepository;
+  private final RecipeMapperImpl recipeMapper;
 
   public UserRecipeServiceImpl(UserRecipeRepository userRecipeRepository,
                                RecipeRepository recipeRepository,
-                               UserRepository userRepository) {
+                               UserRepository userRepository,
+                               RecipeMapperImpl recipeMapper) {
     this.userRecipeRepository = userRecipeRepository;
     this.recipeRepository = recipeRepository;
     this.userRepository = userRepository;
+    this.recipeMapper = recipeMapper;
   }
 
   @Transactional
@@ -52,10 +59,6 @@ public class UserRecipeServiceImpl implements UserRecipeService {
     userRecipeRepository.save(userRecipe);
   }
 
-  private boolean isAlreadySaved(int userId, int recipeId, short type) {
-    return userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type);
-  }
-
   @Transactional
   public void deleteSavedRecipeFromUser(int recipeId, int userId, short type) {
     UserRecipe userRecipe = userRecipeRepository
@@ -68,6 +71,18 @@ public class UserRecipeServiceImpl implements UserRecipeService {
     userRecipeRepository.delete(userRecipe);
   }
 
+  public List<RecipeResponseDto> getRecipesByUserAndType(int userId, short type) {
+    List<UserRecipe> userRecipes = userRecipeRepository.findByUserIdAndType(userId, type);
+
+    List<Recipe> recipes = userRecipes.stream()
+            .map(UserRecipe::getRecipe)
+            .collect(Collectors.toList());
+
+    return recipes.stream()
+            .map(recipeMapper::toResponseDto)
+            .collect(Collectors.toList());
+  }
+
   public LikesAndSavesResponseDto calculateRecipeLikesAndSaves(int recipeId) {
     recipeRepository.findById(recipeId)
             .orElseThrow(() -> new NoSuchElementException(
@@ -78,4 +93,9 @@ public class UserRecipeServiceImpl implements UserRecipeService {
 
     return new LikesAndSavesResponseDto(likes, saves);
   }
+
+  private boolean isAlreadySaved(int userId, int recipeId, short type) {
+    return userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type);
+  }
+
 }

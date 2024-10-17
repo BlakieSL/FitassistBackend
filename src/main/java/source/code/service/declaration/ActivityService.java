@@ -26,15 +26,11 @@ public interface ActivityService {
 
   List<ActivityResponseDto> getAllActivities();
 
-  List<ActivityCategoryResponseDto> getAllCategories();
-
   List<ActivityResponseDto> getActivitiesByCategory(int categoryId);
 
   ActivityCalculatedResponseDto calculateCaloriesBurned(int id, CalculateActivityCaloriesRequestDto request);
 
   List<ActivityResponseDto> searchActivities(SearchRequestDto request);
-
-  List<ActivityResponseDto> getActivitiesByUserAndType(int userId, short type);
 
   ActivityAverageMetResponseDto getAverageMet();
 }

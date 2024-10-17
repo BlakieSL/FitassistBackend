@@ -23,8 +23,6 @@ public interface ExerciseService {
 
   List<ExerciseResponseDto> getAllExercises();
 
-  List<ExerciseResponseDto> getExercisesByUserAndType(int userId, short type);
-
   List<ExerciseResponseDto> searchExercises(SearchRequestDto dto);
 
   List<ExerciseCategoryResponseDto> getAllCategories();

@@ -2,8 +2,10 @@ package source.code.service.implementation.User;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import source.code.dto.response.ExerciseResponseDto;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
+import source.code.mapper.ExerciseMapperImpl;
 import source.code.model.Exercise.Exercise;
 import source.code.model.User.User;
 import source.code.model.User.UserExercise;
@@ -12,21 +14,25 @@ import source.code.repository.UserExerciseRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.UserExerciseService;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class UserExerciseServiceImpl implements UserExerciseService {
   private final UserExerciseRepository userExerciseRepository;
   private final ExerciseRepository exerciseRepository;
   private final UserRepository userRepository;
+  private final ExerciseMapperImpl exerciseMapper;
 
   public UserExerciseServiceImpl(
           UserExerciseRepository userExerciseRepository,
           ExerciseRepository exerciseRepository,
-          UserRepository userRepository) {
+          UserRepository userRepository, ExerciseMapperImpl exerciseMapper) {
     this.userExerciseRepository = userExerciseRepository;
     this.exerciseRepository = exerciseRepository;
     this.userRepository = userRepository;
+    this.exerciseMapper = exerciseMapper;
   }
 
   @Transactional
@@ -53,10 +59,6 @@ public class UserExerciseServiceImpl implements UserExerciseService {
     userExerciseRepository.save(userExercise);
   }
 
-  private boolean isAlreadySaved(int userId, int exerciseId, short type) {
-    return userExerciseRepository.existsByUserIdAndExerciseIdAndType(userId, exerciseId, type);
-  }
-
   @Transactional
   public void deleteSavedExerciseFromUser(int exerciseId, int userId, short type) {
     UserExercise userExercise = userExerciseRepository
@@ -69,6 +71,20 @@ public class UserExerciseServiceImpl implements UserExerciseService {
     userExerciseRepository.delete(userExercise);
   }
 
+  public List<ExerciseResponseDto> getExercisesByUserAndType(int userId, short type) {
+    List<UserExercise> userExercises = userExerciseRepository.findByUserIdAndType(userId, type);
+
+    List<Exercise> exercises = userExercises
+            .stream()
+            .map(UserExercise::getExercise)
+            .collect(Collectors.toList());
+
+    return exercises
+            .stream()
+            .map(exerciseMapper::toResponseDto)
+            .collect(Collectors.toList());
+  }
+
   public LikesAndSavesResponseDto calculateExerciseLikesAndSaves(int exerciseId) {
     exerciseRepository.findById(exerciseId)
             .orElseThrow(() -> new NoSuchElementException(
@@ -79,4 +95,9 @@ public class UserExerciseServiceImpl implements UserExerciseService {
 
     return new LikesAndSavesResponseDto(likes, saves);
   }
+
+  private boolean isAlreadySaved(int userId, int exerciseId, short type) {
+    return userExerciseRepository.existsByUserIdAndExerciseIdAndType(userId, exerciseId, type);
+  }
+
 }

@@ -11,7 +11,7 @@ import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.helper.JsonPatchHelper;
 import source.code.helper.ValidationHelper;
-import source.code.mapper.DailyFoodMapper;
+import source.code.mapper.Food.DailyFoodMapper;
 import source.code.model.Food.DailyFood;
 import source.code.model.Food.DailyFoodItem;
 import source.code.model.Food.Food;
