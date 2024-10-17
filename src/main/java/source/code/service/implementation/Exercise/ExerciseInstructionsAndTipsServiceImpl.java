@@ -4,7 +4,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.ExerciseInstructionResponseDto;
 import source.code.dto.response.ExerciseTipResponseDto;
-import source.code.mapper.ExerciseMapper;
+import source.code.mapper.Exercise.ExerciseMapper;
 import source.code.model.Exercise.ExerciseInstruction;
 import source.code.model.Exercise.ExerciseTip;
 import source.code.repository.ExerciseInstructionRepository;

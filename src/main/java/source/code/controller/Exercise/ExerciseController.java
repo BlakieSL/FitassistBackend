@@ -8,6 +8,7 @@ import source.code.dto.request.ExerciseCreateDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ExerciseResponseDto;
 import source.code.dto.response.LikesAndSavesResponseDto;
+import source.code.helper.enumerators.ExerciseField;
 import source.code.service.declaration.ExerciseService;
 import source.code.service.declaration.UserExerciseService;
 
@@ -44,5 +45,20 @@ public class ExerciseController {
   public ResponseEntity<List<ExerciseResponseDto>> searchExercises(
           @Valid @RequestBody SearchRequestDto request) {
     return ResponseEntity.ok(exerciseService.searchExercises(request));
+  }
+
+  @GetMapping("/{categoryId}/categories")
+  public ResponseEntity<List<ExerciseResponseDto>> getExercisesByCategory(
+          @PathVariable int categoryId) {
+
+    return ResponseEntity.ok(exerciseService.getExercisesByCategory(categoryId));
+  }
+
+  @GetMapping("/field/{field}/{value}")
+  public ResponseEntity<List<ExerciseResponseDto>> getExercisesByField(
+          @PathVariable ExerciseField field,
+          @PathVariable int value) {
+    List<ExerciseResponseDto> exercises = exerciseService.getExercisesByField(field, value);
+    return ResponseEntity.ok(exercises);
   }
 }
