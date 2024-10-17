@@ -2,13 +2,13 @@ package source.code.cache.event.Food;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import source.code.dto.request.FoodCreateDto;
 import source.code.model.Food.Food;
 
 @Getter
-public class FoodCreateEvent extends ApplicationEvent {
+public class FoodUpdateEvent extends ApplicationEvent {
   private final Food food;
-  public FoodCreateEvent(Object source, Food food) {
+
+  public FoodUpdateEvent(Object source, Food food) {
     super(source);
     this.food = food;
   }

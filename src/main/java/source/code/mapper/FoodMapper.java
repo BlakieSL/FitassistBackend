@@ -3,6 +3,7 @@ package source.code.mapper;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.FoodCreateDto;
+import source.code.dto.request.FoodUpdateDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.FoodCategoryResponseDto;
 import source.code.dto.response.FoodResponseDto;
@@ -19,7 +20,7 @@ public abstract class FoodMapper {
 
   @Mapping(target = "categoryName", source = "foodCategory.name")
   @Mapping(target = "categoryId", source = "foodCategory.id")
-  public abstract FoodResponseDto toDto(Food food);
+  public abstract FoodResponseDto toResponseDto(Food food);
 
   @Mapping(target = "categoryName", source = "foodCategory.name")
   @Mapping(target = "categoryId", source = "foodCategory.id")
@@ -34,6 +35,14 @@ public abstract class FoodMapper {
   public abstract Food toEntity(FoodCreateDto dto);
 
   public abstract FoodCategoryResponseDto toCategoryDto(FoodCategory foodCategory);
+
+  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  @Mapping(target = "foodCategory", source = "categoryId", qualifiedByName = "categoryIdToFoodCategory")
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "dailyFoodItems", ignore = true)
+  @Mapping(target = "recipeFoods", ignore = true)
+  @Mapping(target = "userFoods", ignore = true)
+  public abstract void updateFood(@MappingTarget Food food, FoodUpdateDto request);
 
   @AfterMapping
   protected void calculateMacros(@MappingTarget FoodCalculatedMacrosResponseDto dto, @Context double factor) {
