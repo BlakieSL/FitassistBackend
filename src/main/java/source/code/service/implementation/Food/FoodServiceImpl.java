@@ -19,11 +19,9 @@ import source.code.dto.response.FoodCategoryResponseDto;
 import source.code.dto.response.FoodResponseDto;
 import source.code.helper.JsonPatchHelper;
 import source.code.helper.ValidationHelper;
-import source.code.mapper.FoodMapper;
-import source.code.model.Exercise.Exercise;
+import source.code.mapper.Food.FoodMapper;
 import source.code.model.Food.Food;
 import source.code.model.Food.FoodCategory;
-import source.code.model.User.UserFood;
 import source.code.repository.FoodCategoryRepository;
 import source.code.repository.FoodRepository;
 import source.code.repository.UserFoodRepository;
@@ -115,18 +113,6 @@ public class FoodServiceImpl implements FoodService {
   @Cacheable(value = {"allFoods"})
   public List<FoodResponseDto> getAllFoods() {
     List<Food> foods = foodRepository.findAll();
-
-    return foods.stream()
-            .map(foodMapper::toResponseDto)
-            .collect(Collectors.toList());
-  }
-
-  public List<FoodResponseDto> getFoodsByUserAndType(int userId, short type) {
-    List<UserFood> userFoods = userFoodRepository.findByUserIdAndType(userId, type);
-
-    List<Food> foods = userFoods.stream()
-            .map(UserFood::getFood)
-            .collect(Collectors.toList());
 
     return foods.stream()
             .map(foodMapper::toResponseDto)

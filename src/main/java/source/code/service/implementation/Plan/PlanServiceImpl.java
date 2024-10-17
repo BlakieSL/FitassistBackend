@@ -105,17 +105,6 @@ public class PlanServiceImpl implements PlanService {
             .collect(Collectors.toList());
   }
 
-  public List<PlanResponseDto> getPlansByUserAndType(int userId, short type) {
-    List<UserPlan> userPlans = userPlanRepository.findByUserIdAndType(userId, type);
-    List<Plan> plans = userPlans.stream()
-            .map(UserPlan::getPlan)
-            .collect(Collectors.toList());
-
-    return plans.stream()
-            .map(planMapper::toResponseDto)
-            .collect(Collectors.toList());
-  }
-
   @Cacheable(value = {"allPlanCategories"})
   public List<PlanCategoryResponseDto> getAllCategories() {
     List<PlanCategory> categories = planCategoryRepository.findAll();

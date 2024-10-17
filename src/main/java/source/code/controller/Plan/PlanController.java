@@ -16,11 +16,9 @@ import java.util.List;
 @RequestMapping("/api/plans")
 public class PlanController {
   private final PlanService planService;
-  private final UserPlanService userPlanService;
 
-  public PlanController(PlanService planService, UserPlanService userPlanService) {
+  public PlanController(PlanService planService) {
     this.planService = planService;
-    this.userPlanService = userPlanService;
   }
 
   @GetMapping("/{id}")
@@ -33,19 +31,6 @@ public class PlanController {
   public ResponseEntity<List<PlanResponseDto>> getAllPlans() {
     List<PlanResponseDto> plans = planService.getAllPlans();
     return ResponseEntity.ok(plans);
-  }
-
-  @GetMapping("/user/{userId}/type/{type}")
-  public ResponseEntity<List<PlanResponseDto>> getPlansByUserAndType(@PathVariable int userId,
-                                                                     @PathVariable short type) {
-    List<PlanResponseDto> plans = planService.getPlansByUserAndType(userId, type);
-    return ResponseEntity.ok(plans);
-  }
-
-  @GetMapping("/{id}/likes-and-saves")
-  public ResponseEntity<LikesAndSavesResponseDto> getPlanLikesAndSaves(@PathVariable int id) {
-    LikesAndSavesResponseDto dto = userPlanService.calculatePlanLikesAndSaves(id);
-    return ResponseEntity.ok(dto);
   }
 
   @PostMapping

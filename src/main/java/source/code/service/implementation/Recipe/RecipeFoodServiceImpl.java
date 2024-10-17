@@ -91,10 +91,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
     RecipeFoodCreateDto existingRecipeFoodDto = new RecipeFoodCreateDto(recipeFood.getAmount());
 
     RecipeFoodCreateDto patchedDto = jsonPatchHelper
-            .applyPatch(
-                    patch,
-                    existingRecipeFoodDto,
-                    RecipeFoodCreateDto.class);
+            .applyPatch(patch, existingRecipeFoodDto, RecipeFoodCreateDto.class);
 
     validationHelper.validate(patchedDto);
 

@@ -17,11 +17,9 @@ import java.util.List;
 @RequestMapping("/api/exercises")
 public class ExerciseController {
   private final ExerciseService exerciseService;
-  private final UserExerciseService userExerciseService;
 
-  public ExerciseController(ExerciseService exerciseService, UserExerciseService userExerciseService) {
+  public ExerciseController(ExerciseService exerciseService) {
     this.exerciseService = exerciseService;
-    this.userExerciseService = userExerciseService;
   }
 
   @GetMapping("/{id}")
@@ -34,19 +32,6 @@ public class ExerciseController {
   public ResponseEntity<List<ExerciseResponseDto>> getAllExercises() {
     List<ExerciseResponseDto> exercises = exerciseService.getAllExercises();
     return ResponseEntity.ok(exercises);
-  }
-
-  @GetMapping("/user/{userId}/type/{type}")
-  public ResponseEntity<List<ExerciseResponseDto>> getExercisesByUserAndType(@PathVariable int userId,
-                                                                             @PathVariable short type) {
-    List<ExerciseResponseDto> exercises = exerciseService.getExercisesByUserAndType(userId, type);
-    return ResponseEntity.ok(exercises);
-  }
-
-  @GetMapping("/{id}/likes-and-saves")
-  public ResponseEntity<LikesAndSavesResponseDto> getExerciseLikesAndSaves(@PathVariable int id) {
-    LikesAndSavesResponseDto dto = userExerciseService.calculateExerciseLikesAndSaves(id);
-    return ResponseEntity.ok(dto);
   }
 
   @PostMapping

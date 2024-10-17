@@ -35,19 +35,6 @@ public class RecipeController {
     return ResponseEntity.ok(recipeService.getAllRecipes());
   }
 
-  @GetMapping("/user/{userId}/type/{type}")
-  public ResponseEntity<List<RecipeResponseDto>> getRecipesByUserAndType(@PathVariable int userId,
-                                                                         @PathVariable short type) {
-    List<RecipeResponseDto> recipes = recipeService.getRecipesByUserAndType(userId, type);
-    return ResponseEntity.ok(recipes);
-  }
-
-  @GetMapping("/{id}/likes-and-saves")
-  public ResponseEntity<LikesAndSavesResponseDto> getRecipeLikesAndSaves(@PathVariable int id) {
-    LikesAndSavesResponseDto dto = userRecipeService.calculateRecipeLikesAndSaves(id);
-    return ResponseEntity.ok(dto);
-  }
-
   @PostMapping
   public ResponseEntity<RecipeResponseDto> createRecipe(
           @Valid @RequestBody RecipeCreateDto recipeDto) {

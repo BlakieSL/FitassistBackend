@@ -21,8 +21,6 @@ public interface PlanService {
 
   List<PlanResponseDto> getAllPlans();
 
-  List<PlanResponseDto> getPlansByUserAndType(int userId, short type);
-
   List<PlanCategoryResponseDto> getAllCategories();
 
   List<PlanResponseDto> getPlansByCategory(int categoryId);

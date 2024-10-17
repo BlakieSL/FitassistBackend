@@ -102,18 +102,6 @@ public class RecipeServiceImpl implements RecipeService {
             .collect(Collectors.toList());
   }
 
-  public List<RecipeResponseDto> getRecipesByUserAndType(int userId, short type) {
-    List<UserRecipe> userRecipes = userRecipeRepository.findByUserIdAndType(userId, type);
-
-    List<Recipe> recipes = userRecipes.stream()
-            .map(UserRecipe::getRecipe)
-            .collect(Collectors.toList());
-
-    return recipes.stream()
-            .map(recipeMapper::toResponseDto)
-            .collect(Collectors.toList());
-  }
-
   @Cacheable(value = {"allRecipeCategories"})
   public List<RecipeCategoryResponseDto> getAllCategories() {
     List<RecipeCategory> categories = recipeCategoryRepository.findAll();

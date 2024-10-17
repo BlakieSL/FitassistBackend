@@ -112,20 +112,6 @@ public class ExerciseServiceImpl implements ExerciseService {
             .collect(Collectors.toList());
   }
 
-  public List<ExerciseResponseDto> getExercisesByUserAndType(int userId, short type) {
-    List<UserExercise> userExercises = userExerciseRepository.findByUserIdAndType(userId, type);
-
-    List<Exercise> exercises = userExercises
-            .stream()
-            .map(UserExercise::getExercise)
-            .collect(Collectors.toList());
-
-    return exercises
-            .stream()
-            .map(exerciseMapper::toResponseDto)
-            .collect(Collectors.toList());
-  }
-
   @Cacheable(value = "allExerciseCategories")
   public List<ExerciseCategoryResponseDto> getAllCategories() {
     List<ExerciseCategory> categories = exerciseCategoryRepository.findAll();

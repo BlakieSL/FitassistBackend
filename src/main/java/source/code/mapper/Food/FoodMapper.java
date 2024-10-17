@@ -1,4 +1,4 @@
-package source.code.mapper;
+package source.code.mapper.Food;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -19,11 +19,9 @@ import java.util.List;
 @RequestMapping(path = "/api/activities")
 public class ActivityController {
   private final ActivityService activityService;
-  private final UserActivityService userActivityService;
 
-  public ActivityController(ActivityService activityService, UserActivityService userActivityService) {
+  public ActivityController(ActivityService activityService) {
     this.activityService = activityService;
-    this.userActivityService = userActivityService;
   }
 
   @GetMapping("/{id}")
@@ -37,17 +35,9 @@ public class ActivityController {
     return ResponseEntity.ok(activityService.getAllActivities());
   }
 
-  @GetMapping("/user/{userId}/type/{type}")
-  public ResponseEntity<List<ActivityResponseDto>> getActivitiesByUserAndType(@PathVariable int userId,
-                                                                              @PathVariable short type) {
-    List<ActivityResponseDto> recipes = activityService.getActivitiesByUserAndType(userId, type);
-    return ResponseEntity.ok(recipes);
-  }
-
-  @GetMapping("/{id}/likes-and-saves")
-  public ResponseEntity<LikesAndSavesResponseDto> getActivityLikesAndSaves(@PathVariable int id) {
-    LikesAndSavesResponseDto dto = userActivityService.calculateActivityLikesAndSaves(id);
-    return ResponseEntity.ok(dto);
+  @GetMapping("/categories/{categoryId}/")
+  public ResponseEntity<List<ActivityResponseDto>> getActivitiesByCategory(@PathVariable int categoryId) {
+    return ResponseEntity.ok(activityService.getActivitiesByCategory(categoryId));
   }
 
   @GetMapping("/met")

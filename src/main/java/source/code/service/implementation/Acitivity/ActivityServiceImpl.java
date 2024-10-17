@@ -1,6 +1,5 @@
 package source.code.service.implementation.Acitivity;
 
-import com.fasterxml.jackson.annotation.JsonMerge;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
@@ -17,15 +16,12 @@ import source.code.dto.request.CalculateActivityCaloriesRequestDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ActivityAverageMetResponseDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
-import source.code.dto.response.ActivityCategoryResponseDto;
 import source.code.dto.response.ActivityResponseDto;
 import source.code.helper.JsonPatchHelper;
 import source.code.helper.ValidationHelper;
-import source.code.mapper.ActivityMapper;
+import source.code.mapper.Activity.ActivityMapper;
 import source.code.model.Activity.Activity;
-import source.code.model.Activity.ActivityCategory;
 import source.code.model.User.User;
-import source.code.model.User.UserActivity;
 import source.code.repository.ActivityCategoryRepository;
 import source.code.repository.ActivityRepository;
 import source.code.repository.UserActivityRepository;
@@ -44,8 +40,6 @@ public class ActivityServiceImpl implements ActivityService {
   private final ApplicationEventPublisher applicationEventPublisher;
   private final ActivityRepository activityRepository;
   private final UserRepository userRepository;
-  private final ActivityCategoryRepository activityCategoryRepository;
-  private final UserActivityRepository userActivityRepository;
 
   public ActivityServiceImpl(
           ActivityMapper activityMapper,
@@ -53,17 +47,13 @@ public class ActivityServiceImpl implements ActivityService {
           JsonPatchHelper jsonPatchHelper,
           ApplicationEventPublisher applicationEventPublisher,
           ActivityRepository activityRepository,
-          UserRepository userRepository,
-          ActivityCategoryRepository activityCategoryRepository,
-          UserActivityRepository userActivityRepository) {
+          UserRepository userRepository) {
     this.activityMapper = activityMapper;
     this.validationHelper = validationHelper;
     this.jsonPatchHelper = jsonPatchHelper;
     this.applicationEventPublisher = applicationEventPublisher;
     this.activityRepository = activityRepository;
     this.userRepository = userRepository;
-    this.activityCategoryRepository = activityCategoryRepository;
-    this.userActivityRepository = userActivityRepository;
   }
 
   @Transactional
@@ -134,30 +124,9 @@ public class ActivityServiceImpl implements ActivityService {
             .collect(Collectors.toList());
   }
 
-  @Cacheable(value = "allActivityCategories")
-  public List<ActivityCategoryResponseDto> getAllCategories() {
-    List<ActivityCategory> categories = activityCategoryRepository.findAll();
-
-    return categories.stream()
-            .map(activityMapper::toCategoryDto)
-            .collect(Collectors.toList());
-  }
-
   @Cacheable(value = "activitiesByCategory", key = "#categoryId")
   public List<ActivityResponseDto> getActivitiesByCategory(int categoryId) {
     List<Activity> activities = activityRepository.findAllByActivityCategory_Id(categoryId);
-
-    return activities.stream()
-            .map(activityMapper::toResponseDto)
-            .collect(Collectors.toList());
-  }
-
-  public List<ActivityResponseDto> getActivitiesByUserAndType(int userId, short type) {
-    List<UserActivity> userActivities = userActivityRepository.findByUserIdAndType(userId, type);
-
-    List<Activity> activities = userActivities.stream()
-            .map(UserActivity::getActivity)
-            .collect(Collectors.toList());
 
     return activities.stream()
             .map(activityMapper::toResponseDto)
