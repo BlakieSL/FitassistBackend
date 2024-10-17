@@ -3,7 +3,9 @@ package source.code.service.implementation.User;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.LikesAndSavesResponseDto;
+import source.code.dto.response.PlanResponseDto;
 import source.code.exception.NotUniqueRecordException;
+import source.code.mapper.PlanMapperImpl;
 import source.code.model.Plan.Plan;
 import source.code.model.User.User;
 import source.code.model.User.UserPlan;
@@ -12,20 +14,24 @@ import source.code.repository.UserPlanRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.UserPlanService;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class UserPlanServiceImpl implements UserPlanService {
   private final UserPlanRepository userPlanRepository;
   private final PlanRepository planRepository;
   private final UserRepository userRepository;
+  private final PlanMapperImpl planMapper;
 
   public UserPlanServiceImpl(UserPlanRepository userPlanRepository,
                              PlanRepository planRepository,
-                             UserRepository userRepository) {
+                             UserRepository userRepository, PlanMapperImpl planMapper) {
     this.userPlanRepository = userPlanRepository;
     this.planRepository = planRepository;
     this.userRepository = userRepository;
+    this.planMapper = planMapper;
   }
 
   @Transactional
@@ -49,10 +55,6 @@ public class UserPlanServiceImpl implements UserPlanService {
     userPlanRepository.save(userPlan);
   }
 
-  private boolean isAlreadySaved(int userId, int planId, short type) {
-    return userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type);
-  }
-
   @Transactional
   public void deleteSavedPlanFromUser(int planId, int userId, short type) {
     UserPlan userPlan = userPlanRepository.findByUserIdAndPlanIdAndType(userId, planId, type)
@@ -62,6 +64,17 @@ public class UserPlanServiceImpl implements UserPlanService {
                             + " and type: " + type + " not found"));
 
     userPlanRepository.delete(userPlan);
+  }
+
+  public List<PlanResponseDto> getPlansByUserAndType(int userId, short type) {
+    List<UserPlan> userPlans = userPlanRepository.findByUserIdAndType(userId, type);
+    List<Plan> plans = userPlans.stream()
+            .map(UserPlan::getPlan)
+            .collect(Collectors.toList());
+
+    return plans.stream()
+            .map(planMapper::toResponseDto)
+            .collect(Collectors.toList());
   }
 
   public LikesAndSavesResponseDto calculatePlanLikesAndSaves(int planId) {
@@ -74,4 +87,9 @@ public class UserPlanServiceImpl implements UserPlanService {
 
     return new LikesAndSavesResponseDto(likes, saves);
   }
+
+  private boolean isAlreadySaved(int userId, int planId, short type) {
+    return userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type);
+  }
+
 }

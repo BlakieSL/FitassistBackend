@@ -19,11 +19,9 @@ import java.util.List;
 @RequestMapping(path = "/api/foods")
 public class FoodController {
   private final FoodService foodService;
-  private final UserFoodService userFoodService;
 
-  public FoodController(FoodService foodService, UserFoodService userFoodService) {
+  public FoodController(FoodService foodService) {
     this.foodService = foodService;
-    this.userFoodService = userFoodService;
   }
 
   @GetMapping("/{id}")
@@ -35,19 +33,6 @@ public class FoodController {
   @GetMapping
   public ResponseEntity<List<FoodResponseDto>> getAllFoods() {
     return ResponseEntity.ok(foodService.getAllFoods());
-  }
-
-  @GetMapping("/user/{userId}/type/{type}")
-  public ResponseEntity<List<FoodResponseDto>> getFoodsByUserAndType(@PathVariable int userId,
-                                                                     @PathVariable short type) {
-    List<FoodResponseDto> recipes = foodService.getFoodsByUserAndType(userId, type);
-    return ResponseEntity.ok(recipes);
-  }
-
-  @GetMapping("/{id}/likes-and-saves")
-  public ResponseEntity<LikesAndSavesResponseDto> getFoodLikesAndSaves(@PathVariable int id) {
-    LikesAndSavesResponseDto dto = userFoodService.calculateFoodLikesAndSaves(id);
-    return ResponseEntity.ok(dto);
   }
 
   @PostMapping("/{id}/calculate-macros")

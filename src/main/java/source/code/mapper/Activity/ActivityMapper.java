@@ -1,4 +1,4 @@
-package source.code.mapper;
+package source.code.mapper.Activity;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +38,6 @@ public abstract class ActivityMapper {
   @Mapping(target = "dailyActivityItems", ignore = true)
   @Mapping(target = "userActivities", ignore = true)
   public abstract Activity toEntity(ActivityCreateDto dto);
-
-  @Mapping(target = "id", source = "id")
-  @Mapping(target = "name", source = "name")
-  public abstract ActivityCategoryResponseDto toCategoryDto(ActivityCategory activityCategory);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
   @Mapping(target = "activityCategory", source = "categoryId", qualifiedByName = "categoryIdToActivityCategory")
