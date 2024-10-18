@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import source.code.dto.request.ExerciseCreateDto;
+import source.code.dto.request.Exercise.ExerciseCreateDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ExerciseCategoryResponseDto;
 import source.code.dto.response.ExerciseResponseDto;

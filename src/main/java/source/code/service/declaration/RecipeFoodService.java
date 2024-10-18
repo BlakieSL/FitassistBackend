@@ -3,7 +3,7 @@ package source.code.service.declaration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import source.code.dto.request.RecipeFoodCreateDto;
+import source.code.dto.request.Recipe.RecipeFoodCreateDto;
 
 public interface RecipeFoodService {
   void addFoodToRecipe(int recipeId, int foodId, RecipeFoodCreateDto request);

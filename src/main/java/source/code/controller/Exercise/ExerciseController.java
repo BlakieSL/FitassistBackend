@@ -4,13 +4,11 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.request.ExerciseCreateDto;
+import source.code.dto.request.Exercise.ExerciseCreateDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ExerciseResponseDto;
-import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.helper.enumerators.ExerciseField;
 import source.code.service.declaration.ExerciseService;
-import source.code.service.declaration.UserExerciseService;
 
 import java.util.List;
 

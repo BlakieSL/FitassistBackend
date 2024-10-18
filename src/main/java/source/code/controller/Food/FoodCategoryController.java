@@ -20,11 +20,14 @@ public class FoodCategoryController {
     this.foodService = foodService;
   }
 
+  /*
   @GetMapping
   public ResponseEntity<List<FoodCategoryResponseDto>> getAllFoodCategories() {
     return ResponseEntity.ok(foodService.getAllCategories());
   }
 
+
+   */
   @GetMapping("/{categoryId}/foods")
   public ResponseEntity<List<FoodResponseDto>> getFoodsByCategory(@PathVariable int categoryId) {
     return ResponseEntity.ok(foodService.getFoodsByCategory(categoryId));

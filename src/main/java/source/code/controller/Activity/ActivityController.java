@@ -3,15 +3,13 @@ package source.code.controller.Activity;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.request.ActivityCreateDto;
-import source.code.dto.request.CalculateActivityCaloriesRequestDto;
+import source.code.dto.request.Activity.ActivityCreateDto;
+import source.code.dto.request.Activity.CalculateActivityCaloriesRequestDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ActivityAverageMetResponseDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.ActivityResponseDto;
-import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.service.declaration.ActivityService;
-import source.code.service.declaration.UserActivityService;
 
 import java.util.List;
 

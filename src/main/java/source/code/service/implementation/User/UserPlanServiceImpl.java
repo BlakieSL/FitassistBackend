@@ -5,7 +5,8 @@ import org.springframework.stereotype.Service;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.dto.response.PlanResponseDto;
 import source.code.exception.NotUniqueRecordException;
-import source.code.mapper.PlanMapperImpl;
+
+import source.code.mapper.Plan.PlanMapper;
 import source.code.model.Plan.Plan;
 import source.code.model.User.User;
 import source.code.model.User.UserPlan;
@@ -23,11 +24,11 @@ public class UserPlanServiceImpl implements UserPlanService {
   private final UserPlanRepository userPlanRepository;
   private final PlanRepository planRepository;
   private final UserRepository userRepository;
-  private final PlanMapperImpl planMapper;
+  private final PlanMapper planMapper;
 
   public UserPlanServiceImpl(UserPlanRepository userPlanRepository,
                              PlanRepository planRepository,
-                             UserRepository userRepository, PlanMapperImpl planMapper) {
+                             UserRepository userRepository, PlanMapper planMapper) {
     this.userPlanRepository = userPlanRepository;
     this.planRepository = planRepository;
     this.userRepository = userRepository;

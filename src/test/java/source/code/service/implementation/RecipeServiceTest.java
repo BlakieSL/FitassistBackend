@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import source.code.mapper.RecipeMapper;
+import source.code.mapper.Recipe.RecipeMapper;
 import source.code.repository.RecipeCategoryAssociationRepository;
 import source.code.repository.RecipeCategoryRepository;
 import source.code.repository.RecipeRepository;

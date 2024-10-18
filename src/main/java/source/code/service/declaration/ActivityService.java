@@ -3,12 +3,11 @@ package source.code.service.declaration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import source.code.dto.request.ActivityCreateDto;
-import source.code.dto.request.CalculateActivityCaloriesRequestDto;
+import source.code.dto.request.Activity.ActivityCreateDto;
+import source.code.dto.request.Activity.CalculateActivityCaloriesRequestDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ActivityAverageMetResponseDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
-import source.code.dto.response.ActivityCategoryResponseDto;
 import source.code.dto.response.ActivityResponseDto;
 
 import java.util.List;

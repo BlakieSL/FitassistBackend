@@ -3,7 +3,7 @@ package source.code.service.declaration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import source.code.dto.request.PlanCreateDto;
+import source.code.dto.request.Plan.PlanCreateDto;
 import source.code.dto.response.PlanCategoryResponseDto;
 import source.code.dto.response.PlanResponseDto;
 import source.code.helper.enumerators.PlanField;

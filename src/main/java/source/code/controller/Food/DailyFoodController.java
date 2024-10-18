@@ -6,7 +6,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.request.DailyFoodItemCreateDto;
+import source.code.dto.request.Food.DailyFoodItemCreateDto;
 import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.service.declaration.DailyFoodService;
 
