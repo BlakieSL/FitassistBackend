@@ -2,8 +2,8 @@ package source.code.mapper.Food;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.request.FoodCreateDto;
-import source.code.dto.request.FoodUpdateDto;
+import source.code.dto.request.Food.FoodCreateDto;
+import source.code.dto.request.Food.FoodUpdateDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.FoodCategoryResponseDto;
 import source.code.dto.response.FoodResponseDto;
@@ -33,8 +33,6 @@ public abstract class FoodMapper {
   @Mapping(target = "recipeFoods", ignore = true)
   @Mapping(target = "userFoods", ignore = true)
   public abstract Food toEntity(FoodCreateDto dto);
-
-  public abstract FoodCategoryResponseDto toCategoryDto(FoodCategory foodCategory);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
   @Mapping(target = "foodCategory", source = "categoryId", qualifiedByName = "categoryIdToFoodCategory")

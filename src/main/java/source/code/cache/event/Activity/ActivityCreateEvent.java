@@ -2,7 +2,7 @@ package source.code.cache.event.Activity;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import source.code.dto.request.ActivityCreateDto;
+import source.code.dto.request.Activity.ActivityCreateDto;
 
 @Getter
 public class ActivityCreateEvent extends ApplicationEvent {

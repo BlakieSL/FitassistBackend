@@ -2,7 +2,6 @@ package source.code.cache.event.Recipe;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import source.code.dto.request.RecipeCreateDto;
 import source.code.model.Recipe.Recipe;
 
 @Getter

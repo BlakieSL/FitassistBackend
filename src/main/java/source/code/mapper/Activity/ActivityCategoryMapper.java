@@ -1,24 +1,23 @@
 package source.code.mapper.Activity;
 
 import org.mapstruct.*;
-import source.code.dto.request.ActivityCategoryCreateDto;
-import source.code.dto.request.ActivityCategoryUpdateDto;
-import source.code.dto.response.ActivityCategoryResponseDto;
+import source.code.dto.request.Category.CategoryCreateDto;
+import source.code.dto.request.Category.CategoryUpdateDto;
+import source.code.dto.response.CategoryResponseDto;
+import source.code.mapper.Generics.BaseMapper;
 import source.code.model.Activity.ActivityCategory;
 
 @Mapper(componentModel = "spring")
-public abstract class ActivityCategoryMapper {
-  @Mapping(target = "id", source = "id")
-  @Mapping(target = "name", source = "name")
-  public abstract ActivityCategoryResponseDto toResponseDto(ActivityCategory activityCategory);
+public abstract class ActivityCategoryMapper implements BaseMapper<ActivityCategory> {
+  public abstract CategoryResponseDto toResponseDto(ActivityCategory activityCategory);
 
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "activities", ignore = true)
-  public abstract ActivityCategory toEntity(ActivityCategoryCreateDto request);
+  public abstract ActivityCategory toEntity(CategoryCreateDto request);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "activities", ignore = true)
-  public abstract void updateCategory(@MappingTarget ActivityCategory activityCategory,
-                                      ActivityCategoryUpdateDto request);
+  public abstract void updateEntityFromDto(@MappingTarget ActivityCategory activityCategory,
+                                           CategoryUpdateDto request);
 }

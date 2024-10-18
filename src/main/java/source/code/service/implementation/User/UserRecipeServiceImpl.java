@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.dto.response.RecipeResponseDto;
 import source.code.exception.NotUniqueRecordException;
-import source.code.mapper.RecipeMapperImpl;
+import source.code.mapper.Recipe.RecipeMapper;
 import source.code.model.Recipe.Recipe;
 import source.code.model.User.User;
 import source.code.model.User.UserRecipe;
@@ -23,12 +23,12 @@ public class UserRecipeServiceImpl implements UserRecipeService {
   private final UserRecipeRepository userRecipeRepository;
   private final RecipeRepository recipeRepository;
   private final UserRepository userRepository;
-  private final RecipeMapperImpl recipeMapper;
+  private final RecipeMapper recipeMapper;
 
   public UserRecipeServiceImpl(UserRecipeRepository userRecipeRepository,
                                RecipeRepository recipeRepository,
                                UserRepository userRepository,
-                               RecipeMapperImpl recipeMapper) {
+                               RecipeMapper recipeMapper) {
     this.userRecipeRepository = userRecipeRepository;
     this.recipeRepository = recipeRepository;
     this.userRepository = userRepository;

@@ -6,7 +6,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import source.code.dto.request.DailyActivityItemCreateDto;
+import source.code.dto.request.Activity.DailyActivityItemCreateDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.DailyActivitiesResponseDto;
 import source.code.helper.JsonPatchHelper;

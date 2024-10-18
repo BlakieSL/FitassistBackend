@@ -2,7 +2,6 @@ package source.code.cache.event.Exercise;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import source.code.dto.request.ExerciseCreateDto;
 import source.code.model.Exercise.Exercise;
 
 @Getter

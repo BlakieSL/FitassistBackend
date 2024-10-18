@@ -2,7 +2,6 @@ package source.code.cache.event.Plan;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import source.code.dto.request.PlanCreateDto;
 import source.code.model.Plan.Plan;
 
 @Getter

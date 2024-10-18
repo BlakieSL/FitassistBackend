@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import source.code.mapper.PlanMapper;
+import source.code.mapper.Plan.PlanMapper;
 import source.code.repository.PlanCategoryAssociationRepository;
 import source.code.repository.PlanCategoryRepository;
 import source.code.repository.PlanRepository;

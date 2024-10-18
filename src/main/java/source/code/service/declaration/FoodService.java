@@ -3,9 +3,8 @@ package source.code.service.declaration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import source.code.dto.request.CalculateFoodMacrosRequestDto;
-import source.code.dto.request.FoodCreateDto;
-import source.code.dto.request.FoodUpdateDto;
+import source.code.dto.request.Food.CalculateFoodMacrosRequestDto;
+import source.code.dto.request.Food.FoodCreateDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.FoodCategoryResponseDto;
@@ -27,8 +26,6 @@ public interface FoodService {
   FoodCalculatedMacrosResponseDto calculateFoodMacros(int foodId, CalculateFoodMacrosRequestDto request);
 
   List<FoodResponseDto> searchFoods(SearchRequestDto request);
-
-  List<FoodCategoryResponseDto> getAllCategories();
 
   List<FoodResponseDto> getFoodsByCategory(int categoryId);
 }

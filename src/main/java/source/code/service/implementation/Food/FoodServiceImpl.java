@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import source.code.cache.event.Food.FoodCreateEvent;
 import source.code.cache.event.Food.FoodDeleteEvent;
 import source.code.cache.event.Food.FoodUpdateEvent;
-import source.code.dto.request.CalculateFoodMacrosRequestDto;
-import source.code.dto.request.FoodCreateDto;
-import source.code.dto.request.FoodUpdateDto;
+import source.code.dto.request.Food.CalculateFoodMacrosRequestDto;
+import source.code.dto.request.Food.FoodCreateDto;
+import source.code.dto.request.Food.FoodUpdateDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.FoodCategoryResponseDto;
@@ -116,15 +116,6 @@ public class FoodServiceImpl implements FoodService {
 
     return foods.stream()
             .map(foodMapper::toResponseDto)
-            .collect(Collectors.toList());
-  }
-
-  @Cacheable(value = {"allFoodCategories"})
-  public List<FoodCategoryResponseDto> getAllCategories() {
-    List<FoodCategory> categories = foodCategoryRepository.findAll();
-
-    return categories.stream()
-            .map(foodMapper::toCategoryDto)
             .collect(Collectors.toList());
   }
 

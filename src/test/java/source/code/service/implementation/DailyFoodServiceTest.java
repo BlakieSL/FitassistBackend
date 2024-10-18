@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import source.code.dto.request.DailyFoodItemCreateDto;
+import source.code.dto.request.Food.DailyFoodItemCreateDto;
 import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.helper.JsonPatchHelper;

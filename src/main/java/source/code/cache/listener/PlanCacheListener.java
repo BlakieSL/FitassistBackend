@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import source.code.cache.event.Plan.PlanCreateEvent;
 import source.code.cache.event.Plan.PlanDeleteEvent;
 import source.code.cache.event.Plan.PlanUpdateEvent;
-import source.code.dto.request.PlanCreateDto;
 import source.code.model.Plan.Plan;
 import source.code.model.Plan.PlanCategoryAssociation;
 
