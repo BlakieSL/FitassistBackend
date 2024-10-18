@@ -5,7 +5,7 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import source.code.dto.request.RecipeFoodCreateDto;
+import source.code.dto.request.Recipe.RecipeFoodCreateDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.helper.JsonPatchHelper;
 import source.code.helper.ValidationHelper;

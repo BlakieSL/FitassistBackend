@@ -2,10 +2,9 @@ package source.code.mapper.Activity;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.request.ActivityCreateDto;
-import source.code.dto.request.ActivityUpdateDto;
+import source.code.dto.request.Activity.ActivityCreateDto;
+import source.code.dto.request.Activity.ActivityUpdateDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
-import source.code.dto.response.ActivityCategoryResponseDto;
 import source.code.dto.response.ActivityResponseDto;
 import source.code.helper.CalculationsHelper;
 import source.code.model.Activity.Activity;

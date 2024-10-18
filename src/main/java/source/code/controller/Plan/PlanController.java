@@ -4,11 +4,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.request.PlanCreateDto;
-import source.code.dto.response.LikesAndSavesResponseDto;
+import source.code.dto.request.Plan.PlanCreateDto;
 import source.code.dto.response.PlanResponseDto;
 import source.code.service.declaration.PlanService;
-import source.code.service.declaration.UserPlanService;
 
 import java.util.List;
 

@@ -8,7 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.request.RecipeFoodCreateDto;
+import source.code.dto.request.Recipe.RecipeFoodCreateDto;
 import source.code.service.declaration.RecipeFoodService;
 
 @RestController

@@ -6,7 +6,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import source.code.dto.request.DailyFoodItemCreateDto;
+import source.code.dto.request.Food.DailyFoodItemCreateDto;
 import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.helper.JsonPatchHelper;
