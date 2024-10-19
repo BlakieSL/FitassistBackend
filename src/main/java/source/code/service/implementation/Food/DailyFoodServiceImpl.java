@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.request.Food.DailyFoodItemCreateDto;
 import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
+import source.code.exception.RecordNotFoundException;
 import source.code.helper.JsonPatchHelper;
 import source.code.helper.ValidationHelper;
 import source.code.mapper.Food.DailyFoodMapper;
@@ -16,6 +17,7 @@ import source.code.model.Food.DailyFood;
 import source.code.model.Food.DailyFoodItem;
 import source.code.model.Food.Food;
 import source.code.model.User.User;
+import source.code.repository.DailyFoodItemRepository;
 import source.code.repository.DailyFoodRepository;
 import source.code.repository.FoodRepository;
 import source.code.repository.UserRepository;
@@ -23,8 +25,6 @@ import source.code.service.declaration.DailyFoodService;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,20 +33,25 @@ public class DailyFoodServiceImpl implements DailyFoodService {
   private final JsonPatchHelper jsonPatchHelper;
   private final DailyFoodMapper dailyFoodMapper;
   private final DailyFoodRepository dailyFoodRepository;
+  private final DailyFoodItemRepository dailyFoodItemRepository;
   private final FoodRepository foodRepository;
   private final UserRepository userRepository;
 
   public DailyFoodServiceImpl(
-          ValidationHelper validationHelper, DailyFoodRepository dailyFoodRepository,
+          ValidationHelper validationHelper,
+          DailyFoodRepository dailyFoodRepository,
           FoodRepository foodRepository,
           UserRepository userRepository,
-          JsonPatchHelper jsonPatchHelper, DailyFoodMapper dailyFoodMapper) {
+          JsonPatchHelper jsonPatchHelper,
+          DailyFoodMapper dailyFoodMapper,
+          DailyFoodItemRepository dailyFoodItemRepository) {
     this.validationHelper = validationHelper;
     this.dailyFoodRepository = dailyFoodRepository;
     this.foodRepository = foodRepository;
     this.userRepository = userRepository;
     this.jsonPatchHelper = jsonPatchHelper;
     this.dailyFoodMapper = dailyFoodMapper;
+    this.dailyFoodItemRepository = dailyFoodItemRepository;
   }
 
   @Scheduled(cron = "0 0 0 * * ?", zone = "GMT+2")
@@ -63,42 +68,19 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 
   @Transactional
   public void addFoodToDailyFoodItem(int userId, int foodId, DailyFoodItemCreateDto dto) {
-    DailyFood dailyFood = getDailyFoodByUser(userId);
+    DailyFood dailyFood = getOrCreateDailyFoodForUser(userId);
+    Food food = getFoodById(foodId);
 
-    Food food = foodRepository.findById(foodId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Food with id: " + foodId + " not found"));
-
-
-    Optional<DailyFoodItem> existingDailyFoodItem = dailyFood.getDailyFoodItems().stream()
-            .filter(item -> item.getFood().getId().equals(foodId))
-            .findFirst();
-
-    if (existingDailyFoodItem.isPresent()) {
-      updateDailyFoodItemAmount(existingDailyFoodItem.get(), dto.getAmount());
-    } else {
-      DailyFoodItem dailyFoodItem = DailyFoodItem
-              .createWithAmountFoodDailyFood(dto.getAmount(), food, dailyFood);
-
-      dailyFood.getDailyFoodItems().add(dailyFoodItem);
-    }
+    DailyFoodItem dailyFoodItem = findOrCreateDailyFoodItem(dailyFood, food, dto.getAmount());
+    updateOrAddDailyFoodItem(dailyFood, dailyFoodItem);
 
     dailyFoodRepository.save(dailyFood);
   }
 
-  private void updateDailyFoodItemAmount(DailyFoodItem dailyFoodItem, int amount) {
-    dailyFoodItem.setAmount(amount);
-  }
-
   @Transactional
   public void removeFoodFromDailyFoodItem(int userId, int foodId) {
-    DailyFood dailyFood = getDailyFoodByUser(userId);
-
-    DailyFoodItem dailyFoodItem = dailyFood.getDailyFoodItems().stream()
-            .filter(item -> item.getFood().getId().equals(foodId))
-            .findFirst()
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Food with id: " + foodId + " not found"));
+    DailyFood dailyFood = getOrCreateDailyFoodForUser(userId);
+    DailyFoodItem dailyFoodItem = getDailyFoodItemById(dailyFood.getId(), foodId);
 
     dailyFood.getDailyFoodItems().remove(dailyFoodItem);
     dailyFoodRepository.save(dailyFood);
@@ -107,52 +89,76 @@ public class DailyFoodServiceImpl implements DailyFoodService {
   @Transactional
   public void updateDailyFoodItem(int userId, int foodId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
-    DailyFood dailyFood = getDailyFoodByUser(userId);
 
-    DailyFoodItem dailyFoodItem = dailyFood.getDailyFoodItems().stream()
-            .filter(item -> item.getFood().getId().equals(foodId))
-            .findFirst()
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Food with id: " + foodId + " not found in daily cart"));
+    DailyFood dailyFood = getOrCreateDailyFoodForUser(userId);
+    DailyFoodItem dailyFoodItem = getDailyFoodItemById(dailyFood.getId(), foodId);
 
-    DailyFoodItemCreateDto dailyFoodItemCreateDto = new DailyFoodItemCreateDto();
-    dailyFoodItemCreateDto.setAmount(dailyFoodItem.getAmount());
+    DailyFoodItemCreateDto patchedDto = applyPatchToDailyFoodItem(dailyFoodItem, patch);
+    validationHelper.validate(patchedDto);
 
-    DailyFoodItemCreateDto patchedDailyFoodItemCreateDto = jsonPatchHelper
-            .applyPatch(
-                    patch,
-                    dailyFoodItemCreateDto,
-                    DailyFoodItemCreateDto.class);
+    updateDailyFoodItemAmount(dailyFoodItem, patchedDto.getAmount());
 
-    validationHelper.validate(patchedDailyFoodItemCreateDto);
-
-    dailyFoodItem.setAmount(patchedDailyFoodItemCreateDto.getAmount());
     dailyFoodRepository.save(dailyFood);
   }
 
-  private DailyFood getDailyFoodByUser(int userId) {
-    return dailyFoodRepository.findByUserId(userId)
-            .orElseGet(() -> createNewDailyFoodForUser(userId));
-  }
-
-  @Transactional
-  public DailyFood createNewDailyFoodForUser(int userId) {
-    User user = userRepository.findById(userId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "User with id: " + userId + " not found"));
-
-    DailyFood newDailyFood = DailyFood.createForToday(user);
-
-    return dailyFoodRepository.save(newDailyFood);
-  }
-
   public DailyFoodsResponseDto getFoodsFromDailyFoodItem(int userId) {
-    DailyFood dailyFood = getDailyFoodByUser(userId);
+    DailyFood dailyFood = getOrCreateDailyFoodForUser(userId);
 
     List<FoodCalculatedMacrosResponseDto> foods = dailyFood.getDailyFoodItems().stream()
             .map(dailyFoodMapper::toFoodCalculatedMacrosResponseDto)
             .collect(Collectors.toList());
 
     return dailyFoodMapper.toDailyFoodsResponseDto(foods);
+  }
+
+  private DailyFoodItem findOrCreateDailyFoodItem(DailyFood dailyFood, Food food, int amount) {
+    return dailyFoodItemRepository.findByDailyFoodIdAndFoodId(dailyFood.getId(), food.getId())
+            .orElse(DailyFoodItem.createWithAmountFoodDailyFood(amount, food, dailyFood));
+  }
+
+  private void updateOrAddDailyFoodItem(DailyFood dailyFood, DailyFoodItem dailyFoodItem) {
+    if(!dailyFood.getDailyFoodItems().contains(dailyFoodItem)) {
+      dailyFood.getDailyFoodItems().add(dailyFoodItem);
+    }
+    updateDailyFoodItemAmount(dailyFoodItem, dailyFoodItem.getAmount());
+  }
+
+  private void updateDailyFoodItemAmount(DailyFoodItem dailyFoodItem, int amount) {
+    dailyFoodItem.setAmount(amount);
+  }
+
+  private DailyFood getOrCreateDailyFoodForUser(int userId) {
+    return dailyFoodRepository.findByUserId(userId)
+            .orElseGet(() -> createDailyFood(userId));
+  }
+
+  @Transactional
+  public DailyFood createDailyFood(int userId) {
+    User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RecordNotFoundException("User", userId));
+
+    DailyFood newDailyFood = DailyFood.createForToday(user);
+
+    return dailyFoodRepository.save(newDailyFood);
+  }
+
+  private DailyFoodItem getDailyFoodItemById(int dailyFoodId, int foodId) {
+    return dailyFoodItemRepository.findByDailyFoodIdAndFoodId(dailyFoodId, foodId)
+            .orElseThrow(() -> new RecordNotFoundException("DailyFoodItem", foodId));
+  }
+
+  private Food getFoodById(int foodId) {
+    return foodRepository.findById(foodId)
+            .orElseThrow(() -> new RecordNotFoundException("Food", foodId));
+  }
+
+  private DailyFoodItemCreateDto applyPatchToDailyFoodItem(DailyFoodItem dailyFoodItem,
+                                                           JsonMergePatch patch)
+          throws JsonPatchException, JsonProcessingException {
+
+    DailyFoodItemCreateDto dailyFoodItemCreateDto = new
+            DailyFoodItemCreateDto(dailyFoodItem.getAmount());
+
+    return jsonPatchHelper.applyPatch(patch, dailyFoodItemCreateDto, DailyFoodItemCreateDto.class);
   }
 }
