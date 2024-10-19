@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.request.Activity.DailyActivityItemCreateDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.DailyActivitiesResponseDto;
-import source.code.helper.JsonPatchHelper;
+import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
 import source.code.mapper.Activity.DailyActivityMapper;
 import source.code.model.Activity.Activity;
 import source.code.model.Activity.ActivityCategory;
@@ -22,7 +22,7 @@ import source.code.model.User.User;
 import source.code.repository.ActivityRepository;
 import source.code.repository.DailyActivityRepository;
 import source.code.repository.UserRepository;
-import source.code.service.implementation.Acitivity.DailyActivityServiceImpl;
+import source.code.service.implementation.Daily.DailyActivityServiceImpl;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.*;
 public class DailyActivityServiceTest {
     @Mock private DailyActivityMapper dailyActivityMapper;
     @Mock
-    private JsonPatchHelper jsonPatchHelper;
+    private JsonPatchServiceImpl jsonPatchServiceImpl;
     @Mock
     private DailyActivityRepository dailyActivityRepository;
     @Mock
@@ -257,7 +257,7 @@ public class DailyActivityServiceTest {
 
         JsonMergePatch patch = mock(JsonMergePatch.class);
         when(dailyActivityRepository.findByUserId(user1.getId())).thenReturn(Optional.of(dailyActivity1));
-        when(jsonPatchHelper.applyPatch(
+        when(jsonPatchServiceImpl.applyPatch(
                 eq(patch),
                 any(DailyActivityItemCreateDto.class),
                 eq(DailyActivityItemCreateDto.class)))
@@ -268,7 +268,7 @@ public class DailyActivityServiceTest {
 
         // Assert
         verify(dailyActivityRepository, times(1)).findByUserId(user1.getId());
-        verify(jsonPatchHelper, times(1)).applyPatch(
+        verify(jsonPatchServiceImpl, times(1)).applyPatch(
                 eq(patch),
                 any(DailyActivityItemCreateDto.class),
                 eq(DailyActivityItemCreateDto.class));
@@ -288,7 +288,7 @@ public class DailyActivityServiceTest {
                 dailyActivityService.updateDailyActivityItem(user1.getId(), activity1.getId(), mock(JsonMergePatch.class)));
 
         assertEquals("Activity with id: " + activity1.getId() + " not found in daily cart", exception.getMessage());
-        verify(jsonPatchHelper, never()).applyPatch(any(),any(),any());
+        verify(jsonPatchServiceImpl, never()).applyPatch(any(),any(),any());
         verify(dailyActivityRepository, times(1)).findByUserId(user1.getId());
     }
 
@@ -299,7 +299,7 @@ public class DailyActivityServiceTest {
         when(dailyActivityRepository.save(any(DailyActivity.class))).thenReturn(dailyActivity1);
 
         // Act
-        DailyActivity createdDailyActivity = dailyActivityService.createNewDailyActivityForUser(user1.getId());
+        DailyActivity createdDailyActivity = dailyActivityService.createDailyActivity(user1.getId());
 
         // Assert
         assertNotNull(createdDailyActivity);
@@ -316,7 +316,7 @@ public class DailyActivityServiceTest {
 
         // Act & Assert
         NoSuchElementException exception  = assertThrows(NoSuchElementException.class, () ->
-                dailyActivityService.createNewDailyActivityForUser(nonExistingUserId));
+                dailyActivityService.createDailyActivity(nonExistingUserId));
 
         assertEquals("User with id: " + nonExistingUserId + " not found", exception.getMessage());
         verify(userRepository, times(1)).findById(nonExistingUserId);

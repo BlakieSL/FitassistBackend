@@ -12,7 +12,7 @@ import source.code.model.User.UserExercise;
 import source.code.repository.ExerciseRepository;
 import source.code.repository.UserExerciseRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.UserExerciseService;
+import source.code.service.declaration.User.UserExerciseService;
 
 import java.util.List;
 import java.util.NoSuchElementException;

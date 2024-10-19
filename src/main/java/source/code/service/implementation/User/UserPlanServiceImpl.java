@@ -13,7 +13,7 @@ import source.code.model.User.UserPlan;
 import source.code.repository.PlanRepository;
 import source.code.repository.UserPlanRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.UserPlanService;
+import source.code.service.declaration.User.UserPlanService;
 
 import java.util.List;
 import java.util.NoSuchElementException;

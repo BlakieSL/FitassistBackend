@@ -8,7 +8,7 @@ import source.code.dto.request.Exercise.ExerciseCreateDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ExerciseResponseDto;
 import source.code.helper.enumerators.ExerciseField;
-import source.code.service.declaration.ExerciseService;
+import source.code.service.declaration.Exercise.ExerciseService;
 
 import java.util.List;
 

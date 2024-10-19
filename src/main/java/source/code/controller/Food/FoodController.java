@@ -9,7 +9,7 @@ import source.code.dto.request.Food.FoodCreateDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.FoodResponseDto;
-import source.code.service.declaration.FoodService;
+import source.code.service.declaration.Food.FoodService;
 
 import java.util.List;
 
@@ -31,6 +31,11 @@ public class FoodController {
   @GetMapping
   public ResponseEntity<List<FoodResponseDto>> getAllFoods() {
     return ResponseEntity.ok(foodService.getAllFoods());
+  }
+
+  @GetMapping("/{categoryId}/categories")
+  public ResponseEntity<List<FoodResponseDto>> getFoodsByCategory(@PathVariable int categoryId) {
+    return ResponseEntity.ok(foodService.getFoodsByCategory(categoryId));
   }
 
   @PostMapping("/{id}/calculate-macros")

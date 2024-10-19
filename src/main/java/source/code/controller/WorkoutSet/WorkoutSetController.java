@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.WorkoutSetDto;
-import source.code.service.declaration.WorkoutSetService;
+import source.code.service.declaration.Workout.WorkoutSetService;
 
 import java.util.List;
 

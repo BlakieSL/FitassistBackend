@@ -17,5 +17,4 @@ public class DailyFoodItemCreateDto {
   @Positive
   @Max(value = 100)
   private int amount;
-
 }

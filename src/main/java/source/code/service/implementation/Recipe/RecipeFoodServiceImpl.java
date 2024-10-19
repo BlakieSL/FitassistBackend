@@ -11,17 +11,16 @@ import org.springframework.stereotype.Service;
 import source.code.dto.request.Recipe.RecipeFoodCreateDto;
 import source.code.dto.response.FoodResponseDto;
 import source.code.exception.NotUniqueRecordException;
-import source.code.helper.JsonPatchHelper;
-import source.code.helper.ValidationHelper;
+import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
+import source.code.service.implementation.Helpers.ValidationServiceImpl;
 import source.code.mapper.Food.FoodMapper;
-import source.code.mapper.Food.FoodMapperImpl;
 import source.code.model.Food.Food;
 import source.code.model.Recipe.Recipe;
 import source.code.model.Recipe.RecipeFood;
 import source.code.repository.FoodRepository;
 import source.code.repository.RecipeFoodRepository;
 import source.code.repository.RecipeRepository;
-import source.code.service.declaration.RecipeFoodService;
+import source.code.service.declaration.Recipe.RecipeFoodService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,25 +28,25 @@ import java.util.stream.Collectors;
 
 @Service
 public class RecipeFoodServiceImpl implements RecipeFoodService {
-  private final ValidationHelper validationHelper;
+  private final ValidationServiceImpl validationServiceImpl;
   private final RecipeFoodRepository recipeFoodRepository;
   private final FoodRepository foodRepository;
   private final RecipeRepository recipeRepository;
-  private final JsonPatchHelper jsonPatchHelper;
+  private final JsonPatchServiceImpl jsonPatchServiceImpl;
   private final FoodMapper foodMapper;
 
   public RecipeFoodServiceImpl(
-          ValidationHelper validationHelper,
+          ValidationServiceImpl validationServiceImpl,
           RecipeFoodRepository recipeFoodRepository,
           FoodRepository foodRepository,
           RecipeRepository recipeRepository,
-          JsonPatchHelper jsonPatchHelper,
+          JsonPatchServiceImpl jsonPatchServiceImpl,
           FoodMapper foodMapper) {
-    this.validationHelper = validationHelper;
+    this.validationServiceImpl = validationServiceImpl;
     this.recipeFoodRepository = recipeFoodRepository;
     this.foodRepository = foodRepository;
     this.recipeRepository = recipeRepository;
-    this.jsonPatchHelper = jsonPatchHelper;
+    this.jsonPatchServiceImpl = jsonPatchServiceImpl;
     this.foodMapper = foodMapper;
   }
 
@@ -89,10 +88,10 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 
     RecipeFoodCreateDto existingRecipeFoodDto = new RecipeFoodCreateDto(recipeFood.getAmount());
 
-    RecipeFoodCreateDto patchedDto = jsonPatchHelper
+    RecipeFoodCreateDto patchedDto = jsonPatchServiceImpl
             .applyPatch(patch, existingRecipeFoodDto, RecipeFoodCreateDto.class);
 
-    validationHelper.validate(patchedDto);
+    validationServiceImpl.validate(patchedDto);
 
     if (patchedDto.getAmount() != recipeFood.getAmount()) {
       recipeFood.setAmount(patchedDto.getAmount());

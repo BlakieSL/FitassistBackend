@@ -9,7 +9,7 @@ import source.code.model.Workout.WorkoutPlan;
 import source.code.repository.PlanRepository;
 import source.code.repository.WorkoutPlanRepository;
 import source.code.repository.WorkoutRepository;
-import source.code.service.declaration.WorkoutPlanService;
+import source.code.service.declaration.Workout.WorkoutPlanService;
 
 import java.util.NoSuchElementException;
 

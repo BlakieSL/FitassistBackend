@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.response.ActivityResponseDto;
 import source.code.dto.response.LikesAndSavesResponseDto;
-import source.code.service.declaration.UserActivityService;
+import source.code.service.declaration.User.UserActivityService;
 
 import java.util.List;
 
