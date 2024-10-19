@@ -57,7 +57,7 @@ public class ActivityServiceImpl implements ActivityService {
   @Transactional
   public ActivityResponseDto createActivity(ActivityCreateDto dto) {
     Activity activity = activityRepository.save(activityMapper.toEntity(dto));
-    applicationEventPublisher.publishEvent(new ActivityCreateEvent(this, dto));
+    publishEvent(new ActivityCreateEvent(this, dto));
 
     return activityMapper.toResponseDto(activity);
   }
@@ -73,15 +73,15 @@ public class ActivityServiceImpl implements ActivityService {
     activityMapper.updateActivityFromDto(activity,patchedActivityUpdateDto);
     Activity savedActivity = activityRepository.save(activity);
 
-    applicationEventPublisher.publishEvent(new ActivityUpdateEvent(this, savedActivity));
+    publishEvent(new ActivityUpdateEvent(this, savedActivity));
   }
 
   @Transactional
   public void deleteActivity(int activityId) {
     Activity activity = getActivityOrThrow(activityId);
-    activityRepository.delete(getActivityOrThrow(activityId));
+    activityRepository.delete(activity);
 
-    applicationEventPublisher.publishEvent(new ActivityDeleteEvent(this, activity));
+    publishEvent(new ActivityDeleteEvent(this, activity));
   }
 
   public ActivityCalculatedResponseDto calculateCaloriesBurned(
@@ -153,5 +153,9 @@ public class ActivityServiceImpl implements ActivityService {
 
     ActivityResponseDto responseDto = activityMapper.toResponseDto(activity);
     return jsonPatchHelper.applyPatch(patch, responseDto, ActivityUpdateDto.class);
+  }
+
+  private void publishEvent(Object event) {
+    applicationEventPublisher.publishEvent(event);
   }
 }

@@ -377,7 +377,7 @@ public class DailyFoodServiceTest {
     when(dailyFoodRepository.save(any(DailyFood.class))).thenReturn(dailyFood1);
 
     // Act
-    DailyFood createdDailyFood = dailyFoodService.createNewDailyFoodForUser(user1.getId());
+    DailyFood createdDailyFood = dailyFoodService.createDailyFood(user1.getId());
 
     // Assert
     assertNotNull(createdDailyFood);
@@ -394,7 +394,7 @@ public class DailyFoodServiceTest {
 
     // Act & Assert
     NoSuchElementException exception = assertThrows(NoSuchElementException.class, () ->
-            dailyFoodService.createNewDailyFoodForUser(nonExistingUserId));
+            dailyFoodService.createDailyFood(nonExistingUserId));
 
     assertEquals("User with id: " + nonExistingUserId + " not found", exception.getMessage());
     verify(userRepository, times(1)).findById(nonExistingUserId);

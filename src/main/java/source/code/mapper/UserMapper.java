@@ -1,9 +1,6 @@
 package source.code.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import source.code.dto.other.UserCredentialsDto;
@@ -52,6 +49,7 @@ public abstract class UserMapper {
   @Mapping(target = "userActivities", ignore = true)
   public abstract User toEntity(UserCreateDto dto);
 
+  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
   @Mapping(target = "calculatedCalories", expression = "java(calculatedCalories(user, request))")
   @Mapping(target = "password", source = "password", qualifiedByName = "hashPassword")
   @Mapping(target = "id", ignore = true)

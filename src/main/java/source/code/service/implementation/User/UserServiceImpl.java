@@ -114,8 +114,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   }
 
   private boolean isPasswordChangeRequested(UserUpdateDto dto) {
+    if (dto.getOldPassword() == null && dto.getPassword() != null) {
+      throw new IllegalArgumentException("Old password is required when changing to a new password.");
+    }
     return dto.getOldPassword() != null && dto.getPassword() != null;
   }
+
 
   private void validateOldPassword(User user, String oldPassword) {
     if (!passwordEncoder.matches(oldPassword, user.getPassword())) {

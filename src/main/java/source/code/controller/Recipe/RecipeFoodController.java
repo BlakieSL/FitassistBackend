@@ -29,7 +29,7 @@ public class RecipeFoodController {
           @PathVariable int foodId,
           @Valid @RequestBody RecipeFoodCreateDto request) {
 
-    recipeFoodService.addFoodToRecipe(recipeId, foodId, request);
+    recipeFoodService.saveFoodToRecipe(recipeId, foodId, request);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
