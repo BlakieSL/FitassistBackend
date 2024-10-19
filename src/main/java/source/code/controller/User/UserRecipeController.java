@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.dto.response.RecipeResponseDto;
-import source.code.service.declaration.UserRecipeService;
+import source.code.service.declaration.User.UserRecipeService;
 
 import java.util.List;
 

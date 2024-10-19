@@ -15,17 +15,15 @@ import source.code.dto.request.Food.FoodCreateDto;
 import source.code.dto.request.Food.FoodUpdateDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
-import source.code.dto.response.FoodCategoryResponseDto;
 import source.code.dto.response.FoodResponseDto;
-import source.code.helper.JsonPatchHelper;
-import source.code.helper.ValidationHelper;
+import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
+import source.code.service.implementation.Helpers.ValidationServiceImpl;
 import source.code.mapper.Food.FoodMapper;
 import source.code.model.Food.Food;
-import source.code.model.Food.FoodCategory;
 import source.code.repository.FoodCategoryRepository;
 import source.code.repository.FoodRepository;
 import source.code.repository.UserFoodRepository;
-import source.code.service.declaration.FoodService;
+import source.code.service.declaration.Food.FoodService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -34,8 +32,8 @@ import java.util.stream.Collectors;
 @Service
 public class FoodServiceImpl implements FoodService {
   private final ApplicationEventPublisher applicationEventPublisher;
-  private final ValidationHelper validationHelper;
-  private final JsonPatchHelper jsonPatchHelper;
+  private final ValidationServiceImpl validationServiceImpl;
+  private final JsonPatchServiceImpl jsonPatchServiceImpl;
   private final FoodRepository foodRepository;
   private final FoodMapper foodMapper;
   private final FoodCategoryRepository foodCategoryRepository;
@@ -43,15 +41,15 @@ public class FoodServiceImpl implements FoodService {
 
   public FoodServiceImpl(
           ApplicationEventPublisher applicationEventPublisher,
-          ValidationHelper validationHelper,
-          JsonPatchHelper jsonPatchHelper,
+          ValidationServiceImpl validationServiceImpl,
+          JsonPatchServiceImpl jsonPatchServiceImpl,
           FoodRepository foodRepository,
           FoodMapper foodMapper,
           FoodCategoryRepository foodCategoryRepository,
           UserFoodRepository userFoodRepository) {
     this.applicationEventPublisher = applicationEventPublisher;
-    this.validationHelper = validationHelper;
-    this.jsonPatchHelper = jsonPatchHelper;
+    this.validationServiceImpl = validationServiceImpl;
+    this.jsonPatchServiceImpl = jsonPatchServiceImpl;
     this.foodRepository = foodRepository;
     this.foodMapper = foodMapper;
     this.foodCategoryRepository = foodCategoryRepository;
@@ -73,7 +71,7 @@ public class FoodServiceImpl implements FoodService {
     Food food = getFoodOrThrow(foodId);
     FoodUpdateDto patchedFoodUpdateDto = applyPatchToFood(food, patch);
 
-    validationHelper.validate(patchedFoodUpdateDto);
+    validationServiceImpl.validate(patchedFoodUpdateDto);
 
     foodMapper.updateFood(food, patchedFoodUpdateDto);
     Food savedFood = foodRepository.save(food);
@@ -139,6 +137,6 @@ public class FoodServiceImpl implements FoodService {
           throws JsonPatchException, JsonProcessingException {
 
     FoodResponseDto responseDto = foodMapper.toResponseDto(food);
-    return jsonPatchHelper.applyPatch(patch, responseDto, FoodUpdateDto.class);
+    return jsonPatchServiceImpl.applyPatch(patch, responseDto, FoodUpdateDto.class);
   }
 }

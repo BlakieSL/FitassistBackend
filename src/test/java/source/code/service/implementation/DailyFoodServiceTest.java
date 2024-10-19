@@ -12,8 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.request.Food.DailyFoodItemCreateDto;
 import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
-import source.code.helper.JsonPatchHelper;
-import source.code.helper.ValidationHelper;
+import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
+import source.code.service.implementation.Helpers.ValidationServiceImpl;
 import source.code.mapper.Food.DailyFoodMapper;
 import source.code.model.Food.DailyFood;
 import source.code.model.Food.DailyFoodItem;
@@ -23,7 +23,7 @@ import source.code.model.User.User;
 import source.code.repository.DailyFoodRepository;
 import source.code.repository.FoodRepository;
 import source.code.repository.UserRepository;
-import source.code.service.implementation.Food.DailyFoodServiceImpl;
+import source.code.service.implementation.Daily.DailyFoodServiceImpl;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -37,9 +37,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class DailyFoodServiceTest {
   @Mock
-  private ValidationHelper validationHelper;
+  private ValidationServiceImpl validationServiceImpl;
   @Mock
-  private JsonPatchHelper jsonPatchHelper;
+  private JsonPatchServiceImpl jsonPatchServiceImpl;
   @Mock
   private DailyFoodMapper dailyFoodMapper;
   @Mock
@@ -268,23 +268,23 @@ public class DailyFoodServiceTest {
 
     JsonMergePatch patch = mock(JsonMergePatch.class);lenient();
     when(dailyFoodRepository.findByUserId(userId)).thenReturn(Optional.of(dailyFood1));
-    when(jsonPatchHelper.applyPatch(
+    when(jsonPatchServiceImpl.applyPatch(
             eq(patch),
             any(DailyFoodItemCreateDto.class),
             eq(DailyFoodItemCreateDto.class)))
             .thenReturn(patchedDto);
-    doNothing().when(validationHelper).validate(any(DailyFoodItemCreateDto.class));
+    doNothing().when(validationServiceImpl).validate(any(DailyFoodItemCreateDto.class));
 
     // Act
     dailyFoodService.updateDailyFoodItem(userId, food1.getId(), patch);
 
     // Assert
     verify(dailyFoodRepository, times(1)).findByUserId(userId);
-    verify(jsonPatchHelper, times(1)).applyPatch(
+    verify(jsonPatchServiceImpl, times(1)).applyPatch(
             eq(patch),
             any(DailyFoodItemCreateDto.class),
             eq(DailyFoodItemCreateDto.class));
-    verify(validationHelper, times(1)).validate(any(DailyFoodItemCreateDto.class));
+    verify(validationServiceImpl, times(1)).validate(any(DailyFoodItemCreateDto.class));
     verify(dailyFoodRepository, times(1)).save(dailyFood1);
     assertEquals(newAmount, dailyFoodItem1.getAmount());
   }
@@ -301,8 +301,8 @@ public class DailyFoodServiceTest {
             dailyFoodService.updateDailyFoodItem(user1.getId(), food1.getId(), mock(JsonMergePatch.class)));
 
     assertEquals("Food with id: " + food1.getId() + " not found in daily cart", exception.getMessage());
-    verify(jsonPatchHelper, never()).applyPatch(any(), any(), any());
-    verify(validationHelper, never()).validate(any());
+    verify(jsonPatchServiceImpl, never()).applyPatch(any(), any(), any());
+    verify(validationServiceImpl, never()).validate(any());
     verify(dailyFoodRepository, times(1)).findByUserId(user1.getId());
   }
 
@@ -315,7 +315,7 @@ public class DailyFoodServiceTest {
 
     when(dailyFoodRepository.findByUserId(userId)).thenReturn(Optional.of(dailyFood1));
 
-    when(jsonPatchHelper.applyPatch(
+    when(jsonPatchServiceImpl.applyPatch(
             eq(patch),
             any(DailyFoodItemCreateDto.class),
             eq(DailyFoodItemCreateDto.class)))
@@ -327,11 +327,11 @@ public class DailyFoodServiceTest {
     );
 
     verify(dailyFoodRepository, times(1)).findByUserId(userId);
-    verify(jsonPatchHelper, times(1)).applyPatch(
+    verify(jsonPatchServiceImpl, times(1)).applyPatch(
             eq(patch),
             any(DailyFoodItemCreateDto.class),
             eq(DailyFoodItemCreateDto.class));
-    verify(validationHelper, never()).validate(any());
+    verify(validationServiceImpl, never()).validate(any());
     verify(dailyFoodRepository, never()).save(any(DailyFood.class));
   }
 
@@ -346,14 +346,14 @@ public class DailyFoodServiceTest {
     patchedDto.setAmount(-1);
 
     when(dailyFoodRepository.findByUserId(userId)).thenReturn(Optional.of(dailyFood1));
-    when(jsonPatchHelper.applyPatch(
+    when(jsonPatchServiceImpl.applyPatch(
             eq(patch),
             any(DailyFoodItemCreateDto.class),
             eq(DailyFoodItemCreateDto.class)))
             .thenReturn(patchedDto);
 
     doThrow(new IllegalArgumentException("Validation failed"))
-            .when(validationHelper)
+            .when(validationServiceImpl)
             .validate(any(DailyFoodItemCreateDto.class));
 
     // Act & Assert
@@ -361,11 +361,11 @@ public class DailyFoodServiceTest {
             dailyFoodService.updateDailyFoodItem(userId, food1.getId(), patch));
 
     verify(dailyFoodRepository, times(1)).findByUserId(userId);
-    verify(jsonPatchHelper, times(1)).applyPatch(
+    verify(jsonPatchServiceImpl, times(1)).applyPatch(
             eq(patch),
             any(DailyFoodItemCreateDto.class),
             eq(DailyFoodItemCreateDto.class));
-    verify(validationHelper, times(1)).validate(any(DailyFoodItemCreateDto.class));
+    verify(validationServiceImpl, times(1)).validate(any(DailyFoodItemCreateDto.class));
     verify(dailyFoodRepository, never()).save(any(DailyFood.class));
   }
 

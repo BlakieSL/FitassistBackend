@@ -13,7 +13,10 @@ import source.code.dto.request.RefreshTokenRequestDto;
 import source.code.dto.request.UserCreateDto;
 import source.code.dto.response.AccessTokenResponseDto;
 import source.code.dto.response.UserResponseDto;
-import source.code.service.declaration.*;
+import source.code.service.declaration.User.UserFoodService;
+import source.code.service.declaration.User.UserPlanService;
+import source.code.service.declaration.User.UserRecipeService;
+import source.code.service.declaration.User.UserService;
 import source.code.validation.ValidationGroups;
 
 @RestController

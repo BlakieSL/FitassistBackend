@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import source.code.dto.response.ExerciseInstructionResponseDto;
 import source.code.dto.response.ExerciseTipResponseDto;
-import source.code.service.declaration.ExerciseInstructionsAndTipsService;
+import source.code.service.declaration.Exercise.ExerciseInstructionsAndTipsService;
 
 import java.util.List;
 

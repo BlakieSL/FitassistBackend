@@ -12,10 +12,9 @@ import source.code.cache.event.Plan.PlanDeleteEvent;
 import source.code.cache.event.Plan.PlanUpdateEvent;
 import source.code.dto.request.Plan.PlanCreateDto;
 import source.code.dto.request.Plan.PlanUpdateDto;
-import source.code.dto.response.PlanCategoryResponseDto;
 import source.code.dto.response.PlanResponseDto;
-import source.code.helper.JsonPatchHelper;
-import source.code.helper.ValidationHelper;
+import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
+import source.code.service.implementation.Helpers.ValidationServiceImpl;
 import source.code.helper.enumerators.PlanField;
 import source.code.mapper.Plan.PlanMapper;
 import source.code.model.Plan.*;
@@ -23,7 +22,7 @@ import source.code.repository.PlanCategoryAssociationRepository;
 import source.code.repository.PlanCategoryRepository;
 import source.code.repository.PlanRepository;
 import source.code.repository.UserPlanRepository;
-import source.code.service.declaration.PlanService;
+import source.code.service.declaration.Plan.PlanService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -33,8 +32,8 @@ import java.util.stream.Collectors;
 @Service
 public class PlanServiceImpl implements PlanService {
   private final PlanMapper planMapper;
-  private final JsonPatchHelper jsonPatchHelper;
-  private final ValidationHelper validationHelper;
+  private final JsonPatchServiceImpl jsonPatchServiceImpl;
+  private final ValidationServiceImpl validationServiceImpl;
   private final ApplicationEventPublisher applicationEventPublisher;
   private final PlanRepository planRepository;
   private final UserPlanRepository userPlanRepository;
@@ -42,16 +41,16 @@ public class PlanServiceImpl implements PlanService {
   private final PlanCategoryAssociationRepository planCategoryAssociationRepository;
 
   public PlanServiceImpl(PlanMapper planMapper,
-                         JsonPatchHelper jsonPatchHelper,
-                         ValidationHelper validationHelper,
+                         JsonPatchServiceImpl jsonPatchServiceImpl,
+                         ValidationServiceImpl validationServiceImpl,
                          ApplicationEventPublisher applicationEventPublisher,
                          PlanRepository planRepository,
                          UserPlanRepository userPlanRepository,
                          PlanCategoryRepository planCategoryRepository,
                          PlanCategoryAssociationRepository planCategoryAssociationRepository) {
     this.planMapper = planMapper;
-    this.jsonPatchHelper = jsonPatchHelper;
-    this.validationHelper = validationHelper;
+    this.jsonPatchServiceImpl = jsonPatchServiceImpl;
+    this.validationServiceImpl = validationServiceImpl;
     this.applicationEventPublisher = applicationEventPublisher;
     this.planRepository = planRepository;
     this.userPlanRepository = userPlanRepository;
@@ -73,7 +72,7 @@ public class PlanServiceImpl implements PlanService {
     Plan plan = getPlanOrThrow(planId);
     PlanUpdateDto patchedPlanUpdateDto = applyPatchToPlan(plan, patch);
 
-    validationHelper.validate(patchedPlanUpdateDto);
+    validationServiceImpl.validate(patchedPlanUpdateDto);
 
     planMapper.updatePlan(plan, patchedPlanUpdateDto);
     Plan savedPlan = planRepository.save(plan);
@@ -101,15 +100,6 @@ public class PlanServiceImpl implements PlanService {
 
     return plans.stream()
             .map(planMapper::toResponseDto)
-            .collect(Collectors.toList());
-  }
-
-  @Cacheable(value = {"allPlanCategories"})
-  public List<PlanCategoryResponseDto> getAllCategories() {
-    List<PlanCategory> categories = planCategoryRepository.findAll();
-
-    return categories.stream()
-            .map(planMapper::toCategoryDto)
             .collect(Collectors.toList());
   }
 
@@ -163,6 +153,6 @@ public class PlanServiceImpl implements PlanService {
   private PlanUpdateDto applyPatchToPlan (Plan plan, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
     PlanResponseDto responseDto = planMapper.toResponseDto(plan);
-    return jsonPatchHelper.applyPatch(patch, responseDto, PlanUpdateDto.class);
+    return jsonPatchServiceImpl.applyPatch(patch, responseDto, PlanUpdateDto.class);
   }
 }
