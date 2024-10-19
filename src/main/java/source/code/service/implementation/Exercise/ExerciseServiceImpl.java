@@ -23,6 +23,7 @@ import source.code.repository.*;
 import source.code.service.declaration.ExerciseService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -37,6 +38,13 @@ public class ExerciseServiceImpl implements ExerciseService {
   private final UserExerciseRepository userExerciseRepository;
   private final ExerciseCategoryRepository exerciseCategoryRepository;
   private final ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository;
+
+  private static final Map<ExerciseField, Function<Exercise, Integer>> fieldExtractorMap = Map.of(
+          ExerciseField.EXPERTISE_LEVEL, exercise -> exercise.getExpertiseLevel().getId(),
+          ExerciseField.FORCE_TYPE, exercise -> exercise.getForceType().getId(),
+          ExerciseField.MECHANICS_TYPE, exercise -> exercise.getMechanicsType().getId(),
+          ExerciseField.EQUIPMENT, exercise -> exercise.getExerciseEquipment().getId(),
+          ExerciseField.TYPE, exercise -> exercise.getExerciseType().getId());
 
   public ExerciseServiceImpl(ExerciseMapper exerciseMapper,
                              ValidationHelper validationHelper,
@@ -126,30 +134,13 @@ public class ExerciseServiceImpl implements ExerciseService {
 
   @Cacheable(value = "exercisesByField", key = "#field.name() + '_' + #value")
   public List<ExerciseResponseDto> getExercisesByField(ExerciseField field, int value) {
-    switch (field) {
-      case EXPERTISE_LEVEL:
-        return getExercisesByField(Exercise::getExpertiseLevel, ExpertiseLevel::getId, value);
-      case FORCE_TYPE:
-        return getExercisesByField(Exercise::getForceType, ForceType::getId, value);
-      case MECHANICS_TYPE:
-        return getExercisesByField(Exercise::getMechanicsType, MechanicsType::getId, value);
-      case EQUIPMENT:
-        return getExercisesByField(Exercise::getExerciseEquipment, ExerciseEquipment::getId, value);
-      case TYPE:
-        return getExercisesByField(Exercise::getExerciseType, ExerciseType::getId, value);
-      default:
-        throw new IllegalArgumentException("Unknown field: " + field);
+    Function<Exercise, Integer> fieldExtractor = fieldExtractorMap.get(field);
+    if (fieldExtractor == null) {
+      throw new IllegalArgumentException("Unknown field: " + field);
     }
-  }
 
-  private <T> List<ExerciseResponseDto> getExercisesByField(Function<Exercise, T> fieldExtractor,
-                                                            Function<T, Integer> idExtractor,
-                                                            int fieldValue) {
-    List<Exercise> exercises = exerciseRepository.findAll().stream()
-            .filter(exercise -> idExtractor.apply(fieldExtractor.apply(exercise)).equals(fieldValue))
-            .collect(Collectors.toList());
-
-    return exercises.stream()
+    return exerciseRepository.findAll().stream()
+            .filter(exercise -> fieldExtractor.apply(exercise).equals(value))
             .map(exerciseMapper::toResponseDto)
             .collect(Collectors.toList());
   }

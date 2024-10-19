@@ -16,6 +16,5 @@ public interface DailyFoodService {
 
   void updateDailyFoodItem(int userId, int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-  DailyFood createNewDailyFoodForUser(int userId);
   DailyFoodsResponseDto getFoodsFromDailyFoodItem(int userId);
 }

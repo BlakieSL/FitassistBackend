@@ -87,11 +87,8 @@ public class DailyActivityServiceImpl implements DailyActivityService {
   @Transactional
   public void removeActivityFromDailyActivity(int userId, int activityId) {
     DailyActivity dailyActivity = getDailyActivityByUser(userId);
-    DailyActivityItem dailyActivityItem = dailyActivity.getDailyActivityItems().stream()
-            .filter(item -> item.getActivity().getId().equals(activityId))
-            .findFirst()
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Activity with id: " + activityId + " not found"));
+    DailyActivityItem dailyActivityItem = getDailyActivityItemByActivity(dailyActivity, activityId);
+
     dailyActivity.getDailyActivityItems().remove(dailyActivityItem);
     dailyActivityRepository.save(dailyActivity);
   }
@@ -101,20 +98,13 @@ public class DailyActivityServiceImpl implements DailyActivityService {
           throws JsonPatchException, JsonProcessingException {
     DailyActivity dailyActivity = getDailyActivityByUser(userId);
 
-    DailyActivityItem dailyActivityItem = dailyActivity.getDailyActivityItems().stream()
-            .filter(item -> item.getActivity().getId().equals(activityId))
-            .findFirst()
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Activity with id: " + activityId + " not found in daily cart"));
+    DailyActivityItem dailyActivityItem = getDailyActivityItemByActivity(dailyActivity, activityId);
 
     DailyActivityItemCreateDto dailyActivityItemDto = new DailyActivityItemCreateDto();
     dailyActivityItemDto.setTime(dailyActivityItem.getTime());
 
-    DailyActivityItemCreateDto patchedDailyActivityItemDto =
-            jsonPatchHelper.applyPatch(
-                    patch,
-                    dailyActivityItemDto,
-                    DailyActivityItemCreateDto.class);
+    DailyActivityItemCreateDto patchedDailyActivityItemDto = jsonPatchHelper
+            .applyPatch(patch, dailyActivityItemDto, DailyActivityItemCreateDto.class);
 
     dailyActivityItem.setTime(patchedDailyActivityItemDto.getTime());
     dailyActivityRepository.save(dailyActivity);
@@ -129,7 +119,6 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 
     return dailyActivityRepository.save(newDailyActivity);
   }
-
 
   public DailyActivitiesResponseDto getActivitiesFromDailyActivity(int userId) {
     DailyActivity dailyActivity = getDailyActivityByUser(userId);
@@ -155,6 +144,14 @@ public class DailyActivityServiceImpl implements DailyActivityService {
   private DailyActivity getDailyActivityByUser(int userId) {
     return dailyActivityRepository.findByUserId(userId)
             .orElseGet(() -> createNewDailyActivityForUser(userId));
+  }
+
+  private DailyActivityItem getDailyActivityItemByActivity(DailyActivity dailyActivity, int activityId) {
+    return dailyActivity.getDailyActivityItems().stream()
+            .filter(item -> item.getActivity().getId().equals(activityId))
+            .findFirst()
+            .orElseThrow(() -> new NoSuchElementException(
+                    "Activity with id: " + activityId + " not found in daily cart"));
   }
 
   private void updateDailyActivityItemTime(DailyActivityItem dailyActivityItem, int time) {
