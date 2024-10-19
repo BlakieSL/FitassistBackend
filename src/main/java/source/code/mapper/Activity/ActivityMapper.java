@@ -6,7 +6,7 @@ import source.code.dto.request.Activity.ActivityCreateDto;
 import source.code.dto.request.Activity.ActivityUpdateDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.ActivityResponseDto;
-import source.code.helper.CalculationsHelper;
+import source.code.service.implementation.Helpers.CalculationsServiceImpl;
 import source.code.model.Activity.Activity;
 import source.code.model.Activity.ActivityCategory;
 import source.code.model.User.User;
@@ -20,7 +20,7 @@ public abstract class ActivityMapper {
   private ActivityCategoryRepository activityCategoryRepository;
 
   @Autowired
-  private CalculationsHelper calculationsHelper;
+  private CalculationsServiceImpl calculationsService;
 
   @Mapping(target = "categoryName", source = "activityCategory.name")
   @Mapping(target = "categoryId", source = "activityCategory.id")
@@ -47,7 +47,7 @@ public abstract class ActivityMapper {
 
   @AfterMapping
   protected void setCaloriesBurned(@MappingTarget ActivityCalculatedResponseDto dto, Activity activity, @Context User user, @Context int time) {
-    int caloriesBurned = (int) calculationsHelper.calculateCaloriesBurned(time, user.getWeight(), activity.getMet());
+    int caloriesBurned = (int) calculationsService.calculateCaloriesBurned(time, user.getWeight(), activity.getMet());
     dto.setCaloriesBurned(caloriesBurned);
     dto.setTime(time);
   }

@@ -14,14 +14,14 @@ import source.code.dto.request.Recipe.RecipeCreateDto;
 import source.code.dto.request.Recipe.RecipeUpdateDto;
 import source.code.dto.response.RecipeCategoryResponseDto;
 import source.code.dto.response.RecipeResponseDto;
-import source.code.helper.JsonPatchHelper;
-import source.code.helper.ValidationHelper;
+import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
+import source.code.service.implementation.Helpers.ValidationServiceImpl;
 import source.code.mapper.Recipe.RecipeMapper;
 import source.code.model.Recipe.Recipe;
 import source.code.model.Recipe.RecipeCategory;
 import source.code.model.Recipe.RecipeCategoryAssociation;
 import source.code.repository.*;
-import source.code.service.declaration.RecipeService;
+import source.code.service.declaration.Recipe.RecipeService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
 @Service
 public class RecipeServiceImpl implements RecipeService {
   private final RecipeMapper recipeMapper;
-  private final JsonPatchHelper jsonPatchHelper;
-  private final ValidationHelper validationHelper;
+  private final JsonPatchServiceImpl jsonPatchServiceImpl;
+  private final ValidationServiceImpl validationServiceImpl;
   private final ApplicationEventPublisher applicationEventPublisher;
   private final RecipeRepository recipeRepository;
   private final UserRecipeRepository userRecipeRepository;
@@ -39,16 +39,16 @@ public class RecipeServiceImpl implements RecipeService {
   private final RecipeCategoryAssociationRepository recipeCategoryAssociationRepository;
 
   public RecipeServiceImpl(RecipeMapper recipeMapper,
-                           JsonPatchHelper jsonPatchHelper,
-                           ValidationHelper validationHelper,
+                           JsonPatchServiceImpl jsonPatchServiceImpl,
+                           ValidationServiceImpl validationServiceImpl,
                            ApplicationEventPublisher applicationEventPublisher,
                            RecipeRepository recipeRepository,
                            UserRecipeRepository userRecipeRepository,
                            RecipeCategoryRepository recipeCategoryRepository,
                            RecipeCategoryAssociationRepository recipeCategoryAssociationRepository) {
     this.recipeMapper = recipeMapper;
-    this.jsonPatchHelper = jsonPatchHelper;
-    this.validationHelper = validationHelper;
+    this.jsonPatchServiceImpl = jsonPatchServiceImpl;
+    this.validationServiceImpl = validationServiceImpl;
     this.applicationEventPublisher = applicationEventPublisher;
     this.recipeRepository = recipeRepository;
     this.userRecipeRepository = userRecipeRepository;
@@ -70,7 +70,7 @@ public class RecipeServiceImpl implements RecipeService {
     Recipe recipe = getRecipeOrThrow(recipeId);
     RecipeUpdateDto patchedRecipeUpdateDto = applyPatchToRecipe(recipe, patch);
 
-    validationHelper.validate(patchedRecipeUpdateDto);
+    validationServiceImpl.validate(patchedRecipeUpdateDto);
 
     recipeMapper.updateRecipe(recipe, patchedRecipeUpdateDto);
     Recipe savedRecipe = recipeRepository.save(recipe);
@@ -133,6 +133,6 @@ public class RecipeServiceImpl implements RecipeService {
   private RecipeUpdateDto applyPatchToRecipe(Recipe recipe, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
     RecipeResponseDto responseDto = recipeMapper.toResponseDto(recipe);
-    return jsonPatchHelper.applyPatch(patch, responseDto, RecipeUpdateDto.class);
+    return jsonPatchServiceImpl.applyPatch(patch, responseDto, RecipeUpdateDto.class);
   }
 }

@@ -17,14 +17,14 @@ import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ActivityAverageMetResponseDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.ActivityResponseDto;
-import source.code.helper.JsonPatchHelper;
-import source.code.helper.ValidationHelper;
+import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
+import source.code.service.implementation.Helpers.ValidationServiceImpl;
 import source.code.mapper.Activity.ActivityMapper;
 import source.code.model.Activity.Activity;
 import source.code.model.User.User;
 import source.code.repository.ActivityRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.ActivityService;
+import source.code.service.declaration.Activity.ActivityService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -33,22 +33,22 @@ import java.util.stream.Collectors;
 @Service
 public class ActivityServiceImpl implements ActivityService {
   private final ActivityMapper activityMapper;
-  private final ValidationHelper validationHelper;
-  private final JsonPatchHelper jsonPatchHelper;
+  private final ValidationServiceImpl validationServiceImpl;
+  private final JsonPatchServiceImpl jsonPatchServiceImpl;
   private final ApplicationEventPublisher applicationEventPublisher;
   private final ActivityRepository activityRepository;
   private final UserRepository userRepository;
 
   public ActivityServiceImpl(
           ActivityMapper activityMapper,
-          ValidationHelper validationHelper,
-          JsonPatchHelper jsonPatchHelper,
+          ValidationServiceImpl validationServiceImpl,
+          JsonPatchServiceImpl jsonPatchServiceImpl,
           ApplicationEventPublisher applicationEventPublisher,
           ActivityRepository activityRepository,
           UserRepository userRepository) {
     this.activityMapper = activityMapper;
-    this.validationHelper = validationHelper;
-    this.jsonPatchHelper = jsonPatchHelper;
+    this.validationServiceImpl = validationServiceImpl;
+    this.jsonPatchServiceImpl = jsonPatchServiceImpl;
     this.applicationEventPublisher = applicationEventPublisher;
     this.activityRepository = activityRepository;
     this.userRepository = userRepository;
@@ -68,7 +68,7 @@ public class ActivityServiceImpl implements ActivityService {
     Activity activity = getActivityOrThrow(activityId);
     ActivityUpdateDto patchedActivityUpdateDto = applyPatchToActivity(activity, patch);
 
-    validationHelper.validate(patchedActivityUpdateDto);
+    validationServiceImpl.validate(patchedActivityUpdateDto);
 
     activityMapper.updateActivityFromDto(activity,patchedActivityUpdateDto);
     Activity savedActivity = activityRepository.save(activity);
@@ -152,7 +152,7 @@ public class ActivityServiceImpl implements ActivityService {
           throws JsonPatchException, JsonProcessingException {
 
     ActivityResponseDto responseDto = activityMapper.toResponseDto(activity);
-    return jsonPatchHelper.applyPatch(patch, responseDto, ActivityUpdateDto.class);
+    return jsonPatchServiceImpl.applyPatch(patch, responseDto, ActivityUpdateDto.class);
   }
 
   private void publishEvent(Object event) {

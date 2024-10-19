@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.Activity.DailyActivityItemCreateDto;
 import source.code.dto.response.DailyActivitiesResponseDto;
-import source.code.service.declaration.DailyActivityService;
+import source.code.service.declaration.Daily.DailyActivityService;
 
 @RestController
 @RequestMapping(path = "/api/daily-activities")

@@ -7,7 +7,7 @@ import source.code.dto.response.MediaResponseDto;
 import source.code.mapper.MediaMapper;
 import source.code.model.Media.Media;
 import source.code.repository.MediaRepository;
-import source.code.service.declaration.MediaService;
+import source.code.service.declaration.Media.MediaService;
 
 import java.util.List;
 import java.util.NoSuchElementException;

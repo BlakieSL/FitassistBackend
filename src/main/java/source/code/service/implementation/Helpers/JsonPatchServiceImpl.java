@@ -1,0 +1,24 @@
+package source.code.service.implementation.Helpers;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import org.springframework.stereotype.Service;
+
+@Service
+public class JsonPatchServiceImpl {
+
+  private final ObjectMapper objectMapper;
+
+  public JsonPatchServiceImpl(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+  }
+
+  public <T> T applyPatch(JsonMergePatch patch, Object targetBean, Class<T> beanClass) throws JsonPatchException, JsonProcessingException {
+    JsonNode targetNode = objectMapper.valueToTree(targetBean);
+    JsonNode patchedNode = patch.apply(targetNode);
+    return objectMapper.treeToValue(patchedNode, beanClass);
+  }
+}

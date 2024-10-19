@@ -12,7 +12,7 @@ import source.code.model.User.UserFood;
 import source.code.repository.FoodRepository;
 import source.code.repository.UserFoodRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.UserFoodService;
+import source.code.service.declaration.User.UserFoodService;
 
 import java.util.List;
 import java.util.NoSuchElementException;

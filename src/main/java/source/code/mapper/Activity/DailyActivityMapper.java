@@ -6,13 +6,13 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.response.ActivityCalculatedResponseDto;
-import source.code.helper.CalculationsHelper;
+import source.code.service.implementation.Helpers.CalculationsServiceImpl;
 import source.code.model.Activity.DailyActivityItem;
 
 @Mapper(componentModel = "spring")
 public abstract class DailyActivityMapper {
   @Autowired
-  private CalculationsHelper calculationsHelper;
+  private CalculationsServiceImpl calculationsService;
 
   @Mapping(target = "id", source = "dailyActivityItem.activity.id")
   @Mapping(target = "name", source = "dailyActivityItem.activity.name")
@@ -29,7 +29,7 @@ public abstract class DailyActivityMapper {
           DailyActivityItem dailyActivityItem,
           double userWeight) {
 
-    double calories = calculationsHelper.calculateCaloriesBurned(
+    double calories = calculationsService.calculateCaloriesBurned(
             dailyActivityItem.getTime(),
             userWeight,
             dailyActivityItem.getActivity().getMet());

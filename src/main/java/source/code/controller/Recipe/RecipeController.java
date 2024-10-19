@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.Recipe.RecipeCreateDto;
 import source.code.dto.response.RecipeResponseDto;
-import source.code.service.declaration.RecipeService;
-import source.code.service.declaration.UserRecipeService;
+import source.code.service.declaration.Recipe.RecipeService;
+import source.code.service.declaration.User.UserRecipeService;
 
 import java.util.List;
 

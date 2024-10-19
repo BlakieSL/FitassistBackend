@@ -7,8 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import source.code.helper.JsonPatchHelper;
-import source.code.helper.ValidationHelper;
+import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
+import source.code.service.implementation.Helpers.ValidationServiceImpl;
 import source.code.mapper.UserMapper;
 import source.code.repository.UserRepository;
 import source.code.service.implementation.User.UserServiceImpl;
@@ -16,9 +16,9 @@ import source.code.service.implementation.User.UserServiceImpl;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
   @Mock
-  private ValidationHelper validationHelper;
+  private ValidationServiceImpl validationServiceImpl;
   @Mock
-  private JsonPatchHelper jsonPatchHelper;
+  private JsonPatchServiceImpl jsonPatchServiceImpl;
   @Mock
   private UserMapper userMapper;
   @Mock

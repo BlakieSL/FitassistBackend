@@ -7,7 +7,7 @@ import source.code.dto.other.UserCredentialsDto;
 import source.code.dto.request.UserCreateDto;
 import source.code.dto.request.UserUpdateDto;
 import source.code.dto.response.UserResponseDto;
-import source.code.helper.CalculationsHelper;
+import source.code.service.implementation.Helpers.CalculationsServiceImpl;
 import source.code.model.User.Role;
 import source.code.model.User.User;
 import source.code.repository.RoleRepository;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public abstract class UserMapper {
 
   @Autowired
-  private CalculationsHelper calculationsHelper;
+  private CalculationsServiceImpl calculationsService;
 
   @Autowired
   private RoleRepository roleRepository;
@@ -67,7 +67,7 @@ public abstract class UserMapper {
 
   public void setCalculatedCalories(User user, UserCreateDto dto) {
     int age = Period.between(dto.getBirthday(), LocalDate.now()).getYears();
-    user.setCalculatedCalories(calculationsHelper.calculateCaloricNeeds(
+    user.setCalculatedCalories(calculationsService.calculateCaloricNeeds(
             dto.getWeight(),
             dto.getHeight(),
             age,
@@ -102,7 +102,7 @@ public abstract class UserMapper {
 
   double calculatedCalories(User user, UserUpdateDto request) {
     int age = Period.between(user.getBirthday(), LocalDate.now()).getYears();
-    return calculationsHelper.calculateCaloricNeeds(
+    return calculationsService.calculateCaloricNeeds(
             user.getWeight(),
             user.getHeight(),
             age,

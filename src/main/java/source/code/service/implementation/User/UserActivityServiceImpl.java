@@ -12,7 +12,7 @@ import source.code.model.User.UserActivity;
 import source.code.repository.ActivityRepository;
 import source.code.repository.UserActivityRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.UserActivityService;
+import source.code.service.declaration.User.UserActivityService;
 
 import java.util.List;
 import java.util.NoSuchElementException;

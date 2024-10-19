@@ -10,7 +10,7 @@ import source.code.model.Workout.WorkoutType;
 import source.code.repository.WorkoutPlanRepository;
 import source.code.repository.WorkoutRepository;
 import source.code.repository.WorkoutTypeRepository;
-import source.code.service.declaration.WorkoutService;
+import source.code.service.declaration.Workout.WorkoutService;
 
 import java.util.List;
 import java.util.NoSuchElementException;

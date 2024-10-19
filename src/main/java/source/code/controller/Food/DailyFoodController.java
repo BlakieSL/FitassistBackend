@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.Food.DailyFoodItemCreateDto;
 import source.code.dto.response.DailyFoodsResponseDto;
-import source.code.service.declaration.DailyFoodService;
+import source.code.service.declaration.Daily.DailyFoodService;
 
 @RestController
 @RequestMapping(path = "/api/cart")

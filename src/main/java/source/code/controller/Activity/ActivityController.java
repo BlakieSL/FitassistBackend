@@ -9,7 +9,7 @@ import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ActivityAverageMetResponseDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.ActivityResponseDto;
-import source.code.service.declaration.ActivityService;
+import source.code.service.declaration.Activity.ActivityService;
 
 import java.util.List;
 
