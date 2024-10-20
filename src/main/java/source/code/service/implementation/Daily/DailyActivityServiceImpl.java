@@ -10,8 +10,9 @@ import source.code.dto.request.Activity.DailyActivityItemCreateDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.DailyActivitiesResponseDto;
 import source.code.exception.RecordNotFoundException;
+import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.ValidationService;
 import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
-import source.code.service.implementation.Helpers.ValidationServiceImpl;
 import source.code.mapper.Activity.DailyActivityMapper;
 import source.code.model.Activity.Activity;
 import source.code.model.Activity.DailyActivity;
@@ -29,8 +30,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class DailyActivityServiceImpl implements DailyActivityService {
-  private final JsonPatchServiceImpl jsonPatchServiceImpl;
-  private final ValidationServiceImpl validationServiceImpl;
+  private final JsonPatchService jsonPatchService;
+  private final ValidationService validationService;
   private final DailyActivityMapper dailyActivityMapper;
   private final DailyActivityRepository dailyActivityRepository;
   private final DailyActivityItemRepository dailyActivityItemRepository;
@@ -41,15 +42,15 @@ public class DailyActivityServiceImpl implements DailyActivityService {
           DailyActivityRepository dailyActivityRepository,
           UserRepository userRepository,
           ActivityRepository activityRepository,
-          JsonPatchServiceImpl jsonPatchServiceImpl,
-          ValidationServiceImpl validationServiceImpl,
+          JsonPatchServiceImpl jsonPatchService,
+          ValidationService validationService,
           DailyActivityMapper dailyActivityMapper,
           DailyActivityItemRepository dailyActivityItemRepository) {
     this.dailyActivityRepository = dailyActivityRepository;
     this.userRepository = userRepository;
     this.activityRepository = activityRepository;
-    this.jsonPatchServiceImpl = jsonPatchServiceImpl;
-    this.validationServiceImpl = validationServiceImpl;
+    this.jsonPatchService = jsonPatchService;
+    this.validationService = validationService;
     this.dailyActivityMapper = dailyActivityMapper;
     this.dailyActivityItemRepository = dailyActivityItemRepository;
   }
@@ -96,7 +97,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     DailyActivityItem dailyActivityItem = getDailyActivityItem(dailyActivity.getId(), activityId);
 
     DailyActivityItemCreateDto patchedDto = applyPatchToDailyActivityItem(dailyActivityItem, patch);
-    validationServiceImpl.validate(patchedDto);
+    validationService.validate(patchedDto);
 
     updateDailyActivityItemTime(dailyActivityItem, patchedDto.getTime());
     dailyActivityRepository.save(dailyActivity);
@@ -161,7 +162,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
           throws JsonPatchException, JsonProcessingException {
 
     DailyActivityItemCreateDto createDto = new DailyActivityItemCreateDto(dailyActivityItem.getTime());
-    return jsonPatchServiceImpl.applyPatch(patch, createDto, DailyActivityItemCreateDto.class);
+    return jsonPatchService.applyPatch(patch, createDto, DailyActivityItemCreateDto.class);
   }
 
   private void saveDailyActivityItem(DailyActivity dailyActivity,

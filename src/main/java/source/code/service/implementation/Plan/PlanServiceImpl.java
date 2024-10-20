@@ -13,8 +13,8 @@ import source.code.cache.event.Plan.PlanUpdateEvent;
 import source.code.dto.request.Plan.PlanCreateDto;
 import source.code.dto.request.Plan.PlanUpdateDto;
 import source.code.dto.response.PlanResponseDto;
-import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
-import source.code.service.implementation.Helpers.ValidationServiceImpl;
+import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.ValidationService;
 import source.code.helper.enumerators.PlanField;
 import source.code.mapper.Plan.PlanMapper;
 import source.code.model.Plan.*;
@@ -32,8 +32,8 @@ import java.util.stream.Collectors;
 @Service
 public class PlanServiceImpl implements PlanService {
   private final PlanMapper planMapper;
-  private final JsonPatchServiceImpl jsonPatchServiceImpl;
-  private final ValidationServiceImpl validationServiceImpl;
+  private final JsonPatchService jsonPatchService;
+  private final ValidationService validationService;
   private final ApplicationEventPublisher applicationEventPublisher;
   private final PlanRepository planRepository;
   private final UserPlanRepository userPlanRepository;
@@ -41,16 +41,16 @@ public class PlanServiceImpl implements PlanService {
   private final PlanCategoryAssociationRepository planCategoryAssociationRepository;
 
   public PlanServiceImpl(PlanMapper planMapper,
-                         JsonPatchServiceImpl jsonPatchServiceImpl,
-                         ValidationServiceImpl validationServiceImpl,
+                         JsonPatchService jsonPatchService,
+                         ValidationService validationService,
                          ApplicationEventPublisher applicationEventPublisher,
                          PlanRepository planRepository,
                          UserPlanRepository userPlanRepository,
                          PlanCategoryRepository planCategoryRepository,
                          PlanCategoryAssociationRepository planCategoryAssociationRepository) {
     this.planMapper = planMapper;
-    this.jsonPatchServiceImpl = jsonPatchServiceImpl;
-    this.validationServiceImpl = validationServiceImpl;
+    this.jsonPatchService = jsonPatchService;
+    this.validationService = validationService;
     this.applicationEventPublisher = applicationEventPublisher;
     this.planRepository = planRepository;
     this.userPlanRepository = userPlanRepository;
@@ -72,7 +72,7 @@ public class PlanServiceImpl implements PlanService {
     Plan plan = getPlanOrThrow(planId);
     PlanUpdateDto patchedPlanUpdateDto = applyPatchToPlan(plan, patch);
 
-    validationServiceImpl.validate(patchedPlanUpdateDto);
+    validationService.validate(patchedPlanUpdateDto);
 
     planMapper.updatePlan(plan, patchedPlanUpdateDto);
     Plan savedPlan = planRepository.save(plan);
@@ -153,6 +153,6 @@ public class PlanServiceImpl implements PlanService {
   private PlanUpdateDto applyPatchToPlan (Plan plan, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
     PlanResponseDto responseDto = planMapper.toResponseDto(plan);
-    return jsonPatchServiceImpl.applyPatch(patch, responseDto, PlanUpdateDto.class);
+    return jsonPatchService.applyPatch(patch, responseDto, PlanUpdateDto.class);
   }
 }

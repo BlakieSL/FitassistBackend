@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import source.code.dto.request.Recipe.RecipeFoodCreateDto;
 import source.code.dto.response.FoodResponseDto;
 import source.code.exception.NotUniqueRecordException;
-import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
-import source.code.service.implementation.Helpers.ValidationServiceImpl;
+import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.ValidationService;
 import source.code.mapper.Food.FoodMapper;
 import source.code.model.Food.Food;
 import source.code.model.Recipe.Recipe;
@@ -28,25 +28,25 @@ import java.util.stream.Collectors;
 
 @Service
 public class RecipeFoodServiceImpl implements RecipeFoodService {
-  private final ValidationServiceImpl validationServiceImpl;
+  private final ValidationService validationService;
   private final RecipeFoodRepository recipeFoodRepository;
   private final FoodRepository foodRepository;
   private final RecipeRepository recipeRepository;
-  private final JsonPatchServiceImpl jsonPatchServiceImpl;
+  private final JsonPatchService jsonPatchService;
   private final FoodMapper foodMapper;
 
   public RecipeFoodServiceImpl(
-          ValidationServiceImpl validationServiceImpl,
+          ValidationService validationService,
           RecipeFoodRepository recipeFoodRepository,
           FoodRepository foodRepository,
           RecipeRepository recipeRepository,
-          JsonPatchServiceImpl jsonPatchServiceImpl,
+          JsonPatchService jsonPatchService,
           FoodMapper foodMapper) {
-    this.validationServiceImpl = validationServiceImpl;
+    this.validationService = validationService;
     this.recipeFoodRepository = recipeFoodRepository;
     this.foodRepository = foodRepository;
     this.recipeRepository = recipeRepository;
-    this.jsonPatchServiceImpl = jsonPatchServiceImpl;
+    this.jsonPatchService = jsonPatchService;
     this.foodMapper = foodMapper;
   }
 
@@ -88,10 +88,10 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 
     RecipeFoodCreateDto existingRecipeFoodDto = new RecipeFoodCreateDto(recipeFood.getAmount());
 
-    RecipeFoodCreateDto patchedDto = jsonPatchServiceImpl
+    RecipeFoodCreateDto patchedDto = jsonPatchService
             .applyPatch(patch, existingRecipeFoodDto, RecipeFoodCreateDto.class);
 
-    validationServiceImpl.validate(patchedDto);
+    validationService.validate(patchedDto);
 
     if (patchedDto.getAmount() != recipeFood.getAmount()) {
       recipeFood.setAmount(patchedDto.getAmount());

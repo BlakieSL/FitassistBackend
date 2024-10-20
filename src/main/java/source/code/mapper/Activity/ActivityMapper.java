@@ -6,6 +6,7 @@ import source.code.dto.request.Activity.ActivityCreateDto;
 import source.code.dto.request.Activity.ActivityUpdateDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.ActivityResponseDto;
+import source.code.service.declaration.Helpers.CalculationsService;
 import source.code.service.implementation.Helpers.CalculationsServiceImpl;
 import source.code.model.Activity.Activity;
 import source.code.model.Activity.ActivityCategory;
@@ -20,7 +21,7 @@ public abstract class ActivityMapper {
   private ActivityCategoryRepository activityCategoryRepository;
 
   @Autowired
-  private CalculationsServiceImpl calculationsService;
+  private CalculationsService calculationsService;
 
   @Mapping(target = "categoryName", source = "activityCategory.name")
   @Mapping(target = "categoryId", source = "activityCategory.id")

@@ -3,17 +3,19 @@ package source.code.service.implementation.Helpers;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.springframework.stereotype.Service;
+import source.code.service.declaration.Helpers.ValidationService;
 
 import java.util.Set;
 
 @Service
-public final class ValidationServiceImpl {
+public final class ValidationServiceImpl implements ValidationService {
   private final Validator validator;
 
   public ValidationServiceImpl(Validator validator) {
     this.validator = validator;
   }
 
+  @Override
   public <T> void validate(T dto, Class<?>... groups) {
     Set<ConstraintViolation<T>> errors = validator.validate(dto, groups);
     if (!errors.isEmpty()) {

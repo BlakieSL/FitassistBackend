@@ -10,8 +10,8 @@ import source.code.dto.request.Food.DailyFoodItemCreateDto;
 import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
-import source.code.service.implementation.Helpers.ValidationServiceImpl;
+import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.ValidationService;
 import source.code.mapper.Food.DailyFoodMapper;
 import source.code.model.Food.DailyFood;
 import source.code.model.Food.DailyFoodItem;
@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class DailyFoodServiceImpl implements DailyFoodService {
-  private final ValidationServiceImpl validationServiceImpl;
-  private final JsonPatchServiceImpl jsonPatchServiceImpl;
+  private final ValidationService validationService;
+  private final JsonPatchService jsonPatchService;
   private final DailyFoodMapper dailyFoodMapper;
   private final DailyFoodRepository dailyFoodRepository;
   private final DailyFoodItemRepository dailyFoodItemRepository;
@@ -38,18 +38,18 @@ public class DailyFoodServiceImpl implements DailyFoodService {
   private final UserRepository userRepository;
 
   public DailyFoodServiceImpl(
-          ValidationServiceImpl validationServiceImpl,
+          ValidationService validationService,
           DailyFoodRepository dailyFoodRepository,
           FoodRepository foodRepository,
           UserRepository userRepository,
-          JsonPatchServiceImpl jsonPatchServiceImpl,
+          JsonPatchService jsonPatchService,
           DailyFoodMapper dailyFoodMapper,
           DailyFoodItemRepository dailyFoodItemRepository) {
-    this.validationServiceImpl = validationServiceImpl;
+    this.validationService = validationService;
     this.dailyFoodRepository = dailyFoodRepository;
     this.foodRepository = foodRepository;
     this.userRepository = userRepository;
-    this.jsonPatchServiceImpl = jsonPatchServiceImpl;
+    this.jsonPatchService = jsonPatchService;
     this.dailyFoodMapper = dailyFoodMapper;
     this.dailyFoodItemRepository = dailyFoodItemRepository;
   }
@@ -93,7 +93,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     DailyFoodItem dailyFoodItem = getDailyFoodItem(dailyFood.getId(), foodId);
 
     DailyFoodItemCreateDto patchedDto = applyPatchToDailyFoodItem(dailyFoodItem, patch);
-    validationServiceImpl.validate(patchedDto);
+    validationService.validate(patchedDto);
 
     updateDailyFoodItemAmount(dailyFoodItem, patchedDto.getAmount());
     dailyFoodRepository.save(dailyFood);
@@ -143,7 +143,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
           throws JsonPatchException, JsonProcessingException {
 
     DailyFoodItemCreateDto createDto = new DailyFoodItemCreateDto(dailyFoodItem.getAmount());
-    return jsonPatchServiceImpl.applyPatch(patch, createDto, DailyFoodItemCreateDto.class);
+    return jsonPatchService.applyPatch(patch, createDto, DailyFoodItemCreateDto.class);
   }
 
   private DailyFoodItem getDailyFoodItem(int dailyFoodId, int foodId) {

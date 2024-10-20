@@ -17,8 +17,8 @@ import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ActivityAverageMetResponseDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.ActivityResponseDto;
-import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
-import source.code.service.implementation.Helpers.ValidationServiceImpl;
+import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.ValidationService;
 import source.code.mapper.Activity.ActivityMapper;
 import source.code.model.Activity.Activity;
 import source.code.model.User.User;
@@ -33,22 +33,22 @@ import java.util.stream.Collectors;
 @Service
 public class ActivityServiceImpl implements ActivityService {
   private final ActivityMapper activityMapper;
-  private final ValidationServiceImpl validationServiceImpl;
-  private final JsonPatchServiceImpl jsonPatchServiceImpl;
+  private final ValidationService validationService;
+  private final JsonPatchService jsonPatchService;
   private final ApplicationEventPublisher applicationEventPublisher;
   private final ActivityRepository activityRepository;
   private final UserRepository userRepository;
 
   public ActivityServiceImpl(
           ActivityMapper activityMapper,
-          ValidationServiceImpl validationServiceImpl,
-          JsonPatchServiceImpl jsonPatchServiceImpl,
+          ValidationService validationService,
+          JsonPatchService jsonPatchService,
           ApplicationEventPublisher applicationEventPublisher,
           ActivityRepository activityRepository,
           UserRepository userRepository) {
     this.activityMapper = activityMapper;
-    this.validationServiceImpl = validationServiceImpl;
-    this.jsonPatchServiceImpl = jsonPatchServiceImpl;
+    this.validationService = validationService;
+    this.jsonPatchService = jsonPatchService;
     this.applicationEventPublisher = applicationEventPublisher;
     this.activityRepository = activityRepository;
     this.userRepository = userRepository;
@@ -68,7 +68,7 @@ public class ActivityServiceImpl implements ActivityService {
     Activity activity = getActivityOrThrow(activityId);
     ActivityUpdateDto patchedActivityUpdateDto = applyPatchToActivity(activity, patch);
 
-    validationServiceImpl.validate(patchedActivityUpdateDto);
+    validationService.validate(patchedActivityUpdateDto);
 
     activityMapper.updateActivityFromDto(activity,patchedActivityUpdateDto);
     Activity savedActivity = activityRepository.save(activity);
@@ -152,7 +152,7 @@ public class ActivityServiceImpl implements ActivityService {
           throws JsonPatchException, JsonProcessingException {
 
     ActivityResponseDto responseDto = activityMapper.toResponseDto(activity);
-    return jsonPatchServiceImpl.applyPatch(patch, responseDto, ActivityUpdateDto.class);
+    return jsonPatchService.applyPatch(patch, responseDto, ActivityUpdateDto.class);
   }
 
   private void publishEvent(Object event) {
