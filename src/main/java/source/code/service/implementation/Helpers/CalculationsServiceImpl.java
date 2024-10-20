@@ -1,9 +1,10 @@
 package source.code.service.implementation.Helpers;
 
 import org.springframework.stereotype.Service;
+import source.code.service.declaration.Helpers.CalculationsService;
 
 @Service
-public final class CalculationsServiceImpl {
+public final class CalculationsServiceImpl implements CalculationsService {
   private static final double MALE_WEIGHT_MULTIPLIER = 10.0;
   private static final double MALE_HEIGHT_MULTIPLIER = 6.25;
   private static final double MALE_AGE_MULTIPLIER = 5.0;
@@ -22,8 +23,8 @@ public final class CalculationsServiceImpl {
   private static final int CALORIE_SURPLUS = 200;
   private static final int CALORIE_DIVISOR = 200;
 
-  public double calculateBMR(final double weight, final double height,
-                             final int age, final String gender) {
+  @Override
+  public double calculateBMR(double weight, double height, int age, String gender) {
     if ("male".equalsIgnoreCase(gender)) {
       return MALE_WEIGHT_MULTIPLIER * weight + MALE_HEIGHT_MULTIPLIER * height -
               MALE_AGE_MULTIPLIER * age + MALE_CONSTANT;
@@ -34,7 +35,8 @@ public final class CalculationsServiceImpl {
     return 0;
   }
 
-  public double calculateTDEE(final double bmr, final String activityLevel) {
+  @Override
+  public double calculateTDEE(double bmr, String activityLevel) {
     double activityFactor = switch (activityLevel.toLowerCase()) {
       case "sedentary" -> SEDENTARY_FACTOR;
       case "lightly_active" -> LIGHTLY_ACTIVE_FACTOR;
@@ -46,12 +48,9 @@ public final class CalculationsServiceImpl {
     return bmr * activityFactor;
   }
 
-  public double calculateCaloricNeeds(final double weight,
-                                      final double height,
-                                      final int age,
-                                      final String gender,
-                                      final String activityLevel,
-                                      final String goal) {
+  @Override
+  public double calculateCaloricNeeds(double weight, double height, int age, String gender,
+                                      String activityLevel, String goal) {
     double bmr = calculateBMR(weight, height, age, gender);
     double tdee = calculateTDEE(bmr, activityLevel);
     return switch (goal.toLowerCase()) {
@@ -62,8 +61,8 @@ public final class CalculationsServiceImpl {
     };
   }
 
-  public double calculateCaloriesBurned(
-          final int time, final double weight, final double met) {
+  @Override
+  public double calculateCaloriesBurned(int time, double weight, double met) {
     return (time * met * weight) / CALORIE_DIVISOR;
   }
 }
