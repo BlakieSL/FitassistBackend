@@ -64,8 +64,11 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ResponseEntity<String> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
-    String errorMessage = String.format("Invalid value for parameter '%s'. Expected type: %s", e.getName(), e.getRequiredType().getSimpleName());
+  public ResponseEntity<String> handleMethodArgumentTypeMismatchException(
+          MethodArgumentTypeMismatchException e) {
+
+    String errorMessage = String.format("Invalid value for parameter '%s'. " +
+            "Expected type: %s", e.getName(), e.getRequiredType().getSimpleName());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
   }
 
@@ -81,9 +84,17 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
   }
 
+  @ExceptionHandler(IllegalStateException.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public ResponseEntity<String> handleIllegalStateException(IllegalStateException e) {
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("An error occurred: " + e.getMessage());
+  }
+
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ResponseEntity<String> handleException(Exception e) {
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("An unexpected error occurred: " + e.getMessage());
   }
 }
