@@ -14,8 +14,8 @@ import source.code.dto.request.Exercise.ExerciseCreateDto;
 import source.code.dto.request.Exercise.ExerciseUpdateDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ExerciseResponseDto;
-import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
-import source.code.service.implementation.Helpers.ValidationServiceImpl;
+import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.ValidationService;
 import source.code.helper.enumerators.ExerciseField;
 import source.code.mapper.Exercise.ExerciseMapper;
 import source.code.model.Exercise.*;
@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
 @Service
 public class ExerciseServiceImpl implements ExerciseService {
   private final ExerciseMapper exerciseMapper;
-  private final ValidationServiceImpl validationServiceImpl;
-  private final JsonPatchServiceImpl jsonPatchServiceImpl;
+  private final ValidationService validationService;
+  private final JsonPatchService jsonPatchService;
   private final ApplicationEventPublisher applicationEventPublisher;
   private final ExerciseRepository exerciseRepository;
   private final UserExerciseRepository userExerciseRepository;
@@ -47,16 +47,16 @@ public class ExerciseServiceImpl implements ExerciseService {
           ExerciseField.TYPE, exercise -> exercise.getExerciseType().getId());
 
   public ExerciseServiceImpl(ExerciseMapper exerciseMapper,
-                             ValidationServiceImpl validationServiceImpl,
-                             JsonPatchServiceImpl jsonPatchServiceImpl,
+                             ValidationService validationService,
+                             JsonPatchService jsonPatchService,
                              ApplicationEventPublisher applicationEventPublisher,
                              ExerciseRepository exerciseRepository,
                              UserExerciseRepository userExerciseRepository,
                              ExerciseCategoryRepository exerciseCategoryRepository,
                              ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository) {
     this.exerciseMapper = exerciseMapper;
-    this.validationServiceImpl = validationServiceImpl;
-    this.jsonPatchServiceImpl = jsonPatchServiceImpl;
+    this.validationService = validationService;
+    this.jsonPatchService = jsonPatchService;
     this.applicationEventPublisher = applicationEventPublisher;
     this.exerciseRepository = exerciseRepository;
     this.userExerciseRepository = userExerciseRepository;
@@ -79,7 +79,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     Exercise exercise = getExerciseOrThrow(exerciseId);
     ExerciseUpdateDto patchedExerciseUpdateDto = applyPatchToExercise(exercise, patch);
 
-    validationServiceImpl.validate(patchedExerciseUpdateDto);
+    validationService.validate(patchedExerciseUpdateDto);
 
     exerciseMapper.updateExerciseFromDto(exercise, patchedExerciseUpdateDto);
     Exercise savedExercise = exerciseRepository.save(exercise);
@@ -155,6 +155,6 @@ public class ExerciseServiceImpl implements ExerciseService {
           throws JsonPatchException, JsonProcessingException {
 
     ExerciseResponseDto responseDto = exerciseMapper.toResponseDto(exercise);
-    return jsonPatchServiceImpl.applyPatch(patch, responseDto, ExerciseUpdateDto.class);
+    return jsonPatchService.applyPatch(patch, responseDto, ExerciseUpdateDto.class);
   }
 }

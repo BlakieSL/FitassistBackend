@@ -12,8 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.request.Food.DailyFoodItemCreateDto;
 import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
+import source.code.service.declaration.Helpers.ValidationService;
 import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
-import source.code.service.implementation.Helpers.ValidationServiceImpl;
 import source.code.mapper.Food.DailyFoodMapper;
 import source.code.model.Food.DailyFood;
 import source.code.model.Food.DailyFoodItem;
@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class DailyFoodServiceTest {
   @Mock
-  private ValidationServiceImpl validationServiceImpl;
+  private ValidationService validationService;
   @Mock
   private JsonPatchServiceImpl jsonPatchServiceImpl;
   @Mock
@@ -273,7 +273,7 @@ public class DailyFoodServiceTest {
             any(DailyFoodItemCreateDto.class),
             eq(DailyFoodItemCreateDto.class)))
             .thenReturn(patchedDto);
-    doNothing().when(validationServiceImpl).validate(any(DailyFoodItemCreateDto.class));
+    doNothing().when(validationService).validate(any(DailyFoodItemCreateDto.class));
 
     // Act
     dailyFoodService.updateDailyFoodItem(userId, food1.getId(), patch);
@@ -284,7 +284,7 @@ public class DailyFoodServiceTest {
             eq(patch),
             any(DailyFoodItemCreateDto.class),
             eq(DailyFoodItemCreateDto.class));
-    verify(validationServiceImpl, times(1)).validate(any(DailyFoodItemCreateDto.class));
+    verify(validationService, times(1)).validate(any(DailyFoodItemCreateDto.class));
     verify(dailyFoodRepository, times(1)).save(dailyFood1);
     assertEquals(newAmount, dailyFoodItem1.getAmount());
   }
@@ -302,7 +302,7 @@ public class DailyFoodServiceTest {
 
     assertEquals("Food with id: " + food1.getId() + " not found in daily cart", exception.getMessage());
     verify(jsonPatchServiceImpl, never()).applyPatch(any(), any(), any());
-    verify(validationServiceImpl, never()).validate(any());
+    verify(validationService, never()).validate(any());
     verify(dailyFoodRepository, times(1)).findByUserId(user1.getId());
   }
 
@@ -331,7 +331,7 @@ public class DailyFoodServiceTest {
             eq(patch),
             any(DailyFoodItemCreateDto.class),
             eq(DailyFoodItemCreateDto.class));
-    verify(validationServiceImpl, never()).validate(any());
+    verify(validationService, never()).validate(any());
     verify(dailyFoodRepository, never()).save(any(DailyFood.class));
   }
 
@@ -353,7 +353,7 @@ public class DailyFoodServiceTest {
             .thenReturn(patchedDto);
 
     doThrow(new IllegalArgumentException("Validation failed"))
-            .when(validationServiceImpl)
+            .when(validationService)
             .validate(any(DailyFoodItemCreateDto.class));
 
     // Act & Assert
@@ -365,7 +365,7 @@ public class DailyFoodServiceTest {
             eq(patch),
             any(DailyFoodItemCreateDto.class),
             eq(DailyFoodItemCreateDto.class));
-    verify(validationServiceImpl, times(1)).validate(any(DailyFoodItemCreateDto.class));
+    verify(validationService, times(1)).validate(any(DailyFoodItemCreateDto.class));
     verify(dailyFoodRepository, never()).save(any(DailyFood.class));
   }
 

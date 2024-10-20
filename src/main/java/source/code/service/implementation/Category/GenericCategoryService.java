@@ -13,8 +13,9 @@ import source.code.cache.event.Category.CategoryCreateCacheEvent;
 import source.code.dto.request.Category.CategoryCreateDto;
 import source.code.dto.request.Category.CategoryUpdateDto;
 import source.code.dto.response.CategoryResponseDto;
+import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.ValidationService;
 import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
-import source.code.service.implementation.Helpers.ValidationServiceImpl;
 import source.code.mapper.Generics.BaseMapper;
 
 import java.util.List;
@@ -23,21 +24,21 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public abstract class GenericCategoryService<T> {
-  protected final ValidationServiceImpl validationServiceImpl;
-  protected final JsonPatchServiceImpl jsonPatchServiceImpl;
+  protected final ValidationService validationService;
+  protected final JsonPatchService jsonPatchService;
   protected final ApplicationEventPublisher applicationEventPublisher;
-
   protected final CacheManager cacheManager;
   protected final JpaRepository<T, Integer> repository;
   protected final BaseMapper<T> mapper;
-  protected GenericCategoryService(ValidationServiceImpl validationServiceImpl,
-                                   JsonPatchServiceImpl jsonPatchServiceImpl,
+
+  protected GenericCategoryService(ValidationService validationService,
+                                   JsonPatchServiceImpl jsonPatchService,
                                    ApplicationEventPublisher applicationEventPublisher,
                                    CacheManager cacheManager,
                                    JpaRepository<T, Integer> repository,
                                    BaseMapper<T> mapper) {
-    this.validationServiceImpl = validationServiceImpl;
-    this.jsonPatchServiceImpl = jsonPatchServiceImpl;
+    this.validationService = validationService;
+    this.jsonPatchService = jsonPatchService;
     this.applicationEventPublisher = applicationEventPublisher;
     this.cacheManager = cacheManager;
     this.repository = repository;
@@ -60,7 +61,7 @@ public abstract class GenericCategoryService<T> {
     T category = getCategoryOrThrow(categoryId);
     CategoryUpdateDto patchedCategory = applyPatchToCategory(category, patch);
 
-    validationServiceImpl.validate(patchedCategory);
+    validationService.validate(patchedCategory);
     mapper.updateEntityFromDto(category, patchedCategory);
     repository.save(category);
 
@@ -101,7 +102,7 @@ public abstract class GenericCategoryService<T> {
   private CategoryUpdateDto applyPatchToCategory(T category, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
     CategoryResponseDto response = mapper.toResponseDto(category);
-    return jsonPatchServiceImpl.applyPatch(patch, response, CategoryUpdateDto.class);
+    return jsonPatchService.applyPatch(patch, response, CategoryUpdateDto.class);
   }
 
   private Optional<List<CategoryResponseDto>> getCachedCategories(String cacheKey) {

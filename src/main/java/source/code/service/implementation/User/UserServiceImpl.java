@@ -18,9 +18,10 @@ import source.code.dto.other.UserCredentialsDto;
 import source.code.dto.request.UserCreateDto;
 import source.code.dto.request.UserUpdateDto;
 import source.code.dto.response.UserResponseDto;
+import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.ValidationService;
 import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
 import source.code.helper.UserDetailsHelper;
-import source.code.service.implementation.Helpers.ValidationServiceImpl;
 import source.code.mapper.UserMapper;
 import source.code.model.User.User;
 import source.code.repository.UserRepository;
@@ -32,8 +33,8 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
   private final ApplicationEventPublisher applicationEventPublisher;
-  private final ValidationServiceImpl validationServiceImpl;
-  private final JsonPatchServiceImpl jsonPatchServiceImpl;
+  private final ValidationService validationService;
+  private final JsonPatchService jsonPatchService;
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
@@ -41,14 +42,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   public UserServiceImpl(ApplicationEventPublisher applicationEventPublisher,
                          UserRepository userRepository,
                          UserMapper userMapper,
-                         ValidationServiceImpl validationServiceImpl,
-                         JsonPatchServiceImpl jsonPatchServiceImpl,
+                         ValidationService validationService,
+                         JsonPatchServiceImpl jsonPatchService,
                          PasswordEncoder passwordEncoder) {
     this.applicationEventPublisher = applicationEventPublisher;
     this.userRepository = userRepository;
     this.userMapper = userMapper;
-    this.validationServiceImpl = validationServiceImpl;
-    this.jsonPatchServiceImpl = jsonPatchServiceImpl;
+    this.validationService = validationService;
+    this.jsonPatchService = jsonPatchService;
     this.passwordEncoder = passwordEncoder;
   }
 
@@ -86,7 +87,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     validatePasswordIfNeeded(user, patchedUserUpdateDto);
 
-    validationServiceImpl.validate(patchedUserUpdateDto);
+    validationService.validate(patchedUserUpdateDto);
 
     userMapper.updateUserFromDto(user, patchedUserUpdateDto);
     User savedUser = userRepository.save(user);
@@ -104,7 +105,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
           throws JsonPatchException, JsonProcessingException {
 
     UserResponseDto userDto = getUser(userId);
-    return jsonPatchServiceImpl.applyPatch(patch, userDto, UserUpdateDto.class);
+    return jsonPatchService.applyPatch(patch, userDto, UserUpdateDto.class);
   }
 
   private void validatePasswordIfNeeded(User user, UserUpdateDto dto) {

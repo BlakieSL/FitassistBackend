@@ -3,8 +3,8 @@ package source.code.service.implementation.Category;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import source.code.service.declaration.Helpers.ValidationService;
 import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
-import source.code.service.implementation.Helpers.ValidationServiceImpl;
 import source.code.mapper.Exercise.ExerciseCategoryMapper;
 import source.code.model.Exercise.ExerciseCategory;
 import source.code.repository.ExerciseCategoryRepository;
@@ -16,13 +16,13 @@ public class ExerciseCategoryServiceImpl
         extends GenericCategoryService<ExerciseCategory>
         implements CategoryService {
 
-  protected ExerciseCategoryServiceImpl(ValidationServiceImpl validationServiceImpl,
+  protected ExerciseCategoryServiceImpl(ValidationService validationService,
                                         JsonPatchServiceImpl jsonPatchServiceImpl,
                                         ApplicationEventPublisher applicationEventPublisher,
                                         CacheManager cacheManager,
                                         ExerciseCategoryRepository repository,
                                         ExerciseCategoryMapper mapper) {
-    super(validationServiceImpl,
+    super(validationService,
             jsonPatchServiceImpl,
             applicationEventPublisher,
             cacheManager,
