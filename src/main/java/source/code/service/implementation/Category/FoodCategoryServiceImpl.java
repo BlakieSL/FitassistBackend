@@ -1,5 +1,7 @@
 package source.code.service.implementation.Category;
 
+import org.springframework.cache.CacheManager;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
 import source.code.service.implementation.Helpers.ValidationServiceImpl;
@@ -15,8 +17,15 @@ public class FoodCategoryServiceImpl
 
   protected FoodCategoryServiceImpl(ValidationServiceImpl validationServiceImpl,
                                     JsonPatchServiceImpl jsonPatchServiceImpl,
+                                    ApplicationEventPublisher applicationEventPublisher,
+                                    CacheManager cacheManager,
                                     FoodCategoryRepository repository,
                                     FoodCategoryMapper mapper) {
-    super(validationServiceImpl, jsonPatchServiceImpl, repository, mapper);
+    super(validationServiceImpl,
+            jsonPatchServiceImpl,
+            applicationEventPublisher,
+            cacheManager,
+            repository,
+            mapper);
   }
 }
