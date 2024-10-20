@@ -17,6 +17,7 @@ import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ActivityAverageMetResponseDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.ActivityResponseDto;
+import source.code.service.declaration.Helpers.GenericRepositoryHelper;
 import source.code.service.declaration.Helpers.JsonPatchService;
 import source.code.service.declaration.Helpers.ValidationService;
 import source.code.mapper.Activity.ActivityMapper;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class ActivityServiceImpl implements ActivityService {
+  private final GenericRepositoryHelper<Activity, ActivityResponseDto> repositoryHelper;
   private final ActivityMapper activityMapper;
   private final ValidationService validationService;
   private final JsonPatchService jsonPatchService;
@@ -40,12 +42,14 @@ public class ActivityServiceImpl implements ActivityService {
   private final UserRepository userRepository;
 
   public ActivityServiceImpl(
+          GenericRepositoryHelper<Activity, ActivityResponseDto> repositoryHelper,
           ActivityMapper activityMapper,
           ValidationService validationService,
           JsonPatchService jsonPatchService,
           ApplicationEventPublisher applicationEventPublisher,
           ActivityRepository activityRepository,
           UserRepository userRepository) {
+    this.repositoryHelper = repositoryHelper;
     this.activityMapper = activityMapper;
     this.validationService = validationService;
     this.jsonPatchService = jsonPatchService;
@@ -65,7 +69,7 @@ public class ActivityServiceImpl implements ActivityService {
   @Transactional
   public void updateActivity(int activityId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
-    Activity activity = getActivityOrThrow(activityId);
+    Activity activity = repositoryHelper.findByIdOrThrow(activityId);
     ActivityUpdateDto patchedActivityUpdateDto = applyPatchToActivity(activity, patch);
 
     validationService.validate(patchedActivityUpdateDto);
@@ -78,7 +82,7 @@ public class ActivityServiceImpl implements ActivityService {
 
   @Transactional
   public void deleteActivity(int activityId) {
-    Activity activity = getActivityOrThrow(activityId);
+    Activity activity = repositoryHelper.findByIdOrThrow(activityId);
     activityRepository.delete(activity);
 
     publishEvent(new ActivityDeleteEvent(this, activity));
@@ -92,60 +96,42 @@ public class ActivityServiceImpl implements ActivityService {
             .orElseThrow(() -> new NoSuchElementException(
                     "User with id: " + request.getUserId() + " not found"));
 
-    Activity activity = getActivityOrThrow(activityId);
+    Activity activity = repositoryHelper.findByIdOrThrow(activityId);
 
     return activityMapper.toCalculatedDto(activity, user, request.getTime());
   }
 
   public List<ActivityResponseDto> searchActivities(SearchRequestDto request) {
-    List<Activity> activities = activityRepository
-            .findAllByNameContainingIgnoreCase(request.getName());
-
-    return activities.stream()
+    return activityRepository.findAllByNameContainingIgnoreCase(request.getName()).stream()
             .map(activityMapper::toResponseDto)
             .collect(Collectors.toList());
   }
 
   @Cacheable(value = "activities", key = "#id")
   public ActivityResponseDto getActivity(int activityId) {
-    Activity activity = getActivityOrThrow(activityId);
-
+    Activity activity = repositoryHelper.findByIdOrThrow(activityId);
     return activityMapper.toResponseDto(activity);
   }
 
   @Cacheable(value = "allActivities")
   public List<ActivityResponseDto> getAllActivities() {
-    List<Activity> activities = activityRepository.findAll();
-
-    return activities.stream()
-            .map(activityMapper::toResponseDto)
-            .collect(Collectors.toList());
+    return repositoryHelper.findAll(activityMapper::toResponseDto);
   }
 
   @Cacheable(value = "activitiesByCategory", key = "#categoryId")
   public List<ActivityResponseDto> getActivitiesByCategory(int categoryId) {
-    List<Activity> activities = activityRepository.findAllByActivityCategory_Id(categoryId);
-
-    return activities.stream()
+    return activityRepository.findAllByActivityCategory_Id(categoryId).stream()
             .map(activityMapper::toResponseDto)
             .collect(Collectors.toList());
   }
 
   public ActivityAverageMetResponseDto getAverageMet() {
-    List<Activity> activities = activityRepository.findAll();
-
-    double averageMet = activities.stream()
+    double averageMet = activityRepository.findAll().stream()
             .mapToDouble(Activity::getMet)
             .average()
             .orElse(0.0);
 
     return new ActivityAverageMetResponseDto(averageMet);
-  }
-
-  private Activity getActivityOrThrow(int activityId) {
-    return activityRepository.findById(activityId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Activity with id: " + activityId + " not found"));
   }
 
   private ActivityUpdateDto applyPatchToActivity(Activity activity, JsonMergePatch patch)
