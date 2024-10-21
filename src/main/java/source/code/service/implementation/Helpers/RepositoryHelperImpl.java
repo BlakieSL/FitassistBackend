@@ -3,16 +3,16 @@ package source.code.service.implementation.Helpers;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 import source.code.exception.RecordNotFoundException;
-import source.code.service.declaration.Helpers.GenericRepositoryHelper;
+import source.code.service.declaration.Helpers.RepositoryHelper;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
-public class GenericRepositoryHelperImpl implements GenericRepositoryHelper {
+public class RepositoryHelperImpl implements RepositoryHelper {
   @Override
-  public <T> T findById(JpaRepository<T, Integer> repository, Class<T> entityType, int id) {
+  public <T> T find(JpaRepository<T, Integer> repository, Class<T> entityType, int id) {
     return repository.findById(id)
             .orElseThrow(() -> new RecordNotFoundException(entityType.getSimpleName(), id));
   }

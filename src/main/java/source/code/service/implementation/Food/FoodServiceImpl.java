@@ -17,43 +17,37 @@ import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.FoodResponseDto;
 import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.RepositoryHelper;
 import source.code.service.declaration.Helpers.ValidationService;
 import source.code.mapper.Food.FoodMapper;
 import source.code.model.Food.Food;
-import source.code.repository.FoodCategoryRepository;
 import source.code.repository.FoodRepository;
-import source.code.repository.UserFoodRepository;
 import source.code.service.declaration.Food.FoodService;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
 public class FoodServiceImpl implements FoodService {
-  private final ApplicationEventPublisher applicationEventPublisher;
   private final ValidationService validationService;
   private final JsonPatchService jsonPatchService;
-  private final FoodRepository foodRepository;
+  private final ApplicationEventPublisher applicationEventPublisher;
   private final FoodMapper foodMapper;
-  private final FoodCategoryRepository foodCategoryRepository;
-  private final UserFoodRepository userFoodRepository;
-
+  private final RepositoryHelper repositoryHelper;
+  private final FoodRepository foodRepository;
   public FoodServiceImpl(
           ApplicationEventPublisher applicationEventPublisher,
           ValidationService validationService,
           JsonPatchService jsonPatchService,
           FoodRepository foodRepository,
           FoodMapper foodMapper,
-          FoodCategoryRepository foodCategoryRepository,
-          UserFoodRepository userFoodRepository) {
+          RepositoryHelper repositoryHelper) {
     this.applicationEventPublisher = applicationEventPublisher;
     this.validationService = validationService;
     this.jsonPatchService = jsonPatchService;
     this.foodRepository = foodRepository;
     this.foodMapper = foodMapper;
-    this.foodCategoryRepository = foodCategoryRepository;
-    this.userFoodRepository = userFoodRepository;
+    this.repositoryHelper = repositoryHelper;
   }
 
   @Transactional
@@ -68,7 +62,7 @@ public class FoodServiceImpl implements FoodService {
   public void updateFood(int foodId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
 
-    Food food = getFoodOrThrow(foodId);
+    Food food = find(foodId);
     FoodUpdateDto patchedFoodUpdateDto = applyPatchToFood(food, patch);
 
     validationService.validate(patchedFoodUpdateDto);
@@ -80,7 +74,7 @@ public class FoodServiceImpl implements FoodService {
   }
 
   public void deleteFood(int foodId) {
-    Food food = getFoodOrThrow(foodId);
+    Food food = find(foodId);
     foodRepository.delete(food);
 
     applicationEventPublisher.publishEvent(new FoodDeleteEvent(this, food));
@@ -88,49 +82,38 @@ public class FoodServiceImpl implements FoodService {
 
   public FoodCalculatedMacrosResponseDto calculateFoodMacros(int id,
                                                              CalculateFoodMacrosRequestDto request) {
-    Food food = getFoodOrThrow(id);
+    Food food = find(id);
     double factor = (double) request.getAmount() / 100;
 
     return foodMapper.toDtoWithFactor(food, factor);
   }
 
   public List<FoodResponseDto> searchFoods(SearchRequestDto request) {
-    List<Food> foods = foodRepository.findAllByNameContainingIgnoreCase(request.getName());
-
-    return foods.stream()
+    return foodRepository.findAllByNameContainingIgnoreCase(request.getName()).stream()
             .map(foodMapper::toResponseDto)
             .collect(Collectors.toList());
   }
 
   @Cacheable(value = {"foods"}, key = "#id")
   public FoodResponseDto getFood(int id) {
-    Food food = getFoodOrThrow(id);
+    Food food = find(id);
     return foodMapper.toResponseDto(food);
   }
 
   @Cacheable(value = {"allFoods"})
   public List<FoodResponseDto> getAllFoods() {
-    List<Food> foods = foodRepository.findAll();
-
-    return foods.stream()
-            .map(foodMapper::toResponseDto)
-            .collect(Collectors.toList());
+    return repositoryHelper.findAll(foodRepository, foodMapper::toResponseDto);
   }
 
   @Cacheable(value = {"foodsByCategory"}, key = "#categoryId")
   public List<FoodResponseDto> getFoodsByCategory(int categoryId) {
-    List<Food> foods = foodRepository
-            .findAllByFoodCategory_Id(categoryId);
-
-    return foods.stream()
+    return foodRepository.findAllByFoodCategory_Id(categoryId).stream()
             .map(foodMapper::toResponseDto)
             .collect(Collectors.toList());
   }
 
-  private Food getFoodOrThrow(int foodId) {
-    return foodRepository.findById(foodId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Food with id: " + foodId + " not found"));
+  private Food find(int foodId) {
+    return repositoryHelper.find(foodRepository, Food.class, foodId);
   }
 
   private FoodUpdateDto applyPatchToFood(Food food, JsonMergePatch patch)

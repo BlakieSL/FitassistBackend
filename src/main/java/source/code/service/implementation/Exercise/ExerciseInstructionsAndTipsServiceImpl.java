@@ -30,19 +30,14 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
 
   @Cacheable(value = "exerciseInstructions", key = "#exerciseId")
   public List<ExerciseInstructionResponseDto> getExerciseInstructions(int exerciseId) {
-    List<ExerciseInstruction> instructions = exerciseInstructionRepository
-            .getAllByExerciseId(exerciseId);
-
-    return instructions.stream()
+    return exerciseInstructionRepository.getAllByExerciseId(exerciseId).stream()
             .map(exerciseMapper::toInstructionDto)
             .collect(Collectors.toList());
   }
 
   @Cacheable(value = "exerciseTips", key = "#exerciseId")
   public List<ExerciseTipResponseDto> getExerciseTips(int exerciseId) {
-    List<ExerciseTip> tips = exerciseTipRepository.getAllByExerciseId(exerciseId);
-
-    return tips.stream()
+    return exerciseTipRepository.getAllByExerciseId(exerciseId).stream()
             .map(exerciseMapper::toTipDto)
             .collect(Collectors.toList());
   }

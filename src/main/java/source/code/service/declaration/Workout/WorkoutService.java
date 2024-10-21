@@ -1,15 +1,16 @@
 package source.code.service.declaration.Workout;
 
-import source.code.dto.WorkoutDto;
+import source.code.dto.response.WorkoutResponseDto;
+import source.code.dto.request.Workout.WorkoutCreateDto;
 
 import java.util.List;
 
 public interface WorkoutService {
-  WorkoutDto createWorkout(WorkoutDto dto);
+  WorkoutResponseDto createWorkout(WorkoutCreateDto dto);
 
-  WorkoutDto getWorkout(int id);
+  WorkoutResponseDto getWorkout(int id);
 
-  List<WorkoutDto> getAllWorkouts();
+  List<WorkoutResponseDto> getAllWorkouts();
 
-  List<WorkoutDto> getWorkoutsByPlan(int planId);
+  List<WorkoutResponseDto> getWorkoutsByPlan(int planId);
 }

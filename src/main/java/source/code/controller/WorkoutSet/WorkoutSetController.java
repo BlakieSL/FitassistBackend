@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.WorkoutSetDto;
+import source.code.dto.request.Workout.WorkoutCreateDto;
+import source.code.dto.request.WorkoutSet.WorkoutSetCreateDto;
+import source.code.dto.response.WorkoutSetResponseDto;
 import source.code.service.declaration.Workout.WorkoutSetService;
 
 import java.util.List;
@@ -19,21 +21,21 @@ public class WorkoutSetController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<WorkoutSetDto> getWorkoutSet(@PathVariable int id) {
-    WorkoutSetDto workoutSet = workoutSetService.getWorkoutSet(id);
+  public ResponseEntity<WorkoutSetResponseDto> getWorkoutSet(@PathVariable int id) {
+    WorkoutSetResponseDto workoutSet = workoutSetService.getWorkoutSet(id);
     return ResponseEntity.ok(workoutSet);
   }
 
   @GetMapping
-  public ResponseEntity<List<WorkoutSetDto>> getAllWorkoutSets() {
-    List<WorkoutSetDto> workoutSets = workoutSetService.getAllWorkoutSets();
+  public ResponseEntity<List<WorkoutSetResponseDto>> getAllWorkoutSets() {
+    List<WorkoutSetResponseDto> workoutSets = workoutSetService.getAllWorkoutSets();
     return ResponseEntity.ok(workoutSets);
   }
 
   @GetMapping("/workout-type/{workoutTypeId}")
-  public ResponseEntity<List<WorkoutSetDto>> getWorkoutSetsByWorkoutType(
+  public ResponseEntity<List<WorkoutSetResponseDto>> getWorkoutSetsByWorkoutType(
           @PathVariable int workoutTypeId) {
-    List<WorkoutSetDto> workoutSets = workoutSetService.getWorkoutSetsByWorkoutType(workoutTypeId);
+    List<WorkoutSetResponseDto> workoutSets = workoutSetService.getWorkoutSetsByWorkoutType(workoutTypeId);
     return ResponseEntity.ok(workoutSets);
   }
 
@@ -44,9 +46,9 @@ public class WorkoutSetController {
   }
 
   @PostMapping
-  public ResponseEntity<WorkoutSetDto> createWorkoutSet(
-          @Valid @RequestBody WorkoutSetDto workoutSetDto) {
-    WorkoutSetDto response = workoutSetService.createWorkoutSet(workoutSetDto);
+  public ResponseEntity<WorkoutSetResponseDto> createWorkoutSet(
+          @Valid @RequestBody WorkoutSetCreateDto request) {
+    WorkoutSetResponseDto response = workoutSetService.createWorkoutSet(request);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 }
