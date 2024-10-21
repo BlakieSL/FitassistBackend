@@ -117,7 +117,7 @@ public class ActivityServiceImpl implements ActivityService {
   public List<ActivityResponseDto> getActivitiesByCategory(int categoryId) {
     return activityRepository.findAllByActivityCategory_Id(categoryId).stream()
             .map(activityMapper::toResponseDto)
-            .collect(Collectors.toList());
+            .toList();
   }
 
   public ActivityAverageMetResponseDto getAverageMet() {

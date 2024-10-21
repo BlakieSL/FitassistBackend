@@ -21,6 +21,6 @@ public class RepositoryHelperImpl implements RepositoryHelper {
   public <T, R> List<R> findAll(JpaRepository<T, Integer> repository, Function<T,R> mapper) {
     return repository.findAll().stream()
             .map(mapper)
-            .collect(Collectors.toList());
+            .toList();
   }
 }

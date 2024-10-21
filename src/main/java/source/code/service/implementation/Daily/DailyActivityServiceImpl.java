@@ -114,7 +114,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     List<ActivityCalculatedResponseDto> activities = dailyActivity.getDailyActivityItems().stream()
             .map(dailyActivityItem -> dailyActivityMapper
                     .toActivityCalculatedResponseDto(dailyActivityItem, user.getWeight()))
-            .collect(Collectors.toList());
+            .toList();
 
     int totalCaloriesBurned = activities.stream()
             .mapToInt(ActivityCalculatedResponseDto::getCaloriesBurned)

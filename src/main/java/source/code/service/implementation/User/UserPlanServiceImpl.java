@@ -13,84 +13,61 @@ import source.code.model.User.UserPlan;
 import source.code.repository.PlanRepository;
 import source.code.repository.UserPlanRepository;
 import source.code.repository.UserRepository;
+import source.code.service.declaration.User.SavedService;
 import source.code.service.declaration.User.UserPlanService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-@Service
-public class UserPlanServiceImpl implements UserPlanService {
-  private final UserPlanRepository userPlanRepository;
-  private final PlanRepository planRepository;
-  private final UserRepository userRepository;
-  private final PlanMapper planMapper;
+@Service("userPlanService")
+public class UserPlanServiceImpl
+        extends GenericSavedService<Plan, UserPlan, PlanResponseDto>
+        implements SavedService {
 
   public UserPlanServiceImpl(UserPlanRepository userPlanRepository,
                              PlanRepository planRepository,
-                             UserRepository userRepository, PlanMapper planMapper) {
-    this.userPlanRepository = userPlanRepository;
-    this.planRepository = planRepository;
-    this.userRepository = userRepository;
-    this.planMapper = planMapper;
+                             UserRepository userRepository,
+                             PlanMapper planMapper) {
+    super(userRepository, planRepository, userPlanRepository, planMapper::toResponseDto);
   }
 
-  @Transactional
-  public void savePlanToUser(int userId, int planId,  short type) {
-    if (isAlreadySaved(userId, planId, type)) {
-      throw new NotUniqueRecordException(
-              "User with id: " + userId
-                      + " already has plan with id: " + planId
-                      + " and type: " + type);
-    }
-    User user = userRepository.findById(userId)
+  @Override
+  protected boolean isAlreadySaved(int userId, int planId, short type) {
+    return ((UserPlanRepository) userEntityRepository)
+            .existsByUserIdAndPlanIdAndType(userId, planId, type);
+  }
+
+  @Override
+  protected UserPlan createUserEntity(User user, Plan entity, short type) {
+    return UserPlan.createWithUserPlanType(user, entity, type);
+  }
+
+  @Override
+  protected UserPlan findUserEntity(int userId, int planId, short type) {
+    return ((UserPlanRepository) userEntityRepository)
+            .findByUserIdAndPlanIdAndType(userId, planId, type)
             .orElseThrow(() -> new NoSuchElementException(
-                    "User with id: " + userId + " not found"));
-
-    Plan plan = planRepository.findById(planId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Plan with id: " + planId + " not found"));
-
-    UserPlan userPlan =
-            UserPlan.createWithUserPlanType(user, plan, type);
-    userPlanRepository.save(userPlan);
+                    "UserPlan with user id: " + userId + ", plan id: " + planId + " and type: " + type + " not found"));
   }
 
-  @Transactional
-  public void deleteSavedPlanFromUser(int planId, int userId, short type) {
-    UserPlan userPlan = userPlanRepository.findByUserIdAndPlanIdAndType(userId, planId, type)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "UserPlan with user id: " + userId
-                            + ", plan id: " + planId
-                            + " and type: " + type + " not found"));
-
-    userPlanRepository.delete(userPlan);
+  @Override
+  protected List<UserPlan> findAllByUserAndType(int userId, short type) {
+    return ((UserPlanRepository) userEntityRepository).findByUserIdAndType(userId, type);
   }
 
-  public List<PlanResponseDto> getPlansByUserAndType(int userId, short type) {
-    List<UserPlan> userPlans = userPlanRepository.findByUserIdAndType(userId, type);
-    List<Plan> plans = userPlans.stream()
-            .map(UserPlan::getPlan)
-            .collect(Collectors.toList());
-
-    return plans.stream()
-            .map(planMapper::toResponseDto)
-            .collect(Collectors.toList());
+  @Override
+  protected Plan extractEntity(UserPlan userPlan) {
+    return userPlan.getPlan();
   }
 
-  public LikesAndSavesResponseDto calculatePlanLikesAndSaves(int planId) {
-    planRepository.findById(planId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Plan with id: " + planId + " not found"));
-
-    long saves = userPlanRepository.countByPlanIdAndType(planId, (short) 1);
-    long likes = userPlanRepository.countByPlanIdAndType(planId, (short) 2);
-
-    return new LikesAndSavesResponseDto(likes, saves);
+  @Override
+  protected long countSaves(int planId) {
+    return ((UserPlanRepository) userEntityRepository).countByPlanIdAndType(planId, (short) 1);
   }
 
-  private boolean isAlreadySaved(int userId, int planId, short type) {
-    return userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type);
+  @Override
+  protected long countLikes(int planId) {
+    return ((UserPlanRepository) userEntityRepository).countByPlanIdAndType(planId, (short) 2);
   }
-
 }

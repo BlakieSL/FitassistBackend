@@ -9,6 +9,7 @@ import source.code.dto.response.PlanCategoryResponseDto;
 import source.code.dto.response.PlanResponseDto;
 import source.code.model.Plan.*;
 import source.code.repository.*;
+import source.code.service.declaration.Helpers.RepositoryHelper;
 
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,8 @@ import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public abstract class PlanMapper {
+  @Autowired
+  private RepositoryHelper repositoryHelper;
   @Autowired
   private PlanCategoryRepository planCategoryRepository;
   @Autowired
@@ -67,12 +70,12 @@ public abstract class PlanMapper {
     Set<PlanCategoryAssociation> associations = new HashSet<>();
 
     for (Integer categoryId : categoryIds) {
-      PlanCategory category = planCategoryRepository.findById(categoryId)
-              .orElseThrow(() -> new NoSuchElementException(
-                      "Category not found for id: " + categoryId));
+      PlanCategory category = repositoryHelper
+              .find(planCategoryRepository, PlanCategory.class, categoryId);
 
-      PlanCategoryAssociation association = new PlanCategoryAssociation();
-      association.setPlanCategory(category);
+      PlanCategoryAssociation association = PlanCategoryAssociation
+              .createWithPlanCategory(category);
+
       associations.add(association);
     }
 
@@ -91,26 +94,22 @@ public abstract class PlanMapper {
 
   @Named("mapTypeIdToEntity")
   protected PlanType mapTypeIdToEntity(int planTypeId) {
-    return planTypeRepository.findById(planTypeId)
-            .orElseThrow(() -> new NoSuchElementException("PlanType not found for id: " + planTypeId));
+    return repositoryHelper.find(planTypeRepository, PlanType.class, planTypeId);
   }
 
   @Named("mapDurationIdToEntity")
   protected PlanDuration mapDurationIdToEntity(int planDurationId) {
-    return planDurationRepository.findById(planDurationId)
-            .orElseThrow(() -> new NoSuchElementException("PlanDuration not found for id: " + planDurationId));
+    return repositoryHelper.find(planDurationRepository, PlanDuration.class, planDurationId);
   }
 
   @Named("mapEquipmentIdToEntity")
   protected PlanEquipment mapEquipmentIdToEntity(int planEquipmentId) {
-    return planEquipmentRepository.findById(planEquipmentId)
-            .orElseThrow(() -> new NoSuchElementException("PlanEquipment not found for id: " + planEquipmentId));
+    return repositoryHelper.find(planEquipmentRepository, PlanEquipment.class, planEquipmentId);
   }
 
   @Named("mapExpertiseLevelIdToEntity")
   protected PlanExpertiseLevel mapExpertiseLevelIdToEntity(int planExpertiseLevelId) {
-    return planExpertiseLevelRepository.findById(planExpertiseLevelId)
-            .orElseThrow(() -> new NoSuchElementException("PlanExpertiseLevel not found for id: " + planExpertiseLevelId));
+    return repositoryHelper.find(planExpertiseLevelRepository, PlanExpertiseLevel.class, planExpertiseLevelId);
   }
 
   @Named("mapTypeToShortDto")

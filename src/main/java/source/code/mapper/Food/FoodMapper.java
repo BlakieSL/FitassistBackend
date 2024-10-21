@@ -10,11 +10,15 @@ import source.code.dto.response.FoodResponseDto;
 import source.code.model.Food.Food;
 import source.code.model.Food.FoodCategory;
 import source.code.repository.FoodCategoryRepository;
+import source.code.service.declaration.Helpers.RepositoryHelper;
 
 import java.util.NoSuchElementException;
 
 @Mapper(componentModel = "spring")
 public abstract class FoodMapper {
+  @Autowired
+  private RepositoryHelper repositoryHelper;
+
   @Autowired
   private FoodCategoryRepository foodCategoryRepository;
 
@@ -52,8 +56,6 @@ public abstract class FoodMapper {
 
   @Named("categoryIdToFoodCategory")
   protected FoodCategory categoryIdToFoodCategory(int categoryId) {
-    return foodCategoryRepository.findById(categoryId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Food category with id: " + categoryId + " not found"));
+    return repositoryHelper.find(foodCategoryRepository, FoodCategory.class, categoryId);
   }
 }

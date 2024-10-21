@@ -24,4 +24,10 @@ public class PlanCategoryAssociation {
   @ManyToOne
   @JoinColumn(name = "plan_category_id", nullable = false)
   private PlanCategory planCategory;
+
+  public static PlanCategoryAssociation createWithPlanCategory(PlanCategory category) {
+    PlanCategoryAssociation association = new PlanCategoryAssociation();
+    association.setPlanCategory(category);
+    return association;
+  }
 }

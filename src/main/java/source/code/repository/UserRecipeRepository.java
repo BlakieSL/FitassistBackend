@@ -6,7 +6,7 @@ import source.code.model.User.UserRecipe;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRecipeRepository extends JpaRepository<UserRecipe, Long> {
+public interface UserRecipeRepository extends JpaRepository<UserRecipe, Integer> {
   List<UserRecipe> findByUserId(int userId);
 
   List<UserRecipe> findByUserIdAndType(int userId, short type);

@@ -70,7 +70,7 @@ public class WorkoutSetServiceImpl implements WorkoutSetService {
   public List<WorkoutSetResponseDto> getWorkoutSetsByWorkoutType(int workoutTypeId) {
     return workoutSetRepository.findByWorkoutTypeId(workoutTypeId).stream()
             .map(workoutSetMapper::toResponseDto)
-            .collect(Collectors.toList());
+            .toList();
   }
 
   private WorkoutSet find(int workoutSetId) {

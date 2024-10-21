@@ -11,6 +11,7 @@ import source.code.model.Recipe.Recipe;
 import source.code.model.Recipe.RecipeCategory;
 import source.code.model.Recipe.RecipeCategoryAssociation;
 import source.code.repository.RecipeCategoryRepository;
+import source.code.service.declaration.Helpers.RepositoryHelper;
 
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +22,10 @@ import java.util.Set;
 public abstract class RecipeMapper {
   @Autowired
   private RecipeCategoryRepository recipeCategoryRepository;
+
+  @Autowired
+  private RepositoryHelper repositoryHelper;
+
 
   @Mapping(target = "categories", source = "recipeCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryShortDto")
   public abstract RecipeResponseDto toResponseDto(Recipe recipe);
@@ -49,12 +54,12 @@ public abstract class RecipeMapper {
     Set<RecipeCategoryAssociation> associations = new HashSet<>();
 
     for (Integer categoryId : categoryIds) {
-      RecipeCategory category = recipeCategoryRepository.findById(categoryId)
-              .orElseThrow(() -> new NoSuchElementException(
-                      "Category not found for id: " + categoryId));
+      RecipeCategory category = repositoryHelper
+              .find(recipeCategoryRepository, RecipeCategory.class, categoryId);
 
-      RecipeCategoryAssociation association =
-              RecipeCategoryAssociation.createWithRecipeCategory(category);
+      RecipeCategoryAssociation association = RecipeCategoryAssociation
+              .createWithRecipeCategory(category);
+
       associations.add(association);
     }
 

@@ -3,6 +3,7 @@ package source.code.controller.Category;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.Category.CategoryCreateDto;
 import source.code.dto.response.CategoryResponseDto;
@@ -22,38 +23,43 @@ public class CategoryController {
   }
 
   @GetMapping("/{categoryType}")
-  public List<CategoryResponseDto> getAllCategories(@PathVariable CategoryType categoryType) {
+  public ResponseEntity<List<CategoryResponseDto>>getAllCategories(@PathVariable CategoryType categoryType) {
     CategoryService categoryService = categorySelectorService.getService(categoryType);
-    return categoryService.getAllCategories();
+    List<CategoryResponseDto> dto = categoryService.getAllCategories();
+    return ResponseEntity.ok(dto);
   }
 
   @GetMapping("/{categoryType}/{id}")
-  public CategoryResponseDto getCategory(@PathVariable CategoryType categoryType, @PathVariable int id) {
+  public ResponseEntity<CategoryResponseDto> getCategory(@PathVariable CategoryType categoryType, @PathVariable int id) {
     CategoryService categoryService = categorySelectorService.getService(categoryType);
-    return categoryService.getCategory(id);
+    CategoryResponseDto dto = categoryService.getCategory(id);
+    return ResponseEntity.ok(dto);
   }
 
   @PostMapping("/{categoryType}")
-  public CategoryResponseDto createCategory(@PathVariable CategoryType categoryType,
+  public ResponseEntity<CategoryResponseDto> createCategory(@PathVariable CategoryType categoryType,
                                             @RequestBody CategoryCreateDto request) {
     CategoryService categoryService = categorySelectorService.getService(categoryType);
-    return categoryService.createCategory(request);
+    CategoryResponseDto dto = categoryService.createCategory(request);
+    return ResponseEntity.ok(dto);
   }
 
   @PutMapping("/{categoryType}/{id}")
-  public CategoryResponseDto updateCategory(@PathVariable CategoryType categoryType,
+  public ResponseEntity<CategoryResponseDto> updateCategory(@PathVariable CategoryType categoryType,
                                             @PathVariable int id,
                                             @RequestBody JsonMergePatch patch)
           throws JsonProcessingException, JsonPatchException {
 
     CategoryService categoryService = categorySelectorService.getService(categoryType);
     categoryService.updateCategory(id, patch);
-    return categoryService.getCategory(id);
+    CategoryResponseDto dto = categoryService.getCategory(id);
+    return ResponseEntity.ok(dto);
   }
 
   @DeleteMapping("/{categoryType}/{id}")
-  public void deleteCategory(@PathVariable CategoryType categoryType, @PathVariable int id) {
+  public ResponseEntity<Void> deleteCategory(@PathVariable CategoryType categoryType, @PathVariable int id) {
     CategoryService categoryService = categorySelectorService.getService(categoryType);
     categoryService.deleteCategory(id);
+    return ResponseEntity.ok().build();
   }
 }

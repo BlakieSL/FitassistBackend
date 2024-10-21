@@ -44,7 +44,7 @@ public class MediaServiceImpl implements MediaService {
   public List<MediaResponseDto> getAllMediaForParent(int parentId, short parentType) {
     return mediaRepository.findByParentIdAndParentType(parentId, parentType).stream()
             .map(mediaMapper::toDto)
-            .collect(Collectors.toList());
+            .toList();
   }
 
   public MediaResponseDto getFirstMediaForParent(int parentId, short parentType) {
