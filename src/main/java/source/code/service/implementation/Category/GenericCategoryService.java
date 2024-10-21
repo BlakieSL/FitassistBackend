@@ -13,6 +13,8 @@ import source.code.cache.event.Category.CategoryCreateCacheEvent;
 import source.code.dto.request.Category.CategoryCreateDto;
 import source.code.dto.request.Category.CategoryUpdateDto;
 import source.code.dto.response.CategoryResponseDto;
+import source.code.exception.RecordNotFoundException;
+import source.code.service.declaration.Helpers.GenericRepositoryHelper;
 import source.code.service.declaration.Helpers.JsonPatchService;
 import source.code.service.declaration.Helpers.ValidationService;
 import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
@@ -25,12 +27,11 @@ import java.util.stream.Collectors;
 
 public abstract class GenericCategoryService<T> {
   protected final ValidationService validationService;
-  protected final JsonPatchService jsonPatchService;
+  protected final JsonPatchService jsonPatchService ;
   protected final ApplicationEventPublisher applicationEventPublisher;
   protected final CacheManager cacheManager;
   protected final JpaRepository<T, Integer> repository;
   protected final BaseMapper<T> mapper;
-
   protected GenericCategoryService(ValidationService validationService,
                                    JsonPatchServiceImpl jsonPatchService,
                                    ApplicationEventPublisher applicationEventPublisher,
@@ -83,7 +84,7 @@ public abstract class GenericCategoryService<T> {
     return getCachedCategories(cacheKey)
             .orElseGet(() -> {
               List<T> categories = repository.findAll();
-              List<CategoryResponseDto> categoryResponseDtos = categories.stream()
+              List<CategoryResponseDto> categoryResponseDtos = repository.findAll().stream()
                       .map(mapper::toResponseDto)
                       .collect(Collectors.toList());
 
@@ -97,6 +98,11 @@ public abstract class GenericCategoryService<T> {
   public CategoryResponseDto getCategory(int categoryId) {
     T category = getCategoryOrThrow(categoryId);
     return mapper.toResponseDto(category);
+  }
+
+  private T getCategoryOrThrow(int categoryId) {
+    return repository.findById(categoryId)
+            .orElseThrow(() -> new RecordNotFoundException(getSubClassName(), categoryId));
   }
 
   private CategoryUpdateDto applyPatchToCategory(T category, JsonMergePatch patch)
@@ -119,13 +125,6 @@ public abstract class GenericCategoryService<T> {
     }
 
     return Optional.empty();
-  }
-
-
-  private T getCategoryOrThrow(int categoryId) {
-    return repository.findById(categoryId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    getSubClassName() + " with id: " + categoryId + " not found"));
   }
 
   private String getSubClassName() {
