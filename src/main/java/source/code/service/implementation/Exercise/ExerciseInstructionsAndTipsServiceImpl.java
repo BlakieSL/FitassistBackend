@@ -32,13 +32,13 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
   public List<ExerciseInstructionResponseDto> getExerciseInstructions(int exerciseId) {
     return exerciseInstructionRepository.getAllByExerciseId(exerciseId).stream()
             .map(exerciseMapper::toInstructionDto)
-            .collect(Collectors.toList());
+            .toList();
   }
 
   @Cacheable(value = "exerciseTips", key = "#exerciseId")
   public List<ExerciseTipResponseDto> getExerciseTips(int exerciseId) {
     return exerciseTipRepository.getAllByExerciseId(exerciseId).stream()
             .map(exerciseMapper::toTipDto)
-            .collect(Collectors.toList());
+            .toList();
   }
 }

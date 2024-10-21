@@ -10,6 +10,7 @@ import source.code.dto.response.ExerciseResponseDto;
 import source.code.dto.response.ExerciseTipResponseDto;
 import source.code.model.Exercise.*;
 import source.code.repository.*;
+import source.code.service.declaration.Helpers.RepositoryHelper;
 
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +19,8 @@ import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public abstract class ExerciseMapper {
+  @Autowired
+  private RepositoryHelper repositoryHelper;
 
   @Autowired
   private ExerciseCategoryRepository exerciseCategoryRepository;
@@ -81,12 +84,12 @@ public abstract class ExerciseMapper {
     Set<ExerciseCategoryAssociation> associations = new HashSet<>();
 
     for (Integer categoryId : categoryIds) {
-      ExerciseCategory category = exerciseCategoryRepository.findById(categoryId)
-              .orElseThrow(() -> new NoSuchElementException(
-                      "Category not found for id: " + categoryId));
+      ExerciseCategory category = repositoryHelper
+              .find(exerciseCategoryRepository, ExerciseCategory.class, categoryId);
 
-      ExerciseCategoryAssociation association =
-              ExerciseCategoryAssociation.createWithExerciseCategory(category);
+      ExerciseCategoryAssociation association = ExerciseCategoryAssociation
+              .createWithExerciseCategory(category);
+
       associations.add(association);
     }
 
@@ -130,31 +133,26 @@ public abstract class ExerciseMapper {
 
   @Named("mapExpertiseLevel")
   protected ExpertiseLevel mapExpertiseLevel(Integer expertiseLevelId) {
-    return expertiseLevelRepository.findById(expertiseLevelId)
-            .orElseThrow(() -> new NoSuchElementException("Expertise Level not found for id: " + expertiseLevelId));
+    return repositoryHelper.find(expertiseLevelRepository, ExpertiseLevel.class, expertiseLevelId);
   }
 
   @Named("mapMechanicsType")
   protected MechanicsType mapMechanicsType(Integer mechanicsTypeId) {
-    return mechanicsTypeRepository.findById(mechanicsTypeId)
-            .orElseThrow(() -> new NoSuchElementException("Mechanics Type not found for id: " + mechanicsTypeId));
+    return repositoryHelper.find(mechanicsTypeRepository, MechanicsType.class, mechanicsTypeId);
   }
 
   @Named("mapForceType")
   protected ForceType mapForceType(Integer forceTypeId) {
-    return forceTypeRepository.findById(forceTypeId)
-            .orElseThrow(() -> new NoSuchElementException("Force Type not found for id: " + forceTypeId));
+    return repositoryHelper.find(forceTypeRepository, ForceType.class, forceTypeId);
   }
 
   @Named("mapExerciseEquipment")
   protected ExerciseEquipment mapExerciseEquipment(Integer exerciseEquipmentId) {
-    return exerciseEquipmentRepository.findById(exerciseEquipmentId)
-            .orElseThrow(() -> new NoSuchElementException("Exercise Equipment not found for id: " + exerciseEquipmentId));
+    return repositoryHelper.find(exerciseEquipmentRepository, ExerciseEquipment.class, exerciseEquipmentId);
   }
 
   @Named("mapExerciseType")
   protected ExerciseType mapExerciseType(Integer exerciseTypeId) {
-    return exerciseTypeRepository.findById(exerciseTypeId)
-            .orElseThrow(() -> new NoSuchElementException("Exercise Type not found for id: " + exerciseTypeId));
+    return repositoryHelper.find(exerciseTypeRepository, ExerciseType.class, exerciseTypeId);
   }
 }

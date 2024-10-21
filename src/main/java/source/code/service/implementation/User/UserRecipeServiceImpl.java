@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.dto.response.RecipeResponseDto;
 import source.code.exception.NotUniqueRecordException;
+import source.code.exception.RecordNotFoundException;
 import source.code.mapper.Recipe.RecipeMapper;
 import source.code.model.Recipe.Recipe;
 import source.code.model.User.User;
@@ -12,90 +13,62 @@ import source.code.model.User.UserRecipe;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
+import source.code.service.declaration.User.SavedService;
 import source.code.service.declaration.User.UserRecipeService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-@Service
-public class UserRecipeServiceImpl implements UserRecipeService {
-  private final UserRecipeRepository userRecipeRepository;
-  private final RecipeRepository recipeRepository;
-  private final UserRepository userRepository;
-  private final RecipeMapper recipeMapper;
+@Service("userRecipeService")
+public class UserRecipeServiceImpl
+        extends GenericSavedService<Recipe, UserRecipe, RecipeResponseDto>
+        implements SavedService {
+
 
   public UserRecipeServiceImpl(UserRecipeRepository userRecipeRepository,
                                RecipeRepository recipeRepository,
                                UserRepository userRepository,
                                RecipeMapper recipeMapper) {
-    this.userRecipeRepository = userRecipeRepository;
-    this.recipeRepository = recipeRepository;
-    this.userRepository = userRepository;
-    this.recipeMapper = recipeMapper;
+    super(userRepository, recipeRepository, userRecipeRepository, recipeMapper::toResponseDto);
   }
 
-  @Transactional
-  public void saveRecipeToUser(int userId, int recipeId, short type) {
-    if (isAlreadySaved(userId, recipeId, type)) {
-      throw new NotUniqueRecordException(
-              "User with id: " + userId
-                      + " already has recipe with id: " + recipeId
-                      + " and type: " + type);
-    }
 
-    User user = userRepository
-            .findById(userId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "User with id: " + userId + " not found"));
-
-    Recipe recipe = recipeRepository
-            .findById(recipeId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Recipe with id: " + recipeId + " not found"));
-
-    UserRecipe userRecipe =
-            UserRecipe.createWithUserRecipeType(user, recipe, type);
-    userRecipeRepository.save(userRecipe);
+  @Override
+  protected boolean isAlreadySaved(int userId, int entityId, short type) {
+    return ((UserRecipeRepository) userEntityRepository)
+            .existsByUserIdAndRecipeIdAndType(userId, entityId,type);
   }
 
-  @Transactional
-  public void deleteSavedRecipeFromUser(int recipeId, int userId, short type) {
-    UserRecipe userRecipe = userRecipeRepository
+  @Override
+  protected UserRecipe createUserEntity(User user, Recipe entity, short type) {
+    return UserRecipe.createWithUserRecipeType(user, entity, type);
+  }
+
+  @Override
+  protected UserRecipe findUserEntity(int userId, int recipeId, short type) {
+    return ((UserRecipeRepository) userEntityRepository)
             .findByUserIdAndRecipeIdAndType(userId, recipeId, type)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "UserRecipe with user id: " + userId
-                            + ", recipe id: " + recipeId
-                            + " and type: " + type + " not found"));
-
-    userRecipeRepository.delete(userRecipe);
+            .orElseThrow(() -> new RecordNotFoundException("UserRecipe", userId, recipeId, type));
   }
 
-  public List<RecipeResponseDto> getRecipesByUserAndType(int userId, short type) {
-    List<UserRecipe> userRecipes = userRecipeRepository.findByUserIdAndType(userId, type);
-
-    List<Recipe> recipes = userRecipes.stream()
-            .map(UserRecipe::getRecipe)
-            .collect(Collectors.toList());
-
-    return recipes.stream()
-            .map(recipeMapper::toResponseDto)
-            .collect(Collectors.toList());
+  @Override
+  protected List<UserRecipe> findAllByUserAndType(int userId, short type) {
+    return ((UserRecipeRepository) userEntityRepository).findByUserIdAndType(userId, type);
   }
 
-  public LikesAndSavesResponseDto calculateRecipeLikesAndSaves(int recipeId) {
-    recipeRepository.findById(recipeId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Recipe with id: " + recipeId + " not found"));
-
-    long saves = userRecipeRepository.countByRecipeIdAndType(recipeId, (short) 1);
-    long likes = userRecipeRepository.countByRecipeIdAndType(recipeId, (short) 2);
-
-    return new LikesAndSavesResponseDto(likes, saves);
+  @Override
+  protected Recipe extractEntity(UserRecipe userRecipe) {
+    return userRecipe.getRecipe();
   }
 
-  private boolean isAlreadySaved(int userId, int recipeId, short type) {
-    return userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type);
+  @Override
+  protected long countSaves(int recipeId) {
+    return ((UserRecipeRepository) userEntityRepository).countByRecipeIdAndType(recipeId, (short) 1);
   }
 
+  @Override
+  protected long countLikes(int recipeId) {
+    return ((UserRecipeRepository) userEntityRepository).countByRecipeIdAndType(recipeId, (short) 2);
+  }
 }
