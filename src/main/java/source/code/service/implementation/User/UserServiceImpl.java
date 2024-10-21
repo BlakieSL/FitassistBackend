@@ -126,7 +126,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return findUserCredentialsByEmail(username)
             .map(UserDetailsHelper::buildUserDetails)
-            .orElseThrow(() -> new RecordNotFoundException("User", username));
+            .orElseThrow(() -> new RecordNotFoundException(User.class, username));
   }
 
   private Optional<UserCredentialsDto> findUserCredentialsByEmail(String email) {
@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   public int getUserIdByEmail(String email) {
     return userRepository.findByEmail(email)
             .map(User::getId)
-            .orElseThrow(() -> new RecordNotFoundException("User", email));
+            .orElseThrow(() -> new RecordNotFoundException(User.class, email));
   }
 
   private User find(int userId) {

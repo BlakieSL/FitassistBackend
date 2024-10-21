@@ -50,7 +50,7 @@ public class MediaServiceImpl implements MediaService {
   public MediaResponseDto getFirstMediaForParent(int parentId, short parentType) {
     Media media = mediaRepository
             .findFirstByParentIdAndParentTypeOrderByIdAsc(parentId, parentType)
-            .orElseThrow(() -> new RecordNotFoundException("Media", parentId, parentType));
+            .orElseThrow(() -> new RecordNotFoundException(Media.class, parentId, parentType));
 
     return mediaMapper.toDto(media);
   }

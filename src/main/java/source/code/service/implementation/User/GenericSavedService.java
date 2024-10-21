@@ -17,15 +17,17 @@ public abstract class GenericSavedService<T, U, R> {
   protected final JpaRepository<T, Integer> entityRepository;
   protected final JpaRepository<U, Integer> userEntityRepository;
   protected final Function<T, R> map;
-
+  protected final Class<T> entityType;
   public GenericSavedService(UserRepository userRepository,
                              JpaRepository<T, Integer> entityRepository,
                              JpaRepository<U, Integer> userEntityRepository,
-                             Function<T, R> map) {
+                             Function<T, R> map,
+                             Class<T> entityType) {
     this.userRepository = userRepository;
     this.entityRepository = entityRepository;
     this.userEntityRepository = userEntityRepository;
     this.map = map;
+    this.entityType = entityType;
   }
 
   @Transactional
@@ -38,10 +40,10 @@ public abstract class GenericSavedService<T, U, R> {
     }
 
     User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RecordNotFoundException("User", userId));
+            .orElseThrow(() -> new RecordNotFoundException(User.class, userId));
 
     T entity = entityRepository.findById(entityId)
-            .orElseThrow(() -> new RecordNotFoundException("Entity", entityId));
+            .orElseThrow(() -> new RecordNotFoundException(entityType, entityId));
 
     U userEntity = createUserEntity(user, entity, type);
     userEntityRepository.save(userEntity);
@@ -62,7 +64,7 @@ public abstract class GenericSavedService<T, U, R> {
 
   public LikesAndSavesResponseDto calculateLikesAndSaves(int entityId) {
     entityRepository.findById(entityId)
-            .orElseThrow(() -> new RecordNotFoundException("Entity", entityId));
+            .orElseThrow(() -> new RecordNotFoundException(entityType, entityId));
 
     long saves = countSaves(entityId);
     long likes = countLikes(entityId);
