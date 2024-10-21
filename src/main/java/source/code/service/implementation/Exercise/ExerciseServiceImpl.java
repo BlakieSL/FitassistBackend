@@ -15,6 +15,7 @@ import source.code.dto.request.Exercise.ExerciseUpdateDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ExerciseResponseDto;
 import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.RepositoryHelper;
 import source.code.service.declaration.Helpers.ValidationService;
 import source.code.helper.enumerators.ExerciseField;
 import source.code.mapper.Exercise.ExerciseMapper;
@@ -24,19 +25,17 @@ import source.code.service.declaration.Exercise.ExerciseService;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
 public class ExerciseServiceImpl implements ExerciseService {
-  private final ExerciseMapper exerciseMapper;
   private final ValidationService validationService;
   private final JsonPatchService jsonPatchService;
   private final ApplicationEventPublisher applicationEventPublisher;
+  private final ExerciseMapper exerciseMapper;
+  private final RepositoryHelper repositoryHelper;
   private final ExerciseRepository exerciseRepository;
-  private final UserExerciseRepository userExerciseRepository;
-  private final ExerciseCategoryRepository exerciseCategoryRepository;
   private final ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository;
 
   private static final Map<ExerciseField, Function<Exercise, Integer>> fieldExtractorMap = Map.of(
@@ -50,17 +49,15 @@ public class ExerciseServiceImpl implements ExerciseService {
                              ValidationService validationService,
                              JsonPatchService jsonPatchService,
                              ApplicationEventPublisher applicationEventPublisher,
+                             RepositoryHelper repositoryHelper,
                              ExerciseRepository exerciseRepository,
-                             UserExerciseRepository userExerciseRepository,
-                             ExerciseCategoryRepository exerciseCategoryRepository,
                              ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository) {
     this.exerciseMapper = exerciseMapper;
     this.validationService = validationService;
     this.jsonPatchService = jsonPatchService;
     this.applicationEventPublisher = applicationEventPublisher;
+    this.repositoryHelper = repositoryHelper;
     this.exerciseRepository = exerciseRepository;
-    this.userExerciseRepository = userExerciseRepository;
-    this.exerciseCategoryRepository = exerciseCategoryRepository;
     this.exerciseCategoryAssociationRepository = exerciseCategoryAssociationRepository;
   }
 
@@ -76,7 +73,7 @@ public class ExerciseServiceImpl implements ExerciseService {
   public void updateExercise(int exerciseId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
 
-    Exercise exercise = getExerciseOrThrow(exerciseId);
+    Exercise exercise = find(exerciseId);
     ExerciseUpdateDto patchedExerciseUpdateDto = applyPatchToExercise(exercise, patch);
 
     validationService.validate(patchedExerciseUpdateDto);
@@ -89,7 +86,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
   @Transactional
   public void deleteExercise(int exerciseId) {
-    Exercise exercise = getExerciseOrThrow(exerciseId);
+    Exercise exercise = find(exerciseId);
     exerciseRepository.delete(exercise);
 
     applicationEventPublisher.publishEvent(new ExerciseDeleteEvent(this, exercise));
@@ -97,39 +94,28 @@ public class ExerciseServiceImpl implements ExerciseService {
 
 
   public List<ExerciseResponseDto> searchExercises(SearchRequestDto dto) {
-    List<Exercise> exercises = exerciseRepository.findByNameContainingIgnoreCase(dto.getName());
-
-    return exercises.stream()
+    return exerciseRepository.findByNameContainingIgnoreCase(dto.getName()).stream()
             .map(exerciseMapper::toResponseDto)
             .collect(Collectors.toList());
   }
 
   @Cacheable(value = "exercises", key = "#id")
-  public ExerciseResponseDto getExercise(int id) {
-    Exercise exercise = getExerciseOrThrow(id);
+  public ExerciseResponseDto getExercise(int exerciseId) {
+    Exercise exercise = find(exerciseId);
     return exerciseMapper.toResponseDto(exercise);
   }
 
   @Cacheable(value = "allExercises")
   public List<ExerciseResponseDto> getAllExercises() {
-    List<Exercise> exercises = exerciseRepository.findAll();
-    return exercises.stream()
-            .map(exerciseMapper::toResponseDto)
-            .collect(Collectors.toList());
+    return repositoryHelper.findAll(exerciseRepository, exerciseMapper::toResponseDto);
   }
 
   @Cacheable(value = "exercisesByCategory", key = "#categoryId")
   public List<ExerciseResponseDto> getExercisesByCategory(int categoryId) {
-    List<ExerciseCategoryAssociation> exerciseCategoryAssociations =
-            exerciseCategoryAssociationRepository.findByExerciseCategoryId(categoryId);
-
-    List<Exercise> exercises = exerciseCategoryAssociations.stream()
+    return exerciseCategoryAssociationRepository.findByExerciseCategoryId(categoryId).stream()
             .map(ExerciseCategoryAssociation::getExercise)
-            .collect(Collectors.toList());
-
-    return exercises.stream()
             .map(exerciseMapper::toResponseDto)
-            .collect(Collectors.toList());
+            .toList();
   }
 
   @Cacheable(value = "exercisesByField", key = "#field.name() + '_' + #value")
@@ -145,10 +131,8 @@ public class ExerciseServiceImpl implements ExerciseService {
             .collect(Collectors.toList());
   }
 
-  private Exercise getExerciseOrThrow(int exerciseId) {
-    return exerciseRepository.findById(exerciseId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Exercise with id: " + exerciseId + " not found"));
+  private Exercise find(int exerciseId) {
+    return repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId);
   }
 
   private ExerciseUpdateDto applyPatchToExercise(Exercise exercise, JsonMergePatch patch)

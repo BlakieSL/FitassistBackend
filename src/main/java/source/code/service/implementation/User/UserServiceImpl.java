@@ -18,7 +18,9 @@ import source.code.dto.other.UserCredentialsDto;
 import source.code.dto.request.UserCreateDto;
 import source.code.dto.request.UserUpdateDto;
 import source.code.dto.response.UserResponseDto;
+import source.code.exception.RecordNotFoundException;
 import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.RepositoryHelper;
 import source.code.service.declaration.Helpers.ValidationService;
 import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
 import source.code.helper.UserDetailsHelper;
@@ -37,6 +39,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   private final JsonPatchService jsonPatchService;
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
+  private final RepositoryHelper repositoryHelper;
   private final UserRepository userRepository;
 
   public UserServiceImpl(ApplicationEventPublisher applicationEventPublisher,
@@ -44,13 +47,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                          UserMapper userMapper,
                          ValidationService validationService,
                          JsonPatchServiceImpl jsonPatchService,
-                         PasswordEncoder passwordEncoder) {
+                         PasswordEncoder passwordEncoder,
+                         RepositoryHelper repositoryHelper) {
     this.applicationEventPublisher = applicationEventPublisher;
     this.userRepository = userRepository;
     this.userMapper = userMapper;
     this.validationService = validationService;
     this.jsonPatchService = jsonPatchService;
     this.passwordEncoder = passwordEncoder;
+    this.repositoryHelper = repositoryHelper;
   }
 
   @Transactional
@@ -68,10 +73,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
   @Transactional
   public void deleteUser(int id) {
-    User user = userRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "User with id: " + id + " not found"));
-
+    User user = find(id);
     userRepository.delete(user);
 
     applicationEventPublisher.publishEvent(new UserDeleteEvent(this, user));
@@ -81,24 +83,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   public void updateUser(int userId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
 
-    User user = getUserOrThrow(userId);
-
+    User user = find(userId);
     UserUpdateDto patchedUserUpdateDto = applyPatchToUser(patch, userId);
 
     validatePasswordIfNeeded(user, patchedUserUpdateDto);
-
     validationService.validate(patchedUserUpdateDto);
 
     userMapper.updateUserFromDto(user, patchedUserUpdateDto);
     User savedUser = userRepository.save(user);
 
     applicationEventPublisher.publishEvent(new UserUpdateEvent(this, savedUser));
-  }
-
-  private User getUserOrThrow(int userId) {
-    return userRepository.findById(userId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "User with id: " + userId + " not found"));
   }
 
   private UserUpdateDto applyPatchToUser(JsonMergePatch patch, int userId)
@@ -132,8 +126,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return findUserCredentialsByEmail(username)
             .map(UserDetailsHelper::buildUserDetails)
-            .orElseThrow(() -> new UsernameNotFoundException(
-                    "User " + username + " not found"));
+            .orElseThrow(() -> new RecordNotFoundException("User", username));
   }
 
   private Optional<UserCredentialsDto> findUserCredentialsByEmail(String email) {
@@ -142,8 +135,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
   @Cacheable(value = {"userById"}, key = "#userId")
   public UserResponseDto getUser(int userId) {
-    User user = getUserOrThrow(userId);
-
+    User user = find(userId);
     return userMapper.toResponse(user);
   }
 
@@ -151,7 +143,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   public int getUserIdByEmail(String email) {
     return userRepository.findByEmail(email)
             .map(User::getId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "User with email: " + email + " not found"));
+            .orElseThrow(() -> new RecordNotFoundException("User", email));
+  }
+
+  private User find(int userId) {
+    return repositoryHelper.find(userRepository, User.class, userId);
   }
 }
