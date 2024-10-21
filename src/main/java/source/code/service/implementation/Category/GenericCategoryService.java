@@ -100,7 +100,7 @@ public abstract class GenericCategoryService<T> {
 
   private T getCategoryOrThrow(int categoryId) {
     return repository.findById(categoryId)
-            .orElseThrow(() -> new RecordNotFoundException(getSubClassName(), categoryId));
+            .orElseThrow(() -> new RecordNotFoundException(getClass(), categoryId));
   }
 
   private CategoryUpdateDto applyPatchToCategory(T category, JsonMergePatch patch)
