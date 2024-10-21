@@ -6,7 +6,7 @@ import source.code.model.User.UserPlan;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserPlanRepository extends JpaRepository<UserPlan, Long> {
+public interface UserPlanRepository extends JpaRepository<UserPlan, Integer> {
   List<UserPlan> findByUserId(int userId);
 
   List<UserPlan> findByUserIdAndType(int userId, short type);

@@ -91,7 +91,7 @@ public class FoodServiceImpl implements FoodService {
   public List<FoodResponseDto> searchFoods(SearchRequestDto request) {
     return foodRepository.findAllByNameContainingIgnoreCase(request.getName()).stream()
             .map(foodMapper::toResponseDto)
-            .collect(Collectors.toList());
+            .toList();
   }
 
   @Cacheable(value = {"foods"}, key = "#id")
@@ -109,7 +109,7 @@ public class FoodServiceImpl implements FoodService {
   public List<FoodResponseDto> getFoodsByCategory(int categoryId) {
     return foodRepository.findAllByFoodCategory_Id(categoryId).stream()
             .map(foodMapper::toResponseDto)
-            .collect(Collectors.toList());
+            .toList();
   }
 
   private Food find(int foodId) {

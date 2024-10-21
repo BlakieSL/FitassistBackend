@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.response.ActivityResponseDto;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
+import source.code.exception.RecordNotFoundException;
 import source.code.mapper.Activity.ActivityMapper;
 import source.code.model.Activity.Activity;
 import source.code.model.User.User;
@@ -12,90 +13,60 @@ import source.code.model.User.UserActivity;
 import source.code.repository.ActivityRepository;
 import source.code.repository.UserActivityRepository;
 import source.code.repository.UserRepository;
+import source.code.service.declaration.User.SavedService;
 import source.code.service.declaration.User.UserActivityService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-@Service
-public class UserActivityServiceImpl implements UserActivityService {
-  private final UserActivityRepository userActivityRepository;
-  private final ActivityRepository activityRepository;
-  private final UserRepository userRepository;
-  private final ActivityMapper activityMapper;
+@Service("userActivityService")
+public class UserActivityServiceImpl
+        extends GenericSavedService<Activity, UserActivity, ActivityResponseDto>
+        implements SavedService {
 
-  public UserActivityServiceImpl(
-          UserActivityRepository userActivityRepository,
-          ActivityRepository activityRepository,
-          UserRepository userRepository,
-          ActivityMapper activityMapper) {
-    this.userActivityRepository = userActivityRepository;
-    this.activityRepository = activityRepository;
-    this.userRepository = userRepository;
-    this.activityMapper = activityMapper;
+  public UserActivityServiceImpl(UserActivityRepository userActivityRepository,
+                                 ActivityRepository activityRepository,
+                                 UserRepository userRepository,
+                                 ActivityMapper activityMapper) {
+    super(userRepository, activityRepository, userActivityRepository, activityMapper::toResponseDto);
   }
 
-  @Transactional
-  public void saveActivityToUser(int userId, int activityId, short type) {
-    if (isAlreadySaved(userId, activityId, type)) {
-      throw new NotUniqueRecordException(
-              "User with id: " + userId
-                      + " already has activity with id: " + activityId
-                      + " and type: " + type);
-    }
-
-    User user = userRepository
-            .findById(userId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "User with id: " + userId + " not found"));
-
-    Activity activity = activityRepository
-            .findById(activityId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Activity with id: " + activityId + " not found"));
-
-    UserActivity userActivity =
-            UserActivity.createWithUserActivityType(user, activity, type);
-    userActivityRepository.save(userActivity);
+  @Override
+  protected boolean isAlreadySaved(int userId, int activityId, short type) {
+    return ((UserActivityRepository) userEntityRepository)
+            .existsByUserIdAndActivityIdAndType(userId, activityId, type);
   }
 
-  @Transactional
-  public void deleteSavedActivityFromUser(int activityId, int userId, short type) {
-    UserActivity userActivity = userActivityRepository
+  @Override
+  protected UserActivity createUserEntity(User user, Activity entity, short type) {
+    return UserActivity.createWithUserActivityType(user, entity, type);
+  }
+
+  @Override
+  protected UserActivity findUserEntity(int userId, int activityId, short type) {
+    return ((UserActivityRepository) userEntityRepository)
             .findByUserIdAndActivityIdAndType(userId, activityId, type)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "UserActivity with user id: " + userId
-                            + ", activity id: " + activityId
-                            + " and type: " + type + " not found"));
-
-    userActivityRepository.delete(userActivity);
+            .orElseThrow(() -> new RecordNotFoundException("UserActivity", userId, activityId, type));
   }
 
-  public List<ActivityResponseDto> getActivitiesByUserAndType(int userId, short type) {
-    List<UserActivity> userActivities = userActivityRepository.findByUserIdAndType(userId, type);
-
-    List<Activity> activities = userActivities.stream()
-            .map(UserActivity::getActivity)
-            .collect(Collectors.toList());
-
-    return activities.stream()
-            .map(activityMapper::toResponseDto)
-            .collect(Collectors.toList());
+  @Override
+  protected List<UserActivity> findAllByUserAndType(int userId, short type) {
+    return ((UserActivityRepository) userEntityRepository).findByUserIdAndType(userId, type);
   }
 
-  public LikesAndSavesResponseDto calculateActivityLikesAndSaves(int activityId) {
-    activityRepository.findById(activityId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Activity with id: " + activityId + " not found"));
-
-    long saves = userActivityRepository.countByActivityIdAndType(activityId, (short) 1);
-    long likes = userActivityRepository.countByActivityIdAndType(activityId, (short) 2);
-
-    return new LikesAndSavesResponseDto(likes, saves);
+  @Override
+  protected Activity extractEntity(UserActivity userActivity) {
+    return userActivity.getActivity();
   }
 
-  private boolean isAlreadySaved(int userId, int activityId, short type) {
-    return userActivityRepository.existsByUserIdAndActivityIdAndType(userId, activityId, type);
+  @Override
+  protected long countSaves(int activityId) {
+    return ((UserActivityRepository) userEntityRepository).countByActivityIdAndType(activityId, (short) 1);
+  }
+
+  @Override
+  protected long countLikes(int activityId) {
+    return ((UserActivityRepository) userEntityRepository).countByActivityIdAndType(activityId, (short) 2);
   }
 }

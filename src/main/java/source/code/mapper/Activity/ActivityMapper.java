@@ -7,6 +7,7 @@ import source.code.dto.request.Activity.ActivityUpdateDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.ActivityResponseDto;
 import source.code.service.declaration.Helpers.CalculationsService;
+import source.code.service.declaration.Helpers.RepositoryHelper;
 import source.code.service.implementation.Helpers.CalculationsServiceImpl;
 import source.code.model.Activity.Activity;
 import source.code.model.Activity.ActivityCategory;
@@ -19,6 +20,9 @@ import java.util.NoSuchElementException;
 public abstract class ActivityMapper {
   @Autowired
   private ActivityCategoryRepository activityCategoryRepository;
+
+  @Autowired
+  private RepositoryHelper repositoryHelper;
 
   @Autowired
   private CalculationsService calculationsService;
@@ -55,8 +59,6 @@ public abstract class ActivityMapper {
 
   @Named("categoryIdToActivityCategory")
   protected ActivityCategory categoryIdToActivityCategory(int categoryId) {
-    return activityCategoryRepository.findById(categoryId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Activity category with id: " + categoryId + " not found"));
+    return repositoryHelper.find(activityCategoryRepository, ActivityCategory.class, categoryId);
   }
 }

@@ -96,7 +96,7 @@ public class ExerciseServiceImpl implements ExerciseService {
   public List<ExerciseResponseDto> searchExercises(SearchRequestDto dto) {
     return exerciseRepository.findByNameContainingIgnoreCase(dto.getName()).stream()
             .map(exerciseMapper::toResponseDto)
-            .collect(Collectors.toList());
+            .toList();
   }
 
   @Cacheable(value = "exercises", key = "#id")
@@ -128,7 +128,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     return exerciseRepository.findAll().stream()
             .filter(exercise -> fieldExtractor.apply(exercise).equals(value))
             .map(exerciseMapper::toResponseDto)
-            .collect(Collectors.toList());
+            .toList();
   }
 
   private Exercise find(int exerciseId) {

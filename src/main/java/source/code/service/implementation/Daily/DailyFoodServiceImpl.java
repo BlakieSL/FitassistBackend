@@ -108,7 +108,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 
     List<FoodCalculatedMacrosResponseDto> foods = dailyFood.getDailyFoodItems().stream()
             .map(dailyFoodMapper::toFoodCalculatedMacrosResponseDto)
-            .collect(Collectors.toList());
+            .toList();
 
     return dailyFoodMapper.toDailyFoodsResponseDto(foods);
   }

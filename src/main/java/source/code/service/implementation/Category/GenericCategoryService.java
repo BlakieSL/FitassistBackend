@@ -84,7 +84,7 @@ public abstract class GenericCategoryService<T> {
               List<T> categories = repository.findAll();
               List<CategoryResponseDto> categoryResponseDtos = repository.findAll().stream()
                       .map(mapper::toResponseDto)
-                      .collect(Collectors.toList());
+                      .toList();
 
               applicationEventPublisher.publishEvent(
                       new CategoryCreateCacheEvent(this, cacheKey, categoryResponseDtos));

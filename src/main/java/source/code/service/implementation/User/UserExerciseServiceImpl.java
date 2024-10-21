@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.response.ExerciseResponseDto;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
+import source.code.exception.RecordNotFoundException;
 import source.code.mapper.Exercise.ExerciseMapper;
 import source.code.model.Exercise.Exercise;
 import source.code.model.User.User;
@@ -12,93 +13,60 @@ import source.code.model.User.UserExercise;
 import source.code.repository.ExerciseRepository;
 import source.code.repository.UserExerciseRepository;
 import source.code.repository.UserRepository;
+import source.code.service.declaration.User.SavedService;
 import source.code.service.declaration.User.UserExerciseService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-@Service
-public class UserExerciseServiceImpl implements UserExerciseService {
-  private final UserExerciseRepository userExerciseRepository;
-  private final ExerciseRepository exerciseRepository;
-  private final UserRepository userRepository;
-  private final ExerciseMapper exerciseMapper;
+@Service("userExerciseService")
+public class UserExerciseServiceImpl
+        extends GenericSavedService<Exercise, UserExercise, ExerciseResponseDto>
+        implements SavedService {
 
-  public UserExerciseServiceImpl(
-          UserExerciseRepository userExerciseRepository,
-          ExerciseRepository exerciseRepository,
-          UserRepository userRepository,
-          ExerciseMapper exerciseMapper) {
-    this.userExerciseRepository = userExerciseRepository;
-    this.exerciseRepository = exerciseRepository;
-    this.userRepository = userRepository;
-    this.exerciseMapper = exerciseMapper;
+  public UserExerciseServiceImpl(UserExerciseRepository userExerciseRepository,
+                                 ExerciseRepository exerciseRepository,
+                                 UserRepository userRepository,
+                                 ExerciseMapper exerciseMapper) {
+    super(userRepository, exerciseRepository, userExerciseRepository, exerciseMapper::toResponseDto);
   }
 
-  @Transactional
-  public void saveExerciseToUser(int userId, int exerciseId,  short type) {
-    if (isAlreadySaved(userId, exerciseId, type)) {
-      throw new NotUniqueRecordException(
-              "User with id: " + userId
-                      + " already has exercise with id: " + exerciseId
-                      + " and type: " + type);
-    }
-
-    User user = userRepository
-            .findById(userId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "User with id: " + userId + " not found"));
-
-    Exercise exercise = exerciseRepository
-            .findById(exerciseId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Exercise with id: " + exerciseId + " not found"));
-
-    UserExercise userExercise = UserExercise
-            .createWithUserExerciseType(user, exercise, type);
-    userExerciseRepository.save(userExercise);
+  @Override
+  protected boolean isAlreadySaved(int userId, int exerciseId, short type) {
+    return ((UserExerciseRepository) userEntityRepository)
+            .existsByUserIdAndExerciseIdAndType(userId, exerciseId, type);
   }
 
-  @Transactional
-  public void deleteSavedExerciseFromUser(int exerciseId, int userId, short type) {
-    UserExercise userExercise = userExerciseRepository
+  @Override
+  protected UserExercise createUserEntity(User user, Exercise entity, short type) {
+    return UserExercise.createWithUserExerciseType(user, entity, type);
+  }
+
+  @Override
+  protected UserExercise findUserEntity(int userId, int exerciseId, short type) {
+    return ((UserExerciseRepository) userEntityRepository)
             .findByUserIdAndExerciseIdAndType(userId, exerciseId, type)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "UserExercise with user id: " + userId
-                            + ", exercise id: " + exerciseId
-                            + " and type: " + type + " not found"));
-
-    userExerciseRepository.delete(userExercise);
+            .orElseThrow(() -> new RecordNotFoundException("UserExercise", userId, exerciseId, type));
   }
 
-  public List<ExerciseResponseDto> getExercisesByUserAndType(int userId, short type) {
-    List<UserExercise> userExercises = userExerciseRepository.findByUserIdAndType(userId, type);
-
-    List<Exercise> exercises = userExercises
-            .stream()
-            .map(UserExercise::getExercise)
-            .collect(Collectors.toList());
-
-    return exercises
-            .stream()
-            .map(exerciseMapper::toResponseDto)
-            .collect(Collectors.toList());
+  @Override
+  protected List<UserExercise> findAllByUserAndType(int userId, short type) {
+    return ((UserExerciseRepository) userEntityRepository).findByUserIdAndType(userId, type);
   }
 
-  public LikesAndSavesResponseDto calculateExerciseLikesAndSaves(int exerciseId) {
-    exerciseRepository.findById(exerciseId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Exercise with id: " + exerciseId + " not found"));
-
-    long saves = userExerciseRepository.countByExerciseIdAndType(exerciseId, (short) 1);
-    long likes = userExerciseRepository.countByExerciseIdAndType(exerciseId, (short) 2);
-
-    return new LikesAndSavesResponseDto(likes, saves);
+  @Override
+  protected Exercise extractEntity(UserExercise userExercise) {
+    return userExercise.getExercise();
   }
 
-  private boolean isAlreadySaved(int userId, int exerciseId, short type) {
-    return userExerciseRepository.existsByUserIdAndExerciseIdAndType(userId, exerciseId, type);
+  @Override
+  protected long countSaves(int exerciseId) {
+    return ((UserExerciseRepository) userEntityRepository).countByExerciseIdAndType(exerciseId, (short) 1);
   }
 
+  @Override
+  protected long countLikes(int exerciseId) {
+    return ((UserExerciseRepository) userEntityRepository).countByExerciseIdAndType(exerciseId, (short) 2);
+  }
 }
