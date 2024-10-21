@@ -108,7 +108,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
   private RecipeFood find(int recipeId, int foodId) {
     return recipeFoodRepository
             .findByRecipeIdAndFoodId(recipeId, foodId)
-            .orElseThrow(() -> new RecordNotFoundException("RecipeFood", foodId, recipeId));
+            .orElseThrow(() -> new RecordNotFoundException(RecipeFood.class, foodId, recipeId));
   }
 
   private boolean isAlreadyAdded(int recipeId, int foodId) {

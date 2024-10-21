@@ -30,7 +30,11 @@ public class UserRecipeServiceImpl
                                RecipeRepository recipeRepository,
                                UserRepository userRepository,
                                RecipeMapper recipeMapper) {
-    super(userRepository, recipeRepository, userRecipeRepository, recipeMapper::toResponseDto);
+    super(userRepository,
+            recipeRepository,
+            userRecipeRepository,
+            recipeMapper::toResponseDto,
+            Recipe.class);
   }
 
 
@@ -49,7 +53,7 @@ public class UserRecipeServiceImpl
   protected UserRecipe findUserEntity(int userId, int recipeId, short type) {
     return ((UserRecipeRepository) userEntityRepository)
             .findByUserIdAndRecipeIdAndType(userId, recipeId, type)
-            .orElseThrow(() -> new RecordNotFoundException("UserRecipe", userId, recipeId, type));
+            .orElseThrow(() -> new RecordNotFoundException(UserRecipe.class, userId, recipeId, type));
   }
 
   @Override

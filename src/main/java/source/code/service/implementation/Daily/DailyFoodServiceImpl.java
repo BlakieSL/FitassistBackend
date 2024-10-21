@@ -150,7 +150,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 
   private DailyFoodItem getDailyFoodItem(int dailyFoodId, int foodId) {
     return dailyFoodItemRepository.findByDailyFoodIdAndFoodId(dailyFoodId, foodId)
-            .orElseThrow(() -> new RecordNotFoundException("DailyFoodItem", foodId));
+            .orElseThrow(() -> new RecordNotFoundException(DailyFoodItem.class, foodId));
   }
 
   private boolean existByDailyFoodAndItem(DailyFoodItem dailyFoodItem, DailyFood dailyFood) {
