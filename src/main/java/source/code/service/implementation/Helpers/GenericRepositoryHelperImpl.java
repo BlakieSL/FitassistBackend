@@ -9,24 +9,16 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class GenericRepositoryHelperImpl<T, R> implements GenericRepositoryHelper<T, R> {
-  private final JpaRepository<T, Integer> repository;
-  private final Class<T> entityType;
-
-  public GenericRepositoryHelperImpl(JpaRepository<T, Integer> repository,
-                                     Class<T> entityType) {
-    this.repository = repository;
-    this.entityType = entityType;
-  }
-
+@Component
+public class GenericRepositoryHelperImpl implements GenericRepositoryHelper {
   @Override
-  public T findByIdOrThrow(int id) {
+  public <T> T findById(JpaRepository<T, Integer> repository, Class<T> entityType, int id) {
     return repository.findById(id)
             .orElseThrow(() -> new RecordNotFoundException(entityType.getSimpleName(), id));
   }
 
   @Override
-  public List<R> findAll(Function<T,R> mapper) {
+  public <T, R> List<R> findAll(JpaRepository<T, Integer> repository, Function<T,R> mapper) {
     return repository.findAll().stream()
             .map(mapper)
             .collect(Collectors.toList());

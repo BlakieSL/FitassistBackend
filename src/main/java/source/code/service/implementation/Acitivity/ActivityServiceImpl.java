@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class ActivityServiceImpl implements ActivityService {
-  private final GenericRepositoryHelper<Activity, ActivityResponseDto> repositoryHelper;
+  private final GenericRepositoryHelper repositoryHelper;
   private final ActivityMapper activityMapper;
   private final ValidationService validationService;
   private final JsonPatchService jsonPatchService;
@@ -42,7 +42,7 @@ public class ActivityServiceImpl implements ActivityService {
   private final UserRepository userRepository;
 
   public ActivityServiceImpl(
-          GenericRepositoryHelper<Activity, ActivityResponseDto> repositoryHelper,
+          GenericRepositoryHelper repositoryHelper,
           ActivityMapper activityMapper,
           ValidationService validationService,
           JsonPatchService jsonPatchService,
@@ -69,7 +69,7 @@ public class ActivityServiceImpl implements ActivityService {
   @Transactional
   public void updateActivity(int activityId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
-    Activity activity = repositoryHelper.findByIdOrThrow(activityId);
+    Activity activity = repositoryHelper.findById(activityRepository, Activity.class, activityId);
     ActivityUpdateDto patchedActivityUpdateDto = applyPatchToActivity(activity, patch);
 
     validationService.validate(patchedActivityUpdateDto);
@@ -82,21 +82,17 @@ public class ActivityServiceImpl implements ActivityService {
 
   @Transactional
   public void deleteActivity(int activityId) {
-    Activity activity = repositoryHelper.findByIdOrThrow(activityId);
+    Activity activity = repositoryHelper.findById(activityRepository, Activity.class, activityId);
     activityRepository.delete(activity);
 
     publishEvent(new ActivityDeleteEvent(this, activity));
   }
 
   public ActivityCalculatedResponseDto calculateCaloriesBurned(
-          int activityId,
-          CalculateActivityCaloriesRequestDto request) {
+          int activityId, CalculateActivityCaloriesRequestDto request) {
 
-    User user = userRepository.findById(request.getUserId())
-            .orElseThrow(() -> new NoSuchElementException(
-                    "User with id: " + request.getUserId() + " not found"));
-
-    Activity activity = repositoryHelper.findByIdOrThrow(activityId);
+    User user = repositoryHelper.findById(userRepository, User.class, request.getUserId());
+    Activity activity = repositoryHelper.findById(activityRepository, Activity.class, activityId);
 
     return activityMapper.toCalculatedDto(activity, user, request.getTime());
   }
@@ -109,13 +105,13 @@ public class ActivityServiceImpl implements ActivityService {
 
   @Cacheable(value = "activities", key = "#id")
   public ActivityResponseDto getActivity(int activityId) {
-    Activity activity = repositoryHelper.findByIdOrThrow(activityId);
+    Activity activity = repositoryHelper.findById(activityRepository, Activity.class, activityId);
     return activityMapper.toResponseDto(activity);
   }
 
   @Cacheable(value = "allActivities")
   public List<ActivityResponseDto> getAllActivities() {
-    return repositoryHelper.findAll(activityMapper::toResponseDto);
+    return repositoryHelper.findAll(activityRepository, activityMapper::toResponseDto);
   }
 
   @Cacheable(value = "activitiesByCategory", key = "#categoryId")
