@@ -98,11 +98,6 @@ public class RecipeServiceImpl implements RecipeService {
     return repositoryHelper.findAll(recipeRepository, recipeMapper::toResponseDto);
   }
 
-  @Cacheable(value = {"allRecipeCategories"})
-  public List<RecipeCategoryResponseDto> getAllCategories() {
-    return repositoryHelper.findAll(recipeCategoryRepository, recipeMapper::toCategoryDto);
-  }
-
   @Cacheable(value = {"recipesByCategory"}, key = "#categoryId")
   public List<RecipeResponseDto> getRecipesByCategory(int categoryId) {
     return recipeCategoryAssociationRepository.findByRecipeCategoryId(categoryId).stream()

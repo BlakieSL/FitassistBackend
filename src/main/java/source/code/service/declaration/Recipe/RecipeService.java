@@ -20,7 +20,5 @@ public interface RecipeService {
 
   List<RecipeResponseDto> getAllRecipes();
 
-  List<RecipeCategoryResponseDto> getAllCategories();
-
   List<RecipeResponseDto> getRecipesByCategory(int categoryId);
 }
