@@ -11,6 +11,7 @@ import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.RepositoryHelper;
 import source.code.service.declaration.Helpers.ValidationService;
 import source.code.mapper.Food.DailyFoodMapper;
 import source.code.model.Food.DailyFood;
@@ -32,6 +33,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
   private final ValidationService validationService;
   private final JsonPatchService jsonPatchService;
   private final DailyFoodMapper dailyFoodMapper;
+  private final RepositoryHelper repositoryHelper;
   private final DailyFoodRepository dailyFoodRepository;
   private final DailyFoodItemRepository dailyFoodItemRepository;
   private final FoodRepository foodRepository;
@@ -39,6 +41,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 
   public DailyFoodServiceImpl(
           ValidationService validationService,
+          RepositoryHelper repositoryHelper,
           DailyFoodRepository dailyFoodRepository,
           FoodRepository foodRepository,
           UserRepository userRepository,
@@ -46,6 +49,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
           DailyFoodMapper dailyFoodMapper,
           DailyFoodItemRepository dailyFoodItemRepository) {
     this.validationService = validationService;
+    this.repositoryHelper = repositoryHelper;
     this.dailyFoodRepository = dailyFoodRepository;
     this.foodRepository = foodRepository;
     this.userRepository = userRepository;
@@ -68,7 +72,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
   @Transactional
   public void addFoodToDailyFoodItem(int userId, int foodId, DailyFoodItemCreateDto dto) {
     DailyFood dailyFood = getOrCreateDailyFoodForUser(userId);
-    Food food = getFood(foodId);
+    Food food = repositoryHelper.find(foodRepository, Food.class, foodId);
 
     DailyFoodItem dailyFoodItem = getOrCreateDailyFoodItem(dailyFood, food, dto.getAmount());
     updateOrAddDailyFoodItem(dailyFood, dailyFoodItem);
@@ -132,9 +136,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 
   @Transactional
   public DailyFood createDailyFood(int userId) {
-    User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RecordNotFoundException("User", userId));
-
+    User user = repositoryHelper.find(userRepository, User.class, userId);
     return dailyFoodRepository.save(DailyFood.createForToday(user));
   }
 
@@ -149,11 +151,6 @@ public class DailyFoodServiceImpl implements DailyFoodService {
   private DailyFoodItem getDailyFoodItem(int dailyFoodId, int foodId) {
     return dailyFoodItemRepository.findByDailyFoodIdAndFoodId(dailyFoodId, foodId)
             .orElseThrow(() -> new RecordNotFoundException("DailyFoodItem", foodId));
-  }
-
-  private Food getFood(int foodId) {
-    return foodRepository.findById(foodId)
-            .orElseThrow(() -> new RecordNotFoundException("Food", foodId));
   }
 
   private boolean existByDailyFoodAndItem(DailyFoodItem dailyFoodItem, DailyFood dailyFood) {

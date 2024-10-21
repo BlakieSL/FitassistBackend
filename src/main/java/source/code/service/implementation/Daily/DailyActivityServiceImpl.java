@@ -11,6 +11,7 @@ import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.DailyActivitiesResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.RepositoryHelper;
 import source.code.service.declaration.Helpers.ValidationService;
 import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
 import source.code.mapper.Activity.DailyActivityMapper;
@@ -33,6 +34,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
   private final JsonPatchService jsonPatchService;
   private final ValidationService validationService;
   private final DailyActivityMapper dailyActivityMapper;
+  private final RepositoryHelper repositoryHelper;
   private final DailyActivityRepository dailyActivityRepository;
   private final DailyActivityItemRepository dailyActivityItemRepository;
   private final ActivityRepository activityRepository;
@@ -45,6 +47,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
           JsonPatchServiceImpl jsonPatchService,
           ValidationService validationService,
           DailyActivityMapper dailyActivityMapper,
+          RepositoryHelper repositoryHelper,
           DailyActivityItemRepository dailyActivityItemRepository) {
     this.dailyActivityRepository = dailyActivityRepository;
     this.userRepository = userRepository;
@@ -52,6 +55,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     this.jsonPatchService = jsonPatchService;
     this.validationService = validationService;
     this.dailyActivityMapper = dailyActivityMapper;
+    this.repositoryHelper = repositoryHelper;
     this.dailyActivityItemRepository = dailyActivityItemRepository;
   }
 
@@ -71,7 +75,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
                                              DailyActivityItemCreateDto dto) {
 
     DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
-    Activity activity = getActivity(activityId);
+    Activity activity = repositoryHelper.find(activityRepository, Activity.class, activityId);
 
     DailyActivityItem dailyActivityItem = getOrCreateDailyActivityItem(
             dailyActivity, activity, dto.getTime());
@@ -119,10 +123,6 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     return new DailyActivitiesResponseDto(activities, totalCaloriesBurned);
   }
 
-
-
-
-
   private DailyActivityItem getOrCreateDailyActivityItem(DailyActivity dailyActivity,
                                                          Activity activity,
                                                          int time) {
@@ -151,9 +151,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 
   @Transactional
   public DailyActivity createDailyActivity(int userId) {
-    User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RecordNotFoundException("User", userId));
-
+    User user = repositoryHelper.find(userRepository, User.class, userId);
     return dailyActivityRepository.save(DailyActivity.createForToday(user));
   }
 
@@ -173,11 +171,6 @@ public class DailyActivityServiceImpl implements DailyActivityService {
   private DailyActivityItem getDailyActivityItem(int dailyActivityId, int activityId) {
     return dailyActivityItemRepository.findByDailyActivityIdAndActivityId(dailyActivityId, activityId)
             .orElseThrow(() -> new RecordNotFoundException("DailyActivityItem", activityId));
-  }
-
-  private Activity getActivity(int activityId) {
-    return activityRepository.findById(activityId)
-            .orElseThrow(() -> new RecordNotFoundException("Activity", activityId));
   }
 
   private boolean existByDailyActivityAndItem(DailyActivityItem dailyActivityItem,

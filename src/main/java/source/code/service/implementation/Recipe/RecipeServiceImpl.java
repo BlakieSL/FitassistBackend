@@ -15,6 +15,7 @@ import source.code.dto.request.Recipe.RecipeUpdateDto;
 import source.code.dto.response.RecipeCategoryResponseDto;
 import source.code.dto.response.RecipeResponseDto;
 import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.RepositoryHelper;
 import source.code.service.declaration.Helpers.ValidationService;
 import source.code.mapper.Recipe.RecipeMapper;
 import source.code.model.Recipe.Recipe;
@@ -33,25 +34,25 @@ public class RecipeServiceImpl implements RecipeService {
   private final JsonPatchService jsonPatchService;
   private final ValidationService validationService;
   private final ApplicationEventPublisher applicationEventPublisher;
-  private final RecipeRepository recipeRepository;
-  private final UserRecipeRepository userRecipeRepository;
+  private final RepositoryHelper repositoryHelper;
   private final RecipeCategoryRepository recipeCategoryRepository;
   private final RecipeCategoryAssociationRepository recipeCategoryAssociationRepository;
+  private final RecipeRepository recipeRepository;
 
   public RecipeServiceImpl(RecipeMapper recipeMapper,
                            JsonPatchService jsonPatchService,
                            ValidationService validationService,
                            ApplicationEventPublisher applicationEventPublisher,
+                           RepositoryHelper repositoryHelper,
                            RecipeRepository recipeRepository,
-                           UserRecipeRepository userRecipeRepository,
                            RecipeCategoryRepository recipeCategoryRepository,
                            RecipeCategoryAssociationRepository recipeCategoryAssociationRepository) {
     this.recipeMapper = recipeMapper;
     this.jsonPatchService = jsonPatchService;
     this.validationService = validationService;
     this.applicationEventPublisher = applicationEventPublisher;
+    this.repositoryHelper = repositoryHelper;
     this.recipeRepository = recipeRepository;
-    this.userRecipeRepository = userRecipeRepository;
     this.recipeCategoryRepository = recipeCategoryRepository;
     this.recipeCategoryAssociationRepository = recipeCategoryAssociationRepository;
   }
@@ -67,7 +68,7 @@ public class RecipeServiceImpl implements RecipeService {
   @Transactional
   public void updateRecipe(int recipeId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
-    Recipe recipe = getRecipeOrThrow(recipeId);
+    Recipe recipe = find(recipeId);
     RecipeUpdateDto patchedRecipeUpdateDto = applyPatchToRecipe(recipe, patch);
 
     validationService.validate(patchedRecipeUpdateDto);
@@ -80,7 +81,7 @@ public class RecipeServiceImpl implements RecipeService {
 
   @Transactional
   public void deleteRecipe(int recipeId) {
-    Recipe recipe = getRecipeOrThrow(recipeId);
+    Recipe recipe = find(recipeId);
     recipeRepository.delete(recipe);
 
     applicationEventPublisher.publishEvent(new RecipeDeleteEvent(this, recipe));
@@ -88,46 +89,30 @@ public class RecipeServiceImpl implements RecipeService {
 
   @Cacheable(value = {"recipes"}, key = "#id")
   public RecipeResponseDto getRecipe(int id) {
-    Recipe recipe = getRecipeOrThrow(id);
+    Recipe recipe = find(id);
     return recipeMapper.toResponseDto(recipe);
   }
 
   @Cacheable(value = {"allRecipes"})
   public List<RecipeResponseDto> getAllRecipes() {
-    List<Recipe> recipes = recipeRepository.findAll();
-
-    return recipes.stream()
-            .map(recipeMapper::toResponseDto)
-            .collect(Collectors.toList());
+    return repositoryHelper.findAll(recipeRepository, recipeMapper::toResponseDto);
   }
 
   @Cacheable(value = {"allRecipeCategories"})
   public List<RecipeCategoryResponseDto> getAllCategories() {
-    List<RecipeCategory> categories = recipeCategoryRepository.findAll();
-
-    return categories.stream()
-            .map(recipeMapper::toCategoryDto)
-            .collect(Collectors.toList());
+    return repositoryHelper.findAll(recipeCategoryRepository, recipeMapper::toCategoryDto);
   }
 
   @Cacheable(value = {"recipesByCategory"}, key = "#categoryId")
   public List<RecipeResponseDto> getRecipesByCategory(int categoryId) {
-    List<RecipeCategoryAssociation> recipeCategoryAssociations =
-            recipeCategoryAssociationRepository.findByRecipeCategoryId(categoryId);
-
-    List<Recipe> recipes = recipeCategoryAssociations.stream()
+    return recipeCategoryAssociationRepository.findByRecipeCategoryId(categoryId).stream()
             .map(RecipeCategoryAssociation::getRecipe)
-            .collect(Collectors.toList());
-
-    return recipes.stream()
             .map(recipeMapper::toResponseDto)
-            .collect(Collectors.toList());
+            .toList();
   }
 
-  private Recipe getRecipeOrThrow(int recipeId) {
-    return recipeRepository.findById(recipeId)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "Recipe with id: " + recipeId + " not found"));
+  private Recipe find(int recipeId) {
+    return repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
   }
 
   private RecipeUpdateDto applyPatchToRecipe(Recipe recipe, JsonMergePatch patch)

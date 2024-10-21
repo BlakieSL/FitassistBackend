@@ -1,7 +1,9 @@
 package source.code.mapper;
 
 import org.mapstruct.*;
-import source.code.dto.WorkoutSetDto;
+import source.code.dto.request.Workout.WorkoutCreateDto;
+import source.code.dto.request.WorkoutSet.WorkoutSetCreateDto;
+import source.code.dto.response.WorkoutSetResponseDto;
 import source.code.model.Exercise.Exercise;
 import source.code.model.Workout.WorkoutSet;
 import source.code.model.Workout.WorkoutType;
@@ -10,16 +12,15 @@ import source.code.model.Workout.WorkoutType;
 public interface WorkoutSetMapper {
   @Mapping(target = "workoutTypeId", source = "workoutType.id")
   @Mapping(target = "exerciseId", source = "exercise.id")
-  WorkoutSetDto toDto(WorkoutSet workoutSet);
+  WorkoutSetResponseDto toResponseDto(WorkoutSet workoutSet);
 
   @Mapping(target = "id", ignore = true)
-  WorkoutSet toEntity(WorkoutSetDto dto, @Context WorkoutType workoutType, @Context Exercise exercise);
+  WorkoutSet toEntity(WorkoutSetCreateDto request, @Context WorkoutType workoutType, @Context Exercise exercise);
 
   @AfterMapping
   default void setWorkoutType(@MappingTarget WorkoutSet workoutSet, @Context WorkoutType workoutType) {
     workoutSet.setWorkoutType(workoutType);
   }
-
 
   @AfterMapping
   default void setExercise(@MappingTarget WorkoutSet workoutSet, @Context Exercise exercise) {

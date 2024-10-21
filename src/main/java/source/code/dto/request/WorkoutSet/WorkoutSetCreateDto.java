@@ -1,4 +1,4 @@
-package source.code.dto;
+package source.code.dto.request.WorkoutSet;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -10,9 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorkoutSetDto {
-  private Integer id;
-
+public class WorkoutSetCreateDto {
   @NotNull
   private double weight;
 
