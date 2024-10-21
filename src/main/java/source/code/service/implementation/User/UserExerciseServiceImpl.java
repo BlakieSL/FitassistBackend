@@ -29,7 +29,11 @@ public class UserExerciseServiceImpl
                                  ExerciseRepository exerciseRepository,
                                  UserRepository userRepository,
                                  ExerciseMapper exerciseMapper) {
-    super(userRepository, exerciseRepository, userExerciseRepository, exerciseMapper::toResponseDto);
+    super(userRepository,
+            exerciseRepository,
+            userExerciseRepository,
+            exerciseMapper::toResponseDto,
+            Exercise.class);
   }
 
   @Override
@@ -47,7 +51,7 @@ public class UserExerciseServiceImpl
   protected UserExercise findUserEntity(int userId, int exerciseId, short type) {
     return ((UserExerciseRepository) userEntityRepository)
             .findByUserIdAndExerciseIdAndType(userId, exerciseId, type)
-            .orElseThrow(() -> new RecordNotFoundException("UserExercise", userId, exerciseId, type));
+            .orElseThrow(() -> new RecordNotFoundException(UserExercise.class, userId, exerciseId, type));
   }
 
   @Override

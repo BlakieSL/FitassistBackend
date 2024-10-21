@@ -55,7 +55,7 @@ public class WorkoutPlanServiceImpl implements WorkoutPlanService {
   public void deleteWorkoutFromPlan(int workoutId, int planId) {
     WorkoutPlan workoutPlan = workoutPlanRepository
             .findByWorkoutIdAndPlanId(workoutId, planId)
-            .orElseThrow(() -> new RecordNotFoundException("WorkoutPlan", workoutId, planId));
+            .orElseThrow(() -> new RecordNotFoundException(WorkoutPlan.class, workoutId, planId));
 
     workoutPlanRepository.delete(workoutPlan);
   }

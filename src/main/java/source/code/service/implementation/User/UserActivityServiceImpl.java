@@ -29,7 +29,11 @@ public class UserActivityServiceImpl
                                  ActivityRepository activityRepository,
                                  UserRepository userRepository,
                                  ActivityMapper activityMapper) {
-    super(userRepository, activityRepository, userActivityRepository, activityMapper::toResponseDto);
+    super(userRepository,
+            activityRepository,
+            userActivityRepository,
+            activityMapper::toResponseDto,
+            Activity.class);
   }
 
   @Override
@@ -47,7 +51,7 @@ public class UserActivityServiceImpl
   protected UserActivity findUserEntity(int userId, int activityId, short type) {
     return ((UserActivityRepository) userEntityRepository)
             .findByUserIdAndActivityIdAndType(userId, activityId, type)
-            .orElseThrow(() -> new RecordNotFoundException("UserActivity", userId, activityId, type));
+            .orElseThrow(() -> new RecordNotFoundException(UserActivity.class, userId, activityId, type));
   }
 
   @Override

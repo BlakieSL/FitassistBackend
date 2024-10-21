@@ -170,7 +170,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 
   private DailyActivityItem getDailyActivityItem(int dailyActivityId, int activityId) {
     return dailyActivityItemRepository.findByDailyActivityIdAndActivityId(dailyActivityId, activityId)
-            .orElseThrow(() -> new RecordNotFoundException("DailyActivityItem", activityId));
+            .orElseThrow(() -> new RecordNotFoundException(DailyActivityItem.class, activityId));
   }
 
   private boolean existByDailyActivityAndItem(DailyActivityItem dailyActivityItem,

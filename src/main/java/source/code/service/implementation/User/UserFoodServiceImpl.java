@@ -29,7 +29,11 @@ public class UserFoodServiceImpl
                              FoodRepository foodRepository,
                              UserRepository userRepository,
                              FoodMapper foodMapper) {
-    super(userRepository, foodRepository, userFoodRepository, foodMapper::toResponseDto);
+    super(userRepository,
+            foodRepository,
+            userFoodRepository,
+            foodMapper::toResponseDto,
+            Food.class);
   }
 
   @Override
@@ -47,7 +51,7 @@ public class UserFoodServiceImpl
   protected UserFood findUserEntity(int userId, int foodId, short type) {
     return ((UserFoodRepository) userEntityRepository)
             .findByUserIdAndFoodIdAndType(userId, foodId, type)
-            .orElseThrow(() -> new RecordNotFoundException("UserFood", userId, foodId, type));
+            .orElseThrow(() -> new RecordNotFoundException(UserFood.class, userId, foodId, type));
   }
 
   @Override

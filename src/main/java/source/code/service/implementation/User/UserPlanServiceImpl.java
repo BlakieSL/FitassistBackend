@@ -6,6 +6,7 @@ import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.dto.response.PlanResponseDto;
 import source.code.exception.NotUniqueRecordException;
 
+import source.code.exception.RecordNotFoundException;
 import source.code.mapper.Plan.PlanMapper;
 import source.code.model.Plan.Plan;
 import source.code.model.User.User;
@@ -29,7 +30,11 @@ public class UserPlanServiceImpl
                              PlanRepository planRepository,
                              UserRepository userRepository,
                              PlanMapper planMapper) {
-    super(userRepository, planRepository, userPlanRepository, planMapper::toResponseDto);
+    super(userRepository,
+            planRepository,
+            userPlanRepository,
+            planMapper::toResponseDto,
+            Plan.class);
   }
 
   @Override
@@ -47,8 +52,7 @@ public class UserPlanServiceImpl
   protected UserPlan findUserEntity(int userId, int planId, short type) {
     return ((UserPlanRepository) userEntityRepository)
             .findByUserIdAndPlanIdAndType(userId, planId, type)
-            .orElseThrow(() -> new NoSuchElementException(
-                    "UserPlan with user id: " + userId + ", plan id: " + planId + " and type: " + type + " not found"));
+            .orElseThrow(() -> new RecordNotFoundException(UserPlan.class, userId, planId, type));
   }
 
   @Override

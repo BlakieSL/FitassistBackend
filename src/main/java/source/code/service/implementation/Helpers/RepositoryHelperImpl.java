@@ -14,7 +14,7 @@ public class RepositoryHelperImpl implements RepositoryHelper {
   @Override
   public <T> T find(JpaRepository<T, Integer> repository, Class<T> entityType, int id) {
     return repository.findById(id)
-            .orElseThrow(() -> new RecordNotFoundException(entityType.getSimpleName(), id));
+            .orElseThrow(() -> new RecordNotFoundException(entityType, id));
   }
 
   @Override
