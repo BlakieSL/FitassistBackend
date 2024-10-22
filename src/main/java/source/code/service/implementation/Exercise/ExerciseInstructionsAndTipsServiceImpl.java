@@ -52,6 +52,7 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
     this.instructionsTipsMapper = instructionsTipsMapper;
   }
 
+  @Override
   @Transactional
   public void deleteInstruction(int instructionId) {
     ExerciseInstruction instruction = findInstruction(instructionId);
@@ -60,6 +61,7 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
     applicationEventPublisher.publishEvent(new ExerciseInstructionEvent(this, instruction));
   }
 
+  @Override
   @Transactional
   public void deleteTip(int tipId) {
     ExerciseTip tip = findTip(tipId);
@@ -68,6 +70,7 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
     applicationEventPublisher.publishEvent(new ExerciseTipEvent(this, tip));
   }
 
+  @Override
   @Transactional
   public void updateInstruction(int instructionId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
@@ -83,6 +86,7 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
     applicationEventPublisher.publishEvent(new ExerciseInstructionEvent(this, saved));
   }
 
+  @Override
   @Transactional
   public void updateTip(int tipId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
@@ -98,6 +102,7 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
     applicationEventPublisher.publishEvent(new ExerciseTipEvent(this, saved));
   }
 
+  @Override
   @Cacheable(value = "exerciseInstructions", key = "#exerciseId")
   public List<ExerciseInstructionResponseDto> getInstructions(int exerciseId) {
     return exerciseInstructionRepository.getAllByExerciseId(exerciseId).stream()
@@ -105,6 +110,7 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
             .toList();
   }
 
+  @Override
   @Cacheable(value = "exerciseTips", key = "#exerciseId")
   public List<ExerciseTipResponseDto> getTips(int exerciseId) {
     return exerciseTipRepository.getAllByExerciseId(exerciseId).stream()
