@@ -1,0 +1,15 @@
+package source.code.cache.event.Exercise;
+
+import lombok.Getter;
+import org.springframework.context.ApplicationEvent;
+import source.code.model.Exercise.ExerciseInstruction;
+import source.code.model.Exercise.ExerciseTip;
+
+@Getter
+public class ExerciseTipEvent extends ApplicationEvent {
+  private final ExerciseTip tip;
+  public ExerciseTipEvent(Object source, ExerciseTip tip) {
+    super(source);
+    this.tip = tip;
+  }
+}

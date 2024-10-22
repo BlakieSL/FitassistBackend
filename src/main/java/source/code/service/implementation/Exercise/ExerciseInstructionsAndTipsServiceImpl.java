@@ -5,14 +5,16 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import source.code.cache.event.Exercise.ExerciseInstructionEvent;
+import source.code.cache.event.Exercise.ExerciseTipEvent;
 import source.code.dto.request.Exercise.ExerciseInstructionUpdateDto;
 import source.code.dto.request.Exercise.ExerciseTipUpdateDto;
 import source.code.dto.response.ExerciseInstructionResponseDto;
 import source.code.dto.response.ExerciseTipResponseDto;
 import source.code.mapper.Exercise.ExerciseInstructionsTipsMapper;
-import source.code.mapper.Exercise.ExerciseMapper;
 import source.code.model.Exercise.ExerciseInstruction;
 import source.code.model.Exercise.ExerciseTip;
 import source.code.repository.ExerciseInstructionRepository;
@@ -28,7 +30,7 @@ import java.util.List;
 public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructionsAndTipsService {
   private final ValidationService validationService;
   private final JsonPatchService jsonPatchService;
-
+  private final ApplicationEventPublisher applicationEventPublisher;
   private final ExerciseInstructionsTipsMapper instructionsTipsMapper;
   private final RepositoryHelper repositoryHelper;
   private final ExerciseInstructionRepository exerciseInstructionRepository;
@@ -36,29 +38,34 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
   public ExerciseInstructionsAndTipsServiceImpl(
           ValidationService validationService,
           JsonPatchService jsonPatchService,
+          ApplicationEventPublisher applicationEventPublisher,
           ExerciseInstructionsTipsMapper instructionsTipsMapper,
           RepositoryHelper repositoryHelper,
           ExerciseInstructionRepository exerciseInstructionRepository,
           ExerciseTipRepository exerciseTipRepository) {
     this.validationService = validationService;
     this.jsonPatchService = jsonPatchService;
+    this.applicationEventPublisher = applicationEventPublisher;
     this.repositoryHelper = repositoryHelper;
     this.exerciseInstructionRepository = exerciseInstructionRepository;
     this.exerciseTipRepository = exerciseTipRepository;
     this.instructionsTipsMapper = instructionsTipsMapper;
   }
 
-  @CacheEvict(value = "exerciseInstructions")
   @Transactional
   public void deleteInstruction(int instructionId) {
     ExerciseInstruction instruction = findInstruction(instructionId);
     exerciseInstructionRepository.delete(instruction);
+
+    applicationEventPublisher.publishEvent(new ExerciseInstructionEvent(this, instruction));
   }
 
   @Transactional
   public void deleteTip(int tipId) {
     ExerciseTip tip = findTip(tipId);
     exerciseTipRepository.delete(tip);
+
+    applicationEventPublisher.publishEvent(new ExerciseTipEvent(this, tip));
   }
 
   @Transactional
@@ -73,6 +80,7 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
     instructionsTipsMapper.updateInstruction(instruction, patched);
     ExerciseInstruction saved = exerciseInstructionRepository.save(instruction);
 
+    applicationEventPublisher.publishEvent(new ExerciseInstructionEvent(this, saved));
   }
 
   @Transactional
@@ -86,6 +94,8 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
 
     instructionsTipsMapper.updateTip(tip, patched);
     ExerciseTip saved = exerciseTipRepository.save(tip);
+
+    applicationEventPublisher.publishEvent(new ExerciseTipEvent(this, saved));
   }
 
   @Cacheable(value = "exerciseInstructions", key = "#exerciseId")
