@@ -25,13 +25,13 @@ public class ExerciseInstructionsAndTipsController {
   public ResponseEntity<List<ExerciseInstructionResponseDto>> getAllInstructionsByExercise(
           @PathVariable int id) {
     List<ExerciseInstructionResponseDto> instructions = exerciseInstructionsAndTipsService
-            .getExerciseInstructions(id);
+            .getInstructions(id);
     return ResponseEntity.ok(instructions);
   }
 
   @GetMapping("/{id}/tips")
   public ResponseEntity<List<ExerciseTipResponseDto>> getAllTipsByExercise(@PathVariable int id) {
-    List<ExerciseTipResponseDto> tips = exerciseInstructionsAndTipsService.getExerciseTips(id);
+    List<ExerciseTipResponseDto> tips = exerciseInstructionsAndTipsService.getTips(id);
     return ResponseEntity.ok(tips);
   }
 }

@@ -59,10 +59,6 @@ public abstract class ExerciseMapper {
   @Mapping(target = "workoutSet", ignore = true)
   public abstract Exercise toEntity(ExerciseCreateDto dto);
 
-  public abstract ExerciseInstructionResponseDto toInstructionDto(ExerciseInstruction exerciseInstruction);
-
-  public abstract ExerciseTipResponseDto toTipDto(ExerciseTip exerciseTip);
-
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
   @Mapping(target = "exerciseCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
   @Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevel")

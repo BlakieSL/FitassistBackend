@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Service("userPlanService")
 public class UserPlanServiceImpl
         extends GenericSavedService<Plan, UserPlan, PlanResponseDto>
-        implements SavedService {
+        implements SavedService<PlanResponseDto> {
 
   public UserPlanServiceImpl(UserPlanRepository userPlanRepository,
                              PlanRepository planRepository,

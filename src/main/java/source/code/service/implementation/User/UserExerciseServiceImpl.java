@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Service("userExerciseService")
 public class UserExerciseServiceImpl
         extends GenericSavedService<Exercise, UserExercise, ExerciseResponseDto>
-        implements SavedService {
+        implements SavedService<ExerciseResponseDto> {
 
   public UserExerciseServiceImpl(UserExerciseRepository userExerciseRepository,
                                  ExerciseRepository exerciseRepository,

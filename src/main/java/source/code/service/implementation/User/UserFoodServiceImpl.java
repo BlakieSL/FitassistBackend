@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Service("userFoodService")
 public class UserFoodServiceImpl
         extends GenericSavedService<Food, UserFood, FoodResponseDto>
-        implements SavedService {
+        implements SavedService<FoodResponseDto> {
 
   public UserFoodServiceImpl(UserFoodRepository userFoodRepository,
                              FoodRepository foodRepository,
