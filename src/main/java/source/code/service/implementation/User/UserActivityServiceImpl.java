@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Service("userActivityService")
 public class UserActivityServiceImpl
         extends GenericSavedService<Activity, UserActivity, ActivityResponseDto>
-        implements SavedService {
+        implements SavedService<ActivityResponseDto> {
 
   public UserActivityServiceImpl(UserActivityRepository userActivityRepository,
                                  ActivityRepository activityRepository,

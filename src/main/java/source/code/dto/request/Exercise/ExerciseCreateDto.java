@@ -34,7 +34,7 @@ public class ExerciseCreateDto {
 
   @NotNull
   @Positive
-  private Double score;
+  private double score;
 
   @NotNull
   private int expertiseLevelId;
