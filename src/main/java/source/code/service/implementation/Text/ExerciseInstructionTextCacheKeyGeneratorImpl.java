@@ -1,12 +1,11 @@
 package source.code.service.implementation.Text;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import source.code.model.Exercise.ExerciseInstruction;
-import source.code.service.declaration.Text.CacheKeyGenerator;
+import source.code.service.declaration.Text.TextCacheKeyGenerator;
 
 @Service("exerciseInstructionCacheKeyGenerator")
-public class ExerciseInstructionCacheKeyGeneratorImpl implements CacheKeyGenerator<ExerciseInstruction> {
+public class ExerciseInstructionTextCacheKeyGeneratorImpl implements TextCacheKeyGenerator<ExerciseInstruction> {
   private static final String CACHE_PREFIX = "exerciseInstruction_";
   @Override
   public String generateCacheKey(ExerciseInstruction entity) {

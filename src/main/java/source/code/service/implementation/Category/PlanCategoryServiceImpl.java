@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import source.code.mapper.Plan.PlanCategoryMapper;
 import source.code.model.Plan.PlanCategory;
 import source.code.repository.PlanCategoryRepository;
+import source.code.service.declaration.Category.CategoryCacheKeyGenerator;
 import source.code.service.declaration.Category.CategoryService;
+import source.code.service.declaration.Helpers.JsonPatchService;
 import source.code.service.declaration.Helpers.ValidationService;
 import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
 
@@ -15,13 +17,15 @@ public class PlanCategoryServiceImpl
         extends GenericCategoryService<PlanCategory>
         implements CategoryService {
   protected PlanCategoryServiceImpl(ValidationService validationService,
-                                    JsonPatchServiceImpl jsonPatchServiceImpl,
+                                    JsonPatchService jsonPatchService,
+                                    CategoryCacheKeyGenerator<PlanCategory> cacheKeyGenerator,
                                     ApplicationEventPublisher applicationEventPublisher,
                                     CacheManager cacheManager,
                                     PlanCategoryRepository repository,
                                     PlanCategoryMapper mapper) {
     super(validationService,
-            jsonPatchServiceImpl,
+            jsonPatchService,
+            cacheKeyGenerator,
             applicationEventPublisher,
             cacheManager,
             repository,

@@ -15,6 +15,7 @@ import source.code.dto.request.Category.CategoryUpdateDto;
 import source.code.dto.response.CategoryResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.Generics.BaseMapper;
+import source.code.service.declaration.Category.CategoryCacheKeyGenerator;
 import source.code.service.declaration.Helpers.JsonPatchService;
 import source.code.service.declaration.Helpers.ValidationService;
 import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
@@ -25,18 +26,21 @@ import java.util.Optional;
 public abstract class GenericCategoryService<T> {
   protected final ValidationService validationService;
   protected final JsonPatchService jsonPatchService ;
+  protected final CategoryCacheKeyGenerator<T> cacheKeyGenerator;
   protected final ApplicationEventPublisher applicationEventPublisher;
   protected final CacheManager cacheManager;
   protected final JpaRepository<T, Integer> repository;
   protected final BaseMapper<T> mapper;
   protected GenericCategoryService(ValidationService validationService,
-                                   JsonPatchServiceImpl jsonPatchService,
+                                   JsonPatchService jsonPatchService,
+                                   CategoryCacheKeyGenerator<T> cacheKeyGenerator,
                                    ApplicationEventPublisher applicationEventPublisher,
                                    CacheManager cacheManager,
                                    JpaRepository<T, Integer> repository,
                                    BaseMapper<T> mapper) {
     this.validationService = validationService;
     this.jsonPatchService = jsonPatchService;
+    this.cacheKeyGenerator = cacheKeyGenerator;
     this.applicationEventPublisher = applicationEventPublisher;
     this.cacheManager = cacheManager;
     this.repository = repository;
@@ -48,7 +52,8 @@ public abstract class GenericCategoryService<T> {
     T category = mapper.toEntity(request);
     T savedCategory = repository.save(category);
 
-    applicationEventPublisher.publishEvent(new CategoryClearCacheEvent(this, getSubClassName()));
+    applicationEventPublisher.publishEvent(
+            new CategoryClearCacheEvent(this, cacheKeyGenerator.generateCacheKey()));
     return mapper.toResponseDto(savedCategory);
   }
 
@@ -63,7 +68,8 @@ public abstract class GenericCategoryService<T> {
     mapper.updateEntityFromDto(category, patchedCategory);
     repository.save(category);
 
-    applicationEventPublisher.publishEvent(new CategoryClearCacheEvent(this, getSubClassName()));
+    applicationEventPublisher.publishEvent(
+            new CategoryClearCacheEvent(this, cacheKeyGenerator.generateCacheKey()));
   }
 
   @Transactional
@@ -71,12 +77,13 @@ public abstract class GenericCategoryService<T> {
     T category = getCategoryOrThrow(categoryId);
     repository.delete(category);
 
-    applicationEventPublisher.publishEvent(new CategoryClearCacheEvent(this, getSubClassName()));
+    applicationEventPublisher.publishEvent(
+            new CategoryClearCacheEvent(this, cacheKeyGenerator.generateCacheKey()));
   }
 
 
   public List<CategoryResponseDto> getAllCategories() {
-    String cacheKey = getSubClassName();
+    String cacheKey = cacheKeyGenerator.generateCacheKey();
 
     return getCachedCategories(cacheKey)
             .orElseGet(() -> {

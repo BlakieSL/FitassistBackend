@@ -2,10 +2,10 @@ package source.code.service.implementation.Text;
 
 import org.springframework.stereotype.Service;
 import source.code.model.Exercise.ExerciseTip;
-import source.code.service.declaration.Text.CacheKeyGenerator;
+import source.code.service.declaration.Text.TextCacheKeyGenerator;
 
 @Service("exerciseTipCacheKeyGenerator")
-public class ExerciseTipCacheKeyGeneratorImpl implements CacheKeyGenerator<ExerciseTip> {
+public class ExerciseTipTextCacheKeyGeneratorImpl implements TextCacheKeyGenerator<ExerciseTip> {
   private static final String CACHE_PREFIX = "exerciseTip_";
   @Override
   public String generateCacheKey(ExerciseTip entity) {

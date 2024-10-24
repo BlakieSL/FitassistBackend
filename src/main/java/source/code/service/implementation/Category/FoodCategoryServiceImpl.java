@@ -4,9 +4,12 @@ import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import source.code.mapper.Food.FoodCategoryMapper;
+import source.code.model.Activity.ActivityCategory;
 import source.code.model.Food.FoodCategory;
 import source.code.repository.FoodCategoryRepository;
+import source.code.service.declaration.Category.CategoryCacheKeyGenerator;
 import source.code.service.declaration.Category.CategoryService;
+import source.code.service.declaration.Helpers.JsonPatchService;
 import source.code.service.declaration.Helpers.ValidationService;
 import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
 
@@ -16,13 +19,15 @@ public class FoodCategoryServiceImpl
         implements CategoryService {
 
   protected FoodCategoryServiceImpl(ValidationService validationService,
-                                    JsonPatchServiceImpl jsonPatchServiceImpl,
+                                    JsonPatchService jsonPatchService,
+                                    CategoryCacheKeyGenerator<FoodCategory> cacheKeyGenerator,
                                     ApplicationEventPublisher applicationEventPublisher,
                                     CacheManager cacheManager,
                                     FoodCategoryRepository repository,
                                     FoodCategoryMapper mapper) {
     super(validationService,
-            jsonPatchServiceImpl,
+            jsonPatchService,
+            cacheKeyGenerator,
             applicationEventPublisher,
             cacheManager,
             repository,

@@ -10,7 +10,7 @@ import source.code.model.Exercise.ExerciseInstruction;
 import source.code.repository.ExerciseInstructionRepository;
 import source.code.service.declaration.Helpers.JsonPatchService;
 import source.code.service.declaration.Helpers.ValidationService;
-import source.code.service.declaration.Text.CacheKeyGenerator;
+import source.code.service.declaration.Text.TextCacheKeyGenerator;
 import source.code.service.declaration.Text.TextService;
 
 import java.util.List;
@@ -23,14 +23,14 @@ public class ExerciseInstructionServiceImpl
 
   protected ExerciseInstructionServiceImpl(ValidationService validationService,
                                            JsonPatchService jsonPatchService,
-                                           CacheKeyGenerator<ExerciseInstruction> cacheKeyGenerator,
+                                           TextCacheKeyGenerator<ExerciseInstruction> textCacheKeyGenerator,
                                            CacheManager cacheManager,
                                            ApplicationEventPublisher applicationEventPublisher,
                                            ExerciseInstructionRepository repository,
                                            ExerciseInstructionsTipsMapper mapper) {
     super(validationService,
             jsonPatchService,
-            cacheKeyGenerator,
+            textCacheKeyGenerator,
             cacheManager,
             applicationEventPublisher,
             repository,
