@@ -38,6 +38,12 @@ public class FoodController {
     return ResponseEntity.ok(foodService.getFoodsByCategory(categoryId));
   }
 
+  @PostMapping
+  public ResponseEntity<FoodResponseDto> createFood(@Valid @RequestBody FoodCreateDto dto) {
+    FoodResponseDto response = foodService.createFood(dto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  }
+
   @PostMapping("/{id}/calculate-macros")
   public ResponseEntity<FoodCalculatedMacrosResponseDto> calculateFoodMacros(
           @PathVariable int id,
@@ -45,12 +51,6 @@ public class FoodController {
 
     FoodCalculatedMacrosResponseDto response = foodService.calculateFoodMacros(id, request);
     return ResponseEntity.ok(response);
-  }
-
-  @PostMapping
-  public ResponseEntity<FoodResponseDto> createFood(@Valid @RequestBody FoodCreateDto dto) {
-    FoodResponseDto response = foodService.createFood(dto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
   @PostMapping("/search")

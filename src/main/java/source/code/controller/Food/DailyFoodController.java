@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.Food.DailyFoodItemCreateDto;
@@ -32,7 +33,7 @@ public class DailyFoodController {
           @Valid @RequestBody DailyFoodItemCreateDto request) {
 
     dailyFoodService.addFoodToDailyFoodItem(userId, foodId, request);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
   @DeleteMapping("/{userId}/remove/{foodId}")
@@ -40,7 +41,7 @@ public class DailyFoodController {
                                                           @PathVariable int foodId) {
 
     dailyFoodService.removeFoodFromDailyFoodItem(userId, foodId);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 
   @PatchMapping("/{userId}/modify-food/{foodId}")

@@ -50,6 +50,6 @@ public class MediaController {
   @DeleteMapping("/{mediaId}")
   public ResponseEntity<Void> removeMediaFromParent(@PathVariable int mediaId) {
     mediaService.deleteMedia(mediaId);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 }
