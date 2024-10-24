@@ -53,6 +53,10 @@ public class ExerciseCreateDto {
 
   private List<Integer> categoryIds;
 
+  private List<ExerciseInstructionCreateDto> instructions;
+
+  private List<ExerciseTipCreateDto> tips;
+
   public static ExerciseCreateDto createWithName(String name) {
     ExerciseCreateDto createDto = new ExerciseCreateDto();
     createDto.setName(name);

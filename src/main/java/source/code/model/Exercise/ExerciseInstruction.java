@@ -33,9 +33,16 @@ public class ExerciseInstruction {
   private Exercise exercise;
 
   public static ExerciseInstruction createWithIdAndExercise(int id, Exercise exercise) {
-    ExerciseInstruction exerciseInstruction = new ExerciseInstruction();
-    exerciseInstruction.setId(id);
-    exerciseInstruction.setExercise(exercise);
-    return exerciseInstruction;
+    ExerciseInstruction instruction = new ExerciseInstruction();
+    instruction.setId(id);
+    instruction.setExercise(exercise);
+    return instruction;
+  }
+
+  public static ExerciseInstruction createWithNumberAndText(short number, String text) {
+    ExerciseInstruction instruction = new ExerciseInstruction();
+    instruction.setNumber(number);
+    instruction.setText(text);
+    return  instruction;
   }
 }
