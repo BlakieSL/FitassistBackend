@@ -1,5 +1,8 @@
 package source.code.controller.Food;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,12 +41,6 @@ public class FoodController {
     return ResponseEntity.ok(foodService.getFoodsByCategory(categoryId));
   }
 
-  @PostMapping
-  public ResponseEntity<FoodResponseDto> createFood(@Valid @RequestBody FoodCreateDto dto) {
-    FoodResponseDto response = foodService.createFood(dto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(response);
-  }
-
   @PostMapping("/{id}/calculate-macros")
   public ResponseEntity<FoodCalculatedMacrosResponseDto> calculateFoodMacros(
           @PathVariable int id,
@@ -58,5 +55,24 @@ public class FoodController {
           @Valid @RequestBody SearchRequestDto request) {
 
     return ResponseEntity.ok(foodService.searchFoods(request));
+  }
+
+  @PostMapping
+  public ResponseEntity<FoodResponseDto> createFood(@Valid @RequestBody FoodCreateDto dto) {
+    FoodResponseDto response = foodService.createFood(dto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  }
+
+  @PatchMapping("/{id}")
+  public ResponseEntity<Void> updateFood(@PathVariable int id, @RequestBody JsonMergePatch patch)
+          throws JsonPatchException, JsonProcessingException {
+    foodService.updateFood(id, patch);
+    return ResponseEntity.noContent().build();
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteFood(@PathVariable int id) {
+    foodService.deleteFood(id);
+    return ResponseEntity.noContent().build();
   }
 }

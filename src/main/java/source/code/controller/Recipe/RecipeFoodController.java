@@ -9,7 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.Recipe.RecipeFoodCreateDto;
+import source.code.dto.response.FoodResponseDto;
 import source.code.service.declaration.Recipe.RecipeFoodService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/recipe-food")
@@ -49,5 +52,11 @@ public class RecipeFoodController {
 
     recipeFoodService.updateFoodRecipe(recipeId, foodId, patch);
     return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/{id}/foods")
+  public ResponseEntity<List<FoodResponseDto>> getFoodsByRecipe(@PathVariable int id) {
+    List<FoodResponseDto> foods = recipeFoodService.getFoodsByRecipe(id);
+    return ResponseEntity.ok(foods);
   }
 }
