@@ -1,5 +1,6 @@
 package source.code.service.implementation.Text;
 
+import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.Exercise.ExerciseInstructionUpdateDto;
@@ -9,6 +10,7 @@ import source.code.model.Exercise.ExerciseInstruction;
 import source.code.repository.ExerciseInstructionRepository;
 import source.code.service.declaration.Helpers.JsonPatchService;
 import source.code.service.declaration.Helpers.ValidationService;
+import source.code.service.declaration.Text.CacheKeyGenerator;
 import source.code.service.declaration.Text.TextService;
 
 import java.util.List;
@@ -21,11 +23,15 @@ public class ExerciseInstructionServiceImpl
 
   protected ExerciseInstructionServiceImpl(ValidationService validationService,
                                            JsonPatchService jsonPatchService,
+                                           CacheKeyGenerator<ExerciseInstruction> cacheKeyGenerator,
+                                           CacheManager cacheManager,
                                            ApplicationEventPublisher applicationEventPublisher,
                                            ExerciseInstructionRepository repository,
                                            ExerciseInstructionsTipsMapper mapper) {
     super(validationService,
             jsonPatchService,
+            cacheKeyGenerator,
+            cacheManager,
             applicationEventPublisher,
             repository,
             mapper::toInstructionResponseDto,

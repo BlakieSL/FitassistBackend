@@ -5,18 +5,19 @@ import org.springframework.cache.CacheManager;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import source.code.cache.event.Category.CategoryClearCacheEvent;
-import source.code.cache.event.Category.CategoryCreateCacheEvent;
+import source.code.cache.event.Text.TextCreateCacheEvent;
 
 @Component
-public class CategoryCacheListener {
+public class TextCacheListener {
   private final CacheManager cacheManager;
-  private static final String CACHE_NAME = "allCategories";
-  public CategoryCacheListener(CacheManager cacheManager) {
+  private static final String CACHE_NAME = "allTextByParent";
+
+  public TextCacheListener(CacheManager cacheManager) {
     this.cacheManager = cacheManager;
   }
 
   @EventListener
-  public void handleCacheCreateEvent(CategoryCreateCacheEvent event) {
+  public void handleCacheCreateEvent(TextCreateCacheEvent event) {
     Cache cache = cacheManager.getCache(CACHE_NAME);
 
     if (cache == null) {
@@ -30,5 +31,4 @@ public class CategoryCacheListener {
   public void handleCacheClearEvent(CategoryClearCacheEvent event) {
     cacheManager.getCache(CACHE_NAME).evict(event.getCacheKey());
   }
-
 }

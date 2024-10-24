@@ -3,21 +3,29 @@ package source.code.service.implementation.Text;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
+import source.code.cache.event.Text.TextClearCacheEvent;
+import source.code.cache.event.Text.TextCreateCacheEvent;
 import source.code.dto.response.Text.BaseTextResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.service.declaration.Helpers.JsonPatchService;
 import source.code.service.declaration.Helpers.ValidationService;
+import source.code.service.declaration.Text.CacheKeyGenerator;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Integer>> {
   protected final ValidationService validationService;
   protected final JsonPatchService jsonPatchService;
+  protected final CacheKeyGenerator<T> cacheKeyGenerator;
+  protected final CacheManager cacheManager;
   protected final ApplicationEventPublisher applicationEventPublisher;
   protected final E repository;
   protected final Function<T, R> toResponse;
@@ -25,6 +33,8 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
   protected final Class<U> entityType;
   protected GenericTextService(ValidationService validationService,
                                JsonPatchService jsonPatchService,
+                               CacheKeyGenerator<T> cacheKeyGenerator,
+                               CacheManager cacheManager,
                                ApplicationEventPublisher applicationEventPublisher,
                                E repository,
                                Function<T, R> toResponse,
@@ -32,6 +42,8 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
                                Class<U> entityType) {
     this.validationService = validationService;
     this.jsonPatchService = jsonPatchService;
+    this.cacheKeyGenerator = cacheKeyGenerator;
+    this.cacheManager = cacheManager;
     this.applicationEventPublisher = applicationEventPublisher;
     this.repository = repository;
     this.toResponse = toResponse;
@@ -43,6 +55,9 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
   public void deleteText(int id) {
     T entity = findById(id);
     repository.delete(entity);
+
+    applicationEventPublisher
+            .publishEvent(new TextClearCacheEvent(this, cacheKeyGenerator.generateCacheKey(entity)));
   }
 
   @Transactional
@@ -56,12 +71,26 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
 
     update.accept(entity, patched);
     T saved = repository.save(entity);
+
+    applicationEventPublisher
+            .publishEvent(new TextClearCacheEvent(this, cacheKeyGenerator.generateCacheKey(saved)));
   }
 
-  public List<BaseTextResponseDto> getAllByExercise(int exerciseId) {
-    return getAllByExerciseId(exerciseId).stream()
-            .map(entity -> (BaseTextResponseDto) toResponse.apply(entity))
-            .toList();
+  public List<BaseTextResponseDto> getAllByParent(int exerciseId) {
+    String cacheKey = cacheKeyGenerator.generateCacheKeyForParent(exerciseId);
+
+    return getCachedText(cacheKey)
+            .orElseGet(() -> {
+              List<BaseTextResponseDto> responseDtos = getAllByExerciseId(exerciseId).stream()
+                      .map(entity -> (BaseTextResponseDto) toResponse.apply(entity))
+                      .toList();
+
+              applicationEventPublisher
+                      .publishEvent(new TextCreateCacheEvent(this, cacheKey, responseDtos));
+
+              return responseDtos;
+            });
+
   }
 
   private T findById(int id) {
@@ -69,10 +98,26 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
             .orElseThrow(() -> new RecordNotFoundException(getClass(), id));
   }
 
-   private <U> U applyPatch(T entity, JsonMergePatch patch)
+   private U applyPatch(T entity, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
     R response = toResponse.apply(entity);
-    return jsonPatchService.applyPatch(patch, response, (Class<U>) entityType);
+    return jsonPatchService.applyPatch(patch, response, entityType);
+  }
+
+  private Optional<List<BaseTextResponseDto>> getCachedText(String cacheKey) {
+    Cache cache = cacheManager.getCache("allTextByParent");
+
+    if (cache == null) {
+      throw new IllegalStateException("Cache not available for: allTextByParent");
+    }
+
+    Cache.ValueWrapper cachedValue = cache.get(cacheKey);
+
+    if(cachedValue != null) {
+      return Optional.of((List<BaseTextResponseDto>) cachedValue.get());
+    }
+
+    return Optional.empty();
   }
 
   protected abstract List<T> getAllByExerciseId(int exerciseId);
