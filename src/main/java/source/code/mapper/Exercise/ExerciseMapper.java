@@ -4,6 +4,8 @@ import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.other.ExerciseCategoryShortDto;
 import source.code.dto.request.Exercise.ExerciseCreateDto;
+import source.code.dto.request.Exercise.ExerciseInstructionCreateDto;
+import source.code.dto.request.Exercise.ExerciseTipCreateDto;
 import source.code.dto.request.Exercise.ExerciseUpdateDto;
 import source.code.dto.response.ExerciseResponseDto;
 import source.code.model.Exercise.*;
@@ -13,6 +15,7 @@ import source.code.service.declaration.Helpers.RepositoryHelper;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class ExerciseMapper {
@@ -46,6 +49,8 @@ public abstract class ExerciseMapper {
   public abstract ExerciseResponseDto toResponseDto(Exercise exercise);
 
   @Mapping(target = "exerciseCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
+  @Mapping(target = "exerciseInstructions", source = "instructions", qualifiedByName = "mapInstructions")
+  @Mapping(target = "exerciseTips", source = "tips", qualifiedByName = "mapTips")
   @Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevel")
   @Mapping(target = "mechanicsType", source = "mechanicsTypeId", qualifiedByName = "mapMechanicsType")
   @Mapping(target = "forceType", source = "forceTypeId", qualifiedByName = "mapForceType")
@@ -68,6 +73,7 @@ public abstract class ExerciseMapper {
   @Mapping(target = "workoutSet", ignore = true)
   public abstract void updateExerciseFromDto(@MappingTarget Exercise exercise, ExerciseUpdateDto request);
 
+
   @Named("mapCategoryIdsToAssociations")
   protected Set<ExerciseCategoryAssociation> mapCategoryIdsToAssociations(List<Integer> categoryIds) {
     if (categoryIds == null) {
@@ -89,8 +95,41 @@ public abstract class ExerciseMapper {
     return associations;
   }
 
+  @Named("mapInstructions")
+  protected Set<ExerciseInstruction> mapInstructions(List<ExerciseInstructionCreateDto> dto) {
+    if(dto == null) {
+      return new HashSet<>();
+    }
+
+    return dto.stream()
+            .map(instructionDto -> {
+              ExerciseInstruction instruction = ExerciseInstruction
+                      .createWithNumberAndText(instructionDto.getNumber(), instructionDto.getText());
+
+              return instruction;
+            })
+            .collect(Collectors.toSet());
+  }
+
+  @Named("mapTips")
+  protected Set<ExerciseTip> mapTips(List<ExerciseTipCreateDto> dto) {
+    if(dto == null) {
+      return new HashSet<>();
+    }
+
+    return dto.stream()
+            .map(tipDto -> {
+              ExerciseTip tip = ExerciseTip
+                      .createWithNumberAndText(tipDto.getNumber(), tipDto.getText());
+
+              return tip;
+            })
+            .collect(Collectors.toSet());
+  }
+
   @Named("mapAssociationsToCategoryShortDto")
-  protected List<ExerciseCategoryShortDto> mapAssociationsToCategoryShortDto(Set<ExerciseCategoryAssociation> associations) {
+  protected List<ExerciseCategoryShortDto> mapAssociationsToCategoryShortDto(
+          Set<ExerciseCategoryAssociation> associations) {
     return associations.stream()
             .map(association -> new ExerciseCategoryShortDto(
                     association.getExerciseCategory().getId(),

@@ -33,9 +33,16 @@ public class ExerciseTip {
   private Exercise exercise;
 
   public static ExerciseTip createWithIdAndExercise(int id, Exercise exercise) {
-    ExerciseTip exerciseTip = new ExerciseTip();
-    exerciseTip.setId(id);
-    exerciseTip.setExercise(exercise);
-    return exerciseTip;
+    ExerciseTip tip = new ExerciseTip();
+    tip.setId(id);
+    tip.setExercise(exercise);
+    return tip;
+  }
+
+  public static ExerciseTip createWithNumberAndText(short number, String text) {
+    ExerciseTip tip = new ExerciseTip();
+    tip.setNumber(number);
+    tip.setText(text);
+    return tip;
   }
 }
