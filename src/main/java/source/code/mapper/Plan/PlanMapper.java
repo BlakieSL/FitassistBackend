@@ -13,7 +13,6 @@ import source.code.service.declaration.Helpers.RepositoryHelper;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 @Mapper(componentModel = "spring")

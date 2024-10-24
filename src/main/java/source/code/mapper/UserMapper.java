@@ -6,12 +6,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import source.code.dto.other.UserCredentialsDto;
 import source.code.dto.request.UserCreateDto;
 import source.code.dto.request.UserUpdateDto;
-import source.code.dto.response.UserResponseDto;
-import source.code.service.declaration.Helpers.CalculationsService;
-import source.code.service.implementation.Helpers.CalculationsServiceImpl;
+import source.code.dto.response.User.UserResponseDto;
 import source.code.model.User.Role;
 import source.code.model.User.User;
 import source.code.repository.RoleRepository;
+import source.code.service.declaration.Helpers.CalculationsService;
 
 import java.time.LocalDate;
 import java.time.Period;

@@ -14,19 +14,20 @@ import source.code.dto.request.Exercise.ExerciseCreateDto;
 import source.code.dto.request.Exercise.ExerciseUpdateDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ExerciseResponseDto;
+import source.code.helper.enumerators.ExerciseField;
+import source.code.mapper.Exercise.ExerciseMapper;
+import source.code.model.Exercise.Exercise;
+import source.code.model.Exercise.ExerciseCategoryAssociation;
+import source.code.repository.ExerciseCategoryAssociationRepository;
+import source.code.repository.ExerciseRepository;
+import source.code.service.declaration.Exercise.ExerciseService;
 import source.code.service.declaration.Helpers.JsonPatchService;
 import source.code.service.declaration.Helpers.RepositoryHelper;
 import source.code.service.declaration.Helpers.ValidationService;
-import source.code.helper.enumerators.ExerciseField;
-import source.code.mapper.Exercise.ExerciseMapper;
-import source.code.model.Exercise.*;
-import source.code.repository.*;
-import source.code.service.declaration.Exercise.ExerciseService;
 
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class ExerciseServiceImpl implements ExerciseService {

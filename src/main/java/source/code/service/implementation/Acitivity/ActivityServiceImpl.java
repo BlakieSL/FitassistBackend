@@ -17,18 +17,17 @@ import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.ActivityAverageMetResponseDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.ActivityResponseDto;
-import source.code.service.declaration.Helpers.RepositoryHelper;
-import source.code.service.declaration.Helpers.JsonPatchService;
-import source.code.service.declaration.Helpers.ValidationService;
 import source.code.mapper.Activity.ActivityMapper;
 import source.code.model.Activity.Activity;
 import source.code.model.User.User;
 import source.code.repository.ActivityRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.Activity.ActivityService;
+import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.RepositoryHelper;
+import source.code.service.declaration.Helpers.ValidationService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ActivityServiceImpl implements ActivityService {

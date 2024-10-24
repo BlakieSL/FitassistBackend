@@ -12,9 +12,6 @@ import source.code.dto.request.Recipe.RecipeFoodCreateDto;
 import source.code.dto.response.FoodResponseDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
-import source.code.service.declaration.Helpers.JsonPatchService;
-import source.code.service.declaration.Helpers.RepositoryHelper;
-import source.code.service.declaration.Helpers.ValidationService;
 import source.code.mapper.Food.FoodMapper;
 import source.code.model.Food.Food;
 import source.code.model.Recipe.Recipe;
@@ -22,10 +19,12 @@ import source.code.model.Recipe.RecipeFood;
 import source.code.repository.FoodRepository;
 import source.code.repository.RecipeFoodRepository;
 import source.code.repository.RecipeRepository;
+import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.RepositoryHelper;
+import source.code.service.declaration.Helpers.ValidationService;
 import source.code.service.declaration.Recipe.RecipeFoodService;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class RecipeFoodServiceImpl implements RecipeFoodService {

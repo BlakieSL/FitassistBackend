@@ -1,6 +1,5 @@
 package source.code.service.declaration.Workout;
 
-import source.code.dto.request.Workout.WorkoutCreateDto;
 import source.code.dto.request.WorkoutSet.WorkoutSetCreateDto;
 import source.code.dto.response.WorkoutSetResponseDto;
 

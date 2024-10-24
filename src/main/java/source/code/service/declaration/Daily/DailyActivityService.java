@@ -5,7 +5,6 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.request.Activity.DailyActivityItemCreateDto;
 import source.code.dto.response.DailyActivitiesResponseDto;
-import source.code.model.Activity.DailyActivity;
 
 public interface DailyActivityService {
   void addActivityToDailyActivityItem(int userId, Integer activityId, DailyActivityItemCreateDto dto);
