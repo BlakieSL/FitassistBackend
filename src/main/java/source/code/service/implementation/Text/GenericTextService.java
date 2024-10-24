@@ -14,7 +14,7 @@ import source.code.dto.response.Text.BaseTextResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.service.declaration.Helpers.JsonPatchService;
 import source.code.service.declaration.Helpers.ValidationService;
-import source.code.service.declaration.Text.CacheKeyGenerator;
+import source.code.service.declaration.Text.TextCacheKeyGenerator;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +24,7 @@ import java.util.function.Function;
 public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Integer>> {
   protected final ValidationService validationService;
   protected final JsonPatchService jsonPatchService;
-  protected final CacheKeyGenerator<T> cacheKeyGenerator;
+  protected final TextCacheKeyGenerator<T> textCacheKeyGenerator;
   protected final CacheManager cacheManager;
   protected final ApplicationEventPublisher applicationEventPublisher;
   protected final E repository;
@@ -33,7 +33,7 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
   protected final Class<U> entityType;
   protected GenericTextService(ValidationService validationService,
                                JsonPatchService jsonPatchService,
-                               CacheKeyGenerator<T> cacheKeyGenerator,
+                               TextCacheKeyGenerator<T> textCacheKeyGenerator,
                                CacheManager cacheManager,
                                ApplicationEventPublisher applicationEventPublisher,
                                E repository,
@@ -42,7 +42,7 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
                                Class<U> entityType) {
     this.validationService = validationService;
     this.jsonPatchService = jsonPatchService;
-    this.cacheKeyGenerator = cacheKeyGenerator;
+    this.textCacheKeyGenerator = textCacheKeyGenerator;
     this.cacheManager = cacheManager;
     this.applicationEventPublisher = applicationEventPublisher;
     this.repository = repository;
@@ -57,7 +57,7 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
     repository.delete(entity);
 
     applicationEventPublisher
-            .publishEvent(new TextClearCacheEvent(this, cacheKeyGenerator.generateCacheKey(entity)));
+            .publishEvent(new TextClearCacheEvent(this, textCacheKeyGenerator.generateCacheKey(entity)));
   }
 
   @Transactional
@@ -73,11 +73,11 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
     T saved = repository.save(entity);
 
     applicationEventPublisher
-            .publishEvent(new TextClearCacheEvent(this, cacheKeyGenerator.generateCacheKey(saved)));
+            .publishEvent(new TextClearCacheEvent(this, textCacheKeyGenerator.generateCacheKey(saved)));
   }
 
   public List<BaseTextResponseDto> getAllByParent(int exerciseId) {
-    String cacheKey = cacheKeyGenerator.generateCacheKeyForParent(exerciseId);
+    String cacheKey = textCacheKeyGenerator.generateCacheKeyForParent(exerciseId);
 
     return getCachedText(cacheKey)
             .orElseGet(() -> {
