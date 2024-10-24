@@ -10,5 +10,5 @@ import java.util.List;
 public interface TextService {
   void deleteText(int id);
   void updateText(int id, JsonMergePatch patch)  throws JsonPatchException, JsonProcessingException;
-  List<BaseTextResponseDto> getAllByExercise(int exerciseId);
+  List<BaseTextResponseDto> getAllByParent(int exerciseId);
 }

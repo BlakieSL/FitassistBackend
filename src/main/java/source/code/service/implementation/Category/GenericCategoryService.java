@@ -80,7 +80,6 @@ public abstract class GenericCategoryService<T> {
 
     return getCachedCategories(cacheKey)
             .orElseGet(() -> {
-              List<T> categories = repository.findAll();
               List<CategoryResponseDto> categoryResponseDtos = repository.findAll().stream()
                       .map(mapper::toResponseDto)
                       .toList();

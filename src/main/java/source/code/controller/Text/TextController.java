@@ -26,7 +26,7 @@ public class TextController {
           @PathVariable int id, @PathVariable TextType type) {
 
     TextService textService = textSelectorService.getService(type);
-    List<BaseTextResponseDto> response = textService.getAllByExercise(id);
+    List<BaseTextResponseDto> response = textService.getAllByParent(id);
     return ResponseEntity.ok(response);
   }
 
