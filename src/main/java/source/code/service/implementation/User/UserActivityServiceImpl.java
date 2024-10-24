@@ -1,10 +1,7 @@
 package source.code.service.implementation.User;
 
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.ActivityResponseDto;
-import source.code.dto.response.LikesAndSavesResponseDto;
-import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.Activity.ActivityMapper;
 import source.code.model.Activity.Activity;
@@ -14,16 +11,13 @@ import source.code.repository.ActivityRepository;
 import source.code.repository.UserActivityRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.User.SavedService;
-import source.code.service.declaration.User.UserActivityService;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service("userActivityService")
 public class UserActivityServiceImpl
         extends GenericSavedService<Activity, UserActivity, ActivityResponseDto>
-        implements SavedService<ActivityResponseDto> {
+        implements SavedService {
 
   public UserActivityServiceImpl(UserActivityRepository userActivityRepository,
                                  ActivityRepository activityRepository,

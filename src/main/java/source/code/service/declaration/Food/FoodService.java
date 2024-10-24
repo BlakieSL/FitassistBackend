@@ -7,7 +7,6 @@ import source.code.dto.request.Food.CalculateFoodMacrosRequestDto;
 import source.code.dto.request.Food.FoodCreateDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
-import source.code.dto.response.FoodCategoryResponseDto;
 import source.code.dto.response.FoodResponseDto;
 
 import java.util.List;

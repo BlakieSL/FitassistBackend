@@ -6,15 +6,12 @@ import source.code.dto.request.Activity.ActivityCreateDto;
 import source.code.dto.request.Activity.ActivityUpdateDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.ActivityResponseDto;
-import source.code.service.declaration.Helpers.CalculationsService;
-import source.code.service.declaration.Helpers.RepositoryHelper;
-import source.code.service.implementation.Helpers.CalculationsServiceImpl;
 import source.code.model.Activity.Activity;
 import source.code.model.Activity.ActivityCategory;
 import source.code.model.User.User;
 import source.code.repository.ActivityCategoryRepository;
-
-import java.util.NoSuchElementException;
+import source.code.service.declaration.Helpers.CalculationsService;
+import source.code.service.declaration.Helpers.RepositoryHelper;
 
 @Mapper(componentModel = "spring")
 public abstract class ActivityMapper {

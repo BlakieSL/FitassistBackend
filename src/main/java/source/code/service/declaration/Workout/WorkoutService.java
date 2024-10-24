@@ -1,7 +1,7 @@
 package source.code.service.declaration.Workout;
 
-import source.code.dto.response.WorkoutResponseDto;
 import source.code.dto.request.Workout.WorkoutCreateDto;
+import source.code.dto.response.WorkoutResponseDto;
 
 import java.util.List;
 

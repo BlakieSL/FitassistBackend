@@ -5,14 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.Food.FoodCreateDto;
 import source.code.dto.request.Food.FoodUpdateDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
-import source.code.dto.response.FoodCategoryResponseDto;
 import source.code.dto.response.FoodResponseDto;
 import source.code.model.Food.Food;
 import source.code.model.Food.FoodCategory;
 import source.code.repository.FoodCategoryRepository;
 import source.code.service.declaration.Helpers.RepositoryHelper;
-
-import java.util.NoSuchElementException;
 
 @Mapper(componentModel = "spring")
 public abstract class FoodMapper {

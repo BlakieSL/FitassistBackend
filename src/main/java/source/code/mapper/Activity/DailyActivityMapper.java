@@ -6,9 +6,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.response.ActivityCalculatedResponseDto;
-import source.code.service.declaration.Helpers.CalculationsService;
-import source.code.service.implementation.Helpers.CalculationsServiceImpl;
 import source.code.model.Activity.DailyActivityItem;
+import source.code.service.declaration.Helpers.CalculationsService;
 
 @Mapper(componentModel = "spring")
 public abstract class DailyActivityMapper {

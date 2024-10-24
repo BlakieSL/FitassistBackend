@@ -1,0 +1,40 @@
+package source.code.service.implementation.Text;
+
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+import source.code.dto.request.Exercise.ExerciseInstructionUpdateDto;
+import source.code.dto.response.Text.ExerciseInstructionResponseDto;
+import source.code.mapper.Exercise.ExerciseInstructionsTipsMapper;
+import source.code.model.Exercise.ExerciseInstruction;
+import source.code.repository.ExerciseInstructionRepository;
+import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.ValidationService;
+import source.code.service.declaration.Text.TextService;
+
+import java.util.List;
+
+@Service("exerciseInstructionService")
+public class ExerciseInstructionServiceImpl
+        extends GenericTextService<ExerciseInstruction, ExerciseInstructionResponseDto,
+        ExerciseInstructionUpdateDto, ExerciseInstructionRepository>
+        implements TextService {
+
+  protected ExerciseInstructionServiceImpl(ValidationService validationService,
+                                           JsonPatchService jsonPatchService,
+                                           ApplicationEventPublisher applicationEventPublisher,
+                                           ExerciseInstructionRepository repository,
+                                           ExerciseInstructionsTipsMapper mapper) {
+    super(validationService,
+            jsonPatchService,
+            applicationEventPublisher,
+            repository,
+            mapper::toInstructionResponseDto,
+            mapper::updateInstruction,
+            ExerciseInstructionUpdateDto.class);
+  }
+
+  @Override
+  protected List<ExerciseInstruction> getAllByExerciseId(int exerciseId) {
+    return repository.getAllByExerciseId(exerciseId);
+  }
+}

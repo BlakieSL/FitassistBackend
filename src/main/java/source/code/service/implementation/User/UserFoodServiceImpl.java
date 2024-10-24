@@ -1,10 +1,7 @@
 package source.code.service.implementation.User;
 
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.FoodResponseDto;
-import source.code.dto.response.LikesAndSavesResponseDto;
-import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.Food.FoodMapper;
 import source.code.model.Food.Food;
@@ -14,16 +11,13 @@ import source.code.repository.FoodRepository;
 import source.code.repository.UserFoodRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.User.SavedService;
-import source.code.service.declaration.User.UserFoodService;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service("userFoodService")
 public class UserFoodServiceImpl
         extends GenericSavedService<Food, UserFood, FoodResponseDto>
-        implements SavedService<FoodResponseDto> {
+        implements SavedService{
 
   public UserFoodServiceImpl(UserFoodRepository userFoodRepository,
                              FoodRepository foodRepository,

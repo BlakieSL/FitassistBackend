@@ -12,21 +12,19 @@ import source.code.cache.event.Recipe.RecipeDeleteEvent;
 import source.code.cache.event.Recipe.RecipeUpdateEvent;
 import source.code.dto.request.Recipe.RecipeCreateDto;
 import source.code.dto.request.Recipe.RecipeUpdateDto;
-import source.code.dto.response.RecipeCategoryResponseDto;
 import source.code.dto.response.RecipeResponseDto;
+import source.code.mapper.Recipe.RecipeMapper;
+import source.code.model.Recipe.Recipe;
+import source.code.model.Recipe.RecipeCategoryAssociation;
+import source.code.repository.RecipeCategoryAssociationRepository;
+import source.code.repository.RecipeCategoryRepository;
+import source.code.repository.RecipeRepository;
 import source.code.service.declaration.Helpers.JsonPatchService;
 import source.code.service.declaration.Helpers.RepositoryHelper;
 import source.code.service.declaration.Helpers.ValidationService;
-import source.code.mapper.Recipe.RecipeMapper;
-import source.code.model.Recipe.Recipe;
-import source.code.model.Recipe.RecipeCategory;
-import source.code.model.Recipe.RecipeCategoryAssociation;
-import source.code.repository.*;
 import source.code.service.declaration.Recipe.RecipeService;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 public class RecipeServiceImpl implements RecipeService {

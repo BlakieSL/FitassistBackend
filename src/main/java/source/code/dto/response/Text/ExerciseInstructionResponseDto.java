@@ -1,4 +1,4 @@
-package source.code.dto.response;
+package source.code.dto.response.Text;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExerciseInstructionResponseDto {
+public class ExerciseInstructionResponseDto implements BaseTextResponseDto{
   private Integer id;
   private short number;
   private String text;

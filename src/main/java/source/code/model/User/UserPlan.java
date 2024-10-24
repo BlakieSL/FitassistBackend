@@ -14,7 +14,7 @@ import source.code.model.Plan.Plan;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPlan {
+public class UserPlan implements BaseUserEntity{
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;

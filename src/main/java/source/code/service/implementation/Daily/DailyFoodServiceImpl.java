@@ -10,9 +10,6 @@ import source.code.dto.request.Food.DailyFoodItemCreateDto;
 import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.service.declaration.Helpers.JsonPatchService;
-import source.code.service.declaration.Helpers.RepositoryHelper;
-import source.code.service.declaration.Helpers.ValidationService;
 import source.code.mapper.Food.DailyFoodMapper;
 import source.code.model.Food.DailyFood;
 import source.code.model.Food.DailyFoodItem;
@@ -23,10 +20,12 @@ import source.code.repository.DailyFoodRepository;
 import source.code.repository.FoodRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.Daily.DailyFoodService;
+import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.RepositoryHelper;
+import source.code.service.declaration.Helpers.ValidationService;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class DailyFoodServiceImpl implements DailyFoodService {

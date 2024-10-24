@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
-import source.code.model.Recipe.Recipe;
+import source.code.model.User.BaseUserEntity;
 import source.code.model.User.User;
 import source.code.repository.UserRepository;
 
@@ -55,10 +55,10 @@ public abstract class GenericSavedService<T, U, R> {
     userEntityRepository.delete(userEntity);
   }
 
-  public List<R> getAllFromUser(int userId, short type) {
+  public List<BaseUserEntity> getAllFromUser(int userId, short type) {
     return findAllByUserAndType(userId, type).stream()
             .map(this::extractEntity)
-            .map(map)
+            .map(entity -> (BaseUserEntity) map.apply(entity))
             .toList();
   }
 

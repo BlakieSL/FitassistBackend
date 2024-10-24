@@ -4,7 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.helper.enumerators.SavedType;
-import source.code.service.declaration.User.SavedSelectorService;
+import source.code.model.User.BaseUserEntity;
+import source.code.service.declaration.Selector.SavedSelectorService;
 import source.code.service.declaration.User.SavedService;
 
 import java.util.List;
@@ -19,11 +20,11 @@ public class SavedController {
   }
 
   @GetMapping("/item-type/{itemType}/users/{userId}/type/{type}")
-  public <R> ResponseEntity<List<R>> getAllFromUser(@PathVariable SavedType itemType,
-                                                @PathVariable int userId,
-                                                @PathVariable short type) {
+  public ResponseEntity<List<BaseUserEntity>> getAllFromUser(@PathVariable SavedType itemType,
+                                                             @PathVariable int userId,
+                                                             @PathVariable short type) {
     SavedService savedService = savedSelectorService.getService(itemType);
-    List<R> dto =  savedService.getAllFromUser(userId, type);
+    List<BaseUserEntity> dto =  savedService.getAllFromUser(userId, type);
     return ResponseEntity.ok(dto);
   }
 
