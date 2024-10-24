@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.Activity.DailyActivityItemCreateDto;
@@ -22,7 +23,6 @@ public class DailyActivityController {
   @GetMapping("/{userId}")
   public ResponseEntity<DailyActivitiesResponseDto> getAllDailyActivitiesByUser(
           @PathVariable int userId) {
-
     DailyActivitiesResponseDto activities = dailyActivityService.getActivitiesFromDailyActivity(userId);
     return ResponseEntity.ok(activities);
   }
@@ -34,7 +34,7 @@ public class DailyActivityController {
           @Valid @RequestBody DailyActivityItemCreateDto request) {
 
     dailyActivityService.addActivityToDailyActivityItem(userId, activityId, request);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
   @DeleteMapping("/{userId}/remove/{activityId}")
@@ -43,7 +43,7 @@ public class DailyActivityController {
           @PathVariable int activityId) {
 
     dailyActivityService.removeActivityFromDailyActivity(userId, activityId);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 
   @PatchMapping("/{userId}/modify-activity/{activityId}")

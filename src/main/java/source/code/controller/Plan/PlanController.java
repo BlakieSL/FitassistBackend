@@ -32,15 +32,10 @@ public class PlanController {
     return ResponseEntity.ok(plans);
   }
 
-  @PostMapping
-  public ResponseEntity<PlanResponseDto> createPlan(@Valid @RequestBody PlanCreateDto planDto) {
-    PlanResponseDto response = planService.createPlan(planDto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(response);
-  }
-
   @GetMapping("/{categoryId}/categories")
   public ResponseEntity<List<PlanResponseDto>> getPlansByCategory(@PathVariable int categoryId) {
-    return ResponseEntity.ok(planService.getPlansByCategory(categoryId));
+    List<PlanResponseDto> plans = planService.getPlansByCategory(categoryId);
+    return ResponseEntity.ok(plans);
   }
 
   @GetMapping("/field/{field}/{value}")
@@ -49,5 +44,11 @@ public class PlanController {
           @PathVariable int value) {
     List<PlanResponseDto> plans = planService.getPlansByField(field, value);
     return ResponseEntity.ok(plans);
+  }
+
+  @PostMapping
+  public ResponseEntity<PlanResponseDto> createPlan(@Valid @RequestBody PlanCreateDto planDto) {
+    PlanResponseDto response = planService.createPlan(planDto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 }

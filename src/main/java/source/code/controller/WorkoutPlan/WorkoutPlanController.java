@@ -25,6 +25,6 @@ public class WorkoutPlanController {
   public ResponseEntity<Void> deleteWorkoutFromPlan(@PathVariable int workoutId,
                                                     @PathVariable int planId) {
     workoutPlanService.deleteWorkoutFromPlan(workoutId, planId);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 }

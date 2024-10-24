@@ -33,18 +33,6 @@ public class ExerciseController {
     return ResponseEntity.ok(exercises);
   }
 
-  @PostMapping
-  public ResponseEntity<ExerciseResponseDto> createExercise(@Valid @RequestBody ExerciseCreateDto dto) {
-    ExerciseResponseDto savedExercise = exerciseService.createExercise(dto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(savedExercise);
-  }
-
-  @PostMapping("/search")
-  public ResponseEntity<List<ExerciseResponseDto>> searchExercises(
-          @Valid @RequestBody SearchRequestDto request) {
-    return ResponseEntity.ok(exerciseService.searchExercises(request));
-  }
-
   @GetMapping("/{categoryId}/categories")
   public ResponseEntity<List<ExerciseResponseDto>> getExercisesByCategory(
           @PathVariable int categoryId) {
@@ -58,5 +46,17 @@ public class ExerciseController {
           @PathVariable int value) {
     List<ExerciseResponseDto> exercises = exerciseService.getExercisesByField(field, value);
     return ResponseEntity.ok(exercises);
+  }
+
+  @PostMapping
+  public ResponseEntity<ExerciseResponseDto> createExercise(@Valid @RequestBody ExerciseCreateDto dto) {
+    ExerciseResponseDto savedExercise = exerciseService.createExercise(dto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(savedExercise);
+  }
+
+  @PostMapping("/search")
+  public ResponseEntity<List<ExerciseResponseDto>> searchExercises(
+          @Valid @RequestBody SearchRequestDto request) {
+    return ResponseEntity.ok(exerciseService.searchExercises(request));
   }
 }

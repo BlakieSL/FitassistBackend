@@ -42,7 +42,7 @@ public class SavedController {
                                          @PathVariable short type) {
     SavedService savedService = savedSelectorService.getService(itemType);
     savedService.saveToUser(userId, itemId, type);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 
   @DeleteMapping("/item-type/{itemType}/{itemId}/users/{userId}/type/{type}")
@@ -52,6 +52,6 @@ public class SavedController {
                                              @PathVariable short type) {
     SavedService savedService = savedSelectorService.getService(itemType);
     savedService.deleteFromUser(userId, itemId, type);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 }
