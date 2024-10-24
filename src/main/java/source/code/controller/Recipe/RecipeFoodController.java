@@ -48,6 +48,6 @@ public class RecipeFoodController {
           throws JsonPatchException, JsonProcessingException {
 
     recipeFoodService.updateFoodRecipe(recipeId, foodId, patch);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 }

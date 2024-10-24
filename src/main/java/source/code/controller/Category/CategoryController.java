@@ -3,6 +3,7 @@ package source.code.controller.Category;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.Category.CategoryCreateDto;
@@ -41,25 +42,24 @@ public class CategoryController {
                                             @RequestBody CategoryCreateDto request) {
     CategoryService categoryService = categorySelectorService.getService(categoryType);
     CategoryResponseDto dto = categoryService.createCategory(request);
-    return ResponseEntity.ok(dto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(dto);
   }
 
   @PutMapping("/{categoryType}/{id}")
-  public ResponseEntity<CategoryResponseDto> updateCategory(@PathVariable CategoryType categoryType,
+  public ResponseEntity<Void> updateCategory(@PathVariable CategoryType categoryType,
                                             @PathVariable int id,
                                             @RequestBody JsonMergePatch patch)
           throws JsonProcessingException, JsonPatchException {
 
     CategoryService categoryService = categorySelectorService.getService(categoryType);
     categoryService.updateCategory(id, patch);
-    CategoryResponseDto dto = categoryService.getCategory(id);
-    return ResponseEntity.ok(dto);
+    return ResponseEntity.noContent().build();
   }
 
   @DeleteMapping("/{categoryType}/{id}")
   public ResponseEntity<Void> deleteCategory(@PathVariable CategoryType categoryType, @PathVariable int id) {
     CategoryService categoryService = categorySelectorService.getService(categoryType);
     categoryService.deleteCategory(id);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 }
