@@ -1,6 +1,10 @@
 package source.code.controller.Exercise;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,15 +52,28 @@ public class ExerciseController {
     return ResponseEntity.ok(exercises);
   }
 
+  @PostMapping("/search")
+  public ResponseEntity<List<ExerciseResponseDto>> searchExercises(
+          @Valid @RequestBody SearchRequestDto request) {
+    return ResponseEntity.ok(exerciseService.searchExercises(request));
+  }
+
   @PostMapping
   public ResponseEntity<ExerciseResponseDto> createExercise(@Valid @RequestBody ExerciseCreateDto dto) {
     ExerciseResponseDto savedExercise = exerciseService.createExercise(dto);
     return ResponseEntity.status(HttpStatus.CREATED).body(savedExercise);
   }
 
-  @PostMapping("/search")
-  public ResponseEntity<List<ExerciseResponseDto>> searchExercises(
-          @Valid @RequestBody SearchRequestDto request) {
-    return ResponseEntity.ok(exerciseService.searchExercises(request));
+  @PatchMapping("/{id}")
+  public ResponseEntity<Void> updateExercise(@PathVariable int id, @RequestBody JsonMergePatch patch)
+          throws JsonPatchException, JsonProcessingException {
+    exerciseService.updateExercise(id, patch);
+    return ResponseEntity.noContent().build();
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteExercise(@PathVariable int id) {
+    exerciseService.deleteExercise(id);
+    return ResponseEntity.noContent().build();
   }
 }

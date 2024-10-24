@@ -1,5 +1,8 @@
 package source.code.controller.Plan;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,5 +53,18 @@ public class PlanController {
   public ResponseEntity<PlanResponseDto> createPlan(@Valid @RequestBody PlanCreateDto planDto) {
     PlanResponseDto response = planService.createPlan(planDto);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  }
+
+  @PatchMapping("/{id}")
+  public ResponseEntity<Void> updatePlan(@PathVariable int id, @RequestBody JsonMergePatch patch)
+          throws JsonPatchException, JsonProcessingException {
+    planService.updatePlan(id, patch);
+    return ResponseEntity.noContent().build();
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deletePlan(@PathVariable int id) {
+    planService.deletePlan(id);
+    return ResponseEntity.noContent().build();
   }
 }
