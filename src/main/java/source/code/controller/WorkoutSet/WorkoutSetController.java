@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.request.Workout.WorkoutCreateDto;
 import source.code.dto.request.WorkoutSet.WorkoutSetCreateDto;
 import source.code.dto.response.WorkoutSetResponseDto;
 import source.code.service.declaration.Workout.WorkoutSetService;

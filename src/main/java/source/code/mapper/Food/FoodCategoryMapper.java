@@ -1,7 +1,6 @@
 package source.code.mapper.Food;
 
 import org.mapstruct.*;
-
 import source.code.dto.request.Category.CategoryCreateDto;
 import source.code.dto.request.Category.CategoryUpdateDto;
 import source.code.dto.response.CategoryResponseDto;

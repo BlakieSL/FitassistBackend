@@ -1,10 +1,10 @@
-package source.code.service.implementation.Category;
+package source.code.service.implementation.Selector;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import source.code.helper.enumerators.CategoryType;
-import source.code.service.declaration.Category.CategorySelectorService;
 import source.code.service.declaration.Category.CategoryService;
+import source.code.service.declaration.Selector.CategorySelectorService;
 
 @Service
 public class CategorySelectorServiceImpl implements CategorySelectorService {
@@ -28,19 +28,12 @@ public class CategorySelectorServiceImpl implements CategorySelectorService {
 
   @Override
   public CategoryService getService(CategoryType categoryType) {
-    switch (categoryType) {
-      case FOOD:
-        return foodCategoryService;
-      case ACTIVITY:
-        return activityCategoryService;
-      case EXERCISE:
-        return exerciseCategoryService;
-      case RECIPE:
-        return recipeCategoryService;
-      case PLAN:
-        return planCategoryService;
-      default:
-        throw new IllegalArgumentException("Invalid category type: " + categoryType);
-    }
+    return switch (categoryType) {
+      case FOOD -> foodCategoryService;
+      case ACTIVITY -> activityCategoryService;
+      case EXERCISE -> exerciseCategoryService;
+      case RECIPE -> recipeCategoryService;
+      case PLAN -> planCategoryService;
+    };
   }
 }

@@ -16,16 +16,15 @@ import source.code.dto.request.Food.FoodUpdateDto;
 import source.code.dto.request.SearchRequestDto;
 import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.FoodResponseDto;
-import source.code.service.declaration.Helpers.JsonPatchService;
-import source.code.service.declaration.Helpers.RepositoryHelper;
-import source.code.service.declaration.Helpers.ValidationService;
 import source.code.mapper.Food.FoodMapper;
 import source.code.model.Food.Food;
 import source.code.repository.FoodRepository;
 import source.code.service.declaration.Food.FoodService;
+import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.RepositoryHelper;
+import source.code.service.declaration.Helpers.ValidationService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FoodServiceImpl implements FoodService {

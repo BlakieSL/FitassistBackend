@@ -5,16 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.other.ExerciseCategoryShortDto;
 import source.code.dto.request.Exercise.ExerciseCreateDto;
 import source.code.dto.request.Exercise.ExerciseUpdateDto;
-import source.code.dto.response.ExerciseInstructionResponseDto;
 import source.code.dto.response.ExerciseResponseDto;
-import source.code.dto.response.ExerciseTipResponseDto;
 import source.code.model.Exercise.*;
 import source.code.repository.*;
 import source.code.service.declaration.Helpers.RepositoryHelper;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 @Mapper(componentModel = "spring")

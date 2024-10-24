@@ -10,10 +10,6 @@ import source.code.dto.request.Activity.DailyActivityItemCreateDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.DailyActivitiesResponseDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.service.declaration.Helpers.JsonPatchService;
-import source.code.service.declaration.Helpers.RepositoryHelper;
-import source.code.service.declaration.Helpers.ValidationService;
-import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
 import source.code.mapper.Activity.DailyActivityMapper;
 import source.code.model.Activity.Activity;
 import source.code.model.Activity.DailyActivity;
@@ -24,10 +20,13 @@ import source.code.repository.DailyActivityItemRepository;
 import source.code.repository.DailyActivityRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.Daily.DailyActivityService;
+import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.RepositoryHelper;
+import source.code.service.declaration.Helpers.ValidationService;
+import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class DailyActivityServiceImpl implements DailyActivityService {

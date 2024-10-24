@@ -1,10 +1,10 @@
 package source.code.mapper;
 
-        import org.mapstruct.*;
-        import source.code.dto.response.WorkoutResponseDto;
-        import source.code.dto.request.Workout.WorkoutCreateDto;
-        import source.code.model.Workout.Workout;
-        import source.code.model.Workout.WorkoutType;
+import org.mapstruct.*;
+import source.code.dto.request.Workout.WorkoutCreateDto;
+import source.code.dto.response.WorkoutResponseDto;
+import source.code.model.Workout.Workout;
+import source.code.model.Workout.WorkoutType;
 
 @Mapper(componentModel = "spring")
 public interface WorkoutMapper {

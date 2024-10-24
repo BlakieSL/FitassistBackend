@@ -13,8 +13,6 @@ import source.code.repository.WorkoutRepository;
 import source.code.service.declaration.Helpers.RepositoryHelper;
 import source.code.service.declaration.Workout.WorkoutPlanService;
 
-import java.util.NoSuchElementException;
-
 @Service
 public class WorkoutPlanServiceImpl implements WorkoutPlanService {
   private final RepositoryHelper repositoryHelper;

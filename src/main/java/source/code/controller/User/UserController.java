@@ -12,10 +12,7 @@ import source.code.auth.JwtService;
 import source.code.dto.request.RefreshTokenRequestDto;
 import source.code.dto.request.UserCreateDto;
 import source.code.dto.response.AccessTokenResponseDto;
-import source.code.dto.response.UserResponseDto;
-import source.code.service.declaration.User.UserFoodService;
-import source.code.service.declaration.User.UserPlanService;
-import source.code.service.declaration.User.UserRecipeService;
+import source.code.dto.response.User.UserResponseDto;
 import source.code.service.declaration.User.UserService;
 import source.code.validation.ValidationGroups;
 
@@ -23,21 +20,12 @@ import source.code.validation.ValidationGroups;
 @RequestMapping(path = "/api/users")
 public class UserController {
   private final UserService userService;
-  private final UserRecipeService userRecipeService;
-  private final UserPlanService userPlanService;
-  private final UserFoodService userFoodService;
   private final JwtService jwtService;
 
   public UserController(
           UserService userService,
-          UserRecipeService userRecipeService,
-          UserPlanService userPlanService,
-          UserFoodService userFoodService,
           JwtService jwtService) {
     this.userService = userService;
-    this.userRecipeService = userRecipeService;
-    this.userPlanService = userPlanService;
-    this.userFoodService = userFoodService;
     this.jwtService = jwtService;
   }
 

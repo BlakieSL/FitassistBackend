@@ -1,10 +1,7 @@
 package source.code.service.implementation.User;
 
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.dto.response.RecipeResponseDto;
-import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.Recipe.RecipeMapper;
 import source.code.model.Recipe.Recipe;
@@ -14,16 +11,13 @@ import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.User.SavedService;
-import source.code.service.declaration.User.UserRecipeService;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service("userRecipeService")
 public class UserRecipeServiceImpl
         extends GenericSavedService<Recipe, UserRecipe, RecipeResponseDto>
-        implements SavedService<RecipeResponseDto> {
+        implements SavedService {
 
 
   public UserRecipeServiceImpl(UserRecipeRepository userRecipeRepository,

@@ -13,20 +13,18 @@ import source.code.cache.event.Plan.PlanUpdateEvent;
 import source.code.dto.request.Plan.PlanCreateDto;
 import source.code.dto.request.Plan.PlanUpdateDto;
 import source.code.dto.response.PlanResponseDto;
-import source.code.service.declaration.Helpers.JsonPatchService;
-import source.code.service.declaration.Helpers.RepositoryHelper;
-import source.code.service.declaration.Helpers.ValidationService;
 import source.code.helper.enumerators.PlanField;
 import source.code.mapper.Plan.PlanMapper;
 import source.code.model.Plan.*;
 import source.code.repository.PlanCategoryAssociationRepository;
 import source.code.repository.PlanRepository;
+import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.RepositoryHelper;
+import source.code.service.declaration.Helpers.ValidationService;
 import source.code.service.declaration.Plan.PlanService;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class PlanServiceImpl implements PlanService {

@@ -14,7 +14,7 @@ import source.code.model.Recipe.Recipe;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRecipe {
+public class UserRecipe implements BaseUserEntity{
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;

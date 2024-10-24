@@ -1,9 +1,9 @@
-package source.code.service.implementation.User;
+package source.code.service.implementation.Selector;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import source.code.helper.enumerators.SavedType;
-import source.code.service.declaration.User.SavedSelectorService;
+import source.code.service.declaration.Selector.SavedSelectorService;
 import source.code.service.declaration.User.SavedService;
 
 @Service
@@ -28,19 +28,12 @@ public class SavedSelectorServiceImpl implements SavedSelectorService {
 
   @Override
   public SavedService getService(SavedType savedType) {
-    switch (savedType) {
-      case ACTIVITY:
-        return userActivityService;
-      case EXERCISE:
-        return userExerciseService;
-      case PLAN:
-        return userFoodService;
-      case FOOD:
-        return userPlanService;
-      case RECIPE:
-        return userRecipeService;
-      default:
-        throw new IllegalArgumentException("Invalid saved type: " + savedType);
-    }
+    return switch (savedType) {
+      case ACTIVITY -> userActivityService;
+      case EXERCISE -> userExerciseService;
+      case PLAN -> userFoodService;
+      case FOOD -> userPlanService;
+      case RECIPE -> userRecipeService;
+    };
   }
 }

@@ -7,8 +7,8 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import source.code.dto.request.Exercise.ExerciseInstructionUpdateDto;
 import source.code.dto.request.Exercise.ExerciseTipUpdateDto;
-import source.code.dto.response.ExerciseInstructionResponseDto;
-import source.code.dto.response.ExerciseTipResponseDto;
+import source.code.dto.response.Text.ExerciseInstructionResponseDto;
+import source.code.dto.response.Text.ExerciseTipResponseDto;
 import source.code.model.Exercise.ExerciseInstruction;
 import source.code.model.Exercise.ExerciseTip;
 

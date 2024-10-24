@@ -12,8 +12,6 @@ import source.code.service.declaration.Helpers.RepositoryHelper;
 import source.code.service.declaration.Media.MediaService;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 public class MediaServiceImpl implements MediaService {

@@ -14,7 +14,7 @@ import source.code.model.Activity.Activity;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserActivity {
+public class UserActivity implements BaseUserEntity{
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;

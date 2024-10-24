@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.Recipe.RecipeCreateDto;
 import source.code.dto.response.RecipeResponseDto;
 import source.code.service.declaration.Recipe.RecipeService;
-import source.code.service.declaration.User.UserRecipeService;
 
 import java.util.List;
 
@@ -15,11 +14,9 @@ import java.util.List;
 @RequestMapping(path = "/api/recipes")
 public class RecipeController {
   private final RecipeService recipeService;
-  private final UserRecipeService userRecipeService;
 
-  public RecipeController(RecipeService recipeService, UserRecipeService userRecipeService) {
+  public RecipeController(RecipeService recipeService) {
     this.recipeService = recipeService;
-    this.userRecipeService = userRecipeService;
   }
 
   @GetMapping("/{id}")

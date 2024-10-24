@@ -17,19 +17,18 @@ import source.code.cache.event.User.UserUpdateEvent;
 import source.code.dto.other.UserCredentialsDto;
 import source.code.dto.request.UserCreateDto;
 import source.code.dto.request.UserUpdateDto;
-import source.code.dto.response.UserResponseDto;
+import source.code.dto.response.User.UserResponseDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.service.declaration.Helpers.JsonPatchService;
-import source.code.service.declaration.Helpers.RepositoryHelper;
-import source.code.service.declaration.Helpers.ValidationService;
-import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
 import source.code.helper.UserDetailsHelper;
 import source.code.mapper.UserMapper;
 import source.code.model.User.User;
 import source.code.repository.UserRepository;
+import source.code.service.declaration.Helpers.JsonPatchService;
+import source.code.service.declaration.Helpers.RepositoryHelper;
+import source.code.service.declaration.Helpers.ValidationService;
 import source.code.service.declaration.User.UserService;
+import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service

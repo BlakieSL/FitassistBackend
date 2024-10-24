@@ -2,7 +2,6 @@ package source.code.helper;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 import source.code.dto.other.UserCredentialsDto;
 
 public class UserDetailsHelper {

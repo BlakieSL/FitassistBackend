@@ -5,7 +5,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import source.code.cache.event.Exercise.ExerciseInstructionEvent;
 import source.code.cache.event.Exercise.ExerciseTipEvent;
-import source.code.model.Exercise.Exercise;
 import source.code.model.Exercise.ExerciseInstruction;
 import source.code.model.Exercise.ExerciseTip;
 

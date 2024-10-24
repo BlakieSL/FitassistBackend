@@ -1,11 +1,7 @@
 package source.code.service.implementation.User;
 
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.dto.response.PlanResponseDto;
-import source.code.exception.NotUniqueRecordException;
-
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.Plan.PlanMapper;
 import source.code.model.Plan.Plan;
@@ -15,16 +11,13 @@ import source.code.repository.PlanRepository;
 import source.code.repository.UserPlanRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.User.SavedService;
-import source.code.service.declaration.User.UserPlanService;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service("userPlanService")
 public class UserPlanServiceImpl
         extends GenericSavedService<Plan, UserPlan, PlanResponseDto>
-        implements SavedService<PlanResponseDto> {
+        implements SavedService{
 
   public UserPlanServiceImpl(UserPlanRepository userPlanRepository,
                              PlanRepository planRepository,

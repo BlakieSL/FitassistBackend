@@ -15,7 +15,6 @@ import source.code.service.declaration.Helpers.RepositoryHelper;
 import source.code.service.declaration.Workout.WorkoutSetService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class WorkoutSetServiceImpl implements WorkoutSetService {
