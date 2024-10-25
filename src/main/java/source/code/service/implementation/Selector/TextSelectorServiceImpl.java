@@ -8,20 +8,23 @@ import source.code.service.declaration.Text.TextService;
 
 @Service
 public class TextSelectorServiceImpl implements TextSelectorService {
-  private final TextService instructionService;
-  private final TextService tipService;
-
-  public TextSelectorServiceImpl(@Qualifier("exerciseInstructionService") TextService instructionService,
-                                 @Qualifier("exerciseTipService") TextService tipService) {
-    this.instructionService = instructionService;
-    this.tipService = tipService;
+  private final TextService exerciseInstructionService;
+  private final TextService exerciseTipService;
+  private final TextService recipeInstructionService;
+  public TextSelectorServiceImpl(@Qualifier("exerciseInstructionService") TextService exerciseInstructionService,
+                                 @Qualifier("exerciseTipService") TextService exerciseTipService,
+                                 @Qualifier("recipeInstructionService") TextService recipeInstructionService) {
+    this.exerciseInstructionService = exerciseInstructionService;
+    this.exerciseTipService = exerciseTipService;
+    this.recipeInstructionService = recipeInstructionService;
   }
 
   @Override
   public TextService getService(TextType textType) {
     return switch (textType) {
-      case INSTRUCTION -> instructionService;
-      case TIP -> tipService;
+      case EXERCISE_INSTRUCTION -> exerciseInstructionService;
+      case EXERCISE_TIP -> exerciseTipService;
+      case RECIPE_TIP -> recipeInstructionService;
     };
   }
 }

@@ -81,7 +81,7 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
 
     return getCachedText(cacheKey)
             .orElseGet(() -> {
-              List<BaseTextResponseDto> responseDtos = getAllByExerciseId(exerciseId).stream()
+              List<BaseTextResponseDto> responseDtos = getAllByParentId(exerciseId).stream()
                       .map(entity -> (BaseTextResponseDto) toResponse.apply(entity))
                       .toList();
 
@@ -120,5 +120,5 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
     return Optional.empty();
   }
 
-  protected abstract List<T> getAllByExerciseId(int exerciseId);
+  protected abstract List<T> getAllByParentId(int parentId);
 }

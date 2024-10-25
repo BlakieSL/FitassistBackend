@@ -3,10 +3,10 @@ package source.code.service.implementation.Text;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import source.code.dto.request.Exercise.ExerciseTipUpdateDto;
+import source.code.dto.request.Text.ExerciseTipUpdateDto;
 import source.code.dto.response.Text.ExerciseTipResponseDto;
-import source.code.mapper.Exercise.ExerciseInstructionsTipsMapper;
-import source.code.model.Exercise.ExerciseTip;
+import source.code.mapper.Text.TextMapper;
+import source.code.model.Text.ExerciseTip;
 import source.code.repository.ExerciseTipRepository;
 import source.code.service.declaration.Helpers.JsonPatchService;
 import source.code.service.declaration.Helpers.ValidationService;
@@ -27,20 +27,20 @@ public class ExerciseTipServiceImpl
                                    CacheManager cacheManager,
                                    ApplicationEventPublisher applicationEventPublisher,
                                    ExerciseTipRepository repository,
-                                   ExerciseInstructionsTipsMapper mapper) {
+                                   TextMapper mapper) {
     super(validationService,
             jsonPatchService,
             textCacheKeyGenerator,
             cacheManager,
             applicationEventPublisher,
             repository,
-            mapper::toTipResponseDto,
-            mapper::updateTip,
+            mapper::toExerciseTipResponseDto,
+            mapper::updateExerciseTip,
             ExerciseTipUpdateDto.class);
   }
 
   @Override
-  protected List<ExerciseTip> getAllByExerciseId(int exerciseId) {
+  protected List<ExerciseTip> getAllByParentId(int exerciseId) {
     return repository.getAllByExerciseId(exerciseId);
   }
 }

@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.request.Text.ExerciseInstructionCreateDto;
+import source.code.dto.request.Text.ExerciseTipCreateDto;
 
 import java.util.List;
 

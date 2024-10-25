@@ -1,4 +1,4 @@
-package source.code.model.Exercise;
+package source.code.model.Text;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -7,26 +7,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.model.Exercise.Exercise;
 
 @Entity
-@Table(name = "exercise_instruction")
+@DiscriminatorValue("EXERCISE_INSTRUCTION")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExerciseInstruction {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
-
-  @NotNull
-  @Column(nullable = false)
-  private short number;
-
-  @NotBlank
-  @Column(nullable = false)
-  private String text;
-
+public class ExerciseInstruction extends TextBase {
   @NotNull
   @ManyToOne
   @JoinColumn(name = "exercise_id", nullable = false)

@@ -1,4 +1,4 @@
-package source.code.dto.request.Exercise;
+package source.code.dto.request.Text;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

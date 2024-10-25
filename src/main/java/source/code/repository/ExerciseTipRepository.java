@@ -1,7 +1,7 @@
 package source.code.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import source.code.model.Exercise.ExerciseTip;
+import source.code.model.Text.ExerciseTip;
 
 import java.util.List;
 

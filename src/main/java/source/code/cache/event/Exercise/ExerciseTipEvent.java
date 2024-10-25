@@ -2,7 +2,7 @@ package source.code.cache.event.Exercise;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import source.code.model.Exercise.ExerciseTip;
+import source.code.model.Text.ExerciseTip;
 
 @Getter
 public class ExerciseTipEvent extends ApplicationEvent {
