@@ -32,9 +32,10 @@ public class RecipeInstruction extends TextBase{
     return instruction;
   }
 
-  public static RecipeInstruction createWithNumberAndText(short number, String text) {
+  public static RecipeInstruction createWithNumberTitleText(short number, String title, String text) {
     RecipeInstruction instruction = new RecipeInstruction();
     instruction.setNumber(number);;
+    instruction.setTitle(title);
     instruction.setText(text);
     return  instruction;
   }
