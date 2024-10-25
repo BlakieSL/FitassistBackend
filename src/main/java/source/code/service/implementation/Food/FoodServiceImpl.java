@@ -87,12 +87,6 @@ public class FoodServiceImpl implements FoodService {
     return foodMapper.toDtoWithFactor(food, factor);
   }
 
-  public List<FoodResponseDto> searchFoods(SearchRequestDto request) {
-    return foodRepository.findAllByNameContainingIgnoreCase(request.getName()).stream()
-            .map(foodMapper::toResponseDto)
-            .toList();
-  }
-
   @Cacheable(value = {"foods"}, key = "#id")
   public FoodResponseDto getFood(int id) {
     Food food = find(id);

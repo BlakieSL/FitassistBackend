@@ -21,8 +21,6 @@ public interface ExerciseService {
 
   List<ExerciseResponseDto> getAllExercises();
 
-  List<ExerciseResponseDto> searchExercises(SearchRequestDto dto);
-
   List<ExerciseResponseDto> getExercisesByCategory(int categoryId);
 
   List<ExerciseResponseDto> getExercisesByField(ExerciseField field, int value);

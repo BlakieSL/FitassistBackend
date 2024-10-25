@@ -77,11 +77,4 @@ public class ActivityController {
     ActivityCalculatedResponseDto response = activityService.calculateCaloriesBurned(id, request);
     return ResponseEntity.ok(response);
   }
-
-  @PostMapping("/search")
-  public ResponseEntity<List<ActivityResponseDto>> searchActivities(
-          @Valid @RequestBody SearchRequestDto request) {
-
-    return ResponseEntity.ok(activityService.searchActivities(request));
-  }
 }
