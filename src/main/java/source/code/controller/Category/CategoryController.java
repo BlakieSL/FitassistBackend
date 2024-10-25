@@ -45,7 +45,7 @@ public class CategoryController {
     return ResponseEntity.status(HttpStatus.CREATED).body(dto);
   }
 
-  @PutMapping("/{categoryType}/{id}")
+  @PatchMapping("/{categoryType}/{id}")
   public ResponseEntity<Void> updateCategory(@PathVariable CategoryType categoryType,
                                             @PathVariable int id,
                                             @RequestBody JsonMergePatch patch)

@@ -10,7 +10,7 @@ import source.code.dto.request.Activity.DailyActivityItemCreateDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.DailyActivitiesResponseDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.mapper.Activity.DailyActivityMapper;
+import source.code.mapper.Daily.DailyActivityMapper;
 import source.code.model.Activity.Activity;
 import source.code.model.Activity.DailyActivity;
 import source.code.model.Activity.DailyActivityItem;

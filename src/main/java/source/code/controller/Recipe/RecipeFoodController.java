@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.Recipe.RecipeFoodCreateDto;
 import source.code.dto.response.FoodResponseDto;
+import source.code.dto.response.RecipeResponseDto;
 import source.code.service.declaration.Recipe.RecipeFoodService;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public class RecipeFoodController {
   public ResponseEntity<Void> updateFoodRecipe(
           @PathVariable int recipeId,
           @PathVariable int foodId,
-          @Valid @RequestBody JsonMergePatch patch)
+          @RequestBody JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
 
     recipeFoodService.updateFoodRecipe(recipeId, foodId, patch);
@@ -58,5 +59,11 @@ public class RecipeFoodController {
   public ResponseEntity<List<FoodResponseDto>> getFoodsByRecipe(@PathVariable int id) {
     List<FoodResponseDto> foods = recipeFoodService.getFoodsByRecipe(id);
     return ResponseEntity.ok(foods);
+  }
+
+  @GetMapping("/{id}/recipes")
+  public ResponseEntity<List<RecipeResponseDto>> getRecipesByFood(@PathVariable int id) {
+    List<RecipeResponseDto> recipes = recipeFoodService.getRecipesByFood(id);
+    return ResponseEntity.ok(recipes);
   }
 }

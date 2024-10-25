@@ -1,4 +1,4 @@
-package source.code.mapper.Food;
+package source.code.mapper.Daily;
 
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;

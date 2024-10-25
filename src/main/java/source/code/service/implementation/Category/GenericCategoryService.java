@@ -14,11 +14,10 @@ import source.code.dto.request.Category.CategoryCreateDto;
 import source.code.dto.request.Category.CategoryUpdateDto;
 import source.code.dto.response.CategoryResponseDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.mapper.Generics.BaseMapper;
+import source.code.mapper.Category.BaseMapper;
 import source.code.service.declaration.Category.CategoryCacheKeyGenerator;
 import source.code.service.declaration.Helpers.JsonPatchService;
 import source.code.service.declaration.Helpers.ValidationService;
-import source.code.service.implementation.Helpers.JsonPatchServiceImpl;
 
 import java.util.List;
 import java.util.Optional;

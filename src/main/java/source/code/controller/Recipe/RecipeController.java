@@ -34,6 +34,12 @@ public class RecipeController {
     return ResponseEntity.ok(recipeService.getAllRecipes());
   }
 
+  @GetMapping("/categories/{categoryId}")
+  public ResponseEntity<List<RecipeResponseDto>> getRecipesByCategory(@PathVariable int categoryId) {
+    List<RecipeResponseDto> recipes = recipeService.getRecipesByCategory(categoryId);
+    return ResponseEntity.ok(recipes);
+  }
+
   @PostMapping
   public ResponseEntity<RecipeResponseDto> createRecipe(
           @Valid @RequestBody RecipeCreateDto recipeDto) {

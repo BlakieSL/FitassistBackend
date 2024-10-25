@@ -1,4 +1,4 @@
-package source.code.mapper.Generics;
+package source.code.mapper.Category;
 
 import org.mapstruct.MappingTarget;
 import source.code.dto.request.Category.CategoryCreateDto;

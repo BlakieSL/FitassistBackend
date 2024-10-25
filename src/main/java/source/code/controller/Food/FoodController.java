@@ -36,9 +36,10 @@ public class FoodController {
     return ResponseEntity.ok(foodService.getAllFoods());
   }
 
-  @GetMapping("/{categoryId}/categories")
+  @GetMapping("/categories/{categoryId}")
   public ResponseEntity<List<FoodResponseDto>> getFoodsByCategory(@PathVariable int categoryId) {
-    return ResponseEntity.ok(foodService.getFoodsByCategory(categoryId));
+    List<FoodResponseDto> foods = foodService.getFoodsByCategory(categoryId);
+    return ResponseEntity.ok(foods);
   }
 
   @PostMapping("/{id}/calculate-macros")
