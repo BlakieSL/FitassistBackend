@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.model.Text.ExerciseInstruction;
+import source.code.model.Text.ExerciseTip;
 import source.code.model.User.UserExercise;
 import source.code.model.Workout.WorkoutSet;
 

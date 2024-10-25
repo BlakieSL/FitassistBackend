@@ -3,10 +3,10 @@ package source.code.service.implementation.Text;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import source.code.dto.request.Exercise.ExerciseInstructionUpdateDto;
+import source.code.dto.request.Text.ExerciseInstructionUpdateDto;
 import source.code.dto.response.Text.ExerciseInstructionResponseDto;
-import source.code.mapper.Exercise.ExerciseInstructionsTipsMapper;
-import source.code.model.Exercise.ExerciseInstruction;
+import source.code.mapper.Text.TextMapper;
+import source.code.model.Text.ExerciseInstruction;
 import source.code.repository.ExerciseInstructionRepository;
 import source.code.service.declaration.Helpers.JsonPatchService;
 import source.code.service.declaration.Helpers.ValidationService;
@@ -27,20 +27,20 @@ public class ExerciseInstructionServiceImpl
                                            CacheManager cacheManager,
                                            ApplicationEventPublisher applicationEventPublisher,
                                            ExerciseInstructionRepository repository,
-                                           ExerciseInstructionsTipsMapper mapper) {
+                                           TextMapper mapper) {
     super(validationService,
             jsonPatchService,
             textCacheKeyGenerator,
             cacheManager,
             applicationEventPublisher,
             repository,
-            mapper::toInstructionResponseDto,
-            mapper::updateInstruction,
+            mapper::toExerciseInstructionResponseDto,
+            mapper::updateExerciseInstruction,
             ExerciseInstructionUpdateDto.class);
   }
 
   @Override
-  protected List<ExerciseInstruction> getAllByExerciseId(int exerciseId) {
+  protected List<ExerciseInstruction> getAllByParentId(int exerciseId) {
     return repository.getAllByExerciseId(exerciseId);
   }
 }

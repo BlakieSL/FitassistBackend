@@ -1,4 +1,4 @@
-package source.code.dto.request.Exercise;
+package source.code.dto.request.Text;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
