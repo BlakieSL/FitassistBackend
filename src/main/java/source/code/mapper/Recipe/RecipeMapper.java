@@ -5,12 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.other.RecipeCategoryShortDto;
 import source.code.dto.request.Recipe.RecipeCreateDto;
 import source.code.dto.request.Recipe.RecipeUpdateDto;
-import source.code.dto.response.RecipeCategoryResponseDto;
 import source.code.dto.response.RecipeResponseDto;
 import source.code.model.Recipe.Recipe;
 import source.code.model.Recipe.RecipeCategory;
 import source.code.model.Recipe.RecipeCategoryAssociation;
-import source.code.model.Text.ExerciseInstruction;
 import source.code.model.Text.RecipeInstruction;
 import source.code.repository.RecipeCategoryRepository;
 import source.code.service.declaration.Helpers.RepositoryHelper;
@@ -50,7 +48,9 @@ public abstract class RecipeMapper {
     Set<RecipeInstruction> instructions = dto.getInstructions().stream()
             .map(instructionDto -> {
               RecipeInstruction instruction = RecipeInstruction
-                      .createWithNumberAndText(instructionDto.getNumber(), instructionDto.getText());
+                      .createWithNumberTitleText(instructionDto.getNumber(),
+                              instructionDto.getText(), instructionDto.getText());
+
               instruction.setRecipe(recipe);
               return instruction;
             }).collect(Collectors.toSet());

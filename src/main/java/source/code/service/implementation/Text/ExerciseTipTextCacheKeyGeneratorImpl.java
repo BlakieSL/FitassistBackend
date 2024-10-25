@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import source.code.model.Text.ExerciseTip;
 import source.code.service.declaration.Text.TextCacheKeyGenerator;
 
-@Service("exerciseTipCacheKeyGenerator")
+@Service
 public class ExerciseTipTextCacheKeyGeneratorImpl implements TextCacheKeyGenerator<ExerciseTip> {
   private static final String CACHE_PREFIX = "exerciseTip_";
   @Override

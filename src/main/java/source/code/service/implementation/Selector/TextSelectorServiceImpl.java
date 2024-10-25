@@ -11,12 +11,19 @@ public class TextSelectorServiceImpl implements TextSelectorService {
   private final TextService exerciseInstructionService;
   private final TextService exerciseTipService;
   private final TextService recipeInstructionService;
-  public TextSelectorServiceImpl(@Qualifier("exerciseInstructionService") TextService exerciseInstructionService,
-                                 @Qualifier("exerciseTipService") TextService exerciseTipService,
-                                 @Qualifier("recipeInstructionService") TextService recipeInstructionService) {
+  private final TextService planInstructionService;
+  public TextSelectorServiceImpl(@Qualifier("exerciseInstructionService")
+                                 TextService exerciseInstructionService,
+                                 @Qualifier("exerciseTipService")
+                                 TextService exerciseTipService,
+                                 @Qualifier("recipeInstructionService")
+                                 TextService recipeInstructionService,
+                                 @Qualifier("planInstructionService")
+                                 TextService planInstructionService) {
     this.exerciseInstructionService = exerciseInstructionService;
     this.exerciseTipService = exerciseTipService;
     this.recipeInstructionService = recipeInstructionService;
+    this.planInstructionService = planInstructionService;
   }
 
   @Override
