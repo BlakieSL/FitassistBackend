@@ -95,12 +95,6 @@ public class ActivityServiceImpl implements ActivityService {
     return activityMapper.toCalculatedDto(activity, user, request.getTime());
   }
 
-  public List<ActivityResponseDto> searchActivities(SearchRequestDto request) {
-    return activityRepository.findAllByNameContainingIgnoreCase(request.getName()).stream()
-            .map(activityMapper::toResponseDto)
-            .toList();
-  }
-
   @Cacheable(value = "activities", key = "#id")
   public ActivityResponseDto getActivity(int activityId) {
     Activity activity = repositoryHelper.find(activityRepository, Activity.class, activityId);
