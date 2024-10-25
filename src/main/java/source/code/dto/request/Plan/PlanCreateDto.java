@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.request.Text.PlanInstructionCreateDto;
 
 import java.util.List;
 
@@ -47,4 +48,6 @@ public class PlanCreateDto {
   private int planExpertiseLevelId;
 
   private List<Integer> categoryIds;
+
+  private List<PlanInstructionCreateDto> instructions;
 }

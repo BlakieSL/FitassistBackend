@@ -8,12 +8,15 @@ import source.code.dto.request.Plan.PlanUpdateDto;
 import source.code.dto.response.PlanCategoryResponseDto;
 import source.code.dto.response.PlanResponseDto;
 import source.code.model.Plan.*;
+import source.code.model.Text.PlanInstruction;
+import source.code.model.Text.RecipeInstruction;
 import source.code.repository.*;
 import source.code.service.declaration.Helpers.RepositoryHelper;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class PlanMapper {
@@ -47,8 +50,6 @@ public abstract class PlanMapper {
   @Mapping(target = "workoutPlans", ignore = true)
   public abstract Plan toEntity(PlanCreateDto dto);
 
-  public abstract PlanCategoryResponseDto toCategoryDto(PlanCategory planCategory);
-
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
   @Mapping(target = "planCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
   @Mapping(target = "planType", source = "planTypeId", qualifiedByName = "mapTypeIdToEntity")
@@ -59,6 +60,21 @@ public abstract class PlanMapper {
   @Mapping(target = "userPlans", ignore = true)
   @Mapping(target = "workoutPlans", ignore = true)
   public abstract void updatePlan(@MappingTarget Plan plan, PlanUpdateDto planUpdateDto);
+
+  @AfterMapping
+  protected void setPlanAssociations(@MappingTarget Plan plan, PlanCreateDto dto) {
+    Set<PlanInstruction> instructions = dto.getInstructions().stream()
+            .map(instructionDto -> {
+              PlanInstruction instruction = PlanInstruction
+                      .createWithNumberTitleText(instructionDto.getNumber(),
+                              instructionDto.getText(), instructionDto.getText());
+
+              instruction.setPlan(plan);
+              return instruction;
+            }).collect(Collectors.toSet());
+
+    plan.getPlanInstructions().addAll(instructions);
+  }
 
   @Named("mapCategoryIdsToAssociations")
   protected Set<PlanCategoryAssociation> mapCategoryIdsToAssociations(List<Integer> categoryIds) {

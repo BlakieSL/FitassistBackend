@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.model.Text.PlanInstruction;
 import source.code.model.User.UserPlan;
 import source.code.model.Workout.WorkoutPlan;
 
@@ -67,6 +68,10 @@ public class Plan {
   @ManyToOne
   @JoinColumn(name = "plan_expertise_level_id", nullable = false)
   private PlanExpertiseLevel planExpertiseLevel;
+
+  @OneToMany(mappedBy = "plan",
+          cascade = { CascadeType.REMOVE , CascadeType.PERSIST }, orphanRemoval = true)
+  private final Set<PlanInstruction> planInstructions = new HashSet<>();
 
   @OneToMany(mappedBy = "plan",
           cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
