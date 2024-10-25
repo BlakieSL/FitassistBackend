@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.request.Text.RecipeInstructionCreateDto;
 
 import java.util.List;
 
@@ -32,8 +33,9 @@ public class RecipeCreateDto {
   private String text;
 
   @NotNull
-  private Double score;
+  private double score;
 
-  @NotNull
   private List<Integer> categoryIds;
+
+  private List<RecipeInstructionCreateDto> instructions;
 }

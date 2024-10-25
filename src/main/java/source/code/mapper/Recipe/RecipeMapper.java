@@ -10,12 +10,15 @@ import source.code.dto.response.RecipeResponseDto;
 import source.code.model.Recipe.Recipe;
 import source.code.model.Recipe.RecipeCategory;
 import source.code.model.Recipe.RecipeCategoryAssociation;
+import source.code.model.Text.ExerciseInstruction;
+import source.code.model.Text.RecipeInstruction;
 import source.code.repository.RecipeCategoryRepository;
 import source.code.service.declaration.Helpers.RepositoryHelper;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class RecipeMapper {
@@ -35,14 +38,25 @@ public abstract class RecipeMapper {
   @Mapping(target = "recipeFoods", ignore = true)
   public abstract Recipe toEntity(RecipeCreateDto dto);
 
-  public abstract RecipeCategoryResponseDto toCategoryDto(RecipeCategory recipeCategory);
-
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
   @Mapping(target = "recipeCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "userRecipes", ignore = true)
   @Mapping(target = "recipeFoods", ignore = true)
   public abstract void updateRecipe(@MappingTarget Recipe recipe, RecipeUpdateDto request);
+
+  @AfterMapping
+  protected void setRecipeAssociations(@MappingTarget Recipe recipe, RecipeCreateDto dto) {
+    Set<RecipeInstruction> instructions = dto.getInstructions().stream()
+            .map(instructionDto -> {
+              RecipeInstruction instruction = RecipeInstruction
+                      .createWithNumberAndText(instructionDto.getNumber(), instructionDto.getText());
+              instruction.setRecipe(recipe);
+              return instruction;
+            }).collect(Collectors.toSet());
+
+    recipe.getRecipeInstructions().addAll(instructions);
+  }
 
   @Named("mapCategoryIdsToAssociations")
   protected Set<RecipeCategoryAssociation> mapCategoryIdsToAssociations(List<Integer> categoryIds) {

@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.model.Text.RecipeInstruction;
 import source.code.model.User.UserRecipe;
 
 import java.util.HashSet;
@@ -46,13 +47,17 @@ public class Recipe {
   @Column(nullable = false)
   private Double score;
 
-  @OneToMany(mappedBy = "recipe",
-          cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
-  private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();
-
   @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE)
   private final Set<UserRecipe> userRecipes = new HashSet<>();
 
   @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private final Set<RecipeFood> recipeFoods = new HashSet<>();
+
+  @OneToMany(mappedBy = "recipe",
+          cascade = { CascadeType.REMOVE, CascadeType.PERSIST }, orphanRemoval = true)
+  private final Set<RecipeInstruction> recipeInstructions = new HashSet<>();
+
+  @OneToMany(mappedBy = "recipe",
+          cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
+  private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();
 }

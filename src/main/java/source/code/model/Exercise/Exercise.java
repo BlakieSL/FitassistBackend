@@ -83,10 +83,12 @@ public class Exercise {
   @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE)
   private final Set<UserExercise> userExercises = new HashSet<>();
 
-  @OneToMany(mappedBy = "exercise", cascade = { CascadeType.REMOVE, CascadeType.PERSIST }, orphanRemoval = true)
+  @OneToMany(mappedBy = "exercise",
+          cascade = { CascadeType.REMOVE, CascadeType.PERSIST }, orphanRemoval = true)
   private final Set<ExerciseInstruction> exerciseInstructions = new HashSet<>();
 
-  @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  @OneToMany(mappedBy = "exercise",
+          cascade = { CascadeType.REMOVE, CascadeType.PERSIST }, orphanRemoval = true)
   private final Set<ExerciseTip> exerciseTips = new HashSet<>();
 
   @OneToMany(mappedBy = "exercise",
