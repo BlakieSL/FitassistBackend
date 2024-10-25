@@ -1,10 +1,9 @@
-package source.code.mapper.Exercise;
+package source.code.mapper.Category;
 
 import org.mapstruct.*;
 import source.code.dto.request.Category.CategoryCreateDto;
 import source.code.dto.request.Category.CategoryUpdateDto;
 import source.code.dto.response.CategoryResponseDto;
-import source.code.mapper.Generics.BaseMapper;
 import source.code.model.Exercise.ExerciseCategory;
 
 @Mapper(componentModel = "spring")
