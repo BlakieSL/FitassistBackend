@@ -59,7 +59,7 @@ public class ActivityServiceImpl implements ActivityService {
   @Transactional
   public ActivityResponseDto createActivity(ActivityCreateDto dto) {
     Activity activity = activityRepository.save(activityMapper.toEntity(dto));
-    publishEvent(new ActivityCreateEvent(this, dto));
+    publishEvent(new ActivityCreateEvent(this, activity));
 
     return activityMapper.toResponseDto(activity);
   }

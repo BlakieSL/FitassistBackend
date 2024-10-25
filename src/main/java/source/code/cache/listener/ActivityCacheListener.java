@@ -20,7 +20,7 @@ public class ActivityCacheListener {
   public void handleActivityCreate(ActivityCreateEvent event) {
     cacheManager.getCache("allActivities").clear();
 
-    int categoryId = event.getActivityCreateDto().getCategoryId();
+    int categoryId = event.getActivity().getActivityCategory().getId();
     cacheManager.getCache("activitiesByCategory").evict(categoryId);
   }
 
