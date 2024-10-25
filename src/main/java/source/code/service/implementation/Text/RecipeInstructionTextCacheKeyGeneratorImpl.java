@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import source.code.model.Text.RecipeInstruction;
 import source.code.service.declaration.Text.TextCacheKeyGenerator;
 
-@Service("recipeInstructionCacheKeyGenerator")
+@Service
 public class RecipeInstructionTextCacheKeyGeneratorImpl implements TextCacheKeyGenerator<RecipeInstruction> {
   private static final String CACHE_PREFIX = "recipeInstruction_";
 
