@@ -1,6 +1,6 @@
 package source.code.helper.enumerators;
 
-public enum SavedType {
+public enum EntityType {
   FOOD,
   ACTIVITY,
   EXERCISE,

@@ -93,13 +93,6 @@ public class ExerciseServiceImpl implements ExerciseService {
     applicationEventPublisher.publishEvent(new ExerciseDeleteEvent(this, exercise));
   }
 
-
-  public List<ExerciseResponseDto> searchExercises(SearchRequestDto dto) {
-    return exerciseRepository.findByNameContainingIgnoreCase(dto.getName()).stream()
-            .map(exerciseMapper::toResponseDto)
-            .toList();
-  }
-
   @Cacheable(value = "exercises", key = "#id")
   public ExerciseResponseDto getExercise(int exerciseId) {
     Exercise exercise = find(exerciseId);

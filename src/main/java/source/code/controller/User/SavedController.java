@@ -3,7 +3,7 @@ package source.code.controller.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.response.LikesAndSavesResponseDto;
-import source.code.helper.enumerators.SavedType;
+import source.code.helper.enumerators.EntityType;
 import source.code.model.User.BaseUserEntity;
 import source.code.service.declaration.Selector.SavedSelectorService;
 import source.code.service.declaration.User.SavedService;
@@ -20,7 +20,7 @@ public class SavedController {
   }
 
   @GetMapping("/item-type/{itemType}/users/{userId}/type/{type}")
-  public ResponseEntity<List<BaseUserEntity>> getAllFromUser(@PathVariable SavedType itemType,
+  public ResponseEntity<List<BaseUserEntity>> getAllFromUser(@PathVariable EntityType itemType,
                                                              @PathVariable int userId,
                                                              @PathVariable short type) {
     SavedService savedService = savedSelectorService.getService(itemType);
@@ -29,7 +29,7 @@ public class SavedController {
   }
 
   @GetMapping("/item-type/{itemType}/{itemId}/likes-ans-saves")
-  public ResponseEntity<LikesAndSavesResponseDto> calculateLikesAndSaves(@PathVariable SavedType itemType,
+  public ResponseEntity<LikesAndSavesResponseDto> calculateLikesAndSaves(@PathVariable EntityType itemType,
                                                                          @PathVariable int itemId) {
     SavedService savedService = savedSelectorService.getService(itemType);
     LikesAndSavesResponseDto dto = savedService.calculateLikesAndSaves(itemId);
@@ -37,7 +37,7 @@ public class SavedController {
   }
 
   @PostMapping("/item-type/{itemType}/{itemId}/users/{userId}/type/{type}")
-  public ResponseEntity<Void> saveToUser(@PathVariable SavedType itemType,
+  public ResponseEntity<Void> saveToUser(@PathVariable EntityType itemType,
                                          @PathVariable int itemId,
                                          @PathVariable int userId,
                                          @PathVariable short type) {
@@ -47,7 +47,7 @@ public class SavedController {
   }
 
   @DeleteMapping("/item-type/{itemType}/{itemId}/users/{userId}/type/{type}")
-  public ResponseEntity<Void> deleteFromUser(@PathVariable SavedType itemType,
+  public ResponseEntity<Void> deleteFromUser(@PathVariable EntityType itemType,
                                              @PathVariable int itemId,
                                              @PathVariable int userId,
                                              @PathVariable short type) {

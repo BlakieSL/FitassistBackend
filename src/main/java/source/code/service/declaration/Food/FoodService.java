@@ -24,7 +24,5 @@ public interface FoodService {
 
   FoodCalculatedMacrosResponseDto calculateFoodMacros(int foodId, CalculateFoodMacrosRequestDto request);
 
-  List<FoodResponseDto> searchFoods(SearchRequestDto request);
-
   List<FoodResponseDto> getFoodsByCategory(int categoryId);
 }

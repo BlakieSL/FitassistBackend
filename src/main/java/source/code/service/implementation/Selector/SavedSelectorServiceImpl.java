@@ -2,7 +2,7 @@ package source.code.service.implementation.Selector;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import source.code.helper.enumerators.SavedType;
+import source.code.helper.enumerators.EntityType;
 import source.code.service.declaration.Selector.SavedSelectorService;
 import source.code.service.declaration.User.SavedService;
 
@@ -27,8 +27,8 @@ public class SavedSelectorServiceImpl implements SavedSelectorService {
   }
 
   @Override
-  public SavedService getService(SavedType savedType) {
-    return switch (savedType) {
+  public SavedService getService(EntityType entityType) {
+    return switch (entityType) {
       case ACTIVITY -> userActivityService;
       case EXERCISE -> userExerciseService;
       case PLAN -> userFoodService;

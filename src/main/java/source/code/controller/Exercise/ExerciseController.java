@@ -52,12 +52,6 @@ public class ExerciseController {
     return ResponseEntity.ok(exercises);
   }
 
-  @PostMapping("/search")
-  public ResponseEntity<List<ExerciseResponseDto>> searchExercises(
-          @Valid @RequestBody SearchRequestDto request) {
-    return ResponseEntity.ok(exerciseService.searchExercises(request));
-  }
-
   @PostMapping
   public ResponseEntity<ExerciseResponseDto> createExercise(@Valid @RequestBody ExerciseCreateDto dto) {
     ExerciseResponseDto savedExercise = exerciseService.createExercise(dto);

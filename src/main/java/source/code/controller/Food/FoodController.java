@@ -51,13 +51,6 @@ public class FoodController {
     return ResponseEntity.ok(response);
   }
 
-  @PostMapping("/search")
-  public ResponseEntity<List<FoodResponseDto>> searchFoods(
-          @Valid @RequestBody SearchRequestDto request) {
-
-    return ResponseEntity.ok(foodService.searchFoods(request));
-  }
-
   @PostMapping
   public ResponseEntity<FoodResponseDto> createFood(@Valid @RequestBody FoodCreateDto dto) {
     FoodResponseDto response = foodService.createFood(dto);
