@@ -32,7 +32,7 @@ public class TextController {
 
   @PatchMapping("/{id}/type/{type}")
   public ResponseEntity<Void> update(
-          @PathVariable int id, @PathVariable TextType type, JsonMergePatch patch)
+          @PathVariable int id, @PathVariable TextType type, @RequestBody JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
 
     TextService textService = textSelectorService.getService(type);

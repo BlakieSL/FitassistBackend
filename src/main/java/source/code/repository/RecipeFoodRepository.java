@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface RecipeFoodRepository extends JpaRepository<RecipeFood, Long> {
   List<RecipeFood> findByRecipeId(int recipeId);
+  List<RecipeFood> findByFoodId(int foodId);
   boolean existsByRecipeIdAndFoodId(int recipeId, int foodId);
   Optional<RecipeFood> findByRecipeIdAndFoodId(int recipeId, int foodId);
 }

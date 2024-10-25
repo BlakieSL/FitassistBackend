@@ -10,9 +10,11 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.Recipe.RecipeFoodCreateDto;
 import source.code.dto.response.FoodResponseDto;
+import source.code.dto.response.RecipeResponseDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.Food.FoodMapper;
+import source.code.mapper.Recipe.RecipeMapper;
 import source.code.model.Food.Food;
 import source.code.model.Recipe.Recipe;
 import source.code.model.Recipe.RecipeFood;
@@ -31,6 +33,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
   private final ValidationService validationService;
   private final JsonPatchService jsonPatchService;
   private final FoodMapper foodMapper;
+  private final RecipeMapper recipeMapper;
   private final RepositoryHelper repositoryHelper;
   private final RecipeFoodRepository recipeFoodRepository;
   private final FoodRepository foodRepository;
@@ -38,6 +41,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 
   public RecipeFoodServiceImpl(
           ValidationService validationService,
+          RecipeMapper recipeMapper,
           RecipeFoodRepository recipeFoodRepository,
           FoodRepository foodRepository,
           RecipeRepository recipeRepository,
@@ -45,6 +49,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
           FoodMapper foodMapper,
           RepositoryHelper repositoryHelper) {
     this.validationService = validationService;
+    this.recipeMapper = recipeMapper;
     this.recipeFoodRepository = recipeFoodRepository;
     this.foodRepository = foodRepository;
     this.recipeRepository = recipeRepository;
@@ -53,7 +58,8 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
     this.repositoryHelper = repositoryHelper;
   }
 
-  @CacheEvict(value = "foodsByRecipe", key = "#recipeId")
+  @Override
+  @CacheEvict(value = {"foodsByRecipe", "recipesByFood"}, allEntries = true)
   @Transactional
   public void saveFoodToRecipe(int recipeId, int foodId, RecipeFoodCreateDto request) {
     if(isAlreadyAdded(recipeId, foodId)) {
@@ -69,7 +75,8 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
     recipeFoodRepository.save(recipeFood);
   }
 
-  @CachePut(value = "foodsByRecipe", key = "#recipeId")
+  @Override
+  @CachePut(value = {"foodsByRecipe", "recipesByFood"}, key = "#recipeId")
   @Transactional
   public void updateFoodRecipe(int recipeId, int foodId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
@@ -89,13 +96,15 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
     recipeFoodRepository.save(recipeFood);
   }
 
-  @CacheEvict(value = "foodsByRecipe", key = "#recipeId")
+  @Override
+  @CacheEvict(value = {"foodsByRecipe", "recipesByFood"}, key = "#recipeId")
   @Transactional
   public void deleteFoodFromRecipe(int foodId, int recipeId) {
     RecipeFood recipeFood = find(recipeId, foodId);
     recipeFoodRepository.delete(recipeFood);
   }
 
+  @Override
   @Cacheable(value = "foodsByRecipe", key = "#recipeId")
   public List<FoodResponseDto> getFoodsByRecipe(int recipeId) {
     return recipeFoodRepository.findByRecipeId(recipeId).stream()
@@ -103,6 +112,16 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
             .map(foodMapper::toResponseDto)
             .toList();
   }
+
+  @Override
+  @Cacheable(value = "recipesByFood", key = "#foodId")
+  public List<RecipeResponseDto> getRecipesByFood(int foodId) {
+    return recipeFoodRepository.findByFoodId(foodId).stream()
+            .map(RecipeFood::getRecipe)
+            .map(recipeMapper::toResponseDto)
+            .toList();
+  }
+
 
   private RecipeFood find(int recipeId, int foodId) {
     return recipeFoodRepository

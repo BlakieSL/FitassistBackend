@@ -5,6 +5,7 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.request.Recipe.RecipeFoodCreateDto;
 import source.code.dto.response.FoodResponseDto;
+import source.code.dto.response.RecipeResponseDto;
 
 import java.util.List;
 
@@ -15,4 +16,5 @@ public interface RecipeFoodService {
 
   void deleteFoodFromRecipe(int foodId, int recipeId);
   List<FoodResponseDto> getFoodsByRecipe(int recipeId);
+  List<RecipeResponseDto> getRecipesByFood(int foodId);
 }
