@@ -1,7 +1,7 @@
 package source.code.service.implementation.Text;
 
 import org.springframework.stereotype.Service;
-import source.code.model.Exercise.ExerciseInstruction;
+import source.code.model.Text.ExerciseInstruction;
 import source.code.service.declaration.Text.TextCacheKeyGenerator;
 
 @Service("exerciseInstructionCacheKeyGenerator")

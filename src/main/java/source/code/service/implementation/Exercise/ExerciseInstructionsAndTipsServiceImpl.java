@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import source.code.cache.event.Exercise.ExerciseInstructionEvent;
 import source.code.cache.event.Exercise.ExerciseTipEvent;
-import source.code.dto.request.Exercise.ExerciseInstructionUpdateDto;
-import source.code.dto.request.Exercise.ExerciseTipUpdateDto;
+import source.code.dto.request.Text.ExerciseInstructionUpdateDto;
+import source.code.dto.request.Text.ExerciseTipUpdateDto;
 import source.code.dto.response.Text.ExerciseInstructionResponseDto;
 import source.code.dto.response.Text.ExerciseTipResponseDto;
-import source.code.mapper.Exercise.ExerciseInstructionsTipsMapper;
-import source.code.model.Exercise.ExerciseInstruction;
-import source.code.model.Exercise.ExerciseTip;
+import source.code.mapper.Text.TextMapper;
+import source.code.model.Text.ExerciseInstruction;
+import source.code.model.Text.ExerciseTip;
 import source.code.repository.ExerciseInstructionRepository;
 import source.code.repository.ExerciseTipRepository;
 import source.code.service.declaration.Exercise.ExerciseInstructionsAndTipsService;
@@ -30,7 +30,7 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
   private final ValidationService validationService;
   private final JsonPatchService jsonPatchService;
   private final ApplicationEventPublisher applicationEventPublisher;
-  private final ExerciseInstructionsTipsMapper instructionsTipsMapper;
+  private final TextMapper instructionsTipsMapper;
   private final RepositoryHelper repositoryHelper;
   private final ExerciseInstructionRepository exerciseInstructionRepository;
   private final ExerciseTipRepository exerciseTipRepository;
@@ -38,7 +38,7 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
           ValidationService validationService,
           JsonPatchService jsonPatchService,
           ApplicationEventPublisher applicationEventPublisher,
-          ExerciseInstructionsTipsMapper instructionsTipsMapper,
+          TextMapper instructionsTipsMapper,
           RepositoryHelper repositoryHelper,
           ExerciseInstructionRepository exerciseInstructionRepository,
           ExerciseTipRepository exerciseTipRepository) {
@@ -79,7 +79,7 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
 
     validationService.validate(patched);
 
-    instructionsTipsMapper.updateInstruction(instruction, patched);
+    instructionsTipsMapper.updateExerciseInstruction(instruction, patched);
     ExerciseInstruction saved = exerciseInstructionRepository.save(instruction);
 
     applicationEventPublisher.publishEvent(new ExerciseInstructionEvent(this, saved));
@@ -95,7 +95,7 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
 
     validationService.validate(patched);
 
-    instructionsTipsMapper.updateTip(tip, patched);
+    instructionsTipsMapper.updateExerciseTip(tip, patched);
     ExerciseTip saved = exerciseTipRepository.save(tip);
 
     applicationEventPublisher.publishEvent(new ExerciseTipEvent(this, saved));
@@ -105,7 +105,7 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
   @Cacheable(value = "exerciseInstructions", key = "#exerciseId")
   public List<ExerciseInstructionResponseDto> getInstructions(int exerciseId) {
     return exerciseInstructionRepository.getAllByExerciseId(exerciseId).stream()
-            .map(instructionsTipsMapper::toInstructionResponseDto)
+            .map(instructionsTipsMapper::toExerciseInstructionResponseDto)
             .toList();
   }
 
@@ -113,7 +113,7 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
   @Cacheable(value = "exerciseTips", key = "#exerciseId")
   public List<ExerciseTipResponseDto> getTips(int exerciseId) {
     return exerciseTipRepository.getAllByExerciseId(exerciseId).stream()
-            .map(instructionsTipsMapper::toTipResponseDto)
+            .map(instructionsTipsMapper::toExerciseTipResponseDto)
             .toList();
   }
 
@@ -129,13 +129,13 @@ public class ExerciseInstructionsAndTipsServiceImpl implements ExerciseInstructi
                                                                JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
     ExerciseInstructionResponseDto responseDto = instructionsTipsMapper
-            .toInstructionResponseDto(instruction);
+            .toExerciseInstructionResponseDto(instruction);
     return jsonPatchService.applyPatch(patch, responseDto, ExerciseInstructionUpdateDto.class);
   }
 
   private ExerciseTipUpdateDto applyPatchToTip(ExerciseTip tip, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
-    ExerciseTipResponseDto responseDto = instructionsTipsMapper.toTipResponseDto(tip);
+    ExerciseTipResponseDto responseDto = instructionsTipsMapper.toExerciseTipResponseDto(tip);
     return jsonPatchService.applyPatch(patch, responseDto, ExerciseTipUpdateDto.class);
   }
 }
