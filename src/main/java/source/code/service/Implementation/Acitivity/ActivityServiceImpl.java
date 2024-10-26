@@ -16,6 +16,7 @@ import source.code.dto.Request.Activity.CalculateActivityCaloriesRequestDto;
 import source.code.dto.Response.ActivityAverageMetResponseDto;
 import source.code.dto.Response.ActivityCalculatedResponseDto;
 import source.code.dto.Response.ActivityResponseDto;
+import source.code.helper.Enum.CacheNames;
 import source.code.mapper.Activity.ActivityMapper;
 import source.code.model.Activity.Activity;
 import source.code.model.User.User;
@@ -94,18 +95,18 @@ public class ActivityServiceImpl implements ActivityService {
     return activityMapper.toCalculatedDto(activity, user, request.getTime());
   }
 
-  @Cacheable(value = "activities", key = "#id")
+  @Cacheable(value = CacheNames.ACTIVITIES, key = "#id")
   public ActivityResponseDto getActivity(int activityId) {
     Activity activity = repositoryHelper.find(activityRepository, Activity.class, activityId);
     return activityMapper.toResponseDto(activity);
   }
 
-  @Cacheable(value = "allActivities")
+  @Cacheable(value = CacheNames.ALL_ACTIVITIES)
   public List<ActivityResponseDto> getAllActivities() {
     return repositoryHelper.findAll(activityRepository, activityMapper::toResponseDto);
   }
 
-  @Cacheable(value = "activitiesByCategory", key = "#categoryId")
+  @Cacheable(value = CacheNames.ACTIVITIES_BY_CATEGORY, key = "#categoryId")
   public List<ActivityResponseDto> getActivitiesByCategory(int categoryId) {
     return activityRepository.findAllByActivityCategory_Id(categoryId).stream()
             .map(activityMapper::toResponseDto)

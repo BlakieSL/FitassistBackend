@@ -5,5 +5,9 @@ public enum ExerciseField {
   FORCE_TYPE,
   MECHANICS_TYPE,
   EQUIPMENT,
-  TYPE
+  TYPE;
+  @Override
+  public String toString() {
+    return name() + "_";
+  }
 }

@@ -59,19 +59,19 @@ public class ExerciseListener {
 
   private void clearExercisesByFieldCache(Exercise exercise) {
     cacheService.evictCache(CacheNames.EXERCISES_BY_FIELD,
-            ExerciseField.EXPERTISE_LEVEL.name() + exercise.getExpertiseLevel().getId());
+            ExerciseField.EXPERTISE_LEVEL.toString() + exercise.getExpertiseLevel().getId());
 
     cacheService.evictCache(CacheNames.EXERCISES_BY_FIELD,
-            ExerciseField.FORCE_TYPE.name() + exercise.getForceType().getId());
+            ExerciseField.FORCE_TYPE.toString() + exercise.getForceType().getId());
 
     cacheService.evictCache(CacheNames.EXERCISES_BY_FIELD,
-            ExerciseField.MECHANICS_TYPE.name() + exercise.getMechanicsType().getId());
+            ExerciseField.MECHANICS_TYPE.toString() + exercise.getMechanicsType().getId());
 
     cacheService.evictCache(CacheNames.EXERCISES_BY_FIELD,
-            ExerciseField.EQUIPMENT.name() + exercise.getExerciseEquipment().getId());
+            ExerciseField.EQUIPMENT.toString() + exercise.getExerciseEquipment().getId());
 
     cacheService.evictCache(CacheNames.EXERCISES_BY_FIELD,
-            ExerciseField.TYPE.name() + exercise.getExerciseType().getId());
+            ExerciseField.TYPE.toString() + exercise.getExerciseType().getId());
   }
 
   private void clearExercisesByCategoryCache(Exercise exercise) {

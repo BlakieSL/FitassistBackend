@@ -6,29 +6,23 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import source.code.event.events.Category.CategoryClearCacheEvent;
 import source.code.event.events.Category.CategoryCreateCacheEvent;
+import source.code.helper.Enum.CacheNames;
+import source.code.service.Declaration.Cache.CacheService;
 
 @Component
 public class CategoryListener {
-  private final CacheManager cacheManager;
-  private static final String CACHE_NAME = "allCategories";
-  public CategoryListener(CacheManager cacheManager) {
-    this.cacheManager = cacheManager;
+  private final CacheService cacheService;
+  public CategoryListener(CacheService cacheService) {
+    this.cacheService = cacheService;
   }
 
   @EventListener
   public void handleCacheCreateEvent(CategoryCreateCacheEvent event) {
-    Cache cache = cacheManager.getCache(CACHE_NAME);
-
-    if (cache == null) {
-      throw new IllegalStateException("Cache not available: " + CACHE_NAME);
-    }
-
-    cache.put(event.getCacheKey(), event.getCachedData());
+    cacheService.putCache(CacheNames.ALL_CATEGORIES, event.getCacheKey(), event.getCachedData());
   }
 
   @EventListener
   public void handleCacheClearEvent(CategoryClearCacheEvent event) {
-    cacheManager.getCache(CACHE_NAME).evict(event.getCacheKey());
+    cacheService.evictCache(CacheNames.ALL_CATEGORIES, event.getCacheKey());
   }
-
 }
