@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.helper.search.IndexedEntity;
 import source.code.model.Text.PlanInstruction;
 import source.code.model.User.UserPlan;
 import source.code.model.Workout.WorkoutPlan;
@@ -21,7 +22,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Plan {
+public class Plan implements IndexedEntity {
   private static final int NAME_MAX_LENGTH = 100;
   private static final int DESCRIPTION_MAX_LENGTH = 255;
   private static final int TEXT_MAX_LENGTH = 10000;
@@ -82,4 +83,9 @@ public class Plan {
 
   @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private final Set<WorkoutPlan> workoutPlans = new HashSet<>();
+
+  @Override
+  public String getClassName() {
+    return this.getClass().getSimpleName();
+  }
 }
