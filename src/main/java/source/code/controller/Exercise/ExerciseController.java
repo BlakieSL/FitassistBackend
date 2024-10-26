@@ -4,15 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.request.Exercise.ExerciseCreateDto;
-import source.code.dto.request.SearchRequestDto;
-import source.code.dto.response.ExerciseResponseDto;
-import source.code.helper.enumerators.ExerciseField;
-import source.code.service.declaration.Exercise.ExerciseService;
+import source.code.dto.Request.Exercise.ExerciseCreateDto;
+import source.code.dto.Response.ExerciseResponseDto;
+import source.code.helper.Enum.ExerciseField;
+import source.code.service.Declaration.Exercise.ExerciseService;
 
 import java.util.List;
 

@@ -6,11 +6,11 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.request.Category.CategoryCreateDto;
-import source.code.dto.response.CategoryResponseDto;
-import source.code.helper.enumerators.CategoryType;
-import source.code.service.declaration.Category.CategoryService;
-import source.code.service.declaration.Selector.CategorySelectorService;
+import source.code.dto.Request.Category.CategoryCreateDto;
+import source.code.dto.Response.CategoryResponseDto;
+import source.code.helper.Enum.CategoryType;
+import source.code.service.Declaration.Category.CategoryService;
+import source.code.service.Declaration.Selector.CategorySelectorService;
 
 import java.util.List;
 

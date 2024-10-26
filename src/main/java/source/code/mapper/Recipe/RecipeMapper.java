@@ -2,16 +2,16 @@ package source.code.mapper.Recipe;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.other.RecipeCategoryShortDto;
-import source.code.dto.request.Recipe.RecipeCreateDto;
-import source.code.dto.request.Recipe.RecipeUpdateDto;
-import source.code.dto.response.RecipeResponseDto;
+import source.code.dto.Other.RecipeCategoryShortDto;
+import source.code.dto.Request.Recipe.RecipeCreateDto;
+import source.code.dto.Request.Recipe.RecipeUpdateDto;
+import source.code.dto.Response.RecipeResponseDto;
 import source.code.model.Recipe.Recipe;
 import source.code.model.Recipe.RecipeCategory;
 import source.code.model.Recipe.RecipeCategoryAssociation;
 import source.code.model.Text.RecipeInstruction;
 import source.code.repository.RecipeCategoryRepository;
-import source.code.service.declaration.Helpers.RepositoryHelper;
+import source.code.service.Declaration.Helpers.RepositoryHelper;
 
 import java.util.HashSet;
 import java.util.List;

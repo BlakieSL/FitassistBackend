@@ -2,16 +2,16 @@ package source.code.mapper.Activity;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.request.Activity.ActivityCreateDto;
-import source.code.dto.request.Activity.ActivityUpdateDto;
-import source.code.dto.response.ActivityCalculatedResponseDto;
-import source.code.dto.response.ActivityResponseDto;
+import source.code.dto.Request.Activity.ActivityCreateDto;
+import source.code.dto.Request.Activity.ActivityUpdateDto;
+import source.code.dto.Response.ActivityCalculatedResponseDto;
+import source.code.dto.Response.ActivityResponseDto;
 import source.code.model.Activity.Activity;
 import source.code.model.Activity.ActivityCategory;
 import source.code.model.User.User;
 import source.code.repository.ActivityCategoryRepository;
-import source.code.service.declaration.Helpers.CalculationsService;
-import source.code.service.declaration.Helpers.RepositoryHelper;
+import source.code.service.Declaration.Helpers.CalculationsService;
+import source.code.service.Declaration.Helpers.RepositoryHelper;
 
 @Mapper(componentModel = "spring")
 public abstract class ActivityMapper {

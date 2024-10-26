@@ -2,16 +2,14 @@ package source.code.mapper.Plan;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.other.PlanCategoryShortDto;
-import source.code.dto.request.Plan.PlanCreateDto;
-import source.code.dto.request.Plan.PlanUpdateDto;
-import source.code.dto.response.PlanCategoryResponseDto;
-import source.code.dto.response.PlanResponseDto;
+import source.code.dto.Other.PlanCategoryShortDto;
+import source.code.dto.Request.Plan.PlanCreateDto;
+import source.code.dto.Request.Plan.PlanUpdateDto;
+import source.code.dto.Response.PlanResponseDto;
 import source.code.model.Plan.*;
 import source.code.model.Text.PlanInstruction;
-import source.code.model.Text.RecipeInstruction;
 import source.code.repository.*;
-import source.code.service.declaration.Helpers.RepositoryHelper;
+import source.code.service.Declaration.Helpers.RepositoryHelper;
 
 import java.util.HashSet;
 import java.util.List;

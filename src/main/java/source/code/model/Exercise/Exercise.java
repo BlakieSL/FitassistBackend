@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.helper.search.IndexedEntity;
+import source.code.helper.Search.IndexedEntity;
 import source.code.model.Text.ExerciseInstruction;
 import source.code.model.Text.ExerciseTip;
 import source.code.model.User.UserExercise;
