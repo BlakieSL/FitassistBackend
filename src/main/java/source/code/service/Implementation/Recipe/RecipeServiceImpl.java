@@ -13,6 +13,7 @@ import source.code.event.events.Recipe.RecipeUpdateEvent;
 import source.code.dto.Request.Recipe.RecipeCreateDto;
 import source.code.dto.Request.Recipe.RecipeUpdateDto;
 import source.code.dto.Response.RecipeResponseDto;
+import source.code.helper.Enum.CacheNames;
 import source.code.mapper.Recipe.RecipeMapper;
 import source.code.model.Recipe.Recipe;
 import source.code.model.Recipe.RecipeCategoryAssociation;
@@ -85,18 +86,18 @@ public class RecipeServiceImpl implements RecipeService {
     applicationEventPublisher.publishEvent(new RecipeDeleteEvent(this, recipe));
   }
 
-  @Cacheable(value = {"recipes"}, key = "#id")
+  @Cacheable(value = CacheNames.RECIPES, key = "#id")
   public RecipeResponseDto getRecipe(int id) {
     Recipe recipe = find(id);
     return recipeMapper.toResponseDto(recipe);
   }
 
-  @Cacheable(value = {"allRecipes"})
+  @Cacheable(value = CacheNames.ALL_RECIPES)
   public List<RecipeResponseDto> getAllRecipes() {
     return repositoryHelper.findAll(recipeRepository, recipeMapper::toResponseDto);
   }
 
-  @Cacheable(value = {"recipesByCategory"}, key = "#categoryId")
+  @Cacheable(value = CacheNames.RECIPES_BY_CATEGORY, key = "#categoryId")
   public List<RecipeResponseDto> getRecipesByCategory(int categoryId) {
     return recipeCategoryAssociationRepository.findByRecipeCategoryId(categoryId).stream()
             .map(RecipeCategoryAssociation::getRecipe)

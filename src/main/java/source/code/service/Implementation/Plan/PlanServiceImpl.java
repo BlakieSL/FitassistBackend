@@ -13,6 +13,7 @@ import source.code.event.events.Plan.PlanUpdateEvent;
 import source.code.dto.Request.Plan.PlanCreateDto;
 import source.code.dto.Request.Plan.PlanUpdateDto;
 import source.code.dto.Response.PlanResponseDto;
+import source.code.helper.Enum.CacheNames;
 import source.code.helper.Enum.PlanField;
 import source.code.mapper.Plan.PlanMapper;
 import source.code.model.Plan.*;
@@ -82,18 +83,18 @@ public class PlanServiceImpl implements PlanService {
     applicationEventPublisher.publishEvent(new PlanDeleteEvent(this, plan));
   }
 
-  @Cacheable(value = {"plans"}, key = "#id")
+  @Cacheable(value = CacheNames.PLANS, key = "#id")
   public PlanResponseDto getPlan(int id) {
     Plan plan = find(id);
     return planMapper.toResponseDto(plan);
   }
 
-  @Cacheable(value = {"allPlans"})
+  @Cacheable(value = CacheNames.ALL_PLANS)
   public List<PlanResponseDto> getAllPlans() {
     return repositoryHelper.findAll(planRepository, planMapper::toResponseDto);
   }
 
-  @Cacheable(value = {"plansByCategory"}, key = "#categoryId")
+  @Cacheable(value = CacheNames.PLANS_BY_CATEGORY, key = "#categoryId")
   public List<PlanResponseDto> getPlansByCategory(int categoryId) {
     return planCategoryAssociationRepository.findByPlanCategoryId(categoryId).stream()
             .map(PlanCategoryAssociation::getPlan)
@@ -101,7 +102,7 @@ public class PlanServiceImpl implements PlanService {
             .toList();
   }
 
-  @Cacheable(value = "plansByField", key = "#field.name() + '_' + #value")
+  @Cacheable(value = CacheNames.PLANS_BY_FIELD, key = "#field.toString() + #value")
   public List<PlanResponseDto> getPlansByField(PlanField field, int value) {
     return switch (field) {
       case TYPE -> getPlansByField(Plan::getPlanType, PlanType::getId, value);

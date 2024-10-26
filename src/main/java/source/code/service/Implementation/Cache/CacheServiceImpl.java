@@ -16,15 +16,16 @@ public class CacheServiceImpl implements CacheService {
 
   @Override
   public void evictCache(String cacheName, Object key) {
-    if (cacheManager.getCache(cacheName) != null) {
       Objects.requireNonNull(cacheManager.getCache(cacheName)).evict(key);
-    }
   }
 
   @Override
   public void clearCache(String cacheName) {
-    if (cacheManager.getCache(cacheName) != null) {
       Objects.requireNonNull(cacheManager.getCache(cacheName)).clear();
-    }
+  }
+
+  @Override
+  public void putCache(String cacheName, Object key, Object cachedData) {
+    Objects.requireNonNull(cacheManager.getCache(cacheName)).put(key, cachedData);
   }
 }
