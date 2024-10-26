@@ -7,9 +7,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.request.Food.DailyFoodItemCreateDto;
-import source.code.dto.response.DailyFoodsResponseDto;
-import source.code.service.declaration.Daily.DailyFoodService;
+import source.code.dto.Request.Food.DailyFoodItemCreateDto;
+import source.code.dto.Response.DailyFoodsResponseDto;
+import source.code.service.Declaration.Daily.DailyFoodService;
 
 @RestController
 @RequestMapping(path = "/api/cart")

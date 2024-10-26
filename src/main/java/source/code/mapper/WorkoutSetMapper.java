@@ -1,8 +1,8 @@
 package source.code.mapper;
 
 import org.mapstruct.*;
-import source.code.dto.request.WorkoutSet.WorkoutSetCreateDto;
-import source.code.dto.response.WorkoutSetResponseDto;
+import source.code.dto.Request.WorkoutSet.WorkoutSetCreateDto;
+import source.code.dto.Response.WorkoutSetResponseDto;
 import source.code.model.Exercise.Exercise;
 import source.code.model.Workout.WorkoutSet;
 import source.code.model.Workout.WorkoutType;

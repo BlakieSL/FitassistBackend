@@ -5,10 +5,10 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.response.Text.BaseTextResponseDto;
-import source.code.helper.enumerators.TextType;
-import source.code.service.declaration.Selector.TextSelectorService;
-import source.code.service.declaration.Text.TextService;
+import source.code.dto.Response.Text.BaseTextResponseDto;
+import source.code.helper.Enum.TextType;
+import source.code.service.Declaration.Selector.TextSelectorService;
+import source.code.service.Declaration.Text.TextService;
 
 import java.util.List;
 

@@ -4,8 +4,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.springframework.web.multipart.MultipartFile;
-import source.code.dto.request.MediaCreateDto;
-import source.code.dto.response.MediaResponseDto;
+import source.code.dto.Request.MediaCreateDto;
+import source.code.dto.Response.MediaResponseDto;
 import source.code.exception.FileProcessingException;
 import source.code.model.Media.Media;
 
