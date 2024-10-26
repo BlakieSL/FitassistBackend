@@ -15,6 +15,7 @@ import source.code.dto.Request.Food.FoodCreateDto;
 import source.code.dto.Request.Food.FoodUpdateDto;
 import source.code.dto.Response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.Response.FoodResponseDto;
+import source.code.helper.Enum.CacheNames;
 import source.code.mapper.Food.FoodMapper;
 import source.code.model.Food.Food;
 import source.code.repository.FoodRepository;
@@ -86,18 +87,18 @@ public class FoodServiceImpl implements FoodService {
     return foodMapper.toDtoWithFactor(food, factor);
   }
 
-  @Cacheable(value = {"foods"}, key = "#id")
+  @Cacheable(value = CacheNames.FOODS, key = "#id")
   public FoodResponseDto getFood(int id) {
     Food food = find(id);
     return foodMapper.toResponseDto(food);
   }
 
-  @Cacheable(value = {"allFoods"})
+  @Cacheable(value = CacheNames.ALL_FOODS)
   public List<FoodResponseDto> getAllFoods() {
     return repositoryHelper.findAll(foodRepository, foodMapper::toResponseDto);
   }
 
-  @Cacheable(value = {"foodsByCategory"}, key = "#categoryId")
+  @Cacheable(value = CacheNames.FOODS_BY_CATEGORY, key = "#categoryId")
   public List<FoodResponseDto> getFoodsByCategory(int categoryId) {
     return foodRepository.findAllByFoodCategory_Id(categoryId).stream()
             .map(foodMapper::toResponseDto)

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
+import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import source.code.event.events.Exercise.ExerciseUpdateEvent;
 import source.code.dto.Request.Exercise.ExerciseCreateDto;
 import source.code.dto.Request.Exercise.ExerciseUpdateDto;
 import source.code.dto.Response.ExerciseResponseDto;
+import source.code.helper.Enum.CacheNames;
 import source.code.helper.Enum.ExerciseField;
 import source.code.mapper.Exercise.ExerciseMapper;
 import source.code.model.Exercise.Exercise;
@@ -92,18 +94,18 @@ public class ExerciseServiceImpl implements ExerciseService {
     applicationEventPublisher.publishEvent(new ExerciseDeleteEvent(this, exercise));
   }
 
-  @Cacheable(value = "exercises", key = "#id")
+  @Cacheable(value = CacheNames.EXERCISES, key = "#id")
   public ExerciseResponseDto getExercise(int exerciseId) {
     Exercise exercise = find(exerciseId);
     return exerciseMapper.toResponseDto(exercise);
   }
 
-  @Cacheable(value = "allExercises")
+  @Cacheable(value = CacheNames.ALL_EXERCISES)
   public List<ExerciseResponseDto> getAllExercises() {
     return repositoryHelper.findAll(exerciseRepository, exerciseMapper::toResponseDto);
   }
 
-  @Cacheable(value = "exercisesByCategory", key = "#categoryId")
+  @Cacheable(value = CacheNames.EXERCISES_BY_CATEGORY, key = "#categoryId")
   public List<ExerciseResponseDto> getExercisesByCategory(int categoryId) {
     return exerciseCategoryAssociationRepository.findByExerciseCategoryId(categoryId).stream()
             .map(ExerciseCategoryAssociation::getExercise)
@@ -111,7 +113,7 @@ public class ExerciseServiceImpl implements ExerciseService {
             .toList();
   }
 
-  @Cacheable(value = "exercisesByField", key = "#field.name() + '_' + #value")
+  @Cacheable(value = CacheNames.EXERCISES_BY_FIELD, key = "#field.toString() + #value")
   public List<ExerciseResponseDto> getExercisesByField(ExerciseField field, int value) {
     Function<Exercise, Integer> fieldExtractor = fieldExtractorMap.get(field);
     if (fieldExtractor == null) {

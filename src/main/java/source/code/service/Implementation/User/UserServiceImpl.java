@@ -19,6 +19,7 @@ import source.code.dto.Request.UserCreateDto;
 import source.code.dto.Request.UserUpdateDto;
 import source.code.dto.Response.User.UserResponseDto;
 import source.code.exception.RecordNotFoundException;
+import source.code.helper.Enum.CacheNames;
 import source.code.helper.UserDetailsHelper;
 import source.code.mapper.UserMapper;
 import source.code.model.User.User;
@@ -121,7 +122,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
   }
 
-  @Cacheable(value = {"userDetails"}, key = "#username")
+  @Cacheable(value = CacheNames.USER_DETAILS, key = "#username")
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return findUserCredentialsByEmail(username)
             .map(UserDetailsHelper::buildUserDetails)
@@ -132,13 +133,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     return userRepository.findUserWithRolesByEmail(email).map(userMapper::toDetails);
   }
 
-  @Cacheable(value = {"userById"}, key = "#userId")
+  @Cacheable(value = CacheNames.USER_BY_ID, key = "#userId")
   public UserResponseDto getUser(int userId) {
     User user = find(userId);
     return userMapper.toResponse(user);
   }
 
-  @Cacheable(value = {"userIdByEmail"}, key = "#email")
+  @Cacheable(value = CacheNames.USER_ID_BY_EMAIL, key = "#email")
   public int getUserIdByEmail(String email) {
     return userRepository.findByEmail(email)
             .map(User::getId)

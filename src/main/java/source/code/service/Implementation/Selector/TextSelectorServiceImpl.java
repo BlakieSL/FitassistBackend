@@ -32,6 +32,7 @@ public class TextSelectorServiceImpl implements TextSelectorService {
       case EXERCISE_INSTRUCTION -> exerciseInstructionService;
       case EXERCISE_TIP -> exerciseTipService;
       case RECIPE_INSTRUCTION -> recipeInstructionService;
+      case PLAN_INSTRUCTION -> planInstructionService;
     };
   }
 }

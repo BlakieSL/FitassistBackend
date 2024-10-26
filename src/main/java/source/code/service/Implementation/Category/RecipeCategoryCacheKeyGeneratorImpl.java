@@ -1,6 +1,7 @@
 package source.code.service.Implementation.Category;
 
 import org.springframework.stereotype.Service;
+import source.code.helper.Enum.CacheKeys;
 import source.code.model.Recipe.RecipeCategory;
 import source.code.service.Declaration.Category.CategoryCacheKeyGenerator;
 
@@ -8,6 +9,6 @@ import source.code.service.Declaration.Category.CategoryCacheKeyGenerator;
 public class RecipeCategoryCacheKeyGeneratorImpl implements CategoryCacheKeyGenerator<RecipeCategory> {
   @Override
   public String generateCacheKey() {
-    return "recipeCategories";
+    return CacheKeys.RECIPE_CATEGORIES.name();
   }
 }

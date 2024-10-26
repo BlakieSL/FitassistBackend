@@ -6,29 +6,24 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import source.code.event.events.Category.CategoryClearCacheEvent;
 import source.code.event.events.Text.TextCreateCacheEvent;
+import source.code.helper.Enum.CacheNames;
+import source.code.service.Declaration.Cache.CacheService;
 
 @Component
 public class TextListener {
-  private final CacheManager cacheManager;
-  private static final String CACHE_NAME = "allTextByParent";
+  private final CacheService cacheService;
 
-  public TextListener(CacheManager cacheManager) {
-    this.cacheManager = cacheManager;
+  public TextListener(CacheService cacheService) {
+    this.cacheService = cacheService;
   }
 
   @EventListener
   public void handleCacheCreateEvent(TextCreateCacheEvent event) {
-    Cache cache = cacheManager.getCache(CACHE_NAME);
-
-    if (cache == null) {
-      throw new IllegalStateException("Cache not available: " + CACHE_NAME);
-    }
-
-    cache.put(event.getCacheKey(), event.getCachedData());
+    cacheService.putCache(CacheNames.ALL_TEXT_BY_PARENT, event.getCacheKey(), event.getCachedData());
   }
 
   @EventListener
   public void handleCacheClearEvent(CategoryClearCacheEvent event) {
-    cacheManager.getCache(CACHE_NAME).evict(event.getCacheKey());
+    cacheService.evictCache(CacheNames.ALL_TEXT_BY_PARENT, event.getCacheKey());
   }
 }

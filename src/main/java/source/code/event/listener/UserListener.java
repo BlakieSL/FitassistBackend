@@ -6,14 +6,16 @@ import org.springframework.stereotype.Component;
 import source.code.event.events.User.UserDeleteEvent;
 import source.code.event.events.User.UserRegisterEvent;
 import source.code.event.events.User.UserUpdateEvent;
+import source.code.helper.Enum.CacheNames;
 import source.code.model.User.User;
+import source.code.service.Declaration.Cache.CacheService;
 
 @Component
 public class UserListener {
-  private final CacheManager cacheManager;
+  private final CacheService cacheService;
 
-  public UserListener(CacheManager cacheManager) {
-    this.cacheManager = cacheManager;
+  public UserListener(CacheService cacheService) {
+    this.cacheService = cacheService;
   }
 
   @EventListener
@@ -34,8 +36,8 @@ public class UserListener {
   }
 
   public void clearCache(User user) {
-    cacheManager.getCache("userDetails").evict(user.getEmail());
-    cacheManager.getCache("userById").evict(user.getId());
-    cacheManager.getCache("userIdByEmail").evict(user.getEmail());
+    cacheService.evictCache(CacheNames.USER_DETAILS, user.getEmail());
+    cacheService.evictCache(CacheNames.USER_BY_ID, user.getId());
+    cacheService.evictCache(CacheNames.USER_ID_BY_EMAIL, user.getEmail());
   }
 }
