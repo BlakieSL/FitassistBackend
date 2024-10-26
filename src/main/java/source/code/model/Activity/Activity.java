@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.helper.search.IndexedEntity;
 import source.code.model.User.UserActivity;
 
 import java.util.HashSet;
@@ -20,7 +21,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Activity {
+public class Activity implements IndexedEntity {
   private static final int NAME_MAX_LENGTH = 50;
 
   @Id
@@ -60,5 +61,10 @@ public class Activity {
     Activity activity = new Activity();
     activity.setId(id);
     return activity;
+  }
+
+  @Override
+  public String getClassName() {
+    return this.getClass().getSimpleName();
   }
 }

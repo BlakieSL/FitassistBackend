@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.helper.search.IndexedEntity;
 import source.code.model.Recipe.RecipeFood;
 import source.code.model.User.UserFood;
 
@@ -18,7 +19,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Food {
+public class Food implements IndexedEntity {
   private static final int MAX_NAME_LENGTH = 50;
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,5 +68,10 @@ public class Food {
     Food food = new Food();
     food.setId(id);
     return food;
+  }
+
+  @Override
+  public String getClassName() {
+    return this.getClass().getSimpleName();
   }
 }

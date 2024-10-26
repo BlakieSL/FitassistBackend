@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.helper.search.IndexedEntity;
 import source.code.model.Text.RecipeInstruction;
 import source.code.model.User.UserRecipe;
 
@@ -20,7 +21,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Recipe {
+public class Recipe implements IndexedEntity {
   private static final int NAME_MAX_LENGTH = 100;
   private static final int DESCRIPTION_MAX_LENGTH = 255;
   private static final int TEXT_MAX_LENGTH = 2000;
@@ -60,4 +61,9 @@ public class Recipe {
   @OneToMany(mappedBy = "recipe",
           cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
   private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();
+
+  @Override
+  public String getClassName() {
+    return this.getClass().getSimpleName();
+  }
 }

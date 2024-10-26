@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.helper.search.IndexedEntity;
 import source.code.model.Text.ExerciseInstruction;
 import source.code.model.Text.ExerciseTip;
 import source.code.model.User.UserExercise;
@@ -23,7 +24,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Exercise {
+public class Exercise implements IndexedEntity {
   private static final int MAX_NAME_LENGTH = 100;
   private static final int MAX_DESCRIPTION_LENGTH = 255;
   private static final int MAX_TEXT_LENGTH = 1000;
@@ -106,6 +107,11 @@ public class Exercise {
     exercise.setId(id);
     exercise.setName(name);
     return exercise;
+  }
+
+  @Override
+  public String getClassName() {
+    return this.getClass().getSimpleName();
   }
 }
 
