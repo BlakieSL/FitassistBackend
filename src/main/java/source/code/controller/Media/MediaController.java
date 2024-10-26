@@ -4,9 +4,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.request.MediaCreateDto;
-import source.code.dto.response.MediaResponseDto;
-import source.code.service.declaration.Media.MediaService;
+import source.code.dto.Request.MediaCreateDto;
+import source.code.dto.Response.MediaResponseDto;
+import source.code.service.Declaration.Media.MediaService;
 
 import java.util.List;
 

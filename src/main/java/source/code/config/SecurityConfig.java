@@ -20,7 +20,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import source.code.auth.BearerTokenFilter;
 import source.code.auth.JwtAuthenticationFilter;
 import source.code.auth.JwtService;
-import source.code.service.implementation.User.UserServiceImpl;
+import source.code.service.Implementation.User.UserServiceImpl;
 
 import java.util.Arrays;
 import java.util.List;

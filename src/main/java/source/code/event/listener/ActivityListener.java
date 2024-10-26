@@ -1,0 +1,56 @@
+package source.code.event.listener;
+
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
+import source.code.event.events.Activity.ActivityCreateEvent;
+import source.code.event.events.Activity.ActivityDeleteEvent;
+import source.code.event.events.Activity.ActivityUpdateEvent;
+import source.code.helper.Enum.CacheNames;
+import source.code.model.Activity.Activity;
+import source.code.service.Declaration.Cache.CacheService;
+import source.code.service.Declaration.Search.LuceneIndexService;
+
+@Component
+public class ActivityListener {
+  private final CacheService cacheService;
+  private final LuceneIndexService luceneService;
+
+  public ActivityListener(CacheService cacheService, LuceneIndexService luceneService) {
+    this.cacheService = cacheService;
+    this.luceneService = luceneService;
+  }
+
+  @EventListener
+  public void handleActivityCreate(ActivityCreateEvent event) {
+    Activity activity = event.getActivity();
+
+    clearCommonCache(activity);
+    luceneService.addEntity(activity);
+  }
+
+  @EventListener
+  public void handleActivityUpdate(ActivityUpdateEvent event) {
+    Activity activity = event.getActivity();
+
+    clearCache(activity);
+    luceneService.updateEntity(activity);
+  }
+
+  @EventListener
+  public void handleActivityDelete(ActivityDeleteEvent event) {
+    Activity activity = event.getActivity();
+
+    clearCache(activity);
+    luceneService.deleteEntity(activity);
+  }
+
+  public void clearCache(Activity activity) {
+    cacheService.evictCache(CacheNames.ACTIVITIES, activity.getId());
+    clearCommonCache(activity);
+  }
+
+  public void clearCommonCache(Activity activity) {
+    cacheService.clearCache(CacheNames.ALL_ACTIVITIES);
+    cacheService.evictCache(CacheNames.ACTIVITIES_BY_CATEGORY, activity.getActivityCategory().getId());
+  }
+}

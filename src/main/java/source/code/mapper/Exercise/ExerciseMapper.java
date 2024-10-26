@@ -2,15 +2,15 @@ package source.code.mapper.Exercise;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.other.ExerciseCategoryShortDto;
-import source.code.dto.request.Exercise.ExerciseCreateDto;
-import source.code.dto.request.Exercise.ExerciseUpdateDto;
-import source.code.dto.response.ExerciseResponseDto;
+import source.code.dto.Other.ExerciseCategoryShortDto;
+import source.code.dto.Request.Exercise.ExerciseCreateDto;
+import source.code.dto.Request.Exercise.ExerciseUpdateDto;
+import source.code.dto.Response.ExerciseResponseDto;
 import source.code.model.Exercise.*;
 import source.code.model.Text.ExerciseInstruction;
 import source.code.model.Text.ExerciseTip;
 import source.code.repository.*;
-import source.code.service.declaration.Helpers.RepositoryHelper;
+import source.code.service.Declaration.Helpers.RepositoryHelper;
 
 import java.util.HashSet;
 import java.util.List;

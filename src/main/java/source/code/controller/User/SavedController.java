@@ -2,11 +2,11 @@ package source.code.controller.User;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.response.LikesAndSavesResponseDto;
-import source.code.helper.enumerators.EntityType;
+import source.code.dto.Response.LikesAndSavesResponseDto;
+import source.code.helper.Enum.EntityType;
 import source.code.model.User.BaseUserEntity;
-import source.code.service.declaration.Selector.SavedSelectorService;
-import source.code.service.declaration.User.SavedService;
+import source.code.service.Declaration.Selector.SavedSelectorService;
+import source.code.service.Declaration.User.SavedService;
 
 import java.util.List;
 
