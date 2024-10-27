@@ -18,6 +18,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "plan")
+@NamedEntityGraph(name = "Plan.withoutAssociations", attributeNodes = {})
 @Getter
 @Setter
 @AllArgsConstructor

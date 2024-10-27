@@ -9,11 +9,11 @@ import source.code.service.Declaration.Text.TextCacheKeyGenerator;
 public class PlanInstructionTextCacheKeyGeneratorImpl implements TextCacheKeyGenerator<PlanInstruction> {
   @Override
   public String generateCacheKey(PlanInstruction entity) {
-    return CacheKeys.PLAN_CATEGORIES.toString() + entity.getPlan().getId();
+    return CacheKeys.PLAN_INSTRUCTION.toString() + entity.getPlan().getId();
   }
 
   @Override
   public String generateCacheKeyForParent(int parentId) {
-    return CacheKeys.PLAN_CATEGORIES.toString() + parentId;
+    return CacheKeys.PLAN_INSTRUCTION.toString() + parentId;
   }
 }

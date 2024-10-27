@@ -20,6 +20,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "exercise")
+@NamedEntityGraph(name = "Exercise.withoutAssociations", attributeNodes = {})
 @Getter
 @Setter
 @AllArgsConstructor
@@ -78,12 +79,6 @@ public class Exercise implements IndexedEntity {
   @JoinColumn(name = "exercise_type_id", nullable = false)
   private ExerciseType exerciseType;
 
-  @OneToOne(mappedBy = "exercise")
-  private WorkoutSet workoutSet;
-
-  @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE)
-  private final Set<UserExercise> userExercises = new HashSet<>();
-
   @OneToMany(mappedBy = "exercise",
           cascade = { CascadeType.REMOVE, CascadeType.PERSIST }, orphanRemoval = true)
   private final Set<ExerciseInstruction> exerciseInstructions = new HashSet<>();
@@ -95,6 +90,13 @@ public class Exercise implements IndexedEntity {
   @OneToMany(mappedBy = "exercise",
           cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
   private final Set<ExerciseCategoryAssociation> exerciseCategoryAssociations = new HashSet<>();
+
+  @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  private final Set<WorkoutSet> workoutSets = new HashSet<>();
+
+  @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE)
+  private final Set<UserExercise> userExercises = new HashSet<>();
+
 
   public static Exercise createWithId(int id) {
     Exercise exercise = new Exercise();
