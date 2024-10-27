@@ -11,6 +11,11 @@ import source.code.service.Declaration.Recipe.RecipeService;
 import source.code.service.Declaration.Search.LuceneIndexService;
 import source.code.service.Declaration.Search.LuceneInitialLoadService;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,6 +28,8 @@ public class LuceneInitialLoadServiceImpl implements LuceneInitialLoadService {
   private final ExerciseService exerciseService;
   private final RecipeService recipeService;
   private final PlanService planService;
+
+  private static final String PATH = "src/main/resources/lucene-index";
 
   public LuceneInitialLoadServiceImpl(LuceneIndexService luceneIndexService,
                                       FoodService foodService,
@@ -42,6 +49,8 @@ public class LuceneInitialLoadServiceImpl implements LuceneInitialLoadService {
   @Override
   @PostConstruct
   public void indexAll() {
+    clearIndexDirectory();
+
     List<IndexedEntity> allEntities = Stream.of(
                     foodService.getAllFoodEntities(),
                     activityService.getAllActivityEntities(),
@@ -52,5 +61,25 @@ public class LuceneInitialLoadServiceImpl implements LuceneInitialLoadService {
             .collect(Collectors.toList());
 
     luceneIndexService.indexEntities(allEntities);
+  }
+
+  private void clearIndexDirectory() {
+    Path indexPath = Paths.get(PATH);
+    if (Files.exists(indexPath)) {
+      try (Stream<Path> files = Files.walk(indexPath)) {
+        files.sorted(Comparator.reverseOrder())
+                .forEach(this::deleteFile);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  private void deleteFile(Path path) {
+    try {
+      Files.delete(path);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }
