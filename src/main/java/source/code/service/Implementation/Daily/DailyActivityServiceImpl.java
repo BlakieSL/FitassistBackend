@@ -69,6 +69,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     }
   }
 
+  @Override
   @Transactional
   public void addActivityToDailyActivityItem(int userId, Integer activityId,
                                              DailyActivityItemCreateDto dto) {
@@ -83,6 +84,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     dailyActivityRepository.save(dailyActivity);
   }
 
+  @Override
   @Transactional
   public void removeActivityFromDailyActivity(int userId, int activityId) {
     DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
@@ -92,6 +94,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     dailyActivityRepository.save(dailyActivity);
   }
 
+  @Override
   @Transactional
   public void updateDailyActivityItem(int userId, int activityId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
@@ -106,6 +109,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     dailyActivityRepository.save(dailyActivity);
   }
 
+  @Override
   public DailyActivitiesResponseDto getActivitiesFromDailyActivity(int userId) {
     DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
     User user = dailyActivity.getUser();

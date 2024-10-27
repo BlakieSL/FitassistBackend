@@ -36,11 +36,10 @@ public class Workout {
   @Column(nullable = false)
   private int time;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "workout_type_id", nullable = false)
-  private WorkoutType workoutType;
-
   @OneToMany(mappedBy = "workout", cascade = CascadeType.REMOVE)
   private final Set<WorkoutPlan> workoutPlans = new HashSet<>();
+
+  @OneToMany(mappedBy = "workout",
+          cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
+  private final Set<WorkoutSet> workoutSets = new HashSet<>();
 }

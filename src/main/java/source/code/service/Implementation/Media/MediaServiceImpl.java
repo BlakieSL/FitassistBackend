@@ -27,24 +27,28 @@ public class MediaServiceImpl implements MediaService {
     this.repositoryHelper = repositoryHelper;
   }
 
+  @Override
   @Transactional
   public MediaResponseDto createMedia(MediaCreateDto request) {
     Media savedMedia = mediaRepository.save(mediaMapper.toEntity(request));
     return mediaMapper.toDto(savedMedia);
   }
 
+  @Override
   @Transactional
   public void deleteMedia(int mediaId) {
     Media media = find(mediaId);
     mediaRepository.delete(media);
   }
 
+  @Override
   public List<MediaResponseDto> getAllMediaForParent(int parentId, short parentType) {
     return mediaRepository.findByParentIdAndParentType(parentId, parentType).stream()
             .map(mediaMapper::toDto)
             .toList();
   }
 
+  @Override
   public MediaResponseDto getFirstMediaForParent(int parentId, short parentType) {
     Media media = mediaRepository
             .findFirstByParentIdAndParentTypeOrderByIdAsc(parentId, parentType)
@@ -53,6 +57,7 @@ public class MediaServiceImpl implements MediaService {
     return mediaMapper.toDto(media);
   }
 
+  @Override
   public MediaResponseDto getMedia(int mediaId) {
     Media media = find(mediaId);
     return mediaMapper.toDto(media);

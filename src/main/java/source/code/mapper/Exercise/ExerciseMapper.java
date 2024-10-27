@@ -56,7 +56,7 @@ public abstract class ExerciseMapper {
   @Mapping(target = "exerciseType", source = "exerciseTypeId", qualifiedByName = "mapExerciseType")
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "userExercises", ignore = true)
-  @Mapping(target = "workoutSet", ignore = true)
+  @Mapping(target = "workoutSets", ignore = true)
   public abstract Exercise toEntity(ExerciseCreateDto dto);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -68,7 +68,7 @@ public abstract class ExerciseMapper {
   @Mapping(target = "exerciseType", source = "exerciseTypeId", qualifiedByName = "mapExerciseType")
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "userExercises", ignore = true)
-  @Mapping(target = "workoutSet", ignore = true)
+  @Mapping(target = "workoutSets", ignore = true)
   public abstract void updateExerciseFromDto(@MappingTarget Exercise exercise, ExerciseUpdateDto request);
 
 

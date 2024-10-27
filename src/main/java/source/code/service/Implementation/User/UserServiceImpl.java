@@ -20,7 +20,7 @@ import source.code.dto.Request.UserUpdateDto;
 import source.code.dto.Response.User.UserResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.CacheNames;
-import source.code.helper.UserDetailsHelper;
+import source.code.helper.User.UserDetailsHelper;
 import source.code.mapper.UserMapper;
 import source.code.model.User.User;
 import source.code.repository.UserRepository;
@@ -58,6 +58,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     this.repositoryHelper = repositoryHelper;
   }
 
+  @Override
   @Transactional
   public UserResponseDto register(UserCreateDto request) {
     User user = userMapper.toEntity(request);
@@ -71,6 +72,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     return userMapper.toResponse(savedUser);
   }
 
+  @Override
   @Transactional
   public void deleteUser(int id) {
     User user = find(id);
@@ -79,6 +81,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     applicationEventPublisher.publishEvent(new UserDeleteEvent(this, user));
   }
 
+  @Override
   @Transactional
   public void updateUser(int userId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
@@ -95,11 +98,34 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     applicationEventPublisher.publishEvent(new UserUpdateEvent(this, savedUser));
   }
 
+  @Override
+  @Cacheable(value = CacheNames.USER_DETAILS, key = "#username")
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    return findUserCredentialsByEmail(username)
+            .map(UserDetailsHelper::buildUserDetails)
+            .orElseThrow(() -> new RecordNotFoundException(User.class, username));
+  }
+
   private UserUpdateDto applyPatchToUser(JsonMergePatch patch, int userId)
           throws JsonPatchException, JsonProcessingException {
 
     UserResponseDto userDto = getUser(userId);
     return jsonPatchService.applyPatch(patch, userDto, UserUpdateDto.class);
+  }
+
+  @Override
+  @Cacheable(value = CacheNames.USER_BY_ID, key = "#userId")
+  public UserResponseDto getUser(int userId) {
+    User user = find(userId);
+    return userMapper.toResponse(user);
+  }
+
+  @Override
+  @Cacheable(value = CacheNames.USER_ID_BY_EMAIL, key = "#email")
+  public int getUserIdByEmail(String email) {
+    return userRepository.findByEmail(email)
+            .map(User::getId)
+            .orElseThrow(() -> new RecordNotFoundException(User.class, email));
   }
 
   private void validatePasswordIfNeeded(User user, UserUpdateDto dto) {
@@ -122,28 +148,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
   }
 
-  @Cacheable(value = CacheNames.USER_DETAILS, key = "#username")
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return findUserCredentialsByEmail(username)
-            .map(UserDetailsHelper::buildUserDetails)
-            .orElseThrow(() -> new RecordNotFoundException(User.class, username));
-  }
-
   private Optional<UserCredentialsDto> findUserCredentialsByEmail(String email) {
     return userRepository.findUserWithRolesByEmail(email).map(userMapper::toDetails);
-  }
-
-  @Cacheable(value = CacheNames.USER_BY_ID, key = "#userId")
-  public UserResponseDto getUser(int userId) {
-    User user = find(userId);
-    return userMapper.toResponse(user);
-  }
-
-  @Cacheable(value = CacheNames.USER_ID_BY_EMAIL, key = "#email")
-  public int getUserIdByEmail(String email) {
-    return userRepository.findByEmail(email)
-            .map(User::getId)
-            .orElseThrow(() -> new RecordNotFoundException(User.class, email));
   }
 
   private User find(int userId) {

@@ -8,6 +8,7 @@ import source.code.dto.Request.Activity.CalculateActivityCaloriesRequestDto;
 import source.code.dto.Response.ActivityAverageMetResponseDto;
 import source.code.dto.Response.ActivityCalculatedResponseDto;
 import source.code.dto.Response.ActivityResponseDto;
+import source.code.model.Activity.Activity;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public interface ActivityService {
   ActivityResponseDto getActivity(int id);
 
   List<ActivityResponseDto> getAllActivities();
+  List<Activity> getAllActivityEntities();
 
   List<ActivityResponseDto> getActivitiesByCategory(int categoryId);
 

@@ -63,6 +63,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     this.exerciseCategoryAssociationRepository = exerciseCategoryAssociationRepository;
   }
 
+  @Override
   @Transactional
   public ExerciseResponseDto createExercise(ExerciseCreateDto dto) {
     Exercise exercise = exerciseRepository.save(exerciseMapper.toEntity(dto));
@@ -71,6 +72,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     return exerciseMapper.toResponseDto(exercise);
   }
 
+  @Override
   @Transactional
   public void updateExercise(int exerciseId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
@@ -86,6 +88,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     applicationEventPublisher.publishEvent(new ExerciseUpdateEvent(this, savedExercise));
   }
 
+  @Override
   @Transactional
   public void deleteExercise(int exerciseId) {
     Exercise exercise = find(exerciseId);
@@ -94,17 +97,25 @@ public class ExerciseServiceImpl implements ExerciseService {
     applicationEventPublisher.publishEvent(new ExerciseDeleteEvent(this, exercise));
   }
 
+  @Override
   @Cacheable(value = CacheNames.EXERCISES, key = "#id")
   public ExerciseResponseDto getExercise(int exerciseId) {
     Exercise exercise = find(exerciseId);
     return exerciseMapper.toResponseDto(exercise);
   }
 
+  @Override
   @Cacheable(value = CacheNames.ALL_EXERCISES)
   public List<ExerciseResponseDto> getAllExercises() {
     return repositoryHelper.findAll(exerciseRepository, exerciseMapper::toResponseDto);
   }
 
+  @Override
+  public List<Exercise> getAllExerciseEntities() {
+    return exerciseRepository.findAllWithoutAssociations();
+  }
+
+  @Override
   @Cacheable(value = CacheNames.EXERCISES_BY_CATEGORY, key = "#categoryId")
   public List<ExerciseResponseDto> getExercisesByCategory(int categoryId) {
     return exerciseCategoryAssociationRepository.findByExerciseCategoryId(categoryId).stream()
@@ -113,6 +124,7 @@ public class ExerciseServiceImpl implements ExerciseService {
             .toList();
   }
 
+  @Override
   @Cacheable(value = CacheNames.EXERCISES_BY_FIELD, key = "#field.toString() + #value")
   public List<ExerciseResponseDto> getExercisesByField(ExerciseField field, int value) {
     Function<Exercise, Integer> fieldExtractor = fieldExtractorMap.get(field);
