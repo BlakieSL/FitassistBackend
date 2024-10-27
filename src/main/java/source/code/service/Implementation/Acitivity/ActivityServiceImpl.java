@@ -56,6 +56,7 @@ public class ActivityServiceImpl implements ActivityService {
     this.userRepository = userRepository;
   }
 
+  @Override
   @Transactional
   public ActivityResponseDto createActivity(ActivityCreateDto dto) {
     Activity activity = activityRepository.save(activityMapper.toEntity(dto));
@@ -64,6 +65,7 @@ public class ActivityServiceImpl implements ActivityService {
     return activityMapper.toResponseDto(activity);
   }
 
+  @Override
   @Transactional
   public void updateActivity(int activityId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
@@ -78,6 +80,7 @@ public class ActivityServiceImpl implements ActivityService {
     publishEvent(new ActivityUpdateEvent(this, savedActivity));
   }
 
+  @Override
   @Transactional
   public void deleteActivity(int activityId) {
     Activity activity = repositoryHelper.find(activityRepository, Activity.class, activityId);
@@ -86,6 +89,7 @@ public class ActivityServiceImpl implements ActivityService {
     publishEvent(new ActivityDeleteEvent(this, activity));
   }
 
+  @Override
   public ActivityCalculatedResponseDto calculateCaloriesBurned(
           int activityId, CalculateActivityCaloriesRequestDto request) {
 
@@ -95,17 +99,25 @@ public class ActivityServiceImpl implements ActivityService {
     return activityMapper.toCalculatedDto(activity, user, request.getTime());
   }
 
+  @Override
   @Cacheable(value = CacheNames.ACTIVITIES, key = "#id")
   public ActivityResponseDto getActivity(int activityId) {
     Activity activity = repositoryHelper.find(activityRepository, Activity.class, activityId);
     return activityMapper.toResponseDto(activity);
   }
 
+  @Override
   @Cacheable(value = CacheNames.ALL_ACTIVITIES)
   public List<ActivityResponseDto> getAllActivities() {
     return repositoryHelper.findAll(activityRepository, activityMapper::toResponseDto);
   }
 
+  @Override
+  public List<Activity> getAllActivityEntities() {
+    return activityRepository.findAllWithoutAssociations();
+  }
+
+  @Override
   @Cacheable(value = CacheNames.ACTIVITIES_BY_CATEGORY, key = "#categoryId")
   public List<ActivityResponseDto> getActivitiesByCategory(int categoryId) {
     return activityRepository.findAllByActivityCategory_Id(categoryId).stream()
@@ -113,6 +125,7 @@ public class ActivityServiceImpl implements ActivityService {
             .toList();
   }
 
+  @Override
   public ActivityAverageMetResponseDto getAverageMet() {
     double averageMet = activityRepository.findAll().stream()
             .mapToDouble(Activity::getMet)

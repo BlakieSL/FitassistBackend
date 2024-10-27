@@ -30,6 +30,7 @@ public class LuceneIndexServiceImpl implements LuceneIndexService {
     } catch (IOException e) {
       e.printStackTrace();
     }
+
   }
 
   @Override

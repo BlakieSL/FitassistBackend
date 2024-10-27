@@ -53,6 +53,7 @@ public class PlanServiceImpl implements PlanService {
     this.planCategoryAssociationRepository = planCategoryAssociationRepository;
   }
 
+  @Override
   @Transactional
   public PlanResponseDto createPlan(PlanCreateDto request) {
     Plan plan = planRepository.save(planMapper.toEntity(request));
@@ -61,6 +62,7 @@ public class PlanServiceImpl implements PlanService {
     return planMapper.toResponseDto(plan);
   }
 
+  @Override
   @Transactional
   public void updatePlan(int planId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
@@ -75,6 +77,7 @@ public class PlanServiceImpl implements PlanService {
     applicationEventPublisher.publishEvent(new PlanUpdateEvent(this, savedPlan));
   }
 
+  @Override
   @Transactional
   public void deletePlan(int planId) {
     Plan plan = find(planId);
@@ -83,17 +86,25 @@ public class PlanServiceImpl implements PlanService {
     applicationEventPublisher.publishEvent(new PlanDeleteEvent(this, plan));
   }
 
+  @Override
   @Cacheable(value = CacheNames.PLANS, key = "#id")
   public PlanResponseDto getPlan(int id) {
     Plan plan = find(id);
     return planMapper.toResponseDto(plan);
   }
 
+  @Override
   @Cacheable(value = CacheNames.ALL_PLANS)
   public List<PlanResponseDto> getAllPlans() {
     return repositoryHelper.findAll(planRepository, planMapper::toResponseDto);
   }
 
+  @Override
+  public List<Plan> getAllPlanEntities() {
+    return planRepository.findAllWithoutAssociations();
+  }
+
+  @Override
   @Cacheable(value = CacheNames.PLANS_BY_CATEGORY, key = "#categoryId")
   public List<PlanResponseDto> getPlansByCategory(int categoryId) {
     return planCategoryAssociationRepository.findByPlanCategoryId(categoryId).stream()
@@ -102,6 +113,7 @@ public class PlanServiceImpl implements PlanService {
             .toList();
   }
 
+  @Override
   @Cacheable(value = CacheNames.PLANS_BY_FIELD, key = "#field.toString() + #value")
   public List<PlanResponseDto> getPlansByField(PlanField field, int value) {
     return switch (field) {

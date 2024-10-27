@@ -56,6 +56,7 @@ public class RecipeServiceImpl implements RecipeService {
     this.recipeCategoryAssociationRepository = recipeCategoryAssociationRepository;
   }
 
+  @Override
   @Transactional
   public RecipeResponseDto createRecipe(RecipeCreateDto request) {
     Recipe recipe = recipeRepository.save(recipeMapper.toEntity(request));
@@ -64,6 +65,7 @@ public class RecipeServiceImpl implements RecipeService {
     return recipeMapper.toResponseDto(recipe);
   }
 
+  @Override
   @Transactional
   public void updateRecipe(int recipeId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
@@ -78,6 +80,7 @@ public class RecipeServiceImpl implements RecipeService {
     applicationEventPublisher.publishEvent(new RecipeUpdateEvent(this, savedRecipe));
   }
 
+  @Override
   @Transactional
   public void deleteRecipe(int recipeId) {
     Recipe recipe = find(recipeId);
@@ -86,17 +89,25 @@ public class RecipeServiceImpl implements RecipeService {
     applicationEventPublisher.publishEvent(new RecipeDeleteEvent(this, recipe));
   }
 
+  @Override
   @Cacheable(value = CacheNames.RECIPES, key = "#id")
   public RecipeResponseDto getRecipe(int id) {
     Recipe recipe = find(id);
     return recipeMapper.toResponseDto(recipe);
   }
 
+  @Override
   @Cacheable(value = CacheNames.ALL_RECIPES)
   public List<RecipeResponseDto> getAllRecipes() {
     return repositoryHelper.findAll(recipeRepository, recipeMapper::toResponseDto);
   }
 
+  @Override
+  public List<Recipe> getAllRecipeEntities() {
+    return recipeRepository.findAllWithoutAssociations();
+  }
+
+  @Override
   @Cacheable(value = CacheNames.RECIPES_BY_CATEGORY, key = "#categoryId")
   public List<RecipeResponseDto> getRecipesByCategory(int categoryId) {
     return recipeCategoryAssociationRepository.findByRecipeCategoryId(categoryId).stream()

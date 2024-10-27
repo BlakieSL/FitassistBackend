@@ -6,6 +6,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.Request.Exercise.ExerciseCreateDto;
 import source.code.dto.Response.ExerciseResponseDto;
 import source.code.helper.Enum.ExerciseField;
+import source.code.model.Exercise.Exercise;
 
 import java.util.List;
 
@@ -19,6 +20,8 @@ public interface ExerciseService {
   ExerciseResponseDto getExercise(int id);
 
   List<ExerciseResponseDto> getAllExercises();
+
+  List<Exercise> getAllExerciseEntities();
 
   List<ExerciseResponseDto> getExercisesByCategory(int categoryId);
 

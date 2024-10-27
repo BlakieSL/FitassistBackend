@@ -7,6 +7,7 @@ import source.code.dto.Request.Food.CalculateFoodMacrosRequestDto;
 import source.code.dto.Request.Food.FoodCreateDto;
 import source.code.dto.Response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.Response.FoodResponseDto;
+import source.code.model.Food.Food;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public interface FoodService {
   FoodResponseDto getFood(int foodId);
 
   List<FoodResponseDto> getAllFoods();
+  List<Food> getAllFoodEntities();
 
   FoodCalculatedMacrosResponseDto calculateFoodMacros(int foodId, CalculateFoodMacrosRequestDto request);
 

@@ -68,6 +68,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     }
   }
 
+  @Override
   @Transactional
   public void addFoodToDailyFoodItem(int userId, int foodId, DailyFoodItemCreateDto dto) {
     DailyFood dailyFood = getOrCreateDailyFoodForUser(userId);
@@ -79,6 +80,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     dailyFoodRepository.save(dailyFood);
   }
 
+  @Override
   @Transactional
   public void removeFoodFromDailyFoodItem(int userId, int foodId) {
     DailyFood dailyFood = getOrCreateDailyFoodForUser(userId);
@@ -88,6 +90,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     dailyFoodRepository.save(dailyFood);
   }
 
+  @Override
   @Transactional
   public void updateDailyFoodItem(int userId, int foodId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
@@ -102,6 +105,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     dailyFoodRepository.save(dailyFood);
   }
 
+  @Override
   public DailyFoodsResponseDto getFoodsFromDailyFoodItem(int userId) {
     DailyFood dailyFood = getOrCreateDailyFoodForUser(userId);
 

@@ -5,6 +5,7 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.Request.Recipe.RecipeCreateDto;
 import source.code.dto.Response.RecipeResponseDto;
+import source.code.model.Recipe.Recipe;
 
 import java.util.List;
 
@@ -18,6 +19,8 @@ public interface RecipeService {
   RecipeResponseDto getRecipe(int id);
 
   List<RecipeResponseDto> getAllRecipes();
+
+  List<Recipe> getAllRecipeEntities();
 
   List<RecipeResponseDto> getRecipesByCategory(int categoryId);
 }

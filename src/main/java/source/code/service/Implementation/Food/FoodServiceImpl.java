@@ -49,6 +49,7 @@ public class FoodServiceImpl implements FoodService {
     this.repositoryHelper = repositoryHelper;
   }
 
+  @Override
   @Transactional
   public FoodResponseDto createFood(FoodCreateDto request) {
     Food food = foodRepository.save(foodMapper.toEntity(request));
@@ -57,6 +58,7 @@ public class FoodServiceImpl implements FoodService {
     return foodMapper.toResponseDto(food);
   }
 
+  @Override
   @Transactional
   public void updateFood(int foodId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
@@ -72,6 +74,7 @@ public class FoodServiceImpl implements FoodService {
     applicationEventPublisher.publishEvent(new FoodUpdateEvent(this, savedFood));
   }
 
+  @Override
   public void deleteFood(int foodId) {
     Food food = find(foodId);
     foodRepository.delete(food);
@@ -79,6 +82,7 @@ public class FoodServiceImpl implements FoodService {
     applicationEventPublisher.publishEvent(new FoodDeleteEvent(this, food));
   }
 
+  @Override
   public FoodCalculatedMacrosResponseDto calculateFoodMacros(int id,
                                                              CalculateFoodMacrosRequestDto request) {
     Food food = find(id);
@@ -87,17 +91,25 @@ public class FoodServiceImpl implements FoodService {
     return foodMapper.toDtoWithFactor(food, factor);
   }
 
+  @Override
   @Cacheable(value = CacheNames.FOODS, key = "#id")
   public FoodResponseDto getFood(int id) {
     Food food = find(id);
     return foodMapper.toResponseDto(food);
   }
 
+  @Override
   @Cacheable(value = CacheNames.ALL_FOODS)
   public List<FoodResponseDto> getAllFoods() {
     return repositoryHelper.findAll(foodRepository, foodMapper::toResponseDto);
   }
 
+  @Override
+  public List<Food> getAllFoodEntities() {
+    return foodRepository.findAllWithoutAssociations();
+  }
+
+  @Override
   @Cacheable(value = CacheNames.FOODS_BY_CATEGORY, key = "#categoryId")
   public List<FoodResponseDto> getFoodsByCategory(int categoryId) {
     return foodRepository.findAllByFoodCategory_Id(categoryId).stream()
