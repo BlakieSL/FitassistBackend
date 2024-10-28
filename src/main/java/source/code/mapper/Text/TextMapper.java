@@ -1,10 +1,7 @@
 package source.code.mapper.Text;
 
 
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 import source.code.dto.Request.Text.ExerciseInstructionUpdateDto;
 import source.code.dto.Request.Text.ExerciseTipUpdateDto;
 import source.code.dto.Request.Text.PlanInstructionUpdateDto;
@@ -26,18 +23,26 @@ public abstract class TextMapper {
   public abstract PlanInstructionResponseDto toPlanInstructionResponseDto(PlanInstruction instruction);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "exercise", ignore = true)
   public abstract void updateExerciseInstruction(@MappingTarget ExerciseInstruction instruction,
                                                  ExerciseInstructionUpdateDto dto);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "exercise", ignore = true)
   public abstract void updateExerciseTip(@MappingTarget ExerciseTip tip,
                                          ExerciseTipUpdateDto dto);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "recipe", ignore = true)
   public abstract void updateRecipeInstruction(@MappingTarget RecipeInstruction instruction,
                                                RecipeInstructionUpdateDto dto);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "plan", ignore = true)
   public abstract void updatePlanInstruction(@MappingTarget PlanInstruction instruction,
                                              PlanInstructionUpdateDto dto);
 }
