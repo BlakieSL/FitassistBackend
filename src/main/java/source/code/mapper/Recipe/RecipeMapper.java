@@ -34,6 +34,7 @@ public abstract class RecipeMapper {
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "userRecipes", ignore = true)
   @Mapping(target = "recipeFoods", ignore = true)
+  @Mapping(target = "recipeInstructions", ignore = true)
   public abstract Recipe toEntity(RecipeCreateDto dto);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -41,6 +42,7 @@ public abstract class RecipeMapper {
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "userRecipes", ignore = true)
   @Mapping(target = "recipeFoods", ignore = true)
+  @Mapping(target = "recipeInstructions", ignore = true)
   public abstract void updateRecipe(@MappingTarget Recipe recipe, RecipeUpdateDto request);
 
   @AfterMapping
