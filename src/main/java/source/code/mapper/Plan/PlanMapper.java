@@ -46,6 +46,7 @@ public abstract class PlanMapper {
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "userPlans", ignore = true)
   @Mapping(target = "workoutPlans", ignore = true)
+  @Mapping(target = "planInstructions", ignore = true)
   public abstract Plan toEntity(PlanCreateDto dto);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -57,6 +58,7 @@ public abstract class PlanMapper {
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "userPlans", ignore = true)
   @Mapping(target = "workoutPlans", ignore = true)
+  @Mapping(target = "planInstructions", ignore = true)
   public abstract void updatePlan(@MappingTarget Plan plan, PlanUpdateDto planUpdateDto);
 
   @AfterMapping
