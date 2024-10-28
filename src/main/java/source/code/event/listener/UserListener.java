@@ -36,7 +36,6 @@ public class UserListener {
   }
 
   public void clearCache(User user) {
-    cacheService.evictCache(CacheNames.USER_DETAILS, user.getEmail());
     cacheService.evictCache(CacheNames.USER_BY_ID, user.getId());
     cacheService.evictCache(CacheNames.USER_ID_BY_EMAIL, user.getEmail());
   }

@@ -99,7 +99,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   }
 
   @Override
-  @Cacheable(value = CacheNames.USER_DETAILS, key = "#username")
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return findUserCredentialsByEmail(username)
             .map(UserDetailsHelper::buildUserDetails)
