@@ -16,7 +16,8 @@ import java.util.Optional;
 @Component
 public class RedissonInterceptor implements HandlerInterceptor {
   private final RedissonRateLimiterService rateLimitingService;
-  private static final List<String> NON_AUTH_ENDPOINTS = Arrays.asList("/api/users/login", "/api/users/register");
+  private static final List<String> NON_AUTH_ENDPOINTS =
+          Arrays.asList("/api/users/login", "/api/users/register");
 
   public RedissonInterceptor(RedissonRateLimiterService rateLimitingService) {
     this.rateLimitingService = rateLimitingService;
@@ -30,8 +31,8 @@ public class RedissonInterceptor implements HandlerInterceptor {
     }
 
     return extractToken(request)
-            .flatMap(this::extractUserId)
-            .map(userId -> handleRateLimiting(userId, response))
+            .flatMap(this::extractUserIdAndRoles)
+            .map(userInfo -> handleRateLimiting(userInfo, response))
             .orElseGet(() -> handleInvalidToken(response));
   }
 
@@ -45,19 +46,26 @@ public class RedissonInterceptor implements HandlerInterceptor {
             .map(authHeader -> authHeader.substring("Bearer".length()).trim());
   }
 
-  private Optional<Integer> extractUserId(String token) {
+  private Optional<UserInfo> extractUserIdAndRoles(String token) {
     try {
       SignedJWT signedJWT = SignedJWT.parse(token);
       JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
-      return Optional.ofNullable(claimsSet.getIntegerClaim("userId"));
+
+      int userId = claimsSet.getIntegerClaim("userId");
+      List<String> roles = claimsSet.getStringListClaim("authorities");
+
+      return Optional.of(new UserInfo(userId, roles));
     } catch (Exception e) {
-      e.printStackTrace();
       return Optional.empty();
     }
   }
 
-  private boolean handleRateLimiting(int userId, HttpServletResponse response) {
-    if (rateLimitingService.isAllowed(userId)) {
+  private boolean handleRateLimiting(UserInfo userInfo, HttpServletResponse response) {
+    if (userInfo.roles.contains("ROLE_ADMIN")) {
+      return true;
+    }
+
+    if (rateLimitingService.isAllowed(userInfo.userId)) {
       return true;
     } else {
       return writeErrorResponse(response, 429, "Too many requests");
@@ -65,7 +73,8 @@ public class RedissonInterceptor implements HandlerInterceptor {
   }
 
   private boolean handleInvalidToken(HttpServletResponse response) {
-    return writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid or missing token");
+    return writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED,
+            "Invalid or missing token");
   }
 
   private boolean writeErrorResponse(HttpServletResponse response, int statusCode, String message) {
@@ -77,4 +86,6 @@ public class RedissonInterceptor implements HandlerInterceptor {
     }
     return false;
   }
+
+  private static record UserInfo(int userId, List<String> roles) {}
 }
