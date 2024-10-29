@@ -25,10 +25,12 @@ public class RecipeFood {
   @Column(nullable = false)
   private int amount;
 
+  @NotNull
   @ManyToOne
   @JoinColumn(name = "recipe_id", nullable = false)
   private Recipe recipe;
 
+  @NotNull
   @ManyToOne
   @JoinColumn(name = "food_id", nullable = false)
   private Food food;

@@ -19,10 +19,12 @@ public class UserActivity implements BaseUserEntity{
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
+  @NotNull
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
+  @NotNull
   @ManyToOne
   @JoinColumn(name = "activity_id", nullable = false)
   private Activity activity;

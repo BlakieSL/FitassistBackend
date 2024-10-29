@@ -37,6 +37,7 @@ public class Workout {
   @Column(nullable = false)
   private int time;
 
+  @NotNull
   @ManyToOne
   @JoinColumn(name = "plan_id", nullable = false)
   private Plan plan;
