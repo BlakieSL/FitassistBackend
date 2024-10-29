@@ -18,10 +18,12 @@ public class ExerciseCategoryAssociation {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
+  @NotNull
   @ManyToOne
   @JoinColumn(name = "exercise_id", nullable = false)
   private Exercise exercise;
 
+  @NotNull
   @ManyToOne
   @JoinColumn(name = "exercise_category_id", nullable = false)
   private ExerciseCategory exerciseCategory;

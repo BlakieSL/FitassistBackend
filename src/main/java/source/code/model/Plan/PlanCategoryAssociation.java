@@ -1,6 +1,7 @@
 package source.code.model.Plan;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +18,12 @@ public class PlanCategoryAssociation {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
+  @NotNull
   @ManyToOne
   @JoinColumn(name = "plan_id", nullable = false)
   private Plan plan;
 
+  @NotNull
   @ManyToOne
   @JoinColumn(name = "plan_category_id", nullable = false)
   private PlanCategory planCategory;
