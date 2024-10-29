@@ -11,7 +11,7 @@ import lombok.Setter;
 import source.code.helper.Search.IndexedEntity;
 import source.code.model.Text.PlanInstruction;
 import source.code.model.User.UserPlan;
-import source.code.model.Workout.WorkoutPlan;
+import source.code.model.Workout.Workout;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -83,7 +83,7 @@ public class Plan implements IndexedEntity {
   private final Set<UserPlan> userPlans = new HashSet<>();
 
   @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, orphanRemoval = true)
-  private final Set<WorkoutPlan> workoutPlans = new HashSet<>();
+  private final Set<Workout> workouts = new HashSet<>();
 
   @Override
   public String getClassName() {

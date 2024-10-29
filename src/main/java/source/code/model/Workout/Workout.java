@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.model.Plan.Plan;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -36,8 +37,9 @@ public class Workout {
   @Column(nullable = false)
   private int time;
 
-  @OneToMany(mappedBy = "workout", cascade = CascadeType.REMOVE)
-  private final Set<WorkoutPlan> workoutPlans = new HashSet<>();
+  @ManyToOne
+  @JoinColumn(name = "plan_id", nullable = false)
+  private Plan plan;
 
   @OneToMany(mappedBy = "workout",
           cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
