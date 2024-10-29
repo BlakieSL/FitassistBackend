@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import source.code.auth.JwtService;
 import source.code.dto.Request.RefreshTokenRequestDto;
-import source.code.dto.Request.UserCreateDto;
+import source.code.dto.Request.User.UserCreateDto;
 import source.code.dto.Response.AccessTokenResponseDto;
 import source.code.dto.Response.User.UserResponseDto;
 import source.code.service.Declaration.User.UserService;

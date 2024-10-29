@@ -25,11 +25,13 @@ public class DailyFoodItem {
   @Column(nullable = false)
   private int amount;
 
+  @NotNull
   @ManyToOne
   @JoinColumn(name = "daily_cart_id", nullable = false)
   @JsonBackReference
   private DailyFood dailyFood;
 
+  @NotNull
   @ManyToOne
   @JoinColumn(name = "food_id", nullable = false)
   private Food food;

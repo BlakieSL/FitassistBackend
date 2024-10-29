@@ -3,7 +3,7 @@ package source.code.service.Declaration.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import source.code.dto.Request.UserCreateDto;
+import source.code.dto.Request.User.UserCreateDto;
 import source.code.dto.Response.User.UserResponseDto;
 
 public interface UserService {

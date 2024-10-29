@@ -24,10 +24,12 @@ public class DailyActivityItem {
   @Column(nullable = false)
   private int time;
 
+  @NotNull
   @ManyToOne
   @JoinColumn(name = "daily_activity_id", nullable = false)
   private DailyActivity dailyActivity;
 
+  @NotNull
   @ManyToOne
   @JoinColumn(name = "activity_id", nullable = false)
   private Activity activity;
