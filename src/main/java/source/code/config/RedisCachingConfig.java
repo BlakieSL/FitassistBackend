@@ -22,15 +22,14 @@ import java.time.Duration;
 @Configuration
 @EnableCaching
 public class RedisCachingConfig {
-  private final ObjectMapper objectMapper;
-
-  public RedisCachingConfig(ObjectMapper objectMapper) {
-    this.objectMapper = objectMapper;
-  }
-
   @Bean
   public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
-    GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(objectMapper);
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
+    mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    mapper.activateDefaultTyping(mapper.getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.NON_FINAL);
+
+    GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(mapper);
     RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
             .entryTtl(Duration.ofMinutes(60))
             .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))

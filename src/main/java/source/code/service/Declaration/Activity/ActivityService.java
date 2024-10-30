@@ -5,6 +5,7 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.Request.Activity.ActivityCreateDto;
 import source.code.dto.Request.Activity.CalculateActivityCaloriesRequestDto;
+import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Response.ActivityAverageMetResponseDto;
 import source.code.dto.Response.ActivityCalculatedResponseDto;
 import source.code.dto.Response.ActivityResponseDto;
@@ -24,6 +25,8 @@ public interface ActivityService {
   ActivityResponseDto getActivity(int id);
 
   List<ActivityResponseDto> getAllActivities();
+  List<ActivityResponseDto> getFilteredActivities(FilterDto filterDto);
+
   List<Activity> getAllActivityEntities();
 
   List<ActivityResponseDto> getActivitiesByCategory(int categoryId);
