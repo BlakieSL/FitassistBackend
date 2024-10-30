@@ -29,6 +29,8 @@ import source.code.service.Declaration.Helpers.JsonPatchService;
 import source.code.service.Declaration.Helpers.RepositoryHelper;
 import source.code.service.Declaration.Helpers.ValidationService;
 import source.code.specification.SpecificationBuilder;
+import source.code.specification.factory.SpecificationFactory;
+import source.code.specification.specification.ActivitySpecification;
 
 import java.util.List;
 
@@ -117,7 +119,8 @@ public class ActivityServiceImpl implements ActivityService {
 
   @Override
   public List<ActivityResponseDto> getFilteredActivities(FilterDto filterDto) {
-    SpecificationBuilder<Activity> specificationBuilder = new SpecificationBuilder<>(filterDto);
+    SpecificationFactory<Activity> activityFactory = ActivitySpecification::new;
+    SpecificationBuilder<Activity> specificationBuilder = new SpecificationBuilder<>(filterDto, activityFactory);
     Specification<Activity> specification = specificationBuilder.build();
 
     List<Activity> filteredActivities = activityRepository.findAll(specification);
