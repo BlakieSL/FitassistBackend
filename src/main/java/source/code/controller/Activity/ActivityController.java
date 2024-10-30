@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.Request.Activity.ActivityCreateDto;
 import source.code.dto.Request.Activity.CalculateActivityCaloriesRequestDto;
+import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Response.ActivityAverageMetResponseDto;
 import source.code.dto.Response.ActivityCalculatedResponseDto;
 import source.code.dto.Response.ActivityResponseDto;
@@ -39,6 +40,12 @@ public class ActivityController {
   @GetMapping("/categories/{categoryId}/")
   public ResponseEntity<List<ActivityResponseDto>> getActivitiesByCategory(@PathVariable int categoryId) {
     return ResponseEntity.ok(activityService.getActivitiesByCategory(categoryId));
+  }
+
+  @PostMapping("/filter")
+  public ResponseEntity<List<ActivityResponseDto>> getFilteredActivities(@RequestBody FilterDto filterDto) {
+    List<ActivityResponseDto> filteredActivities = activityService.getFilteredActivities(filterDto);
+    return ResponseEntity.ok(filteredActivities);
   }
 
   @GetMapping("/met")

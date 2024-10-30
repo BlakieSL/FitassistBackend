@@ -6,7 +6,9 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import source.code.dto.Request.Filter.FilterDto;
 import source.code.event.events.Activity.ActivityCreateEvent;
 import source.code.event.events.Activity.ActivityDeleteEvent;
 import source.code.event.events.Activity.ActivityUpdateEvent;
@@ -26,6 +28,7 @@ import source.code.service.Declaration.Activity.ActivityService;
 import source.code.service.Declaration.Helpers.JsonPatchService;
 import source.code.service.Declaration.Helpers.RepositoryHelper;
 import source.code.service.Declaration.Helpers.ValidationService;
+import source.code.specification.SpecificationBuilder;
 
 import java.util.List;
 
@@ -110,6 +113,18 @@ public class ActivityServiceImpl implements ActivityService {
   @Cacheable(value = CacheNames.ALL_ACTIVITIES)
   public List<ActivityResponseDto> getAllActivities() {
     return repositoryHelper.findAll(activityRepository, activityMapper::toResponseDto);
+  }
+
+  @Override
+  public List<ActivityResponseDto> getFilteredActivities(FilterDto filterDto) {
+    SpecificationBuilder<Activity> specificationBuilder = new SpecificationBuilder<>(filterDto);
+    Specification<Activity> specification = specificationBuilder.build();
+
+    List<Activity> filteredActivities = activityRepository.findAll(specification);
+
+    return filteredActivities.stream()
+            .map(activityMapper::toResponseDto)
+            .toList();
   }
 
   @Override
