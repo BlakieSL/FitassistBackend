@@ -1,6 +1,9 @@
 spring:
   application:
     name: SimpleFullStackProject
+  devtools:
+    restart:
+      enabled: false
   cache:
     type: redis
   data:
