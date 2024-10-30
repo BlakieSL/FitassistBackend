@@ -32,7 +32,7 @@ public class RedissonRateLimiterServiceImpl implements RedissonRateLimiterServic
   private RRateLimiter createRateLimiterForUserId(int userId) {
     String rateLimiterName = "rateLimiter:user:" + userId;
     RRateLimiter rateLimiter = redissonClient.getRateLimiter(rateLimiterName);
-    rateLimiter.trySetRate(RateType.OVERALL, 15, 1, RateIntervalUnit.MINUTES);
+    rateLimiter.trySetRate(RateType.OVERALL, 8, 1, RateIntervalUnit.MINUTES);
     return rateLimiter;
   }
 }
