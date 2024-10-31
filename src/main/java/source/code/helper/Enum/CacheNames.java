@@ -27,7 +27,6 @@ public class CacheNames {
 
   public static final String ALL_TEXT_BY_PARENT = "allTextByParent";
 
-  public static final String USER_DETAILS = "userDetails";
   public static final String USER_BY_ID = "userById";
   public static final String USER_ID_BY_EMAIL = "userIdByEmail";
 

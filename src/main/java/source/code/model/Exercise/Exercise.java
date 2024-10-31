@@ -27,7 +27,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Exercise implements IndexedEntity {
-  public static final String EXERCISE_TYPE = "exerciseType";
+  public static final String TYPE = "exerciseType";
   public static final String EXPERTISE_LEVEL = "expertiseLevel";
   public static final String EQUIPMENT = "equipment";
   public static final String MECHANICS_TYPE = "mechanicsType";

@@ -16,4 +16,8 @@ import java.util.List;
 public class FilterDto {
   private List<FilterCriteria> filterCriteria;
   private FilterDataOption dataOption;
+
+  public static FilterDto createWithSingleCriteria(FilterCriteria filterCriteria) {
+    return new FilterDto(List.of(filterCriteria), FilterDataOption.AND);
+  }
 }

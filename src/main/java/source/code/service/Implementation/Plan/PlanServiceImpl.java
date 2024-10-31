@@ -16,10 +16,12 @@ import source.code.dto.Request.Plan.PlanCreateDto;
 import source.code.dto.Request.Plan.PlanUpdateDto;
 import source.code.dto.Response.PlanResponseDto;
 import source.code.helper.Enum.CacheNames;
+import source.code.helper.Enum.FilterOperation;
 import source.code.helper.Enum.PlanField;
 import source.code.mapper.Plan.PlanMapper;
 import source.code.model.Other.ExpertiseLevel;
 import source.code.model.Plan.*;
+import source.code.pojo.FilterCriteria;
 import source.code.repository.PlanCategoryAssociationRepository;
 import source.code.repository.PlanRepository;
 import source.code.service.Declaration.Helpers.JsonPatchService;
@@ -133,20 +135,10 @@ public class PlanServiceImpl implements PlanService {
   @Override
   @Cacheable(value = CacheNames.PLANS_BY_FIELD, key = "#field.toString() + #value")
   public List<PlanResponseDto> getPlansByField(PlanField field, int value) {
-    return switch (field) {
-      case TYPE -> getPlansByField(Plan::getPlanType, PlanType::getId, value);
-      case DURATION -> getPlansByField(Plan::getPlanDuration, PlanDuration::getId, value);
-      case EXPERTISE_LEVEL -> getPlansByField(Plan::getExpertiseLevel, ExpertiseLevel::getId, value);
-    };
-  }
+    FilterCriteria filterCriteria = FilterCriteria.create(field.name(), value, FilterOperation.EQUAL);
+    FilterDto filterDto = FilterDto.createWithSingleCriteria(filterCriteria);
 
-  private <T> List<PlanResponseDto> getPlansByField(Function<Plan, T> fieldExtractor,
-                                                    Function<T, Integer> idExtractor,
-                                                    int fieldValue) {
-    return planRepository.findAll().stream()
-            .filter(plan -> idExtractor.apply(fieldExtractor.apply(plan)).equals(fieldValue))
-            .map(planMapper::toResponseDto)
-            .toList();
+    return getFilteredPlans(filterDto);
   }
 
   private Plan find(int planId) {

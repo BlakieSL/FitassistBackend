@@ -25,9 +25,10 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Plan implements IndexedEntity {
-  public static final String PLAN_TYPE = "planType";
+  public static final String TYPE = "planType";
   public static final String EXPERTISE_LEVEL = "expertiseLevel";
-  public static final String PLAN_DURATION = "planDuration";
+  public static final String DURATION = "planDuration";
+
   public static final String PLAN_CATEGORY_ASSOCIATIONS = "planCategoryAssociations";
   public static final String CATEGORY = "planCategory";
 
