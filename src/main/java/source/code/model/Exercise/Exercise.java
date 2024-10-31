@@ -26,6 +26,14 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Exercise implements IndexedEntity {
+  public static final String EXPERTISE_LEVEL = "expertiseLevel";
+  public static final String MECHANICS_TYPE = "mechanicsType";
+  public static final String FORCE_TYPE = "forceType";
+  public static final String EXERCISE_EQUIPMENT = "exerciseEquipment";
+  public static final String EXERCISE_TYPE = "exerciseType";
+  public static final String EXERCISE_CATEGORY_ASSOCIATIONS = "exerciseCategoryAssociations";
+  public static final String CATEGORY = "exerciseCategory";
+
   private static final int MAX_NAME_LENGTH = 100;
   private static final int MAX_DESCRIPTION_LENGTH = 255;
   private static final int MAX_TEXT_LENGTH = 1000;
@@ -48,11 +56,6 @@ public class Exercise implements IndexedEntity {
   @Size(max = MAX_TEXT_LENGTH)
   @Column(nullable = false, length = MAX_TEXT_LENGTH)
   private String text;
-
-  @NotNull
-  @Positive
-  @Column(nullable = false)
-  private Double score;
 
   @NotNull
   @ManyToOne

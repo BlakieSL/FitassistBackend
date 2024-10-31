@@ -17,7 +17,6 @@ public class ExerciseResponseDto {
   private String name;
   private String description;
   private String text;
-  private Double score;
   private ExerciseCategoryShortDto expertiseLevel;
   private ExerciseCategoryShortDto mechanicsType;
   private ExerciseCategoryShortDto forceType;

@@ -6,7 +6,9 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import source.code.dto.Request.Filter.FilterDto;
 import source.code.event.events.Food.FoodCreateEvent;
 import source.code.event.events.Food.FoodDeleteEvent;
 import source.code.event.events.Food.FoodUpdateEvent;
@@ -17,12 +19,17 @@ import source.code.dto.Response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.Response.FoodResponseDto;
 import source.code.helper.Enum.CacheNames;
 import source.code.mapper.Food.FoodMapper;
+import source.code.model.Activity.Activity;
 import source.code.model.Food.Food;
 import source.code.repository.FoodRepository;
 import source.code.service.Declaration.Food.FoodService;
 import source.code.service.Declaration.Helpers.JsonPatchService;
 import source.code.service.Declaration.Helpers.RepositoryHelper;
 import source.code.service.Declaration.Helpers.ValidationService;
+import source.code.specification.SpecificationBuilder;
+import source.code.specification.SpecificationFactory;
+import source.code.specification.specification.ActivitySpecification;
+import source.code.specification.specification.FoodSpecification;
 
 import java.util.List;
 
@@ -103,6 +110,19 @@ public class FoodServiceImpl implements FoodService {
   public List<FoodResponseDto> getAllFoods() {
     return repositoryHelper.findAll(foodRepository, foodMapper::toResponseDto);
   }
+
+  @Override
+  public List<FoodResponseDto> getFilteredFoods(FilterDto filterDto) {
+    SpecificationFactory<Food> foodFactory = FoodSpecification::new;
+    SpecificationBuilder<Food> specificationBuilder =
+            new SpecificationBuilder<>(filterDto, foodFactory);
+    Specification<Food> specification = specificationBuilder.build();
+
+    return foodRepository.findAll(specification).stream()
+            .map(foodMapper::toResponseDto)
+            .toList();
+  }
+
 
   @Override
   public List<Food> getAllFoodEntities() {
