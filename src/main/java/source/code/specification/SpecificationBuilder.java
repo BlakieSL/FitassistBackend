@@ -15,6 +15,10 @@ public class SpecificationBuilder<T> {
     this.specificationFactory = specificationFactory;
   }
 
+  public static <T> SpecificationBuilder<T> create(FilterDto filterDto, SpecificationFactory<T> specificationFactory) {
+    return new SpecificationBuilder<>(filterDto, specificationFactory);
+  }
+
   public Specification<T> build() {
     List<FilterCriteria> criteriaList = filterDto.getFilterCriteria();
     if (criteriaList.isEmpty()) {
