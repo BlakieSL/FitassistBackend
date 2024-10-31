@@ -7,7 +7,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Request.Plan.PlanCreateDto;
+import source.code.dto.Response.ActivityResponseDto;
 import source.code.dto.Response.PlanResponseDto;
 import source.code.helper.Enum.Model.PlanField;
 import source.code.service.Declaration.Plan.PlanService;
@@ -39,6 +41,13 @@ public class PlanController {
   public ResponseEntity<List<PlanResponseDto>> getPlansByCategory(@PathVariable int categoryId) {
     List<PlanResponseDto> plans = planService.getPlansByCategory(categoryId);
     return ResponseEntity.ok(plans);
+  }
+
+  @PostMapping("/filter")
+  public ResponseEntity<List<PlanResponseDto>> getFilteredPlans(
+          @Valid @RequestBody FilterDto filterDto) {
+    List<PlanResponseDto> filtered = planService.getFilteredPlans(filterDto);
+    return ResponseEntity.ok(filtered);
   }
 
   @PostMapping

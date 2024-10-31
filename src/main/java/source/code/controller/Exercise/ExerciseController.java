@@ -37,7 +37,8 @@ public class ExerciseController {
   }
 
   @PostMapping("/filter")
-  public ResponseEntity<List<ExerciseResponseDto>> getFilteredExercises(@RequestBody FilterDto filter) {
+  public ResponseEntity<List<ExerciseResponseDto>> getFilteredExercises(
+          @Valid @RequestBody FilterDto filter) {
     List<ExerciseResponseDto> filtered = exerciseService.getFilteredExercises(filter);
     return ResponseEntity.ok(filtered);
   }

@@ -1,4 +1,4 @@
-package source.code.dto.Request;
+package source.code.dto.Request.Filter;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
