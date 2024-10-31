@@ -116,10 +116,10 @@ public class ExerciseServiceImpl implements ExerciseService {
   }
 
   @Override
-  public List<ExerciseResponseDto> getFilteredExercises(FilterDto filterDto) {
+  public List<ExerciseResponseDto> getFilteredExercises(FilterDto filter) {
     SpecificationFactory<Exercise> exerciseFactory = ExerciseSpecification::new;
     SpecificationBuilder<Exercise> specificationBuilder =
-            new SpecificationBuilder<>(filterDto, exerciseFactory);
+            new SpecificationBuilder<>(filter, exerciseFactory);
     Specification<Exercise> specification = specificationBuilder.build();
 
     return exerciseRepository.findAll(specification).stream()

@@ -23,7 +23,7 @@ public interface FoodService {
 
   List<FoodResponseDto> getAllFoods();
 
-  List<FoodResponseDto> getFilteredFoods(FilterDto filterDto);
+  List<FoodResponseDto> getFilteredFoods(FilterDto filter);
 
   List<Food> getAllFoodEntities();
 

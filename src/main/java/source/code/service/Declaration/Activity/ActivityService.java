@@ -25,7 +25,7 @@ public interface ActivityService {
   ActivityResponseDto getActivity(int id);
 
   List<ActivityResponseDto> getAllActivities();
-  List<ActivityResponseDto> getFilteredActivities(FilterDto filterDto);
+  List<ActivityResponseDto> getFilteredActivities(FilterDto filter);
 
   List<Activity> getAllActivityEntities();
 

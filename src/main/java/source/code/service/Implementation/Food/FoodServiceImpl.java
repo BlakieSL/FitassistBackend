@@ -112,10 +112,10 @@ public class FoodServiceImpl implements FoodService {
   }
 
   @Override
-  public List<FoodResponseDto> getFilteredFoods(FilterDto filterDto) {
+  public List<FoodResponseDto> getFilteredFoods(FilterDto filter) {
     SpecificationFactory<Food> foodFactory = FoodSpecification::new;
     SpecificationBuilder<Food> specificationBuilder =
-            new SpecificationBuilder<>(filterDto, foodFactory);
+            new SpecificationBuilder<>(filter, foodFactory);
     Specification<Food> specification = specificationBuilder.build();
 
     return foodRepository.findAll(specification).stream()
