@@ -49,7 +49,7 @@ public class ExerciseServiceImpl implements ExerciseService {
           ExerciseField.EXPERTISE_LEVEL, exercise -> exercise.getExpertiseLevel().getId(),
           ExerciseField.FORCE_TYPE, exercise -> exercise.getForceType().getId(),
           ExerciseField.MECHANICS_TYPE, exercise -> exercise.getMechanicsType().getId(),
-          ExerciseField.EQUIPMENT, exercise -> exercise.getExerciseEquipment().getId(),
+          ExerciseField.EQUIPMENT, exercise -> exercise.getEquipment().getId(),
           ExerciseField.TYPE, exercise -> exercise.getExerciseType().getId());
 
   public ExerciseServiceImpl(ExerciseMapper exerciseMapper,

@@ -68,7 +68,7 @@ public class ExerciseListener {
             ExerciseField.MECHANICS_TYPE.toString() + exercise.getMechanicsType().getId());
 
     cacheService.evictCache(CacheNames.EXERCISES_BY_FIELD,
-            ExerciseField.EQUIPMENT.toString() + exercise.getExerciseEquipment().getId());
+            ExerciseField.EQUIPMENT.toString() + exercise.getEquipment().getId());
 
     cacheService.evictCache(CacheNames.EXERCISES_BY_FIELD,
             ExerciseField.TYPE.toString() + exercise.getExerciseType().getId());
