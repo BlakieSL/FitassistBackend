@@ -11,6 +11,7 @@ import source.code.model.Exercise.ExerciseCategoryAssociation;
 import source.code.pojo.FilterCriteria;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 public class ExerciseSpecification extends BaseSpecification<Exercise>{
@@ -44,12 +45,8 @@ public class ExerciseSpecification extends BaseSpecification<Exercise>{
   @Override
   public Predicate toPredicate(@NonNull Root<Exercise> root, @NonNull CriteriaQuery<?> query,
                                @NonNull CriteriaBuilder builder) {
-    BiFunction<Root<Exercise>, CriteriaBuilder, Predicate> handler = fieldHandlers.get(criteria.getFilterKey());
-
-    if (handler == null) {
-      throw new IllegalStateException("Unexpected filter key: " + criteria.getFilterKey());
-    }
-
-    return handler.apply(root, builder);
+    return Optional.ofNullable(fieldHandlers.get(criteria.getFilterKey()))
+            .map(handler -> handler.apply(root, builder))
+            .orElseThrow(() -> new IllegalStateException("Unexpected filter key: " + criteria.getFilterKey()));
   }
 }

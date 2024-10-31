@@ -7,6 +7,7 @@ import source.code.model.Activity.Activity;
 import source.code.pojo.FilterCriteria;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 public class ActivitySpecification extends BaseSpecification<Activity> {
@@ -28,12 +29,8 @@ public class ActivitySpecification extends BaseSpecification<Activity> {
   @Override
   public Predicate toPredicate(@NonNull Root<Activity> root, @NonNull CriteriaQuery<?> query,
                                @NonNull CriteriaBuilder builder) {
-    BiFunction<Root<Activity>, CriteriaBuilder, Predicate> handler = fieldHandlers.get(criteria.getFilterKey());
-
-    if (handler == null) {
-      throw new IllegalStateException("Unexpected filter key: " + criteria.getFilterKey());
-    }
-
-    return handler.apply(root, builder);
+    return Optional.ofNullable(fieldHandlers.get(criteria.getFilterKey()))
+            .map(handler -> handler.apply(root, builder))
+            .orElseThrow(() -> new IllegalStateException("Unexpected filter key: " + criteria.getFilterKey()));
   }
 }

@@ -11,6 +11,7 @@ import source.code.model.Plan.PlanCategoryAssociation;
 import source.code.pojo.FilterCriteria;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 public class PlanSpecification extends BaseSpecification<Plan>{
@@ -38,12 +39,8 @@ public class PlanSpecification extends BaseSpecification<Plan>{
   @Override
   public Predicate toPredicate(@NonNull Root<Plan> root, @NonNull CriteriaQuery<?> query,
                                @NonNull CriteriaBuilder builder) {
-    BiFunction<Root<Plan>, CriteriaBuilder, Predicate> handler = fieldHandlers.get(criteria.getFilterKey());
-
-    if (handler == null) {
-      throw new IllegalStateException("Unexpected filter key: " + criteria.getFilterKey());
-    }
-
-    return handler.apply(root, builder);
+    return Optional.ofNullable(fieldHandlers.get(criteria.getFilterKey()))
+            .map(handler -> handler.apply(root, builder))
+            .orElseThrow(() -> new IllegalStateException("Unexpected filter key: " + criteria.getFilterKey()));
   }
 }

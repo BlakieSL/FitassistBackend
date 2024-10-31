@@ -11,6 +11,7 @@ import source.code.model.Recipe.RecipeCategoryAssociation;
 import source.code.pojo.FilterCriteria;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 public class RecipeSpecification extends BaseSpecification<Recipe>{
@@ -28,12 +29,8 @@ public class RecipeSpecification extends BaseSpecification<Recipe>{
   @Override
   public Predicate toPredicate(@NonNull Root<Recipe> root, @NonNull CriteriaQuery<?> query,
                                @NonNull CriteriaBuilder builder) {
-    BiFunction<Root<Recipe>, CriteriaBuilder, Predicate> handler = fieldHandlers.get(criteria.getFilterKey());
-
-    if (handler == null) {
-      throw new IllegalStateException("Unexpected filter key: " + criteria.getFilterKey());
-    }
-
-    return handler.apply(root, builder);
+    return Optional.ofNullable(fieldHandlers.get(criteria.getFilterKey()))
+            .map(handler -> handler.apply(root, builder))
+            .orElseThrow(() -> new IllegalStateException("Unexpected filter key: " + criteria.getFilterKey()));
   }
 }
