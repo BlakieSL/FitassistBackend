@@ -32,9 +32,6 @@ public class RecipeCreateDto {
   @Size(max = TEXT_MAX_LENGTH)
   private String text;
 
-  @NotNull
-  private double score;
-
   private List<Integer> categoryIds;
 
   private List<RecipeInstructionCreateDto> instructions;

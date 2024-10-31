@@ -6,7 +6,9 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import source.code.dto.Request.Filter.FilterDto;
 import source.code.event.events.Recipe.RecipeCreateEvent;
 import source.code.event.events.Recipe.RecipeDeleteEvent;
 import source.code.event.events.Recipe.RecipeUpdateEvent;
@@ -17,6 +19,7 @@ import source.code.helper.Enum.CacheNames;
 import source.code.mapper.Recipe.RecipeMapper;
 import source.code.model.Recipe.Recipe;
 import source.code.model.Recipe.RecipeCategoryAssociation;
+import source.code.model.Text.RecipeInstruction;
 import source.code.repository.RecipeCategoryAssociationRepository;
 import source.code.repository.RecipeCategoryRepository;
 import source.code.repository.RecipeRepository;
@@ -24,6 +27,9 @@ import source.code.service.Declaration.Helpers.JsonPatchService;
 import source.code.service.Declaration.Helpers.RepositoryHelper;
 import source.code.service.Declaration.Helpers.ValidationService;
 import source.code.service.Declaration.Recipe.RecipeService;
+import source.code.specification.SpecificationBuilder;
+import source.code.specification.SpecificationFactory;
+import source.code.specification.specification.RecipeSpecification;
 
 import java.util.List;
 
@@ -100,6 +106,18 @@ public class RecipeServiceImpl implements RecipeService {
   @Cacheable(value = CacheNames.ALL_RECIPES)
   public List<RecipeResponseDto> getAllRecipes() {
     return repositoryHelper.findAll(recipeRepository, recipeMapper::toResponseDto);
+  }
+
+  @Override
+  public List<RecipeResponseDto> getFilteredRecipes(FilterDto filterDto) {
+    SpecificationFactory<Recipe> recipeFactory = RecipeSpecification::new;
+    SpecificationBuilder<Recipe> specificationBuilder =
+            new SpecificationBuilder<>(filterDto, recipeFactory);
+    Specification<Recipe> specification = specificationBuilder.build();
+
+    return recipeRepository.findAll(specification).stream()
+            .map(recipeMapper::toResponseDto)
+            .toList();
   }
 
   @Override

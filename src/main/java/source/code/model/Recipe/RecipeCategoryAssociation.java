@@ -14,6 +14,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecipeCategoryAssociation {
+  public static final String RECIPE_CATEGORY = "recipeCategory";
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;

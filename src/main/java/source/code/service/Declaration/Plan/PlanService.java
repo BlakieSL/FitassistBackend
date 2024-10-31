@@ -3,6 +3,7 @@ package source.code.service.Declaration.Plan;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Request.Plan.PlanCreateDto;
 import source.code.dto.Response.PlanResponseDto;
 import source.code.helper.Enum.PlanField;
@@ -20,6 +21,8 @@ public interface PlanService {
   PlanResponseDto getPlan(int id);
 
   List<PlanResponseDto> getAllPlans();
+
+  List<PlanResponseDto> getFilteredPlans(FilterDto filterDto);
 
   List<Plan> getAllPlanEntities();
 

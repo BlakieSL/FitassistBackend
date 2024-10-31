@@ -14,6 +14,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlanCategoryAssociation {
+  public static final String PLAN_CATEGORY = "planCategory";
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
