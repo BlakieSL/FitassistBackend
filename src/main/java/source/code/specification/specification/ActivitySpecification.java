@@ -1,41 +1,23 @@
 package source.code.specification.specification;
 
 import jakarta.persistence.criteria.*;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.NonNull;
 import source.code.model.Activity.Activity;
 import source.code.pojo.FilterCriteria;
 
-public class ActivitySpecification implements Specification<Activity> {
-  private final FilterCriteria criteria;
+public class ActivitySpecification extends BaseSpecification<Activity> {
 
-  public ActivitySpecification(FilterCriteria criteria) {
-    this.criteria = criteria;
+  public ActivitySpecification(@NonNull FilterCriteria criteria) {
+    super(criteria);
   }
 
   @Override
-  public Predicate toPredicate(Root<Activity> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
-    if ("categoryId".equals(criteria.getFilterKey())) {
-      Join<Object, Object> categoryJoin = root.join("activityCategory");
-      return switch (criteria.getOperation()) {
-        case EQUAL -> builder.equal(categoryJoin.get("id"), criteria.getValue());
-        case NOT_EQUAL -> builder.notEqual(categoryJoin.get("id"), criteria.getValue());
-        default -> throw new IllegalArgumentException("Unsupported operation for categoryId: " + criteria.getOperation());
-      };
-    }
-
-    if ("met".equals(criteria.getFilterKey())) {
-      Path<Double> metPath = root.get("met");
-      Double value = (Double) criteria.getValue();
-      return switch (criteria.getOperation()) {
-        case GREATER_THAN -> builder.greaterThan(metPath, value);
-        case LESS_THAN -> builder.lessThan(metPath, value);
-        case EQUAL -> builder.equal(metPath, value);
-        case NOT_EQUAL -> builder.notEqual(metPath, value);
-        default -> throw new IllegalArgumentException("Unsupported operation for met: " + criteria.getOperation());
-      };
-    }
-
-    throw new IllegalArgumentException("Unsupported filter key: " + criteria.getFilterKey());
+  public Predicate toPredicate(@NonNull Root<Activity> root, @NonNull CriteriaQuery<?> query,
+                               @NonNull CriteriaBuilder builder) {
+    return switch (criteria.getFilterKey()) {
+      case Activity.CATEGORY -> handleEntityProperty(root, Activity.CATEGORY, "id", builder);
+      case Activity.MET -> handleNumericProperty(root.get(Activity.MET), builder);
+      default -> throw new IllegalStateException("Unexpected value: " + criteria.getFilterKey());
+    };
   }
-
 }

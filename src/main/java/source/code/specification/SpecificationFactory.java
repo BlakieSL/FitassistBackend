@@ -1,4 +1,4 @@
-package source.code.specification.factory;
+package source.code.specification;
 
 import org.springframework.data.jpa.domain.Specification;
 import source.code.pojo.FilterCriteria;
