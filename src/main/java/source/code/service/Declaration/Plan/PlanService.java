@@ -22,7 +22,7 @@ public interface PlanService {
 
   List<PlanResponseDto> getAllPlans();
 
-  List<PlanResponseDto> getFilteredPlans(FilterDto filterDto);
+  List<PlanResponseDto> getFilteredPlans(FilterDto filter);
 
   List<Plan> getAllPlanEntities();
 

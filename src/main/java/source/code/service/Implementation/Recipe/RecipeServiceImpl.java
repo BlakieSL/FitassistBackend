@@ -109,10 +109,10 @@ public class RecipeServiceImpl implements RecipeService {
   }
 
   @Override
-  public List<RecipeResponseDto> getFilteredRecipes(FilterDto filterDto) {
+  public List<RecipeResponseDto> getFilteredRecipes(FilterDto filter) {
     SpecificationFactory<Recipe> recipeFactory = RecipeSpecification::new;
     SpecificationBuilder<Recipe> specificationBuilder =
-            new SpecificationBuilder<>(filterDto, recipeFactory);
+            new SpecificationBuilder<>(filter, recipeFactory);
     Specification<Recipe> specification = specificationBuilder.build();
 
     return recipeRepository.findAll(specification).stream()
