@@ -23,12 +23,10 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Recipe implements IndexedEntity {
-  public static final String RECIPE_CATEGORY_ASSOCIATIONS = "recipeCategoryAssociations";
-  public static final String CATEGORY = "recipeCategory";
-
   private static final int NAME_MAX_LENGTH = 100;
   private static final int DESCRIPTION_MAX_LENGTH = 255;
   private static final int TEXT_MAX_LENGTH = 2000;
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;

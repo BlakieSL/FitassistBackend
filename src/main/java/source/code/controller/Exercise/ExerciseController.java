@@ -49,14 +49,6 @@ public class ExerciseController {
     return ResponseEntity.ok(exerciseService.getExercisesByCategory(categoryId));
   }
 
-  @GetMapping("/field/{field}/{value}")
-  public ResponseEntity<List<ExerciseResponseDto>> getExercisesByField(
-          @PathVariable ExerciseField field,
-          @PathVariable int value) {
-    List<ExerciseResponseDto> exercises = exerciseService.getExercisesByField(field, value);
-    return ResponseEntity.ok(exercises);
-  }
-
   @PostMapping
   public ResponseEntity<ExerciseResponseDto> createExercise(@Valid @RequestBody ExerciseCreateDto dto) {
     ExerciseResponseDto savedExercise = exerciseService.createExercise(dto);

@@ -27,6 +27,4 @@ public interface PlanService {
   List<Plan> getAllPlanEntities();
 
   List<PlanResponseDto> getPlansByCategory(int categoryId);
-
-  public List<PlanResponseDto> getPlansByField(PlanField field, int value);
 }
