@@ -22,7 +22,7 @@ public interface ExerciseService {
 
   List<ExerciseResponseDto> getAllExercises();
 
-  List<ExerciseResponseDto> getFilteredExercises(FilterDto filterDto);
+  List<ExerciseResponseDto> getFilteredExercises(FilterDto filter);
 
   List<Exercise> getAllExerciseEntities();
 

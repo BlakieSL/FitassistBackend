@@ -21,7 +21,7 @@ public interface RecipeService {
 
   List<RecipeResponseDto> getAllRecipes();
 
-  List<RecipeResponseDto> getFilteredRecipes(FilterDto filterDto);
+  List<RecipeResponseDto> getFilteredRecipes(FilterDto filter);
 
   List<Recipe> getAllRecipeEntities();
 

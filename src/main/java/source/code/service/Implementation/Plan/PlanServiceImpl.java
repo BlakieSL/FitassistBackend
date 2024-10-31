@@ -107,10 +107,10 @@ public class PlanServiceImpl implements PlanService {
   }
 
   @Override
-  public List<PlanResponseDto> getFilteredPlans(FilterDto filterDto) {
+  public List<PlanResponseDto> getFilteredPlans(FilterDto filter) {
     SpecificationFactory<Plan> planFactory = PlanSpecification::new;
     SpecificationBuilder<Plan> specificationBuilder =
-            new SpecificationBuilder<>(filterDto, planFactory);
+            new SpecificationBuilder<>(filter, planFactory);
     Specification<Plan> specification = specificationBuilder.build();
 
     return planRepository.findAll(specification).stream()
