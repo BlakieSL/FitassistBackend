@@ -18,8 +18,7 @@ public class PlanResponseDto {
   private String description;
   private String text;
   private PlanCategoryShortDto planType;
+  private PlanCategoryShortDto expertiseLevel;
   private PlanCategoryShortDto planDuration;
-  private PlanCategoryShortDto planEquipment;
-  private PlanCategoryShortDto planExpertiseLevel;
   private List<PlanCategoryShortDto> categories;
 }

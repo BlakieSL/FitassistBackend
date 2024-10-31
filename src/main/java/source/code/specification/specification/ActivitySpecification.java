@@ -15,7 +15,7 @@ public class ActivitySpecification extends BaseSpecification<Activity> {
   public Predicate toPredicate(@NonNull Root<Activity> root, @NonNull CriteriaQuery<?> query,
                                @NonNull CriteriaBuilder builder) {
     return switch (criteria.getFilterKey()) {
-      case Activity.CATEGORY -> handleEntityProperty(root, Activity.CATEGORY, "id", builder);
+      case Activity.CATEGORY -> handleEntityProperty(root, Activity.CATEGORY, builder);
       case Activity.MET -> handleNumericProperty(root.get(Activity.MET), builder);
       default -> throw new IllegalStateException("Unexpected value: " + criteria.getFilterKey());
     };

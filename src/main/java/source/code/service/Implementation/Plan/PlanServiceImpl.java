@@ -18,8 +18,9 @@ import source.code.dto.Response.PlanResponseDto;
 import source.code.helper.Enum.CacheNames;
 import source.code.helper.Enum.PlanField;
 import source.code.mapper.Plan.PlanMapper;
+import source.code.model.Other.ExpertiseLevel;
+import source.code.model.Other.PlanEquipment;
 import source.code.model.Plan.*;
-import source.code.model.Recipe.Recipe;
 import source.code.repository.PlanCategoryAssociationRepository;
 import source.code.repository.PlanRepository;
 import source.code.service.Declaration.Helpers.JsonPatchService;
@@ -29,7 +30,6 @@ import source.code.service.Declaration.Plan.PlanService;
 import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.PlanSpecification;
-import source.code.specification.specification.RecipeSpecification;
 
 import java.util.List;
 import java.util.function.Function;
@@ -138,7 +138,7 @@ public class PlanServiceImpl implements PlanService {
       case TYPE -> getPlansByField(Plan::getPlanType, PlanType::getId, value);
       case DURATION -> getPlansByField(Plan::getPlanDuration, PlanDuration::getId, value);
       case EQUIPMENT -> getPlansByField(Plan::getPlanEquipment, PlanEquipment::getId, value);
-      case EXPERTISE_LEVEL -> getPlansByField(Plan::getPlanExpertiseLevel, PlanExpertiseLevel::getId, value);
+      case EXPERTISE_LEVEL -> getPlansByField(Plan::getExpertiseLevel, ExpertiseLevel::getId, value);
     };
   }
 

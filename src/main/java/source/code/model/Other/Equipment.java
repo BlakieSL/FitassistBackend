@@ -1,4 +1,4 @@
-package source.code.model.Exercise;
+package source.code.model.Other;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -6,17 +6,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.model.Exercise.Exercise;
+import source.code.model.Plan.PlanEquipmentAssociation;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "expertise_level")
+@Table(name = "equipment")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExpertiseLevel {
+public class Equipment {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
@@ -25,12 +27,6 @@ public class ExpertiseLevel {
   @Column(nullable = false)
   private String name;
 
-  @OneToMany(mappedBy = "expertiseLevel", cascade = CascadeType.REMOVE)
+  @OneToMany(mappedBy = "equipment", cascade = CascadeType.REMOVE)
   private final Set<Exercise> exercises = new HashSet<>();
-
-  public static ExpertiseLevel createWithId(int id){
-    ExpertiseLevel expertiseLevel = new ExpertiseLevel();
-    expertiseLevel.setId(id);
-    return expertiseLevel;
-  }
 }
