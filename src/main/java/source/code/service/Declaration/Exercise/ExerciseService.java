@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.Request.Exercise.ExerciseCreateDto;
+import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Response.ExerciseResponseDto;
 import source.code.helper.Enum.ExerciseField;
 import source.code.model.Exercise.Exercise;
@@ -20,6 +21,8 @@ public interface ExerciseService {
   ExerciseResponseDto getExercise(int id);
 
   List<ExerciseResponseDto> getAllExercises();
+
+  List<ExerciseResponseDto> getFilteredExercises(FilterDto filterDto);
 
   List<Exercise> getAllExerciseEntities();
 

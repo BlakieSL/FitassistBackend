@@ -35,10 +35,6 @@ public class ExerciseCreateDto {
   private String text;
 
   @NotNull
-  @Positive
-  private double score;
-
-  @NotNull
   private int expertiseLevelId;
 
   @NotNull

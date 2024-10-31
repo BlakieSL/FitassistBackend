@@ -14,6 +14,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExerciseCategoryAssociation {
+  public static final String EXERCISE_CATEGORY = "exerciseCategory";
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;

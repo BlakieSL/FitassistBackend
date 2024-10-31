@@ -23,6 +23,9 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Activity implements IndexedEntity {
+  public static final String CATEGORY = "activityCategory";
+  public static final String MET = "met";
+
   private static final int NAME_MAX_LENGTH = 50;
 
   @Id

@@ -27,9 +27,6 @@ public class ExerciseUpdateDto {
   @Size(max = MAX_TEXT_LENGTH)
   private String text;
 
-  @Positive
-  private Double score;
-
   private Integer expertiseLevelId;
   private Integer mechanicsTypeId;
   private Integer forceTypeId;

@@ -7,7 +7,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import source.code.dto.Request.Filter.FilterDto;
 import source.code.event.events.Exercise.ExerciseCreateEvent;
 import source.code.event.events.Exercise.ExerciseDeleteEvent;
 import source.code.event.events.Exercise.ExerciseUpdateEvent;
@@ -25,6 +27,9 @@ import source.code.service.Declaration.Exercise.ExerciseService;
 import source.code.service.Declaration.Helpers.JsonPatchService;
 import source.code.service.Declaration.Helpers.RepositoryHelper;
 import source.code.service.Declaration.Helpers.ValidationService;
+import source.code.specification.SpecificationBuilder;
+import source.code.specification.SpecificationFactory;
+import source.code.specification.specification.ExerciseSpecification;
 
 import java.util.List;
 import java.util.Map;
@@ -108,6 +113,18 @@ public class ExerciseServiceImpl implements ExerciseService {
   @Cacheable(value = CacheNames.ALL_EXERCISES)
   public List<ExerciseResponseDto> getAllExercises() {
     return repositoryHelper.findAll(exerciseRepository, exerciseMapper::toResponseDto);
+  }
+
+  @Override
+  public List<ExerciseResponseDto> getFilteredExercises(FilterDto filterDto) {
+    SpecificationFactory<Exercise> exerciseFactory = ExerciseSpecification::new;
+    SpecificationBuilder<Exercise> specificationBuilder =
+            new SpecificationBuilder<>(filterDto, exerciseFactory);
+    Specification<Exercise> specification = specificationBuilder.build();
+
+    return exerciseRepository.findAll(specification).stream()
+            .map(exerciseMapper::toResponseDto)
+            .toList();
   }
 
   @Override

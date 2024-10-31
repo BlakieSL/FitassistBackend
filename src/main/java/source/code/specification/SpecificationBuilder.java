@@ -4,7 +4,6 @@ import org.springframework.data.jpa.domain.Specification;
 import source.code.dto.Request.Filter.FilterDto;
 import source.code.helper.Enum.FilterDataOption;
 import source.code.pojo.FilterCriteria;
-import source.code.specification.factory.SpecificationFactory;
 
 import java.util.List;
 

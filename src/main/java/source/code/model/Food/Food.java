@@ -21,6 +21,12 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Food implements IndexedEntity {
+  public static final String CALORIES = "calories";
+  public static final String PROTEIN = "protein";
+  public static final String FAT = "fat";
+  public static final String CARBOHYDRATES = "carbohydrates";
+  public static final String CATEGORY = "foodCategory";
+
   private static final int MAX_NAME_LENGTH = 50;
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
