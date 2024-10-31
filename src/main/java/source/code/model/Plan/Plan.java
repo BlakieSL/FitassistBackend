@@ -1,7 +1,6 @@
 package source.code.model.Plan;
 
 import jakarta.persistence.*;
-import jakarta.servlet.http.PushBuilder;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -10,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.helper.Search.IndexedEntity;
+import source.code.model.Other.ExpertiseLevel;
 import source.code.model.Text.PlanInstruction;
 import source.code.model.User.UserPlan;
 import source.code.model.Workout.Workout;
@@ -26,9 +26,8 @@ import java.util.Set;
 @NoArgsConstructor
 public class Plan implements IndexedEntity {
   public static final String PLAN_TYPE = "planType";
+  public static final String EXPERTISE_LEVEL = "expertiseLevel";
   public static final String PLAN_DURATION = "planDuration";
-  public static final String PLAN_EQUIPMENT = "planEquipment";
-  public static final String PLAN_EXPERTISE_LEVEL = "planExpertiseLevel";
   public static final String PLAN_CATEGORY_ASSOCIATIONS = "planCategoryAssociations";
   public static final String CATEGORY = "planCategory";
 
@@ -62,18 +61,13 @@ public class Plan implements IndexedEntity {
 
   @NotNull
   @ManyToOne
+  @JoinColumn(name = "expertise_level_id", nullable = false)
+  private ExpertiseLevel expertiseLevel;
+
+  @NotNull
+  @ManyToOne
   @JoinColumn(name = "plan_duration_id", nullable = false)
   private PlanDuration planDuration;
-
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "plan_equipment_id", nullable = false)
-  private PlanEquipment planEquipment;
-
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "plan_expertise_level_id", nullable = false)
-  private PlanExpertiseLevel planExpertiseLevel;
 
   @OneToMany(mappedBy = "plan",
           cascade = { CascadeType.REMOVE , CascadeType.PERSIST }, orphanRemoval = true)

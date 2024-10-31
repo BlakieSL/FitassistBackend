@@ -24,28 +24,28 @@ public abstract class BaseSpecification<T> implements Specification<T> {
   }
 
   protected Predicate handleEntityProperty(Root<T> root, String joinProperty,
-                                           String targetField, CriteriaBuilder builder) {
+                                           CriteriaBuilder builder) {
     Join<Object, Object> join = root.join(joinProperty);
     Object value = criteria.getValue();
 
     return switch (criteria.getOperation()) {
-      case EQUAL -> builder.equal(join.get(targetField), value);
-      case NOT_EQUAL -> builder.notEqual(join.get(targetField), value);
+      case EQUAL -> builder.equal(join.get("id"), value);
+      case NOT_EQUAL -> builder.notEqual(join.get("id"), value);
       default -> throw new IllegalArgumentException(
               "Unsupported operation for " + joinProperty + ": " + criteria.getOperation());
     };
   }
 
   protected Predicate handleManyToManyProperty(Root<T> root, String joinProperty,
-                                               String joinProperty2, String targetField,
+                                               String joinProperty2,
                                                CriteriaBuilder builder) {
 
     Join<Object, Object> associationJoin = root.join(joinProperty);
     Object value = criteria.getValue();
 
     return switch (criteria.getOperation()) {
-      case EQUAL -> builder.equal(associationJoin.get(joinProperty2).get(targetField), value);
-      case NOT_EQUAL -> builder.notEqual(associationJoin.get(joinProperty2).get(targetField), value);
+      case EQUAL -> builder.equal(associationJoin.get(joinProperty2).get("id"), value);
+      case NOT_EQUAL -> builder.notEqual(associationJoin.get(joinProperty2).get("id"), value);
       default -> throw new IllegalArgumentException(
               "Unsupported operation for category: " + criteria.getOperation());
     };

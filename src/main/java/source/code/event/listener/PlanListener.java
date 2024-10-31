@@ -68,7 +68,7 @@ public class PlanListener {
             PlanField.EQUIPMENT.toString() + plan.getPlanEquipment().getId());
 
     cacheService.evictCache(CacheNames.PLANS_BY_FIELD,
-            PlanField.EXPERTISE_LEVEL.toString() + plan.getPlanExpertiseLevel().getId());
+            PlanField.EXPERTISE_LEVEL.toString() + plan.getExpertiseLevel().getId());
   }
 
   private void clearPlansByCategoryCache(Plan plan) {

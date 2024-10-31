@@ -3,13 +3,14 @@ package source.code.model.Exercise;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.helper.Search.IndexedEntity;
+import source.code.model.Other.Equipment;
+import source.code.model.Other.ExpertiseLevel;
 import source.code.model.Text.ExerciseInstruction;
 import source.code.model.Text.ExerciseTip;
 import source.code.model.User.UserExercise;
@@ -26,11 +27,11 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Exercise implements IndexedEntity {
+  public static final String EXERCISE_TYPE = "exerciseType";
   public static final String EXPERTISE_LEVEL = "expertiseLevel";
+  public static final String EQUIPMENT = "equipment";
   public static final String MECHANICS_TYPE = "mechanicsType";
   public static final String FORCE_TYPE = "forceType";
-  public static final String EXERCISE_EQUIPMENT = "exerciseEquipment";
-  public static final String EXERCISE_TYPE = "exerciseType";
   public static final String EXERCISE_CATEGORY_ASSOCIATIONS = "exerciseCategoryAssociations";
   public static final String CATEGORY = "exerciseCategory";
 
@@ -59,8 +60,18 @@ public class Exercise implements IndexedEntity {
 
   @NotNull
   @ManyToOne
+  @JoinColumn(name = "exercise_type_id", nullable = false)
+  private ExerciseType exerciseType;
+
+  @NotNull
+  @ManyToOne
   @JoinColumn(name = "expertise_level_id", nullable = false)
   private ExpertiseLevel expertiseLevel;
+
+  @NotNull
+  @ManyToOne
+  @JoinColumn(name = "equipment_id", nullable = false)
+  private Equipment equipment;
 
   @NotNull
   @ManyToOne
@@ -72,15 +83,6 @@ public class Exercise implements IndexedEntity {
   @JoinColumn(name = "force_type_id", nullable = false)
   private ForceType forceType;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "exercise_equipment_id", nullable = false)
-  private ExerciseEquipment exerciseEquipment;
-
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "exercise_type_id", nullable = false)
-  private ExerciseType exerciseType;
 
   @OneToMany(mappedBy = "exercise",
           cascade = { CascadeType.REMOVE, CascadeType.PERSIST }, orphanRemoval = true)

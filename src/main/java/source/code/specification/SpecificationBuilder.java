@@ -30,7 +30,7 @@ public class SpecificationBuilder<T> {
     for (int i = 1; i < criteriaList.size(); i++) {
       Specification<T> spec = specificationFactory.createSpecification(criteriaList.get(i));
 
-      result = filterDto.getDataOption() == FilterDataOption.ALL
+      result = filterDto.getDataOption() == FilterDataOption.AND
               ? Specification.where(result).and(spec)
               : Specification.where(result).or(spec);
     }

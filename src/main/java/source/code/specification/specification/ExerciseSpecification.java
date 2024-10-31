@@ -18,18 +18,18 @@ public class ExerciseSpecification extends BaseSpecification<Exercise>{
                                @NonNull CriteriaBuilder builder) {
     return switch (criteria.getFilterKey()) {
       case Exercise.EXPERTISE_LEVEL -> 
-              handleEntityProperty(root, Exercise.EXPERTISE_LEVEL, "id", builder);
+              handleEntityProperty(root, Exercise.EXPERTISE_LEVEL, builder);
       case Exercise.MECHANICS_TYPE -> 
-              handleEntityProperty(root, Exercise.MECHANICS_TYPE, "id", builder);
+              handleEntityProperty(root, Exercise.MECHANICS_TYPE, builder);
       case Exercise.FORCE_TYPE -> 
-              handleEntityProperty(root, Exercise.FORCE_TYPE, "id", builder);
-      case Exercise.EXERCISE_EQUIPMENT -> 
-              handleEntityProperty(root, Exercise.EXERCISE_EQUIPMENT, "id", builder);
+              handleEntityProperty(root, Exercise.FORCE_TYPE, builder);
+      case Exercise.EQUIPMENT ->
+              handleEntityProperty(root, Exercise.EQUIPMENT, builder);
       case Exercise.EXERCISE_TYPE ->
-              handleEntityProperty(root, Exercise.EXERCISE_TYPE, "id", builder);
+              handleEntityProperty(root, Exercise.EXERCISE_TYPE, builder);
       case Exercise.CATEGORY ->
               handleManyToManyProperty(root, Exercise.EXERCISE_CATEGORY_ASSOCIATIONS,
-                      ExerciseCategoryAssociation.EXERCISE_CATEGORY, "id", builder);
+                      ExerciseCategoryAssociation.EXERCISE_CATEGORY, builder);
       default -> throw new IllegalStateException("Unexpected value: " + criteria.getFilterKey());
     };
   }

@@ -19,7 +19,7 @@ public class RecipeSpecification extends BaseSpecification<Recipe>{
                                @NonNull CriteriaBuilder builder) {
     return switch (criteria.getFilterKey()) {
       case Recipe.CATEGORY -> handleManyToManyProperty(root, Recipe.RECIPE_CATEGORY_ASSOCIATIONS,
-              RecipeCategoryAssociation.RECIPE_CATEGORY, "id", builder);
+              RecipeCategoryAssociation.RECIPE_CATEGORY, builder);
       default -> throw new IllegalStateException(
               "Unexpected value: " + criteria.getFilterKey());
     };

@@ -35,6 +35,12 @@ public class ExerciseCreateDto {
   private String text;
 
   @NotNull
+  private int exerciseTypeId;
+
+  @NotNull
+  private int equipmentId;
+
+  @NotNull
   private int expertiseLevelId;
 
   @NotNull
@@ -42,12 +48,6 @@ public class ExerciseCreateDto {
 
   @NotNull
   private int forceTypeId;
-
-  @NotNull
-  private int exerciseEquipmentId;
-
-  @NotNull
-  private int exerciseTypeId;
 
   private List<Integer> categoryIds;
 

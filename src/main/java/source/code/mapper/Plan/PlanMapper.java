@@ -6,6 +6,7 @@ import source.code.dto.Other.PlanCategoryShortDto;
 import source.code.dto.Request.Plan.PlanCreateDto;
 import source.code.dto.Request.Plan.PlanUpdateDto;
 import source.code.dto.Response.PlanResponseDto;
+import source.code.model.Other.ExpertiseLevel;
 import source.code.model.Plan.*;
 import source.code.model.Text.PlanInstruction;
 import source.code.repository.*;
@@ -27,22 +28,20 @@ public abstract class PlanMapper {
   @Autowired
   private PlanDurationRepository planDurationRepository;
   @Autowired
-  private PlanEquipmentRepository planEquipmentRepository;
+  private EquipmentRepository equipmentRepository;
   @Autowired
-  private PlanExpertiseLevelRepository planExpertiseLevelRepository;
+  private ExpertiseLevelRepository expertiseLevelRepository;
 
   @Mapping(target = "categories", source = "planCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryShortDto")
   @Mapping(target = "planType", source = "planType", qualifiedByName = "mapTypeToShortDto")
   @Mapping(target = "planDuration", source = "planDuration", qualifiedByName = "mapDurationToShortDto")
-  @Mapping(target = "planEquipment", source = "planEquipment", qualifiedByName = "mapEquipmentToShortDto")
-  @Mapping(target = "planExpertiseLevel", source = "planExpertiseLevel", qualifiedByName = "mapExpertiseLevelToShortDto")
+  @Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseLevelToShortDto")
   public abstract PlanResponseDto toResponseDto(Plan plan);
 
   @Mapping(target = "planCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
   @Mapping(target = "planType", source = "planTypeId", qualifiedByName = "mapTypeIdToEntity")
   @Mapping(target = "planDuration", source = "planDurationId", qualifiedByName = "mapDurationIdToEntity")
-  @Mapping(target = "planEquipment", source = "planEquipmentId", qualifiedByName = "mapEquipmentIdToEntity")
-  @Mapping(target = "planExpertiseLevel", source = "planExpertiseLevelId", qualifiedByName = "mapExpertiseLevelIdToEntity")
+  @Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevelIdToEntity")
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "userPlans", ignore = true)
   @Mapping(target = "workouts", ignore = true)
@@ -53,8 +52,7 @@ public abstract class PlanMapper {
   @Mapping(target = "planCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
   @Mapping(target = "planType", source = "planTypeId", qualifiedByName = "mapTypeIdToEntity")
   @Mapping(target = "planDuration", source = "planDurationId", qualifiedByName = "mapDurationIdToEntity")
-  @Mapping(target = "planEquipment", source = "planEquipmentId", qualifiedByName = "mapEquipmentIdToEntity")
-  @Mapping(target = "planExpertiseLevel", source = "planExpertiseLevelId", qualifiedByName = "mapExpertiseLevelIdToEntity")
+  @Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevelIdToEntity")
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "userPlans", ignore = true)
   @Mapping(target = "workouts", ignore = true)
@@ -117,14 +115,9 @@ public abstract class PlanMapper {
     return repositoryHelper.find(planDurationRepository, PlanDuration.class, planDurationId);
   }
 
-  @Named("mapEquipmentIdToEntity")
-  protected PlanEquipment mapEquipmentIdToEntity(int planEquipmentId) {
-    return repositoryHelper.find(planEquipmentRepository, PlanEquipment.class, planEquipmentId);
-  }
-
   @Named("mapExpertiseLevelIdToEntity")
-  protected PlanExpertiseLevel mapExpertiseLevelIdToEntity(int planExpertiseLevelId) {
-    return repositoryHelper.find(planExpertiseLevelRepository, PlanExpertiseLevel.class, planExpertiseLevelId);
+  protected ExpertiseLevel mapExpertiseLevelIdToEntity(int expertiseLevelId) {
+    return repositoryHelper.find(expertiseLevelRepository, ExpertiseLevel.class, expertiseLevelId);
   }
 
   @Named("mapTypeToShortDto")
@@ -137,13 +130,8 @@ public abstract class PlanMapper {
     return new PlanCategoryShortDto(planDuration.getId(), planDuration.getName());
   }
 
-  @Named("mapEquipmentToShortDto")
-  protected PlanCategoryShortDto mapEquipmentToShortDto(PlanEquipment planEquipment) {
-    return new PlanCategoryShortDto(planEquipment.getId(), planEquipment.getName());
-  }
-
   @Named("mapExpertiseLevelToShortDto")
-  protected PlanCategoryShortDto mapExpertiseLevelToShortDto(PlanExpertiseLevel planExpertiseLevel) {
-    return new PlanCategoryShortDto(planExpertiseLevel.getId(), planExpertiseLevel.getName());
+  protected PlanCategoryShortDto mapExpertiseLevelToShortDto(ExpertiseLevel expertiseLevel) {
+    return new PlanCategoryShortDto(expertiseLevel.getId(), expertiseLevel.getName());
   }
 }
