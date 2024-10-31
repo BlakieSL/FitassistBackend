@@ -17,22 +17,11 @@ public class PlanUpdateDto {
   private static final int DESCRIPTION_MAX_LENGTH = 255;
   private static final int TEXT_MAX_LENGTH = 10000;
 
-  @Size(max = NAME_MAX_LENGTH)
-  private String name;
-
-  @Size(max = DESCRIPTION_MAX_LENGTH)
-  private String description;
-
-  @Size(max = TEXT_MAX_LENGTH)
-  private String text;
-
+  @Size(max = NAME_MAX_LENGTH) private String name;
+  @Size(max = DESCRIPTION_MAX_LENGTH) private String description;
+  @Size(max = TEXT_MAX_LENGTH) private String text;
   private Integer planTypeId;
-
+  private Integer expertiseLevelId;
   private Integer planDurationId;
-
-  private Integer planEquipmentId;
-
-  private Integer planExpertiseLevelId;
-
   private List<Integer> categoryIds;
 }

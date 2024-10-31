@@ -18,19 +18,13 @@ public class ExerciseUpdateDto {
   private static final int MAX_DESCRIPTION_LENGTH = 255;
   private static final int MAX_TEXT_LENGTH = 1000;
 
-  @Size(max = MAX_NAME_LENGTH)
-  private String name;
-
-  @Size(max = MAX_DESCRIPTION_LENGTH)
-  private String description;
-
-  @Size(max = MAX_TEXT_LENGTH)
-  private String text;
-
+  @Size(max = MAX_NAME_LENGTH) private String name;
+  @Size(max = MAX_DESCRIPTION_LENGTH) private String description;
+  @Size(max = MAX_TEXT_LENGTH) private String text;
+  private Integer equipmentId;
   private Integer expertiseLevelId;
+  private Integer exerciseTypeId;
   private Integer mechanicsTypeId;
   private Integer forceTypeId;
-  private Integer exerciseEquipmentId;
-  private Integer exerciseTypeId;
   private List<Integer> categoryIds;
 }

@@ -18,7 +18,7 @@ public class FoodSpecification extends BaseSpecification<Food>{
       case Food.PROTEIN -> handleNumericProperty(root.get(Food.PROTEIN), builder);
       case Food.FAT -> handleNumericProperty(root.get(Food.FAT), builder);
       case Food.CARBOHYDRATES -> handleNumericProperty(root.get(Food.CARBOHYDRATES), builder);
-      case Food.CATEGORY -> handleEntityProperty(root, Food.CATEGORY, "id", builder);
+      case Food.CATEGORY -> handleEntityProperty(root, Food.CATEGORY, builder);
       default -> throw new IllegalStateException("Unexpected value: " + criteria.getFilterKey());
     };
   }

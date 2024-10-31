@@ -1,4 +1,4 @@
-package source.code.model.Exercise;
+package source.code.model.Other;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -6,17 +6,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.model.Plan.Plan;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "exercise_equipment")
+@Table(name = "plan_equipment")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExerciseEquipment {
+public class PlanEquipment {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
@@ -25,12 +26,6 @@ public class ExerciseEquipment {
   @Column(nullable = false)
   private String name;
 
-  @OneToMany(mappedBy = "exerciseEquipment", cascade = CascadeType.REMOVE)
-  private final Set<Exercise> exercises = new HashSet<>();
-
-  public static ExerciseEquipment createWithId(int id) {
-    ExerciseEquipment exerciseEquipment = new ExerciseEquipment();
-    exerciseEquipment.setId(id);
-    return exerciseEquipment;
-  }
+  @OneToMany(mappedBy = "planEquipment", cascade = CascadeType.REMOVE)
+  private final Set<Plan> plans = new HashSet<>();
 }

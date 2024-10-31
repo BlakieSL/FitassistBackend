@@ -36,13 +36,10 @@ public class PlanCreateDto {
   private int planTypeId;
 
   @NotNull
+  private int expertiseLevelId;
+
+  @NotNull
   private int planDurationId;
-
-  @NotNull
-  private int planEquipmentId;
-
-  @NotNull
-  private int planExpertiseLevelId;
 
   private List<Integer> categoryIds;
 

@@ -7,6 +7,8 @@ import source.code.dto.Request.Exercise.ExerciseCreateDto;
 import source.code.dto.Request.Exercise.ExerciseUpdateDto;
 import source.code.dto.Response.ExerciseResponseDto;
 import source.code.model.Exercise.*;
+import source.code.model.Other.Equipment;
+import source.code.model.Other.ExpertiseLevel;
 import source.code.model.Text.ExerciseInstruction;
 import source.code.model.Text.ExerciseTip;
 import source.code.repository.*;
@@ -35,7 +37,7 @@ public abstract class ExerciseMapper {
   private MechanicsTypeRepository mechanicsTypeRepository;
 
   @Autowired
-  private ExerciseEquipmentRepository exerciseEquipmentRepository;
+  private EquipmentRepository equipmentRepository;
 
   @Autowired
   private ExerciseTypeRepository exerciseTypeRepository;
@@ -44,7 +46,7 @@ public abstract class ExerciseMapper {
   @Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseToShortDto")
   @Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsToShortDto")
   @Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceToShortDto")
-  @Mapping(target = "exerciseEquipment", source = "exerciseEquipment", qualifiedByName = "mapEquipmentToShortDto")
+  @Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToShortDto")
   @Mapping(target = "exerciseType", source = "exerciseType", qualifiedByName = "mapTypeToShortDto")
   public abstract ExerciseResponseDto toResponseDto(Exercise exercise);
 
@@ -52,7 +54,7 @@ public abstract class ExerciseMapper {
   @Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevel")
   @Mapping(target = "mechanicsType", source = "mechanicsTypeId", qualifiedByName = "mapMechanicsType")
   @Mapping(target = "forceType", source = "forceTypeId", qualifiedByName = "mapForceType")
-  @Mapping(target = "exerciseEquipment", source = "exerciseEquipmentId", qualifiedByName = "mapExerciseEquipment")
+  @Mapping(target = "equipment", source = "equipmentId", qualifiedByName = "mapExerciseEquipment")
   @Mapping(target = "exerciseType", source = "exerciseTypeId", qualifiedByName = "mapExerciseType")
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "userExercises", ignore = true)
@@ -66,7 +68,7 @@ public abstract class ExerciseMapper {
   @Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevel")
   @Mapping(target = "mechanicsType", source = "mechanicsTypeId", qualifiedByName = "mapMechanicsType")
   @Mapping(target = "forceType", source = "forceTypeId", qualifiedByName = "mapForceType")
-  @Mapping(target = "exerciseEquipment", source = "exerciseEquipmentId", qualifiedByName = "mapExerciseEquipment")
+  @Mapping(target = "equipment", source = "equipmentId", qualifiedByName = "mapExerciseEquipment")
   @Mapping(target = "exerciseType", source = "exerciseTypeId", qualifiedByName = "mapExerciseType")
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "userExercises", ignore = true)
@@ -148,8 +150,8 @@ public abstract class ExerciseMapper {
   }
 
   @Named("mapEquipmentToShortDto")
-  protected ExerciseCategoryShortDto mapEquipmentToShortDto(ExerciseEquipment exerciseEquipment) {
-    return new ExerciseCategoryShortDto(exerciseEquipment.getId(), exerciseEquipment.getName());
+  protected ExerciseCategoryShortDto mapEquipmentToShortDto(Equipment equipment) {
+    return new ExerciseCategoryShortDto(equipment.getId(), equipment.getName());
   }
 
   @Named("mapTypeToShortDto")
@@ -173,8 +175,8 @@ public abstract class ExerciseMapper {
   }
 
   @Named("mapExerciseEquipment")
-  protected ExerciseEquipment mapExerciseEquipment(Integer exerciseEquipmentId) {
-    return repositoryHelper.find(exerciseEquipmentRepository, ExerciseEquipment.class, exerciseEquipmentId);
+  protected Equipment mapExerciseEquipment(Integer equipmentId) {
+    return repositoryHelper.find(equipmentRepository, Equipment.class, equipmentId);
   }
 
   @Named("mapExerciseType")
