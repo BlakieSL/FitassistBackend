@@ -7,8 +7,10 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Request.Food.CalculateFoodMacrosRequestDto;
 import source.code.dto.Request.Food.FoodCreateDto;
+import source.code.dto.Response.ActivityResponseDto;
 import source.code.dto.Response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.Response.FoodResponseDto;
 import source.code.service.Declaration.Food.FoodService;
@@ -39,6 +41,13 @@ public class FoodController {
   public ResponseEntity<List<FoodResponseDto>> getFoodsByCategory(@PathVariable int categoryId) {
     List<FoodResponseDto> foods = foodService.getFoodsByCategory(categoryId);
     return ResponseEntity.ok(foods);
+  }
+
+  @PostMapping("/filter")
+  public ResponseEntity<List<FoodResponseDto>> getFilteredFoods(
+          @Valid @RequestBody FilterDto filterDto) {
+    List<FoodResponseDto> filtered = foodService.getFilteredFoods(filterDto);
+    return ResponseEntity.ok(filtered);
   }
 
   @PostMapping("/{id}/calculate-macros")
