@@ -1,11 +1,11 @@
 package source.code.helper.Enum;
 
 public enum ExerciseField {
+  TYPE,
   EXPERTISE_LEVEL,
-  FORCE_TYPE,
-  MECHANICS_TYPE,
   EQUIPMENT,
-  TYPE;
+  MECHANICS_TYPE,
+  FORCE_TYPE;
   @Override
   public String toString() {
     return name() + "_";
