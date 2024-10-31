@@ -65,9 +65,6 @@ public class PlanListener {
             PlanField.DURATION.toString() + plan.getPlanDuration().getId());
 
     cacheService.evictCache(CacheNames.PLANS_BY_FIELD,
-            PlanField.EQUIPMENT.toString() + plan.getPlanEquipment().getId());
-
-    cacheService.evictCache(CacheNames.PLANS_BY_FIELD,
             PlanField.EXPERTISE_LEVEL.toString() + plan.getExpertiseLevel().getId());
   }
 

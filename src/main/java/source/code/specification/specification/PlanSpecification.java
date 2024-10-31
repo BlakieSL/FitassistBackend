@@ -7,7 +7,6 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.lang.NonNull;
 import source.code.model.Plan.Plan;
 import source.code.model.Plan.PlanCategoryAssociation;
-import source.code.model.Plan.PlanEquipmentAssociation;
 import source.code.pojo.FilterCriteria;
 
 public class PlanSpecification extends BaseSpecification<Plan>{
