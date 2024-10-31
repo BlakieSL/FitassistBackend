@@ -5,32 +5,52 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.lang.NonNull;
+import source.code.helper.Enum.Model.ExerciseField;
 import source.code.model.Exercise.Exercise;
 import source.code.model.Exercise.ExerciseCategoryAssociation;
 import source.code.pojo.FilterCriteria;
 
+import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 public class ExerciseSpecification extends BaseSpecification<Exercise>{
+  private final Map<String, BiFunction<Root<Exercise>, CriteriaBuilder, Predicate>> fieldHandlers;
+
   public ExerciseSpecification(@NonNull FilterCriteria criteria) {
     super(criteria);
+
+    fieldHandlers = Map.of(
+            ExerciseField.EXPERTISE_LEVEL.name(),
+            (root, builder) -> handleEntityProperty(root, ExerciseField.EXPERTISE_LEVEL.getFieldName(), builder),
+
+            ExerciseField.EQUIPMENT.name(),
+            (root, builder) -> handleEntityProperty(root, ExerciseField.EQUIPMENT.getFieldName(), builder),
+
+            ExerciseField.TYPE.name(),
+            (root, builder) -> handleEntityProperty(root, ExerciseField.TYPE.getFieldName(), builder),
+
+            ExerciseField.MECHANICS_TYPE.name(),
+            (root, builder) -> handleEntityProperty(root, ExerciseField.MECHANICS_TYPE.getFieldName(), builder),
+
+            ExerciseField.FORCE_TYPE.name(),
+            (root, builder) -> handleEntityProperty(root, ExerciseField.FORCE_TYPE.getFieldName(), builder),
+
+            ExerciseField.CATEGORY.name(),
+            (root, builder) -> handleManyToManyProperty(root, ExerciseField.CATEGORY.getFieldName(),
+                    ExerciseCategoryAssociation.EXERCISE_CATEGORY, builder)
+    );
   }
+
   @Override
   public Predicate toPredicate(@NonNull Root<Exercise> root, @NonNull CriteriaQuery<?> query,
                                @NonNull CriteriaBuilder builder) {
-    return switch (criteria.getFilterKey()) {
-      case Exercise.EXPERTISE_LEVEL ->
-              handleEntityProperty(root, Exercise.EXPERTISE_LEVEL, builder);
-      case Exercise.EQUIPMENT ->
-              handleEntityProperty(root, Exercise.EQUIPMENT, builder);
-      case Exercise.TYPE ->
-              handleEntityProperty(root, Exercise.TYPE, builder);
-      case Exercise.MECHANICS_TYPE ->
-              handleEntityProperty(root, Exercise.MECHANICS_TYPE, builder);
-      case Exercise.FORCE_TYPE ->
-              handleEntityProperty(root, Exercise.FORCE_TYPE, builder);
-      case Exercise.CATEGORY ->
-              handleManyToManyProperty(root, Exercise.EXERCISE_CATEGORY_ASSOCIATIONS,
-                      ExerciseCategoryAssociation.EXERCISE_CATEGORY, builder);
-      default -> throw new IllegalStateException("Unexpected value: " + criteria.getFilterKey());
-    };
+    BiFunction<Root<Exercise>, CriteriaBuilder, Predicate> handler = fieldHandlers.get(criteria.getFilterKey());
+
+    if (handler == null) {
+      throw new IllegalStateException("Unexpected filter key: " + criteria.getFilterKey());
+    }
+
+    return handler.apply(root, builder);
   }
 }

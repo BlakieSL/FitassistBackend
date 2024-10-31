@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
-import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,8 +16,7 @@ import source.code.dto.Request.Exercise.ExerciseCreateDto;
 import source.code.dto.Request.Exercise.ExerciseUpdateDto;
 import source.code.dto.Response.ExerciseResponseDto;
 import source.code.helper.Enum.CacheNames;
-import source.code.helper.Enum.ExerciseField;
-import source.code.helper.Enum.FilterDataOption;
+import source.code.helper.Enum.Model.ExerciseField;
 import source.code.helper.Enum.FilterOperation;
 import source.code.mapper.Exercise.ExerciseMapper;
 import source.code.model.Exercise.Exercise;
@@ -35,8 +33,6 @@ import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.ExerciseSpecification;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 @Service
 public class ExerciseServiceImpl implements ExerciseService {
@@ -99,7 +95,7 @@ public class ExerciseServiceImpl implements ExerciseService {
   }
 
   @Override
-  @Cacheable(value = CacheNames.EXERCISES, key = "#id")
+  @Cacheable(value = CacheNames.EXERCISES, key = "#exerciseId")
   public ExerciseResponseDto getExercise(int exerciseId) {
     Exercise exercise = find(exerciseId);
     return exerciseMapper.toResponseDto(exercise);
@@ -137,7 +133,7 @@ public class ExerciseServiceImpl implements ExerciseService {
   }
 
   @Override
-  @Cacheable(value = CacheNames.EXERCISES_BY_FIELD, key = "#field.toString() + #value")
+  @Cacheable(value = CacheNames.EXERCISES_BY_FIELD, key = "#field.getFieldName() + #value")
   public List<ExerciseResponseDto> getExercisesByField(ExerciseField field, int value) {
     FilterCriteria filterCriteria = FilterCriteria.create(field.name(), value, FilterOperation.EQUAL);
     FilterDto filterDto = FilterDto.createWithSingleCriteria(filterCriteria);

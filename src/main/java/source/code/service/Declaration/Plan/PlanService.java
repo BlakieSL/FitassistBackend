@@ -6,7 +6,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Request.Plan.PlanCreateDto;
 import source.code.dto.Response.PlanResponseDto;
-import source.code.helper.Enum.PlanField;
+import source.code.helper.Enum.Model.PlanField;
 import source.code.model.Plan.Plan;
 
 import java.util.List;
