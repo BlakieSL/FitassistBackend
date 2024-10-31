@@ -18,9 +18,12 @@ import source.code.dto.Request.Exercise.ExerciseUpdateDto;
 import source.code.dto.Response.ExerciseResponseDto;
 import source.code.helper.Enum.CacheNames;
 import source.code.helper.Enum.ExerciseField;
+import source.code.helper.Enum.FilterDataOption;
+import source.code.helper.Enum.FilterOperation;
 import source.code.mapper.Exercise.ExerciseMapper;
 import source.code.model.Exercise.Exercise;
 import source.code.model.Exercise.ExerciseCategoryAssociation;
+import source.code.pojo.FilterCriteria;
 import source.code.repository.ExerciseCategoryAssociationRepository;
 import source.code.repository.ExerciseRepository;
 import source.code.service.Declaration.Exercise.ExerciseService;
@@ -44,13 +47,6 @@ public class ExerciseServiceImpl implements ExerciseService {
   private final RepositoryHelper repositoryHelper;
   private final ExerciseRepository exerciseRepository;
   private final ExerciseCategoryAssociationRepository exerciseCategoryAssociationRepository;
-
-  private static final Map<ExerciseField, Function<Exercise, Integer>> fieldExtractorMap = Map.of(
-          ExerciseField.EXPERTISE_LEVEL, exercise -> exercise.getExpertiseLevel().getId(),
-          ExerciseField.FORCE_TYPE, exercise -> exercise.getForceType().getId(),
-          ExerciseField.MECHANICS_TYPE, exercise -> exercise.getMechanicsType().getId(),
-          ExerciseField.EQUIPMENT, exercise -> exercise.getEquipment().getId(),
-          ExerciseField.TYPE, exercise -> exercise.getExerciseType().getId());
 
   public ExerciseServiceImpl(ExerciseMapper exerciseMapper,
                              ValidationService validationService,
@@ -143,15 +139,10 @@ public class ExerciseServiceImpl implements ExerciseService {
   @Override
   @Cacheable(value = CacheNames.EXERCISES_BY_FIELD, key = "#field.toString() + #value")
   public List<ExerciseResponseDto> getExercisesByField(ExerciseField field, int value) {
-    Function<Exercise, Integer> fieldExtractor = fieldExtractorMap.get(field);
-    if (fieldExtractor == null) {
-      throw new IllegalArgumentException("Unknown field: " + field);
-    }
+    FilterCriteria filterCriteria = FilterCriteria.create(field.name(), value, FilterOperation.EQUAL);
+    FilterDto filterDto = FilterDto.createWithSingleCriteria(filterCriteria);
 
-    return exerciseRepository.findAll().stream()
-            .filter(exercise -> fieldExtractor.apply(exercise).equals(value))
-            .map(exerciseMapper::toResponseDto)
-            .toList();
+    return getFilteredExercises(filterDto);
   }
 
   private Exercise find(int exerciseId) {
