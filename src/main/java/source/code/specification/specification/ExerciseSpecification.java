@@ -12,7 +12,6 @@ import source.code.pojo.FilterCriteria;
 
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class ExerciseSpecification extends BaseSpecification<Exercise>{
   private final Map<String, BiFunction<Root<Exercise>, CriteriaBuilder, Predicate>> fieldHandlers;

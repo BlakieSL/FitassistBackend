@@ -41,14 +41,6 @@ public class PlanController {
     return ResponseEntity.ok(plans);
   }
 
-  @GetMapping("/field/{field}/{value}")
-  public ResponseEntity<List<PlanResponseDto>> getPlansByField(
-          @PathVariable PlanField field,
-          @PathVariable int value) {
-    List<PlanResponseDto> plans = planService.getPlansByField(field, value);
-    return ResponseEntity.ok(plans);
-  }
-
   @PostMapping
   public ResponseEntity<PlanResponseDto> createPlan(@Valid @RequestBody PlanCreateDto planDto) {
     PlanResponseDto response = planService.createPlan(planDto);
