@@ -120,8 +120,7 @@ public class ActivityServiceImpl implements ActivityService {
   @Override
   public List<ActivityResponseDto> getFilteredActivities(FilterDto filter) {
     SpecificationFactory<Activity> activityFactory = ActivitySpecification::new;
-    SpecificationBuilder<Activity> specificationBuilder =
-            new SpecificationBuilder<>(filter, activityFactory);
+    SpecificationBuilder<Activity> specificationBuilder = SpecificationBuilder.create(filter, activityFactory);
     Specification<Activity> specification = specificationBuilder.build();
 
     return activityRepository.findAll(specification).stream()
