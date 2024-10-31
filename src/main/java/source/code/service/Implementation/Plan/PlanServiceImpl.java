@@ -17,9 +17,8 @@ import source.code.dto.Request.Plan.PlanUpdateDto;
 import source.code.dto.Response.PlanResponseDto;
 import source.code.helper.Enum.CacheNames;
 import source.code.helper.Enum.FilterOperation;
-import source.code.helper.Enum.PlanField;
+import source.code.helper.Enum.Model.PlanField;
 import source.code.mapper.Plan.PlanMapper;
-import source.code.model.Other.ExpertiseLevel;
 import source.code.model.Plan.*;
 import source.code.pojo.FilterCriteria;
 import source.code.repository.PlanCategoryAssociationRepository;
@@ -33,7 +32,6 @@ import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.PlanSpecification;
 
 import java.util.List;
-import java.util.function.Function;
 
 @Service
 public class PlanServiceImpl implements PlanService {
@@ -133,7 +131,7 @@ public class PlanServiceImpl implements PlanService {
   }
 
   @Override
-  @Cacheable(value = CacheNames.PLANS_BY_FIELD, key = "#field.toString() + #value")
+  @Cacheable(value = CacheNames.PLANS_BY_FIELD, key = "#field.getFieldName() + #value")
   public List<PlanResponseDto> getPlansByField(PlanField field, int value) {
     FilterCriteria filterCriteria = FilterCriteria.create(field.name(), value, FilterOperation.EQUAL);
     FilterDto filterDto = FilterDto.createWithSingleCriteria(filterCriteria);
