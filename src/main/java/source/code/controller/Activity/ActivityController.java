@@ -43,7 +43,8 @@ public class ActivityController {
   }
 
   @PostMapping("/filter")
-  public ResponseEntity<List<ActivityResponseDto>> getFilteredActivities(@RequestBody FilterDto filterDto) {
+  public ResponseEntity<List<ActivityResponseDto>> getFilteredActivities(
+          @Valid @RequestBody FilterDto filterDto) {
     List<ActivityResponseDto> filteredActivities = activityService.getFilteredActivities(filterDto);
     return ResponseEntity.ok(filteredActivities);
   }

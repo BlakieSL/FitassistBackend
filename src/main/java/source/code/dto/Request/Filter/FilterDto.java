@@ -1,5 +1,6 @@
 package source.code.dto.Request.Filter;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FilterDto {
+  @NotNull
   private List<FilterCriteria> filterCriteria;
   private FilterDataOption dataOption;
 
