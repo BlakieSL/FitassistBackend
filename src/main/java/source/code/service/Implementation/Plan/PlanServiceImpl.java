@@ -6,7 +6,9 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import source.code.dto.Request.Filter.FilterDto;
 import source.code.event.events.Plan.PlanCreateEvent;
 import source.code.event.events.Plan.PlanDeleteEvent;
 import source.code.event.events.Plan.PlanUpdateEvent;
@@ -17,12 +19,17 @@ import source.code.helper.Enum.CacheNames;
 import source.code.helper.Enum.PlanField;
 import source.code.mapper.Plan.PlanMapper;
 import source.code.model.Plan.*;
+import source.code.model.Recipe.Recipe;
 import source.code.repository.PlanCategoryAssociationRepository;
 import source.code.repository.PlanRepository;
 import source.code.service.Declaration.Helpers.JsonPatchService;
 import source.code.service.Declaration.Helpers.RepositoryHelper;
 import source.code.service.Declaration.Helpers.ValidationService;
 import source.code.service.Declaration.Plan.PlanService;
+import source.code.specification.SpecificationBuilder;
+import source.code.specification.SpecificationFactory;
+import source.code.specification.specification.PlanSpecification;
+import source.code.specification.specification.RecipeSpecification;
 
 import java.util.List;
 import java.util.function.Function;
@@ -97,6 +104,18 @@ public class PlanServiceImpl implements PlanService {
   @Cacheable(value = CacheNames.ALL_PLANS)
   public List<PlanResponseDto> getAllPlans() {
     return repositoryHelper.findAll(planRepository, planMapper::toResponseDto);
+  }
+
+  @Override
+  public List<PlanResponseDto> getFilteredPlans(FilterDto filterDto) {
+    SpecificationFactory<Plan> planFactory = PlanSpecification::new;
+    SpecificationBuilder<Plan> specificationBuilder =
+            new SpecificationBuilder<>(filterDto, planFactory);
+    Specification<Plan> specification = specificationBuilder.build();
+
+    return planRepository.findAll(specification).stream()
+            .map(planMapper::toResponseDto)
+            .toList();
   }
 
   @Override
