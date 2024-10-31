@@ -8,8 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.Request.Exercise.ExerciseCreateDto;
+import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Response.ExerciseResponseDto;
-import source.code.helper.Enum.ExerciseField;
+import source.code.helper.Enum.Model.ExerciseField;
 import source.code.service.Declaration.Exercise.ExerciseService;
 
 import java.util.List;
@@ -33,6 +34,12 @@ public class ExerciseController {
   public ResponseEntity<List<ExerciseResponseDto>> getAllExercises() {
     List<ExerciseResponseDto> exercises = exerciseService.getAllExercises();
     return ResponseEntity.ok(exercises);
+  }
+
+  @PostMapping("/filter")
+  public ResponseEntity<List<ExerciseResponseDto>> getFilteredExercises(@RequestBody FilterDto filter) {
+    List<ExerciseResponseDto> filtered = exerciseService.getFilteredExercises(filter);
+    return ResponseEntity.ok(filtered);
   }
 
   @GetMapping("/{categoryId}/categories")

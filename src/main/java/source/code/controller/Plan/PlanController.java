@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.Request.Plan.PlanCreateDto;
 import source.code.dto.Response.PlanResponseDto;
-import source.code.helper.Enum.PlanField;
+import source.code.helper.Enum.Model.PlanField;
 import source.code.service.Declaration.Plan.PlanService;
 
 import java.util.List;

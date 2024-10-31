@@ -6,7 +6,7 @@ import source.code.event.events.Exercise.ExerciseCreateEvent;
 import source.code.event.events.Exercise.ExerciseDeleteEvent;
 import source.code.event.events.Exercise.ExerciseUpdateEvent;
 import source.code.helper.Enum.CacheNames;
-import source.code.helper.Enum.ExerciseField;
+import source.code.helper.Enum.Model.ExerciseField;
 import source.code.model.Exercise.Exercise;
 import source.code.model.Exercise.ExerciseCategoryAssociation;
 import source.code.service.Declaration.Cache.CacheService;
@@ -59,19 +59,19 @@ public class ExerciseListener {
 
   private void clearExercisesByFieldCache(Exercise exercise) {
     cacheService.evictCache(CacheNames.EXERCISES_BY_FIELD,
-            ExerciseField.EXPERTISE_LEVEL.toString() + exercise.getExpertiseLevel().getId());
+            ExerciseField.EXPERTISE_LEVEL.getFieldName() + exercise.getExpertiseLevel().getId());
 
     cacheService.evictCache(CacheNames.EXERCISES_BY_FIELD,
-            ExerciseField.FORCE_TYPE.toString() + exercise.getForceType().getId());
+            ExerciseField.FORCE_TYPE.getFieldName() + exercise.getForceType().getId());
 
     cacheService.evictCache(CacheNames.EXERCISES_BY_FIELD,
-            ExerciseField.MECHANICS_TYPE.toString() + exercise.getMechanicsType().getId());
+            ExerciseField.MECHANICS_TYPE.getFieldName() + exercise.getMechanicsType().getId());
 
     cacheService.evictCache(CacheNames.EXERCISES_BY_FIELD,
-            ExerciseField.EQUIPMENT.toString() + exercise.getEquipment().getId());
+            ExerciseField.EQUIPMENT.getFieldName() + exercise.getEquipment().getId());
 
     cacheService.evictCache(CacheNames.EXERCISES_BY_FIELD,
-            ExerciseField.TYPE.toString() + exercise.getExerciseType().getId());
+            ExerciseField.TYPE.getFieldName() + exercise.getExerciseType().getId());
   }
 
   private void clearExercisesByCategoryCache(Exercise exercise) {

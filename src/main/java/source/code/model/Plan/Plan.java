@@ -25,13 +25,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Plan implements IndexedEntity {
-  public static final String TYPE = "planType";
-  public static final String EXPERTISE_LEVEL = "expertiseLevel";
-  public static final String DURATION = "planDuration";
-
-  public static final String PLAN_CATEGORY_ASSOCIATIONS = "planCategoryAssociations";
-  public static final String CATEGORY = "planCategory";
-
   private static final int NAME_MAX_LENGTH = 100;
   private static final int DESCRIPTION_MAX_LENGTH = 255;
   private static final int TEXT_MAX_LENGTH = 10000;

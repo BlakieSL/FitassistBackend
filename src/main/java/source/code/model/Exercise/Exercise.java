@@ -122,3 +122,4 @@ public class Exercise implements IndexedEntity {
   }
 }
 
+

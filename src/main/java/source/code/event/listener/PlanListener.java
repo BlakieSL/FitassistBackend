@@ -6,7 +6,7 @@ import source.code.event.events.Plan.PlanCreateEvent;
 import source.code.event.events.Plan.PlanDeleteEvent;
 import source.code.event.events.Plan.PlanUpdateEvent;
 import source.code.helper.Enum.CacheNames;
-import source.code.helper.Enum.PlanField;
+import source.code.helper.Enum.Model.PlanField;
 import source.code.model.Plan.Plan;
 import source.code.model.Plan.PlanCategoryAssociation;
 import source.code.service.Declaration.Cache.CacheService;
@@ -59,13 +59,13 @@ public class PlanListener {
 
   private void clearPlansByFieldCache(Plan plan) {
     cacheService.evictCache(CacheNames.PLANS_BY_FIELD,
-            PlanField.TYPE.toString() + plan.getPlanType().getId());
+            PlanField.TYPE.getFieldName() + plan.getPlanType().getId());
 
     cacheService.evictCache(CacheNames.PLANS_BY_FIELD,
-            PlanField.DURATION.toString() + plan.getPlanDuration().getId());
+            PlanField.DURATION.getFieldName() + plan.getPlanDuration().getId());
 
     cacheService.evictCache(CacheNames.PLANS_BY_FIELD,
-            PlanField.EXPERTISE_LEVEL.toString() + plan.getExpertiseLevel().getId());
+            PlanField.EXPERTISE_LEVEL.getFieldName() + plan.getExpertiseLevel().getId());
   }
 
   private void clearPlansByCategoryCache(Plan plan) {
