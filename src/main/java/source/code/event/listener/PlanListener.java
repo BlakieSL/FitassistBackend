@@ -53,19 +53,7 @@ public class PlanListener {
 
   private void clearCommonCache(Plan plan) {
     cacheService.clearCache(CacheNames.ALL_PLANS);
-    clearPlansByFieldCache(plan);
     clearPlansByCategoryCache(plan);
-  }
-
-  private void clearPlansByFieldCache(Plan plan) {
-    cacheService.evictCache(CacheNames.PLANS_BY_FIELD,
-            PlanField.TYPE.getFieldName() + plan.getPlanType().getId());
-
-    cacheService.evictCache(CacheNames.PLANS_BY_FIELD,
-            PlanField.DURATION.getFieldName() + plan.getPlanDuration().getId());
-
-    cacheService.evictCache(CacheNames.PLANS_BY_FIELD,
-            PlanField.EXPERTISE_LEVEL.getFieldName() + plan.getExpertiseLevel().getId());
   }
 
   private void clearPlansByCategoryCache(Plan plan) {

@@ -1,0 +1,15 @@
+package source.code.helper.Enum.Model;
+
+public enum RecipeField {
+  CATEGORY("recipeCategoryAssociations");
+
+  private final String fieldName;
+
+  RecipeField(String fieldName) {
+    this.fieldName = fieldName;
+  }
+
+  public String getFieldName() {
+    return fieldName;
+  }
+}

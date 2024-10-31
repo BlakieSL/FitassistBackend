@@ -27,7 +27,5 @@ public interface ExerciseService {
   List<Exercise> getAllExerciseEntities();
 
   List<ExerciseResponseDto> getExercisesByCategory(int categoryId);
-
-  List<ExerciseResponseDto> getExercisesByField(ExerciseField field, int value);
 }
 

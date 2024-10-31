@@ -132,15 +132,6 @@ public class ExerciseServiceImpl implements ExerciseService {
             .toList();
   }
 
-  @Override
-  @Cacheable(value = CacheNames.EXERCISES_BY_FIELD, key = "#field.getFieldName() + #value")
-  public List<ExerciseResponseDto> getExercisesByField(ExerciseField field, int value) {
-    FilterCriteria filterCriteria = FilterCriteria.create(field.name(), value, FilterOperation.EQUAL);
-    FilterDto filterDto = FilterDto.createWithSingleCriteria(filterCriteria);
-
-    return getFilteredExercises(filterDto);
-  }
-
   private Exercise find(int exerciseId) {
     return repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId);
   }

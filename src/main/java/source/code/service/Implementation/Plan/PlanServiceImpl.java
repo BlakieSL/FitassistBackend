@@ -130,15 +130,6 @@ public class PlanServiceImpl implements PlanService {
             .toList();
   }
 
-  @Override
-  @Cacheable(value = CacheNames.PLANS_BY_FIELD, key = "#field.getFieldName() + #value")
-  public List<PlanResponseDto> getPlansByField(PlanField field, int value) {
-    FilterCriteria filterCriteria = FilterCriteria.create(field.name(), value, FilterOperation.EQUAL);
-    FilterDto filterDto = FilterDto.createWithSingleCriteria(filterCriteria);
-
-    return getFilteredPlans(filterDto);
-  }
-
   private Plan find(int planId) {
     return repositoryHelper.find(planRepository, Plan.class, planId);
   }
