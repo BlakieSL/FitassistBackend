@@ -33,9 +33,6 @@ public class PlanCreateDto {
   private String text;
 
   @NotNull
-  private Double score;
-
-  @NotNull
   private int planTypeId;
 
   @NotNull

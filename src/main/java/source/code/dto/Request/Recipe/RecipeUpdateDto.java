@@ -26,7 +26,5 @@ public class RecipeUpdateDto {
   @Size(max = TEXT_MAX_LENGTH)
   private String text;
 
-  private Double score;
-
   private List<Integer> categoryIds;
 }

@@ -26,8 +26,6 @@ public class PlanUpdateDto {
   @Size(max = TEXT_MAX_LENGTH)
   private String text;
 
-  private Double score;
-
   private Integer planTypeId;
 
   private Integer planDurationId;

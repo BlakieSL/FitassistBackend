@@ -3,6 +3,7 @@ package source.code.service.Declaration.Recipe;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Request.Recipe.RecipeCreateDto;
 import source.code.dto.Response.RecipeResponseDto;
 import source.code.model.Recipe.Recipe;
@@ -19,6 +20,8 @@ public interface RecipeService {
   RecipeResponseDto getRecipe(int id);
 
   List<RecipeResponseDto> getAllRecipes();
+
+  List<RecipeResponseDto> getFilteredRecipes(FilterDto filterDto);
 
   List<Recipe> getAllRecipeEntities();
 

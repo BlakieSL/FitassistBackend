@@ -1,6 +1,7 @@
 package source.code.model.Plan;
 
 import jakarta.persistence.*;
+import jakarta.servlet.http.PushBuilder;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -24,6 +25,13 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Plan implements IndexedEntity {
+  public static final String PLAN_TYPE = "planType";
+  public static final String PLAN_DURATION = "planDuration";
+  public static final String PLAN_EQUIPMENT = "planEquipment";
+  public static final String PLAN_EXPERTISE_LEVEL = "planExpertiseLevel";
+  public static final String PLAN_CATEGORY_ASSOCIATIONS = "planCategoryAssociations";
+  public static final String CATEGORY = "planCategory";
+
   private static final int NAME_MAX_LENGTH = 100;
   private static final int DESCRIPTION_MAX_LENGTH = 255;
   private static final int TEXT_MAX_LENGTH = 10000;
@@ -46,10 +54,6 @@ public class Plan implements IndexedEntity {
   @Size(max = TEXT_MAX_LENGTH)
   @Column(nullable = false, length = TEXT_MAX_LENGTH)
   private String text;
-
-  @NotNull
-  @Column(nullable = false)
-  private Double score;
 
   @NotNull
   @ManyToOne

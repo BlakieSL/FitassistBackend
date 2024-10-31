@@ -17,7 +17,6 @@ public class PlanResponseDto {
   private String name;
   private String description;
   private String text;
-  private Double score;
   private PlanCategoryShortDto planType;
   private PlanCategoryShortDto planDuration;
   private PlanCategoryShortDto planEquipment;
