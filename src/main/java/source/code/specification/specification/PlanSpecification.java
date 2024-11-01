@@ -44,7 +44,8 @@ public class PlanSpecification extends BaseSpecification<Plan>{
                                @NonNull CriteriaBuilder builder) {
     return Optional.ofNullable(fieldHandlers.get(criteria.getFilterKey()))
             .map(handler -> handler.apply(root, builder))
-            .orElseThrow(() -> new IllegalStateException("Unexpected filter key: " + criteria.getFilterKey()));
+            .orElseThrow(() -> new IllegalStateException(
+                    "Unexpected filter key: " + criteria.getFilterKey()));
   }
 
   private Predicate handleEquipmentProperty(Root<Plan> root, CriteriaBuilder builder) {
@@ -53,6 +54,11 @@ public class PlanSpecification extends BaseSpecification<Plan>{
     Join<WorkoutSet, Exercise> exerciseJoin = workoutSetJoin.join("exercise");
     Join<Exercise, Equipment> equipmentJoin = exerciseJoin.join("equipment");
 
-    return builder.equal(equipmentJoin.get("id"), criteria.getValue());
+    return switch (criteria.getOperation()) {
+      case EQUAL -> builder.equal(equipmentJoin.get("id"), criteria.getValue());
+      case NOT_EQUAL -> builder.notEqual(equipmentJoin.get("id"), criteria.getValue());
+      default -> throw new IllegalStateException(
+              "Unsupported operation: " + criteria.getOperation());
+    };
   }
 }
