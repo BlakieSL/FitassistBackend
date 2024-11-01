@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Request.Plan.PlanCreateDto;
 import source.code.dto.Response.ActivityResponseDto;
+import source.code.dto.Response.Category.EquipmentResponseDto;
 import source.code.dto.Response.PlanResponseDto;
 import source.code.helper.Enum.Model.PlanField;
 import source.code.service.Declaration.Plan.PlanService;
@@ -36,6 +37,13 @@ public class PlanController {
     List<PlanResponseDto> plans = planService.getAllPlans();
     return ResponseEntity.ok(plans);
   }
+
+  @GetMapping("/{id}/equipment")
+  public ResponseEntity<List<EquipmentResponseDto>> getAllEquipment(@PathVariable int id) {
+    List<EquipmentResponseDto> equipment = planService.getAllEquipment(id);
+    return ResponseEntity.ok(equipment);
+  }
+
 
   @GetMapping("/{categoryId}/categories")
   public ResponseEntity<List<PlanResponseDto>> getPlansByCategory(@PathVariable int categoryId) {

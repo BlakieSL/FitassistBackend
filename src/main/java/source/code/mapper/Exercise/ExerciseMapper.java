@@ -2,7 +2,7 @@ package source.code.mapper.Exercise;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.Other.ExerciseCategoryShortDto;
+import source.code.dto.Other.TargetMuscleShortDto;
 import source.code.dto.Request.Exercise.ExerciseCreateDto;
 import source.code.dto.Request.Exercise.ExerciseUpdateDto;
 import source.code.dto.Response.ExerciseResponseDto;
@@ -118,10 +118,10 @@ public abstract class ExerciseMapper {
   }
 
   @Named("mapAssociationsToCategoryShortDto")
-  protected List<ExerciseCategoryShortDto> mapAssociationsToCategoryShortDto(
+  protected List<TargetMuscleShortDto> mapAssociationsToCategoryShortDto(
           Set<ExerciseTargetMuscle> associations) {
     return associations.stream()
-            .map(association -> new ExerciseCategoryShortDto(
+            .map(association -> new TargetMuscleShortDto(
                     association.getTargetMuscle().getId(),
                     association.getTargetMuscle().getName(),
                     association.getPriority()))
@@ -129,23 +129,23 @@ public abstract class ExerciseMapper {
   }
 
   @Named("mapExpertiseToShortDto")
-  protected ExerciseCategoryShortDto mapExpertiseToShortDto(ExpertiseLevel expertiseLevel) {
-    return new ExerciseCategoryShortDto(expertiseLevel.getId(), expertiseLevel.getName());
+  protected TargetMuscleShortDto mapExpertiseToShortDto(ExpertiseLevel expertiseLevel) {
+    return new TargetMuscleShortDto(expertiseLevel.getId(), expertiseLevel.getName());
   }
 
   @Named("mapMechanicsToShortDto")
-  protected ExerciseCategoryShortDto mapMechanicsToShortDto(MechanicsType mechanicsType) {
-    return new ExerciseCategoryShortDto(mechanicsType.getId(), mechanicsType.getName());
+  protected TargetMuscleShortDto mapMechanicsToShortDto(MechanicsType mechanicsType) {
+    return new TargetMuscleShortDto(mechanicsType.getId(), mechanicsType.getName());
   }
 
   @Named("mapForceToShortDto")
-  protected ExerciseCategoryShortDto mapForceToShortDto(ForceType forceType) {
-    return new ExerciseCategoryShortDto(forceType.getId(), forceType.getName());
+  protected TargetMuscleShortDto mapForceToShortDto(ForceType forceType) {
+    return new TargetMuscleShortDto(forceType.getId(), forceType.getName());
   }
 
   @Named("mapEquipmentToShortDto")
-  protected ExerciseCategoryShortDto mapEquipmentToShortDto(Equipment equipment) {
-    return new ExerciseCategoryShortDto(equipment.getId(), equipment.getName());
+  protected TargetMuscleShortDto mapEquipmentToShortDto(Equipment equipment) {
+    return new TargetMuscleShortDto(equipment.getId(), equipment.getName());
   }
 
   @Named("mapExpertiseLevel")

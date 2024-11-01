@@ -12,7 +12,7 @@ import source.code.event.events.Category.CategoryClearCacheEvent;
 import source.code.event.events.Category.CategoryCreateCacheEvent;
 import source.code.dto.Request.Category.CategoryCreateDto;
 import source.code.dto.Request.Category.CategoryUpdateDto;
-import source.code.dto.Response.CategoryResponseDto;
+import source.code.dto.Response.Category.CategoryResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.Category.BaseMapper;
 import source.code.service.Declaration.Category.CategoryCacheKeyGenerator;

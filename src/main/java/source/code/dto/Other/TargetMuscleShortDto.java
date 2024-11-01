@@ -1,4 +1,4 @@
-package source.code.dto.Response;
+package source.code.dto.Other;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlanCategoryResponseDto {
+public class TargetMuscleShortDto {
   private Integer id;
   private String name;
-  private String iconUrl;
-  private String gradient;
+  private int priority;
+
+  public TargetMuscleShortDto(Integer id, String name) {
+    this.id = id;
+    this.name = name;
+  }
 }

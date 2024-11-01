@@ -5,6 +5,7 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Request.Plan.PlanCreateDto;
+import source.code.dto.Response.Category.EquipmentResponseDto;
 import source.code.dto.Response.PlanResponseDto;
 import source.code.helper.Enum.Model.PlanField;
 import source.code.model.Plan.Plan;
@@ -27,4 +28,6 @@ public interface PlanService {
   List<Plan> getAllPlanEntities();
 
   List<PlanResponseDto> getPlansByCategory(int categoryId);
+
+  List<EquipmentResponseDto> getAllEquipment(int planId);
 }
