@@ -6,9 +6,8 @@ import source.code.event.events.Exercise.ExerciseCreateEvent;
 import source.code.event.events.Exercise.ExerciseDeleteEvent;
 import source.code.event.events.Exercise.ExerciseUpdateEvent;
 import source.code.helper.Enum.CacheNames;
-import source.code.helper.Enum.Model.ExerciseField;
 import source.code.model.Exercise.Exercise;
-import source.code.model.Exercise.ExerciseCategoryAssociation;
+import source.code.model.Exercise.ExerciseTargetMuscle;
 import source.code.service.Declaration.Cache.CacheService;
 import source.code.service.Declaration.Search.LuceneIndexService;
 
@@ -57,10 +56,10 @@ public class ExerciseListener {
   }
 
   private void clearExercisesByCategoryCache(Exercise exercise) {
-    if (exercise.getExerciseCategoryAssociations() != null) {
-      for (ExerciseCategoryAssociation association : exercise.getExerciseCategoryAssociations()) {
+    if (exercise.getExerciseTargetMuscles() != null) {
+      for (ExerciseTargetMuscle association : exercise.getExerciseTargetMuscles()) {
         cacheService.evictCache(CacheNames.EXERCISES_BY_CATEGORY,
-                association.getExerciseCategory().getId());
+                association.getTargetMuscle().getId());
       }
     }
   }

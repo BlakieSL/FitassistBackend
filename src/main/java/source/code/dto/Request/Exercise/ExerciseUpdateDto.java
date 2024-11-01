@@ -1,6 +1,5 @@
 package source.code.dto.Request.Exercise;
 
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,8 +22,7 @@ public class ExerciseUpdateDto {
   @Size(max = MAX_TEXT_LENGTH) private String text;
   private Integer equipmentId;
   private Integer expertiseLevelId;
-  private Integer exerciseTypeId;
   private Integer mechanicsTypeId;
   private Integer forceTypeId;
-  private List<Integer> categoryIds;
+  private List<Integer> targetMuscleIds;
 }

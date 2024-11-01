@@ -2,7 +2,6 @@ package source.code.dto.Request.Exercise;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,9 +34,6 @@ public class ExerciseCreateDto {
   private String text;
 
   @NotNull
-  private int exerciseTypeId;
-
-  @NotNull
   private int equipmentId;
 
   @NotNull
@@ -49,7 +45,7 @@ public class ExerciseCreateDto {
   @NotNull
   private int forceTypeId;
 
-  private List<Integer> categoryIds;
+  private List<Integer> targetMusclesIds;
 
   private List<ExerciseInstructionCreateDto> instructions;
 

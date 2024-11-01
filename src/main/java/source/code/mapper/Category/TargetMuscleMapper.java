@@ -4,20 +4,20 @@ import org.mapstruct.*;
 import source.code.dto.Request.Category.CategoryCreateDto;
 import source.code.dto.Request.Category.CategoryUpdateDto;
 import source.code.dto.Response.CategoryResponseDto;
-import source.code.model.Exercise.ExerciseCategory;
+import source.code.model.Exercise.TargetMuscle;
 
 @Mapper(componentModel = "spring")
-public abstract class ExerciseCategoryMapper implements BaseMapper<ExerciseCategory> {
+public abstract class TargetMuscleMapper implements BaseMapper<TargetMuscle> {
 
-  public abstract CategoryResponseDto toResponseDto(ExerciseCategory category);
+  public abstract CategoryResponseDto toResponseDto(TargetMuscle targetMuscle);
 
   @Mapping(target = "id", ignore = true)
-  @Mapping(target = "exerciseCategoryAssociations", ignore = true)
-  public abstract ExerciseCategory toEntity(CategoryCreateDto request);
+  @Mapping(target = "exerciseTargetMuscles", ignore = true)
+  public abstract TargetMuscle toEntity(CategoryCreateDto request);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
   @Mapping(target = "id", ignore = true)
-  @Mapping(target = "exerciseCategoryAssociations", ignore = true)
-  public abstract void updateEntityFromDto(@MappingTarget ExerciseCategory category,
+  @Mapping(target = "exerciseTargetMuscles", ignore = true)
+  public abstract void updateEntityFromDto(@MappingTarget TargetMuscle category,
                                            CategoryUpdateDto request);
 }
