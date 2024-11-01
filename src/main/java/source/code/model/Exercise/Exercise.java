@@ -27,14 +27,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Exercise implements IndexedEntity {
-  public static final String TYPE = "exerciseType";
-  public static final String EXPERTISE_LEVEL = "expertiseLevel";
-  public static final String EQUIPMENT = "equipment";
-  public static final String MECHANICS_TYPE = "mechanicsType";
-  public static final String FORCE_TYPE = "forceType";
-  public static final String EXERCISE_CATEGORY_ASSOCIATIONS = "exerciseCategoryAssociations";
-  public static final String CATEGORY = "exerciseCategory";
-
   private static final int MAX_NAME_LENGTH = 100;
   private static final int MAX_DESCRIPTION_LENGTH = 255;
   private static final int MAX_TEXT_LENGTH = 1000;
@@ -57,11 +49,6 @@ public class Exercise implements IndexedEntity {
   @Size(max = MAX_TEXT_LENGTH)
   @Column(nullable = false, length = MAX_TEXT_LENGTH)
   private String text;
-
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "exercise_type_id", nullable = false)
-  private ExerciseType exerciseType;
 
   @NotNull
   @ManyToOne
@@ -94,7 +81,7 @@ public class Exercise implements IndexedEntity {
 
   @OneToMany(mappedBy = "exercise",
           cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
-  private final Set<ExerciseCategoryAssociation> exerciseCategoryAssociations = new HashSet<>();
+  private final Set<ExerciseTargetMuscle> exerciseTargetMuscles = new HashSet<>();
 
   @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private final Set<WorkoutSet> workoutSets = new HashSet<>();

@@ -7,7 +7,7 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.lang.NonNull;
 import source.code.helper.Enum.Model.ExerciseField;
 import source.code.model.Exercise.Exercise;
-import source.code.model.Exercise.ExerciseCategoryAssociation;
+import source.code.model.Exercise.ExerciseTargetMuscle;
 import source.code.pojo.FilterCriteria;
 
 import java.util.Map;
@@ -36,9 +36,9 @@ public class ExerciseSpecification extends BaseSpecification<Exercise>{
             ExerciseField.FORCE_TYPE.name(),
             (root, builder) -> handleEntityProperty(root, ExerciseField.FORCE_TYPE.getFieldName(), builder),
 
-            ExerciseField.CATEGORY.name(),
-            (root, builder) -> handleManyToManyProperty(root, ExerciseField.CATEGORY.getFieldName(),
-                    ExerciseCategoryAssociation.EXERCISE_CATEGORY, builder)
+            ExerciseField.TARGET_MUSCLE.name(),
+            (root, builder) -> handleManyToManyProperty(root, ExerciseField.TARGET_MUSCLE.getFieldName(),
+                    ExerciseTargetMuscle.TARGET_MUSCLE, builder)
     );
   }
 
