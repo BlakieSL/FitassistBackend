@@ -14,20 +14,29 @@ import java.util.Optional;
 
 public class ActivitySpecification extends BaseSpecification<Activity> {
 
-  private final Map<String, TriFunction<Root<Activity>, CriteriaQuery<?>, CriteriaBuilder, Predicate>> fieldHandlers;
+  private final Map<String, TriFunction<Root<Activity>,
+          CriteriaQuery<?>, CriteriaBuilder, Predicate>> fieldHandlers;
 
   public ActivitySpecification(@NonNull FilterCriteria criteria) {
     super(criteria);
 
     fieldHandlers = Map.of(
             ActivityField.CATEGORY.name(),
-            (root, query, builder) -> handleEntityProperty(root, ActivityField.CATEGORY.getFieldName(), builder),
+            (root, query, builder) ->
+                    handleEntityProperty(root, ActivityField.CATEGORY.getFieldName(), builder),
 
             ActivityField.MET.name(),
-            (root, query, builder) -> handleNumericProperty(root.get(ActivityField.MET.getFieldName()), builder),
+            (root, query, builder) ->
 
-            LikesAndSaves.LIKES.name(), this::handleLikesProperty,
-            LikesAndSaves.SAVES.name(), this::handleSavesProperty
+                    handleNumericProperty(root.get(ActivityField.MET.getFieldName()), builder),
+
+            LikesAndSaves.LIKES.name(),
+            (root, query, builder) ->
+                    handleLikesProperty(root, LikesAndSaves.USER_ACTIVITIES.getFieldName(), query, builder),
+
+            LikesAndSaves.SAVES.name(),
+            (root, query, builder) ->
+                    handleLikesProperty(root, LikesAndSaves.USER_ACTIVITIES.getFieldName(), query, builder)
     );
   }
 
@@ -40,13 +49,4 @@ public class ActivitySpecification extends BaseSpecification<Activity> {
                     "Unexpected filter key: " + criteria.getFilterKey()));
   }
 
-  private Predicate handleLikesProperty(Root<Activity> root, CriteriaQuery<?> query,
-                                        CriteriaBuilder builder) {
-    return handleRangeProperty(root, query, builder, (short) 2, "userActivities");
-  }
-
-  private Predicate handleSavesProperty(Root<Activity> root, CriteriaQuery<?> query,
-                                        CriteriaBuilder builder) {
-    return handleRangeProperty(root, query, builder, (short) 1, "userActivities");
-  }
 }
