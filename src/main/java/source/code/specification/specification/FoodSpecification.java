@@ -3,6 +3,9 @@ package source.code.specification.specification;
 import jakarta.persistence.criteria.*;
 import org.springframework.lang.NonNull;
 import source.code.helper.Enum.Model.FoodField;
+import source.code.helper.Enum.Model.LikesAndSaves;
+import source.code.helper.TriFunction;
+import source.code.model.Exercise.Exercise;
 import source.code.model.Food.Food;
 import source.code.pojo.FilterCriteria;
 
@@ -12,26 +15,35 @@ import java.util.function.BiFunction;
 
 public class FoodSpecification extends BaseSpecification<Food>{
 
-  private final Map<String, BiFunction<Root<Food>, CriteriaBuilder, Predicate>> fieldHandlers;
+  private final Map<String, TriFunction<Root<Food>,
+          CriteriaQuery<?>, CriteriaBuilder, Predicate>> fieldHandlers;
 
   public FoodSpecification(@NonNull FilterCriteria criteria) {
     super(criteria);
 
     fieldHandlers = Map.of(
             FoodField.CALORIES.name(),
-            (root, builder) -> handleNumericProperty(root.get(FoodField.CALORIES.getFieldName()), builder),
+            (root, query, builder)  -> handleNumericProperty(root.get(FoodField.CALORIES.getFieldName()), builder),
 
             FoodField.PROTEIN.name(),
-            (root, builder) -> handleNumericProperty(root.get(FoodField.PROTEIN.getFieldName()), builder),
+            (root, query, builder)  -> handleNumericProperty(root.get(FoodField.PROTEIN.getFieldName()), builder),
 
             FoodField.FAT.name(),
-            (root, builder) -> handleNumericProperty(root.get(FoodField.FAT.getFieldName()), builder),
+            (root, query, builder)  -> handleNumericProperty(root.get(FoodField.FAT.getFieldName()), builder),
 
             FoodField.CARBOHYDRATES.name(),
-            (root, builder) -> handleNumericProperty(root.get(FoodField.CARBOHYDRATES.getFieldName()), builder),
+            (root, query, builder)  -> handleNumericProperty(root.get(FoodField.CARBOHYDRATES.getFieldName()), builder),
 
             FoodField.CATEGORY.name(),
-            (root, builder) -> handleEntityProperty(root, FoodField.CATEGORY.getFieldName(), builder)
+            (root, query, builder)  -> handleEntityProperty(root, FoodField.CATEGORY.getFieldName(), builder),
+
+            LikesAndSaves.LIKES.name(),
+            (root, query, builder) ->
+                    handleLikesProperty(root, LikesAndSaves.USER_FOODS.getFieldName(), query, builder),
+
+            LikesAndSaves.SAVES.name(),
+            (root, query, builder) ->
+                    handleLikesProperty(root, LikesAndSaves.USER_FOODS.getFieldName(), query, builder)
     );
   }
 
@@ -39,7 +51,7 @@ public class FoodSpecification extends BaseSpecification<Food>{
   public Predicate toPredicate(@NonNull Root<Food> root, @NonNull CriteriaQuery<?> query,
                                @NonNull CriteriaBuilder builder) {
     return Optional.ofNullable(fieldHandlers.get(criteria.getFilterKey()))
-            .map(handler -> handler.apply(root, builder))
+            .map(handler -> handler.apply(root, query, builder))
             .orElseThrow(() -> new IllegalStateException("Unexpected filter key: " + criteria.getFilterKey()));
   }
 }

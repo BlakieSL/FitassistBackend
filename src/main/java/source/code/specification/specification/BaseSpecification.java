@@ -53,9 +53,19 @@ public abstract class BaseSpecification<T> implements Specification<T> {
     };
   }
 
-  protected Predicate handleRangeProperty(Root<Activity> root, CriteriaQuery<?> query,
+  protected Predicate handleLikesProperty(Root<T> root, String joinProperty,
+                                          CriteriaQuery<?> query, CriteriaBuilder builder) {
+    return handleRangeProperty(root, query, builder, (short) 2, joinProperty);
+  }
+
+  protected Predicate handleSavesProperty(Root<T> root, String joinProperty,
+                                          CriteriaQuery<?> query, CriteriaBuilder builder) {
+    return handleRangeProperty(root, query, builder, (short) 1, joinProperty);
+  }
+
+  private Predicate handleRangeProperty(Root<T> root, CriteriaQuery<?> query,
                                         CriteriaBuilder builder, short typeValue, String joinProperty) {
-    Join<Activity, UserActivity> userActivityJoin = root.join(joinProperty, JoinType.LEFT);
+    Join<T, UserActivity> userActivityJoin = root.join(joinProperty, JoinType.LEFT);
 
     Predicate typePredicate = builder.or(
             builder.isNull(userActivityJoin.get("type")),
