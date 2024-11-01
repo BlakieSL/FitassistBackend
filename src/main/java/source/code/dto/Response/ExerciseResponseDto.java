@@ -17,12 +17,11 @@ public class ExerciseResponseDto {
   private String name;
   private String description;
   private String text;
-  private ExerciseCategoryShortDto exerciseType;
   private ExerciseCategoryShortDto expertiseLevel;
   private ExerciseCategoryShortDto equipment;
   private ExerciseCategoryShortDto mechanicsType;
   private ExerciseCategoryShortDto forceType;
-  private List<ExerciseCategoryShortDto> categories;
+  private List<ExerciseCategoryShortDto> targetMuscles;
 
   public static ExerciseResponseDto createWithIdAndName(int id, String name) {
     ExerciseResponseDto responseDto = new ExerciseResponseDto();

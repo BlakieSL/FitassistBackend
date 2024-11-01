@@ -12,12 +12,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "exercise_category")
+@Table(name = "target_muscle")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExerciseCategory {
+public class TargetMuscle {
   private static final int NAME_MAX_LENGTH = 50;
 
   @Id
@@ -34,13 +34,13 @@ public class ExerciseCategory {
   @NotBlank
   private String gradient;
 
-  @OneToMany(mappedBy = "exerciseCategory", cascade = CascadeType.REMOVE)
-  private final Set<ExerciseCategoryAssociation> exerciseCategoryAssociations = new HashSet<>();
+  @OneToMany(mappedBy = "targetMuscle", cascade = CascadeType.REMOVE)
+  private final Set<ExerciseTargetMuscle> exerciseTargetMuscles = new HashSet<>();
 
-  public static ExerciseCategory createWithId(int id) {
-    ExerciseCategory exerciseCategory = new ExerciseCategory();
-    exerciseCategory.setId(id);
-    return exerciseCategory;
+  public static TargetMuscle createWithId(int id) {
+    TargetMuscle targetMuscle = new TargetMuscle();
+    targetMuscle.setId(id);
+    return targetMuscle;
   }
 
 }

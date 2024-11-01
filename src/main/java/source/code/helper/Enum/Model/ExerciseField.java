@@ -6,7 +6,7 @@ public enum ExerciseField {
   EQUIPMENT("equipment"),
   MECHANICS_TYPE("mechanicsType"),
   FORCE_TYPE("forceType"),
-  CATEGORY("exerciseCategoryAssociations");
+  TARGET_MUSCLE("exerciseTargetMuscles");
 
   private final String fieldName;
 

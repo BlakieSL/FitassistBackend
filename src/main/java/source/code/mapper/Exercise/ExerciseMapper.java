@@ -25,7 +25,7 @@ public abstract class ExerciseMapper {
   private RepositoryHelper repositoryHelper;
 
   @Autowired
-  private ExerciseCategoryRepository exerciseCategoryRepository;
+  private TargetMuscleRepository targetMuscleRepository;
 
   @Autowired
   private ExpertiseLevelRepository expertiseLevelRepository;
@@ -39,23 +39,18 @@ public abstract class ExerciseMapper {
   @Autowired
   private EquipmentRepository equipmentRepository;
 
-  @Autowired
-  private ExerciseTypeRepository exerciseTypeRepository;
-
-  @Mapping(target = "categories", source = "exerciseCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryShortDto")
+  @Mapping(target = "targetMuscles", source = "exerciseTargetMuscles", qualifiedByName = "mapAssociationsToCategoryShortDto")
   @Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseToShortDto")
   @Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsToShortDto")
   @Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceToShortDto")
   @Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToShortDto")
-  @Mapping(target = "exerciseType", source = "exerciseType", qualifiedByName = "mapTypeToShortDto")
   public abstract ExerciseResponseDto toResponseDto(Exercise exercise);
 
-  @Mapping(target = "exerciseCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
+  @Mapping(target = "exerciseTargetMuscles", source = "targetMusclesIds", qualifiedByName = "mapTargetMuscleIdsToAssociations")
   @Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevel")
   @Mapping(target = "mechanicsType", source = "mechanicsTypeId", qualifiedByName = "mapMechanicsType")
   @Mapping(target = "forceType", source = "forceTypeId", qualifiedByName = "mapForceType")
   @Mapping(target = "equipment", source = "equipmentId", qualifiedByName = "mapExerciseEquipment")
-  @Mapping(target = "exerciseType", source = "exerciseTypeId", qualifiedByName = "mapExerciseType")
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "userExercises", ignore = true)
   @Mapping(target = "workoutSets", ignore = true)
@@ -64,12 +59,11 @@ public abstract class ExerciseMapper {
   public abstract Exercise toEntity(ExerciseCreateDto dto);
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  @Mapping(target = "exerciseCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
+  @Mapping(target = "exerciseTargetMuscles", source = "targetMuscleIds", qualifiedByName = "mapTargetMuscleIdsToAssociations")
   @Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevel")
   @Mapping(target = "mechanicsType", source = "mechanicsTypeId", qualifiedByName = "mapMechanicsType")
   @Mapping(target = "forceType", source = "forceTypeId", qualifiedByName = "mapForceType")
   @Mapping(target = "equipment", source = "equipmentId", qualifiedByName = "mapExerciseEquipment")
-  @Mapping(target = "exerciseType", source = "exerciseTypeId", qualifiedByName = "mapExerciseType")
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "userExercises", ignore = true)
   @Mapping(target = "workoutSets", ignore = true)
@@ -102,20 +96,20 @@ public abstract class ExerciseMapper {
     exercise.getExerciseTips().addAll(tips);
   }
 
-  @Named("mapCategoryIdsToAssociations")
-  protected Set<ExerciseCategoryAssociation> mapCategoryIdsToAssociations(List<Integer> categoryIds) {
+  @Named("mapTargetMuscleIdsToAssociations")
+  protected Set<ExerciseTargetMuscle> mapCategoryIdsToAssociations(List<Integer> categoryIds) {
     if (categoryIds == null) {
       return new HashSet<>();
     }
 
-    Set<ExerciseCategoryAssociation> associations = new HashSet<>();
+    Set<ExerciseTargetMuscle> associations = new HashSet<>();
 
     for (Integer categoryId : categoryIds) {
-      ExerciseCategory category = repositoryHelper
-              .find(exerciseCategoryRepository, ExerciseCategory.class, categoryId);
+      TargetMuscle category = repositoryHelper
+              .find(targetMuscleRepository, TargetMuscle.class, categoryId);
 
-      ExerciseCategoryAssociation association = ExerciseCategoryAssociation
-              .createWithExerciseCategory(category);
+      ExerciseTargetMuscle association = ExerciseTargetMuscle
+              .createWithTargetMuscle(category);
 
       associations.add(association);
     }
@@ -125,11 +119,11 @@ public abstract class ExerciseMapper {
 
   @Named("mapAssociationsToCategoryShortDto")
   protected List<ExerciseCategoryShortDto> mapAssociationsToCategoryShortDto(
-          Set<ExerciseCategoryAssociation> associations) {
+          Set<ExerciseTargetMuscle> associations) {
     return associations.stream()
             .map(association -> new ExerciseCategoryShortDto(
-                    association.getExerciseCategory().getId(),
-                    association.getExerciseCategory().getName(),
+                    association.getTargetMuscle().getId(),
+                    association.getTargetMuscle().getName(),
                     association.getPriority()))
             .toList();
   }
@@ -154,11 +148,6 @@ public abstract class ExerciseMapper {
     return new ExerciseCategoryShortDto(equipment.getId(), equipment.getName());
   }
 
-  @Named("mapTypeToShortDto")
-  protected ExerciseCategoryShortDto mapTypeToShortDto(ExerciseType exerciseType) {
-    return new ExerciseCategoryShortDto(exerciseType.getId(), exerciseType.getName());
-  }
-
   @Named("mapExpertiseLevel")
   protected ExpertiseLevel mapExpertiseLevel(Integer expertiseLevelId) {
     return repositoryHelper.find(expertiseLevelRepository, ExpertiseLevel.class, expertiseLevelId);
@@ -177,10 +166,5 @@ public abstract class ExerciseMapper {
   @Named("mapExerciseEquipment")
   protected Equipment mapExerciseEquipment(Integer equipmentId) {
     return repositoryHelper.find(equipmentRepository, Equipment.class, equipmentId);
-  }
-
-  @Named("mapExerciseType")
-  protected ExerciseType mapExerciseType(Integer exerciseTypeId) {
-    return repositoryHelper.find(exerciseTypeRepository, ExerciseType.class, exerciseTypeId);
   }
 }
