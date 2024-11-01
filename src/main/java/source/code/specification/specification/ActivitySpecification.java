@@ -42,42 +42,11 @@ public class ActivitySpecification extends BaseSpecification<Activity> {
 
   private Predicate handleLikesProperty(Root<Activity> root, CriteriaQuery<?> query,
                                         CriteriaBuilder builder) {
-    return handleRangeProperty(root, query, builder, (short) 2);
+    return handleRangeProperty(root, query, builder, (short) 2, "userActivities");
   }
 
   private Predicate handleSavesProperty(Root<Activity> root, CriteriaQuery<?> query,
                                         CriteriaBuilder builder) {
-    return handleRangeProperty(root, query, builder, (short) 1);
-  }
-
-  private Predicate handleRangeProperty(Root<Activity> root, CriteriaQuery<?> query,
-                                        CriteriaBuilder builder, short typeValue) {
-
-    Join<Activity, UserActivity> userActivityJoin = root.join("userActivities", JoinType.LEFT);
-
-    Predicate typePredicate = builder.or(
-            builder.isNull(userActivityJoin.get("type")),
-            builder.equal(userActivityJoin.get("type"), typeValue)
-    );
-
-    query.groupBy(root.get("id"));
-
-    Expression<Long> countExpression = builder.coalesce(builder.count(userActivityJoin.get("id")), 0L);
-    query.having(createRangePredicate(countExpression, builder));
-
-    return typePredicate;
-  }
-
-
-  private Predicate createRangePredicate(Expression<Long> countExpression, CriteriaBuilder builder) {
-    Number value = (Number) criteria.getValue();
-    Long longValue = value.longValue();
-    return switch (criteria.getOperation()) {
-      case GREATER_THAN -> builder.greaterThan(countExpression, longValue);
-      case LESS_THAN -> builder.lessThan(countExpression, longValue);
-      case EQUAL -> builder.equal(countExpression, longValue);
-      case NOT_EQUAL -> builder.notEqual(countExpression, longValue);
-      default -> throw new IllegalArgumentException("Unsupported operation: " + criteria.getOperation());
-    };
+    return handleRangeProperty(root, query, builder, (short) 1, "userActivities");
   }
 }
