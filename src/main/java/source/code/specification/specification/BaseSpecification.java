@@ -2,6 +2,8 @@ package source.code.specification.specification;
 
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
+import source.code.model.Activity.Activity;
+import source.code.model.User.UserActivity;
 import source.code.pojo.FilterCriteria;
 
 public abstract class BaseSpecification<T> implements Specification<T> {
@@ -48,6 +50,35 @@ public abstract class BaseSpecification<T> implements Specification<T> {
       case NOT_EQUAL -> builder.notEqual(associationJoin.get(joinProperty2).get("id"), value);
       default -> throw new IllegalArgumentException(
               "Unsupported operation for category: " + criteria.getOperation());
+    };
+  }
+
+  protected Predicate handleRangeProperty(Root<Activity> root, CriteriaQuery<?> query,
+                                        CriteriaBuilder builder, short typeValue, String joinProperty) {
+    Join<Activity, UserActivity> userActivityJoin = root.join(joinProperty, JoinType.LEFT);
+
+    Predicate typePredicate = builder.or(
+            builder.isNull(userActivityJoin.get("type")),
+            builder.equal(userActivityJoin.get("type"), typeValue)
+    );
+
+    query.groupBy(root.get("id"));
+
+    Expression<Long> countExpression = builder.coalesce(builder.count(userActivityJoin.get("id")), 0L);
+    query.having(createRangePredicate(countExpression, builder));
+
+    return typePredicate;
+  }
+
+  private Predicate createRangePredicate(Expression<Long> countExpression, CriteriaBuilder builder) {
+    Number value = (Number) criteria.getValue();
+    Long longValue = value.longValue();
+    return switch (criteria.getOperation()) {
+      case GREATER_THAN -> builder.greaterThan(countExpression, longValue);
+      case LESS_THAN -> builder.lessThan(countExpression, longValue);
+      case EQUAL -> builder.equal(countExpression, longValue);
+      case NOT_EQUAL -> builder.notEqual(countExpression, longValue);
+      default -> throw new IllegalArgumentException("Unsupported operation: " + criteria.getOperation());
     };
   }
 }
