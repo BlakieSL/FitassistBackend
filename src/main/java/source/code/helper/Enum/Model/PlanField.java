@@ -4,6 +4,7 @@ public enum PlanField {
   TYPE("planType"),
   DURATION("planDuration"),
   EXPERTISE_LEVEL("expertiseLevel"),
+  EQUIPMENT("exercises.equipment"),
   CATEGORY("planCategoryAssociations");
 
   private final String fieldName;

@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.Request.Category.CategoryCreateDto;
-import source.code.dto.Response.CategoryResponseDto;
+import source.code.dto.Response.Category.CategoryResponseDto;
 import source.code.helper.Enum.CategoryType;
 import source.code.service.Declaration.Category.CategoryService;
 import source.code.service.Declaration.Selector.CategorySelectorService;
