@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import source.code.dto.Request.Filter.FilterDto;
+import source.code.dto.Response.Category.EquipmentResponseDto;
 import source.code.event.events.Plan.PlanCreateEvent;
 import source.code.event.events.Plan.PlanDeleteEvent;
 import source.code.event.events.Plan.PlanUpdateEvent;
@@ -129,6 +130,12 @@ public class PlanServiceImpl implements PlanService {
             .map(planMapper::toResponseDto)
             .toList();
   }
+
+  @Override
+  public List<EquipmentResponseDto> getAllEquipment(int planId) {
+    return planRepository.findAllEquipmentByPlanId(planId);
+  }
+
 
   private Plan find(int planId) {
     return repositoryHelper.find(planRepository, Plan.class, planId);

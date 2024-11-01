@@ -1,4 +1,4 @@
-package source.code.dto.Response;
+package source.code.dto.Response.Category;
 
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

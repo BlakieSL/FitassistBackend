@@ -3,7 +3,7 @@ package source.code.mapper.Category;
 import org.mapstruct.MappingTarget;
 import source.code.dto.Request.Category.CategoryCreateDto;
 import source.code.dto.Request.Category.CategoryUpdateDto;
-import source.code.dto.Response.CategoryResponseDto;
+import source.code.dto.Response.Category.CategoryResponseDto;
 
 public interface BaseMapper<T> {
   CategoryResponseDto toResponseDto(T entity);

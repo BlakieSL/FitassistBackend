@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.Request.Category.CategoryCreateDto;
-import source.code.dto.Response.CategoryResponseDto;
+import source.code.dto.Response.Category.CategoryResponseDto;
 
 import java.util.List;
 

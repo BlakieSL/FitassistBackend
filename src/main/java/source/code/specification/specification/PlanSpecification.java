@@ -1,13 +1,14 @@
 package source.code.specification.specification;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import org.springframework.lang.NonNull;
 import source.code.helper.Enum.Model.PlanField;
+import source.code.model.Exercise.Exercise;
+import source.code.model.Other.Equipment;
 import source.code.model.Plan.Plan;
 import source.code.model.Plan.PlanCategoryAssociation;
+import source.code.model.Workout.Workout;
+import source.code.model.Workout.WorkoutSet;
 import source.code.pojo.FilterCriteria;
 
 import java.util.Map;
@@ -32,7 +33,9 @@ public class PlanSpecification extends BaseSpecification<Plan>{
 
             PlanField.CATEGORY.name(),
             (root, builder) -> handleManyToManyProperty(root, PlanField.CATEGORY.getFieldName(),
-                    PlanCategoryAssociation.PLAN_CATEGORY, builder)
+                    PlanCategoryAssociation.PLAN_CATEGORY, builder),
+
+            PlanField.EQUIPMENT.name(), this::handleEquipmentProperty
     );
   }
 
@@ -42,5 +45,14 @@ public class PlanSpecification extends BaseSpecification<Plan>{
     return Optional.ofNullable(fieldHandlers.get(criteria.getFilterKey()))
             .map(handler -> handler.apply(root, builder))
             .orElseThrow(() -> new IllegalStateException("Unexpected filter key: " + criteria.getFilterKey()));
+  }
+
+  private Predicate handleEquipmentProperty(Root<Plan> root, CriteriaBuilder builder) {
+    Join<Plan, Workout> workoutJoin = root.join("workouts");
+    Join<Workout, WorkoutSet> workoutSetJoin = workoutJoin.join("workoutSets");
+    Join<WorkoutSet, Exercise> exerciseJoin = workoutSetJoin.join("exercise");
+    Join<Exercise, Equipment> equipmentJoin = exerciseJoin.join("equipment");
+
+    return builder.equal(equipmentJoin.get("id"), criteria.getValue());
   }
 }
