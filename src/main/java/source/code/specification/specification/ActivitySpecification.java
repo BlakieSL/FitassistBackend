@@ -55,10 +55,15 @@ public class ActivitySpecification extends BaseSpecification<Activity> {
 
     Join<Activity, UserActivity> userActivityJoin = root.join("userActivities", JoinType.LEFT);
 
-    Predicate typePredicate = builder.equal(userActivityJoin.get("type"), typeValue);
+    Predicate typePredicate = builder.or(
+            builder.isNull(userActivityJoin.get("type")),
+            builder.equal(userActivityJoin.get("type"), typeValue)
+    );
 
     query.groupBy(root.get("id"));
-    query.having(createRangePredicate(builder.count(userActivityJoin.get("id")), builder));
+
+    Expression<Long> countExpression = builder.coalesce(builder.count(userActivityJoin.get("id")), 0L);
+    query.having(createRangePredicate(countExpression, builder));
 
     return typePredicate;
   }
