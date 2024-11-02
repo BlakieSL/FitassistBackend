@@ -2,7 +2,9 @@ package source.code.specification.specification;
 
 import jakarta.persistence.criteria.*;
 import org.springframework.lang.NonNull;
+import source.code.helper.Enum.Model.LikesAndSaves;
 import source.code.helper.Enum.Model.PlanField;
+import source.code.helper.TriFunction;
 import source.code.model.Exercise.Exercise;
 import source.code.model.Other.Equipment;
 import source.code.model.Plan.Plan;
@@ -13,29 +15,43 @@ import source.code.pojo.FilterCriteria;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 public class PlanSpecification extends BaseSpecification<Plan>{
-  private final Map<String, BiFunction<Root<Plan>, CriteriaBuilder, Predicate>> fieldHandlers;
+  private final Map<String, TriFunction<Root<Plan>,
+          CriteriaQuery<?>, CriteriaBuilder, Predicate>> fieldHandlers;
 
   public PlanSpecification(@NonNull FilterCriteria criteria) {
     super(criteria);
 
     fieldHandlers = Map.of(
             PlanField.TYPE.name(),
-            (root, builder) -> handleEntityProperty(root, PlanField.TYPE.getFieldName(), builder),
+            (root, query, builder) ->
+                    handleEntityProperty(root, PlanField.TYPE.getFieldName(), builder),
 
             PlanField.DURATION.name(),
-            (root, builder) -> handleNumericProperty(root.get(PlanField.DURATION.getFieldName()), builder),
+            (root, query, builder) ->
+                    handleNumericProperty(root.get(PlanField.DURATION.getFieldName()), builder),
 
             PlanField.EXPERTISE_LEVEL.name(),
-            (root, builder) -> handleEntityProperty(root, PlanField.EXPERTISE_LEVEL.getFieldName(), builder),
+            (root, query, builder) ->
+                    handleEntityProperty(root, PlanField.EXPERTISE_LEVEL.getFieldName(), builder),
 
             PlanField.CATEGORY.name(),
-            (root, builder) -> handleManyToManyProperty(root, PlanField.CATEGORY.getFieldName(),
+            (root,query, builder) ->
+                    handleManyToManyProperty(root, PlanField.CATEGORY.getFieldName(),
                     PlanCategoryAssociation.PLAN_CATEGORY, builder),
 
-            PlanField.EQUIPMENT.name(), this::handleEquipmentProperty
+            PlanField.EQUIPMENT.name(),
+            (root, query, builder) ->
+                    handleEquipmentProperty(root, builder),
+
+            LikesAndSaves.LIKES.name(),
+            (root, query, builder) ->
+                    handleLikesProperty(root, LikesAndSaves.USER_ACTIVITIES.getFieldName(), query, builder),
+
+            LikesAndSaves.SAVES.name(),
+            (root, query, builder) ->
+                    handleLikesProperty(root, LikesAndSaves.USER_ACTIVITIES.getFieldName(), query, builder)
     );
   }
 
@@ -43,12 +59,12 @@ public class PlanSpecification extends BaseSpecification<Plan>{
   public Predicate toPredicate(@NonNull Root<Plan> root, @NonNull CriteriaQuery<?> query,
                                @NonNull CriteriaBuilder builder) {
     return Optional.ofNullable(fieldHandlers.get(criteria.getFilterKey()))
-            .map(handler -> handler.apply(root, builder))
+            .map(handler -> handler.apply(root, query, builder))
             .orElseThrow(() -> new IllegalStateException(
                     "Unexpected filter key: " + criteria.getFilterKey()));
   }
 
-  private Predicate handleEquipmentProperty(Root<Plan> root, CriteriaBuilder builder) {
+  private Predicate handleEquipmentProperty(Root<Plan> root,  CriteriaBuilder builder) {
     Join<Plan, Workout> workoutJoin = root.join("workouts");
     Join<Workout, WorkoutSet> workoutSetJoin = workoutJoin.join("workoutSets");
     Join<WorkoutSet, Exercise> exerciseJoin = workoutSetJoin.join("exercise");
