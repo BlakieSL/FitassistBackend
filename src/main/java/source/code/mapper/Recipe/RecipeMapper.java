@@ -2,7 +2,7 @@ package source.code.mapper.Recipe;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.Other.RecipeCategoryShortDto;
+import source.code.dto.POJO.RecipeCategoryShortDto;
 import source.code.dto.Request.Recipe.RecipeCreateDto;
 import source.code.dto.Request.Recipe.RecipeUpdateDto;
 import source.code.dto.Response.RecipeResponseDto;
@@ -13,8 +13,8 @@ import source.code.model.Text.RecipeInstruction;
 import source.code.repository.RecipeCategoryRepository;
 import source.code.service.Declaration.Helpers.RepositoryHelper;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -62,27 +62,20 @@ public abstract class RecipeMapper {
 
   @Named("mapCategoryIdsToAssociations")
   protected Set<RecipeCategoryAssociation> mapCategoryIdsToAssociations(List<Integer> categoryIds) {
-    if (categoryIds == null) {
-      return new HashSet<>();
-    }
-
-    Set<RecipeCategoryAssociation> associations = new HashSet<>();
-
-    for (Integer categoryId : categoryIds) {
-      RecipeCategory category = repositoryHelper
-              .find(recipeCategoryRepository, RecipeCategory.class, categoryId);
-
-      RecipeCategoryAssociation association = RecipeCategoryAssociation
-              .createWithRecipeCategory(category);
-
-      associations.add(association);
-    }
-
-    return associations;
+    return Optional.ofNullable(categoryIds)
+            .orElseGet(List::of)
+            .stream()
+            .map(categoryId -> {
+              RecipeCategory category = repositoryHelper
+                      .find(recipeCategoryRepository, RecipeCategory.class, categoryId);
+              return RecipeCategoryAssociation.createWithRecipeCategory(category);
+            })
+            .collect(Collectors.toSet());
   }
 
   @Named("mapAssociationsToCategoryShortDto")
-  protected List<RecipeCategoryShortDto> mapAssociationsToCategoryShortDto(Set<RecipeCategoryAssociation> associations) {
+  protected List<RecipeCategoryShortDto> mapAssociationsToCategoryShortDto(
+          Set<RecipeCategoryAssociation> associations) {
     return associations.stream()
             .map(association -> new RecipeCategoryShortDto(
                     association.getRecipeCategory().getId(),

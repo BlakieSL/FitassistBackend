@@ -6,8 +6,7 @@ import source.code.helper.Enum.Model.ActivityField;
 import source.code.helper.Enum.Model.LikesAndSaves;
 import source.code.helper.TriFunction;
 import source.code.model.Activity.Activity;
-import source.code.model.User.UserActivity;
-import source.code.pojo.FilterCriteria;
+import source.code.dto.POJO.FilterCriteria;
 
 import java.util.Map;
 import java.util.Optional;
