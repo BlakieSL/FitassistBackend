@@ -31,7 +31,8 @@ public class CategoryController {
   }
 
   @GetMapping("/{categoryType}/{id}")
-  public ResponseEntity<CategoryResponseDto> getCategory(@PathVariable CategoryType categoryType, @PathVariable int id) {
+  public ResponseEntity<CategoryResponseDto> getCategory(@PathVariable CategoryType categoryType,
+                                                         @PathVariable int id) {
     CategoryService categoryService = categorySelectorService.getService(categoryType);
     CategoryResponseDto dto = categoryService.getCategory(id);
     return ResponseEntity.ok(dto);
@@ -39,7 +40,7 @@ public class CategoryController {
 
   @PostMapping("/{categoryType}")
   public ResponseEntity<CategoryResponseDto> createCategory(@PathVariable CategoryType categoryType,
-                                            @RequestBody CategoryCreateDto request) {
+                                                            @RequestBody CategoryCreateDto request) {
     CategoryService categoryService = categorySelectorService.getService(categoryType);
     CategoryResponseDto dto = categoryService.createCategory(request);
     return ResponseEntity.status(HttpStatus.CREATED).body(dto);
@@ -57,7 +58,8 @@ public class CategoryController {
   }
 
   @DeleteMapping("/{categoryType}/{id}")
-  public ResponseEntity<Void> deleteCategory(@PathVariable CategoryType categoryType, @PathVariable int id) {
+  public ResponseEntity<Void> deleteCategory(@PathVariable CategoryType categoryType,
+                                             @PathVariable int id) {
     CategoryService categoryService = categorySelectorService.getService(categoryType);
     categoryService.deleteCategory(id);
     return ResponseEntity.noContent().build();

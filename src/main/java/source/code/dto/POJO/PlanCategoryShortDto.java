@@ -1,4 +1,4 @@
-package source.code.dto.Other;
+package source.code.dto.POJO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

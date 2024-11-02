@@ -3,7 +3,7 @@ package source.code.mapper;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import source.code.dto.Other.UserCredentialsDto;
+import source.code.dto.POJO.UserCredentialsDto;
 import source.code.dto.Request.User.UserCreateDto;
 import source.code.dto.Request.User.UserUpdateDto;
 import source.code.dto.Response.User.UserResponseDto;

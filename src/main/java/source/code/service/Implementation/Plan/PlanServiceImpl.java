@@ -17,11 +17,8 @@ import source.code.dto.Request.Plan.PlanCreateDto;
 import source.code.dto.Request.Plan.PlanUpdateDto;
 import source.code.dto.Response.PlanResponseDto;
 import source.code.helper.Enum.CacheNames;
-import source.code.helper.Enum.FilterOperation;
-import source.code.helper.Enum.Model.PlanField;
 import source.code.mapper.Plan.PlanMapper;
 import source.code.model.Plan.*;
-import source.code.pojo.FilterCriteria;
 import source.code.repository.PlanCategoryAssociationRepository;
 import source.code.repository.PlanRepository;
 import source.code.service.Declaration.Helpers.JsonPatchService;
@@ -118,11 +115,6 @@ public class PlanServiceImpl implements PlanService {
   }
 
   @Override
-  public List<Plan> getAllPlanEntities() {
-    return planRepository.findAllWithoutAssociations();
-  }
-
-  @Override
   @Cacheable(value = CacheNames.PLANS_BY_CATEGORY, key = "#categoryId")
   public List<PlanResponseDto> getPlansByCategory(int categoryId) {
     return planCategoryAssociationRepository.findByPlanCategoryId(categoryId).stream()
@@ -134,6 +126,11 @@ public class PlanServiceImpl implements PlanService {
   @Override
   public List<EquipmentResponseDto> getAllEquipment(int planId) {
     return planRepository.findAllEquipmentByPlanId(planId);
+  }
+
+  @Override
+  public List<Plan> getAllPlanEntities() {
+    return planRepository.findAllWithoutAssociations();
   }
 
 

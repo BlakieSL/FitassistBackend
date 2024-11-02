@@ -1,4 +1,4 @@
-package source.code.dto.Request;
+package source.code.dto.Request.Media;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

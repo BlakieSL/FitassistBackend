@@ -11,7 +11,7 @@ import source.code.model.Plan.Plan;
 import source.code.model.Plan.PlanCategoryAssociation;
 import source.code.model.Workout.Workout;
 import source.code.model.Workout.WorkoutSet;
-import source.code.pojo.FilterCriteria;
+import source.code.dto.POJO.FilterCriteria;
 
 import java.util.Map;
 import java.util.Optional;

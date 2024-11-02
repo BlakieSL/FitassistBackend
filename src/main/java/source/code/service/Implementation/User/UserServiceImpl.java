@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import source.code.event.events.User.UserDeleteEvent;
 import source.code.event.events.User.UserRegisterEvent;
 import source.code.event.events.User.UserUpdateEvent;
-import source.code.dto.Other.UserCredentialsDto;
+import source.code.dto.POJO.UserCredentialsDto;
 import source.code.dto.Request.User.UserCreateDto;
 import source.code.dto.Request.User.UserUpdateDto;
 import source.code.dto.Response.User.UserResponseDto;

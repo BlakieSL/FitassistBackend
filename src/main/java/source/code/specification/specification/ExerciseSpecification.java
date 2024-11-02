@@ -8,14 +8,12 @@ import org.springframework.lang.NonNull;
 import source.code.helper.Enum.Model.ExerciseField;
 import source.code.helper.Enum.Model.LikesAndSaves;
 import source.code.helper.TriFunction;
-import source.code.model.Activity.Activity;
 import source.code.model.Exercise.Exercise;
 import source.code.model.Exercise.ExerciseTargetMuscle;
-import source.code.pojo.FilterCriteria;
+import source.code.dto.POJO.FilterCriteria;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 public class ExerciseSpecification extends BaseSpecification<Exercise>{
   private final Map<String, TriFunction<Root<Exercise>,

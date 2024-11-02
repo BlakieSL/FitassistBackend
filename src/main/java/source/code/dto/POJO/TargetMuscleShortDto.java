@@ -1,4 +1,4 @@
-package source.code.dto.Other;
+package source.code.dto.POJO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,4 +18,9 @@ public class TargetMuscleShortDto {
     this.id = id;
     this.name = name;
   }
+
+  public static TargetMuscleShortDto create(Integer id, String name, int priority) {
+    return new TargetMuscleShortDto(id, name, priority);
+  }
+
 }

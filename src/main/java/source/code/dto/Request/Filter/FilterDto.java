@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.POJO.FilterCriteria;
 import source.code.helper.Enum.FilterDataOption;
-import source.code.pojo.FilterCriteria;
 
 import java.util.List;
 

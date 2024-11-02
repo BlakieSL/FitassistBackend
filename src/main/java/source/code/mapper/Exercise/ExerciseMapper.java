@@ -2,7 +2,7 @@ package source.code.mapper.Exercise;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.Other.TargetMuscleShortDto;
+import source.code.dto.POJO.TargetMuscleShortDto;
 import source.code.dto.Request.Exercise.ExerciseCreateDto;
 import source.code.dto.Request.Exercise.ExerciseUpdateDto;
 import source.code.dto.Response.ExerciseResponseDto;
@@ -14,8 +14,8 @@ import source.code.model.Text.ExerciseTip;
 import source.code.repository.*;
 import source.code.service.Declaration.Helpers.RepositoryHelper;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -98,30 +98,22 @@ public abstract class ExerciseMapper {
 
   @Named("mapTargetMuscleIdsToAssociations")
   protected Set<ExerciseTargetMuscle> mapCategoryIdsToAssociations(List<Integer> categoryIds) {
-    if (categoryIds == null) {
-      return new HashSet<>();
-    }
-
-    Set<ExerciseTargetMuscle> associations = new HashSet<>();
-
-    for (Integer categoryId : categoryIds) {
-      TargetMuscle category = repositoryHelper
-              .find(targetMuscleRepository, TargetMuscle.class, categoryId);
-
-      ExerciseTargetMuscle association = ExerciseTargetMuscle
-              .createWithTargetMuscle(category);
-
-      associations.add(association);
-    }
-
-    return associations;
+    return Optional.ofNullable(categoryIds)
+            .orElseGet(List::of)
+            .stream()
+            .map(categoryId -> {
+              TargetMuscle category = repositoryHelper
+                      .find(targetMuscleRepository, TargetMuscle.class, categoryId);
+              return ExerciseTargetMuscle.createWithTargetMuscle(category);
+            })
+            .collect(Collectors.toSet());
   }
 
   @Named("mapAssociationsToCategoryShortDto")
   protected List<TargetMuscleShortDto> mapAssociationsToCategoryShortDto(
           Set<ExerciseTargetMuscle> associations) {
     return associations.stream()
-            .map(association -> new TargetMuscleShortDto(
+            .map(association -> TargetMuscleShortDto.create(
                     association.getTargetMuscle().getId(),
                     association.getTargetMuscle().getName(),
                     association.getPriority()))

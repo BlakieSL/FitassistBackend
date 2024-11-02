@@ -2,7 +2,7 @@ package source.code.mapper.Plan;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.Other.PlanCategoryShortDto;
+import source.code.dto.POJO.PlanCategoryShortDto;
 import source.code.dto.Request.Plan.PlanCreateDto;
 import source.code.dto.Request.Plan.PlanUpdateDto;
 import source.code.dto.Response.PlanResponseDto;
@@ -12,8 +12,8 @@ import source.code.model.Text.PlanInstruction;
 import source.code.repository.*;
 import source.code.service.Declaration.Helpers.RepositoryHelper;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -76,27 +76,20 @@ public abstract class PlanMapper {
 
   @Named("mapCategoryIdsToAssociations")
   protected Set<PlanCategoryAssociation> mapCategoryIdsToAssociations(List<Integer> categoryIds) {
-    if (categoryIds == null) {
-      return new HashSet<>();
-    }
-
-    Set<PlanCategoryAssociation> associations = new HashSet<>();
-
-    for (Integer categoryId : categoryIds) {
-      PlanCategory category = repositoryHelper
-              .find(planCategoryRepository, PlanCategory.class, categoryId);
-
-      PlanCategoryAssociation association = PlanCategoryAssociation
-              .createWithPlanCategory(category);
-
-      associations.add(association);
-    }
-
-    return associations;
+    return Optional.ofNullable(categoryIds)
+            .orElseGet(List::of)
+            .stream()
+            .map(categoryId -> {
+              PlanCategory category = repositoryHelper
+                      .find(planCategoryRepository, PlanCategory.class, categoryId);
+              return PlanCategoryAssociation.createWithPlanCategory(category);
+            })
+            .collect(Collectors.toSet());
   }
 
   @Named("mapAssociationsToCategoryShortDto")
-  protected List<PlanCategoryShortDto> mapAssociationsToCategoryShortDto(Set<PlanCategoryAssociation> associations) {
+  protected List<PlanCategoryShortDto> mapAssociationsToCategoryShortDto(
+          Set<PlanCategoryAssociation> associations) {
     return associations.stream()
             .map(association -> new PlanCategoryShortDto(
                     association.getPlanCategory().getId(),

@@ -1,10 +1,9 @@
-package source.code.pojo;
+package source.code.dto.POJO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.helper.Enum.FilterDataOption;
 import source.code.helper.Enum.FilterOperation;
 
 @Getter
