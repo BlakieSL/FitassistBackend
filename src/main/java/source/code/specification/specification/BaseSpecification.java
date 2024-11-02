@@ -2,9 +2,8 @@ package source.code.specification.specification;
 
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
-import source.code.model.Activity.Activity;
 import source.code.model.User.UserActivity;
-import source.code.pojo.FilterCriteria;
+import source.code.dto.POJO.FilterCriteria;
 
 public abstract class BaseSpecification<T> implements Specification<T> {
   protected final FilterCriteria criteria;

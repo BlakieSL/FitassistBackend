@@ -13,10 +13,14 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import source.code.dto.Response.User.UserResponseDto;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @EnableAutoConfiguration(exclude = RedisRepositoriesAutoConfiguration.class)
 @Configuration
@@ -24,18 +28,39 @@ import java.time.Duration;
 public class RedisCachingConfig {
   @Bean
   public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.registerModule(new JavaTimeModule());
-    mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    ObjectMapper javaTimeMapper = new ObjectMapper();
+    javaTimeMapper.registerModule(new JavaTimeModule());
+    javaTimeMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-    GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(mapper);
-    RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+    Jackson2JsonRedisSerializer<UserResponseDto> userResponseSerializer =
+            new Jackson2JsonRedisSerializer<>(javaTimeMapper, UserResponseDto.class);
+
+
+    RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
             .entryTtl(Duration.ofMinutes(60))
-            .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-            .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer));
+            .serializeKeysWith(RedisSerializationContext
+                    .SerializationPair
+                    .fromSerializer(new StringRedisSerializer()))
+            .serializeValuesWith(RedisSerializationContext
+                    .SerializationPair
+                    .fromSerializer(new Jackson2JsonRedisSerializer<>(javaTimeMapper, Object.class)));
+
+    RedisCacheConfiguration userCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
+            .entryTtl(Duration.ofMinutes(60))
+            .serializeKeysWith(RedisSerializationContext
+                    .SerializationPair
+                    .fromSerializer(new StringRedisSerializer()))
+            .serializeValuesWith(RedisSerializationContext
+                    .SerializationPair
+                    .fromSerializer(userResponseSerializer));
+
+
+    Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
+    cacheConfigurations.put("userById", userCacheConfig);
 
     return RedisCacheManager.builder(redisConnectionFactory)
-            .cacheDefaults(redisCacheConfiguration)
+            .cacheDefaults(defaultCacheConfig)
+            .withInitialCacheConfigurations(cacheConfigurations)
             .build();
   }
 }

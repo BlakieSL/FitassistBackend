@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.dto.Other.TargetMuscleShortDto;
+import source.code.dto.POJO.TargetMuscleShortDto;
 
 import java.util.List;
 

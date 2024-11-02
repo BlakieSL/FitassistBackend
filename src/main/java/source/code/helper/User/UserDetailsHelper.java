@@ -2,7 +2,7 @@ package source.code.helper.User;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import source.code.dto.Other.UserCredentialsDto;
+import source.code.dto.POJO.UserCredentialsDto;
 
 public class UserDetailsHelper {
   public static UserDetails buildUserDetails(UserCredentialsDto dto) {

@@ -1,6 +1,6 @@
 package source.code.service.Declaration.Media;
 
-import source.code.dto.Request.MediaCreateDto;
+import source.code.dto.Request.Media.MediaCreateDto;
 import source.code.dto.Response.MediaResponseDto;
 
 import java.util.List;
