@@ -1,8 +1,14 @@
 package source.code.service.Implementation.Workout;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.Request.Workout.WorkoutCreateDto;
+import source.code.dto.Request.Workout.WorkoutUpdateDto;
 import source.code.dto.Response.Workout.WorkoutResponseDto;
+import source.code.mapper.Plan.PlanMapper;
+import source.code.mapper.Workout.WorkoutMapper;
+import source.code.model.Workout.Workout;
 import source.code.repository.WorkoutRepository;
 import source.code.service.Declaration.Helpers.JsonPatchService;
 import source.code.service.Declaration.Helpers.RepositoryHelper;
@@ -14,41 +20,66 @@ import java.util.List;
 public class WorkoutServiceImpl implements WorkoutService {
   private final JsonPatchService jsonPatchService;
   private final ValidationService validationService;
+  private final WorkoutMapper workoutMapper;
   private final RepositoryHelper repositoryHelper;
   private final WorkoutRepository workoutRepository;
 
   public WorkoutServiceImpl(JsonPatchService jsonPatchService,
                             ValidationService validationService,
+                            WorkoutMapper workoutMapper,
                             RepositoryHelper repositoryHelper,
                             WorkoutRepository workoutRepository) {
     this.jsonPatchService = jsonPatchService;
     this.validationService = validationService;
+    this.workoutMapper = workoutMapper;
     this.repositoryHelper = repositoryHelper;
     this.workoutRepository = workoutRepository;
   }
 
   @Override
   public WorkoutResponseDto createWorkout(WorkoutCreateDto workoutDto) {
-    return null;
+    Workout workout = workoutRepository.save(workoutMapper.toEntity(workoutDto));
+    return workoutMapper.toResponseDto(workout);
   }
 
   @Override
-  public void updateWorkout(int workoutId, JsonMergePatch patch) {
+  public void updateWorkout(int workoutId, JsonMergePatch patch)
+          throws JsonPatchException, JsonProcessingException {
+    Workout workout = find(workoutId);
+    WorkoutUpdateDto patched = applyPatchToWorkout(workout, patch);
 
+    validationService.validate(patched);
+
+    workoutMapper.updateWorkout(workout, patched);
+    Workout saved = workoutRepository.save(workout);
   }
 
   @Override
   public void deleteWorkout(int workoutId) {
-
+    Workout workout = find(workoutId);
+    workoutRepository.delete(workout);
   }
 
   @Override
   public WorkoutResponseDto getWorkout(int id) {
-    return null;
+    Workout workout = find(id);
+    return workoutMapper.toResponseDto(workout);
   }
 
   @Override
   public List<WorkoutResponseDto> getAllWorkoutsForPlan(int planId) {
-    return null;
+    return workoutRepository.findAllByPlanId(planId).stream()
+            .map(workoutMapper::toResponseDto)
+            .toList();
+  }
+
+  private Workout find(int workoutId) {
+    return repositoryHelper.find(workoutRepository, Workout.class, workoutId);
+  }
+
+  private WorkoutUpdateDto applyPatchToWorkout(Workout workout, JsonMergePatch patch)
+          throws JsonPatchException, JsonProcessingException {
+    WorkoutResponseDto responseDto = workoutMapper.toResponseDto(workout);
+    return jsonPatchService.applyPatch(patch, responseDto, WorkoutUpdateDto.class);
   }
 }

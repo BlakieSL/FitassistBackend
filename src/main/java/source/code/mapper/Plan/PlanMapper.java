@@ -28,8 +28,6 @@ public abstract class PlanMapper {
   @Autowired
   private PlanDurationRepository planDurationRepository;
   @Autowired
-  private EquipmentRepository equipmentRepository;
-  @Autowired
   private ExpertiseLevelRepository expertiseLevelRepository;
 
   @Mapping(target = "categories", source = "planCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryShortDto")
