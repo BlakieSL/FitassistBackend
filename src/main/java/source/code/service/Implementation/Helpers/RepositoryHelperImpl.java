@@ -22,8 +22,4 @@ public class RepositoryHelperImpl implements RepositoryHelper {
             .map(mapper)
             .toList();
   }
-
-  public <T> T find(JpaRepository<T, Integer> repository, Function<JpaRepository<T, Integer>, T> fetcher) {
-    return fetcher.apply(repository);
-  }
 }

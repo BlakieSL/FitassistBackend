@@ -1,0 +1,43 @@
+package source.code.mapper.Workout;
+
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import source.code.dto.Request.Workout.WorkoutCreateDto;
+import source.code.dto.Request.Workout.WorkoutUpdateDto;
+import source.code.dto.Response.Workout.WorkoutResponseDto;
+import source.code.model.Plan.Plan;
+import source.code.model.Workout.Workout;
+import source.code.repository.PlanRepository;
+import source.code.service.Declaration.Helpers.RepositoryHelper;
+
+@Mapper(componentModel = "spring")
+public abstract class WorkoutMapper {
+  @Autowired
+  private PlanRepository planRepository;
+  @Autowired
+  private RepositoryHelper repositoryHelper;
+
+  @Mapping(target = "planId", source = "plan", qualifiedByName = "mapPlanToPlanId")
+  public abstract WorkoutResponseDto toResponseDto(Workout workout);
+
+  @Mapping(target = "plan", source = "planId", qualifiedByName = "mapPlanIdToPlan")
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "workoutSets", ignore = true)
+  public abstract Workout toEntity(WorkoutCreateDto createDto);
+
+  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "workoutSets", ignore = true)
+  @Mapping(target = "plan", ignore = true)
+  public abstract void updateWorkout(@MappingTarget Workout workout, WorkoutUpdateDto updateDto);
+
+  @Named("mapPlanToPlanId")
+  protected int mapPlanToPlanId(Plan plan) {
+    return plan.getId();
+  }
+
+  @Named("mapPlanIdToPlan")
+  protected Plan mapPlanIdToPlan(int planId) {
+    return repositoryHelper.find(planRepository, Plan.class, planId);
+  }
+}

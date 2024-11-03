@@ -15,4 +15,5 @@ public class WorkoutResponseDto {
   private int id;
   private String name;
   private int time;
+  private int planId;
 }

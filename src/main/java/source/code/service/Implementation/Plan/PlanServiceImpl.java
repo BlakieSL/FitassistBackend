@@ -138,7 +138,7 @@ public class PlanServiceImpl implements PlanService {
     return repositoryHelper.find(planRepository, Plan.class, planId);
   }
 
-  private PlanUpdateDto applyPatchToPlan (Plan plan, JsonMergePatch patch)
+  private PlanUpdateDto applyPatchToPlan(Plan plan, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
     PlanResponseDto responseDto = planMapper.toResponseDto(plan);
     return jsonPatchService.applyPatch(patch, responseDto, PlanUpdateDto.class);
