@@ -1,6 +1,5 @@
 package source.code.dto.Response.Category;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

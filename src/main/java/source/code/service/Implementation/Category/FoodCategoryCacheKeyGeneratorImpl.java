@@ -1,6 +1,5 @@
 package source.code.service.Implementation.Category;
 
-import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
 import source.code.helper.Enum.CacheKeys;
 import source.code.model.Food.FoodCategory;
