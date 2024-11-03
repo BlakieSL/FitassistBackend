@@ -3,10 +3,10 @@ package source.code.service.Implementation.Workout;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import org.springframework.stereotype.Service;
 import source.code.dto.Request.Workout.WorkoutCreateDto;
 import source.code.dto.Request.Workout.WorkoutUpdateDto;
 import source.code.dto.Response.Workout.WorkoutResponseDto;
-import source.code.mapper.Plan.PlanMapper;
 import source.code.mapper.Workout.WorkoutMapper;
 import source.code.model.Workout.Workout;
 import source.code.repository.WorkoutRepository;
@@ -17,6 +17,7 @@ import source.code.service.Declaration.Workout.WorkoutService;
 
 import java.util.List;
 
+@Service
 public class WorkoutServiceImpl implements WorkoutService {
   private final JsonPatchService jsonPatchService;
   private final ValidationService validationService;
@@ -51,7 +52,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     validationService.validate(patched);
 
     workoutMapper.updateWorkout(workout, patched);
-    Workout saved = workoutRepository.save(workout);
+    workoutRepository.save(workout);
   }
 
   @Override
