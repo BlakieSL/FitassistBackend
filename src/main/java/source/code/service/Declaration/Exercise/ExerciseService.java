@@ -6,7 +6,6 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.Request.Exercise.ExerciseCreateDto;
 import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Response.ExerciseResponseDto;
-import source.code.helper.Enum.Model.ExerciseField;
 import source.code.model.Exercise.Exercise;
 
 import java.util.List;

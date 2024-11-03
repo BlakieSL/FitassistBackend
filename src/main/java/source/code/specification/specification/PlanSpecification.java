@@ -2,6 +2,7 @@ package source.code.specification.specification;
 
 import jakarta.persistence.criteria.*;
 import org.springframework.lang.NonNull;
+import source.code.dto.POJO.FilterCriteria;
 import source.code.helper.Enum.Model.LikesAndSaves;
 import source.code.helper.Enum.Model.PlanField;
 import source.code.helper.TriFunction;
@@ -11,7 +12,6 @@ import source.code.model.Plan.Plan;
 import source.code.model.Plan.PlanCategoryAssociation;
 import source.code.model.Workout.Workout;
 import source.code.model.Workout.WorkoutSet;
-import source.code.dto.POJO.FilterCriteria;
 
 import java.util.Map;
 import java.util.Optional;

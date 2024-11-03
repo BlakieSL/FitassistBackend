@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Request.Food.CalculateFoodMacrosRequestDto;
 import source.code.dto.Request.Food.FoodCreateDto;
-import source.code.dto.Response.ActivityResponseDto;
 import source.code.dto.Response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.Response.FoodResponseDto;
 import source.code.service.Declaration.Food.FoodService;

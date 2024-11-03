@@ -1,6 +1,5 @@
 package source.code.event.listener;
 
-import org.springframework.cache.CacheManager;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import source.code.event.events.User.UserDeleteEvent;

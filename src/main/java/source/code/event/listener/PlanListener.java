@@ -6,7 +6,6 @@ import source.code.event.events.Plan.PlanCreateEvent;
 import source.code.event.events.Plan.PlanDeleteEvent;
 import source.code.event.events.Plan.PlanUpdateEvent;
 import source.code.helper.Enum.CacheNames;
-import source.code.helper.Enum.Model.PlanField;
 import source.code.model.Plan.Plan;
 import source.code.model.Plan.PlanCategoryAssociation;
 import source.code.service.Declaration.Cache.CacheService;

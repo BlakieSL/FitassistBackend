@@ -5,12 +5,12 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.lang.NonNull;
+import source.code.dto.POJO.FilterCriteria;
 import source.code.helper.Enum.Model.ExerciseField;
 import source.code.helper.Enum.Model.LikesAndSaves;
 import source.code.helper.TriFunction;
 import source.code.model.Exercise.Exercise;
 import source.code.model.Exercise.ExerciseTargetMuscle;
-import source.code.dto.POJO.FilterCriteria;
 
 import java.util.Map;
 import java.util.Optional;

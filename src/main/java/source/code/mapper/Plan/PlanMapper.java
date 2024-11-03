@@ -9,7 +9,10 @@ import source.code.dto.Response.PlanResponseDto;
 import source.code.model.Other.ExpertiseLevel;
 import source.code.model.Plan.*;
 import source.code.model.Text.PlanInstruction;
-import source.code.repository.*;
+import source.code.repository.ExpertiseLevelRepository;
+import source.code.repository.PlanCategoryRepository;
+import source.code.repository.PlanDurationRepository;
+import source.code.repository.PlanTypeRepository;
 import source.code.service.Declaration.Helpers.RepositoryHelper;
 
 import java.util.List;
