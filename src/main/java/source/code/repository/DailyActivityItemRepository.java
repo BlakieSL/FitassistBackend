@@ -6,6 +6,7 @@ import source.code.model.Activity.DailyActivityItem;
 import java.util.Optional;
 
 public interface DailyActivityItemRepository extends JpaRepository<DailyActivityItem, Integer> {
-  Optional<DailyActivityItem> findByDailyActivityIdAndActivityId(int dailyActivityId, int activityId);
-  boolean existsByIdAndDailyActivityId(int dailyActivityItemId, int dailyActivityId);
+    Optional<DailyActivityItem> findByDailyActivityIdAndActivityId(int dailyActivityId, int activityId);
+
+    boolean existsByIdAndDailyActivityId(int dailyActivityItemId, int dailyActivityId);
 }

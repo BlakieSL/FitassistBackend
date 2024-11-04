@@ -6,9 +6,10 @@ import source.code.model.Text.ExerciseTip;
 
 @Getter
 public class ExerciseTipEvent extends ApplicationEvent {
-  private final ExerciseTip tip;
-  public ExerciseTipEvent(Object source, ExerciseTip tip) {
-    super(source);
-    this.tip = tip;
-  }
+    private final ExerciseTip tip;
+
+    public ExerciseTipEvent(Object source, ExerciseTip tip) {
+        super(source);
+        this.tip = tip;
+    }
 }

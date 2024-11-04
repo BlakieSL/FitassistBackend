@@ -9,10 +9,14 @@ import source.code.dto.Response.Workout.WorkoutResponseDto;
 import java.util.List;
 
 public interface WorkoutService {
-  WorkoutResponseDto createWorkout(WorkoutCreateDto workoutDto);
-  void updateWorkout(int workoutId, JsonMergePatch patch)
-          throws JsonPatchException, JsonProcessingException;
-  void deleteWorkout(int workoutId);
-  WorkoutResponseDto getWorkout(int id);
-  List<WorkoutResponseDto> getAllWorkoutsForPlan(int planId);
+    WorkoutResponseDto createWorkout(WorkoutCreateDto workoutDto);
+
+    void updateWorkout(int workoutId, JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException;
+
+    void deleteWorkout(int workoutId);
+
+    WorkoutResponseDto getWorkout(int id);
+
+    List<WorkoutResponseDto> getAllWorkoutsForPlan(int planId);
 }

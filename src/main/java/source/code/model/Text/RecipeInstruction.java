@@ -15,28 +15,29 @@ import source.code.model.Recipe.Recipe;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RecipeInstruction extends TextBase{
+public class RecipeInstruction extends TextBase {
 
-  @NotBlank
-  @Column(nullable = false)
-  private String title;
+    @NotBlank
+    @Column(nullable = false)
+    private String title;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "recipe_id", nullable = false)
-  private Recipe recipe;
-  public static RecipeInstruction createWithIdAndRecipe(int id, Recipe recipe){
-    RecipeInstruction instruction = new RecipeInstruction();
-    instruction.setId(id);
-    instruction.setRecipe(recipe);
-    return instruction;
-  }
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "recipe_id", nullable = false)
+    private Recipe recipe;
 
-  public static RecipeInstruction createWithNumberTitleText(short number, String title, String text) {
-    RecipeInstruction instruction = new RecipeInstruction();
-    instruction.setNumber(number);;
-    instruction.setTitle(title);
-    instruction.setText(text);
-    return  instruction;
-  }
+    public static RecipeInstruction createWithIdAndRecipe(int id, Recipe recipe) {
+        RecipeInstruction instruction = new RecipeInstruction();
+        instruction.setId(id);
+        instruction.setRecipe(recipe);
+        return instruction;
+    }
+
+    public static RecipeInstruction createWithNumberTitleText(short number, String title, String text) {
+        RecipeInstruction instruction = new RecipeInstruction();
+        instruction.setNumber(number);
+        instruction.setTitle(title);
+        instruction.setText(text);
+        return instruction;
+    }
 }

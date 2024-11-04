@@ -6,9 +6,10 @@ import source.code.model.Activity.Activity;
 
 @Getter
 public class ActivityDeleteEvent extends ApplicationEvent {
-  private final Activity activity;
-  public ActivityDeleteEvent(Object source, Activity activity) {
-    super(source);
-    this.activity = activity;
-  }
+    private final Activity activity;
+
+    public ActivityDeleteEvent(Object source, Activity activity) {
+        super(source);
+        this.activity = activity;
+    }
 }

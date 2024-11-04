@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserPlanRepository extends JpaRepository<UserPlan, Integer> {
-  List<UserPlan> findByUserId(int userId);
+    List<UserPlan> findByUserId(int userId);
 
-  List<UserPlan> findByUserIdAndType(int userId, short type);
+    List<UserPlan> findByUserIdAndType(int userId, short type);
 
-  Optional<UserPlan> findByUserIdAndPlanIdAndType(int userId, int planId, short type);
+    Optional<UserPlan> findByUserIdAndPlanIdAndType(int userId, int planId, short type);
 
-  boolean existsByUserIdAndPlanIdAndType(int userId, int planId, short type);
+    boolean existsByUserIdAndPlanIdAndType(int userId, int planId, short type);
 
-  long countByPlanIdAndType(int planId, short type);
+    long countByPlanIdAndType(int planId, short type);
 }

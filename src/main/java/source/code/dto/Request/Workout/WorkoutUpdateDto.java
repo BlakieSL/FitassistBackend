@@ -13,11 +13,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutUpdateDto {
-  private static final int NAME_MAX_LENGTH = 50;
+    private static final int NAME_MAX_LENGTH = 50;
 
-  @Size(max = NAME_MAX_LENGTH)
-  private String name;
+    @Size(max = NAME_MAX_LENGTH)
+    private String name;
 
-  @PositiveOrZero
-  private int time;
+    @PositiveOrZero
+    private int time;
 }

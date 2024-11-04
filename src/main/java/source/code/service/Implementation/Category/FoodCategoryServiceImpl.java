@@ -16,19 +16,19 @@ public class FoodCategoryServiceImpl
         extends GenericCategoryService<FoodCategory>
         implements CategoryService {
 
-  protected FoodCategoryServiceImpl(ValidationService validationService,
-                                    JsonPatchService jsonPatchService,
-                                    CategoryCacheKeyGenerator<FoodCategory> cacheKeyGenerator,
-                                    ApplicationEventPublisher applicationEventPublisher,
-                                    CacheManager cacheManager,
-                                    FoodCategoryRepository repository,
-                                    FoodCategoryMapper mapper) {
-    super(validationService,
-            jsonPatchService,
-            cacheKeyGenerator,
-            applicationEventPublisher,
-            cacheManager,
-            repository,
-            mapper);
-  }
+    protected FoodCategoryServiceImpl(ValidationService validationService,
+                                      JsonPatchService jsonPatchService,
+                                      CategoryCacheKeyGenerator<FoodCategory> cacheKeyGenerator,
+                                      ApplicationEventPublisher applicationEventPublisher,
+                                      CacheManager cacheManager,
+                                      FoodCategoryRepository repository,
+                                      FoodCategoryMapper mapper) {
+        super(validationService,
+                jsonPatchService,
+                cacheKeyGenerator,
+                applicationEventPublisher,
+                cacheManager,
+                repository,
+                mapper);
+    }
 }

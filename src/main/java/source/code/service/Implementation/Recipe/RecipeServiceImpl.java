@@ -34,111 +34,111 @@ import java.util.List;
 
 @Service
 public class RecipeServiceImpl implements RecipeService {
-  private final RecipeMapper recipeMapper;
-  private final JsonPatchService jsonPatchService;
-  private final ValidationService validationService;
-  private final ApplicationEventPublisher applicationEventPublisher;
-  private final RepositoryHelper repositoryHelper;
-  private final RecipeCategoryRepository recipeCategoryRepository;
-  private final RecipeCategoryAssociationRepository recipeCategoryAssociationRepository;
-  private final RecipeRepository recipeRepository;
+    private final RecipeMapper recipeMapper;
+    private final JsonPatchService jsonPatchService;
+    private final ValidationService validationService;
+    private final ApplicationEventPublisher applicationEventPublisher;
+    private final RepositoryHelper repositoryHelper;
+    private final RecipeCategoryRepository recipeCategoryRepository;
+    private final RecipeCategoryAssociationRepository recipeCategoryAssociationRepository;
+    private final RecipeRepository recipeRepository;
 
-  public RecipeServiceImpl(RecipeMapper recipeMapper,
-                           JsonPatchService jsonPatchService,
-                           ValidationService validationService,
-                           ApplicationEventPublisher applicationEventPublisher,
-                           RepositoryHelper repositoryHelper,
-                           RecipeRepository recipeRepository,
-                           RecipeCategoryRepository recipeCategoryRepository,
-                           RecipeCategoryAssociationRepository recipeCategoryAssociationRepository) {
-    this.recipeMapper = recipeMapper;
-    this.jsonPatchService = jsonPatchService;
-    this.validationService = validationService;
-    this.applicationEventPublisher = applicationEventPublisher;
-    this.repositoryHelper = repositoryHelper;
-    this.recipeRepository = recipeRepository;
-    this.recipeCategoryRepository = recipeCategoryRepository;
-    this.recipeCategoryAssociationRepository = recipeCategoryAssociationRepository;
-  }
+    public RecipeServiceImpl(RecipeMapper recipeMapper,
+                             JsonPatchService jsonPatchService,
+                             ValidationService validationService,
+                             ApplicationEventPublisher applicationEventPublisher,
+                             RepositoryHelper repositoryHelper,
+                             RecipeRepository recipeRepository,
+                             RecipeCategoryRepository recipeCategoryRepository,
+                             RecipeCategoryAssociationRepository recipeCategoryAssociationRepository) {
+        this.recipeMapper = recipeMapper;
+        this.jsonPatchService = jsonPatchService;
+        this.validationService = validationService;
+        this.applicationEventPublisher = applicationEventPublisher;
+        this.repositoryHelper = repositoryHelper;
+        this.recipeRepository = recipeRepository;
+        this.recipeCategoryRepository = recipeCategoryRepository;
+        this.recipeCategoryAssociationRepository = recipeCategoryAssociationRepository;
+    }
 
-  @Override
-  @Transactional
-  public RecipeResponseDto createRecipe(RecipeCreateDto request) {
-    Recipe recipe = recipeRepository.save(recipeMapper.toEntity(request));
-    applicationEventPublisher.publishEvent(new RecipeCreateEvent(this, recipe));
+    @Override
+    @Transactional
+    public RecipeResponseDto createRecipe(RecipeCreateDto request) {
+        Recipe recipe = recipeRepository.save(recipeMapper.toEntity(request));
+        applicationEventPublisher.publishEvent(new RecipeCreateEvent(this, recipe));
 
-    return recipeMapper.toResponseDto(recipe);
-  }
+        return recipeMapper.toResponseDto(recipe);
+    }
 
-  @Override
-  @Transactional
-  public void updateRecipe(int recipeId, JsonMergePatch patch)
-          throws JsonPatchException, JsonProcessingException {
-    Recipe recipe = find(recipeId);
-    RecipeUpdateDto patchedRecipeUpdateDto = applyPatchToRecipe(recipe, patch);
+    @Override
+    @Transactional
+    public void updateRecipe(int recipeId, JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException {
+        Recipe recipe = find(recipeId);
+        RecipeUpdateDto patchedRecipeUpdateDto = applyPatchToRecipe(recipe, patch);
 
-    validationService.validate(patchedRecipeUpdateDto);
+        validationService.validate(patchedRecipeUpdateDto);
 
-    recipeMapper.updateRecipe(recipe, patchedRecipeUpdateDto);
-    Recipe savedRecipe = recipeRepository.save(recipe);
+        recipeMapper.updateRecipe(recipe, patchedRecipeUpdateDto);
+        Recipe savedRecipe = recipeRepository.save(recipe);
 
-    applicationEventPublisher.publishEvent(new RecipeUpdateEvent(this, savedRecipe));
-  }
+        applicationEventPublisher.publishEvent(new RecipeUpdateEvent(this, savedRecipe));
+    }
 
-  @Override
-  @Transactional
-  public void deleteRecipe(int recipeId) {
-    Recipe recipe = find(recipeId);
-    recipeRepository.delete(recipe);
+    @Override
+    @Transactional
+    public void deleteRecipe(int recipeId) {
+        Recipe recipe = find(recipeId);
+        recipeRepository.delete(recipe);
 
-    applicationEventPublisher.publishEvent(new RecipeDeleteEvent(this, recipe));
-  }
+        applicationEventPublisher.publishEvent(new RecipeDeleteEvent(this, recipe));
+    }
 
-  @Override
-  @Cacheable(value = CacheNames.RECIPES, key = "#id")
-  public RecipeResponseDto getRecipe(int id) {
-    Recipe recipe = find(id);
-    return recipeMapper.toResponseDto(recipe);
-  }
+    @Override
+    @Cacheable(value = CacheNames.RECIPES, key = "#id")
+    public RecipeResponseDto getRecipe(int id) {
+        Recipe recipe = find(id);
+        return recipeMapper.toResponseDto(recipe);
+    }
 
-  @Override
-  @Cacheable(value = CacheNames.ALL_RECIPES)
-  public List<RecipeResponseDto> getAllRecipes() {
-    return repositoryHelper.findAll(recipeRepository, recipeMapper::toResponseDto);
-  }
+    @Override
+    @Cacheable(value = CacheNames.ALL_RECIPES)
+    public List<RecipeResponseDto> getAllRecipes() {
+        return repositoryHelper.findAll(recipeRepository, recipeMapper::toResponseDto);
+    }
 
-  @Override
-  public List<RecipeResponseDto> getFilteredRecipes(FilterDto filter) {
-    SpecificationFactory<Recipe> recipeFactory = RecipeSpecification::new;
-    SpecificationBuilder<Recipe> specificationBuilder = SpecificationBuilder.create(filter, recipeFactory);
-    Specification<Recipe> specification = specificationBuilder.build();
+    @Override
+    public List<RecipeResponseDto> getFilteredRecipes(FilterDto filter) {
+        SpecificationFactory<Recipe> recipeFactory = RecipeSpecification::new;
+        SpecificationBuilder<Recipe> specificationBuilder = SpecificationBuilder.create(filter, recipeFactory);
+        Specification<Recipe> specification = specificationBuilder.build();
 
-    return recipeRepository.findAll(specification).stream()
-            .map(recipeMapper::toResponseDto)
-            .toList();
-  }
+        return recipeRepository.findAll(specification).stream()
+                .map(recipeMapper::toResponseDto)
+                .toList();
+    }
 
-  @Override
-  public List<Recipe> getAllRecipeEntities() {
-    return recipeRepository.findAllWithoutAssociations();
-  }
+    @Override
+    public List<Recipe> getAllRecipeEntities() {
+        return recipeRepository.findAllWithoutAssociations();
+    }
 
-  @Override
-  @Cacheable(value = CacheNames.RECIPES_BY_CATEGORY, key = "#categoryId")
-  public List<RecipeResponseDto> getRecipesByCategory(int categoryId) {
-    return recipeCategoryAssociationRepository.findByRecipeCategoryId(categoryId).stream()
-            .map(RecipeCategoryAssociation::getRecipe)
-            .map(recipeMapper::toResponseDto)
-            .toList();
-  }
+    @Override
+    @Cacheable(value = CacheNames.RECIPES_BY_CATEGORY, key = "#categoryId")
+    public List<RecipeResponseDto> getRecipesByCategory(int categoryId) {
+        return recipeCategoryAssociationRepository.findByRecipeCategoryId(categoryId).stream()
+                .map(RecipeCategoryAssociation::getRecipe)
+                .map(recipeMapper::toResponseDto)
+                .toList();
+    }
 
-  private Recipe find(int recipeId) {
-    return repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
-  }
+    private Recipe find(int recipeId) {
+        return repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
+    }
 
-  private RecipeUpdateDto applyPatchToRecipe(Recipe recipe, JsonMergePatch patch)
-          throws JsonPatchException, JsonProcessingException {
-    RecipeResponseDto responseDto = recipeMapper.toResponseDto(recipe);
-    return jsonPatchService.applyPatch(patch, responseDto, RecipeUpdateDto.class);
-  }
+    private RecipeUpdateDto applyPatchToRecipe(Recipe recipe, JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException {
+        RecipeResponseDto responseDto = recipeMapper.toResponseDto(recipe);
+        return jsonPatchService.applyPatch(patch, responseDto, RecipeUpdateDto.class);
+    }
 }

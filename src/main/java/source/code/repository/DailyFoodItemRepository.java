@@ -6,6 +6,7 @@ import source.code.model.Food.DailyFoodItem;
 import java.util.Optional;
 
 public interface DailyFoodItemRepository extends JpaRepository<DailyFoodItem, Integer> {
-  Optional<DailyFoodItem> findByDailyFoodIdAndFoodId(int dailyFoodId, int foodId);
-  boolean existsByIdAndDailyFoodId(int dailyFoodItemId, int dailyFoodId);
+    Optional<DailyFoodItem> findByDailyFoodIdAndFoodId(int dailyFoodId, int foodId);
+
+    boolean existsByIdAndDailyFoodId(int dailyFoodItemId, int dailyFoodId);
 }

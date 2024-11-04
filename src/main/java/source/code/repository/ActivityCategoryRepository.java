@@ -6,5 +6,5 @@ import source.code.model.Activity.ActivityCategory;
 import java.util.Optional;
 
 public interface ActivityCategoryRepository extends JpaRepository<ActivityCategory, Integer> {
-  Optional<ActivityCategory> findByName(String name);
+    Optional<ActivityCategory> findByName(String name);
 }

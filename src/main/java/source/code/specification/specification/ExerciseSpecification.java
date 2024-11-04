@@ -15,54 +15,58 @@ import source.code.model.Exercise.ExerciseTargetMuscle;
 import java.util.Map;
 import java.util.Optional;
 
-public class ExerciseSpecification extends BaseSpecification<Exercise>{
-  private final Map<String, TriFunction<Root<Exercise>,
-          CriteriaQuery<?>, CriteriaBuilder, Predicate>> fieldHandlers;
+public class ExerciseSpecification extends BaseSpecification<Exercise> {
+    private final Map<String, TriFunction<Root<Exercise>,
+            CriteriaQuery<?>, CriteriaBuilder, Predicate>> fieldHandlers;
 
-  public ExerciseSpecification(@NonNull FilterCriteria criteria) {
-    super(criteria);
+    public ExerciseSpecification(@NonNull FilterCriteria criteria) {
+        super(criteria);
 
-    fieldHandlers = Map.of(
-            ExerciseField.EXPERTISE_LEVEL.name(),
-            (root, query, builder) ->
-                    handleEntityProperty(root, ExerciseField.EXPERTISE_LEVEL.getFieldName(), builder),
+        fieldHandlers = Map.of(
+                ExerciseField.EXPERTISE_LEVEL.name(),
+                (root, query, builder) ->
+                        handleEntityProperty(root, ExerciseField.EXPERTISE_LEVEL.getFieldName(), builder),
 
-            ExerciseField.EQUIPMENT.name(),
-            (root, query, builder) ->
-                    handleEntityProperty(root, ExerciseField.EQUIPMENT.getFieldName(), builder),
+                ExerciseField.EQUIPMENT.name(),
+                (root, query, builder) ->
+                        handleEntityProperty(root, ExerciseField.EQUIPMENT.getFieldName(), builder),
 
-            ExerciseField.TYPE.name(),
-            (root, query, builder)  ->
-                    handleEntityProperty(root, ExerciseField.TYPE.getFieldName(), builder),
+                ExerciseField.TYPE.name(),
+                (root, query, builder) ->
+                        handleEntityProperty(root, ExerciseField.TYPE.getFieldName(), builder),
 
-            ExerciseField.MECHANICS_TYPE.name(),
-            (root, query, builder)  ->
-                    handleEntityProperty(root, ExerciseField.MECHANICS_TYPE.getFieldName(), builder),
+                ExerciseField.MECHANICS_TYPE.name(),
+                (root, query, builder) ->
+                        handleEntityProperty(root, ExerciseField.MECHANICS_TYPE.getFieldName(), builder),
 
-            ExerciseField.FORCE_TYPE.name(),
-            (root, query, builder)  ->
-                    handleEntityProperty(root, ExerciseField.FORCE_TYPE.getFieldName(), builder),
+                ExerciseField.FORCE_TYPE.name(),
+                (root, query, builder) ->
+                        handleEntityProperty(root, ExerciseField.FORCE_TYPE.getFieldName(), builder),
 
-            ExerciseField.TARGET_MUSCLE.name(),
-            (root, query, builder)  ->
-                    handleManyToManyProperty(root, ExerciseField.TARGET_MUSCLE.getFieldName(),
-                    ExerciseTargetMuscle.TARGET_MUSCLE, builder),
+                ExerciseField.TARGET_MUSCLE.name(),
+                (root, query, builder) ->
+                        handleManyToManyProperty(root, ExerciseField.TARGET_MUSCLE.getFieldName(),
+                                ExerciseTargetMuscle.TARGET_MUSCLE, builder),
 
-            LikesAndSaves.LIKES.name(),
-            (root, query, builder) ->
-                    handleLikesProperty(root, LikesAndSaves.USER_EXERCISES.getFieldName(), query, builder),
+                LikesAndSaves.LIKES.name(),
+                (root, query, builder) ->
+                        handleLikesProperty(root, LikesAndSaves.USER_EXERCISES.getFieldName(), query, builder),
 
-            LikesAndSaves.SAVES.name(),
-            (root, query, builder) ->
-                    handleLikesProperty(root, LikesAndSaves.USER_EXERCISES.getFieldName(), query, builder)
-    );
-  }
+                LikesAndSaves.SAVES.name(),
+                (root, query, builder) ->
+                        handleLikesProperty(root, LikesAndSaves.USER_EXERCISES.getFieldName(), query, builder)
+        );
+    }
 
-  @Override
-  public Predicate toPredicate(@NonNull Root<Exercise> root, @NonNull CriteriaQuery<?> query,
-                               @NonNull CriteriaBuilder builder) {
-    return Optional.ofNullable(fieldHandlers.get(criteria.getFilterKey()))
-            .map(handler -> handler.apply(root, query, builder))
-            .orElseThrow(() -> new IllegalStateException("Unexpected filter key: " + criteria.getFilterKey()));
-  }
+    public static ExerciseSpecification of(@NonNull FilterCriteria criteria) {
+        return new ExerciseSpecification(criteria);
+    }
+
+    @Override
+    public Predicate toPredicate(@NonNull Root<Exercise> root, @NonNull CriteriaQuery<?> query,
+                                 @NonNull CriteriaBuilder builder) {
+        return Optional.ofNullable(fieldHandlers.get(criteria.getFilterKey()))
+                .map(handler -> handler.apply(root, query, builder))
+                .orElseThrow(() -> new IllegalStateException("Unexpected filter key: " + criteria.getFilterKey()));
+    }
 }

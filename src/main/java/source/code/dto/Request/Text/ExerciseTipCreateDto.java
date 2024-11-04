@@ -12,8 +12,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExerciseTipCreateDto {
-  @NotNull
-  private short number;
-  @NotBlank
-  private String text;
+    @NotNull
+    private short number;
+    @NotBlank
+    private String text;
 }

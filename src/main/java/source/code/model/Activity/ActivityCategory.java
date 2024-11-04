@@ -18,29 +18,24 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActivityCategory {
-  private static final int NAME_MAX_LENGTH = 50;
+    private static final int NAME_MAX_LENGTH = 50;
+    @OneToMany(mappedBy = "activityCategory", cascade = CascadeType.REMOVE)
+    private final Set<Activity> activities = new HashSet<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @NotBlank
+    @Size(max = NAME_MAX_LENGTH)
+    private String name;
+    @NotBlank
+    private String iconUrl;
+    @NotBlank
+    private String gradient;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
-
-  @NotBlank
-  @Size(max = NAME_MAX_LENGTH)
-  private String name;
-
-  @NotBlank
-  private String iconUrl;
-
-  @NotBlank
-  private String gradient;
-
-  @OneToMany(mappedBy = "activityCategory", cascade = CascadeType.REMOVE)
-  private final Set<Activity> activities = new HashSet<>();
-
-  public static ActivityCategory createWithIdName(int id, String name) {
-    ActivityCategory activityCategory = new ActivityCategory();
-    activityCategory.setId(id);
-    activityCategory.setName(name);
-    return activityCategory;
-  }
+    public static ActivityCategory createWithIdName(int id, String name) {
+        ActivityCategory activityCategory = new ActivityCategory();
+        activityCategory.setId(id);
+        activityCategory.setName(name);
+        return activityCategory;
+    }
 }

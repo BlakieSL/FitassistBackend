@@ -6,10 +6,10 @@ import source.code.model.Activity.Activity;
 
 @Getter
 public class ActivityCreateEvent extends ApplicationEvent {
-  private final Activity activity;
+    private final Activity activity;
 
-  public ActivityCreateEvent(Object source, Activity activity) {
-    super(source);
-    this.activity = activity;
-  }
+    public ActivityCreateEvent(Object source, Activity activity) {
+        super(source);
+        this.activity = activity;
+    }
 }

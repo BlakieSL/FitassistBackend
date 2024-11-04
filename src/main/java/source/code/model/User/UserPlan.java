@@ -14,33 +14,33 @@ import source.code.model.Plan.Plan;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPlan implements BaseUserEntity{
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+public class UserPlan implements BaseUserEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "plan_id", nullable = false)
-  private Plan plan;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "plan_id", nullable = false)
+    private Plan plan;
 
-  @NotNull
-  @Column(nullable = false)
-  private short type;
+    @NotNull
+    @Column(nullable = false)
+    private short type;
 
-  public static UserPlan createWithUserPlanType(
-          User user, Plan plan, short type) {
+    public static UserPlan createWithUserPlanType(
+            User user, Plan plan, short type) {
 
-    UserPlan userPlan = new UserPlan();
-    userPlan.setUser(user);
-    userPlan.setPlan(plan);
-    userPlan.setType(type);
+        UserPlan userPlan = new UserPlan();
+        userPlan.setUser(user);
+        userPlan.setPlan(plan);
+        userPlan.setType(type);
 
-    return userPlan;
-  }
+        return userPlan;
+    }
 }

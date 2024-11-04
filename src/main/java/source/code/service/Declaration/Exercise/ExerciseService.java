@@ -11,20 +11,20 @@ import source.code.model.Exercise.Exercise;
 import java.util.List;
 
 public interface ExerciseService {
-  ExerciseResponseDto createExercise(ExerciseCreateDto dto);
+    ExerciseResponseDto createExercise(ExerciseCreateDto dto);
 
-  void updateExercise(int exerciseId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+    void updateExercise(int exerciseId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-  void deleteExercise(int exerciseId);
+    void deleteExercise(int exerciseId);
 
-  ExerciseResponseDto getExercise(int id);
+    ExerciseResponseDto getExercise(int id);
 
-  List<ExerciseResponseDto> getAllExercises();
+    List<ExerciseResponseDto> getAllExercises();
 
-  List<ExerciseResponseDto> getFilteredExercises(FilterDto filter);
+    List<ExerciseResponseDto> getFilteredExercises(FilterDto filter);
 
-  List<Exercise> getAllExerciseEntities();
+    List<Exercise> getAllExerciseEntities();
 
-  List<ExerciseResponseDto> getExercisesByCategory(int categoryId);
+    List<ExerciseResponseDto> getExercisesByCategory(int categoryId);
 }
 

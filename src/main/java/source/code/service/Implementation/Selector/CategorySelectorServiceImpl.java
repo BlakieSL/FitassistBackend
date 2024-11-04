@@ -8,32 +8,32 @@ import source.code.service.Declaration.Selector.CategorySelectorService;
 
 @Service
 public class CategorySelectorServiceImpl implements CategorySelectorService {
-  private final CategoryService foodCategoryService;
-  private final CategoryService activityCategoryService;
-  private final CategoryService targetMuscleService;
-  private final CategoryService recipeCategoryService;
-  private final CategoryService planCategoryService;
+    private final CategoryService foodCategoryService;
+    private final CategoryService activityCategoryService;
+    private final CategoryService targetMuscleService;
+    private final CategoryService recipeCategoryService;
+    private final CategoryService planCategoryService;
 
-  public CategorySelectorServiceImpl(@Qualifier("foodCategoryService") CategoryService foodCategoryService,
-                                     @Qualifier("activityCategoryService") CategoryService activityCategoryService,
-                                     @Qualifier("targetMuscleService") CategoryService targetMuscleService,
-                                     @Qualifier("recipeCategoryService") CategoryService recipeCategoryService,
-                                     @Qualifier("planCategoryService") CategoryService planCategoryService) {
-    this.foodCategoryService = foodCategoryService;
-    this.activityCategoryService = activityCategoryService;
-    this.targetMuscleService = targetMuscleService;
-    this.recipeCategoryService = recipeCategoryService;
-    this.planCategoryService = planCategoryService;
-  }
+    public CategorySelectorServiceImpl(@Qualifier("foodCategoryService") CategoryService foodCategoryService,
+                                       @Qualifier("activityCategoryService") CategoryService activityCategoryService,
+                                       @Qualifier("targetMuscleService") CategoryService targetMuscleService,
+                                       @Qualifier("recipeCategoryService") CategoryService recipeCategoryService,
+                                       @Qualifier("planCategoryService") CategoryService planCategoryService) {
+        this.foodCategoryService = foodCategoryService;
+        this.activityCategoryService = activityCategoryService;
+        this.targetMuscleService = targetMuscleService;
+        this.recipeCategoryService = recipeCategoryService;
+        this.planCategoryService = planCategoryService;
+    }
 
-  @Override
-  public CategoryService getService(CategoryType categoryType) {
-    return switch (categoryType) {
-      case FOOD -> foodCategoryService;
-      case ACTIVITY -> activityCategoryService;
-      case EXERCISE -> targetMuscleService;
-      case RECIPE -> recipeCategoryService;
-      case PLAN -> planCategoryService;
-    };
-  }
+    @Override
+    public CategoryService getService(CategoryType categoryType) {
+        return switch (categoryType) {
+            case FOOD -> foodCategoryService;
+            case ACTIVITY -> activityCategoryService;
+            case EXERCISE -> targetMuscleService;
+            case RECIPE -> recipeCategoryService;
+            case PLAN -> planCategoryService;
+        };
+    }
 }

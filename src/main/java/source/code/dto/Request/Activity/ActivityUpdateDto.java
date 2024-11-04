@@ -12,13 +12,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActivityUpdateDto {
-  private static final int NAME_MAX_LENGTH = 50;
+    private static final int NAME_MAX_LENGTH = 50;
 
-  @Size(max = NAME_MAX_LENGTH)
-  private String name;
+    @Size(max = NAME_MAX_LENGTH)
+    private String name;
 
-  @Positive
-  private Double met;
+    @Positive
+    private Double met;
 
-  private Integer categoryId;
+    private Integer categoryId;
 }

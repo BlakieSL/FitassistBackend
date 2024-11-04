@@ -14,32 +14,33 @@ import source.code.service.Declaration.Text.TextCacheKeyGenerator;
 import source.code.service.Declaration.Text.TextService;
 
 import java.util.List;
+
 @Service("recipeInstructionService")
 public class RecipeInstructionServiceImpl
         extends GenericTextService<RecipeInstruction, RecipeInstructionResponseDto,
         RecipeInstructionUpdateDto, RecipeInstructionRepository>
         implements TextService {
 
-  protected RecipeInstructionServiceImpl(ValidationService validationService,
-                                         JsonPatchService jsonPatchService,
-                                         TextCacheKeyGenerator<RecipeInstruction> textCacheKeyGenerator,
-                                         CacheManager cacheManager,
-                                         ApplicationEventPublisher applicationEventPublisher,
-                                         RecipeInstructionRepository repository,
-                                         TextMapper mapper) {
-    super(validationService,
-            jsonPatchService,
-            textCacheKeyGenerator,
-            cacheManager,
-            applicationEventPublisher,
-            repository,
-            mapper::toRecipeInstructionResponseDto,
-            mapper::updateRecipeInstruction,
-            RecipeInstructionUpdateDto.class);
-  }
+    protected RecipeInstructionServiceImpl(ValidationService validationService,
+                                           JsonPatchService jsonPatchService,
+                                           TextCacheKeyGenerator<RecipeInstruction> textCacheKeyGenerator,
+                                           CacheManager cacheManager,
+                                           ApplicationEventPublisher applicationEventPublisher,
+                                           RecipeInstructionRepository repository,
+                                           TextMapper mapper) {
+        super(validationService,
+                jsonPatchService,
+                textCacheKeyGenerator,
+                cacheManager,
+                applicationEventPublisher,
+                repository,
+                mapper::toRecipeInstructionResponseDto,
+                mapper::updateRecipeInstruction,
+                RecipeInstructionUpdateDto.class);
+    }
 
-  @Override
-  protected List<RecipeInstruction> getAllByParentId(int recipeId) {
-    return repository.getAllByRecipeId(recipeId);
-  }
+    @Override
+    protected List<RecipeInstruction> getAllByParentId(int recipeId) {
+        return repository.getAllByRecipeId(recipeId);
+    }
 }

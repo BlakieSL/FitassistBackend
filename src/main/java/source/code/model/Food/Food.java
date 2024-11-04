@@ -21,59 +21,49 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Food implements IndexedEntity {
-  private static final int MAX_NAME_LENGTH = 50;
+    private static final int MAX_NAME_LENGTH = 50;
+    @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
+    private final Set<DailyFoodItem> dailyFoodItems = new HashSet<>();
+    @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
+    private final Set<RecipeFood> recipeFoods = new HashSet<>();
+    @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
+    private final Set<UserFood> userFoods = new HashSet<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @NotBlank
+    @Size(max = MAX_NAME_LENGTH)
+    @Column(nullable = false, length = MAX_NAME_LENGTH)
+    private String name;
+    @NotNull
+    @Positive
+    @Column(nullable = false)
+    private double calories;
+    @NotNull
+    @PositiveOrZero
+    @Column(nullable = false)
+    private double protein;
+    @NotNull
+    @PositiveOrZero
+    @Column(nullable = false)
+    private double fat;
+    @NotNull
+    @PositiveOrZero
+    @Column(nullable = false)
+    private double carbohydrates;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "food_category_id", nullable = false)
+    private FoodCategory foodCategory;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+    public static Food createWithId(int id) {
+        Food food = new Food();
+        food.setId(id);
+        return food;
+    }
 
-  @NotBlank
-  @Size(max = MAX_NAME_LENGTH)
-  @Column(nullable = false, length = MAX_NAME_LENGTH)
-  private String name;
-
-  @NotNull
-  @Positive
-  @Column(nullable = false)
-  private double calories;
-
-  @NotNull
-  @PositiveOrZero
-  @Column(nullable = false)
-  private double protein;
-
-  @NotNull
-  @PositiveOrZero
-  @Column(nullable = false)
-  private double fat;
-
-  @NotNull
-  @PositiveOrZero
-  @Column(nullable = false)
-  private double carbohydrates;
-
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "food_category_id", nullable = false)
-  private FoodCategory foodCategory;
-
-  @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
-  private final Set<DailyFoodItem> dailyFoodItems = new HashSet<>();
-
-  @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
-  private final Set<RecipeFood> recipeFoods = new HashSet<>();
-
-  @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
-  private final Set<UserFood> userFoods = new HashSet<>();
-
-  public static Food createWithId(int id) {
-    Food food = new Food();
-    food.setId(id);
-    return food;
-  }
-
-  @Override
-  public String getClassName() {
-    return this.getClass().getSimpleName();
-  }
+    @Override
+    public String getClassName() {
+        return this.getClass().getSimpleName();
+    }
 }

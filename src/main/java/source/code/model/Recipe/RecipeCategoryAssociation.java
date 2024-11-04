@@ -14,26 +14,26 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecipeCategoryAssociation {
-  public static final String RECIPE_CATEGORY = "recipeCategory";
+    public static final String RECIPE_CATEGORY = "recipeCategory";
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "recipe_id", nullable = false)
-  private Recipe recipe;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "recipe_id", nullable = false)
+    private Recipe recipe;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "recipe_category_id", nullable = false)
-  private RecipeCategory recipeCategory;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "recipe_category_id", nullable = false)
+    private RecipeCategory recipeCategory;
 
-  public static RecipeCategoryAssociation createWithRecipeCategory(RecipeCategory recipeCategory) {
-    RecipeCategoryAssociation recipeCategoryAssociation = new RecipeCategoryAssociation();
-    recipeCategoryAssociation.setRecipeCategory(recipeCategory);
+    public static RecipeCategoryAssociation createWithRecipeCategory(RecipeCategory recipeCategory) {
+        RecipeCategoryAssociation recipeCategoryAssociation = new RecipeCategoryAssociation();
+        recipeCategoryAssociation.setRecipeCategory(recipeCategory);
 
-    return recipeCategoryAssociation;
-  }
+        return recipeCategoryAssociation;
+    }
 }

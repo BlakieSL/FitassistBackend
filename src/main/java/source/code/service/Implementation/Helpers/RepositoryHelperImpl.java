@@ -10,16 +10,16 @@ import java.util.function.Function;
 
 @Component
 public class RepositoryHelperImpl implements RepositoryHelper {
-  @Override
-  public <T> T find(JpaRepository<T, Integer> repository, Class<T> entityType, int id) {
-    return repository.findById(id)
-            .orElseThrow(() -> new RecordNotFoundException(entityType, id));
-  }
+    @Override
+    public <T> T find(JpaRepository<T, Integer> repository, Class<T> entityType, int id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException(entityType, id));
+    }
 
-  @Override
-  public <T, R> List<R> findAll(JpaRepository<T, Integer> repository, Function<T,R> mapper) {
-    return repository.findAll().stream()
-            .map(mapper)
-            .toList();
-  }
+    @Override
+    public <T, R> List<R> findAll(JpaRepository<T, Integer> repository, Function<T, R> mapper) {
+        return repository.findAll().stream()
+                .map(mapper)
+                .toList();
+    }
 }

@@ -14,16 +14,16 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActivityCreateDto {
-  private static final int NAME_MAX_LENGTH = 50;
+    private static final int NAME_MAX_LENGTH = 50;
 
-  @Size(max = NAME_MAX_LENGTH)
-  @NotBlank
-  private String name;
+    @Size(max = NAME_MAX_LENGTH)
+    @NotBlank
+    private String name;
 
-  @NotNull
-  @Positive
-  private double met;
+    @NotNull
+    @Positive
+    private double met;
 
-  @NotNull
-  private int categoryId;
+    @NotNull
+    private int categoryId;
 }

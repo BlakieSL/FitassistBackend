@@ -15,23 +15,24 @@ import java.util.List;
 
 
 public interface ActivityService {
-  ActivityResponseDto createActivity(ActivityCreateDto dto);
+    ActivityResponseDto createActivity(ActivityCreateDto dto);
 
-  void updateActivity(int activityId, JsonMergePatch patch)
-          throws JsonPatchException, JsonProcessingException;
+    void updateActivity(int activityId, JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException;
 
-  void deleteActivity(int activityId);
+    void deleteActivity(int activityId);
 
-  ActivityResponseDto getActivity(int id);
+    ActivityResponseDto getActivity(int id);
 
-  List<ActivityResponseDto> getAllActivities();
-  List<ActivityResponseDto> getFilteredActivities(FilterDto filter);
+    List<ActivityResponseDto> getAllActivities();
 
-  List<Activity> getAllActivityEntities();
+    List<ActivityResponseDto> getFilteredActivities(FilterDto filter);
 
-  List<ActivityResponseDto> getActivitiesByCategory(int categoryId);
+    List<Activity> getAllActivityEntities();
 
-  ActivityCalculatedResponseDto calculateCaloriesBurned(int id, CalculateActivityCaloriesRequestDto request);
+    List<ActivityResponseDto> getActivitiesByCategory(int categoryId);
 
-  ActivityAverageMetResponseDto getAverageMet();
+    ActivityCalculatedResponseDto calculateCaloriesBurned(int id, CalculateActivityCaloriesRequestDto request);
+
+    ActivityAverageMetResponseDto getAverageMet();
 }

@@ -7,13 +7,13 @@ import source.code.dto.Request.User.UserCreateDto;
 import source.code.dto.Response.User.UserResponseDto;
 
 public interface UserService {
-  UserResponseDto register(UserCreateDto request);
+    UserResponseDto register(UserCreateDto request);
 
-  void deleteUser(int id);
+    void deleteUser(int id);
 
-  void updateUser(int userId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+    void updateUser(int userId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-  UserResponseDto getUser(int id);
+    UserResponseDto getUser(int id);
 
-  int getUserIdByEmail(String email);
+    int getUserIdByEmail(String email);
 }

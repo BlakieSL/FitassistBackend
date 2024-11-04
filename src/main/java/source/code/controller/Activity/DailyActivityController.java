@@ -14,46 +14,46 @@ import source.code.service.Declaration.Daily.DailyActivityService;
 @RestController
 @RequestMapping(path = "/api/daily-activities")
 public class DailyActivityController {
-  private final DailyActivityService dailyActivityService;
+    private final DailyActivityService dailyActivityService;
 
-  public DailyActivityController(DailyActivityService dailyActivityService) {
-    this.dailyActivityService = dailyActivityService;
-  }
+    public DailyActivityController(DailyActivityService dailyActivityService) {
+        this.dailyActivityService = dailyActivityService;
+    }
 
-  @GetMapping("/{userId}")
-  public ResponseEntity<DailyActivitiesResponseDto> getAllDailyActivitiesByUser(
-          @PathVariable int userId) {
-    DailyActivitiesResponseDto activities = dailyActivityService.getActivitiesFromDailyActivity(userId);
-    return ResponseEntity.ok(activities);
-  }
+    @GetMapping("/{userId}")
+    public ResponseEntity<DailyActivitiesResponseDto> getAllDailyActivitiesByUser(
+            @PathVariable int userId) {
+        DailyActivitiesResponseDto activities = dailyActivityService.getActivitiesFromDailyActivity(userId);
+        return ResponseEntity.ok(activities);
+    }
 
-  @PostMapping("/{userId}/add/{activityId}")
-  public ResponseEntity<Void> addDailyActivityToUser(
-          @PathVariable int userId,
-          @PathVariable int activityId,
-          @Valid @RequestBody DailyActivityItemCreateDto request) {
+    @PostMapping("/{userId}/add/{activityId}")
+    public ResponseEntity<Void> addDailyActivityToUser(
+            @PathVariable int userId,
+            @PathVariable int activityId,
+            @Valid @RequestBody DailyActivityItemCreateDto request) {
 
-    dailyActivityService.addActivityToDailyActivityItem(userId, activityId, request);
-    return ResponseEntity.status(HttpStatus.CREATED).build();
-  }
+        dailyActivityService.addActivityToDailyActivityItem(userId, activityId, request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
-  @DeleteMapping("/{userId}/remove/{activityId}")
-  public ResponseEntity<Void> removeActivityFromDailyCartActivity(
-          @PathVariable int userId,
-          @PathVariable int activityId) {
+    @DeleteMapping("/{userId}/remove/{activityId}")
+    public ResponseEntity<Void> removeActivityFromDailyCartActivity(
+            @PathVariable int userId,
+            @PathVariable int activityId) {
 
-    dailyActivityService.removeActivityFromDailyActivity(userId, activityId);
-    return ResponseEntity.noContent().build();
-  }
+        dailyActivityService.removeActivityFromDailyActivity(userId, activityId);
+        return ResponseEntity.noContent().build();
+    }
 
-  @PatchMapping("/{userId}/modify-activity/{activityId}")
-  public ResponseEntity<Void> updateDailyCartActivity(
-          @PathVariable int userId,
-          @PathVariable int activityId,
-          @RequestBody JsonMergePatch patch)
-          throws JsonPatchException, JsonProcessingException {
+    @PatchMapping("/{userId}/modify-activity/{activityId}")
+    public ResponseEntity<Void> updateDailyCartActivity(
+            @PathVariable int userId,
+            @PathVariable int activityId,
+            @RequestBody JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException {
 
-    dailyActivityService.updateDailyActivityItem(userId, activityId, patch);
-    return ResponseEntity.noContent().build();
-  }
+        dailyActivityService.updateDailyActivityItem(userId, activityId, patch);
+        return ResponseEntity.noContent().build();
+    }
 }

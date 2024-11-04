@@ -18,14 +18,12 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Equipment {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
-
-  @NotBlank
-  @Column(nullable = false)
-  private String name;
-
-  @OneToMany(mappedBy = "equipment", cascade = CascadeType.REMOVE)
-  private final Set<Exercise> exercises = new HashSet<>();
+    @OneToMany(mappedBy = "equipment", cascade = CascadeType.REMOVE)
+    private final Set<Exercise> exercises = new HashSet<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @NotBlank
+    @Column(nullable = false)
+    private String name;
 }

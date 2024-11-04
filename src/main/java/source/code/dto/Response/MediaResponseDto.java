@@ -10,8 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MediaResponseDto {
-  private Integer id;
-  private byte[] image;
-  private short parentType;
-  private Integer parentId;
+    private Integer id;
+    private byte[] image;
+    private short parentType;
+    private Integer parentId;
 }

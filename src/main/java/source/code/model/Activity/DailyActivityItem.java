@@ -15,33 +15,33 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DailyActivityItem {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-  @NotNull
-  @Positive
-  @Column(nullable = false)
-  private int time;
+    @NotNull
+    @Positive
+    @Column(nullable = false)
+    private int time;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "daily_activity_id", nullable = false)
-  private DailyActivity dailyActivity;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "daily_activity_id", nullable = false)
+    private DailyActivity dailyActivity;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "activity_id", nullable = false)
-  private Activity activity;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "activity_id", nullable = false)
+    private Activity activity;
 
-  public static DailyActivityItem of(
-          Activity activity, DailyActivity dailyActivity, int time
-  ) {
-    DailyActivityItem dailyActivityItem = new DailyActivityItem();
-    dailyActivityItem.setActivity(activity);
-    dailyActivityItem.setDailyActivity(dailyActivity);
-    dailyActivityItem.setTime(time);
+    public static DailyActivityItem of(
+            Activity activity, DailyActivity dailyActivity, int time
+    ) {
+        DailyActivityItem dailyActivityItem = new DailyActivityItem();
+        dailyActivityItem.setActivity(activity);
+        dailyActivityItem.setDailyActivity(dailyActivity);
+        dailyActivityItem.setTime(time);
 
-    return dailyActivityItem;
-  }
+        return dailyActivityItem;
+    }
 }

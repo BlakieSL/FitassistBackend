@@ -7,8 +7,8 @@ import source.code.service.Declaration.Category.CategoryCacheKeyGenerator;
 
 @Service
 public class ActivityCategoryCacheKeyGeneratorImpl implements CategoryCacheKeyGenerator<ActivityCategory> {
-  @Override
-  public String generateCacheKey() {
-    return CacheKeys.ACTIVITY_CATEGORIES.name();
-  }
+    @Override
+    public String generateCacheKey() {
+        return CacheKeys.ACTIVITY_CATEGORIES.name();
+    }
 }

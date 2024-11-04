@@ -10,6 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExerciseTipUpdateDto {
-  private short number;
-  private String text;
+    private short number;
+    private String text;
 }

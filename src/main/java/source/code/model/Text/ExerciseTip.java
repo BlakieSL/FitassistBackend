@@ -17,23 +17,23 @@ import source.code.model.Exercise.Exercise;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExerciseTip extends TextBase{
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "exercise_id", nullable = false)
-  private Exercise exercise;
+public class ExerciseTip extends TextBase {
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "exercise_id", nullable = false)
+    private Exercise exercise;
 
-  public static ExerciseTip createWithIdAndExercise(int id, Exercise exercise) {
-    ExerciseTip tip = new ExerciseTip();
-    tip.setId(id);
-    tip.setExercise(exercise);
-    return tip;
-  }
+    public static ExerciseTip createWithIdAndExercise(int id, Exercise exercise) {
+        ExerciseTip tip = new ExerciseTip();
+        tip.setId(id);
+        tip.setExercise(exercise);
+        return tip;
+    }
 
-  public static ExerciseTip createWithNumberAndText(short number, String text) {
-    ExerciseTip tip = new ExerciseTip();
-    tip.setNumber(number);
-    tip.setText(text);
-    return tip;
-  }
+    public static ExerciseTip createWithNumberAndText(short number, String text) {
+        ExerciseTip tip = new ExerciseTip();
+        tip.setNumber(number);
+        tip.setText(text);
+        return tip;
+    }
 }

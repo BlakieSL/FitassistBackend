@@ -10,6 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EquipmentResponseDto {
-  private Integer id;
-  private String name;
+    private Integer id;
+    private String name;
 }

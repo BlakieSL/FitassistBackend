@@ -18,29 +18,24 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TargetMuscle {
-  private static final int NAME_MAX_LENGTH = 50;
+    private static final int NAME_MAX_LENGTH = 50;
+    @OneToMany(mappedBy = "targetMuscle", cascade = CascadeType.REMOVE)
+    private final Set<ExerciseTargetMuscle> exerciseTargetMuscles = new HashSet<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @NotBlank
+    @Size(max = NAME_MAX_LENGTH)
+    private String name;
+    @NotBlank
+    private String iconUrl;
+    @NotBlank
+    private String gradient;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
-
-  @NotBlank
-  @Size(max = NAME_MAX_LENGTH)
-  private String name;
-
-  @NotBlank
-  private String iconUrl;
-
-  @NotBlank
-  private String gradient;
-
-  @OneToMany(mappedBy = "targetMuscle", cascade = CascadeType.REMOVE)
-  private final Set<ExerciseTargetMuscle> exerciseTargetMuscles = new HashSet<>();
-
-  public static TargetMuscle createWithId(int id) {
-    TargetMuscle targetMuscle = new TargetMuscle();
-    targetMuscle.setId(id);
-    return targetMuscle;
-  }
+    public static TargetMuscle createWithId(int id) {
+        TargetMuscle targetMuscle = new TargetMuscle();
+        targetMuscle.setId(id);
+        return targetMuscle;
+    }
 
 }

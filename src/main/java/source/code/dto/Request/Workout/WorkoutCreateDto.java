@@ -14,15 +14,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutCreateDto {
-  private static final int NAME_MAX_LENGTH = 50;
+    private static final int NAME_MAX_LENGTH = 50;
 
-  @NotBlank
-  @Size(max = NAME_MAX_LENGTH)
-  private String name;
+    @NotBlank
+    @Size(max = NAME_MAX_LENGTH)
+    private String name;
 
-  @NotNull
-  @PositiveOrZero
-  private int time;
+    @NotNull
+    @PositiveOrZero
+    private int time;
 
-  private Integer planId;
+    private Integer planId;
 }

@@ -9,12 +9,13 @@ import source.code.dto.Response.Category.CategoryResponseDto;
 import java.util.List;
 
 public interface CategoryService {
-  CategoryResponseDto createCategory(CategoryCreateDto request);
-  void updateCategory(int categoryId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+    CategoryResponseDto createCategory(CategoryCreateDto request);
 
-  void  deleteCategory(int categoryId);
+    void updateCategory(int categoryId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-  List<CategoryResponseDto> getAllCategories();
+    void deleteCategory(int categoryId);
 
-  CategoryResponseDto getCategory(int categoryId);
+    List<CategoryResponseDto> getAllCategories();
+
+    CategoryResponseDto getCategory(int categoryId);
 }

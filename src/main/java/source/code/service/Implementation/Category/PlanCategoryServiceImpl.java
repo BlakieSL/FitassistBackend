@@ -15,19 +15,19 @@ import source.code.service.Declaration.Helpers.ValidationService;
 public class PlanCategoryServiceImpl
         extends GenericCategoryService<PlanCategory>
         implements CategoryService {
-  protected PlanCategoryServiceImpl(ValidationService validationService,
-                                    JsonPatchService jsonPatchService,
-                                    CategoryCacheKeyGenerator<PlanCategory> cacheKeyGenerator,
-                                    ApplicationEventPublisher applicationEventPublisher,
-                                    CacheManager cacheManager,
-                                    PlanCategoryRepository repository,
-                                    PlanCategoryMapper mapper) {
-    super(validationService,
-            jsonPatchService,
-            cacheKeyGenerator,
-            applicationEventPublisher,
-            cacheManager,
-            repository,
-            mapper);
-  }
+    protected PlanCategoryServiceImpl(ValidationService validationService,
+                                      JsonPatchService jsonPatchService,
+                                      CategoryCacheKeyGenerator<PlanCategory> cacheKeyGenerator,
+                                      ApplicationEventPublisher applicationEventPublisher,
+                                      CacheManager cacheManager,
+                                      PlanCategoryRepository repository,
+                                      PlanCategoryMapper mapper) {
+        super(validationService,
+                jsonPatchService,
+                cacheKeyGenerator,
+                applicationEventPublisher,
+                cacheManager,
+                repository,
+                mapper);
+    }
 }

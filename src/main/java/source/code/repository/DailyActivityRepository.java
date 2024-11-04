@@ -7,6 +7,6 @@ import source.code.model.Activity.DailyActivity;
 import java.util.Optional;
 
 public interface DailyActivityRepository extends JpaRepository<DailyActivity, Integer> {
-  @EntityGraph(attributePaths = {"dailyActivityItems"})
-  Optional<DailyActivity> findByUserId(int userId);
+    @EntityGraph(attributePaths = {"dailyActivityItems"})
+    Optional<DailyActivity> findByUserId(int userId);
 }

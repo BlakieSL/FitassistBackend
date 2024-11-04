@@ -13,18 +13,18 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecipeUpdateDto {
-  private static final int NAME_MAX_LENGTH = 100;
-  private static final int DESCRIPTION_MAX_LENGTH = 255;
-  private static final int TEXT_MAX_LENGTH = 2000;
+    private static final int NAME_MAX_LENGTH = 100;
+    private static final int DESCRIPTION_MAX_LENGTH = 255;
+    private static final int TEXT_MAX_LENGTH = 2000;
 
-  @Size(max = NAME_MAX_LENGTH)
-  private String name;
+    @Size(max = NAME_MAX_LENGTH)
+    private String name;
 
-  @Size(max = DESCRIPTION_MAX_LENGTH)
-  private String description;
+    @Size(max = DESCRIPTION_MAX_LENGTH)
+    private String description;
 
-  @Size(max = TEXT_MAX_LENGTH)
-  private String text;
+    @Size(max = TEXT_MAX_LENGTH)
+    private String text;
 
-  private List<Integer> categoryIds;
+    private List<Integer> categoryIds;
 }
