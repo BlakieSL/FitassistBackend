@@ -17,4 +17,8 @@ public class DailyFoodItemCreateDto {
   @Positive
   @Max(value = 100)
   private int amount;
+
+  public static DailyFoodItemCreateDto of(int amount) {
+    return new DailyFoodItemCreateDto(amount);
+  }
 }

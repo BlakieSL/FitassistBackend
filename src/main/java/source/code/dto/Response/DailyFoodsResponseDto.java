@@ -18,7 +18,7 @@ public class DailyFoodsResponseDto {
   private double totalProtein;
   private double totalFat;
 
-  public static DailyFoodsResponseDto createWithFoods(List<FoodCalculatedMacrosResponseDto> foods){
+  public static DailyFoodsResponseDto of(List<FoodCalculatedMacrosResponseDto> foods){
     DailyFoodsResponseDto responseDto = new DailyFoodsResponseDto();
     responseDto.setFoods(foods);
 

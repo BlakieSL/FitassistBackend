@@ -25,7 +25,6 @@ import source.code.service.Declaration.Helpers.RepositoryHelper;
 import source.code.service.Declaration.Helpers.ValidationService;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -134,7 +133,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
           DailyActivity dailyActivity, DailyActivityItem dailyActivityItem)
   {
     if(existByDailyActivityAndItem(dailyActivityItem, dailyActivity)) {
-      saveDailyActivityItem(dailyActivity, dailyActivityItem);
+      dailyActivity.getDailyActivityItems().add(dailyActivityItem);
     }
     updateDailyActivityItemTime(dailyActivityItem, dailyActivityItem.getTime());
   }
@@ -161,12 +160,6 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     DailyActivityItemCreateDto createDto = DailyActivityItemCreateDto
             .of(dailyActivityItem.getTime());
     return jsonPatchService.applyPatch(patch, createDto, DailyActivityItemCreateDto.class);
-  }
-
-  private void saveDailyActivityItem(
-          DailyActivity dailyActivity, DailyActivityItem dailyActivityItem
-  ) {
-    dailyActivity.getDailyActivityItems().add(dailyActivityItem);
   }
 
   private DailyActivityItem getDailyActivityItem(int dailyActivityId, int activityId) {

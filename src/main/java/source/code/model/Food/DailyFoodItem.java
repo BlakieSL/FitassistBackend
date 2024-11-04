@@ -36,22 +36,11 @@ public class DailyFoodItem {
   @JoinColumn(name = "food_id", nullable = false)
   private Food food;
 
-  public static DailyFoodItem createWithIdFoodDailyFood(int id, Food food, DailyFood dailyFood) {
-    DailyFoodItem dailyFoodItem = new DailyFoodItem();
-    dailyFoodItem.setId(id);
-    dailyFoodItem.setFood(food);
-    dailyFoodItem.setDailyFood(dailyFood);
-
-    return dailyFoodItem;
-  }
-
-  public static DailyFoodItem createWithAmountFoodDailyFood(int amount, Food food,
-                                                            DailyFood dailyFood) {
+  public static DailyFoodItem of(int amount, Food food, DailyFood dailyFood) {
     DailyFoodItem dailyFoodItem = new DailyFoodItem();
     dailyFoodItem.setAmount(amount);
     dailyFoodItem.setFood(food);
     dailyFoodItem.setDailyFood(dailyFood);
-
     return dailyFoodItem;
   }
 }
