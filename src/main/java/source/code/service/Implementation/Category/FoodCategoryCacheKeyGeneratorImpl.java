@@ -7,8 +7,8 @@ import source.code.service.Declaration.Category.CategoryCacheKeyGenerator;
 
 @Service
 public class FoodCategoryCacheKeyGeneratorImpl implements CategoryCacheKeyGenerator<FoodCategory> {
-  @Override
-  public String generateCacheKey() {
-    return CacheKeys.FOOD_CATEGORIES.name();
-  }
+    @Override
+    public String generateCacheKey() {
+        return CacheKeys.FOOD_CATEGORIES.name();
+    }
 }

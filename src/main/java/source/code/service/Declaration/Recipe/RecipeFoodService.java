@@ -10,11 +10,13 @@ import source.code.dto.Response.RecipeResponseDto;
 import java.util.List;
 
 public interface RecipeFoodService {
-  void saveFoodToRecipe(int recipeId, int foodId, RecipeFoodCreateDto request);
+    void saveFoodToRecipe(int recipeId, int foodId, RecipeFoodCreateDto request);
 
-  void updateFoodRecipe(int recipeId, int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+    void updateFoodRecipe(int recipeId, int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-  void deleteFoodFromRecipe(int foodId, int recipeId);
-  List<FoodResponseDto> getFoodsByRecipe(int recipeId);
-  List<RecipeResponseDto> getRecipesByFood(int foodId);
+    void deleteFoodFromRecipe(int foodId, int recipeId);
+
+    List<FoodResponseDto> getFoodsByRecipe(int recipeId);
+
+    List<RecipeResponseDto> getRecipesByFood(int foodId);
 }

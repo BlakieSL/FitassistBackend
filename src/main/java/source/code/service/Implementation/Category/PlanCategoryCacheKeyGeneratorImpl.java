@@ -7,8 +7,8 @@ import source.code.service.Declaration.Category.CategoryCacheKeyGenerator;
 
 @Service
 public class PlanCategoryCacheKeyGeneratorImpl implements CategoryCacheKeyGenerator<PlanCategory> {
-  @Override
-  public String generateCacheKey() {
-    return CacheKeys.PLAN_CATEGORIES.name();
-  }
+    @Override
+    public String generateCacheKey() {
+        return CacheKeys.PLAN_CATEGORIES.name();
+    }
 }

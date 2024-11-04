@@ -8,31 +8,32 @@ import source.code.service.Declaration.Text.TextService;
 
 @Service
 public class TextSelectorServiceImpl implements TextSelectorService {
-  private final TextService exerciseInstructionService;
-  private final TextService exerciseTipService;
-  private final TextService recipeInstructionService;
-  private final TextService planInstructionService;
-  public TextSelectorServiceImpl(@Qualifier("exerciseInstructionService")
-                                 TextService exerciseInstructionService,
-                                 @Qualifier("exerciseTipService")
-                                 TextService exerciseTipService,
-                                 @Qualifier("recipeInstructionService")
-                                 TextService recipeInstructionService,
-                                 @Qualifier("planInstructionService")
-                                 TextService planInstructionService) {
-    this.exerciseInstructionService = exerciseInstructionService;
-    this.exerciseTipService = exerciseTipService;
-    this.recipeInstructionService = recipeInstructionService;
-    this.planInstructionService = planInstructionService;
-  }
+    private final TextService exerciseInstructionService;
+    private final TextService exerciseTipService;
+    private final TextService recipeInstructionService;
+    private final TextService planInstructionService;
 
-  @Override
-  public TextService getService(TextType textType) {
-    return switch (textType) {
-      case EXERCISE_INSTRUCTION -> exerciseInstructionService;
-      case EXERCISE_TIP -> exerciseTipService;
-      case RECIPE_INSTRUCTION -> recipeInstructionService;
-      case PLAN_INSTRUCTION -> planInstructionService;
-    };
-  }
+    public TextSelectorServiceImpl(@Qualifier("exerciseInstructionService")
+                                   TextService exerciseInstructionService,
+                                   @Qualifier("exerciseTipService")
+                                   TextService exerciseTipService,
+                                   @Qualifier("recipeInstructionService")
+                                   TextService recipeInstructionService,
+                                   @Qualifier("planInstructionService")
+                                   TextService planInstructionService) {
+        this.exerciseInstructionService = exerciseInstructionService;
+        this.exerciseTipService = exerciseTipService;
+        this.recipeInstructionService = recipeInstructionService;
+        this.planInstructionService = planInstructionService;
+    }
+
+    @Override
+    public TextService getService(TextType textType) {
+        return switch (textType) {
+            case EXERCISE_INSTRUCTION -> exerciseInstructionService;
+            case EXERCISE_TIP -> exerciseTipService;
+            case RECIPE_INSTRUCTION -> recipeInstructionService;
+            case PLAN_INSTRUCTION -> planInstructionService;
+        };
+    }
 }

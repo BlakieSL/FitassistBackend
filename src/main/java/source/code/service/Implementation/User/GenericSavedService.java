@@ -13,76 +13,77 @@ import java.util.List;
 import java.util.function.Function;
 
 public abstract class GenericSavedService<T, U, R> {
-  protected final UserRepository userRepository;
-  protected final JpaRepository<T, Integer> entityRepository;
-  protected final JpaRepository<U, Integer> userEntityRepository;
-  protected final Function<T, R> map;
-  protected final Class<T> entityType;
-  public GenericSavedService(UserRepository userRepository,
-                             JpaRepository<T, Integer> entityRepository,
-                             JpaRepository<U, Integer> userEntityRepository,
-                             Function<T, R> map,
-                             Class<T> entityType) {
-    this.userRepository = userRepository;
-    this.entityRepository = entityRepository;
-    this.userEntityRepository = userEntityRepository;
-    this.map = map;
-    this.entityType = entityType;
-  }
+    protected final UserRepository userRepository;
+    protected final JpaRepository<T, Integer> entityRepository;
+    protected final JpaRepository<U, Integer> userEntityRepository;
+    protected final Function<T, R> map;
+    protected final Class<T> entityType;
 
-  @Transactional
-  public void saveToUser(int userId, int entityId, short type) {
-    if (isAlreadySaved(userId, entityId, type)) {
-      throw new NotUniqueRecordException(
-              "User with id: " + userId
-                      + " already has entity with id: " + entityId
-                      + " and type: " + type);
+    public GenericSavedService(UserRepository userRepository,
+                               JpaRepository<T, Integer> entityRepository,
+                               JpaRepository<U, Integer> userEntityRepository,
+                               Function<T, R> map,
+                               Class<T> entityType) {
+        this.userRepository = userRepository;
+        this.entityRepository = entityRepository;
+        this.userEntityRepository = userEntityRepository;
+        this.map = map;
+        this.entityType = entityType;
     }
 
-    User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RecordNotFoundException(User.class, userId));
+    @Transactional
+    public void saveToUser(int userId, int entityId, short type) {
+        if (isAlreadySaved(userId, entityId, type)) {
+            throw new NotUniqueRecordException(
+                    "User with id: " + userId
+                            + " already has entity with id: " + entityId
+                            + " and type: " + type);
+        }
 
-    T entity = entityRepository.findById(entityId)
-            .orElseThrow(() -> new RecordNotFoundException(entityType, entityId));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RecordNotFoundException(User.class, userId));
 
-    U userEntity = createUserEntity(user, entity, type);
-    userEntityRepository.save(userEntity);
-  }
+        T entity = entityRepository.findById(entityId)
+                .orElseThrow(() -> new RecordNotFoundException(entityType, entityId));
 
-  @Transactional
-  public void deleteFromUser(int userId, int entityId, short type) {
-    U userEntity = findUserEntity(userId, entityId, type);
-    userEntityRepository.delete(userEntity);
-  }
+        U userEntity = createUserEntity(user, entity, type);
+        userEntityRepository.save(userEntity);
+    }
 
-  public List<BaseUserEntity> getAllFromUser(int userId, short type) {
-    return findAllByUserAndType(userId, type).stream()
-            .map(this::extractEntity)
-            .map(entity -> (BaseUserEntity) map.apply(entity))
-            .toList();
-  }
+    @Transactional
+    public void deleteFromUser(int userId, int entityId, short type) {
+        U userEntity = findUserEntity(userId, entityId, type);
+        userEntityRepository.delete(userEntity);
+    }
 
-  public LikesAndSavesResponseDto calculateLikesAndSaves(int entityId) {
-    entityRepository.findById(entityId)
-            .orElseThrow(() -> new RecordNotFoundException(entityType, entityId));
+    public List<BaseUserEntity> getAllFromUser(int userId, short type) {
+        return findAllByUserAndType(userId, type).stream()
+                .map(this::extractEntity)
+                .map(entity -> (BaseUserEntity) map.apply(entity))
+                .toList();
+    }
 
-    long saves = countSaves(entityId);
-    long likes = countLikes(entityId);
+    public LikesAndSavesResponseDto calculateLikesAndSaves(int entityId) {
+        entityRepository.findById(entityId)
+                .orElseThrow(() -> new RecordNotFoundException(entityType, entityId));
 
-    return new LikesAndSavesResponseDto(likes, saves);
-  }
+        long saves = countSaves(entityId);
+        long likes = countLikes(entityId);
 
-  protected abstract boolean isAlreadySaved(int userId, int entityId, short type);
+        return new LikesAndSavesResponseDto(likes, saves);
+    }
 
-  protected abstract U createUserEntity(User user, T entity, short type);
+    protected abstract boolean isAlreadySaved(int userId, int entityId, short type);
 
-  protected abstract U findUserEntity(int userId, int entityId, short type);
+    protected abstract U createUserEntity(User user, T entity, short type);
 
-  protected abstract List<U> findAllByUserAndType(int userId, short type);
+    protected abstract U findUserEntity(int userId, int entityId, short type);
 
-  protected abstract T extractEntity(U userEntity);
+    protected abstract List<U> findAllByUserAndType(int userId, short type);
 
-  protected abstract long countSaves(int entityId);
+    protected abstract T extractEntity(U userEntity);
 
-  protected abstract long countLikes(int entityId);
+    protected abstract long countSaves(int entityId);
+
+    protected abstract long countLikes(int entityId);
 }

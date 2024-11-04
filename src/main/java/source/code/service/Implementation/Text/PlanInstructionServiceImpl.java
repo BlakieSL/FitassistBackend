@@ -21,26 +21,26 @@ public class PlanInstructionServiceImpl
         PlanInstructionUpdateDto, PlanInstructionRepository>
         implements TextService {
 
-  protected PlanInstructionServiceImpl(ValidationService validationService,
-                                       JsonPatchService jsonPatchService,
-                                       TextCacheKeyGenerator<PlanInstruction> textCacheKeyGenerator,
-                                       CacheManager cacheManager,
-                                       ApplicationEventPublisher applicationEventPublisher,
-                                       PlanInstructionRepository repository,
-                                       TextMapper mapper) {
-    super(validationService,
-            jsonPatchService,
-            textCacheKeyGenerator,
-            cacheManager,
-            applicationEventPublisher,
-            repository,
-            mapper::toPlanInstructionResponseDto,
-            mapper::updatePlanInstruction,
-            PlanInstructionUpdateDto.class);
-  }
+    protected PlanInstructionServiceImpl(ValidationService validationService,
+                                         JsonPatchService jsonPatchService,
+                                         TextCacheKeyGenerator<PlanInstruction> textCacheKeyGenerator,
+                                         CacheManager cacheManager,
+                                         ApplicationEventPublisher applicationEventPublisher,
+                                         PlanInstructionRepository repository,
+                                         TextMapper mapper) {
+        super(validationService,
+                jsonPatchService,
+                textCacheKeyGenerator,
+                cacheManager,
+                applicationEventPublisher,
+                repository,
+                mapper::toPlanInstructionResponseDto,
+                mapper::updatePlanInstruction,
+                PlanInstructionUpdateDto.class);
+    }
 
-  @Override
-  protected List<PlanInstruction> getAllByParentId(int planId) {
-    return repository.getAllByPlanId(planId);
-  }
+    @Override
+    protected List<PlanInstruction> getAllByParentId(int planId) {
+        return repository.getAllByPlanId(planId);
+    }
 }

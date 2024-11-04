@@ -12,32 +12,32 @@ import source.code.service.Declaration.Helpers.RepositoryHelper;
 
 @Mapper(componentModel = "spring")
 public abstract class WorkoutMapper {
-  @Autowired
-  private PlanRepository planRepository;
-  @Autowired
-  private RepositoryHelper repositoryHelper;
+    @Autowired
+    private PlanRepository planRepository;
+    @Autowired
+    private RepositoryHelper repositoryHelper;
 
-  @Mapping(target = "planId", source = "plan", qualifiedByName = "mapPlanToPlanId")
-  public abstract WorkoutResponseDto toResponseDto(Workout workout);
+    @Mapping(target = "planId", source = "plan", qualifiedByName = "mapPlanToPlanId")
+    public abstract WorkoutResponseDto toResponseDto(Workout workout);
 
-  @Mapping(target = "plan", source = "planId", qualifiedByName = "mapPlanIdToPlan")
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "workoutSets", ignore = true)
-  public abstract Workout toEntity(WorkoutCreateDto createDto);
+    @Mapping(target = "plan", source = "planId", qualifiedByName = "mapPlanIdToPlan")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "workoutSets", ignore = true)
+    public abstract Workout toEntity(WorkoutCreateDto createDto);
 
-  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "workoutSets", ignore = true)
-  @Mapping(target = "plan", ignore = true)
-  public abstract void updateWorkout(@MappingTarget Workout workout, WorkoutUpdateDto updateDto);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "workoutSets", ignore = true)
+    @Mapping(target = "plan", ignore = true)
+    public abstract void updateWorkout(@MappingTarget Workout workout, WorkoutUpdateDto updateDto);
 
-  @Named("mapPlanToPlanId")
-  protected int mapPlanToPlanId(Plan plan) {
-    return plan.getId();
-  }
+    @Named("mapPlanToPlanId")
+    protected int mapPlanToPlanId(Plan plan) {
+        return plan.getId();
+    }
 
-  @Named("mapPlanIdToPlan")
-  protected Plan mapPlanIdToPlan(int planId) {
-    return repositoryHelper.find(planRepository, Plan.class, planId);
-  }
+    @Named("mapPlanIdToPlan")
+    protected Plan mapPlanIdToPlan(int planId) {
+        return repositoryHelper.find(planRepository, Plan.class, planId);
+    }
 }

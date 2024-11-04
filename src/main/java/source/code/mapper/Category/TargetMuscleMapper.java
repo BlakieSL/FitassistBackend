@@ -9,15 +9,15 @@ import source.code.model.Exercise.TargetMuscle;
 @Mapper(componentModel = "spring")
 public abstract class TargetMuscleMapper implements BaseMapper<TargetMuscle> {
 
-  public abstract CategoryResponseDto toResponseDto(TargetMuscle targetMuscle);
+    public abstract CategoryResponseDto toResponseDto(TargetMuscle targetMuscle);
 
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "exerciseTargetMuscles", ignore = true)
-  public abstract TargetMuscle toEntity(CategoryCreateDto request);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "exerciseTargetMuscles", ignore = true)
+    public abstract TargetMuscle toEntity(CategoryCreateDto request);
 
-  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "exerciseTargetMuscles", ignore = true)
-  public abstract void updateEntityFromDto(@MappingTarget TargetMuscle category,
-                                           CategoryUpdateDto request);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "exerciseTargetMuscles", ignore = true)
+    public abstract void updateEntityFromDto(@MappingTarget TargetMuscle category,
+                                             CategoryUpdateDto request);
 }

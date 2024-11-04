@@ -18,22 +18,17 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecipeCategory {
-  private static final int NAME_MAX_LENGTH = 50;
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
-
-  @NotBlank
-  @Size(max = NAME_MAX_LENGTH)
-  private String name;
-
-  @NotBlank
-  private String iconUrl;
-
-  @NotBlank
-  private String gradient;
-
-  @OneToMany(mappedBy = "recipeCategory", cascade = CascadeType.ALL)
-  private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();
+    private static final int NAME_MAX_LENGTH = 50;
+    @OneToMany(mappedBy = "recipeCategory", cascade = CascadeType.ALL)
+    private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @NotBlank
+    @Size(max = NAME_MAX_LENGTH)
+    private String name;
+    @NotBlank
+    private String iconUrl;
+    @NotBlank
+    private String gradient;
 }

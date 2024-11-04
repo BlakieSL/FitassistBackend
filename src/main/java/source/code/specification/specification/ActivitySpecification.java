@@ -16,39 +16,39 @@ import java.util.Optional;
 
 public class ActivitySpecification extends BaseSpecification<Activity> {
 
-  private final Map<String, TriFunction<Root<Activity>,
-          CriteriaQuery<?>, CriteriaBuilder, Predicate>> fieldHandlers;
+    private final Map<String, TriFunction<Root<Activity>,
+            CriteriaQuery<?>, CriteriaBuilder, Predicate>> fieldHandlers;
 
-  public ActivitySpecification(@NonNull FilterCriteria criteria) {
-    super(criteria);
+    public ActivitySpecification(@NonNull FilterCriteria criteria) {
+        super(criteria);
 
-    fieldHandlers = Map.of(
-            ActivityField.CATEGORY.name(),
-            (root, query, builder) ->
-                    handleEntityProperty(root, ActivityField.CATEGORY.getFieldName(), builder),
+        fieldHandlers = Map.of(
+                ActivityField.CATEGORY.name(),
+                (root, query, builder) ->
+                        handleEntityProperty(root, ActivityField.CATEGORY.getFieldName(), builder),
 
-            ActivityField.MET.name(),
-            (root, query, builder) ->
+                ActivityField.MET.name(),
+                (root, query, builder) ->
 
-                    handleNumericProperty(root.get(ActivityField.MET.getFieldName()), builder),
+                        handleNumericProperty(root.get(ActivityField.MET.getFieldName()), builder),
 
-            LikesAndSaves.LIKES.name(),
-            (root, query, builder) ->
-                    handleLikesProperty(root, LikesAndSaves.USER_ACTIVITIES.getFieldName(), query, builder),
+                LikesAndSaves.LIKES.name(),
+                (root, query, builder) ->
+                        handleLikesProperty(root, LikesAndSaves.USER_ACTIVITIES.getFieldName(), query, builder),
 
-            LikesAndSaves.SAVES.name(),
-            (root, query, builder) ->
-                    handleLikesProperty(root, LikesAndSaves.USER_ACTIVITIES.getFieldName(), query, builder)
-    );
-  }
+                LikesAndSaves.SAVES.name(),
+                (root, query, builder) ->
+                        handleLikesProperty(root, LikesAndSaves.USER_ACTIVITIES.getFieldName(), query, builder)
+        );
+    }
 
-  @Override
-  public Predicate toPredicate(@NonNull Root<Activity> root, @NonNull CriteriaQuery<?> query,
-                               @NonNull CriteriaBuilder builder) {
-    return Optional.ofNullable(fieldHandlers.get(criteria.getFilterKey()))
-            .map(handler -> handler.apply(root, query, builder))
-            .orElseThrow(() -> new IllegalStateException(
-                    "Unexpected filter key: " + criteria.getFilterKey()));
-  }
+    @Override
+    public Predicate toPredicate(@NonNull Root<Activity> root, @NonNull CriteriaQuery<?> query,
+                                 @NonNull CriteriaBuilder builder) {
+        return Optional.ofNullable(fieldHandlers.get(criteria.getFilterKey()))
+                .map(handler -> handler.apply(root, query, builder))
+                .orElseThrow(() -> new IllegalStateException(
+                        "Unexpected filter key: " + criteria.getFilterKey()));
+    }
 
 }

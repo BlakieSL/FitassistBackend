@@ -21,26 +21,26 @@ public class ExerciseInstructionServiceImpl
         ExerciseInstructionUpdateDto, ExerciseInstructionRepository>
         implements TextService {
 
-  protected ExerciseInstructionServiceImpl(ValidationService validationService,
-                                           JsonPatchService jsonPatchService,
-                                           TextCacheKeyGenerator<ExerciseInstruction> textCacheKeyGenerator,
-                                           CacheManager cacheManager,
-                                           ApplicationEventPublisher applicationEventPublisher,
-                                           ExerciseInstructionRepository repository,
-                                           TextMapper mapper) {
-    super(validationService,
-            jsonPatchService,
-            textCacheKeyGenerator,
-            cacheManager,
-            applicationEventPublisher,
-            repository,
-            mapper::toExerciseInstructionResponseDto,
-            mapper::updateExerciseInstruction,
-            ExerciseInstructionUpdateDto.class);
-  }
+    protected ExerciseInstructionServiceImpl(ValidationService validationService,
+                                             JsonPatchService jsonPatchService,
+                                             TextCacheKeyGenerator<ExerciseInstruction> textCacheKeyGenerator,
+                                             CacheManager cacheManager,
+                                             ApplicationEventPublisher applicationEventPublisher,
+                                             ExerciseInstructionRepository repository,
+                                             TextMapper mapper) {
+        super(validationService,
+                jsonPatchService,
+                textCacheKeyGenerator,
+                cacheManager,
+                applicationEventPublisher,
+                repository,
+                mapper::toExerciseInstructionResponseDto,
+                mapper::updateExerciseInstruction,
+                ExerciseInstructionUpdateDto.class);
+    }
 
-  @Override
-  protected List<ExerciseInstruction> getAllByParentId(int exerciseId) {
-    return repository.getAllByExerciseId(exerciseId);
-  }
+    @Override
+    protected List<ExerciseInstruction> getAllByParentId(int exerciseId) {
+        return repository.getAllByExerciseId(exerciseId);
+    }
 }

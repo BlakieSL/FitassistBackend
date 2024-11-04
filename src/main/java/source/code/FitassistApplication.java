@@ -9,8 +9,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class FitassistApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(FitassistApplication.class, args);
-  }
+    public static void main(String[] args) {
+        SpringApplication.run(FitassistApplication.class, args);
+    }
 
 }

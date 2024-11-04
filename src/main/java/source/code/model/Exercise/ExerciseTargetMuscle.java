@@ -14,40 +14,40 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExerciseTargetMuscle {
-  public static final String TARGET_MUSCLE = "targetMuscle";
+    public static final String TARGET_MUSCLE = "targetMuscle";
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "exercise_id", nullable = false)
-  private Exercise exercise;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "exercise_id", nullable = false)
+    private Exercise exercise;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "target_muscle_id", nullable = false)
-  private TargetMuscle targetMuscle;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "target_muscle_id", nullable = false)
+    private TargetMuscle targetMuscle;
 
-  @NotNull
-  @Column(nullable = false)
-  private int priority;
+    @NotNull
+    @Column(nullable = false)
+    private int priority;
 
-  public static ExerciseTargetMuscle createWithTargetMuscle(
-          TargetMuscle targetMuscle) {
-    ExerciseTargetMuscle exerciseTargetMuscle = new ExerciseTargetMuscle();
-    exerciseTargetMuscle.setTargetMuscle(targetMuscle);
+    public static ExerciseTargetMuscle createWithTargetMuscle(
+            TargetMuscle targetMuscle) {
+        ExerciseTargetMuscle exerciseTargetMuscle = new ExerciseTargetMuscle();
+        exerciseTargetMuscle.setTargetMuscle(targetMuscle);
 
-    return exerciseTargetMuscle;
-  }
+        return exerciseTargetMuscle;
+    }
 
-  public static ExerciseTargetMuscle createWithIdAndExerciseAndTurgetMuscle(
-          int id, Exercise exercise, TargetMuscle targetMuscle) {
-    ExerciseTargetMuscle association = new ExerciseTargetMuscle();
-    association.setId(id);
-    association.setExercise(exercise);
-    association.setTargetMuscle(targetMuscle);
-    return association;
-  }
+    public static ExerciseTargetMuscle createWithIdAndExerciseAndTurgetMuscle(
+            int id, Exercise exercise, TargetMuscle targetMuscle) {
+        ExerciseTargetMuscle association = new ExerciseTargetMuscle();
+        association.setId(id);
+        association.setExercise(exercise);
+        association.setTargetMuscle(targetMuscle);
+        return association;
+    }
 }

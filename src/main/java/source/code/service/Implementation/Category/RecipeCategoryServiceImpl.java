@@ -16,19 +16,19 @@ public class RecipeCategoryServiceImpl
         extends GenericCategoryService<RecipeCategory>
         implements CategoryService {
 
-  protected RecipeCategoryServiceImpl(ValidationService validationService,
-                                      JsonPatchService jsonPatchService,
-                                      CategoryCacheKeyGenerator<RecipeCategory> cacheKeyGenerator,
-                                      ApplicationEventPublisher applicationEventPublisher,
-                                      CacheManager cacheManager,
-                                      RecipeCategoryRepository repository,
-                                      RecipeCategoryMapper mapper) {
-    super(validationService,
-            jsonPatchService,
-            cacheKeyGenerator,
-            applicationEventPublisher,
-            cacheManager,
-            repository,
-            mapper);
-  }
+    protected RecipeCategoryServiceImpl(ValidationService validationService,
+                                        JsonPatchService jsonPatchService,
+                                        CategoryCacheKeyGenerator<RecipeCategory> cacheKeyGenerator,
+                                        ApplicationEventPublisher applicationEventPublisher,
+                                        CacheManager cacheManager,
+                                        RecipeCategoryRepository repository,
+                                        RecipeCategoryMapper mapper) {
+        super(validationService,
+                jsonPatchService,
+                cacheKeyGenerator,
+                applicationEventPublisher,
+                cacheManager,
+                repository,
+                mapper);
+    }
 }

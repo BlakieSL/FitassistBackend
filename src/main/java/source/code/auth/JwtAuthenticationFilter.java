@@ -21,33 +21,33 @@ import java.io.IOException;
 
 public class JwtAuthenticationFilter extends HttpFilter {
 
-  private static final RequestMatcher defaultRequestMatcher = new AntPathRequestMatcher("/api/users/login", "POST");
-  private final AuthenticationManager authenticationManager;
-  private final AuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
-  private final AuthenticationSuccessHandler successHandler;
+    private static final RequestMatcher defaultRequestMatcher = new AntPathRequestMatcher("/api/users/login", "POST");
+    private final AuthenticationManager authenticationManager;
+    private final AuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
+    private final AuthenticationSuccessHandler successHandler;
 
-  public JwtAuthenticationFilter(
-          AuthenticationManager authenticationManager, JwtService jwtService, UserServiceImpl userServiceImpl) {
-    this.authenticationManager = authenticationManager;
-    successHandler = new JwtAuthenticationSuccessHandler(jwtService, userServiceImpl);
-  }
-
-  @Override
-  protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-    if (!defaultRequestMatcher.matches(request)) {
-      chain.doFilter(request, response);
-    } else {
-      try {
-        JwtAuthenticationToken jwtAuthentication = new ObjectMapper().readValue(request.getInputStream(), JwtAuthenticationToken.class);
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(jwtAuthentication.username(), jwtAuthentication.password());
-        Authentication authenticationResult = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        successHandler.onAuthenticationSuccess(request, response, authenticationResult);
-      } catch (AuthenticationException ex) {
-        failureHandler.onAuthenticationFailure(request, response, ex);
-      }
+    public JwtAuthenticationFilter(
+            AuthenticationManager authenticationManager, JwtService jwtService, UserServiceImpl userServiceImpl) {
+        this.authenticationManager = authenticationManager;
+        successHandler = new JwtAuthenticationSuccessHandler(jwtService, userServiceImpl);
     }
-  }
 
-  private record JwtAuthenticationToken(String username, String password) {
-  }
+    @Override
+    protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+        if (!defaultRequestMatcher.matches(request)) {
+            chain.doFilter(request, response);
+        } else {
+            try {
+                JwtAuthenticationToken jwtAuthentication = new ObjectMapper().readValue(request.getInputStream(), JwtAuthenticationToken.class);
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(jwtAuthentication.username(), jwtAuthentication.password());
+                Authentication authenticationResult = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+                successHandler.onAuthenticationSuccess(request, response, authenticationResult);
+            } catch (AuthenticationException ex) {
+                failureHandler.onAuthenticationFailure(request, response, ex);
+            }
+        }
+    }
+
+    private record JwtAuthenticationToken(String username, String password) {
+    }
 }

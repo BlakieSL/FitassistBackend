@@ -12,9 +12,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PasswordLowercaseDomain {
-  String message() default "{com.example.lab10.PasswordLowercaseDomain.message}";
+    String message() default "{com.example.lab10.PasswordLowercaseDomain.message}";
 
-  Class<?>[] groups() default {};
+    Class<?>[] groups() default {};
 
-  Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default {};
 }

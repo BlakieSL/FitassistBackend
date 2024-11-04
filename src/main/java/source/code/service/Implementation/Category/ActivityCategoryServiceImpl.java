@@ -16,19 +16,19 @@ public class ActivityCategoryServiceImpl
         extends GenericCategoryService<ActivityCategory>
         implements CategoryService {
 
-  protected ActivityCategoryServiceImpl(ValidationService validationService,
-                                        JsonPatchService jsonPatchService,
-                                        CategoryCacheKeyGenerator<ActivityCategory> cacheKeyGenerator,
-                                        ApplicationEventPublisher applicationEventPublisher,
-                                        CacheManager cacheManager,
-                                        ActivityCategoryRepository repository,
-                                        ActivityCategoryMapper mapper) {
-    super(validationService,
-            jsonPatchService,
-            cacheKeyGenerator,
-            applicationEventPublisher,
-            cacheManager,
-            repository,
-            mapper);
-  }
+    protected ActivityCategoryServiceImpl(ValidationService validationService,
+                                          JsonPatchService jsonPatchService,
+                                          CategoryCacheKeyGenerator<ActivityCategory> cacheKeyGenerator,
+                                          ApplicationEventPublisher applicationEventPublisher,
+                                          CacheManager cacheManager,
+                                          ActivityCategoryRepository repository,
+                                          ActivityCategoryMapper mapper) {
+        super(validationService,
+                jsonPatchService,
+                cacheKeyGenerator,
+                applicationEventPublisher,
+                cacheManager,
+                repository,
+                mapper);
+    }
 }

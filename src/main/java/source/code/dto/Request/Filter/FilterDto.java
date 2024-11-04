@@ -15,11 +15,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FilterDto {
-  @NotNull
-  private List<FilterCriteria> filterCriteria;
-  private FilterDataOption dataOption;
+    @NotNull
+    private List<FilterCriteria> filterCriteria;
+    private FilterDataOption dataOption;
 
-  public static FilterDto createWithSingleCriteria(FilterCriteria filterCriteria) {
-    return new FilterDto(List.of(filterCriteria), FilterDataOption.AND);
-  }
+    public static FilterDto createWithSingleCriteria(FilterCriteria filterCriteria) {
+        return new FilterDto(List.of(filterCriteria), FilterDataOption.AND);
+    }
 }

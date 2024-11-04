@@ -6,10 +6,10 @@ import source.code.dto.Request.User.UserCreateDto;
 
 @Getter
 public class UserRegisterEvent extends ApplicationEvent {
-  private final UserCreateDto userCreateDto;
+    private final UserCreateDto userCreateDto;
 
-  public UserRegisterEvent(Object source, UserCreateDto userCreateDto) {
-    super(source);
-    this.userCreateDto = userCreateDto;
-  }
+    public UserRegisterEvent(Object source, UserCreateDto userCreateDto) {
+        super(source);
+        this.userCreateDto = userCreateDto;
+    }
 }

@@ -12,16 +12,16 @@ import java.util.List;
 
 public interface PlanRepository
         extends JpaRepository<Plan, Integer>, JpaSpecificationExecutor<Plan> {
-  @EntityGraph(value = "Plan.withoutAssociations")
-  @Query("SELECT p FROM Plan p")
-  List<Plan> findAllWithoutAssociations();
+    @EntityGraph(value = "Plan.withoutAssociations")
+    @Query("SELECT p FROM Plan p")
+    List<Plan> findAllWithoutAssociations();
 
-  @Query("SELECT DISTINCT new source.code.dto.Response.Category.EquipmentResponseDto(e.id, e.name) " +
-          "FROM Equipment e " +
-          "JOIN e.exercises ex " +
-          "JOIN ex.workoutSets ws " +
-          "JOIN ws.workout w " +
-          "JOIN w.plan p " +
-          "WHERE p.id = :planId")
-  List<EquipmentResponseDto> findAllEquipmentByPlanId(@Param("planId") int planId);
+    @Query("SELECT DISTINCT new source.code.dto.Response.Category.EquipmentResponseDto(e.id, e.name) " +
+            "FROM Equipment e " +
+            "JOIN e.exercises ex " +
+            "JOIN ex.workoutSets ws " +
+            "JOIN ws.workout w " +
+            "JOIN w.plan p " +
+            "WHERE p.id = :planId")
+    List<EquipmentResponseDto> findAllEquipmentByPlanId(@Param("planId") int planId);
 }

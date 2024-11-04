@@ -13,12 +13,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DailyFoodItemCreateDto {
-  @NotNull
-  @Positive
-  @Max(value = 100)
-  private int amount;
+    @NotNull
+    @Positive
+    @Max(value = 100)
+    private int amount;
 
-  public static DailyFoodItemCreateDto of(int amount) {
-    return new DailyFoodItemCreateDto(amount);
-  }
+    public static DailyFoodItemCreateDto of(int amount) {
+        return new DailyFoodItemCreateDto(amount);
+    }
 }

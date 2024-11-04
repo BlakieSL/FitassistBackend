@@ -12,10 +12,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlanInstructionCreateDto {
-  @NotNull
-  private short number;
-  @NotBlank
-  private String title;
-  @NotBlank
-  private String text;
+    @NotNull
+    private short number;
+    @NotBlank
+    private String title;
+    @NotBlank
+    private String text;
 }

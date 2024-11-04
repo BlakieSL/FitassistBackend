@@ -5,9 +5,10 @@ import org.springframework.context.ApplicationEvent;
 
 @Getter
 public class TextClearCacheEvent extends ApplicationEvent {
-  private final String cacheKey;
-  public TextClearCacheEvent(Object source, String cacheKey) {
-    super(source);
-    this.cacheKey = cacheKey;
-  }
+    private final String cacheKey;
+
+    public TextClearCacheEvent(Object source, String cacheKey) {
+        super(source);
+        this.cacheKey = cacheKey;
+    }
 }

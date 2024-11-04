@@ -19,52 +19,52 @@ public class UserActivityServiceImpl
         extends GenericSavedService<Activity, UserActivity, ActivityResponseDto>
         implements SavedService {
 
-  public UserActivityServiceImpl(UserActivityRepository userActivityRepository,
-                                 ActivityRepository activityRepository,
-                                 UserRepository userRepository,
-                                 ActivityMapper activityMapper) {
-    super(userRepository,
-            activityRepository,
-            userActivityRepository,
-            activityMapper::toResponseDto,
-            Activity.class);
-  }
+    public UserActivityServiceImpl(UserActivityRepository userActivityRepository,
+                                   ActivityRepository activityRepository,
+                                   UserRepository userRepository,
+                                   ActivityMapper activityMapper) {
+        super(userRepository,
+                activityRepository,
+                userActivityRepository,
+                activityMapper::toResponseDto,
+                Activity.class);
+    }
 
-  @Override
-  protected boolean isAlreadySaved(int userId, int activityId, short type) {
-    return ((UserActivityRepository) userEntityRepository)
-            .existsByUserIdAndActivityIdAndType(userId, activityId, type);
-  }
+    @Override
+    protected boolean isAlreadySaved(int userId, int activityId, short type) {
+        return ((UserActivityRepository) userEntityRepository)
+                .existsByUserIdAndActivityIdAndType(userId, activityId, type);
+    }
 
-  @Override
-  protected UserActivity createUserEntity(User user, Activity entity, short type) {
-    return UserActivity.createWithUserActivityType(user, entity, type);
-  }
+    @Override
+    protected UserActivity createUserEntity(User user, Activity entity, short type) {
+        return UserActivity.createWithUserActivityType(user, entity, type);
+    }
 
-  @Override
-  protected UserActivity findUserEntity(int userId, int activityId, short type) {
-    return ((UserActivityRepository) userEntityRepository)
-            .findByUserIdAndActivityIdAndType(userId, activityId, type)
-            .orElseThrow(() -> new RecordNotFoundException(UserActivity.class, userId, activityId, type));
-  }
+    @Override
+    protected UserActivity findUserEntity(int userId, int activityId, short type) {
+        return ((UserActivityRepository) userEntityRepository)
+                .findByUserIdAndActivityIdAndType(userId, activityId, type)
+                .orElseThrow(() -> new RecordNotFoundException(UserActivity.class, userId, activityId, type));
+    }
 
-  @Override
-  protected List<UserActivity> findAllByUserAndType(int userId, short type) {
-    return ((UserActivityRepository) userEntityRepository).findByUserIdAndType(userId, type);
-  }
+    @Override
+    protected List<UserActivity> findAllByUserAndType(int userId, short type) {
+        return ((UserActivityRepository) userEntityRepository).findByUserIdAndType(userId, type);
+    }
 
-  @Override
-  protected Activity extractEntity(UserActivity userActivity) {
-    return userActivity.getActivity();
-  }
+    @Override
+    protected Activity extractEntity(UserActivity userActivity) {
+        return userActivity.getActivity();
+    }
 
-  @Override
-  protected long countSaves(int activityId) {
-    return ((UserActivityRepository) userEntityRepository).countByActivityIdAndType(activityId, (short) 1);
-  }
+    @Override
+    protected long countSaves(int activityId) {
+        return ((UserActivityRepository) userEntityRepository).countByActivityIdAndType(activityId, (short) 1);
+    }
 
-  @Override
-  protected long countLikes(int activityId) {
-    return ((UserActivityRepository) userEntityRepository).countByActivityIdAndType(activityId, (short) 2);
-  }
+    @Override
+    protected long countLikes(int activityId) {
+        return ((UserActivityRepository) userEntityRepository).countByActivityIdAndType(activityId, (short) 2);
+    }
 }

@@ -7,13 +7,13 @@ import source.code.service.Declaration.Text.TextCacheKeyGenerator;
 
 @Service
 public class PlanInstructionTextCacheKeyGeneratorImpl implements TextCacheKeyGenerator<PlanInstruction> {
-  @Override
-  public String generateCacheKey(PlanInstruction entity) {
-    return CacheKeys.PLAN_INSTRUCTION.toString() + entity.getPlan().getId();
-  }
+    @Override
+    public String generateCacheKey(PlanInstruction entity) {
+        return CacheKeys.PLAN_INSTRUCTION.toString() + entity.getPlan().getId();
+    }
 
-  @Override
-  public String generateCacheKeyForParent(int parentId) {
-    return CacheKeys.PLAN_INSTRUCTION.toString() + parentId;
-  }
+    @Override
+    public String generateCacheKeyForParent(int parentId) {
+        return CacheKeys.PLAN_INSTRUCTION.toString() + parentId;
+    }
 }

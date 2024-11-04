@@ -16,33 +16,33 @@ import source.code.model.Food.Food;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecipeFood {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-  @NotNull
-  @Positive
-  @Column(nullable = false)
-  private int amount;
+    @NotNull
+    @Positive
+    @Column(nullable = false)
+    private int amount;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "recipe_id", nullable = false)
-  private Recipe recipe;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "recipe_id", nullable = false)
+    private Recipe recipe;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "food_id", nullable = false)
-  private Food food;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "food_id", nullable = false)
+    private Food food;
 
-  public static RecipeFood createWithAmountRecipeFood(
-          int amount, Recipe recipe, Food food) {
+    public static RecipeFood createWithAmountRecipeFood(
+            int amount, Recipe recipe, Food food) {
 
-    RecipeFood recipeFood = new RecipeFood();
-    recipeFood.setAmount(amount);
-    recipeFood.setRecipe(recipe);
-    recipeFood.setFood(food);
+        RecipeFood recipeFood = new RecipeFood();
+        recipeFood.setAmount(amount);
+        recipeFood.setRecipe(recipe);
+        recipeFood.setFood(food);
 
-    return recipeFood;
-  }
+        return recipeFood;
+    }
 }

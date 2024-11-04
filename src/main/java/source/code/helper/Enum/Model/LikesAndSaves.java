@@ -1,25 +1,25 @@
 package source.code.helper.Enum.Model;
 
 public enum LikesAndSaves {
-  LIKES,
-  SAVES,
-  USER_ACTIVITIES("userActivities"),
-  USER_EXERCISES("userExercises"),
-  USER_FOODS("userFoods"),
-  USER_RECIPES("userRecipes"),
-  USER_PLANS("userPlans");
+    LIKES,
+    SAVES,
+    USER_ACTIVITIES("userActivities"),
+    USER_EXERCISES("userExercises"),
+    USER_FOODS("userFoods"),
+    USER_RECIPES("userRecipes"),
+    USER_PLANS("userPlans");
 
-  private String fieldName;
+    private String fieldName;
 
-  LikesAndSaves(String fieldName) {
-    this.fieldName = fieldName;
-  }
+    LikesAndSaves(String fieldName) {
+        this.fieldName = fieldName;
+    }
 
-  LikesAndSaves() {
+    LikesAndSaves() {
 
-  }
+    }
 
-  public String getFieldName() {
-    return fieldName;
-  }
+    public String getFieldName() {
+        return fieldName;
+    }
 }

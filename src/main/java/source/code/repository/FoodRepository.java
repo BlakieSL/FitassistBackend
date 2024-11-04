@@ -10,8 +10,9 @@ import java.util.List;
 
 public interface FoodRepository
         extends JpaRepository<Food, Integer>, JpaSpecificationExecutor<Food> {
-  List<Food> findAllByFoodCategory_Id(int categoryId);
-  @EntityGraph(value = "Food.withoutAssociations")
-  @Query("SELECT f FROM Food f")
-  List<Food> findAllWithoutAssociations();
+    List<Food> findAllByFoodCategory_Id(int categoryId);
+
+    @EntityGraph(value = "Food.withoutAssociations")
+    @Query("SELECT f FROM Food f")
+    List<Food> findAllWithoutAssociations();
 }

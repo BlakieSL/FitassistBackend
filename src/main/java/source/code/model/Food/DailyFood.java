@@ -19,36 +19,33 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DailyFood {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+    @OneToMany(mappedBy = "dailyFood",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+            orphanRemoval = true)
+    private final List<DailyFoodItem> dailyFoodItems = new ArrayList<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @NotNull
+    @Column(nullable = false)
+    private LocalDate date;
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-  @NotNull
-  @Column(nullable = false)
-  private LocalDate date;
+    public static DailyFood createForToday(User user) {
+        DailyFood dailyFood = new DailyFood();
+        dailyFood.setDate(LocalDate.now());
+        dailyFood.setUser(user);
 
-  @OneToOne
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user;
+        return dailyFood;
+    }
 
-  @OneToMany(mappedBy = "dailyFood",
-          cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
-          orphanRemoval = true  )
-  private final List<DailyFoodItem> dailyFoodItems = new ArrayList<>();
+    public static DailyFood createWithIdUser(int id, User user) {
+        DailyFood dailyFood = new DailyFood();
+        dailyFood.setId(id);
+        dailyFood.setUser(user);
 
-  public static DailyFood createForToday(User user) {
-    DailyFood dailyFood = new DailyFood();
-    dailyFood.setDate(LocalDate.now());
-    dailyFood.setUser(user);
-
-    return dailyFood;
-  }
-
-  public static DailyFood createWithIdUser(int id, User user) {
-    DailyFood dailyFood = new DailyFood();
-    dailyFood.setId(id);
-    dailyFood.setUser(user);
-
-    return dailyFood;
-  }
+        return dailyFood;
+    }
 }

@@ -14,23 +14,23 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Designation {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-  @NotNull
-  @Column(nullable = false)
-  private String tableName;
+    @NotNull
+    @Column(nullable = false)
+    private String tableName;
 
-  @NotNull
-  @Column(nullable = false)
-  private String columnName;
+    @NotNull
+    @Column(nullable = false)
+    private String columnName;
 
-  @NotNull
-  @Column(nullable = false)
-  private short shortValue;
+    @NotNull
+    @Column(nullable = false)
+    private short shortValue;
 
-  @NotNull
-  @Column(nullable = false)
-  private String description;
+    @NotNull
+    @Column(nullable = false)
+    private String description;
 }

@@ -8,20 +8,20 @@ import lombok.*;
 @NoArgsConstructor
 @Data
 public class ActivityResponseDto {
-  private Integer id;
-  private String name;
-  private double met;
-  private String categoryName;
-  private int categoryId;
+    private Integer id;
+    private String name;
+    private double met;
+    private String categoryName;
+    private int categoryId;
 
-  public static ActivityResponseDto createWithIdCategoryNameCategoryId(
-          int id, String categoryName, int categoryId) {
+    public static ActivityResponseDto createWithIdCategoryNameCategoryId(
+            int id, String categoryName, int categoryId) {
 
-    ActivityResponseDto activityResponseDto = new ActivityResponseDto();
-    activityResponseDto.setId(id);
-    activityResponseDto.setCategoryName(categoryName);
-    activityResponseDto.setCategoryId(categoryId);
+        ActivityResponseDto activityResponseDto = new ActivityResponseDto();
+        activityResponseDto.setId(id);
+        activityResponseDto.setCategoryName(categoryName);
+        activityResponseDto.setCategoryId(categoryId);
 
-    return activityResponseDto;
-  }
+        return activityResponseDto;
+    }
 }

@@ -12,9 +12,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PasswordUppercaseDomain {
-  String message() default "{com.example.lab10.PasswordUppercaseDomain.message}";
+    String message() default "{com.example.lab10.PasswordUppercaseDomain.message}";
 
-  Class<?>[] groups() default {};
+    Class<?>[] groups() default {};
 
-  Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default {};
 }

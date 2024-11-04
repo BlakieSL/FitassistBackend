@@ -8,24 +8,24 @@ import java.util.Objects;
 
 @Service
 public class CacheServiceImpl implements CacheService {
-  private final CacheManager cacheManager;
+    private final CacheManager cacheManager;
 
-  public CacheServiceImpl(CacheManager cacheManager) {
-    this.cacheManager = cacheManager;
-  }
+    public CacheServiceImpl(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+    }
 
-  @Override
-  public void evictCache(String cacheName, Object key) {
-      Objects.requireNonNull(cacheManager.getCache(cacheName)).evict(key);
-  }
+    @Override
+    public void evictCache(String cacheName, Object key) {
+        Objects.requireNonNull(cacheManager.getCache(cacheName)).evict(key);
+    }
 
-  @Override
-  public void clearCache(String cacheName) {
-      Objects.requireNonNull(cacheManager.getCache(cacheName)).clear();
-  }
+    @Override
+    public void clearCache(String cacheName) {
+        Objects.requireNonNull(cacheManager.getCache(cacheName)).clear();
+    }
 
-  @Override
-  public void putCache(String cacheName, Object key, Object cachedData) {
-    Objects.requireNonNull(cacheManager.getCache(cacheName)).put(key, cachedData);
-  }
+    @Override
+    public void putCache(String cacheName, Object key, Object cachedData) {
+        Objects.requireNonNull(cacheManager.getCache(cacheName)).put(key, cachedData);
+    }
 }
