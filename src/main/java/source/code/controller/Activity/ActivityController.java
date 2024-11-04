@@ -38,7 +38,8 @@ public class ActivityController {
   }
 
   @GetMapping("/categories/{categoryId}/")
-  public ResponseEntity<List<ActivityResponseDto>> getActivitiesByCategory(@PathVariable int categoryId) {
+  public ResponseEntity<List<ActivityResponseDto>> getActivitiesByCategory(
+          @PathVariable int categoryId) {
     return ResponseEntity.ok(activityService.getActivitiesByCategory(categoryId));
   }
 
