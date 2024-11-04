@@ -14,4 +14,10 @@ import java.util.List;
 public class DailyActivitiesResponseDto {
   List<ActivityCalculatedResponseDto> activities;
   private int totalCaloriesBurned;
+
+  public static DailyActivitiesResponseDto of(
+          List<ActivityCalculatedResponseDto> activities, int totalCaloriesBurned
+  ) {
+    return new DailyActivitiesResponseDto(activities, totalCaloriesBurned);
+  }
 }

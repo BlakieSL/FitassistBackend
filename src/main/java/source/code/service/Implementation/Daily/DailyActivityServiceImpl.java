@@ -23,10 +23,10 @@ import source.code.service.Declaration.Daily.DailyActivityService;
 import source.code.service.Declaration.Helpers.JsonPatchService;
 import source.code.service.Declaration.Helpers.RepositoryHelper;
 import source.code.service.Declaration.Helpers.ValidationService;
-import source.code.service.Implementation.Helpers.JsonPatchServiceImpl;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DailyActivityServiceImpl implements DailyActivityService {
@@ -43,7 +43,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
           DailyActivityRepository dailyActivityRepository,
           UserRepository userRepository,
           ActivityRepository activityRepository,
-          JsonPatchServiceImpl jsonPatchService,
+          JsonPatchService jsonPatchService,
           ValidationService validationService,
           DailyActivityMapper dailyActivityMapper,
           RepositoryHelper repositoryHelper,
@@ -61,26 +61,23 @@ public class DailyActivityServiceImpl implements DailyActivityService {
   @Scheduled(cron = "0 0 0 * * ?", zone = "GMT+2")
   @Transactional
   public void resetDailyCarts() {
-    List<DailyActivity> carts = dailyActivityRepository.findAll();
-
-    for (DailyActivity cart : carts) {
+    dailyActivityRepository.findAll().forEach(cart -> {
       resetDailyActivity(cart);
       dailyActivityRepository.save(cart);
-    }
+    });
   }
 
   @Override
   @Transactional
-  public void addActivityToDailyActivityItem(int userId, Integer activityId,
-                                             DailyActivityItemCreateDto dto) {
-
+  public void addActivityToDailyActivityItem(
+          int userId, Integer activityId, DailyActivityItemCreateDto dto
+  ) {
     DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
     Activity activity = repositoryHelper.find(activityRepository, Activity.class, activityId);
-
     DailyActivityItem dailyActivityItem = getOrCreateDailyActivityItem(
             dailyActivity, activity, dto.getTime());
-    updateOrAddDailyActivityItem(dailyActivity, dailyActivityItem);
 
+    updateOrAddDailyActivityItem(dailyActivity, dailyActivityItem);
     dailyActivityRepository.save(dailyActivity);
   }
 
@@ -98,7 +95,6 @@ public class DailyActivityServiceImpl implements DailyActivityService {
   @Transactional
   public void updateDailyActivityItem(int userId, int activityId, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
-
     DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
     DailyActivityItem dailyActivityItem = getDailyActivityItem(dailyActivity.getId(), activityId);
 
@@ -114,29 +110,29 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
     User user = dailyActivity.getUser();
 
-    List<ActivityCalculatedResponseDto> activities = dailyActivity.getDailyActivityItems().stream()
-            .map(dailyActivityItem -> dailyActivityMapper
-                    .toActivityCalculatedResponseDto(dailyActivityItem, user.getWeight()))
-            .toList();
-
-    int totalCaloriesBurned = activities.stream()
-            .mapToInt(ActivityCalculatedResponseDto::getCaloriesBurned)
-            .sum();
-
-    return new DailyActivitiesResponseDto(activities, totalCaloriesBurned);
+    return dailyActivity.getDailyActivityItems().stream()
+            .map(dailyActivityItem -> dailyActivityMapper.toActivityCalculatedResponseDto(
+                    dailyActivityItem,
+                    user.getWeight()
+            ))
+            .collect(Collectors.teeing(
+                    Collectors.toList(),
+                    Collectors.summingInt(ActivityCalculatedResponseDto::getCaloriesBurned),
+                    DailyActivitiesResponseDto::of
+            ));
   }
 
-  private DailyActivityItem getOrCreateDailyActivityItem(DailyActivity dailyActivity,
-                                                         Activity activity,
-                                                         int time) {
+  private DailyActivityItem getOrCreateDailyActivityItem(
+          DailyActivity dailyActivity, Activity activity, int time
+  ) {
     return dailyActivityItemRepository
             .findByDailyActivityIdAndActivityId(dailyActivity.getId(), activity.getId())
-            .orElse(DailyActivityItem
-                    .createWithActivityDailyActivityTime(activity, dailyActivity, time));
+            .orElse(DailyActivityItem.of(activity, dailyActivity, time));
   }
 
-  private void updateOrAddDailyActivityItem(DailyActivity dailyActivity,
-                                            DailyActivityItem dailyActivityItem) {
+  private void updateOrAddDailyActivityItem(
+          DailyActivity dailyActivity, DailyActivityItem dailyActivityItem)
+  {
     if(existByDailyActivityAndItem(dailyActivityItem, dailyActivity)) {
       saveDailyActivityItem(dailyActivity, dailyActivityItem);
     }
@@ -158,28 +154,32 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     return dailyActivityRepository.save(DailyActivity.createForToday(user));
   }
 
-  private DailyActivityItemCreateDto applyPatchToDailyActivityItem(DailyActivityItem dailyActivityItem,
-                                                                   JsonMergePatch patch)
-          throws JsonPatchException, JsonProcessingException {
-
-    DailyActivityItemCreateDto createDto = new DailyActivityItemCreateDto(dailyActivityItem.getTime());
+  private DailyActivityItemCreateDto applyPatchToDailyActivityItem(
+          DailyActivityItem dailyActivityItem, JsonMergePatch patch)
+          throws JsonPatchException, JsonProcessingException
+  {
+    DailyActivityItemCreateDto createDto = DailyActivityItemCreateDto
+            .of(dailyActivityItem.getTime());
     return jsonPatchService.applyPatch(patch, createDto, DailyActivityItemCreateDto.class);
   }
 
-  private void saveDailyActivityItem(DailyActivity dailyActivity,
-                                     DailyActivityItem dailyActivityItem) {
+  private void saveDailyActivityItem(
+          DailyActivity dailyActivity, DailyActivityItem dailyActivityItem
+  ) {
     dailyActivity.getDailyActivityItems().add(dailyActivityItem);
   }
 
   private DailyActivityItem getDailyActivityItem(int dailyActivityId, int activityId) {
     return dailyActivityItemRepository.findByDailyActivityIdAndActivityId(dailyActivityId, activityId)
-            .orElseThrow(() -> new RecordNotFoundException(DailyActivityItem.class, activityId));
+            .orElseThrow(() -> RecordNotFoundException.of(DailyActivityItem.class, activityId));
   }
 
   private boolean existByDailyActivityAndItem(DailyActivityItem dailyActivityItem,
                                               DailyActivity dailyActivity) {
-    return dailyActivityItemRepository
-            .existsByIdAndDailyActivityId(dailyActivityItem.getId(), dailyActivity.getId());
+    return dailyActivityItemRepository.existsByIdAndDailyActivityId(
+            dailyActivityItem.getId(),
+            dailyActivity.getId()
+    );
   }
   private void resetDailyActivity(DailyActivity dailyActivity) {
     dailyActivity.setDate(LocalDate.now());
