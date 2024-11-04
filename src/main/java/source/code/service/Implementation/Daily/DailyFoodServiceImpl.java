@@ -60,12 +60,10 @@ public class DailyFoodServiceImpl implements DailyFoodService {
   @Scheduled(cron = "0 0 0 * * ?", zone = "GMT+2")
   @Transactional
   public void resetDailyCarts() {
-    List<DailyFood> carts = dailyFoodRepository.findAll();
-
-    for (DailyFood cart : carts) {
-      resetDailyFood(cart);
-      dailyFoodRepository.save(cart);
-    }
+   dailyFoodRepository.findAll().forEach(cart -> {
+     resetDailyFood(cart);
+     dailyFoodRepository.save(cart);
+   });
   }
 
   @Override
@@ -73,10 +71,9 @@ public class DailyFoodServiceImpl implements DailyFoodService {
   public void addFoodToDailyFoodItem(int userId, int foodId, DailyFoodItemCreateDto dto) {
     DailyFood dailyFood = getOrCreateDailyFoodForUser(userId);
     Food food = repositoryHelper.find(foodRepository, Food.class, foodId);
-
     DailyFoodItem dailyFoodItem = getOrCreateDailyFoodItem(dailyFood, food, dto.getAmount());
-    updateOrAddDailyFoodItem(dailyFood, dailyFoodItem);
 
+    updateOrAddDailyFoodItem(dailyFood, dailyFoodItem);
     dailyFoodRepository.save(dailyFood);
   }
 
@@ -109,16 +106,16 @@ public class DailyFoodServiceImpl implements DailyFoodService {
   public DailyFoodsResponseDto getFoodsFromDailyFoodItem(int userId) {
     DailyFood dailyFood = getOrCreateDailyFoodForUser(userId);
 
-    List<FoodCalculatedMacrosResponseDto> foods = dailyFood.getDailyFoodItems().stream()
-            .map(dailyFoodMapper::toFoodCalculatedMacrosResponseDto)
-            .toList();
-
-    return dailyFoodMapper.toDailyFoodsResponseDto(foods);
+    return dailyFoodMapper.toDailyFoodsResponseDto(
+            dailyFood.getDailyFoodItems().stream()
+                    .map(dailyFoodMapper::toFoodCalculatedMacrosResponseDto)
+                    .toList()
+    );
   }
 
   private DailyFoodItem getOrCreateDailyFoodItem(DailyFood dailyFood, Food food, int amount) {
     return dailyFoodItemRepository.findByDailyFoodIdAndFoodId(dailyFood.getId(), food.getId())
-            .orElse(DailyFoodItem.createWithAmountFoodDailyFood(amount, food, dailyFood));
+            .orElse(DailyFoodItem.of(amount, food, dailyFood));
   }
 
   private void updateOrAddDailyFoodItem(DailyFood dailyFood, DailyFoodItem dailyFoodItem) {
@@ -143,22 +140,23 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     return dailyFoodRepository.save(DailyFood.createForToday(user));
   }
 
-  private DailyFoodItemCreateDto applyPatchToDailyFoodItem(DailyFoodItem dailyFoodItem,
-                                                           JsonMergePatch patch)
+  private DailyFoodItemCreateDto applyPatchToDailyFoodItem(
+          DailyFoodItem dailyFoodItem, JsonMergePatch patch)
           throws JsonPatchException, JsonProcessingException {
-
-    DailyFoodItemCreateDto createDto = new DailyFoodItemCreateDto(dailyFoodItem.getAmount());
+    DailyFoodItemCreateDto createDto = DailyFoodItemCreateDto.of(dailyFoodItem.getAmount());
     return jsonPatchService.applyPatch(patch, createDto, DailyFoodItemCreateDto.class);
   }
 
   private DailyFoodItem getDailyFoodItem(int dailyFoodId, int foodId) {
     return dailyFoodItemRepository.findByDailyFoodIdAndFoodId(dailyFoodId, foodId)
-            .orElseThrow(() -> new RecordNotFoundException(DailyFoodItem.class, foodId));
+            .orElseThrow(() -> RecordNotFoundException.of(DailyFoodItem.class, foodId));
   }
 
   private boolean existByDailyFoodAndItem(DailyFoodItem dailyFoodItem, DailyFood dailyFood) {
-    return dailyFoodItemRepository
-            .existsByIdAndDailyFoodId(dailyFoodItem.getId(), dailyFood.getId());
+    return dailyFoodItemRepository.existsByIdAndDailyFoodId(
+            dailyFoodItem.getId(),
+            dailyFood.getId()
+    );
   }
 
   private void resetDailyFood(DailyFood dailyFood) {
