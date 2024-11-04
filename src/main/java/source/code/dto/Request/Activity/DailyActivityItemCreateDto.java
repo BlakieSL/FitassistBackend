@@ -15,4 +15,8 @@ public class DailyActivityItemCreateDto {
   @NotNull
   @Positive
   private int time;
+
+  public static DailyActivityItemCreateDto of(int time) {
+    return new DailyActivityItemCreateDto(time);
+  }
 }
