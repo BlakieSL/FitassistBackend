@@ -19,48 +19,48 @@ import source.code.validation.ValidationGroups;
 @RestController
 @RequestMapping(path = "/api/users")
 public class UserController {
-  private final UserService userService;
-  private final JwtService jwtService;
+    private final UserService userService;
+    private final JwtService jwtService;
 
-  public UserController(
-          UserService userService,
-          JwtService jwtService) {
-    this.userService = userService;
-    this.jwtService = jwtService;
-  }
+    public UserController(
+            UserService userService,
+            JwtService jwtService) {
+        this.userService = userService;
+        this.jwtService = jwtService;
+    }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<UserResponseDto> getUser(@PathVariable int id) {
-    UserResponseDto user = userService.getUser(id);
-    return ResponseEntity.ok(user);
-  }
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDto> getUser(@PathVariable int id) {
+        UserResponseDto user = userService.getUser(id);
+        return ResponseEntity.ok(user);
+    }
 
-  @PostMapping("/refresh-token")
-  public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequestDto dtoRequest) {
-    String newAccessToken = jwtService.refreshAccessToken(dtoRequest.getRefreshToken());
-    AccessTokenResponseDto accessTokenResponseDto = new AccessTokenResponseDto(newAccessToken);
-    return ResponseEntity.ok(accessTokenResponseDto);
-  }
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequestDto dtoRequest) {
+        String newAccessToken = jwtService.refreshAccessToken(dtoRequest.getRefreshToken());
+        AccessTokenResponseDto accessTokenResponseDto = new AccessTokenResponseDto(newAccessToken);
+        return ResponseEntity.ok(accessTokenResponseDto);
+    }
 
-  @PostMapping("/register")
-  public ResponseEntity<UserResponseDto> registerUser(@Valid @RequestBody UserCreateDto request) {
-    UserResponseDto response = userService.register(request);
-    return ResponseEntity.status(HttpStatus.CREATED).body(response);
-  }
+    @PostMapping("/register")
+    public ResponseEntity<UserResponseDto> registerUser(@Valid @RequestBody UserCreateDto request) {
+        UserResponseDto response = userService.register(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 
-  @PatchMapping("/{id}")
-  public ResponseEntity<Void> updateUser(
-          @PathVariable int id,
-          @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch)
-          throws JsonPatchException, JsonProcessingException {
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updateUser(
+            @PathVariable int id,
+            @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException {
 
-    userService.updateUser(id, patch);
-    return ResponseEntity.noContent().build();
-  }
+        userService.updateUser(id, patch);
+        return ResponseEntity.noContent().build();
+    }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteUser(@PathVariable int id) {
-    userService.deleteUser(id);
-    return ResponseEntity.noContent().build();
-  }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
 }

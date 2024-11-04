@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface ActivityRepository
         extends JpaRepository<Activity, Integer>, JpaSpecificationExecutor<Activity> {
-  List<Activity> findAllByActivityCategory_Id(int categoryId);
+    List<Activity> findAllByActivityCategory_Id(int categoryId);
 
-  @EntityGraph(value = "Activity.withoutAssociations")
-  @Query("SELECT a FROM Activity a")
-  List<Activity> findAllWithoutAssociations();
+    @EntityGraph(value = "Activity.withoutAssociations")
+    @Query("SELECT a FROM Activity a")
+    List<Activity> findAllWithoutAssociations();
 }

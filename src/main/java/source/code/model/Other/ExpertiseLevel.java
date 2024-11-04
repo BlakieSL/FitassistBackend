@@ -19,23 +19,20 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExpertiseLevel {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+    @OneToMany(mappedBy = "expertiseLevel", cascade = CascadeType.REMOVE)
+    private final Set<Exercise> exercises = new HashSet<>();
+    @OneToMany(mappedBy = "expertiseLevel", cascade = CascadeType.REMOVE)
+    private final Set<Plan> plans = new HashSet<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @NotBlank
+    @Column(nullable = false)
+    private String name;
 
-  @NotBlank
-  @Column(nullable = false)
-  private String name;
-
-  @OneToMany(mappedBy = "expertiseLevel", cascade = CascadeType.REMOVE)
-  private final Set<Exercise> exercises = new HashSet<>();
-
-  @OneToMany(mappedBy = "expertiseLevel", cascade = CascadeType.REMOVE)
-  private final Set<Plan> plans = new HashSet<>();
-
-  public static ExpertiseLevel createWithId(int id){
-    ExpertiseLevel expertiseLevel = new ExpertiseLevel();
-    expertiseLevel.setId(id);
-    return expertiseLevel;
-  }
+    public static ExpertiseLevel createWithId(int id) {
+        ExpertiseLevel expertiseLevel = new ExpertiseLevel();
+        expertiseLevel.setId(id);
+        return expertiseLevel;
+    }
 }

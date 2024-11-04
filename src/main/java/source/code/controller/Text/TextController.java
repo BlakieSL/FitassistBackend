@@ -15,35 +15,35 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/text")
 public class TextController {
-  private final TextSelectorService textSelectorService;
+    private final TextSelectorService textSelectorService;
 
-  public TextController(TextSelectorService textSelectorService) {
-    this.textSelectorService = textSelectorService;
-  }
+    public TextController(TextSelectorService textSelectorService) {
+        this.textSelectorService = textSelectorService;
+    }
 
-  @GetMapping("/{id}/type/{type}")
-  public ResponseEntity<List<BaseTextResponseDto>> getAll(
-          @PathVariable int id, @PathVariable TextType type) {
+    @GetMapping("/{id}/type/{type}")
+    public ResponseEntity<List<BaseTextResponseDto>> getAll(
+            @PathVariable int id, @PathVariable TextType type) {
 
-    TextService textService = textSelectorService.getService(type);
-    List<BaseTextResponseDto> response = textService.getAllByParent(id);
-    return ResponseEntity.ok(response);
-  }
+        TextService textService = textSelectorService.getService(type);
+        List<BaseTextResponseDto> response = textService.getAllByParent(id);
+        return ResponseEntity.ok(response);
+    }
 
-  @PatchMapping("/{id}/type/{type}")
-  public ResponseEntity<Void> update(
-          @PathVariable int id, @PathVariable TextType type, @RequestBody JsonMergePatch patch)
-          throws JsonPatchException, JsonProcessingException {
+    @PatchMapping("/{id}/type/{type}")
+    public ResponseEntity<Void> update(
+            @PathVariable int id, @PathVariable TextType type, @RequestBody JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException {
 
-    TextService textService = textSelectorService.getService(type);
-    textService.updateText(id, patch);
-    return ResponseEntity.noContent().build();
-  }
+        TextService textService = textSelectorService.getService(type);
+        textService.updateText(id, patch);
+        return ResponseEntity.noContent().build();
+    }
 
-  @DeleteMapping("/{id}/type/{type}")
-  public ResponseEntity<Void> delete(@PathVariable int id, @PathVariable TextType type) {
-    TextService textService = textSelectorService.getService(type);
-    textService.deleteText(id);
-    return ResponseEntity.notFound().build();
-  }
+    @DeleteMapping("/{id}/type/{type}")
+    public ResponseEntity<Void> delete(@PathVariable int id, @PathVariable TextType type) {
+        TextService textService = textSelectorService.getService(type);
+        textService.deleteText(id);
+        return ResponseEntity.notFound().build();
+    }
 }

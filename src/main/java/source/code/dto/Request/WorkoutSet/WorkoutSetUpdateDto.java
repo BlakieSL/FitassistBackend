@@ -10,8 +10,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutSetUpdateDto {
-  private double weight;
-  private int repetitions;
-  private int workoutId;
-  private int exerciseId;
+    private double weight;
+    private int repetitions;
+    private int workoutId;
+    private int exerciseId;
 }

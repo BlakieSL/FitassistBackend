@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRecipeRepository extends JpaRepository<UserRecipe, Integer> {
-  List<UserRecipe> findByUserId(int userId);
+    List<UserRecipe> findByUserId(int userId);
 
-  List<UserRecipe> findByUserIdAndType(int userId, short type);
+    List<UserRecipe> findByUserIdAndType(int userId, short type);
 
-  Optional<UserRecipe> findByUserIdAndRecipeIdAndType(int userId, int recipeId, short type);
+    Optional<UserRecipe> findByUserIdAndRecipeIdAndType(int userId, int recipeId, short type);
 
-  boolean existsByUserIdAndRecipeIdAndType(int userId, int recipeId, short type);
+    boolean existsByUserIdAndRecipeIdAndType(int userId, int recipeId, short type);
 
-  long countByRecipeIdAndType(int recipeId, short type);
+    long countByRecipeIdAndType(int recipeId, short type);
 }

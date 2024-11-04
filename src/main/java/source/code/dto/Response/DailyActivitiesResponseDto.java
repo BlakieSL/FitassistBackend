@@ -12,12 +12,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DailyActivitiesResponseDto {
-  List<ActivityCalculatedResponseDto> activities;
-  private int totalCaloriesBurned;
+    List<ActivityCalculatedResponseDto> activities;
+    private int totalCaloriesBurned;
 
-  public static DailyActivitiesResponseDto of(
-          List<ActivityCalculatedResponseDto> activities, int totalCaloriesBurned
-  ) {
-    return new DailyActivitiesResponseDto(activities, totalCaloriesBurned);
-  }
+    public static DailyActivitiesResponseDto of(
+            List<ActivityCalculatedResponseDto> activities, int totalCaloriesBurned
+    ) {
+        return new DailyActivitiesResponseDto(activities, totalCaloriesBurned);
+    }
 }

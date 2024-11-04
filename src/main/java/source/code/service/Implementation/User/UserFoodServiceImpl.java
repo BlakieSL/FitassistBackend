@@ -17,54 +17,54 @@ import java.util.List;
 @Service("userFoodService")
 public class UserFoodServiceImpl
         extends GenericSavedService<Food, UserFood, FoodResponseDto>
-        implements SavedService{
+        implements SavedService {
 
-  public UserFoodServiceImpl(UserFoodRepository userFoodRepository,
-                             FoodRepository foodRepository,
-                             UserRepository userRepository,
-                             FoodMapper foodMapper) {
-    super(userRepository,
-            foodRepository,
-            userFoodRepository,
-            foodMapper::toResponseDto,
-            Food.class);
-  }
+    public UserFoodServiceImpl(UserFoodRepository userFoodRepository,
+                               FoodRepository foodRepository,
+                               UserRepository userRepository,
+                               FoodMapper foodMapper) {
+        super(userRepository,
+                foodRepository,
+                userFoodRepository,
+                foodMapper::toResponseDto,
+                Food.class);
+    }
 
-  @Override
-  protected boolean isAlreadySaved(int userId, int foodId, short type) {
-    return ((UserFoodRepository) userEntityRepository)
-            .existsByUserIdAndFoodIdAndType(userId, foodId, type);
-  }
+    @Override
+    protected boolean isAlreadySaved(int userId, int foodId, short type) {
+        return ((UserFoodRepository) userEntityRepository)
+                .existsByUserIdAndFoodIdAndType(userId, foodId, type);
+    }
 
-  @Override
-  protected UserFood createUserEntity(User user, Food entity, short type) {
-    return UserFood.createWithUserFoodType(user, entity, type);
-  }
+    @Override
+    protected UserFood createUserEntity(User user, Food entity, short type) {
+        return UserFood.createWithUserFoodType(user, entity, type);
+    }
 
-  @Override
-  protected UserFood findUserEntity(int userId, int foodId, short type) {
-    return ((UserFoodRepository) userEntityRepository)
-            .findByUserIdAndFoodIdAndType(userId, foodId, type)
-            .orElseThrow(() -> new RecordNotFoundException(UserFood.class, userId, foodId, type));
-  }
+    @Override
+    protected UserFood findUserEntity(int userId, int foodId, short type) {
+        return ((UserFoodRepository) userEntityRepository)
+                .findByUserIdAndFoodIdAndType(userId, foodId, type)
+                .orElseThrow(() -> new RecordNotFoundException(UserFood.class, userId, foodId, type));
+    }
 
-  @Override
-  protected List<UserFood> findAllByUserAndType(int userId, short type) {
-    return ((UserFoodRepository) userEntityRepository).findByUserIdAndType(userId, type);
-  }
+    @Override
+    protected List<UserFood> findAllByUserAndType(int userId, short type) {
+        return ((UserFoodRepository) userEntityRepository).findByUserIdAndType(userId, type);
+    }
 
-  @Override
-  protected Food extractEntity(UserFood userFood) {
-    return userFood.getFood();
-  }
+    @Override
+    protected Food extractEntity(UserFood userFood) {
+        return userFood.getFood();
+    }
 
-  @Override
-  protected long countSaves(int foodId) {
-    return ((UserFoodRepository) userEntityRepository).countByFoodIdAndType(foodId, (short) 1);
-  }
+    @Override
+    protected long countSaves(int foodId) {
+        return ((UserFoodRepository) userEntityRepository).countByFoodIdAndType(foodId, (short) 1);
+    }
 
-  @Override
-  protected long countLikes(int foodId) {
-    return ((UserFoodRepository) userEntityRepository).countByFoodIdAndType(foodId, (short) 2);
-  }
+    @Override
+    protected long countLikes(int foodId) {
+        return ((UserFoodRepository) userEntityRepository).countByFoodIdAndType(foodId, (short) 2);
+    }
 }

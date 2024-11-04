@@ -7,8 +7,8 @@ import source.code.service.Declaration.Category.CategoryCacheKeyGenerator;
 
 @Service
 public class ExerciseCategoryCacheKeyGeneratorImpl implements CategoryCacheKeyGenerator<TargetMuscle> {
-  @Override
-  public String generateCacheKey() {
-    return CacheKeys.EXERCISE_CATEGORIES.name();
-  }
+    @Override
+    public String generateCacheKey() {
+        return CacheKeys.EXERCISE_CATEGORIES.name();
+    }
 }

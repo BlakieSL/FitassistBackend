@@ -12,16 +12,16 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DailyFoodsResponseDto {
-  private List<FoodCalculatedMacrosResponseDto> foods;
-  private double totalCalories;
-  private double totalCarbohydrates;
-  private double totalProtein;
-  private double totalFat;
+    private List<FoodCalculatedMacrosResponseDto> foods;
+    private double totalCalories;
+    private double totalCarbohydrates;
+    private double totalProtein;
+    private double totalFat;
 
-  public static DailyFoodsResponseDto of(List<FoodCalculatedMacrosResponseDto> foods){
-    DailyFoodsResponseDto responseDto = new DailyFoodsResponseDto();
-    responseDto.setFoods(foods);
+    public static DailyFoodsResponseDto of(List<FoodCalculatedMacrosResponseDto> foods) {
+        DailyFoodsResponseDto responseDto = new DailyFoodsResponseDto();
+        responseDto.setFoods(foods);
 
-    return  responseDto;
-  }
+        return responseDto;
+    }
 }

@@ -17,51 +17,51 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController {
-  private final CategorySelectorService categorySelectorService;
+    private final CategorySelectorService categorySelectorService;
 
-  public CategoryController(CategorySelectorService categorySelectorService) {
-    this.categorySelectorService = categorySelectorService;
-  }
+    public CategoryController(CategorySelectorService categorySelectorService) {
+        this.categorySelectorService = categorySelectorService;
+    }
 
-  @GetMapping("/{categoryType}")
-  public ResponseEntity<List<CategoryResponseDto>>getAllCategories(@PathVariable CategoryType categoryType) {
-    CategoryService categoryService = categorySelectorService.getService(categoryType);
-    List<CategoryResponseDto> dto = categoryService.getAllCategories();
-    return ResponseEntity.ok(dto);
-  }
+    @GetMapping("/{categoryType}")
+    public ResponseEntity<List<CategoryResponseDto>> getAllCategories(@PathVariable CategoryType categoryType) {
+        CategoryService categoryService = categorySelectorService.getService(categoryType);
+        List<CategoryResponseDto> dto = categoryService.getAllCategories();
+        return ResponseEntity.ok(dto);
+    }
 
-  @GetMapping("/{categoryType}/{id}")
-  public ResponseEntity<CategoryResponseDto> getCategory(@PathVariable CategoryType categoryType,
-                                                         @PathVariable int id) {
-    CategoryService categoryService = categorySelectorService.getService(categoryType);
-    CategoryResponseDto dto = categoryService.getCategory(id);
-    return ResponseEntity.ok(dto);
-  }
+    @GetMapping("/{categoryType}/{id}")
+    public ResponseEntity<CategoryResponseDto> getCategory(@PathVariable CategoryType categoryType,
+                                                           @PathVariable int id) {
+        CategoryService categoryService = categorySelectorService.getService(categoryType);
+        CategoryResponseDto dto = categoryService.getCategory(id);
+        return ResponseEntity.ok(dto);
+    }
 
-  @PostMapping("/{categoryType}")
-  public ResponseEntity<CategoryResponseDto> createCategory(@PathVariable CategoryType categoryType,
-                                                            @RequestBody CategoryCreateDto request) {
-    CategoryService categoryService = categorySelectorService.getService(categoryType);
-    CategoryResponseDto dto = categoryService.createCategory(request);
-    return ResponseEntity.status(HttpStatus.CREATED).body(dto);
-  }
+    @PostMapping("/{categoryType}")
+    public ResponseEntity<CategoryResponseDto> createCategory(@PathVariable CategoryType categoryType,
+                                                              @RequestBody CategoryCreateDto request) {
+        CategoryService categoryService = categorySelectorService.getService(categoryType);
+        CategoryResponseDto dto = categoryService.createCategory(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+    }
 
-  @PatchMapping("/{categoryType}/{id}")
-  public ResponseEntity<Void> updateCategory(@PathVariable CategoryType categoryType,
-                                            @PathVariable int id,
-                                            @RequestBody JsonMergePatch patch)
-          throws JsonProcessingException, JsonPatchException {
+    @PatchMapping("/{categoryType}/{id}")
+    public ResponseEntity<Void> updateCategory(@PathVariable CategoryType categoryType,
+                                               @PathVariable int id,
+                                               @RequestBody JsonMergePatch patch)
+            throws JsonProcessingException, JsonPatchException {
 
-    CategoryService categoryService = categorySelectorService.getService(categoryType);
-    categoryService.updateCategory(id, patch);
-    return ResponseEntity.noContent().build();
-  }
+        CategoryService categoryService = categorySelectorService.getService(categoryType);
+        categoryService.updateCategory(id, patch);
+        return ResponseEntity.noContent().build();
+    }
 
-  @DeleteMapping("/{categoryType}/{id}")
-  public ResponseEntity<Void> deleteCategory(@PathVariable CategoryType categoryType,
-                                             @PathVariable int id) {
-    CategoryService categoryService = categorySelectorService.getService(categoryType);
-    categoryService.deleteCategory(id);
-    return ResponseEntity.noContent().build();
-  }
+    @DeleteMapping("/{categoryType}/{id}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable CategoryType categoryType,
+                                               @PathVariable int id) {
+        CategoryService categoryService = categorySelectorService.getService(categoryType);
+        categoryService.deleteCategory(id);
+        return ResponseEntity.noContent().build();
+    }
 }

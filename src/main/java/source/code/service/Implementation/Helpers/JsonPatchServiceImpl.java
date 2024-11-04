@@ -11,17 +11,17 @@ import source.code.service.Declaration.Helpers.JsonPatchService;
 @Service
 public class JsonPatchServiceImpl implements JsonPatchService {
 
-  private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
-  public JsonPatchServiceImpl(ObjectMapper objectMapper) {
-    this.objectMapper = objectMapper;
-  }
+    public JsonPatchServiceImpl(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
-  @Override
-  public <T> T applyPatch(JsonMergePatch patch, Object targetBean, Class<T> beanClass)
-          throws JsonPatchException, JsonProcessingException {
-    JsonNode targetNode = objectMapper.valueToTree(targetBean);
-    JsonNode patchedNode = patch.apply(targetNode);
-    return objectMapper.treeToValue(patchedNode, beanClass);
-  }
+    @Override
+    public <T> T applyPatch(JsonMergePatch patch, Object targetBean, Class<T> beanClass)
+            throws JsonPatchException, JsonProcessingException {
+        JsonNode targetNode = objectMapper.valueToTree(targetBean);
+        JsonNode patchedNode = patch.apply(targetNode);
+        return objectMapper.treeToValue(patchedNode, beanClass);
+    }
 }

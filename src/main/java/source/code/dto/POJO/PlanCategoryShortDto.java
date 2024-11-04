@@ -10,6 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlanCategoryShortDto {
-  private Integer id;
-  private String name;
+    private Integer id;
+    private String name;
 }

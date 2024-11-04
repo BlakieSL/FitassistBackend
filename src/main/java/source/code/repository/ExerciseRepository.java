@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ExerciseRepository
         extends JpaRepository<Exercise, Integer>, JpaSpecificationExecutor<Exercise> {
-  @EntityGraph(value = "Exercise.withoutAssociations")
-  @Query("SELECT e FROM Exercise e")
-  List<Exercise> findAllWithoutAssociations();
+    @EntityGraph(value = "Exercise.withoutAssociations")
+    @Query("SELECT e FROM Exercise e")
+    List<Exercise> findAllWithoutAssociations();
 }

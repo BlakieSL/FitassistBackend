@@ -6,10 +6,10 @@ import source.code.model.Food.Food;
 
 @Getter
 public class FoodUpdateEvent extends ApplicationEvent {
-  private final Food food;
+    private final Food food;
 
-  public FoodUpdateEvent(Object source, Food food) {
-    super(source);
-    this.food = food;
-  }
+    public FoodUpdateEvent(Object source, Food food) {
+        super(source);
+        this.food = food;
+    }
 }

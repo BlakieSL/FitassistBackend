@@ -33,110 +33,111 @@ import java.util.List;
 
 @Service
 public class ExerciseServiceImpl implements ExerciseService {
-  private final ValidationService validationService;
-  private final JsonPatchService jsonPatchService;
-  private final ApplicationEventPublisher applicationEventPublisher;
-  private final ExerciseMapper exerciseMapper;
-  private final RepositoryHelper repositoryHelper;
-  private final ExerciseRepository exerciseRepository;
-  private final ExerciseTargetMuscleRepository exerciseTargetMuscleRepository;
+    private final ValidationService validationService;
+    private final JsonPatchService jsonPatchService;
+    private final ApplicationEventPublisher applicationEventPublisher;
+    private final ExerciseMapper exerciseMapper;
+    private final RepositoryHelper repositoryHelper;
+    private final ExerciseRepository exerciseRepository;
+    private final ExerciseTargetMuscleRepository exerciseTargetMuscleRepository;
 
-  public ExerciseServiceImpl(ExerciseMapper exerciseMapper,
-                             ValidationService validationService,
-                             JsonPatchService jsonPatchService,
-                             ApplicationEventPublisher applicationEventPublisher,
-                             RepositoryHelper repositoryHelper,
-                             ExerciseRepository exerciseRepository,
-                             ExerciseTargetMuscleRepository exerciseTargetMuscleRepository) {
-    this.exerciseMapper = exerciseMapper;
-    this.validationService = validationService;
-    this.jsonPatchService = jsonPatchService;
-    this.applicationEventPublisher = applicationEventPublisher;
-    this.repositoryHelper = repositoryHelper;
-    this.exerciseRepository = exerciseRepository;
-    this.exerciseTargetMuscleRepository = exerciseTargetMuscleRepository;
-  }
+    public ExerciseServiceImpl(ExerciseMapper exerciseMapper,
+                               ValidationService validationService,
+                               JsonPatchService jsonPatchService,
+                               ApplicationEventPublisher applicationEventPublisher,
+                               RepositoryHelper repositoryHelper,
+                               ExerciseRepository exerciseRepository,
+                               ExerciseTargetMuscleRepository exerciseTargetMuscleRepository) {
+        this.exerciseMapper = exerciseMapper;
+        this.validationService = validationService;
+        this.jsonPatchService = jsonPatchService;
+        this.applicationEventPublisher = applicationEventPublisher;
+        this.repositoryHelper = repositoryHelper;
+        this.exerciseRepository = exerciseRepository;
+        this.exerciseTargetMuscleRepository = exerciseTargetMuscleRepository;
+    }
 
-  @Override
-  @Transactional
-  public ExerciseResponseDto createExercise(ExerciseCreateDto dto) {
-    Exercise exercise = exerciseRepository.save(exerciseMapper.toEntity(dto));
-    applicationEventPublisher.publishEvent(new ExerciseCreateEvent(this, exercise));
+    @Override
+    @Transactional
+    public ExerciseResponseDto createExercise(ExerciseCreateDto dto) {
+        Exercise exercise = exerciseRepository.save(exerciseMapper.toEntity(dto));
+        applicationEventPublisher.publishEvent(ExerciseCreateEvent.of(this, exercise));
 
-    return exerciseMapper.toResponseDto(exercise);
-  }
+        return exerciseMapper.toResponseDto(exercise);
+    }
 
-  @Override
-  @Transactional
-  public void updateExercise(int exerciseId, JsonMergePatch patch)
-          throws JsonPatchException, JsonProcessingException {
+    @Override
+    @Transactional
+    public void updateExercise(int exerciseId, JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException {
+        Exercise exercise = find(exerciseId);
+        ExerciseUpdateDto patchedExerciseUpdateDto = applyPatchToExercise(exercise, patch);
 
-    Exercise exercise = find(exerciseId);
-    ExerciseUpdateDto patchedExerciseUpdateDto = applyPatchToExercise(exercise, patch);
+        validationService.validate(patchedExerciseUpdateDto);
 
-    validationService.validate(patchedExerciseUpdateDto);
+        exerciseMapper.updateExerciseFromDto(exercise, patchedExerciseUpdateDto);
+        Exercise savedExercise = exerciseRepository.save(exercise);
 
-    exerciseMapper.updateExerciseFromDto(exercise, patchedExerciseUpdateDto);
-    Exercise savedExercise = exerciseRepository.save(exercise);
+        applicationEventPublisher.publishEvent(ExerciseUpdateEvent.of(this, savedExercise));
+    }
 
-    applicationEventPublisher.publishEvent(new ExerciseUpdateEvent(this, savedExercise));
-  }
+    @Override
+    @Transactional
+    public void deleteExercise(int exerciseId) {
+        Exercise exercise = find(exerciseId);
+        exerciseRepository.delete(exercise);
 
-  @Override
-  @Transactional
-  public void deleteExercise(int exerciseId) {
-    Exercise exercise = find(exerciseId);
-    exerciseRepository.delete(exercise);
+        applicationEventPublisher.publishEvent(ExerciseDeleteEvent.of(this, exercise));
+    }
 
-    applicationEventPublisher.publishEvent(new ExerciseDeleteEvent(this, exercise));
-  }
+    @Override
+    @Cacheable(value = CacheNames.EXERCISES, key = "#exerciseId")
+    public ExerciseResponseDto getExercise(int exerciseId) {
+        Exercise exercise = find(exerciseId);
+        return exerciseMapper.toResponseDto(exercise);
+    }
 
-  @Override
-  @Cacheable(value = CacheNames.EXERCISES, key = "#exerciseId")
-  public ExerciseResponseDto getExercise(int exerciseId) {
-    Exercise exercise = find(exerciseId);
-    return exerciseMapper.toResponseDto(exercise);
-  }
+    @Override
+    @Cacheable(value = CacheNames.ALL_EXERCISES)
+    public List<ExerciseResponseDto> getAllExercises() {
+        return repositoryHelper.findAll(exerciseRepository, exerciseMapper::toResponseDto);
+    }
 
-  @Override
-  @Cacheable(value = CacheNames.ALL_EXERCISES)
-  public List<ExerciseResponseDto> getAllExercises() {
-    return repositoryHelper.findAll(exerciseRepository, exerciseMapper::toResponseDto);
-  }
+    @Override
+    public List<ExerciseResponseDto> getFilteredExercises(FilterDto filter) {
+        SpecificationFactory<Exercise> exerciseFactory = ExerciseSpecification::of;
+        SpecificationBuilder<Exercise> specificationBuilder = SpecificationBuilder.create(
+                filter,
+                exerciseFactory
+        );
+        Specification<Exercise> specification = specificationBuilder.build();
 
-  @Override
-  public List<ExerciseResponseDto> getFilteredExercises(FilterDto filter) {
-    SpecificationFactory<Exercise> exerciseFactory = ExerciseSpecification::new;
-    SpecificationBuilder<Exercise> specificationBuilder = SpecificationBuilder.create(filter, exerciseFactory);
-    Specification<Exercise> specification = specificationBuilder.build();
+        return exerciseRepository.findAll(specification).stream()
+                .map(exerciseMapper::toResponseDto)
+                .toList();
+    }
 
-    return exerciseRepository.findAll(specification).stream()
-            .map(exerciseMapper::toResponseDto)
-            .toList();
-  }
+    @Override
+    public List<Exercise> getAllExerciseEntities() {
+        return exerciseRepository.findAllWithoutAssociations();
+    }
 
-  @Override
-  public List<Exercise> getAllExerciseEntities() {
-    return exerciseRepository.findAllWithoutAssociations();
-  }
+    @Override
+    @Cacheable(value = CacheNames.EXERCISES_BY_CATEGORY, key = "#categoryId")
+    public List<ExerciseResponseDto> getExercisesByCategory(int categoryId) {
+        return exerciseTargetMuscleRepository.findByTargetMuscleId(categoryId).stream()
+                .map(ExerciseTargetMuscle::getExercise)
+                .map(exerciseMapper::toResponseDto)
+                .toList();
+    }
 
-  @Override
-  @Cacheable(value = CacheNames.EXERCISES_BY_CATEGORY, key = "#categoryId")
-  public List<ExerciseResponseDto> getExercisesByCategory(int categoryId) {
-    return exerciseTargetMuscleRepository.findByTargetMuscleId(categoryId).stream()
-            .map(ExerciseTargetMuscle::getExercise)
-            .map(exerciseMapper::toResponseDto)
-            .toList();
-  }
+    private Exercise find(int exerciseId) {
+        return repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId);
+    }
 
-  private Exercise find(int exerciseId) {
-    return repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId);
-  }
-
-  private ExerciseUpdateDto applyPatchToExercise(Exercise exercise, JsonMergePatch patch)
-          throws JsonPatchException, JsonProcessingException {
-
-    ExerciseResponseDto responseDto = exerciseMapper.toResponseDto(exercise);
-    return jsonPatchService.applyPatch(patch, responseDto, ExerciseUpdateDto.class);
-  }
+    private ExerciseUpdateDto applyPatchToExercise(Exercise exercise, JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException {
+        ExerciseResponseDto responseDto = exerciseMapper.toResponseDto(exercise);
+        return jsonPatchService.applyPatch(patch, responseDto, ExerciseUpdateDto.class);
+    }
 }

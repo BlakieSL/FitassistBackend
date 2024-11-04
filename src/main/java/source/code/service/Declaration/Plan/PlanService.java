@@ -12,21 +12,21 @@ import source.code.model.Plan.Plan;
 import java.util.List;
 
 public interface PlanService {
-  PlanResponseDto createPlan(PlanCreateDto planDto);
+    PlanResponseDto createPlan(PlanCreateDto planDto);
 
-  void updatePlan(int planId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+    void updatePlan(int planId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-  void deletePlan(int planId);
+    void deletePlan(int planId);
 
-  PlanResponseDto getPlan(int id);
+    PlanResponseDto getPlan(int id);
 
-  List<PlanResponseDto> getAllPlans();
+    List<PlanResponseDto> getAllPlans();
 
-  List<PlanResponseDto> getFilteredPlans(FilterDto filter);
+    List<PlanResponseDto> getFilteredPlans(FilterDto filter);
 
-  List<Plan> getAllPlanEntities();
+    List<Plan> getAllPlanEntities();
 
-  List<PlanResponseDto> getPlansByCategory(int categoryId);
+    List<PlanResponseDto> getPlansByCategory(int categoryId);
 
-  List<EquipmentResponseDto> getAllEquipment(int planId);
+    List<EquipmentResponseDto> getAllEquipment(int planId);
 }

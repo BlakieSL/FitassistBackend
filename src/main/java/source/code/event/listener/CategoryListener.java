@@ -9,18 +9,19 @@ import source.code.service.Declaration.Cache.CacheService;
 
 @Component
 public class CategoryListener {
-  private final CacheService cacheService;
-  public CategoryListener(CacheService cacheService) {
-    this.cacheService = cacheService;
-  }
+    private final CacheService cacheService;
 
-  @EventListener
-  public void handleCacheCreateEvent(CategoryCreateCacheEvent event) {
-    cacheService.putCache(CacheNames.ALL_CATEGORIES, event.getCacheKey(), event.getCachedData());
-  }
+    public CategoryListener(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
 
-  @EventListener
-  public void handleCacheClearEvent(CategoryClearCacheEvent event) {
-    cacheService.evictCache(CacheNames.ALL_CATEGORIES, event.getCacheKey());
-  }
+    @EventListener
+    public void handleCacheCreateEvent(CategoryCreateCacheEvent event) {
+        cacheService.putCache(CacheNames.ALL_CATEGORIES, event.getCacheKey(), event.getCachedData());
+    }
+
+    @EventListener
+    public void handleCacheClearEvent(CategoryClearCacheEvent event) {
+        cacheService.evictCache(CacheNames.ALL_CATEGORIES, event.getCacheKey());
+    }
 }

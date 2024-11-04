@@ -10,5 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActivityAverageMetResponseDto {
-  private double met;
+    private double met;
 }

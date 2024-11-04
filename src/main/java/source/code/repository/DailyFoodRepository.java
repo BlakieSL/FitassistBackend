@@ -7,6 +7,6 @@ import source.code.model.Food.DailyFood;
 import java.util.Optional;
 
 public interface DailyFoodRepository extends JpaRepository<DailyFood, Integer> {
-  @EntityGraph(attributePaths = {"dailyFoodItems"})
-  Optional<DailyFood> findByUserId(int id);
+    @EntityGraph(attributePaths = {"dailyFoodItems"})
+    Optional<DailyFood> findByUserId(int id);
 }

@@ -20,53 +20,53 @@ public class UserRecipeServiceImpl
         implements SavedService {
 
 
-  public UserRecipeServiceImpl(UserRecipeRepository userRecipeRepository,
-                               RecipeRepository recipeRepository,
-                               UserRepository userRepository,
-                               RecipeMapper recipeMapper) {
-    super(userRepository,
-            recipeRepository,
-            userRecipeRepository,
-            recipeMapper::toResponseDto,
-            Recipe.class);
-  }
+    public UserRecipeServiceImpl(UserRecipeRepository userRecipeRepository,
+                                 RecipeRepository recipeRepository,
+                                 UserRepository userRepository,
+                                 RecipeMapper recipeMapper) {
+        super(userRepository,
+                recipeRepository,
+                userRecipeRepository,
+                recipeMapper::toResponseDto,
+                Recipe.class);
+    }
 
 
-  @Override
-  protected boolean isAlreadySaved(int userId, int entityId, short type) {
-    return ((UserRecipeRepository) userEntityRepository)
-            .existsByUserIdAndRecipeIdAndType(userId, entityId,type);
-  }
+    @Override
+    protected boolean isAlreadySaved(int userId, int entityId, short type) {
+        return ((UserRecipeRepository) userEntityRepository)
+                .existsByUserIdAndRecipeIdAndType(userId, entityId, type);
+    }
 
-  @Override
-  protected UserRecipe createUserEntity(User user, Recipe entity, short type) {
-    return UserRecipe.createWithUserRecipeType(user, entity, type);
-  }
+    @Override
+    protected UserRecipe createUserEntity(User user, Recipe entity, short type) {
+        return UserRecipe.createWithUserRecipeType(user, entity, type);
+    }
 
-  @Override
-  protected UserRecipe findUserEntity(int userId, int recipeId, short type) {
-    return ((UserRecipeRepository) userEntityRepository)
-            .findByUserIdAndRecipeIdAndType(userId, recipeId, type)
-            .orElseThrow(() -> new RecordNotFoundException(UserRecipe.class, userId, recipeId, type));
-  }
+    @Override
+    protected UserRecipe findUserEntity(int userId, int recipeId, short type) {
+        return ((UserRecipeRepository) userEntityRepository)
+                .findByUserIdAndRecipeIdAndType(userId, recipeId, type)
+                .orElseThrow(() -> new RecordNotFoundException(UserRecipe.class, userId, recipeId, type));
+    }
 
-  @Override
-  protected List<UserRecipe> findAllByUserAndType(int userId, short type) {
-    return ((UserRecipeRepository) userEntityRepository).findByUserIdAndType(userId, type);
-  }
+    @Override
+    protected List<UserRecipe> findAllByUserAndType(int userId, short type) {
+        return ((UserRecipeRepository) userEntityRepository).findByUserIdAndType(userId, type);
+    }
 
-  @Override
-  protected Recipe extractEntity(UserRecipe userRecipe) {
-    return userRecipe.getRecipe();
-  }
+    @Override
+    protected Recipe extractEntity(UserRecipe userRecipe) {
+        return userRecipe.getRecipe();
+    }
 
-  @Override
-  protected long countSaves(int recipeId) {
-    return ((UserRecipeRepository) userEntityRepository).countByRecipeIdAndType(recipeId, (short) 1);
-  }
+    @Override
+    protected long countSaves(int recipeId) {
+        return ((UserRecipeRepository) userEntityRepository).countByRecipeIdAndType(recipeId, (short) 1);
+    }
 
-  @Override
-  protected long countLikes(int recipeId) {
-    return ((UserRecipeRepository) userEntityRepository).countByRecipeIdAndType(recipeId, (short) 2);
-  }
+    @Override
+    protected long countLikes(int recipeId) {
+        return ((UserRecipeRepository) userEntityRepository).countByRecipeIdAndType(recipeId, (short) 2);
+    }
 }

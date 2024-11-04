@@ -14,33 +14,33 @@ import source.code.model.Exercise.Exercise;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserExercise implements BaseUserEntity{
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+public class UserExercise implements BaseUserEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "exercise_id", nullable = false)
-  private Exercise exercise;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "exercise_id", nullable = false)
+    private Exercise exercise;
 
-  @NotNull
-  @Column(nullable = false)
-  private short type;
+    @NotNull
+    @Column(nullable = false)
+    private short type;
 
-  public static UserExercise createWithUserExerciseType(
-          User user, Exercise exercise, short type) {
+    public static UserExercise createWithUserExerciseType(
+            User user, Exercise exercise, short type) {
 
-    UserExercise userExercise = new UserExercise();
-    userExercise.setUser(user);
-    userExercise.setExercise(exercise);
-    userExercise.setType(type);
+        UserExercise userExercise = new UserExercise();
+        userExercise.setUser(user);
+        userExercise.setExercise(exercise);
+        userExercise.setType(type);
 
-    return userExercise;
-  }
+        return userExercise;
+    }
 }

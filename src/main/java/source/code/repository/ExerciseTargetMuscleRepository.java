@@ -6,5 +6,5 @@ import source.code.model.Exercise.ExerciseTargetMuscle;
 import java.util.List;
 
 public interface ExerciseTargetMuscleRepository extends JpaRepository<ExerciseTargetMuscle, Integer> {
-  List<ExerciseTargetMuscle> findByTargetMuscleId(int id);
+    List<ExerciseTargetMuscle> findByTargetMuscleId(int id);
 }

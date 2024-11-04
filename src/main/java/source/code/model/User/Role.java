@@ -18,18 +18,15 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Role {
-  private static final int MIN_ROLE_NAME_LENGTH = 4;
-  private static final int MAX_ROLE_NAME_LENGTH = 5;
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
-
-  @NotBlank
-  @Size(min = MIN_ROLE_NAME_LENGTH, max = MAX_ROLE_NAME_LENGTH)
-  @Column(nullable = false, length = MAX_ROLE_NAME_LENGTH)
-  private String name;
-
-  @ManyToMany(mappedBy = "roles")
-  private final Set<User> users = new HashSet<>();
+    private static final int MIN_ROLE_NAME_LENGTH = 4;
+    private static final int MAX_ROLE_NAME_LENGTH = 5;
+    @ManyToMany(mappedBy = "roles")
+    private final Set<User> users = new HashSet<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @NotBlank
+    @Size(min = MIN_ROLE_NAME_LENGTH, max = MAX_ROLE_NAME_LENGTH)
+    @Column(nullable = false, length = MAX_ROLE_NAME_LENGTH)
+    private String name;
 }

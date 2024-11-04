@@ -8,20 +8,20 @@ import source.code.component.RedissonInterceptor;
 
 @Configuration
 public class AppConfig {
-  private final RedissonInterceptor redissonInterceptor;
+    private final RedissonInterceptor redissonInterceptor;
 
-  public AppConfig(RedissonInterceptor redissonInterceptor) {
-    this.redissonInterceptor = redissonInterceptor;
-  }
+    public AppConfig(RedissonInterceptor redissonInterceptor) {
+        this.redissonInterceptor = redissonInterceptor;
+    }
 
-  @Bean
-  public WebMvcConfigurer webMvcConfigurer() {
-    return new WebMvcConfigurer() {
-      @Override
-      public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(redissonInterceptor)
-                .addPathPatterns("/**");
-      }
-    };
-  }
+    @Bean
+    public WebMvcConfigurer webMvcConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addInterceptors(InterceptorRegistry registry) {
+                registry.addInterceptor(redissonInterceptor)
+                        .addPathPatterns("/**");
+            }
+        };
+    }
 }

@@ -17,19 +17,19 @@ public class TargetMuscleServiceImpl
         extends GenericCategoryService<TargetMuscle>
         implements CategoryService {
 
-  protected TargetMuscleServiceImpl(ValidationService validationService,
-                                    JsonPatchService jsonPatchService,
-                                    CategoryCacheKeyGenerator<TargetMuscle> cacheKeyGenerator,
-                                    ApplicationEventPublisher applicationEventPublisher,
-                                    CacheManager cacheManager,
-                                    TargetMuscleRepository repository,
-                                    TargetMuscleMapper mapper) {
-    super(validationService,
-            jsonPatchService,
-            cacheKeyGenerator,
-            applicationEventPublisher,
-            cacheManager,
-            repository,
-            mapper);
-  }
+    protected TargetMuscleServiceImpl(ValidationService validationService,
+                                      JsonPatchService jsonPatchService,
+                                      CategoryCacheKeyGenerator<TargetMuscle> cacheKeyGenerator,
+                                      ApplicationEventPublisher applicationEventPublisher,
+                                      CacheManager cacheManager,
+                                      TargetMuscleRepository repository,
+                                      TargetMuscleMapper mapper) {
+        super(validationService,
+                jsonPatchService,
+                cacheKeyGenerator,
+                applicationEventPublisher,
+                cacheManager,
+                repository,
+                mapper);
+    }
 }

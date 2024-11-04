@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface RecipeRepository
         extends JpaRepository<Recipe, Integer>, JpaSpecificationExecutor<Recipe> {
-  @EntityGraph(value = "Recipe.withoutAssociations")
-  @Query("SELECT r FROM Recipe r")
-  List<Recipe> findAllWithoutAssociations();
+    @EntityGraph(value = "Recipe.withoutAssociations")
+    @Query("SELECT r FROM Recipe r")
+    List<Recipe> findAllWithoutAssociations();
 }

@@ -11,19 +11,19 @@ import source.code.model.Recipe.Recipe;
 import java.util.List;
 
 public interface RecipeService {
-  RecipeResponseDto createRecipe(RecipeCreateDto dto);
+    RecipeResponseDto createRecipe(RecipeCreateDto dto);
 
-  void updateRecipe(int recipeId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+    void updateRecipe(int recipeId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-  void deleteRecipe(int recipeId);
+    void deleteRecipe(int recipeId);
 
-  RecipeResponseDto getRecipe(int id);
+    RecipeResponseDto getRecipe(int id);
 
-  List<RecipeResponseDto> getAllRecipes();
+    List<RecipeResponseDto> getAllRecipes();
 
-  List<RecipeResponseDto> getFilteredRecipes(FilterDto filter);
+    List<RecipeResponseDto> getFilteredRecipes(FilterDto filter);
 
-  List<Recipe> getAllRecipeEntities();
+    List<Recipe> getAllRecipeEntities();
 
-  List<RecipeResponseDto> getRecipesByCategory(int categoryId);
+    List<RecipeResponseDto> getRecipesByCategory(int categoryId);
 }

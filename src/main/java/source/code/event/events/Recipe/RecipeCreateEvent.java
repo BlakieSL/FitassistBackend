@@ -6,9 +6,10 @@ import source.code.model.Recipe.Recipe;
 
 @Getter
 public class RecipeCreateEvent extends ApplicationEvent {
-  private final Recipe recipe;
-  public RecipeCreateEvent(Object source, Recipe recipe) {
-    super(source);
-    this.recipe = recipe;
-  }
+    private final Recipe recipe;
+
+    public RecipeCreateEvent(Object source, Recipe recipe) {
+        super(source);
+        this.recipe = recipe;
+    }
 }

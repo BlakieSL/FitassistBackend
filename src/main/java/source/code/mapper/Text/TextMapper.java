@@ -17,32 +17,35 @@ import source.code.model.Text.RecipeInstruction;
 
 @Mapper(componentModel = "spring")
 public abstract class TextMapper {
-  public abstract ExerciseInstructionResponseDto toExerciseInstructionResponseDto(ExerciseInstruction instruction);
-  public abstract ExerciseTipResponseDto toExerciseTipResponseDto(ExerciseTip tip);
-  public abstract RecipeInstructionResponseDto toRecipeInstructionResponseDto(RecipeInstruction instruction);
-  public abstract PlanInstructionResponseDto toPlanInstructionResponseDto(PlanInstruction instruction);
+    public abstract ExerciseInstructionResponseDto toExerciseInstructionResponseDto(ExerciseInstruction instruction);
 
-  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "exercise", ignore = true)
-  public abstract void updateExerciseInstruction(@MappingTarget ExerciseInstruction instruction,
-                                                 ExerciseInstructionUpdateDto dto);
+    public abstract ExerciseTipResponseDto toExerciseTipResponseDto(ExerciseTip tip);
 
-  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "exercise", ignore = true)
-  public abstract void updateExerciseTip(@MappingTarget ExerciseTip tip,
-                                         ExerciseTipUpdateDto dto);
+    public abstract RecipeInstructionResponseDto toRecipeInstructionResponseDto(RecipeInstruction instruction);
 
-  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "recipe", ignore = true)
-  public abstract void updateRecipeInstruction(@MappingTarget RecipeInstruction instruction,
-                                               RecipeInstructionUpdateDto dto);
+    public abstract PlanInstructionResponseDto toPlanInstructionResponseDto(PlanInstruction instruction);
 
-  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "plan", ignore = true)
-  public abstract void updatePlanInstruction(@MappingTarget PlanInstruction instruction,
-                                             PlanInstructionUpdateDto dto);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "exercise", ignore = true)
+    public abstract void updateExerciseInstruction(@MappingTarget ExerciseInstruction instruction,
+                                                   ExerciseInstructionUpdateDto dto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "exercise", ignore = true)
+    public abstract void updateExerciseTip(@MappingTarget ExerciseTip tip,
+                                           ExerciseTipUpdateDto dto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "recipe", ignore = true)
+    public abstract void updateRecipeInstruction(@MappingTarget RecipeInstruction instruction,
+                                                 RecipeInstructionUpdateDto dto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "plan", ignore = true)
+    public abstract void updatePlanInstruction(@MappingTarget PlanInstruction instruction,
+                                               PlanInstructionUpdateDto dto);
 }

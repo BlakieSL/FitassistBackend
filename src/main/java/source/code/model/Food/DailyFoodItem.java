@@ -16,31 +16,31 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DailyFoodItem {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-  @NotNull
-  @Positive
-  @Column(nullable = false)
-  private int amount;
+    @NotNull
+    @Positive
+    @Column(nullable = false)
+    private int amount;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "daily_cart_id", nullable = false)
-  @JsonBackReference
-  private DailyFood dailyFood;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "daily_cart_id", nullable = false)
+    @JsonBackReference
+    private DailyFood dailyFood;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "food_id", nullable = false)
-  private Food food;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "food_id", nullable = false)
+    private Food food;
 
-  public static DailyFoodItem of(int amount, Food food, DailyFood dailyFood) {
-    DailyFoodItem dailyFoodItem = new DailyFoodItem();
-    dailyFoodItem.setAmount(amount);
-    dailyFoodItem.setFood(food);
-    dailyFoodItem.setDailyFood(dailyFood);
-    return dailyFoodItem;
-  }
+    public static DailyFoodItem of(int amount, Food food, DailyFood dailyFood) {
+        DailyFoodItem dailyFoodItem = new DailyFoodItem();
+        dailyFoodItem.setAmount(amount);
+        dailyFoodItem.setFood(food);
+        dailyFoodItem.setDailyFood(dailyFood);
+        return dailyFoodItem;
+    }
 }

@@ -6,5 +6,5 @@ import source.code.model.Text.ExerciseInstruction;
 import java.util.List;
 
 public interface ExerciseInstructionRepository extends JpaRepository<ExerciseInstruction, Integer> {
-  List<ExerciseInstruction> getAllByExerciseId(int exerciseId);
+    List<ExerciseInstruction> getAllByExerciseId(int exerciseId);
 }

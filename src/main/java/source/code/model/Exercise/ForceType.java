@@ -17,20 +17,18 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ForceType {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+    @OneToMany(mappedBy = "forceType", cascade = CascadeType.REMOVE)
+    private final Set<Exercise> exercises = new HashSet<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @NotBlank
+    @Column(nullable = false)
+    private String name;
 
-  @NotBlank
-  @Column(nullable = false)
-  private String name;
-
-  @OneToMany(mappedBy = "forceType", cascade = CascadeType.REMOVE)
-  private final Set<Exercise> exercises = new HashSet<>();
-
-  public static ForceType createWithId(int id) {
-    ForceType forceType = new ForceType();
-    forceType.setId(id);
-    return forceType;
-  }
+    public static ForceType createWithId(int id) {
+        ForceType forceType = new ForceType();
+        forceType.setId(id);
+        return forceType;
+    }
 }

@@ -8,13 +8,13 @@ import source.code.service.Declaration.Text.TextCacheKeyGenerator;
 @Service
 public class RecipeInstructionTextCacheKeyGeneratorImpl implements TextCacheKeyGenerator<RecipeInstruction> {
 
-  @Override
-  public String generateCacheKey(RecipeInstruction entity) {
-    return CacheKeys.RECIPE_INSTRUCTION.toString() + entity.getRecipe().getId();
-  }
+    @Override
+    public String generateCacheKey(RecipeInstruction entity) {
+        return CacheKeys.RECIPE_INSTRUCTION.toString() + entity.getRecipe().getId();
+    }
 
-  @Override
-  public String generateCacheKeyForParent(int parentId) {
-    return CacheKeys.RECIPE_INSTRUCTION.toString() + parentId;
-  }
+    @Override
+    public String generateCacheKeyForParent(int parentId) {
+        return CacheKeys.RECIPE_INSTRUCTION.toString() + parentId;
+    }
 }

@@ -14,33 +14,33 @@ import source.code.model.Activity.Activity;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserActivity implements BaseUserEntity{
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+public class UserActivity implements BaseUserEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "activity_id", nullable = false)
-  private Activity activity;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "activity_id", nullable = false)
+    private Activity activity;
 
-  @NotNull
-  @Column(nullable = false)
-  private short type;
+    @NotNull
+    @Column(nullable = false)
+    private short type;
 
-  public static UserActivity createWithUserActivityType(
-          User user, Activity activity, short type) {
+    public static UserActivity createWithUserActivityType(
+            User user, Activity activity, short type) {
 
-    UserActivity userActivity = new UserActivity();
-    userActivity.setUser(user);
-    userActivity.setActivity(activity);
-    userActivity.setType(type);
+        UserActivity userActivity = new UserActivity();
+        userActivity.setUser(user);
+        userActivity.setActivity(activity);
+        userActivity.setType(type);
 
-    return userActivity;
-  }
+        return userActivity;
+    }
 }

@@ -12,15 +12,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryCreateDto {
-  private static final int NAME_MAX_LENGTH = 50;
+    private static final int NAME_MAX_LENGTH = 50;
 
-  @NotBlank
-  @Size(max = NAME_MAX_LENGTH)
-  private String name;
+    @NotBlank
+    @Size(max = NAME_MAX_LENGTH)
+    private String name;
 
-  @NotBlank
-  private String iconUrl;
+    @NotBlank
+    private String iconUrl;
 
-  @NotBlank
-  private String gradient;
+    @NotBlank
+    private String gradient;
 }

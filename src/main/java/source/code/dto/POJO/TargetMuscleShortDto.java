@@ -10,17 +10,17 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TargetMuscleShortDto {
-  private Integer id;
-  private String name;
-  private int priority;
+    private Integer id;
+    private String name;
+    private int priority;
 
-  public TargetMuscleShortDto(Integer id, String name) {
-    this.id = id;
-    this.name = name;
-  }
+    public TargetMuscleShortDto(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
-  public static TargetMuscleShortDto create(Integer id, String name, int priority) {
-    return new TargetMuscleShortDto(id, name, priority);
-  }
+    public static TargetMuscleShortDto create(Integer id, String name, int priority) {
+        return new TargetMuscleShortDto(id, name, priority);
+    }
 
 }

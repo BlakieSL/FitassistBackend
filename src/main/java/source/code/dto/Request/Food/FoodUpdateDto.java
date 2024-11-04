@@ -13,15 +13,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FoodUpdateDto {
-  @Size(max = 50)
-  private String name;
-  @Positive
-  private Double calories;
-  @PositiveOrZero
-  private Double protein;
-  @PositiveOrZero
-  private Double fat;
-  @PositiveOrZero
-  private Double carbohydrates;
-  private Integer categoryId;
+    @Size(max = 50)
+    private String name;
+    @Positive
+    private Double calories;
+    @PositiveOrZero
+    private Double protein;
+    @PositiveOrZero
+    private Double fat;
+    @PositiveOrZero
+    private Double carbohydrates;
+    private Integer categoryId;
 }

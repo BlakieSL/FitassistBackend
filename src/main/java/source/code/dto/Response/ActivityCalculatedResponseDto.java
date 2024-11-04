@@ -10,19 +10,19 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActivityCalculatedResponseDto {
-  private Integer id;
-  private String name;
-  private double met;
-  private String categoryName;
-  private int categoryId;
-  private int caloriesBurned;
-  private int time;
+    private Integer id;
+    private String name;
+    private double met;
+    private String categoryName;
+    private int categoryId;
+    private int caloriesBurned;
+    private int time;
 
-  public static ActivityCalculatedResponseDto createWithId(int id, int time) {
-    ActivityCalculatedResponseDto activityCalculatedResponseDto = new ActivityCalculatedResponseDto();
-    activityCalculatedResponseDto.setId(id);
-    activityCalculatedResponseDto.setTime(time);
+    public static ActivityCalculatedResponseDto createWithId(int id, int time) {
+        ActivityCalculatedResponseDto activityCalculatedResponseDto = new ActivityCalculatedResponseDto();
+        activityCalculatedResponseDto.setId(id);
+        activityCalculatedResponseDto.setTime(time);
 
-    return activityCalculatedResponseDto;
-  }
+        return activityCalculatedResponseDto;
+    }
 }

@@ -17,20 +17,20 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public abstract class TextBase {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-  @NotNull
-  @Column(nullable = false)
-  private short number;
+    @NotNull
+    @Column(nullable = false)
+    private short number;
 
-  @NotBlank
-  @Column(nullable = false)
-  private String text;
+    @NotBlank
+    @Column(nullable = false)
+    private String text;
 
-  public TextBase(short number, String text) {
-    this.number = number;
-    this.text = text;
-  }
+    public TextBase(short number, String text) {
+        this.number = number;
+        this.text = text;
+    }
 }

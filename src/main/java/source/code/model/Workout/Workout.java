@@ -21,28 +21,23 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Workout {
-  private static final int NAME_MAX_LENGTH = 50;
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
-
-  @NotBlank
-  @Size(max = NAME_MAX_LENGTH)
-  @Column(nullable = false, length = NAME_MAX_LENGTH)
-  private String name;
-
-  @NotNull
-  @PositiveOrZero
-  @Column(nullable = false)
-  private int time;
-
-  @NotNull
-  @ManyToOne
-  @JoinColumn(name = "plan_id", nullable = false)
-  private Plan plan;
-
-  @OneToMany(mappedBy = "workout",
-          cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
-  private final Set<WorkoutSet> workoutSets = new HashSet<>();
+    private static final int NAME_MAX_LENGTH = 50;
+    @OneToMany(mappedBy = "workout",
+            cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
+    private final Set<WorkoutSet> workoutSets = new HashSet<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @NotBlank
+    @Size(max = NAME_MAX_LENGTH)
+    @Column(nullable = false, length = NAME_MAX_LENGTH)
+    private String name;
+    @NotNull
+    @PositiveOrZero
+    @Column(nullable = false)
+    private int time;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "plan_id", nullable = false)
+    private Plan plan;
 }

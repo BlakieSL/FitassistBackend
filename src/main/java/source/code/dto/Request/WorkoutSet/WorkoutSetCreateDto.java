@@ -11,15 +11,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutSetCreateDto {
-  @NotNull
-  private double weight;
+    @NotNull
+    private double weight;
 
-  @NotNull
-  private int repetitions;
+    @NotNull
+    private int repetitions;
 
-  @NotNull
-  private int workoutId;
+    @NotNull
+    private int workoutId;
 
-  @NotNull
-  private int exerciseId;
+    @NotNull
+    private int exerciseId;
 }

@@ -10,6 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LikesAndSavesResponseDto {
-  private long likes;
-  private long saves;
+    private long likes;
+    private long saves;
 }

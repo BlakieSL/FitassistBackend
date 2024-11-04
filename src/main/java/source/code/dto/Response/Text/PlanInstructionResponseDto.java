@@ -10,8 +10,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlanInstructionResponseDto implements BaseTextResponseDto {
-  private Integer id;
-  private short number;
-  protected String title;
-  private String text;
+    protected String title;
+    private Integer id;
+    private short number;
+    private String text;
 }

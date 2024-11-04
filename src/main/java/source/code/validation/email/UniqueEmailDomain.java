@@ -12,9 +12,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UniqueEmailDomain {
-  String message() default "{com.example.program.UniqueEmailDomain.message}";
+    String message() default "{com.example.program.UniqueEmailDomain.message}";
 
-  Class<?>[] groups() default {};
+    Class<?>[] groups() default {};
 
-  Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default {};
 }

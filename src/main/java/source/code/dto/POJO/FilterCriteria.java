@@ -11,11 +11,11 @@ import source.code.helper.Enum.FilterOperation;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FilterCriteria {
-  private String filterKey;
-  private Object value;
-  private FilterOperation operation;
+    private String filterKey;
+    private Object value;
+    private FilterOperation operation;
 
-  public static FilterCriteria create(String filterKey, Object value, FilterOperation operation) {
-    return new FilterCriteria(filterKey, value, operation);
-  }
+    public static FilterCriteria create(String filterKey, Object value, FilterOperation operation) {
+        return new FilterCriteria(filterKey, value, operation);
+    }
 }

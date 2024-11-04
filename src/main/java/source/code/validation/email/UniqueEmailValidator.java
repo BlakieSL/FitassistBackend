@@ -8,23 +8,23 @@ import source.code.config.ContextProvider;
 import source.code.repository.UserRepository;
 
 public class UniqueEmailValidator implements ConstraintValidator<UniqueEmailDomain, String> {
-  UserRepository userRepository;
-  private EntityManager entityManager;
+    UserRepository userRepository;
+    private EntityManager entityManager;
 
-  @Override
-  public void initialize(UniqueEmailDomain constraintAnnotation) {
-    entityManager = ContextProvider.getBean(EntityManager.class);
-    this.userRepository = ContextProvider.getBean(UserRepository.class);
-    ConstraintValidator.super.initialize(constraintAnnotation);
-  }
-
-  @Override
-  public boolean isValid(String email, ConstraintValidatorContext context) {
-    try {
-      entityManager.setFlushMode(FlushModeType.COMMIT);
-      return !userRepository.existsByEmail(email);
-    } finally {
-      entityManager.setFlushMode(FlushModeType.AUTO);
+    @Override
+    public void initialize(UniqueEmailDomain constraintAnnotation) {
+        entityManager = ContextProvider.getBean(EntityManager.class);
+        this.userRepository = ContextProvider.getBean(UserRepository.class);
+        ConstraintValidator.super.initialize(constraintAnnotation);
     }
-  }
+
+    @Override
+    public boolean isValid(String email, ConstraintValidatorContext context) {
+        try {
+            entityManager.setFlushMode(FlushModeType.COMMIT);
+            return !userRepository.existsByEmail(email);
+        } finally {
+            entityManager.setFlushMode(FlushModeType.AUTO);
+        }
+    }
 }

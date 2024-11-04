@@ -6,10 +6,10 @@ import source.code.model.Recipe.Recipe;
 
 @Getter
 public class RecipeDeleteEvent extends ApplicationEvent {
-  private final Recipe recipe;
+    private final Recipe recipe;
 
-  public RecipeDeleteEvent(Object source, Recipe recipe) {
-    super(source);
-    this.recipe = recipe;
-  }
+    public RecipeDeleteEvent(Object source, Recipe recipe) {
+        super(source);
+        this.recipe = recipe;
+    }
 }

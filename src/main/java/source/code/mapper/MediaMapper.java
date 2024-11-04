@@ -13,18 +13,18 @@ import java.io.IOException;
 
 @Mapper(componentModel = "spring")
 public interface MediaMapper {
-  @Named("multipartFileToBytes")
-  static byte[] multipartFileToBytes(MultipartFile file) {
-    try {
-      return file.getBytes();
-    } catch (IOException e) {
-      throw new FileProcessingException("Failed to process the image file", e);
+    @Named("multipartFileToBytes")
+    static byte[] multipartFileToBytes(MultipartFile file) {
+        try {
+            return file.getBytes();
+        } catch (IOException e) {
+            throw new FileProcessingException("Failed to process the image file", e);
+        }
     }
-  }
 
-  MediaResponseDto toDto(Media media);
+    MediaResponseDto toDto(Media media);
 
-  @Mapping(target = "image", source = "image", qualifiedByName = "multipartFileToBytes")
-  @Mapping(target = "id", ignore = true)
-  Media toEntity(MediaCreateDto dto);
+    @Mapping(target = "image", source = "image", qualifiedByName = "multipartFileToBytes")
+    @Mapping(target = "id", ignore = true)
+    Media toEntity(MediaCreateDto dto);
 }

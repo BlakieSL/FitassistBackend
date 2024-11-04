@@ -12,12 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MediaCreateDto {
-  @NotNull
-  private MultipartFile image;
+    @NotNull
+    private MultipartFile image;
 
-  @NotNull
-  private String parentType;
+    @NotNull
+    private String parentType;
 
-  @NotNull
-  private Integer parentId;
+    @NotNull
+    private Integer parentId;
 }

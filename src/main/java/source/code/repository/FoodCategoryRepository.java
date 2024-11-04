@@ -6,5 +6,5 @@ import source.code.model.Food.FoodCategory;
 import java.util.Optional;
 
 public interface FoodCategoryRepository extends JpaRepository<FoodCategory, Integer> {
-  Optional<FoodCategory> findByName(String name);
+    Optional<FoodCategory> findByName(String name);
 }

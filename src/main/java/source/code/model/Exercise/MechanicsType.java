@@ -17,20 +17,18 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MechanicsType {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+    @OneToMany(mappedBy = "mechanicsType", cascade = CascadeType.REMOVE)
+    private final Set<Exercise> exercises = new HashSet<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @NotBlank
+    @Column(nullable = false)
+    private String name;
 
-  @NotBlank
-  @Column(nullable = false)
-  private String name;
-
-  @OneToMany(mappedBy = "mechanicsType", cascade = CascadeType.REMOVE)
-  private final Set<Exercise> exercises = new HashSet<>();
-
-  public static MechanicsType createWithId(int id) {
-    MechanicsType mechanicsType = new MechanicsType();
-    mechanicsType.setId(id);
-    return mechanicsType;
-  }
+    public static MechanicsType createWithId(int id) {
+        MechanicsType mechanicsType = new MechanicsType();
+        mechanicsType.setId(id);
+        return mechanicsType;
+    }
 }

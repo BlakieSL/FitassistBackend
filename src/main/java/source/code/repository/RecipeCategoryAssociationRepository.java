@@ -6,5 +6,5 @@ import source.code.model.Recipe.RecipeCategoryAssociation;
 import java.util.List;
 
 public interface RecipeCategoryAssociationRepository extends JpaRepository<RecipeCategoryAssociation, Integer> {
-  List<RecipeCategoryAssociation> findByRecipeCategoryId(int categoryId);
+    List<RecipeCategoryAssociation> findByRecipeCategoryId(int categoryId);
 }

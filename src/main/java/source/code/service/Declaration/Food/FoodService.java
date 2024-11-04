@@ -13,21 +13,21 @@ import source.code.model.Food.Food;
 import java.util.List;
 
 public interface FoodService {
-  FoodResponseDto createFood(FoodCreateDto request);
+    FoodResponseDto createFood(FoodCreateDto request);
 
-  void updateFood(int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+    void updateFood(int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-  void deleteFood(int foodId);
+    void deleteFood(int foodId);
 
-  FoodResponseDto getFood(int foodId);
+    FoodResponseDto getFood(int foodId);
 
-  List<FoodResponseDto> getAllFoods();
+    List<FoodResponseDto> getAllFoods();
 
-  List<FoodResponseDto> getFilteredFoods(FilterDto filter);
+    List<FoodResponseDto> getFilteredFoods(FilterDto filter);
 
-  List<Food> getAllFoodEntities();
+    List<Food> getAllFoodEntities();
 
-  FoodCalculatedMacrosResponseDto calculateFoodMacros(int foodId, CalculateFoodMacrosRequestDto request);
+    FoodCalculatedMacrosResponseDto calculateFoodMacros(int foodId, CalculateFoodMacrosRequestDto request);
 
-  List<FoodResponseDto> getFoodsByCategory(int categoryId);
+    List<FoodResponseDto> getFoodsByCategory(int categoryId);
 }

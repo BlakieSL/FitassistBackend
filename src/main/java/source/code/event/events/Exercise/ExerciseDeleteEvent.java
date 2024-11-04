@@ -6,10 +6,14 @@ import source.code.model.Exercise.Exercise;
 
 @Getter
 public class ExerciseDeleteEvent extends ApplicationEvent {
-  private final Exercise exercise;
+    private final Exercise exercise;
 
-  public ExerciseDeleteEvent(Object source, Exercise exercise) {
-    super(source);
-    this.exercise = exercise;
-  }
+    public ExerciseDeleteEvent(Object source, Exercise exercise) {
+        super(source);
+        this.exercise = exercise;
+    }
+
+    public static ExerciseDeleteEvent of(Object source, Exercise exercise) {
+        return new ExerciseDeleteEvent(source, exercise);
+    }
 }
