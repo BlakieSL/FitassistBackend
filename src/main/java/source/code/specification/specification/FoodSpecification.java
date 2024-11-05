@@ -9,7 +9,7 @@ import source.code.dto.POJO.FilterCriteria;
 import source.code.helper.Enum.Model.FoodField;
 import source.code.helper.Enum.Model.LikesAndSaves;
 import source.code.helper.TriFunction;
-import source.code.model.Food.Food;
+import source.code.model.food.Food;
 
 import java.util.Map;
 import java.util.Optional;

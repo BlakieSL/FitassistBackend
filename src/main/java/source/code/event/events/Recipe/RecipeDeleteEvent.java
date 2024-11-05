@@ -2,7 +2,7 @@ package source.code.event.events.Recipe;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import source.code.model.Recipe.Recipe;
+import source.code.model.recipe.Recipe;
 
 @Getter
 public class RecipeDeleteEvent extends ApplicationEvent {

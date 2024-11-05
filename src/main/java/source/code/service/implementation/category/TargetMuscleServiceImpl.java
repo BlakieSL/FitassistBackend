@@ -4,7 +4,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import source.code.mapper.category.TargetMuscleMapper;
-import source.code.model.Exercise.TargetMuscle;
+import source.code.model.exercise.TargetMuscle;
 import source.code.repository.TargetMuscleRepository;
 import source.code.service.declaration.category.CategoryCacheKeyGenerator;
 import source.code.service.declaration.category.CategoryService;

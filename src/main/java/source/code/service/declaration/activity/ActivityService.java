@@ -9,7 +9,7 @@ import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Response.ActivityAverageMetResponseDto;
 import source.code.dto.Response.ActivityCalculatedResponseDto;
 import source.code.dto.Response.ActivityResponseDto;
-import source.code.model.Activity.Activity;
+import source.code.model.activity.Activity;
 
 import java.util.List;
 

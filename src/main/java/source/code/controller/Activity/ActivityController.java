@@ -58,15 +58,18 @@ public class ActivityController {
 
     @PostMapping
     public ResponseEntity<ActivityResponseDto> createActivity(
-            @Valid @RequestBody ActivityCreateDto dto) {
-
+            @Valid @RequestBody ActivityCreateDto dto)
+    {
         ActivityResponseDto response = activityService.createActivity(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateActivity(@PathVariable int id, @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
+    public ResponseEntity<Void> updateActivity(
+            @PathVariable int id,
+            @RequestBody JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException
+    {
         activityService.updateActivity(id, patch);
         return ResponseEntity.noContent().build();
     }
@@ -80,8 +83,8 @@ public class ActivityController {
     @PostMapping("/{id}/calculate-calories")
     public ResponseEntity<ActivityCalculatedResponseDto> calculateActivityCaloriesBurned(
             @PathVariable int id,
-            @Valid @RequestBody CalculateActivityCaloriesRequestDto request) {
-
+            @Valid @RequestBody CalculateActivityCaloriesRequestDto request
+    ) {
         ActivityCalculatedResponseDto response = activityService.calculateCaloriesBurned(id, request);
         return ResponseEntity.ok(response);
     }

@@ -19,7 +19,7 @@ import source.code.event.events.Food.FoodDeleteEvent;
 import source.code.event.events.Food.FoodUpdateEvent;
 import source.code.helper.Enum.CacheNames;
 import source.code.mapper.food.FoodMapper;
-import source.code.model.Food.Food;
+import source.code.model.food.Food;
 import source.code.repository.FoodRepository;
 import source.code.service.declaration.food.FoodService;
 import source.code.service.declaration.helpers.JsonPatchService;

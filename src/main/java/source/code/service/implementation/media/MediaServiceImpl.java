@@ -6,7 +6,7 @@ import source.code.dto.Request.Media.MediaCreateDto;
 import source.code.dto.Response.MediaResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.MediaMapper;
-import source.code.model.Media.Media;
+import source.code.model.media.Media;
 import source.code.repository.MediaRepository;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.media.MediaService;

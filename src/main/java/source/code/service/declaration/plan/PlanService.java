@@ -7,7 +7,7 @@ import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Request.Plan.PlanCreateDto;
 import source.code.dto.Response.Category.EquipmentResponseDto;
 import source.code.dto.Response.PlanResponseDto;
-import source.code.model.Plan.Plan;
+import source.code.model.plan.Plan;
 
 import java.util.List;
 

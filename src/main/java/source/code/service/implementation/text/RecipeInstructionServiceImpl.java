@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.Request.Text.RecipeInstructionUpdateDto;
 import source.code.dto.Response.Text.RecipeInstructionResponseDto;
 import source.code.mapper.text.TextMapper;
-import source.code.model.Text.RecipeInstruction;
+import source.code.model.text.RecipeInstruction;
 import source.code.repository.RecipeInstructionRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.ValidationService;

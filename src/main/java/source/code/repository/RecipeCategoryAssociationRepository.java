@@ -1,7 +1,7 @@
 package source.code.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import source.code.model.Recipe.RecipeCategoryAssociation;
+import source.code.model.recipe.RecipeCategoryAssociation;
 
 import java.util.List;
 

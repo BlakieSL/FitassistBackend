@@ -9,8 +9,8 @@ import source.code.dto.POJO.FilterCriteria;
 import source.code.helper.Enum.Model.LikesAndSaves;
 import source.code.helper.Enum.Model.RecipeField;
 import source.code.helper.TriFunction;
-import source.code.model.Recipe.Recipe;
-import source.code.model.Recipe.RecipeCategoryAssociation;
+import source.code.model.recipe.Recipe;
+import source.code.model.recipe.RecipeCategoryAssociation;
 
 import java.util.Map;
 import java.util.Optional;

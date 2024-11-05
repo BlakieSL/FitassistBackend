@@ -5,8 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 import source.code.dto.Response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
-import source.code.model.User.BaseUserEntity;
-import source.code.model.User.User;
+import source.code.model.user.BaseUserEntity;
+import source.code.model.user.User;
 import source.code.repository.UserRepository;
 
 import java.util.List;

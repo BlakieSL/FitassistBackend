@@ -1,7 +1,7 @@
 package source.code.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import source.code.model.Workout.WorkoutSet;
+import source.code.model.workout.WorkoutSet;
 
 import java.util.List;
 

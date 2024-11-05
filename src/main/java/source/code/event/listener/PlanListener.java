@@ -6,8 +6,8 @@ import source.code.event.events.Plan.PlanCreateEvent;
 import source.code.event.events.Plan.PlanDeleteEvent;
 import source.code.event.events.Plan.PlanUpdateEvent;
 import source.code.helper.Enum.CacheNames;
-import source.code.model.Plan.Plan;
-import source.code.model.Plan.PlanCategoryAssociation;
+import source.code.model.plan.Plan;
+import source.code.model.plan.PlanCategoryAssociation;
 import source.code.service.declaration.cache.CacheService;
 import source.code.service.declaration.search.LuceneIndexService;
 

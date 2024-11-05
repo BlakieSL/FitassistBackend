@@ -6,12 +6,12 @@ import source.code.dto.POJO.FilterCriteria;
 import source.code.helper.Enum.Model.LikesAndSaves;
 import source.code.helper.Enum.Model.PlanField;
 import source.code.helper.TriFunction;
-import source.code.model.Exercise.Exercise;
-import source.code.model.Other.Equipment;
-import source.code.model.Plan.Plan;
-import source.code.model.Plan.PlanCategoryAssociation;
-import source.code.model.Workout.Workout;
-import source.code.model.Workout.WorkoutSet;
+import source.code.model.exercise.Exercise;
+import source.code.model.other.Equipment;
+import source.code.model.plan.Plan;
+import source.code.model.plan.PlanCategoryAssociation;
+import source.code.model.workout.Workout;
+import source.code.model.workout.WorkoutSet;
 
 import java.util.Map;
 import java.util.Optional;

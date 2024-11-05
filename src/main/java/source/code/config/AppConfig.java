@@ -7,6 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class AppConfig {
+    /*
     private final RedissonInterceptor redissonInterceptor;
 
     public AppConfig(RedissonInterceptor redissonInterceptor) {
@@ -23,4 +24,6 @@ public class AppConfig {
             }
         };
     }
+
+     */
 }

@@ -10,10 +10,10 @@ import source.code.dto.Response.Text.ExerciseInstructionResponseDto;
 import source.code.dto.Response.Text.ExerciseTipResponseDto;
 import source.code.dto.Response.Text.PlanInstructionResponseDto;
 import source.code.dto.Response.Text.RecipeInstructionResponseDto;
-import source.code.model.Text.ExerciseInstruction;
-import source.code.model.Text.ExerciseTip;
-import source.code.model.Text.PlanInstruction;
-import source.code.model.Text.RecipeInstruction;
+import source.code.model.text.ExerciseInstruction;
+import source.code.model.text.ExerciseTip;
+import source.code.model.text.PlanInstruction;
+import source.code.model.text.RecipeInstruction;
 
 @Mapper(componentModel = "spring")
 public abstract class TextMapper {

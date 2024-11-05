@@ -6,8 +6,8 @@ import source.code.dto.Request.Food.FoodCreateDto;
 import source.code.dto.Request.Food.FoodUpdateDto;
 import source.code.dto.Response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.Response.FoodResponseDto;
-import source.code.model.Food.Food;
-import source.code.model.Food.FoodCategory;
+import source.code.model.food.Food;
+import source.code.model.food.FoodCategory;
 import source.code.repository.FoodCategoryRepository;
 import source.code.service.declaration.helpers.RepositoryHelper;
 

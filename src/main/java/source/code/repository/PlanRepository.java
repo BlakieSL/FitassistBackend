@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import source.code.dto.Response.Category.EquipmentResponseDto;
-import source.code.model.Plan.Plan;
+import source.code.model.plan.Plan;
 
 import java.util.List;
 

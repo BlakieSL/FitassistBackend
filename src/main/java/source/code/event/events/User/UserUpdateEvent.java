@@ -2,7 +2,7 @@ package source.code.event.events.User;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import source.code.model.User.User;
+import source.code.model.user.User;
 
 @Getter
 public class UserUpdateEvent extends ApplicationEvent {

@@ -1,7 +1,7 @@
 package source.code.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import source.code.model.Plan.PlanCategoryAssociation;
+import source.code.model.plan.PlanCategoryAssociation;
 
 import java.util.List;
 

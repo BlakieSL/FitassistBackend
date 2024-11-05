@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.Request.Text.PlanInstructionUpdateDto;
 import source.code.dto.Response.Text.PlanInstructionResponseDto;
 import source.code.mapper.text.TextMapper;
-import source.code.model.Text.PlanInstruction;
+import source.code.model.text.PlanInstruction;
 import source.code.repository.PlanInstructionRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.ValidationService;

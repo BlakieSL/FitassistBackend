@@ -6,8 +6,8 @@ import source.code.event.events.Exercise.ExerciseCreateEvent;
 import source.code.event.events.Exercise.ExerciseDeleteEvent;
 import source.code.event.events.Exercise.ExerciseUpdateEvent;
 import source.code.helper.Enum.CacheNames;
-import source.code.model.Exercise.Exercise;
-import source.code.model.Exercise.ExerciseTargetMuscle;
+import source.code.model.exercise.Exercise;
+import source.code.model.exercise.ExerciseTargetMuscle;
 import source.code.service.declaration.cache.CacheService;
 import source.code.service.declaration.search.LuceneIndexService;
 

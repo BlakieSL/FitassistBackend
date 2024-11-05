@@ -9,7 +9,7 @@ import source.code.dto.POJO.FilterCriteria;
 import source.code.helper.Enum.Model.ActivityField;
 import source.code.helper.Enum.Model.LikesAndSaves;
 import source.code.helper.TriFunction;
-import source.code.model.Activity.Activity;
+import source.code.model.activity.Activity;
 
 import java.util.Map;
 import java.util.Optional;

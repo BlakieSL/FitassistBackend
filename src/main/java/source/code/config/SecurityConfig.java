@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -29,10 +30,15 @@ import java.util.List;
 public class SecurityConfig {
     private final JwtService jwtService;
     private final UserServiceImpl userServiceImpl;
+    private final RateLimitingFilter rateLimitingFilter;
 
-    public SecurityConfig(JwtService jwtService, @Lazy UserServiceImpl userServiceImpl) {
+    public SecurityConfig(JwtService jwtService,
+                          @Lazy UserServiceImpl userServiceImpl,
+                          RateLimitingFilter rateLimitingFilter
+    ) {
         this.jwtService = jwtService;
         this.userServiceImpl = userServiceImpl;
+        this.rateLimitingFilter = rateLimitingFilter;
     }
 
     @Bean
@@ -64,8 +70,10 @@ public class SecurityConfig {
         http.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.csrf(AbstractHttpConfigurer::disable);
 
-        http.addFilterBefore(jwtAuthenticationFilter, AuthorizationFilter.class);
-        http.addFilterBefore(bearerTokenFilter, AuthorizationFilter.class);
+        http.addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(bearerTokenFilter, JwtAuthenticationFilter.class);
+
 
         return http.build();
     }

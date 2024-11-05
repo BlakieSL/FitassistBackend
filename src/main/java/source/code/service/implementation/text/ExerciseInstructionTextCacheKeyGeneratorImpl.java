@@ -2,7 +2,7 @@ package source.code.service.implementation.text;
 
 import org.springframework.stereotype.Service;
 import source.code.helper.Enum.CacheKeys;
-import source.code.model.Text.ExerciseInstruction;
+import source.code.model.text.ExerciseInstruction;
 import source.code.service.declaration.text.TextCacheKeyGenerator;
 
 @Service

@@ -8,7 +8,7 @@ import source.code.dto.Request.Workout.WorkoutCreateDto;
 import source.code.dto.Request.Workout.WorkoutUpdateDto;
 import source.code.dto.Response.Workout.WorkoutResponseDto;
 import source.code.mapper.workout.WorkoutMapper;
-import source.code.model.Workout.Workout;
+import source.code.model.workout.Workout;
 import source.code.repository.WorkoutRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;

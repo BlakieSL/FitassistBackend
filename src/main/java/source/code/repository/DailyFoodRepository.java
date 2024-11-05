@@ -2,7 +2,7 @@ package source.code.repository;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import source.code.model.Food.DailyFood;
+import source.code.model.food.DailyFood;
 
 import java.util.Optional;
 

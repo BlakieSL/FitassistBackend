@@ -1,7 +1,7 @@
 package source.code.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import source.code.model.Food.FoodCategory;
+import source.code.model.food.FoodCategory;
 
 import java.util.Optional;
 

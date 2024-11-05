@@ -4,7 +4,7 @@ import org.mapstruct.*;
 import source.code.dto.Request.Category.CategoryCreateDto;
 import source.code.dto.Request.Category.CategoryUpdateDto;
 import source.code.dto.Response.Category.CategoryResponseDto;
-import source.code.model.Food.FoodCategory;
+import source.code.model.food.FoodCategory;
 
 @Mapper(componentModel = "spring")
 public abstract class FoodCategoryMapper implements BaseMapper<FoodCategory> {
