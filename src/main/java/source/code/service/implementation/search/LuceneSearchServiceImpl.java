@@ -22,20 +22,37 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
 
     @Override
     public List<SearchResponseDto> search(String query) {
+        return searchWithFilter(query, null, null);
+    }
+
+    @Override
+    public List<SearchResponseDto> searchFood(String query) {
+        return searchWithFilter(query, "type", "Food");
+    }
+
+    private List<SearchResponseDto> searchWithFilter(String query, String filterField, String filterValue) {
         List<SearchResponseDto> results = new ArrayList<>();
         try (Directory directory = FSDirectory.open(Paths.get(PATH));
              IndexReader reader = DirectoryReader.open(directory)) {
 
             IndexSearcher searcher = new IndexSearcher(reader);
-            BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
+            BooleanQuery.Builder nameQuery = new BooleanQuery.Builder();
 
             Query fuzzyQuery = new FuzzyQuery(new Term("name", query));
-            booleanQuery.add(fuzzyQuery, BooleanClause.Occur.SHOULD);
+            nameQuery.add(fuzzyQuery, BooleanClause.Occur.SHOULD);
 
             Query prefixQuery = new PrefixQuery(new Term("name", query));
-            booleanQuery.add(prefixQuery, BooleanClause.Occur.SHOULD);
+            nameQuery.add(prefixQuery, BooleanClause.Occur.SHOULD);
 
-            TopDocs topDocs = searcher.search(booleanQuery.build(), 10);
+            BooleanQuery.Builder mainQuery = new BooleanQuery.Builder();
+            mainQuery.add(nameQuery.build(), BooleanClause.Occur.MUST);
+
+            if (filterField != null && filterValue != null) {
+                Query filterQuery = new TermQuery(new Term(filterField, filterValue));
+                mainQuery.add(filterQuery, BooleanClause.Occur.MUST);
+            }
+
+            TopDocs topDocs = searcher.search(mainQuery.build(), 10);
 
             for (var scoreDoc : topDocs.scoreDocs) {
                 Document doc = searcher.doc(scoreDoc.doc);
@@ -51,6 +68,6 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
         int id = Integer.parseInt(doc.get("id"));
         String name = doc.get("name");
         String type = doc.get("type");
-        return SearchResponseDto.create(id, name, type);
+        return SearchResponseDto.of(id, name, type);
     }
 }

@@ -9,15 +9,9 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 public class DailyActivitiesResponseDto {
     List<ActivityCalculatedResponseDto> activities;
     private int totalCaloriesBurned;
-
-    public static DailyActivitiesResponseDto of(
-            List<ActivityCalculatedResponseDto> activities, int totalCaloriesBurned
-    ) {
-        return new DailyActivitiesResponseDto(activities, totalCaloriesBurned);
-    }
 }
