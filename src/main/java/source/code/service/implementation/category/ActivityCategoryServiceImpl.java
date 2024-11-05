@@ -4,7 +4,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import source.code.mapper.category.ActivityCategoryMapper;
-import source.code.model.Activity.ActivityCategory;
+import source.code.model.activity.ActivityCategory;
 import source.code.repository.ActivityCategoryRepository;
 import source.code.service.declaration.category.CategoryCacheKeyGenerator;
 import source.code.service.declaration.category.CategoryService;

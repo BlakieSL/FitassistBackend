@@ -7,8 +7,8 @@ import source.code.dto.POJO.UserCredentialsDto;
 import source.code.dto.Request.User.UserCreateDto;
 import source.code.dto.Request.User.UserUpdateDto;
 import source.code.dto.Response.User.UserResponseDto;
-import source.code.model.User.Role;
-import source.code.model.User.User;
+import source.code.model.user.Role;
+import source.code.model.user.User;
 import source.code.repository.RoleRepository;
 import source.code.service.declaration.helpers.CalculationsService;
 

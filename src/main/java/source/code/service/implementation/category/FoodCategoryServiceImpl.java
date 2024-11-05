@@ -4,7 +4,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import source.code.mapper.category.FoodCategoryMapper;
-import source.code.model.Food.FoodCategory;
+import source.code.model.food.FoodCategory;
 import source.code.repository.FoodCategoryRepository;
 import source.code.service.declaration.category.CategoryCacheKeyGenerator;
 import source.code.service.declaration.category.CategoryService;

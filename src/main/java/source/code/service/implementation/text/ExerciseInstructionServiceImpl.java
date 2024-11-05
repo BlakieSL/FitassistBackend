@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.Request.Text.ExerciseInstructionUpdateDto;
 import source.code.dto.Response.Text.ExerciseInstructionResponseDto;
 import source.code.mapper.text.TextMapper;
-import source.code.model.Text.ExerciseInstruction;
+import source.code.model.text.ExerciseInstruction;
 import source.code.repository.ExerciseInstructionRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.ValidationService;

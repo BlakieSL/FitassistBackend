@@ -6,7 +6,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Request.Recipe.RecipeCreateDto;
 import source.code.dto.Response.RecipeResponseDto;
-import source.code.model.Recipe.Recipe;
+import source.code.model.recipe.Recipe;
 
 import java.util.List;
 

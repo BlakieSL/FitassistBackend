@@ -2,7 +2,7 @@ package source.code.event.events.Plan;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import source.code.model.Plan.Plan;
+import source.code.model.plan.Plan;
 
 @Getter
 public class PlanCreateEvent extends ApplicationEvent {

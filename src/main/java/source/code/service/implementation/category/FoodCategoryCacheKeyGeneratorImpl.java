@@ -2,7 +2,7 @@ package source.code.service.implementation.category;
 
 import org.springframework.stereotype.Service;
 import source.code.helper.Enum.CacheKeys;
-import source.code.model.Food.FoodCategory;
+import source.code.model.food.FoodCategory;
 import source.code.service.declaration.category.CategoryCacheKeyGenerator;
 
 @Service

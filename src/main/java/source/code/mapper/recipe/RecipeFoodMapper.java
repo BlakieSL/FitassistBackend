@@ -5,7 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import source.code.dto.Request.Recipe.RecipeFoodCreateDto;
-import source.code.model.Recipe.RecipeFood;
+import source.code.model.recipe.RecipeFood;
 
 @Mapper(componentModel = "spring")
 public abstract class RecipeFoodMapper {

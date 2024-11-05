@@ -2,7 +2,7 @@ package source.code.event.events.Food;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import source.code.model.Food.Food;
+import source.code.model.food.Food;
 
 @Getter
 public class FoodCreateEvent extends ApplicationEvent {

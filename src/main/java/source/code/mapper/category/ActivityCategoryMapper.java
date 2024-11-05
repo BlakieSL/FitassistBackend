@@ -4,7 +4,7 @@ import org.mapstruct.*;
 import source.code.dto.Request.Category.CategoryCreateDto;
 import source.code.dto.Request.Category.CategoryUpdateDto;
 import source.code.dto.Response.Category.CategoryResponseDto;
-import source.code.model.Activity.ActivityCategory;
+import source.code.model.activity.ActivityCategory;
 
 @Mapper(componentModel = "spring")
 public abstract class ActivityCategoryMapper implements BaseMapper<ActivityCategory> {
