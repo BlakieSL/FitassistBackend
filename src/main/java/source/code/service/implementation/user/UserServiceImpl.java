@@ -22,7 +22,7 @@ import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.CacheNames;
 import source.code.helper.User.UserDetailsHelper;
 import source.code.mapper.UserMapper;
-import source.code.model.User.User;
+import source.code.model.user.User;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;

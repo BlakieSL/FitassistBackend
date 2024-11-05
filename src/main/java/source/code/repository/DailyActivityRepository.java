@@ -2,7 +2,7 @@ package source.code.repository;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import source.code.model.Activity.DailyActivity;
+import source.code.model.activity.DailyActivity;
 
 import java.util.Optional;
 

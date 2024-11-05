@@ -1,7 +1,7 @@
 package source.code.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import source.code.model.User.Role;
+import source.code.model.user.Role;
 
 import java.util.Optional;
 

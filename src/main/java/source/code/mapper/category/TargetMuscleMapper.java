@@ -4,7 +4,7 @@ import org.mapstruct.*;
 import source.code.dto.Request.Category.CategoryCreateDto;
 import source.code.dto.Request.Category.CategoryUpdateDto;
 import source.code.dto.Response.Category.CategoryResponseDto;
-import source.code.model.Exercise.TargetMuscle;
+import source.code.model.exercise.TargetMuscle;
 
 @Mapper(componentModel = "spring")
 public abstract class TargetMuscleMapper implements BaseMapper<TargetMuscle> {

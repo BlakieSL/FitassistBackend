@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.Request.Workout.WorkoutCreateDto;
 import source.code.dto.Request.Workout.WorkoutUpdateDto;
 import source.code.dto.Response.Workout.WorkoutResponseDto;
-import source.code.model.Plan.Plan;
-import source.code.model.Workout.Workout;
+import source.code.model.plan.Plan;
+import source.code.model.workout.Workout;
 import source.code.repository.PlanRepository;
 import source.code.service.declaration.helpers.RepositoryHelper;
 

@@ -6,11 +6,11 @@ import source.code.dto.POJO.TargetMuscleShortDto;
 import source.code.dto.Request.Exercise.ExerciseCreateDto;
 import source.code.dto.Request.Exercise.ExerciseUpdateDto;
 import source.code.dto.Response.ExerciseResponseDto;
-import source.code.model.Exercise.*;
-import source.code.model.Other.Equipment;
-import source.code.model.Other.ExpertiseLevel;
-import source.code.model.Text.ExerciseInstruction;
-import source.code.model.Text.ExerciseTip;
+import source.code.model.exercise.*;
+import source.code.model.other.Equipment;
+import source.code.model.other.ExpertiseLevel;
+import source.code.model.text.ExerciseInstruction;
+import source.code.model.text.ExerciseTip;
 import source.code.repository.*;
 import source.code.service.declaration.helpers.RepositoryHelper;
 

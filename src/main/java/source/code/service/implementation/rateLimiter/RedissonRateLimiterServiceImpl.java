@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentMap;
 public class RedissonRateLimiterServiceImpl implements RedissonRateLimiterService {
     private final RedissonClient redissonClient;
     private final ConcurrentMap<Integer, RRateLimiter> rateLimiters = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, RRateLimiter> rateLimitersByKey = new ConcurrentHashMap<>(); // New map for generic keys
 
     public RedissonRateLimiterServiceImpl(RedissonClient redissonClient) {
         this.redissonClient = redissonClient;
@@ -25,6 +26,14 @@ public class RedissonRateLimiterServiceImpl implements RedissonRateLimiterServic
         return rateLimiter.tryAcquire(1);
     }
 
+    @Override
+    public boolean isAllowed(String key) {
+        RRateLimiter rateLimiter = getRateLimiterForKey(key);
+        boolean allowed = rateLimiter.tryAcquire(1);
+        System.out.println("Key: " + key + " | Allowed: " + allowed);
+        return allowed;
+    }
+
     private RRateLimiter getRateLimiterForUserId(int userId) {
         return rateLimiters.computeIfAbsent(userId, this::createRateLimiterForUserId);
     }
@@ -33,6 +42,18 @@ public class RedissonRateLimiterServiceImpl implements RedissonRateLimiterServic
         String rateLimiterName = "rateLimiter:user:" + userId;
         RRateLimiter rateLimiter = redissonClient.getRateLimiter(rateLimiterName);
         rateLimiter.trySetRate(RateType.OVERALL, 8, 1, RateIntervalUnit.MINUTES);
+        return rateLimiter;
+    }
+
+    // New method to handle rate limiting for generic keys (non-auth endpoints)
+    private RRateLimiter getRateLimiterForKey(String key) {
+        return rateLimitersByKey.computeIfAbsent(key, this::createRateLimiterForKey);
+    }
+
+    private RRateLimiter createRateLimiterForKey(String key) {
+        String rateLimiterName = "rateLimiter:key:" + key;
+        RRateLimiter rateLimiter = redissonClient.getRateLimiter(rateLimiterName);
+        rateLimiter.trySetRate(RateType.OVERALL, 5, 1, RateIntervalUnit.MINUTES); // Configurable rate for non-auth endpoints
         return rateLimiter;
     }
 }

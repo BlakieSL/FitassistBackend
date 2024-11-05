@@ -2,7 +2,7 @@ package source.code.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
-import source.code.model.Media.Media;
+import source.code.model.media.Media;
 
 import java.util.List;
 import java.util.Optional;
