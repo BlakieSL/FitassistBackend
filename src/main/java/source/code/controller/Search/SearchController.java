@@ -24,4 +24,10 @@ public class SearchController {
         List<SearchResponseDto> result = luceneSearchService.search(query);
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/foods/{query}")
+    public ResponseEntity<List<SearchResponseDto>> searchFood(@PathVariable String query) {
+        List<SearchResponseDto> foods = luceneSearchService.searchFood(query);
+        return ResponseEntity.ok(foods);
+    }
 }

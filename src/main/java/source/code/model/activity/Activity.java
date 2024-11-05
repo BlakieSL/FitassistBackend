@@ -55,7 +55,7 @@ public class Activity implements IndexedEntity {
         return this.getClass().getSimpleName();
     }
 
-    public static Activity createWithIdNameMet(int id, String name, double met) {
+    public static Activity of(int id, String name, double met) {
         Activity activity = new Activity();
         activity.setId(id);
         activity.setName(name);
@@ -63,9 +63,4 @@ public class Activity implements IndexedEntity {
         return activity;
     }
 
-    public static Activity createWithId(int id) {
-        Activity activity = new Activity();
-        activity.setId(id);
-        return activity;
-    }
 }

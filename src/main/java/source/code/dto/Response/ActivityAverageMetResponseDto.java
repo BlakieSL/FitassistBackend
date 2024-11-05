@@ -7,11 +7,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 public class ActivityAverageMetResponseDto {
     private double met;
-    public static ActivityAverageMetResponseDto of(double met) {
-        return new ActivityAverageMetResponseDto(met);
-    }
 }
