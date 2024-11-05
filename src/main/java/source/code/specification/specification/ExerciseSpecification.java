@@ -24,37 +24,56 @@ public class ExerciseSpecification extends BaseSpecification<Exercise> {
 
         fieldHandlers = Map.of(
                 ExerciseField.EXPERTISE_LEVEL.name(),
-                (root, query, builder) ->
-                        handleEntityProperty(root, ExerciseField.EXPERTISE_LEVEL.getFieldName(), builder),
-
+                (root, query, builder) -> handleEntityProperty(
+                        root,
+                        ExerciseField.EXPERTISE_LEVEL.getFieldName(),
+                        builder
+                ),
                 ExerciseField.EQUIPMENT.name(),
-                (root, query, builder) ->
-                        handleEntityProperty(root, ExerciseField.EQUIPMENT.getFieldName(), builder),
-
+                (root, query, builder) -> handleEntityProperty(
+                        root,
+                        ExerciseField.EQUIPMENT.getFieldName(),
+                        builder
+                ),
                 ExerciseField.TYPE.name(),
-                (root, query, builder) ->
-                        handleEntityProperty(root, ExerciseField.TYPE.getFieldName(), builder),
-
+                (root, query, builder) -> handleEntityProperty(
+                        root,
+                        ExerciseField.TYPE.getFieldName(),
+                        builder
+                ),
                 ExerciseField.MECHANICS_TYPE.name(),
-                (root, query, builder) ->
-                        handleEntityProperty(root, ExerciseField.MECHANICS_TYPE.getFieldName(), builder),
-
+                (root, query, builder) -> handleEntityProperty(
+                        root,
+                        ExerciseField.MECHANICS_TYPE.getFieldName(),
+                        builder
+                ),
                 ExerciseField.FORCE_TYPE.name(),
-                (root, query, builder) ->
-                        handleEntityProperty(root, ExerciseField.FORCE_TYPE.getFieldName(), builder),
-
+                (root, query, builder) -> handleEntityProperty(
+                        root,
+                        ExerciseField.FORCE_TYPE.getFieldName(),
+                        builder
+                ),
                 ExerciseField.TARGET_MUSCLE.name(),
-                (root, query, builder) ->
-                        handleManyToManyProperty(root, ExerciseField.TARGET_MUSCLE.getFieldName(),
-                                ExerciseTargetMuscle.TARGET_MUSCLE, builder),
-
+                (root, query, builder) -> handleManyToManyProperty(
+                        root,
+                        ExerciseField.TARGET_MUSCLE.getFieldName(),
+                        ExerciseTargetMuscle.TARGET_MUSCLE,
+                        builder
+                ),
                 LikesAndSaves.LIKES.name(),
-                (root, query, builder) ->
-                        handleLikesProperty(root, LikesAndSaves.USER_EXERCISES.getFieldName(), query, builder),
-
+                (root, query, builder) -> handleLikesProperty(
+                        root,
+                        LikesAndSaves.USER_EXERCISES.getFieldName(),
+                        query,
+                        builder
+                ),
                 LikesAndSaves.SAVES.name(),
-                (root, query, builder) ->
-                        handleLikesProperty(root, LikesAndSaves.USER_EXERCISES.getFieldName(), query, builder)
+                (root, query, builder) -> handleSavesProperty(
+                        root,
+                        LikesAndSaves.USER_EXERCISES.getFieldName(),
+                        query,
+                        builder
+                )
         );
     }
 

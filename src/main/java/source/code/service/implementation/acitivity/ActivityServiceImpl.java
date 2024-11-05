@@ -120,7 +120,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public List<ActivityResponseDto> getFilteredActivities(FilterDto filter) {
         SpecificationFactory<Activity> activityFactory = ActivitySpecification::of;
-        SpecificationBuilder<Activity> specificationBuilder = SpecificationBuilder.create(
+        SpecificationBuilder<Activity> specificationBuilder = SpecificationBuilder.of(
                 filter,
                 activityFactory
         );

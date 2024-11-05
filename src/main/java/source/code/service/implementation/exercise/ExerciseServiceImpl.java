@@ -106,7 +106,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     public List<ExerciseResponseDto> getFilteredExercises(FilterDto filter) {
         SpecificationFactory<Exercise> exerciseFactory = ExerciseSpecification::of;
-        SpecificationBuilder<Exercise> specificationBuilder = SpecificationBuilder.create(
+        SpecificationBuilder<Exercise> specificationBuilder = SpecificationBuilder.of(
                 filter,
                 exerciseFactory
         );
