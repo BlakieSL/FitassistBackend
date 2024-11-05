@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import source.code.dto.Request.Recipe.RecipeFoodCreateDto;
 import source.code.dto.Response.FoodResponseDto;
 import source.code.dto.Response.RecipeResponseDto;
-import source.code.service.Declaration.Recipe.RecipeFoodService;
+import source.code.service.declaration.recipe.RecipeFoodService;
 
 import java.util.List;
 

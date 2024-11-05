@@ -13,7 +13,7 @@ import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Response.ActivityAverageMetResponseDto;
 import source.code.dto.Response.ActivityCalculatedResponseDto;
 import source.code.dto.Response.ActivityResponseDto;
-import source.code.service.Declaration.Activity.ActivityService;
+import source.code.service.declaration.activity.ActivityService;
 
 import java.util.List;
 

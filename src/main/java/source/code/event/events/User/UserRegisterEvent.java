@@ -12,4 +12,8 @@ public class UserRegisterEvent extends ApplicationEvent {
         super(source);
         this.userCreateDto = userCreateDto;
     }
+
+    public static UserRegisterEvent of(Object source, UserCreateDto userCreateDto) {
+        return new UserRegisterEvent(source, userCreateDto);
+    }
 }

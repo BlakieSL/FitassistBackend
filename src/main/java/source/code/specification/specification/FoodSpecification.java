@@ -59,4 +59,8 @@ public class FoodSpecification extends BaseSpecification<Food> {
                 .map(handler -> handler.apply(root, query, builder))
                 .orElseThrow(() -> new IllegalStateException("Unexpected filter key: " + criteria.getFilterKey()));
     }
+
+    public static FoodSpecification of(FilterCriteria criteria) {
+        return new FoodSpecification(criteria);
+    }
 }

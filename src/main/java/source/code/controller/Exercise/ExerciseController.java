@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import source.code.dto.Request.Exercise.ExerciseCreateDto;
 import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Response.ExerciseResponseDto;
-import source.code.service.Declaration.Exercise.ExerciseService;
+import source.code.service.declaration.exercise.ExerciseService;
 
 import java.util.List;
 

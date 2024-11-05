@@ -13,4 +13,8 @@ public class TextCreateCacheEvent extends ApplicationEvent {
         this.cacheKey = cacheKey;
         this.cachedData = cachedData;
     }
+
+    public static TextCreateCacheEvent of(Object source, String cacheKey, Object cachedData) {
+        return new TextCreateCacheEvent(source, cacheKey, cachedData);
+    }
 }

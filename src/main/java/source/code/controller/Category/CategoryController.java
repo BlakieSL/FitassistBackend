@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import source.code.dto.Request.Category.CategoryCreateDto;
 import source.code.dto.Response.Category.CategoryResponseDto;
 import source.code.helper.Enum.CategoryType;
-import source.code.service.Declaration.Category.CategoryService;
-import source.code.service.Declaration.Selector.CategorySelectorService;
+import source.code.service.declaration.category.CategoryService;
+import source.code.service.declaration.selector.CategorySelectorService;
 
 import java.util.List;
 

@@ -12,4 +12,8 @@ public class FoodDeleteEvent extends ApplicationEvent {
         super(source);
         this.food = food;
     }
+
+    public static FoodDeleteEvent of(Object source, Food food) {
+        return new FoodDeleteEvent(source, food);
+    }
 }

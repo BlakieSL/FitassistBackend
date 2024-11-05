@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import source.code.event.events.Category.CategoryClearCacheEvent;
 import source.code.event.events.Category.CategoryCreateCacheEvent;
 import source.code.helper.Enum.CacheNames;
-import source.code.service.Declaration.Cache.CacheService;
+import source.code.service.declaration.cache.CacheService;
 
 @Component
 public class CategoryListener {

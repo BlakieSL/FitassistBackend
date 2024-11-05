@@ -11,4 +11,8 @@ public class TextClearCacheEvent extends ApplicationEvent {
         super(source);
         this.cacheKey = cacheKey;
     }
+
+    public static TextClearCacheEvent of(Object source, String cacheKey) {
+        return new TextClearCacheEvent(source, cacheKey);
+    }
 }

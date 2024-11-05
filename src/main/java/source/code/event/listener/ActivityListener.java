@@ -7,8 +7,8 @@ import source.code.event.events.Activity.ActivityDeleteEvent;
 import source.code.event.events.Activity.ActivityUpdateEvent;
 import source.code.helper.Enum.CacheNames;
 import source.code.model.Activity.Activity;
-import source.code.service.Declaration.Cache.CacheService;
-import source.code.service.Declaration.Search.LuceneIndexService;
+import source.code.service.declaration.cache.CacheService;
+import source.code.service.declaration.search.LuceneIndexService;
 
 @Component
 public class ActivityListener {

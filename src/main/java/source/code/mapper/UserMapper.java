@@ -10,7 +10,7 @@ import source.code.dto.Response.User.UserResponseDto;
 import source.code.model.User.Role;
 import source.code.model.User.User;
 import source.code.repository.RoleRepository;
-import source.code.service.Declaration.Helpers.CalculationsService;
+import source.code.service.declaration.helpers.CalculationsService;
 
 import java.time.LocalDate;
 import java.time.Period;

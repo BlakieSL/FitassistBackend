@@ -43,4 +43,8 @@ public class RecipeSpecification extends BaseSpecification<Recipe> {
                 .map(handler -> handler.apply(root, query, builder))
                 .orElseThrow(() -> new IllegalStateException("Unexpected filter key: " + criteria.getFilterKey()));
     }
+
+    public static RecipeSpecification of(FilterCriteria criteria) {
+        return new RecipeSpecification(criteria);
+    }
 }

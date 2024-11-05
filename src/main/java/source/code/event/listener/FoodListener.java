@@ -7,8 +7,8 @@ import source.code.event.events.Food.FoodDeleteEvent;
 import source.code.event.events.Food.FoodUpdateEvent;
 import source.code.helper.Enum.CacheNames;
 import source.code.model.Food.Food;
-import source.code.service.Declaration.Cache.CacheService;
-import source.code.service.Declaration.Search.LuceneIndexService;
+import source.code.service.declaration.cache.CacheService;
+import source.code.service.declaration.search.LuceneIndexService;
 
 @Component
 public class FoodListener {

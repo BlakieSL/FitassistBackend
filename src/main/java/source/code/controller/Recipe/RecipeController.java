@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import source.code.dto.Request.Filter.FilterDto;
 import source.code.dto.Request.Recipe.RecipeCreateDto;
 import source.code.dto.Response.RecipeResponseDto;
-import source.code.service.Declaration.Recipe.RecipeService;
+import source.code.service.declaration.recipe.RecipeService;
 
 import java.util.List;
 
