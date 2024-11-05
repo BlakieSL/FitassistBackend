@@ -13,7 +13,7 @@ import source.code.dto.Request.RefreshTokenRequestDto;
 import source.code.dto.Request.User.UserCreateDto;
 import source.code.dto.Response.AccessTokenResponseDto;
 import source.code.dto.Response.User.UserResponseDto;
-import source.code.service.Declaration.User.UserService;
+import source.code.service.declaration.user.UserService;
 import source.code.validation.ValidationGroups;
 
 @RestController

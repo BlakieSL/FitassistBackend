@@ -12,4 +12,8 @@ public class UserUpdateEvent extends ApplicationEvent {
         super(source);
         this.user = user;
     }
+
+    public static UserUpdateEvent of(Object source, User user) {
+        return new UserUpdateEvent(source, user);
+    }
 }

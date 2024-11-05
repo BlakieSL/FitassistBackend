@@ -12,4 +12,8 @@ import lombok.Setter;
 public class LikesAndSavesResponseDto {
     private long likes;
     private long saves;
+
+    public static LikesAndSavesResponseDto of(long likes, long saves) {
+        return new LikesAndSavesResponseDto(likes, saves);
+    }
 }

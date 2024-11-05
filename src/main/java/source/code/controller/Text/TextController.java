@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.Response.Text.BaseTextResponseDto;
 import source.code.helper.Enum.TextType;
-import source.code.service.Declaration.Selector.TextSelectorService;
-import source.code.service.Declaration.Text.TextService;
+import source.code.service.declaration.selector.TextSelectorService;
+import source.code.service.declaration.text.TextService;
 
 import java.util.List;
 

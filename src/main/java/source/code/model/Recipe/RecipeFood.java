@@ -35,7 +35,7 @@ public class RecipeFood {
     @JoinColumn(name = "food_id", nullable = false)
     private Food food;
 
-    public static RecipeFood createWithAmountRecipeFood(
+    public static RecipeFood of(
             int amount, Recipe recipe, Food food) {
 
         RecipeFood recipeFood = new RecipeFood();

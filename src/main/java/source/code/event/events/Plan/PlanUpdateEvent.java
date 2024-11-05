@@ -12,4 +12,8 @@ public class PlanUpdateEvent extends ApplicationEvent {
         super(source);
         this.plan = plan;
     }
+
+    public static PlanUpdateEvent of(Object source, Plan plan) {
+        return new PlanUpdateEvent(source, plan);
+    }
 }

@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import source.code.dto.Response.LikesAndSavesResponseDto;
 import source.code.helper.Enum.EntityType;
 import source.code.model.User.BaseUserEntity;
-import source.code.service.Declaration.Selector.SavedSelectorService;
-import source.code.service.Declaration.User.SavedService;
+import source.code.service.declaration.selector.SavedSelectorService;
+import source.code.service.declaration.user.SavedService;
 
 import java.util.List;
 
