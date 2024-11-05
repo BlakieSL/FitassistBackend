@@ -16,7 +16,7 @@ public class SpecificationBuilder<T> {
         this.specificationFactory = specificationFactory;
     }
 
-    public static <T> SpecificationBuilder<T> create(FilterDto filterDto, SpecificationFactory<T> specificationFactory) {
+    public static <T> SpecificationBuilder<T> of(FilterDto filterDto, SpecificationFactory<T> specificationFactory) {
         return new SpecificationBuilder<>(filterDto, specificationFactory);
     }
 

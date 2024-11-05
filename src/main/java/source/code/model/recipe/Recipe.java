@@ -21,7 +21,8 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Recipe implements IndexedEntity {
+public class
+Recipe implements IndexedEntity {
     private static final int NAME_MAX_LENGTH = 100;
     private static final int DESCRIPTION_MAX_LENGTH = 255;
     private static final int TEXT_MAX_LENGTH = 2000;

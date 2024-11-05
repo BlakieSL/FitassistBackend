@@ -37,10 +37,9 @@ public abstract class BaseSpecification<T> implements Specification<T> {
         };
     }
 
-    protected Predicate handleManyToManyProperty(Root<T> root, String joinProperty,
-                                                 String joinProperty2,
-                                                 CriteriaBuilder builder) {
-
+    protected Predicate handleManyToManyProperty(
+            Root<T> root, String joinProperty, String joinProperty2, CriteriaBuilder builder
+    ) {
         Join<Object, Object> associationJoin = root.join(joinProperty);
         Object value = criteria.getValue();
 

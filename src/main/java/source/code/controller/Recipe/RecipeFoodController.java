@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import source.code.dto.Request.Recipe.FilterRecipesByFoodsDto;
 import source.code.dto.Request.Recipe.RecipeFoodCreateDto;
 import source.code.dto.Response.FoodResponseDto;
 import source.code.dto.Response.RecipeResponseDto;
@@ -65,5 +66,13 @@ public class RecipeFoodController {
     public ResponseEntity<List<RecipeResponseDto>> getRecipesByFood(@PathVariable int id) {
         List<RecipeResponseDto> recipes = recipeFoodService.getRecipesByFood(id);
         return ResponseEntity.ok(recipes);
+    }
+
+    @PostMapping("/filter/foods")
+    public ResponseEntity<List<RecipeResponseDto>> getRecipesByFoods(
+            @Valid @RequestBody FilterRecipesByFoodsDto filter
+    ) {
+       List<RecipeResponseDto> recipes = recipeFoodService.getRecipesByFoods(filter);
+       return ResponseEntity.ok(recipes);
     }
 }

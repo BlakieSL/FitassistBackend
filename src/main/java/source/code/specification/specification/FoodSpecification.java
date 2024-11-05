@@ -24,31 +24,46 @@ public class FoodSpecification extends BaseSpecification<Food> {
 
         fieldHandlers = Map.of(
                 FoodField.CALORIES.name(),
-                (root, query, builder) ->
-                        handleNumericProperty(root.get(FoodField.CALORIES.getFieldName()), builder),
-
+                (root, query, builder) -> handleNumericProperty(
+                        root.get(FoodField.CALORIES.getFieldName()),
+                        builder
+                ),
                 FoodField.PROTEIN.name(),
-                (root, query, builder) ->
-                        handleNumericProperty(root.get(FoodField.PROTEIN.getFieldName()), builder),
-
+                (root, query, builder) -> handleNumericProperty(
+                        root.get(FoodField.PROTEIN.getFieldName()),
+                        builder
+                ),
                 FoodField.FAT.name(),
-                (root, query, builder) ->
-                        handleNumericProperty(root.get(FoodField.FAT.getFieldName()), builder),
-
+                (root, query, builder) -> handleNumericProperty(
+                        root.get(FoodField.FAT.getFieldName()),
+                        builder
+                ),
                 FoodField.CARBOHYDRATES.name(),
-                (root, query, builder) ->
-                        handleNumericProperty(root.get(FoodField.CARBOHYDRATES.getFieldName()), builder),
-
+                (root, query, builder) -> handleNumericProperty(
+                        root.get(FoodField.CARBOHYDRATES.getFieldName()),
+                        builder
+                ),
                 FoodField.CATEGORY.name(),
-                (root, query, builder) -> handleEntityProperty(root, FoodField.CATEGORY.getFieldName(), builder),
-
+                (root, query, builder) -> handleEntityProperty(
+                        root,
+                        FoodField.CATEGORY.getFieldName(),
+                        builder
+                ),
                 LikesAndSaves.LIKES.name(),
-                (root, query, builder) ->
-                        handleLikesProperty(root, LikesAndSaves.USER_FOODS.getFieldName(), query, builder),
-
+                (root, query, builder) -> handleLikesProperty(
+                        root,
+                        LikesAndSaves.USER_FOODS.getFieldName(),
+                        query,
+                        builder
+                ),
                 LikesAndSaves.SAVES.name(),
-                (root, query, builder) ->
-                        handleLikesProperty(root, LikesAndSaves.USER_FOODS.getFieldName(), query, builder)
+                (root, query, builder) -> handleSavesProperty(
+                        root,
+                        LikesAndSaves.USER_FOODS.getFieldName(),
+                        query,
+                        builder
+                )
+
         );
     }
 
