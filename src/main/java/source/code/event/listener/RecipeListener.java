@@ -8,8 +8,8 @@ import source.code.event.events.Recipe.RecipeUpdateEvent;
 import source.code.helper.Enum.CacheNames;
 import source.code.model.Recipe.Recipe;
 import source.code.model.Recipe.RecipeCategoryAssociation;
-import source.code.service.Declaration.Cache.CacheService;
-import source.code.service.Declaration.Search.LuceneIndexService;
+import source.code.service.declaration.cache.CacheService;
+import source.code.service.declaration.search.LuceneIndexService;
 
 @Component
 public class RecipeListener {

@@ -12,4 +12,8 @@ public class UserDeleteEvent extends ApplicationEvent {
         super(source);
         this.user = user;
     }
+
+    public static UserDeleteEvent of(Object source, User user) {
+        return new UserDeleteEvent(source, user);
+    }
 }

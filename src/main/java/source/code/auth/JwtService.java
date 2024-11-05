@@ -14,56 +14,70 @@ import source.code.exception.JwtAuthenticationException;
 
 import java.text.ParseException;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
 @Service
 public class JwtService {
+    private static final long ACCESS_TOKEN_DURATION_MINUTES = 15;
+    private static final long REFRESH_TOKEN_DURATION_MINUTES = 60 * 24 * 7;
+    private static final String ACCESS_TOKEN_TYPE = "ACCESS";
+    private static final String REFRESH_TOKEN_TYPE = "REFRESH";
 
-    private final JWSAlgorithm alg = JWSAlgorithm.HS256;
+    private final JWSAlgorithm algorithm = JWSAlgorithm.HS256;
     private final JWSSigner signer;
     private final JWSVerifier verifier;
 
-    public JwtService(@Value("${jws.sharedKey}") String sharedKey) throws Exception {
-        signer = new MACSigner(sharedKey.getBytes());
-        verifier = new MACVerifier(sharedKey.getBytes());
-    }
-
-    public String createSignedJWT(String username, Integer userId, List<String> authorities, long durationInMinutes) {
-        JWSHeader header = new JWSHeader(alg);
-
-        JWTClaimsSet claimSet = new JWTClaimsSet.Builder()
-                .subject(username)
-                .issueTime(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-                .expirationTime(Date.from(LocalDateTime.now().plusMinutes(durationInMinutes).atZone(ZoneId.systemDefault()).toInstant()))
-                .claim("userId", userId)
-                .claim("authorities", authorities)
-                .claim("tokenType", durationInMinutes == 15 ? "ACCESS" : "REFRESH")
-                .build();
-
-        SignedJWT signedJWT = new SignedJWT(header, claimSet);
-        try {
-            signedJWT.sign(signer);
-        } catch (JOSEException e) {
-            throw new RuntimeException(e);
-        }
-        return signedJWT.serialize();
+    public JwtService(@Value("${jws.sharedKey}") String sharedKey)
+            throws Exception
+    {
+        byte[] sharedKeyBytes = sharedKey.getBytes();
+        this.signer = new MACSigner(sharedKeyBytes);
+        this.verifier = new MACVerifier(sharedKeyBytes);
     }
 
     public String createAccessToken(String username, Integer userId, List<String> authorities) {
-        return createSignedJWT(username, userId, authorities, 15);
+        return createSignedJWT(
+                username,
+                userId,
+                authorities,
+                15,
+                ACCESS_TOKEN_TYPE);
     }
 
     public String createRefreshToken(String username, Integer userId, List<String> authorities) {
-        return createSignedJWT(username, userId, authorities, 60 * 24 * 7);
+        return createSignedJWT(
+                username,
+                userId,
+                authorities,
+                60 * 24 * 7,
+                REFRESH_TOKEN_TYPE);
+    }
+
+    public String createSignedJWT(
+            String username, Integer userId, List<String> authorities,
+            long durationInMinutes, String tokenType)
+    {
+        try {
+            JWTClaimsSet claimSet = buildClaims(
+                    username,
+                    userId,
+                    authorities,
+                    durationInMinutes,
+                    tokenType
+            );
+            SignedJWT signedJWT = new SignedJWT(new JWSHeader(algorithm), claimSet);
+            signedJWT.sign(signer);
+
+            return signedJWT.serialize();
+        } catch (JOSEException e) {
+            throw new JwtAuthenticationException("Failed to sign JWT" + e);
+        }
     }
 
     public void verifySignature(SignedJWT signedJWT) {
         try {
-            boolean verified = signedJWT.verify(verifier);
-            if (!verified)
+            if (!signedJWT.verify(verifier))
                 throw new JwtAuthenticationException("JWT not verified - token: " + signedJWT.serialize());
         } catch (JOSEException ex) {
             throw new JwtAuthenticationException("JWT not verified - token: " + signedJWT.serialize());
@@ -72,28 +86,23 @@ public class JwtService {
 
     public void verifyExpirationTime(SignedJWT signedJWT) {
         try {
-            boolean expired = signedJWT.getJWTClaimsSet()
-                    .getExpirationTime().before(Date.from(Instant.now()));
-
-            if (expired)
+            Date expiration = signedJWT.getJWTClaimsSet().getExpirationTime();
+            if (expiration.before(Date.from(Instant.now()))) {
                 throw new JwtAuthenticationException("JWT expired");
-        } catch (ParseException ex) {
-            throw new JwtAuthenticationException("JWT does not have exp time");
+            }
+        } catch (ParseException e) {
+            throw new JwtAuthenticationException("JWT expiration time is invalid");
         }
     }
 
     public Authentication authentication(SignedJWT signedJWT) {
-        String subject;
-        Integer userId;
-        List<SimpleGrantedAuthority> authorities;
         try {
-            subject = signedJWT.getJWTClaimsSet().getSubject();
-            userId = signedJWT.getJWTClaimsSet().getIntegerClaim("userId");
-            authorities = signedJWT.getJWTClaimsSet().getStringListClaim("authorities")
-                    .stream().map(SimpleGrantedAuthority::new).toList();
+            String subject = signedJWT.getJWTClaimsSet().getSubject();
+            Integer userId = signedJWT.getJWTClaimsSet().getIntegerClaim("userId");
+            List<SimpleGrantedAuthority> authorities = getAuthorities(signedJWT);
             return new CustomAuthenticationToken(subject, userId, null, authorities);
         } catch (ParseException e) {
-            throw new JwtAuthenticationException("Missing claims subject or authorities");
+            throw new JwtAuthenticationException("Missing or invalid claims in JWT");
         }
     }
 
@@ -110,5 +119,33 @@ public class JwtService {
         } catch (ParseException e) {
             throw new JwtAuthenticationException("Invalid refresh token");
         }
+    }
+
+    private JWTClaimsSet buildClaims(
+            String username, Integer userId, List<String> authorities,
+            long durationMinutes, String tokenType
+    ) {
+        return new JWTClaimsSet.Builder()
+                .subject(username)
+                .issueTime(currentDate())
+                .expirationTime(expirationDate(durationMinutes))
+                .claim("userId", userId)
+                .claim("authorities", authorities)
+                .claim("tokenType", tokenType)
+                .build();
+    }
+
+    private Date currentDate() {
+        return Date.from(Instant.now());
+    }
+
+    private Date expirationDate(long minutesFromNow) {
+        return Date.from(Instant.now().plusSeconds(minutesFromNow * 60));
+    }
+
+    private List<SimpleGrantedAuthority> getAuthorities(SignedJWT signedJWT) throws ParseException {
+        return signedJWT.getJWTClaimsSet().getStringListClaim("authorities").stream()
+                .map(SimpleGrantedAuthority::new)
+                .toList();
     }
 }

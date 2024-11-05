@@ -51,4 +51,7 @@ public class ActivitySpecification extends BaseSpecification<Activity> {
                         "Unexpected filter key: " + criteria.getFilterKey()));
     }
 
+    public static ActivitySpecification of(FilterCriteria criteria) {
+        return new ActivitySpecification(criteria);
+    }
 }

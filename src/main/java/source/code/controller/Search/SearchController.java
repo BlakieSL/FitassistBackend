@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import source.code.dto.Response.Search.SearchResponseDto;
-import source.code.service.Declaration.Search.LuceneSearchService;
+import source.code.service.declaration.search.LuceneSearchService;
 
 import java.util.List;
 

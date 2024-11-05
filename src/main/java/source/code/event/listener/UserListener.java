@@ -7,7 +7,7 @@ import source.code.event.events.User.UserRegisterEvent;
 import source.code.event.events.User.UserUpdateEvent;
 import source.code.helper.Enum.CacheNames;
 import source.code.model.User.User;
-import source.code.service.Declaration.Cache.CacheService;
+import source.code.service.declaration.cache.CacheService;
 
 @Component
 public class UserListener {

@@ -8,8 +8,8 @@ import source.code.event.events.Exercise.ExerciseUpdateEvent;
 import source.code.helper.Enum.CacheNames;
 import source.code.model.Exercise.Exercise;
 import source.code.model.Exercise.ExerciseTargetMuscle;
-import source.code.service.Declaration.Cache.CacheService;
-import source.code.service.Declaration.Search.LuceneIndexService;
+import source.code.service.declaration.cache.CacheService;
+import source.code.service.declaration.search.LuceneIndexService;
 
 @Component
 public class ExerciseListener {

@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import source.code.service.Implementation.User.UserServiceImpl;
+import source.code.service.implementation.user.UserServiceImpl;
 
 import java.io.IOException;
 import java.util.List;

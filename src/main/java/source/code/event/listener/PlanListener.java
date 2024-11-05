@@ -8,8 +8,8 @@ import source.code.event.events.Plan.PlanUpdateEvent;
 import source.code.helper.Enum.CacheNames;
 import source.code.model.Plan.Plan;
 import source.code.model.Plan.PlanCategoryAssociation;
-import source.code.service.Declaration.Cache.CacheService;
-import source.code.service.Declaration.Search.LuceneIndexService;
+import source.code.service.declaration.cache.CacheService;
+import source.code.service.declaration.search.LuceneIndexService;
 
 @Component
 public class PlanListener {

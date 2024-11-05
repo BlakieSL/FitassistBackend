@@ -12,4 +12,8 @@ public class PlanDeleteEvent extends ApplicationEvent {
         super(source);
         this.plan = plan;
     }
+
+    public static PlanDeleteEvent of(Object source, Plan plan) {
+        return new PlanDeleteEvent(source, plan);
+    }
 }

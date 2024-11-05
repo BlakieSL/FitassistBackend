@@ -12,4 +12,8 @@ public class FoodUpdateEvent extends ApplicationEvent {
         super(source);
         this.food = food;
     }
+
+    public static FoodUpdateEvent of(Object source, Food food) {
+        return new FoodUpdateEvent(source, food);
+    }
 }

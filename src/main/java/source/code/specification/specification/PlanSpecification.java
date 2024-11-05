@@ -77,4 +77,8 @@ public class PlanSpecification extends BaseSpecification<Plan> {
                     "Unsupported operation: " + criteria.getOperation());
         };
     }
+
+    public static PlanSpecification of(FilterCriteria criteria) {
+        return new PlanSpecification(criteria);
+    }
 }
