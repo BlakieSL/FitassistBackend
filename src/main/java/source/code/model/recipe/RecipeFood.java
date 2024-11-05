@@ -16,6 +16,8 @@ import source.code.model.food.Food;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecipeFood {
+    public static final String FOOD = "food";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

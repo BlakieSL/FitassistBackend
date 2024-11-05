@@ -24,21 +24,30 @@ public class ActivitySpecification extends BaseSpecification<Activity> {
 
         fieldHandlers = Map.of(
                 ActivityField.CATEGORY.name(),
-                (root, query, builder) ->
-                        handleEntityProperty(root, ActivityField.CATEGORY.getFieldName(), builder),
-
+                (root, query, builder) -> handleEntityProperty(
+                        root,
+                        ActivityField.CATEGORY.getFieldName(),
+                        builder
+                ),
                 ActivityField.MET.name(),
-                (root, query, builder) ->
-
-                        handleNumericProperty(root.get(ActivityField.MET.getFieldName()), builder),
-
+                (root, query, builder) -> handleNumericProperty(
+                        root.get(ActivityField.MET.getFieldName()),
+                        builder
+                ),
                 LikesAndSaves.LIKES.name(),
-                (root, query, builder) ->
-                        handleLikesProperty(root, LikesAndSaves.USER_ACTIVITIES.getFieldName(), query, builder),
-
+                (root, query, builder) -> handleLikesProperty(
+                        root,
+                        LikesAndSaves.USER_ACTIVITIES.getFieldName(),
+                        query,
+                        builder
+                ),
                 LikesAndSaves.SAVES.name(),
-                (root, query, builder) ->
-                        handleLikesProperty(root, LikesAndSaves.USER_ACTIVITIES.getFieldName(), query, builder)
+                (root, query, builder) -> handleSavesProperty(
+                        root,
+                        LikesAndSaves.USER_ACTIVITIES.getFieldName(),
+                        query,
+                        builder
+                )
         );
     }
 

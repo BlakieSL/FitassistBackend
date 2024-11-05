@@ -1,8 +1,8 @@
 package source.code.helper.Enum.Model;
 
 public enum RecipeField {
-    CATEGORY("recipeCategoryAssociations");
-
+    CATEGORY("recipeCategoryAssociations"),
+    FOODS("recipeFoods");
     private final String fieldName;
 
     RecipeField(String fieldName) {

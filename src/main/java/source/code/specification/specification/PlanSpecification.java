@@ -25,33 +25,48 @@ public class PlanSpecification extends BaseSpecification<Plan> {
 
         fieldHandlers = Map.of(
                 PlanField.TYPE.name(),
-                (root, query, builder) ->
-                        handleEntityProperty(root, PlanField.TYPE.getFieldName(), builder),
-
+                (root, query, builder) -> handleEntityProperty(
+                        root,
+                        PlanField.TYPE.getFieldName(),
+                        builder
+                ),
                 PlanField.DURATION.name(),
-                (root, query, builder) ->
-                        handleNumericProperty(root.get(PlanField.DURATION.getFieldName()), builder),
-
+                (root, query, builder) -> handleNumericProperty(
+                        root.get(PlanField.DURATION.getFieldName()),
+                        builder
+                ),
                 PlanField.EXPERTISE_LEVEL.name(),
-                (root, query, builder) ->
-                        handleEntityProperty(root, PlanField.EXPERTISE_LEVEL.getFieldName(), builder),
-
+                (root, query, builder) -> handleEntityProperty(
+                        root,
+                        PlanField.EXPERTISE_LEVEL.getFieldName(),
+                        builder
+                ),
                 PlanField.CATEGORY.name(),
-                (root, query, builder) ->
-                        handleManyToManyProperty(root, PlanField.CATEGORY.getFieldName(),
-                                PlanCategoryAssociation.PLAN_CATEGORY, builder),
-
+                (root, query, builder) -> handleManyToManyProperty(
+                        root,
+                        PlanField.CATEGORY.getFieldName(),
+                        PlanCategoryAssociation.PLAN_CATEGORY,
+                        builder
+                ),
                 PlanField.EQUIPMENT.name(),
-                (root, query, builder) ->
-                        handleEquipmentProperty(root, builder),
-
+                (root, query, builder) -> handleEquipmentProperty(
+                        root,
+                        builder
+                ),
                 LikesAndSaves.LIKES.name(),
-                (root, query, builder) ->
-                        handleLikesProperty(root, LikesAndSaves.USER_ACTIVITIES.getFieldName(), query, builder),
-
+                (root, query, builder) -> handleLikesProperty(
+                        root,
+                        LikesAndSaves.USER_ACTIVITIES.getFieldName(),
+                        query,
+                        builder
+                ),
                 LikesAndSaves.SAVES.name(),
-                (root, query, builder) ->
-                        handleLikesProperty(root, LikesAndSaves.USER_ACTIVITIES.getFieldName(), query, builder)
+                (root, query, builder) -> handleSavesProperty(
+                        root,
+                        LikesAndSaves.USER_ACTIVITIES.getFieldName(),
+                        query,
+                        builder
+                )
         );
     }
 

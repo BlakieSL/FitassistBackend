@@ -1,12 +1,11 @@
-package source.code.dto.Request.Filter;
+package source.code.dto.Request.Recipe;
+
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.dto.POJO.FilterCriteria;
-import source.code.helper.Enum.FilterDataOption;
 
 import java.util.List;
 
@@ -14,8 +13,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
-public class FilterDto {
+public class FilterRecipesByFoodsDto {
     @NotNull
-    private List<FilterCriteria> filterCriteria;
-    private FilterDataOption dataOption;
+    private List<Integer> foodIds;
 }

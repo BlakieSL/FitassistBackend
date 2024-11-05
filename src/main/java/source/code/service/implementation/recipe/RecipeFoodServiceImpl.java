@@ -8,12 +8,17 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import source.code.dto.POJO.FilterCriteria;
+import source.code.dto.Request.Filter.FilterDto;
+import source.code.dto.Request.Recipe.FilterRecipesByFoodsDto;
 import source.code.dto.Request.Recipe.RecipeFoodCreateDto;
 import source.code.dto.Response.FoodResponseDto;
 import source.code.dto.Response.RecipeResponseDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.CacheNames;
+import source.code.helper.Enum.FilterDataOption;
+import source.code.helper.Enum.FilterOperation;
 import source.code.mapper.food.FoodMapper;
 import source.code.mapper.recipe.RecipeFoodMapper;
 import source.code.mapper.recipe.RecipeMapper;
@@ -27,11 +32,13 @@ import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.declaration.recipe.RecipeFoodService;
+import source.code.service.declaration.recipe.RecipeService;
 
 import java.util.List;
 
 @Service
 public class RecipeFoodServiceImpl implements RecipeFoodService {
+    private final RecipeService recipeService;
     private final ValidationService validationService;
     private final JsonPatchService jsonPatchService;
     private final FoodMapper foodMapper;
@@ -43,6 +50,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
     private final RecipeRepository recipeRepository;
 
     public RecipeFoodServiceImpl(
+            RecipeService recipeService,
             ValidationService validationService,
             RecipeMapper recipeMapper,
             RecipeFoodMapper recipeFoodMapper,
@@ -52,6 +60,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
             JsonPatchService jsonPatchService,
             FoodMapper foodMapper,
             RepositoryHelper repositoryHelper) {
+        this.recipeService = recipeService;
         this.validationService = validationService;
         this.recipeMapper = recipeMapper;
         this.recipeFoodMapper = recipeFoodMapper;
@@ -119,6 +128,22 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
                 .map(RecipeFood::getRecipe)
                 .map(recipeMapper::toResponseDto)
                 .toList();
+    }
+
+    @Override
+    public List<RecipeResponseDto> getRecipesByFoods(FilterRecipesByFoodsDto filter) {
+        List<FilterCriteria> foodCriteriaList = filter.getFoodIds().stream()
+                .map(foodId -> FilterCriteria.of(
+                        "FOODS",
+                        foodId,
+                        FilterOperation.EQUAL
+                ))
+                .toList();
+
+        return recipeService.getFilteredRecipes(FilterDto.of(
+                foodCriteriaList,
+                FilterDataOption.AND
+        ));
     }
 
 
