@@ -1,19 +1,12 @@
 package source.code.dto.Response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor(staticName = "of")
+@NoArgsConstructor(staticName = "of")
 public class LikesAndSavesResponseDto {
     private long likes;
     private long saves;
-
-    public static LikesAndSavesResponseDto of(long likes, long saves) {
-        return new LikesAndSavesResponseDto(likes, saves);
-    }
 }

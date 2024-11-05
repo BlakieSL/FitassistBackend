@@ -1,5 +1,6 @@
 package source.code.event.events.Category;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 

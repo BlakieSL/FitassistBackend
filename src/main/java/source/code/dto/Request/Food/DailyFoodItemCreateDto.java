@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 public class DailyFoodItemCreateDto {
     @NotNull
@@ -18,7 +18,4 @@ public class DailyFoodItemCreateDto {
     @Max(value = 100)
     private int amount;
 
-    public static DailyFoodItemCreateDto of(int amount) {
-        return new DailyFoodItemCreateDto(amount);
-    }
 }

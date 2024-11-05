@@ -8,13 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 public class SearchResponseDto {
     private Integer id;
     private String name;
-    private String className;
-
-    public static SearchResponseDto create(Integer id, String name, String className) {
-        return new SearchResponseDto(id, name, className);
-    }
+    private String type;
 }
