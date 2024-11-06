@@ -2,9 +2,9 @@ package source.code.mapper.workout;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.Request.Workout.WorkoutCreateDto;
-import source.code.dto.Request.Workout.WorkoutUpdateDto;
-import source.code.dto.Response.Workout.WorkoutResponseDto;
+import source.code.dto.Request.workout.WorkoutCreateDto;
+import source.code.dto.Request.workout.WorkoutUpdateDto;
+import source.code.dto.Response.workout.WorkoutResponseDto;
 import source.code.model.plan.Plan;
 import source.code.model.workout.Workout;
 import source.code.repository.PlanRepository;

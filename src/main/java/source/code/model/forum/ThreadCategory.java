@@ -1,0 +1,30 @@
+package source.code.model.forum;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "thread_category")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class ThreadCategory {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @NotBlank
+    @Column(nullable = false)
+    private String name;
+
+    @OneToMany(mappedBy = "threadCategory", cascade = CascadeType.REMOVE)
+    private final Set<ForumThread> forumThreads = new HashSet<>();
+}

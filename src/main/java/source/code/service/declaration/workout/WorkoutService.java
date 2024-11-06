@@ -3,8 +3,8 @@ package source.code.service.declaration.workout;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import source.code.dto.Request.Workout.WorkoutCreateDto;
-import source.code.dto.Response.Workout.WorkoutResponseDto;
+import source.code.dto.Request.workout.WorkoutCreateDto;
+import source.code.dto.Response.workout.WorkoutResponseDto;
 
 import java.util.List;
 

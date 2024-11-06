@@ -2,7 +2,7 @@ package source.code.service.implementation.media;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import source.code.dto.Request.Media.MediaCreateDto;
+import source.code.dto.Request.media.MediaCreateDto;
 import source.code.dto.Response.MediaResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.MediaMapper;
