@@ -1,7 +1,7 @@
 package source.code.service.implementation.user;
 
 import org.springframework.stereotype.Service;
-import source.code.dto.Response.PlanResponseDto;
+import source.code.dto.response.PlanResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.plan.PlanMapper;
 import source.code.model.plan.Plan;

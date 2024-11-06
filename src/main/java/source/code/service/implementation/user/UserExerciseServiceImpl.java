@@ -1,7 +1,7 @@
 package source.code.service.implementation.user;
 
 import org.springframework.stereotype.Service;
-import source.code.dto.Response.ExerciseResponseDto;
+import source.code.dto.response.ExerciseResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.exercise.ExerciseMapper;
 import source.code.model.exercise.Exercise;

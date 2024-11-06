@@ -3,11 +3,11 @@ package source.code.service.declaration.food;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import source.code.dto.Request.filter.FilterDto;
-import source.code.dto.Request.food.CalculateFoodMacrosRequestDto;
-import source.code.dto.Request.food.FoodCreateDto;
-import source.code.dto.Response.FoodCalculatedMacrosResponseDto;
-import source.code.dto.Response.FoodResponseDto;
+import source.code.dto.request.filter.FilterDto;
+import source.code.dto.request.food.CalculateFoodMacrosRequestDto;
+import source.code.dto.request.food.FoodCreateDto;
+import source.code.dto.response.FoodCalculatedMacrosResponseDto;
+import source.code.dto.response.FoodResponseDto;
 import source.code.model.food.Food;
 
 import java.util.List;

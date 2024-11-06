@@ -4,9 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.springframework.stereotype.Service;
-import source.code.dto.Request.workout.WorkoutCreateDto;
-import source.code.dto.Request.workout.WorkoutUpdateDto;
-import source.code.dto.Response.workout.WorkoutResponseDto;
+import org.springframework.transaction.annotation.Transactional;
+import source.code.dto.request.workout.WorkoutCreateDto;
+import source.code.dto.request.workout.WorkoutUpdateDto;
+import source.code.dto.response.workout.WorkoutResponseDto;
 import source.code.mapper.workout.WorkoutMapper;
 import source.code.model.workout.Workout;
 import source.code.repository.WorkoutRepository;
@@ -38,12 +39,14 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
+    @Transactional
     public WorkoutResponseDto createWorkout(WorkoutCreateDto workoutDto) {
         Workout workout = workoutRepository.save(workoutMapper.toEntity(workoutDto));
         return workoutMapper.toResponseDto(workout);
     }
 
     @Override
+    @Transactional
     public void updateWorkout(int workoutId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
@@ -56,6 +59,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
+    @Transactional
     public void deleteWorkout(int workoutId) {
         Workout workout = find(workoutId);
         workoutRepository.delete(workout);

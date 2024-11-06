@@ -1,7 +1,7 @@
 package source.code.specification;
 
 import org.springframework.data.jpa.domain.Specification;
-import source.code.dto.POJO.FilterCriteria;
+import source.code.dto.pojo.FilterCriteria;
 
 @FunctionalInterface
 public interface SpecificationFactory<T> {
