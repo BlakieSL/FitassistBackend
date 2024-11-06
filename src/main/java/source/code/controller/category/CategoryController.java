@@ -1,4 +1,4 @@
-package source.code.controller.Category;
+package source.code.controller.category;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
