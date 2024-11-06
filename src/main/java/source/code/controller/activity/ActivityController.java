@@ -7,12 +7,12 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.Request.activity.ActivityCreateDto;
-import source.code.dto.Request.activity.CalculateActivityCaloriesRequestDto;
-import source.code.dto.Request.filter.FilterDto;
-import source.code.dto.Response.ActivityAverageMetResponseDto;
-import source.code.dto.Response.ActivityCalculatedResponseDto;
-import source.code.dto.Response.ActivityResponseDto;
+import source.code.dto.request.activity.ActivityCreateDto;
+import source.code.dto.request.activity.CalculateActivityCaloriesRequestDto;
+import source.code.dto.request.filter.FilterDto;
+import source.code.dto.response.ActivityAverageMetResponseDto;
+import source.code.dto.response.ActivityCalculatedResponseDto;
+import source.code.dto.response.ActivityResponseDto;
 import source.code.service.declaration.activity.ActivityService;
 
 import java.util.List;

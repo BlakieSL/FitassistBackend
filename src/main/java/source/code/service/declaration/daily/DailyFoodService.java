@@ -3,8 +3,8 @@ package source.code.service.declaration.daily;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import source.code.dto.Request.food.DailyFoodItemCreateDto;
-import source.code.dto.Response.DailyFoodsResponseDto;
+import source.code.dto.request.food.DailyFoodItemCreateDto;
+import source.code.dto.response.DailyFoodsResponseDto;
 
 public interface DailyFoodService {
     void addFoodToDailyFoodItem(int userId, int foodId, DailyFoodItemCreateDto dto);

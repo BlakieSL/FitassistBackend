@@ -3,10 +3,10 @@ package source.code.service.declaration.plan;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import source.code.dto.Request.filter.FilterDto;
-import source.code.dto.Request.plan.PlanCreateDto;
-import source.code.dto.Response.category.EquipmentResponseDto;
-import source.code.dto.Response.PlanResponseDto;
+import source.code.dto.request.filter.FilterDto;
+import source.code.dto.request.plan.PlanCreateDto;
+import source.code.dto.response.category.EquipmentResponseDto;
+import source.code.dto.response.PlanResponseDto;
 import source.code.model.plan.Plan;
 
 import java.util.List;

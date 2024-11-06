@@ -7,10 +7,10 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.Request.filter.FilterDto;
-import source.code.dto.Request.plan.PlanCreateDto;
-import source.code.dto.Response.category.EquipmentResponseDto;
-import source.code.dto.Response.PlanResponseDto;
+import source.code.dto.request.filter.FilterDto;
+import source.code.dto.request.plan.PlanCreateDto;
+import source.code.dto.response.category.EquipmentResponseDto;
+import source.code.dto.response.PlanResponseDto;
 import source.code.service.declaration.plan.PlanService;
 
 import java.util.List;

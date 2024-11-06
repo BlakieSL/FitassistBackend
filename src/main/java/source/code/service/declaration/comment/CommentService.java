@@ -3,8 +3,8 @@ package source.code.service.declaration.comment;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import source.code.dto.Request.comment.CommentCreateDto;
-import source.code.dto.Response.comment.CommentResponseDto;
+import source.code.dto.request.comment.CommentCreateDto;
+import source.code.dto.response.comment.CommentResponseDto;
 
 import java.util.List;
 

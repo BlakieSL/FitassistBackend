@@ -2,14 +2,14 @@ package source.code.mapper.text;
 
 
 import org.mapstruct.*;
-import source.code.dto.Request.text.ExerciseInstructionUpdateDto;
-import source.code.dto.Request.text.ExerciseTipUpdateDto;
-import source.code.dto.Request.text.PlanInstructionUpdateDto;
-import source.code.dto.Request.text.RecipeInstructionUpdateDto;
-import source.code.dto.Response.text.ExerciseInstructionResponseDto;
-import source.code.dto.Response.text.ExerciseTipResponseDto;
-import source.code.dto.Response.text.PlanInstructionResponseDto;
-import source.code.dto.Response.text.RecipeInstructionResponseDto;
+import source.code.dto.request.text.ExerciseInstructionUpdateDto;
+import source.code.dto.request.text.ExerciseTipUpdateDto;
+import source.code.dto.request.text.PlanInstructionUpdateDto;
+import source.code.dto.request.text.RecipeInstructionUpdateDto;
+import source.code.dto.response.text.ExerciseInstructionResponseDto;
+import source.code.dto.response.text.ExerciseTipResponseDto;
+import source.code.dto.response.text.PlanInstructionResponseDto;
+import source.code.dto.response.text.RecipeInstructionResponseDto;
 import source.code.model.text.ExerciseInstruction;
 import source.code.model.text.ExerciseTip;
 import source.code.model.text.PlanInstruction;

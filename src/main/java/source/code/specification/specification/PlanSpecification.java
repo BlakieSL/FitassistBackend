@@ -2,7 +2,7 @@ package source.code.specification.specification;
 
 import jakarta.persistence.criteria.*;
 import org.springframework.lang.NonNull;
-import source.code.dto.POJO.FilterCriteria;
+import source.code.dto.pojo.FilterCriteria;
 import source.code.helper.Enum.Model.LikesAndSaves;
 import source.code.helper.Enum.Model.PlanField;
 import source.code.helper.TriFunction;

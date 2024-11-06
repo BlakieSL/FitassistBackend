@@ -3,8 +3,8 @@ package source.code.service.declaration.category;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import source.code.dto.Request.category.CategoryCreateDto;
-import source.code.dto.Response.category.CategoryResponseDto;
+import source.code.dto.request.category.CategoryCreateDto;
+import source.code.dto.response.category.CategoryResponseDto;
 
 import java.util.List;
 

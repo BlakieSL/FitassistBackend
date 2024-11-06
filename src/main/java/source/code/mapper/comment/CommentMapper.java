@@ -2,9 +2,9 @@ package source.code.mapper.comment;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.Request.comment.CommentCreateDto;
-import source.code.dto.Request.comment.CommentUpdateDto;
-import source.code.dto.Response.comment.CommentResponseDto;
+import source.code.dto.request.comment.CommentCreateDto;
+import source.code.dto.request.comment.CommentUpdateDto;
+import source.code.dto.response.comment.CommentResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.model.forum.Comment;
 import source.code.model.forum.ForumThread;
@@ -48,7 +48,7 @@ public abstract class CommentMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "replies", ignore = true)
     @Mapping(target = "userCommentLikes", ignore = true)
-    public abstract void updateCommentFromDto(
+    public abstract void update(
             @MappingTarget Comment comment, CommentUpdateDto updateDto);
 
     @Named("threadToThreadId")

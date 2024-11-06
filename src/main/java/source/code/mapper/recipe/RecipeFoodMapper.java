@@ -4,7 +4,7 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import source.code.dto.Request.recipe.RecipeFoodCreateDto;
+import source.code.dto.request.recipe.RecipeFoodCreateDto;
 import source.code.model.recipe.RecipeFood;
 
 @Mapper(componentModel = "spring")

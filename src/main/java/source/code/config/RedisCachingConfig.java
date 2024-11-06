@@ -15,7 +15,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import source.code.dto.Response.user.UserResponseDto;
+import source.code.dto.response.user.UserResponseDto;
 
 import java.time.Duration;
 import java.util.HashMap;

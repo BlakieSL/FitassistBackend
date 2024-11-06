@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
-import source.code.dto.Response.category.EquipmentResponseDto;
+import source.code.dto.response.category.EquipmentResponseDto;
 import source.code.model.plan.Plan;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public interface PlanRepository
     @Query("SELECT p FROM Plan p")
     List<Plan> findAllWithoutAssociations();
 
-    @Query("SELECT DISTINCT new source.code.dto.Response.category.EquipmentResponseDto(e.id, e.name) " +
+    @Query("SELECT DISTINCT new source.code.dto.response.category.EquipmentResponseDto(e.id, e.name) " +
             "FROM Equipment e " +
             "JOIN e.exercises ex " +
             "JOIN ex.workoutSets ws " +

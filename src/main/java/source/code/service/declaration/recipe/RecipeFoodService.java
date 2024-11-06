@@ -3,10 +3,10 @@ package source.code.service.declaration.recipe;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import source.code.dto.Request.recipe.FilterRecipesByFoodsDto;
-import source.code.dto.Request.recipe.RecipeFoodCreateDto;
-import source.code.dto.Response.FoodResponseDto;
-import source.code.dto.Response.RecipeResponseDto;
+import source.code.dto.request.recipe.FilterRecipesByFoodsDto;
+import source.code.dto.request.recipe.RecipeFoodCreateDto;
+import source.code.dto.response.FoodResponseDto;
+import source.code.dto.response.RecipeResponseDto;
 
 import java.util.List;
 

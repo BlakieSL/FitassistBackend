@@ -2,7 +2,7 @@ package source.code.service.implementation.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
-import source.code.dto.Response.LikesAndSavesResponseDto;
+import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.model.user.BaseUserEntity;
