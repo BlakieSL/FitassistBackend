@@ -38,7 +38,7 @@ public class UserExerciseServiceImpl
 
     @Override
     protected UserExercise createUserEntity(User user, Exercise entity, short type) {
-        return UserExercise.createWithUserExerciseType(user, entity, type);
+        return UserExercise.of(user, entity, type);
     }
 
     @Override

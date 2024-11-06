@@ -33,9 +33,9 @@ public class UserExercise implements BaseUserEntity {
     @Column(nullable = false)
     private short type;
 
-    public static UserExercise createWithUserExerciseType(
-            User user, Exercise exercise, short type) {
-
+    public static UserExercise of(
+            User user, Exercise exercise, short type
+    ) {
         UserExercise userExercise = new UserExercise();
         userExercise.setUser(user);
         userExercise.setExercise(exercise);

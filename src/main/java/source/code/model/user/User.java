@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.activity.DailyActivity;
 import source.code.model.food.DailyFood;
+import source.code.model.thread.Comment;
+import source.code.model.thread.Thread;
 import source.code.validation.ValidationGroups;
 import source.code.validation.email.UniqueEmailDomain;
 
@@ -110,6 +112,18 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<UserActivity> userActivities = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final Set<UserComment> userComments = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final Set<Comment> writtenComments = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final Set<UserThread> userThreads = new HashSet<>();;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final Set<Thread> createdThreads = new HashSet<>();
 
     public static User createWithId(int id) {
         User user = new User();
