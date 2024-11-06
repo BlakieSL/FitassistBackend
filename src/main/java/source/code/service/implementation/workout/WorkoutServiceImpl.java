@@ -45,7 +45,8 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public void updateWorkout(int workoutId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
+            throws JsonPatchException, JsonProcessingException
+    {
         Workout workout = find(workoutId);
         WorkoutUpdateDto patched = applyPatchToWorkout(workout, patch);
 

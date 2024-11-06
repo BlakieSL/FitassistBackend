@@ -1,0 +1,39 @@
+package source.code.model.thread;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import source.code.model.user.User;
+import source.code.model.user.UserComment;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "comment")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @NotBlank
+    @Column(nullable = false)
+    private String text;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
+    private final Set<UserComment> userComments = new HashSet<>();
+}
