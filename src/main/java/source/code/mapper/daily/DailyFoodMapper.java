@@ -4,8 +4,8 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import source.code.dto.Response.DailyFoodsResponseDto;
-import source.code.dto.Response.FoodCalculatedMacrosResponseDto;
+import source.code.dto.response.DailyFoodsResponseDto;
+import source.code.dto.response.FoodCalculatedMacrosResponseDto;
 import source.code.model.food.DailyFoodItem;
 import source.code.model.food.Food;
 

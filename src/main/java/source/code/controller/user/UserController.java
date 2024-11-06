@@ -9,10 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import source.code.auth.JwtService;
-import source.code.dto.Request.RefreshTokenRequestDto;
-import source.code.dto.Request.user.UserCreateDto;
-import source.code.dto.Response.AccessTokenResponseDto;
-import source.code.dto.Response.user.UserResponseDto;
+import source.code.dto.request.RefreshTokenRequestDto;
+import source.code.dto.request.user.UserCreateDto;
+import source.code.dto.response.AccessTokenResponseDto;
+import source.code.dto.response.user.UserResponseDto;
 import source.code.service.declaration.user.UserService;
 import source.code.validation.ValidationGroups;
 

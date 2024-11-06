@@ -4,9 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.springframework.stereotype.Service;
-import source.code.dto.Request.workoutSet.WorkoutSetCreateDto;
-import source.code.dto.Request.workoutSet.WorkoutSetUpdateDto;
-import source.code.dto.Response.workoutSet.WorkoutSetResponseDto;
+import org.springframework.transaction.annotation.Transactional;
+import source.code.dto.request.workoutSet.WorkoutSetCreateDto;
+import source.code.dto.request.workoutSet.WorkoutSetUpdateDto;
+import source.code.dto.response.workoutSet.WorkoutSetResponseDto;
 import source.code.mapper.workoutSet.WorkoutSetMapper;
 import source.code.model.workout.WorkoutSet;
 import source.code.repository.WorkoutSetRepository;
@@ -38,12 +39,14 @@ public class WorkoutSetServiceImpl implements WorkoutSetService {
     }
 
     @Override
+    @Transactional
     public WorkoutSetResponseDto createWorkoutSet(WorkoutSetCreateDto createDto) {
         WorkoutSet workoutSet = workoutSetRepository.save(workoutSetMapper.toEntity(createDto));
         return workoutSetMapper.toResponseDto(workoutSet);
     }
 
     @Override
+    @Transactional
     public void updateWorkoutSet(int workoutSetId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException {
         WorkoutSet workoutSet = find(workoutSetId);
@@ -55,6 +58,7 @@ public class WorkoutSetServiceImpl implements WorkoutSetService {
     }
 
     @Override
+    @Transactional
     public void deleteWorkoutSet(int workoutSetId) {
         WorkoutSet workoutSet = find(workoutSetId);
         workoutSetRepository.delete(workoutSet);

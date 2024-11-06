@@ -3,7 +3,7 @@ package source.code.service.declaration.text;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import source.code.dto.Response.text.BaseTextResponseDto;
+import source.code.dto.response.text.BaseTextResponseDto;
 
 import java.util.List;
 

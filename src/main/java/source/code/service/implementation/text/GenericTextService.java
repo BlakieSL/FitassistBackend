@@ -8,7 +8,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
-import source.code.dto.Response.text.BaseTextResponseDto;
+import source.code.dto.response.text.BaseTextResponseDto;
 import source.code.event.events.Text.TextClearCacheEvent;
 import source.code.event.events.Text.TextCreateCacheEvent;
 import source.code.exception.RecordNotFoundException;

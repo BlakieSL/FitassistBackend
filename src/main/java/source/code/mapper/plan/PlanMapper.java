@@ -2,10 +2,10 @@ package source.code.mapper.plan;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.POJO.PlanCategoryShortDto;
-import source.code.dto.Request.plan.PlanCreateDto;
-import source.code.dto.Request.plan.PlanUpdateDto;
-import source.code.dto.Response.PlanResponseDto;
+import source.code.dto.pojo.PlanCategoryShortDto;
+import source.code.dto.request.plan.PlanCreateDto;
+import source.code.dto.request.plan.PlanUpdateDto;
+import source.code.dto.response.PlanResponseDto;
 import source.code.model.other.ExpertiseLevel;
 import source.code.model.plan.*;
 import source.code.model.text.PlanInstruction;

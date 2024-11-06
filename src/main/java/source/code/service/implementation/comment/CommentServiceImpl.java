@@ -4,9 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.springframework.stereotype.Service;
-import source.code.dto.Request.comment.CommentCreateDto;
-import source.code.dto.Request.comment.CommentUpdateDto;
-import source.code.dto.Response.comment.CommentResponseDto;
+import org.springframework.transaction.annotation.Transactional;
+import source.code.dto.request.comment.CommentCreateDto;
+import source.code.dto.request.comment.CommentUpdateDto;
+import source.code.dto.response.comment.CommentResponseDto;
 import source.code.mapper.comment.CommentMapper;
 import source.code.model.forum.Comment;
 import source.code.repository.CommentRepository;
@@ -38,13 +39,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public CommentResponseDto createComment(CommentCreateDto createDto) {
         Comment comment = commentRepository.save(commentMapper.toEntity(createDto));
-
         return commentMapper.toResponseDto(comment);
     }
 
     @Override
+    @Transactional
     public void updateComment(int commentId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
@@ -52,11 +54,12 @@ public class CommentServiceImpl implements CommentService {
         CommentUpdateDto patched = applyPatchToComment(comment, patch);
 
         validationService.validate(patched);
-        commentMapper.updateCommentFromDto(comment, patched);
+        commentMapper.update(comment, patched);
         Comment saved = commentRepository.save(comment);
     }
 
     @Override
+    @Transactional
     public void deleteComment(int commentId) {
         Comment comment = find(commentId);
         commentRepository.delete(comment);
