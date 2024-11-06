@@ -6,8 +6,8 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.Request.WorkoutSet.WorkoutSetCreateDto;
-import source.code.dto.Response.WorkoutSet.WorkoutSetResponseDto;
+import source.code.dto.Request.workoutSet.WorkoutSetCreateDto;
+import source.code.dto.Response.workoutSet.WorkoutSetResponseDto;
 import source.code.service.declaration.workoutSet.WorkoutSetService;
 
 import java.util.List;

@@ -6,7 +6,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import source.code.dto.Request.Activity.DailyActivityItemCreateDto;
+import source.code.dto.Request.activity.DailyActivityItemCreateDto;
 import source.code.dto.Response.ActivityCalculatedResponseDto;
 import source.code.dto.Response.DailyActivitiesResponseDto;
 import source.code.exception.RecordNotFoundException;

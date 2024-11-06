@@ -3,9 +3,9 @@ package source.code.service.declaration.plan;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import source.code.dto.Request.Filter.FilterDto;
-import source.code.dto.Request.Plan.PlanCreateDto;
-import source.code.dto.Response.Category.EquipmentResponseDto;
+import source.code.dto.Request.filter.FilterDto;
+import source.code.dto.Request.plan.PlanCreateDto;
+import source.code.dto.Response.category.EquipmentResponseDto;
 import source.code.dto.Response.PlanResponseDto;
 import source.code.model.plan.Plan;
 

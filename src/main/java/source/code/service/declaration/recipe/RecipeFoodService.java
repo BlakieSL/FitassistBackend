@@ -3,8 +3,8 @@ package source.code.service.declaration.recipe;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import source.code.dto.Request.Recipe.FilterRecipesByFoodsDto;
-import source.code.dto.Request.Recipe.RecipeFoodCreateDto;
+import source.code.dto.Request.recipe.FilterRecipesByFoodsDto;
+import source.code.dto.Request.recipe.RecipeFoodCreateDto;
 import source.code.dto.Response.FoodResponseDto;
 import source.code.dto.Response.RecipeResponseDto;
 

@@ -7,8 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.Request.Filter.FilterDto;
-import source.code.dto.Request.Recipe.RecipeCreateDto;
+import source.code.dto.Request.filter.FilterDto;
+import source.code.dto.Request.recipe.RecipeCreateDto;
 import source.code.dto.Response.RecipeResponseDto;
 import source.code.service.declaration.recipe.RecipeService;
 

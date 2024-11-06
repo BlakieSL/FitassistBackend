@@ -1,6 +1,6 @@
 package source.code.service.declaration.search;
 
-import source.code.dto.Response.Search.SearchResponseDto;
+import source.code.dto.Response.search.SearchResponseDto;
 
 import java.util.List;
 

@@ -7,8 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.Request.Exercise.ExerciseCreateDto;
-import source.code.dto.Request.Filter.FilterDto;
+import source.code.dto.Request.exercise.ExerciseCreateDto;
+import source.code.dto.Request.filter.FilterDto;
 import source.code.dto.Response.ExerciseResponseDto;
 import source.code.service.declaration.exercise.ExerciseService;
 
