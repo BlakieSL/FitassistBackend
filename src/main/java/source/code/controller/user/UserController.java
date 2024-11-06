@@ -1,4 +1,4 @@
-package source.code.controller.User;
+package source.code.controller.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;

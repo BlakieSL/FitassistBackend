@@ -1,4 +1,4 @@
-package source.code.controller.Recipe;
+package source.code.controller.recipe;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,8 +50,8 @@ public class RecipeFoodController {
             @PathVariable int recipeId,
             @PathVariable int foodId,
             @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-
+            throws JsonPatchException, JsonProcessingException
+    {
         recipeFoodService.updateFoodRecipe(recipeId, foodId, patch);
         return ResponseEntity.noContent().build();
     }

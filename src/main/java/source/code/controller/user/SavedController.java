@@ -1,4 +1,4 @@
-package source.code.controller.User;
+package source.code.controller.user;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
