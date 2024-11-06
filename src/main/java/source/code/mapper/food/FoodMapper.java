@@ -2,8 +2,8 @@ package source.code.mapper.food;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.Request.Food.FoodCreateDto;
-import source.code.dto.Request.Food.FoodUpdateDto;
+import source.code.dto.Request.food.FoodCreateDto;
+import source.code.dto.Request.food.FoodUpdateDto;
 import source.code.dto.Response.FoodCalculatedMacrosResponseDto;
 import source.code.dto.Response.FoodResponseDto;
 import source.code.model.food.Food;

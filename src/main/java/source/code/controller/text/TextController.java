@@ -5,7 +5,7 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.Response.Text.BaseTextResponseDto;
+import source.code.dto.Response.text.BaseTextResponseDto;
 import source.code.helper.Enum.TextType;
 import source.code.service.declaration.selector.TextSelectorService;
 import source.code.service.declaration.text.TextService;
