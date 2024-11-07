@@ -1,4 +1,4 @@
-package source.code.controller.WorkoutSetController;
+package source.code.controller.workoutSet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;

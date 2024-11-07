@@ -11,8 +11,9 @@ import java.util.List;
 
 public interface ForumThreadService {
     ForumThreadResponseDto createForumThread(ForumThreadCreateDto createDto);
-    void updateForumThread(int forumThreadId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
-    void deleteForumThread(int forumThreadId) throws AccessDeniedException;
+    void updateForumThread(int forumThreadId, JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException;
+    void deleteForumThread(int forumThreadId);
     ForumThreadResponseDto getForumThread(int forumThreadId);
     List<ForumThreadResponseDto> getAllForumThreads();
     List<ForumThreadResponseDto> getForumThreadsByCategory(int categoryId);

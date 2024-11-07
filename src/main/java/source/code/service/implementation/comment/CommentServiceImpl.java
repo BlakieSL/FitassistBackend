@@ -12,6 +12,7 @@ import source.code.dto.request.comment.CommentCreateDto;
 import source.code.dto.request.comment.CommentUpdateDto;
 import source.code.dto.response.comment.CommentResponseDto;
 import source.code.exception.RecordNotFoundException;
+import source.code.helper.User.AuthorizationUtil;
 import source.code.mapper.comment.CommentMapper;
 import source.code.model.forum.Comment;
 import source.code.repository.CommentRepository;
@@ -58,7 +59,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    @IsCommentOwner
+    @IsCommentOwnerOrAdmin
     public void updateComment(int commentId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
@@ -72,7 +73,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    @IsCommentOwner
+    @IsCommentOwnerOrAdmin
     public void deleteComment(int commentId) {
         Comment comment = find(commentId);
         commentRepository.delete(comment);
@@ -119,7 +120,6 @@ public class CommentServiceImpl implements CommentService {
         return commentDto;
     }
 
-
     public CommentUpdateDto applyPatchToComment(Comment comment, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
@@ -131,18 +131,13 @@ public class CommentServiceImpl implements CommentService {
         return repositoryHelper.find(commentRepository, Comment.class, commentId);
     }
 
-    public boolean isCommentOwner(int commentId)  {
+    public boolean isCommentOwnerOrAdmin(int commentId)  {
         Comment comment = find(commentId);
-        CustomAuthenticationToken auth = (CustomAuthenticationToken) SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-        Integer currentUserId = auth.getUserId();
-
-        return comment.getUser() != null && comment.getUser().getId().equals(currentUserId);
+        return AuthorizationUtil.isOwnerOrAdmin(comment.getUser().getId());
     }
 
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
-    @PreAuthorize("@commentServiceImpl.isCommentOwner(#commentId)")
-    public @interface IsCommentOwner {}
+    @PreAuthorize("@commentServiceImpl.isCommentOwnerOrAdmin(#commentId)")
+    public @interface IsCommentOwnerOrAdmin {}
 }

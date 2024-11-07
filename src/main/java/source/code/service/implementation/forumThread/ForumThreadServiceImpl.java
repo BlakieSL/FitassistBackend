@@ -11,6 +11,7 @@ import source.code.auth.CustomAuthenticationToken;
 import source.code.dto.request.forumThread.ForumThreadCreateDto;
 import source.code.dto.request.forumThread.ForumThreadUpdateDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
+import source.code.helper.User.AuthorizationUtil;
 import source.code.mapper.forumThread.ForumThreadMapper;
 import source.code.model.forum.ForumThread;
 import source.code.repository.ForumThreadRepository;
@@ -24,6 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ForumThreadServiceImpl implements ForumThreadService {
@@ -106,18 +108,13 @@ public class ForumThreadServiceImpl implements ForumThreadService {
         return repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId);
     }
 
-    public boolean isThreadOwner(int threadId)  {
+    public boolean isThreadOwnerOrAdmin(int threadId)  {
         ForumThread thread = find(threadId);
-        CustomAuthenticationToken auth = (CustomAuthenticationToken) SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-        Integer currentUserId = auth.getUserId();
-
-        return thread.getUser() != null && thread.getUser().getId().equals(currentUserId);
+        return AuthorizationUtil.isOwnerOrAdmin(thread.getUser().getId());
     }
 
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
-    @PreAuthorize("@forumThreadServiceImpl.isThreadOwner(#threadId)")
+    @PreAuthorize("@forumThreadServiceImpl.threadOwnerOrAdmin(#threadId)")
     public @interface IsThreadOwner {}
 }
