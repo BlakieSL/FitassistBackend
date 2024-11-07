@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserCommentLikesRepository extends JpaRepository<UserCommentLikes, Integer> {
-    boolean existsByUserAndComment(int userId, int commentId);
+    boolean existsByUserIdAndCommentId(int userId, int commentId);
     Optional<UserCommentLikes> findByUserIdAndCommentId(int userId, int commentId);
     List<UserCommentLikes> findAllByUserId(int userId);
     long countAllByCommentId(int commentId);
