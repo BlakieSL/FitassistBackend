@@ -38,7 +38,7 @@ public class UserActivityServiceImpl
 
     @Override
     protected UserActivity createUserEntity(User user, Activity entity, short type) {
-        return UserActivity.createWithUserActivityType(user, entity, type);
+        return UserActivity.of(user, entity, type);
     }
 
     @Override
