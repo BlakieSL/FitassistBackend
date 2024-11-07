@@ -21,5 +21,5 @@ public class ForumThreadResponseDto {
     private int views;
     private Integer userId;
     private Integer threadCategoryId;
-    private List<Integer> commentIds;
+    private int commentsCount;
 }

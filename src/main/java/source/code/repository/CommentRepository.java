@@ -6,6 +6,7 @@ import source.code.model.forum.Comment;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
-    List<Comment> findAllByThreadId(int threadId);
+    List<Comment> findAllByThreadIdAndParentCommentNull(int threadId);
     List<Comment> findAllByParentCommentId(int commentId);
+    long countAllByThreadId(int threadId);
 }

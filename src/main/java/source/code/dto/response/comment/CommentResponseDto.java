@@ -18,5 +18,5 @@ public class CommentResponseDto {
     private Integer threadId;
     private Integer userId;
     private Integer parentCommentId;
-    private List<Integer> repliesIds;
+    private List<CommentResponseDto> replies;
 }

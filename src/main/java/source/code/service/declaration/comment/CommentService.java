@@ -14,6 +14,7 @@ public interface CommentService {
     void updateComment(int commentId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException, AccessDeniedException;
     void deleteComment(int commentId) throws AccessDeniedException;
     CommentResponseDto getComment(int commentId);
-    List<CommentResponseDto> getCommentsByThread(int threadId);
+    long countCommentsForThread(int threadId);
+    List<CommentResponseDto> getTopCommentsForThread(int threadId);
     List<CommentResponseDto> getReplies(int commentId);
 }
