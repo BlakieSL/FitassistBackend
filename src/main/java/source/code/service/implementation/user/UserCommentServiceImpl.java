@@ -1,6 +1,5 @@
 package source.code.service.implementation.user;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.comment.CommentResponseDto;
 import source.code.exception.RecordNotFoundException;
@@ -14,7 +13,6 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.user.SavedService;
 
 import java.util.List;
-import java.util.function.Function;
 
 @Service("userCommentService")
 public class UserCommentServiceImpl
@@ -35,7 +33,7 @@ public class UserCommentServiceImpl
     @Override
     protected boolean isAlreadySaved(int userId, int entityId, short type) {
         return ((UserCommentLikesRepository) userEntityRepository)
-                .existsByUserAndComment(userId, entityId);
+                .existsByUserIdAndCommentId(userId, entityId);
     }
 
     @Override
