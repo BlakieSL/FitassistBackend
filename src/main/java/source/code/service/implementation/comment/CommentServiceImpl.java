@@ -3,8 +3,11 @@ package source.code.service.implementation.comment;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import source.code.auth.CustomAuthenticationToken;
 import source.code.dto.request.comment.CommentCreateDto;
 import source.code.dto.request.comment.CommentUpdateDto;
 import source.code.dto.response.comment.CommentResponseDto;
@@ -16,6 +19,10 @@ import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.List;
 
 @Service
@@ -47,6 +54,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
+    @IsCommentOwner
     public void updateComment(int commentId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
@@ -60,6 +68,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
+    @IsCommentOwner
     public void deleteComment(int commentId) {
         Comment comment = find(commentId);
         commentRepository.delete(comment);
@@ -95,4 +104,19 @@ public class CommentServiceImpl implements CommentService {
     private Comment find(int commentId) {
         return repositoryHelper.find(commentRepository, Comment.class, commentId);
     }
+
+    public boolean isCommentOwner(int commentId)  {
+        Comment comment = find(commentId);
+        CustomAuthenticationToken auth = (CustomAuthenticationToken) SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+        Integer currentUserId = auth.getUserId();
+
+        return comment.getUser() != null && comment.getUser().getId().equals(currentUserId);
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @PreAuthorize("@commentServiceImpl.isCommentOwner(#commentId)")
+    public @interface IsCommentOwner {}
 }
