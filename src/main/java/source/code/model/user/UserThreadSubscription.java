@@ -12,7 +12,7 @@ import source.code.model.forum.ForumThread;
 @Table(name = "user_thread")
 @Getter
 @Setter
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 public class UserThreadSubscription {
     @Id
@@ -28,4 +28,11 @@ public class UserThreadSubscription {
     @ManyToOne
     @JoinColumn(name = "thread_id", nullable = false)
     private ForumThread forumThread;
+
+    public static UserThreadSubscription of(User user, ForumThread forumThread) {
+        UserThreadSubscription userThreadSubscription = new UserThreadSubscription();
+        userThreadSubscription.setUser(user);
+        userThreadSubscription.setForumThread(forumThread);
+        return userThreadSubscription;
+    }
 }
