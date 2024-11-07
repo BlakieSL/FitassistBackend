@@ -13,7 +13,7 @@ import source.code.model.forum.Comment;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 public class UserCommentLikes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +28,11 @@ public class UserCommentLikes {
     @ManyToOne
     @JoinColumn(name = "comment_id", nullable = false)
     private Comment comment;
+
+    public static UserCommentLikes of(User user, Comment comment) {
+        UserCommentLikes userCommentLikes = new UserCommentLikes();
+        userCommentLikes.setUser(user);
+        userCommentLikes.setComment(comment);
+        return userCommentLikes;
+    }
 }

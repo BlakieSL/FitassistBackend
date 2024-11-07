@@ -33,7 +33,7 @@ public class UserActivity implements BaseUserEntity {
     @Column(nullable = false)
     private short type;
 
-    public static UserActivity createWithUserActivityType(
+    public static UserActivity of(
             User user, Activity activity, short type) {
 
         UserActivity userActivity = new UserActivity();
