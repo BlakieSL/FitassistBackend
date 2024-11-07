@@ -11,13 +11,14 @@ import source.code.repository.CommentRepository;
 import source.code.repository.UserCommentLikesRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.user.SavedService;
+import source.code.service.declaration.user.SavedServiceWithoutType;
 
 import java.util.List;
 
 @Service("userCommentService")
 public class UserCommentServiceImpl
-        extends GenericSavedService<Comment, UserCommentLikes, CommentResponseDto>
-        implements SavedService {
+        extends GenericSavedServiceWithoutType<Comment, UserCommentLikes, CommentResponseDto>
+        implements SavedServiceWithoutType {
 
     public UserCommentServiceImpl(UserCommentLikesRepository userCommentLikesRepository,
                                   CommentRepository commentRepository,
@@ -31,18 +32,18 @@ public class UserCommentServiceImpl
     }
 
     @Override
-    protected boolean isAlreadySaved(int userId, int entityId, short type) {
+    protected boolean isAlreadySaved(int userId, int entityId) {
         return ((UserCommentLikesRepository) userEntityRepository)
                 .existsByUserIdAndCommentId(userId, entityId);
     }
 
     @Override
-    protected UserCommentLikes createUserEntity(User user, Comment entity, short type) {
+    protected UserCommentLikes createUserEntity(User user, Comment entity) {
         return UserCommentLikes.of(user, entity);
     }
 
     @Override
-    protected UserCommentLikes findUserEntity(int userId, int entityId, short type) {
+    protected UserCommentLikes findUserEntity(int userId, int entityId) {
         return ((UserCommentLikesRepository) userEntityRepository)
                 .findByUserIdAndCommentId(userId, entityId)
                 .orElseThrow(() -> RecordNotFoundException.of(
@@ -53,7 +54,7 @@ public class UserCommentServiceImpl
     }
 
     @Override
-    protected List<UserCommentLikes> findAllByUserAndType(int userId, short type) {
+    protected List<UserCommentLikes> findAllByUser(int userId) {
         return ((UserCommentLikesRepository) userEntityRepository).findAllByUserId(userId);
     }
 
