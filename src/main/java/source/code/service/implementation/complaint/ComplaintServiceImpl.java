@@ -2,6 +2,7 @@ package source.code.service.implementation.complaint;
 
 import org.springframework.stereotype.Service;
 import source.code.dto.request.complaint.ComplaintCreateDto;
+import source.code.exception.RecordNotFoundException;
 import source.code.mapper.complaint.ComplaintMapper;
 import source.code.model.forum.CommentComplaint;
 import source.code.model.forum.ComplaintBase;
@@ -36,5 +37,12 @@ public class ComplaintServiceImpl implements ComplaintService {
                 threadComplaintRepository.save(complaint);
             }
         }
+    }
+
+    @Override
+    public void resolveComplaint(int complaintId) {
+        ComplaintBase complaint = commentComplaintRepository.findById(complaintId)
+                .orElseThrow(() -> RecordNotFoundException.of(ComplaintBase.class, complaintId));
+        complaint.setStatus(ComplaintBase.Status.RESOLVED);
     }
 }

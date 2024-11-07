@@ -27,6 +27,11 @@ public abstract class ComplaintBase {
     private ComplaintBase.Reason reason;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ComplaintBase.Status status = ComplaintBase.Status.PENDING;
+
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -35,5 +40,10 @@ public abstract class ComplaintBase {
         SPAM,
         INAPPROPRIATE_CONTENT,
         OTHER
+    }
+
+    public enum Status {
+        PENDING,
+        RESOLVED
     }
 }
