@@ -26,5 +26,5 @@ public class ThreadCategory {
     private String name;
 
     @OneToMany(mappedBy = "threadCategory", cascade = CascadeType.REMOVE)
-    private final Set<ForumThread> forumThreads = new HashSet<>();
+    private final Set<ForumThread> threads = new HashSet<>();
 }
