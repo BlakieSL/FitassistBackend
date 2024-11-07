@@ -11,6 +11,7 @@ import source.code.auth.CustomAuthenticationToken;
 import source.code.dto.request.comment.CommentCreateDto;
 import source.code.dto.request.comment.CommentUpdateDto;
 import source.code.dto.response.comment.CommentResponseDto;
+import source.code.exception.RecordNotFoundException;
 import source.code.mapper.comment.CommentMapper;
 import source.code.model.forum.Comment;
 import source.code.repository.CommentRepository;
@@ -23,7 +24,10 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -81,18 +85,40 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentResponseDto> getCommentsByThread(int threadId) {
-        return commentRepository.findAllByParentCommentId(threadId).stream()
+    public long countCommentsForThread(int threadId) {
+        return commentRepository.countAllByThreadId(threadId);
+    }
+
+    @Override
+    public List<CommentResponseDto> getTopCommentsForThread(int threadId) {
+        return commentRepository.findAllByThreadIdAndParentCommentNull(threadId).stream()
                 .map(commentMapper::toResponseDto)
                 .toList();
     }
 
     @Override
     public List<CommentResponseDto> getReplies(int commentId) {
-        return commentRepository.findAllByParentCommentId(commentId).stream()
-                .map(commentMapper::toResponseDto)
+        List<Comment> directReplies = commentRepository.findAllByParentCommentId(commentId);
+
+        return directReplies.stream()
+                .map(this::buildCommentHierarchy)
                 .toList();
     }
+
+    private CommentResponseDto buildCommentHierarchy(Comment comment) {
+        CommentResponseDto commentDto = commentMapper.toResponseDto(comment);
+
+        List<Comment> replies = commentRepository.findAllByParentCommentId(comment.getId());
+
+        List<CommentResponseDto> replyDtos = replies.stream()
+                .map(this::buildCommentHierarchy)
+                .toList();
+
+        commentDto.setReplies(replyDtos);
+
+        return commentDto;
+    }
+
 
     public CommentUpdateDto applyPatchToComment(Comment comment, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
