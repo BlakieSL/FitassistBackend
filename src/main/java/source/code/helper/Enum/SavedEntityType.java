@@ -1,9 +1,11 @@
 package source.code.helper.Enum;
 
-public enum EntityType {
+public enum SavedEntityType {
     FOOD,
     ACTIVITY,
     EXERCISE,
     RECIPE,
-    PLAN
+    PLAN,
+    COMMENT,
+    FORUM_THREAD,
 }

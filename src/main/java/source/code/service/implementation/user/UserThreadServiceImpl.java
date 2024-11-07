@@ -1,6 +1,5 @@
 package source.code.service.implementation.user;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.exception.RecordNotFoundException;
@@ -12,17 +11,16 @@ import source.code.repository.ForumThreadRepository;
 import source.code.repository.UserRepository;
 import source.code.repository.UserThreadSubscriptionRepository;
 import source.code.service.declaration.user.SavedService;
+import source.code.service.declaration.user.SavedServiceWithoutType;
 
 import java.util.List;
-import java.util.function.Function;
-
 @Service("userThreadService")
 public class UserThreadServiceImpl
-        extends GenericSavedService<ForumThread, UserThreadSubscription, ForumThreadResponseDto>
-        implements SavedService {
+        extends GenericSavedServiceWithoutType<ForumThread, UserThreadSubscription, ForumThreadResponseDto>
+        implements SavedServiceWithoutType {
 
     public UserThreadServiceImpl(UserThreadSubscriptionRepository userThreadSubscriptionRepository,
-                                 ForumThreadRepository forumThreadRepository,,
+                                 ForumThreadRepository forumThreadRepository,
                                  UserRepository userRepository,
                                  ForumThreadMapper forumThreadMapper) {
         super(userRepository,
@@ -33,18 +31,18 @@ public class UserThreadServiceImpl
     }
 
     @Override
-    protected boolean isAlreadySaved(int userId, int entityId, short type) {
+    protected boolean isAlreadySaved(int userId, int entityId) {
         return ((UserThreadSubscriptionRepository) userEntityRepository)
                 .existsByUserIdAndForumThreadId(userId, entityId);
     }
 
     @Override
-    protected UserThreadSubscription createUserEntity(User user, ForumThread entity, short type) {
+    protected UserThreadSubscription createUserEntity(User user, ForumThread entity) {
         return UserThreadSubscription.of(user, entity);
     }
 
     @Override
-    protected UserThreadSubscription findUserEntity(int userId, int entityId, short type) {
+    protected UserThreadSubscription findUserEntity(int userId, int entityId) {
         return ((UserThreadSubscriptionRepository) userEntityRepository)
                 .findByUserIdAndForumThreadId(userId, entityId)
                 .orElseThrow(() -> RecordNotFoundException.of(
@@ -55,7 +53,7 @@ public class UserThreadServiceImpl
     }
 
     @Override
-    protected List<UserThreadSubscription> findAllByUserAndType(int userId, short type) {
+    protected List<UserThreadSubscription> findAllByUser(int userId) {
         return ((UserThreadSubscriptionRepository) userEntityRepository).findAllByUserId(userId);
     }
 

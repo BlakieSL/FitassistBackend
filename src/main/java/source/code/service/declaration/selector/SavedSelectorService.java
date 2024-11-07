@@ -1,8 +1,10 @@
 package source.code.service.declaration.selector;
 
-import source.code.helper.Enum.EntityType;
+import source.code.helper.Enum.SavedEntityType;
 import source.code.service.declaration.user.SavedService;
+import source.code.service.declaration.user.SavedServiceWithoutType;
 
 public interface SavedSelectorService {
-    SavedService getService(EntityType entityType);
+    SavedService getService(SavedEntityType savedEntityType);
+    SavedServiceWithoutType getServiceWithoutType(SavedEntityType savedEntityType);
 }

@@ -11,8 +11,9 @@ import java.util.List;
 
 public interface CommentService {
     CommentResponseDto createComment(CommentCreateDto createDto);
-    void updateComment(int commentId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException, AccessDeniedException;
-    void deleteComment(int commentId) throws AccessDeniedException;
+    void updateComment(int commentId, JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException;
+    void deleteComment(int commentId);
     CommentResponseDto getComment(int commentId);
     long countCommentsForThread(int threadId);
     List<CommentResponseDto> getTopCommentsForThread(int threadId);
