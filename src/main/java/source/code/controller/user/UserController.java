@@ -6,6 +6,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import source.code.auth.JwtService;
@@ -15,6 +16,11 @@ import source.code.dto.response.AccessTokenResponseDto;
 import source.code.dto.response.user.UserResponseDto;
 import source.code.service.declaration.user.UserService;
 import source.code.validation.ValidationGroups;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 @RestController
 @RequestMapping(path = "/api/users")
@@ -29,6 +35,7 @@ public class UserController {
         this.jwtService = jwtService;
     }
 
+    @IsOwnerOrAdmin
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> getUser(@PathVariable int id) {
         UserResponseDto user = userService.getUser(id);
@@ -38,7 +45,7 @@ public class UserController {
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequestDto dtoRequest) {
         String newAccessToken = jwtService.refreshAccessToken(dtoRequest.getRefreshToken());
-        AccessTokenResponseDto accessTokenResponseDto = new AccessTokenResponseDto(newAccessToken);
+        AccessTokenResponseDto accessTokenResponseDto = AccessTokenResponseDto.of(newAccessToken);
         return ResponseEntity.ok(accessTokenResponseDto);
     }
 
@@ -48,19 +55,26 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @IsOwnerOrAdmin
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateUser(
             @PathVariable int id,
             @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-
+            throws JsonPatchException, JsonProcessingException
+    {
         userService.updateUser(id, patch);
         return ResponseEntity.noContent().build();
     }
 
+    @IsOwnerOrAdmin
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable int id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @PreAuthorize("@authorizationUtil.isOwnerOrAdmin(#id)")
+    public @interface IsOwnerOrAdmin {}
 }

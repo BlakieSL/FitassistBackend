@@ -32,15 +32,17 @@ public class RecipeFoodController {
     public ResponseEntity<Void> addFoodToRecipe(
             @PathVariable int recipeId,
             @PathVariable int foodId,
-            @Valid @RequestBody RecipeFoodCreateDto request) {
-
+            @Valid @RequestBody RecipeFoodCreateDto request
+    ) {
         recipeFoodService.saveFoodToRecipe(recipeId, foodId, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{recipeId}/remove/{foodId}")
-    public ResponseEntity<Void> deleteFoodFromRecipe(@PathVariable int recipeId,
-                                                     @PathVariable int foodId) {
+    public ResponseEntity<Void> deleteFoodFromRecipe(
+            @PathVariable int recipeId,
+            @PathVariable int foodId
+    ) {
         recipeFoodService.deleteFoodFromRecipe(foodId, recipeId);
         return ResponseEntity.ok().build();
     }

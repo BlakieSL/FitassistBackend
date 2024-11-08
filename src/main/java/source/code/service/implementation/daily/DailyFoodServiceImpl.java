@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.request.food.DailyFoodItemCreateDto;
 import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.exception.RecordNotFoundException;
+import source.code.helper.User.AuthorizationUtil;
 import source.code.mapper.daily.DailyFoodMapper;
 import source.code.model.food.DailyFood;
 import source.code.model.food.DailyFoodItem;
@@ -66,7 +67,8 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 
     @Override
     @Transactional
-    public void addFoodToDailyFoodItem(int userId, int foodId, DailyFoodItemCreateDto dto) {
+    public void addFoodToDailyFoodItem(int foodId, DailyFoodItemCreateDto dto) {
+        int userId = AuthorizationUtil.getUserId();
         DailyFood dailyFood = getOrCreateDailyFoodForUser(userId);
         Food food = repositoryHelper.find(foodRepository, Food.class, foodId);
         DailyFoodItem dailyFoodItem = getOrCreateDailyFoodItem(dailyFood, food, dto.getAmount());
@@ -77,7 +79,8 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 
     @Override
     @Transactional
-    public void removeFoodFromDailyFoodItem(int userId, int foodId) {
+    public void removeFoodFromDailyFoodItem(int foodId) {
+        int userId = AuthorizationUtil.getUserId();
         DailyFood dailyFood = getOrCreateDailyFoodForUser(userId);
         DailyFoodItem dailyFoodItem = getDailyFoodItem(dailyFood.getId(), foodId);
 
@@ -87,9 +90,10 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 
     @Override
     @Transactional
-    public void updateDailyFoodItem(int userId, int foodId, JsonMergePatch patch)
+    public void updateDailyFoodItem(int foodId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
+        int userId = AuthorizationUtil.getUserId();
         DailyFood dailyFood = getOrCreateDailyFoodForUser(userId);
         DailyFoodItem dailyFoodItem = getDailyFoodItem(dailyFood.getId(), foodId);
 
@@ -101,7 +105,8 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     }
 
     @Override
-    public DailyFoodsResponseDto getFoodsFromDailyFoodItem(int userId) {
+    public DailyFoodsResponseDto getFoodsFromDailyFoodItem() {
+        int userId = AuthorizationUtil.getUserId();
         DailyFood dailyFood = getOrCreateDailyFoodForUser(userId);
 
         return dailyFoodMapper.toDailyFoodsResponseDto(

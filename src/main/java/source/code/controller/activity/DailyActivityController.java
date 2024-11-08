@@ -20,40 +20,34 @@ public class DailyActivityController {
         this.dailyActivityService = dailyActivityService;
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<DailyActivitiesResponseDto> getAllDailyActivitiesByUser(
-            @PathVariable int userId) {
-        DailyActivitiesResponseDto activities = dailyActivityService.getActivitiesFromDailyActivity(userId);
+    @GetMapping
+    public ResponseEntity<DailyActivitiesResponseDto> getAllDailyActivitiesByUser() {
+        DailyActivitiesResponseDto activities = dailyActivityService.getActivitiesFromDailyActivity();
         return ResponseEntity.ok(activities);
     }
 
-    @PostMapping("/{userId}/add/{activityId}")
+    @PostMapping("/add/{activityId}")
     public ResponseEntity<Void> addDailyActivityToUser(
-            @PathVariable int userId,
             @PathVariable int activityId,
-            @Valid @RequestBody DailyActivityItemCreateDto request) {
-
-        dailyActivityService.addActivityToDailyActivityItem(userId, activityId, request);
+            @Valid @RequestBody DailyActivityItemCreateDto request
+    ) {
+        dailyActivityService.addActivityToDailyActivityItem(activityId, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/{userId}/remove/{activityId}")
-    public ResponseEntity<Void> removeActivityFromDailyCartActivity(
-            @PathVariable int userId,
-            @PathVariable int activityId) {
-
-        dailyActivityService.removeActivityFromDailyActivity(userId, activityId);
+    @DeleteMapping("/remove/{activityId}")
+    public ResponseEntity<Void> removeActivityFromDailyCartActivity(@PathVariable int activityId) {
+        dailyActivityService.removeActivityFromDailyActivity(activityId);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{userId}/modify-activity/{activityId}")
+    @PatchMapping("/modify-activity/{activityId}")
     public ResponseEntity<Void> updateDailyCartActivity(
-            @PathVariable int userId,
             @PathVariable int activityId,
             @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-
-        dailyActivityService.updateDailyActivityItem(userId, activityId, patch);
+            throws JsonPatchException, JsonProcessingException
+    {
+        dailyActivityService.updateDailyActivityItem(activityId, patch);
         return ResponseEntity.noContent().build();
     }
 }

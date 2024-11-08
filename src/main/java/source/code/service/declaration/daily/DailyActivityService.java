@@ -7,11 +7,11 @@ import source.code.dto.request.activity.DailyActivityItemCreateDto;
 import source.code.dto.response.DailyActivitiesResponseDto;
 
 public interface DailyActivityService {
-    void addActivityToDailyActivityItem(int userId, Integer activityId, DailyActivityItemCreateDto dto);
+    void addActivityToDailyActivityItem(int activityId, DailyActivityItemCreateDto dto);
 
-    void removeActivityFromDailyActivity(int userId, int activityId);
+    void removeActivityFromDailyActivity(int activityId);
 
-    void updateDailyActivityItem(int userId, int activityId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+    void updateDailyActivityItem(int activityId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-    DailyActivitiesResponseDto getActivitiesFromDailyActivity(int userId);
+    DailyActivitiesResponseDto getActivitiesFromDailyActivity();
 }

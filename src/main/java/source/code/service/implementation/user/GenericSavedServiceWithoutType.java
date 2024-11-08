@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
+import source.code.helper.User.AuthorizationUtil;
 import source.code.model.user.BaseUserEntity;
 import source.code.model.user.User;
 import source.code.repository.UserRepository;
@@ -34,7 +35,8 @@ public abstract class GenericSavedServiceWithoutType<T, U, R> implements SavedSe
 
     @Override
     @Transactional
-    public void saveToUser(int userId, int entityId) {
+    public void saveToUser(int entityId) {
+        int userId = AuthorizationUtil.getUserId();
         if (isAlreadySaved(userId, entityId)) {
             throw NotUniqueRecordException.of(
                     "User with id: " + userId + " already has entity with id: " + entityId
@@ -53,13 +55,15 @@ public abstract class GenericSavedServiceWithoutType<T, U, R> implements SavedSe
 
     @Override
     @Transactional
-    public void deleteFromUser(int userId, int entityId) {
+    public void deleteFromUser(int entityId) {
+        int userId = AuthorizationUtil.getUserId();
         U userEntity = findUserEntity(userId, entityId);
         userEntityRepository.delete(userEntity);
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId) {
+    public List<BaseUserEntity> getAllFromUser() {
+        int userId = AuthorizationUtil.getUserId();
         return findAllByUser(userId).stream()
                 .map(this::extractEntity)
                 .map(entity -> (BaseUserEntity) map.apply(entity))

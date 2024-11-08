@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
+import source.code.helper.User.AuthorizationUtil;
 import source.code.model.user.BaseUserEntity;
 import source.code.model.user.User;
 import source.code.repository.UserRepository;
@@ -32,7 +33,8 @@ public abstract class GenericSavedService<T, U, R> {
     }
 
     @Transactional
-    public void saveToUser(int userId, int entityId, short type) {
+    public void saveToUser(int entityId, short type) {
+        int userId = AuthorizationUtil.getUserId();
         if (isAlreadySaved(userId, entityId, type)) {
             throw NotUniqueRecordException.of(
                     "User with id: " + userId
@@ -52,12 +54,14 @@ public abstract class GenericSavedService<T, U, R> {
     }
 
     @Transactional
-    public void deleteFromUser(int userId, int entityId, short type) {
+    public void deleteFromUser(int entityId, short type) {
+        int userId = AuthorizationUtil.getUserId();
         U userEntity = findUserEntity(userId, entityId, type);
         userEntityRepository.delete(userEntity);
     }
 
-    public List<BaseUserEntity> getAllFromUser(int userId, short type) {
+    public List<BaseUserEntity> getAllFromUser(short type) {
+        int userId = AuthorizationUtil.getUserId();
         return findAllByUserAndType(userId, type).stream()
                 .map(this::extractEntity)
                 .map(entity -> (BaseUserEntity) map.apply(entity))

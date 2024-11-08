@@ -23,8 +23,9 @@ public class TextController {
 
     @GetMapping("/{id}/type/{type}")
     public ResponseEntity<List<BaseTextResponseDto>> getAll(
-            @PathVariable int id, @PathVariable TextType type) {
-
+            @PathVariable int id,
+            @PathVariable TextType type
+    ) {
         TextService textService = textSelectorService.getService(type);
         List<BaseTextResponseDto> response = textService.getAllByParent(id);
         return ResponseEntity.ok(response);
@@ -32,9 +33,11 @@ public class TextController {
 
     @PatchMapping("/{id}/type/{type}")
     public ResponseEntity<Void> update(
-            @PathVariable int id, @PathVariable TextType type, @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-
+            @PathVariable int id,
+            @PathVariable TextType type,
+            @RequestBody JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException
+    {
         TextService textService = textSelectorService.getService(type);
         textService.updateText(id, patch);
         return ResponseEntity.noContent().build();

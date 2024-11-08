@@ -10,6 +10,7 @@ import source.code.dto.request.activity.DailyActivityItemCreateDto;
 import source.code.dto.response.ActivityCalculatedResponseDto;
 import source.code.dto.response.DailyActivitiesResponseDto;
 import source.code.exception.RecordNotFoundException;
+import source.code.helper.User.AuthorizationUtil;
 import source.code.mapper.daily.DailyActivityMapper;
 import source.code.model.activity.Activity;
 import source.code.model.activity.DailyActivity;
@@ -68,9 +69,8 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 
     @Override
     @Transactional
-    public void addActivityToDailyActivityItem(
-            int userId, Integer activityId, DailyActivityItemCreateDto dto
-    ) {
+    public void addActivityToDailyActivityItem(int activityId, DailyActivityItemCreateDto dto) {
+        int userId = AuthorizationUtil.getUserId();
         DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
         Activity activity = repositoryHelper.find(activityRepository, Activity.class, activityId);
         DailyActivityItem dailyActivityItem = getOrCreateDailyActivityItem(
@@ -82,7 +82,8 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 
     @Override
     @Transactional
-    public void removeActivityFromDailyActivity(int userId, int activityId) {
+    public void removeActivityFromDailyActivity(int activityId) {
+        int userId = AuthorizationUtil.getUserId();
         DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
         DailyActivityItem dailyActivityItem = getDailyActivityItem(dailyActivity.getId(), activityId);
 
@@ -92,8 +93,10 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 
     @Override
     @Transactional
-    public void updateDailyActivityItem(int userId, int activityId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
+    public void updateDailyActivityItem(int activityId, JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException
+    {
+        int userId = AuthorizationUtil.getUserId();
         DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
         DailyActivityItem dailyActivityItem = getDailyActivityItem(dailyActivity.getId(), activityId);
 
@@ -105,7 +108,8 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     }
 
     @Override
-    public DailyActivitiesResponseDto getActivitiesFromDailyActivity(int userId) {
+    public DailyActivitiesResponseDto getActivitiesFromDailyActivity() {
+        int userId = AuthorizationUtil.getUserId();
         DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
         User user = dailyActivity.getUser();
 

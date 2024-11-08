@@ -20,14 +20,13 @@ public class SavedController {
         this.savedSelectorService = savedSelectorService;
     }
 
-    @GetMapping("/item-type/{itemType}/users/{userId}/type/{type}")
+    @GetMapping("/item-type/{itemType}/type/{type}")
     public ResponseEntity<List<BaseUserEntity>> getAllFromUser(
             @PathVariable SavedEntityType itemType,
-            @PathVariable int userId,
             @PathVariable short type
     ) {
         SavedService savedService = savedSelectorService.getService(itemType);
-        List<BaseUserEntity> dto = savedService.getAllFromUser(userId, type);
+        List<BaseUserEntity> dto = savedService.getAllFromUser(type);
         return ResponseEntity.ok(dto);
     }
 
@@ -41,62 +40,57 @@ public class SavedController {
         return ResponseEntity.ok(dto);
     }
 
-    @PostMapping("/item-type/{itemType}/{itemId}/users/{userId}/type/{type}")
+    @PostMapping("/item-type/{itemType}/{itemId}/type/{type}")
     public ResponseEntity<Void> saveToUser(
             @PathVariable SavedEntityType itemType,
             @PathVariable int itemId,
-            @PathVariable int userId,
             @PathVariable short type
     ) {
         SavedService savedService = savedSelectorService.getService(itemType);
-        savedService.saveToUser(userId, itemId, type);
+        savedService.saveToUser(itemId, type);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/item-type/{itemType}/{itemId}/users/{userId}/type/{type}")
+    @DeleteMapping("/item-type/{itemType}/{itemId}/type/{type}")
     public ResponseEntity<Void> deleteFromUser(
             @PathVariable SavedEntityType itemType,
             @PathVariable int itemId,
-            @PathVariable int userId,
             @PathVariable short type
     ) {
         SavedService savedService = savedSelectorService.getService(itemType);
-        savedService.deleteFromUser(userId, itemId, type);
+        savedService.deleteFromUser(itemId, type);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/item-type/{itemType}/users/{userId}")
+    @GetMapping("/item-type/{itemType}")
     public ResponseEntity<List<BaseUserEntity>> getAllFromUserWithoutType(
-            @PathVariable SavedEntityType itemType,
-            @PathVariable int userId
+            @PathVariable SavedEntityType itemType
     ) {
         SavedServiceWithoutType savedServiceWithoutType = savedSelectorService
                 .getServiceWithoutType(itemType);
-        List<BaseUserEntity> dto = savedServiceWithoutType.getAllFromUser(userId);
+        List<BaseUserEntity> dto = savedServiceWithoutType.getAllFromUser();
         return ResponseEntity.ok(dto);
     }
 
-    @PostMapping("/item-type/{itemType}/{itemId}/users/{userId}")
+    @PostMapping("/item-type/{itemType}/{itemId}")
     public ResponseEntity<Void> saveToUserWithoutType(
             @PathVariable SavedEntityType itemType,
-            @PathVariable int itemId,
-            @PathVariable int userId
+            @PathVariable int itemId
     ) {
         SavedServiceWithoutType savedServiceWithoutType = savedSelectorService
                 .getServiceWithoutType(itemType);
-        savedServiceWithoutType.saveToUser(userId, itemId);
+        savedServiceWithoutType.saveToUser(itemId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/item-type/{itemType}/{itemId}/users/{userId}")
+    @DeleteMapping("/item-type/{itemType}/{itemId}")
     public ResponseEntity<Void> deleteFromUserWithoutType(
             @PathVariable SavedEntityType itemType,
-            @PathVariable int itemId,
-            @PathVariable int userId
+            @PathVariable int itemId
     ) {
         SavedServiceWithoutType savedServiceWithoutType = savedSelectorService
                 .getServiceWithoutType(itemType);
-        savedServiceWithoutType.deleteFromUser(userId, itemId);
+        savedServiceWithoutType.deleteFromUser(itemId);
         return ResponseEntity.noContent().build();
     }
 
