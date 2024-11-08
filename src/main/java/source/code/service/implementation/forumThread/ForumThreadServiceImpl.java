@@ -4,10 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import source.code.auth.CustomAuthenticationToken;
 import source.code.dto.request.forumThread.ForumThreadCreateDto;
 import source.code.dto.request.forumThread.ForumThreadUpdateDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
@@ -58,7 +56,6 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 
     @Override
     @Transactional
-    @IsThreadOwner
     public void updateForumThread(int threadId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
@@ -72,7 +69,6 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 
     @Override
     @Transactional
-    @IsThreadOwner
     public void deleteForumThread(int threadId) {
         ForumThread thread = find(threadId);
         forumThreadRepository.delete(thread);
@@ -114,9 +110,4 @@ public class ForumThreadServiceImpl implements ForumThreadService {
         ForumThread thread = find(threadId);
         return AuthorizationUtil.isOwnerOrAdmin(thread.getUser().getId());
     }
-
-    @Target(ElementType.METHOD)
-    @Retention(RetentionPolicy.RUNTIME)
-    @PreAuthorize("@forumThreadServiceImpl.isThreadOwnerOrAdmin(#threadId)")
-    public @interface IsThreadOwner {}
 }

@@ -37,27 +37,33 @@ public class ExerciseController {
 
     @PostMapping("/filter")
     public ResponseEntity<List<ExerciseResponseDto>> getFilteredExercises(
-            @Valid @RequestBody FilterDto filter) {
+            @Valid @RequestBody FilterDto filter
+    ) {
         List<ExerciseResponseDto> filtered = exerciseService.getFilteredExercises(filter);
         return ResponseEntity.ok(filtered);
     }
 
     @GetMapping("/{categoryId}/categories")
     public ResponseEntity<List<ExerciseResponseDto>> getExercisesByCategory(
-            @PathVariable int categoryId) {
-
+            @PathVariable int categoryId
+    ) {
         return ResponseEntity.ok(exerciseService.getExercisesByCategory(categoryId));
     }
 
     @PostMapping
-    public ResponseEntity<ExerciseResponseDto> createExercise(@Valid @RequestBody ExerciseCreateDto dto) {
+    public ResponseEntity<ExerciseResponseDto> createExercise(
+            @Valid @RequestBody ExerciseCreateDto dto
+    ) {
         ExerciseResponseDto savedExercise = exerciseService.createExercise(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedExercise);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateExercise(@PathVariable int id, @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
+    public ResponseEntity<Void> updateExercise(
+            @PathVariable int id,
+            @RequestBody JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException
+    {
         exerciseService.updateExercise(id, patch);
         return ResponseEntity.noContent().build();
     }

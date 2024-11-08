@@ -5,16 +5,20 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.forumThread.ForumThreadCreateDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.service.declaration.forumThread.ForumThreadService;
 
-import java.nio.file.AccessDeniedException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/thread")
+@RequestMapping("/api/threads")
 public class ForumThreadController {
     private final ForumThreadService forumThreadService;
 
@@ -43,6 +47,7 @@ public class ForumThreadController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @IsThreadOwnerOrAdmin
     @PostMapping
     public ResponseEntity<ForumThreadResponseDto> createForumThread(
             @Valid @RequestBody ForumThreadCreateDto createDto
@@ -51,6 +56,7 @@ public class ForumThreadController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @IsThreadOwnerOrAdmin
     @PatchMapping("/{forumThreadId}")
     public ResponseEntity<Void> updateForumThread(
             @PathVariable int forumThreadId,
@@ -66,4 +72,10 @@ public class ForumThreadController {
         forumThreadService.deleteForumThread(forumThreadId);
         return ResponseEntity.ok().build();
     }
+
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @PreAuthorize("@forumThreadServiceImpl.isThreadOwnerOrAdmin(#threadId)")
+    public @interface IsThreadOwnerOrAdmin {}
 }

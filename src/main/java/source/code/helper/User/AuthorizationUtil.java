@@ -1,10 +1,10 @@
 package source.code.helper.User;
 
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import source.code.auth.CustomAuthenticationToken;
-import source.code.model.forum.Comment;
-import source.code.model.forum.ForumThread;
 
+@Component
 public class AuthorizationUtil {
     public static boolean isOwnerOrAdmin(int ownerId) {
         CustomAuthenticationToken auth = (CustomAuthenticationToken) SecurityContextHolder

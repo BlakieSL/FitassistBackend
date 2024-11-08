@@ -52,8 +52,8 @@ public class FoodController {
     @PostMapping("/{id}/calculate-macros")
     public ResponseEntity<FoodCalculatedMacrosResponseDto> calculateFoodMacros(
             @PathVariable int id,
-            @Valid @RequestBody CalculateFoodMacrosRequestDto request) {
-
+            @Valid @RequestBody CalculateFoodMacrosRequestDto request
+    ) {
         FoodCalculatedMacrosResponseDto response = foodService.calculateFoodMacros(id, request);
         return ResponseEntity.ok(response);
     }
@@ -66,7 +66,8 @@ public class FoodController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateFood(@PathVariable int id, @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
+            throws JsonPatchException, JsonProcessingException
+    {
         foodService.updateFood(id, patch);
         return ResponseEntity.noContent().build();
     }
