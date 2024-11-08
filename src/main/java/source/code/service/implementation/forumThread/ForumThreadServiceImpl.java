@@ -50,8 +50,10 @@ public class ForumThreadServiceImpl implements ForumThreadService {
     @Override
     @Transactional
     public ForumThreadResponseDto createForumThread(ForumThreadCreateDto createDto) {
-        ForumThread thread = forumThreadRepository.save(forumThreadMapper.toEntity(createDto));
-        return forumThreadMapper.toResponseDto(thread);
+        int userId = AuthorizationUtil.getUserId();
+        ForumThread mapped = forumThreadMapper.toEntity(createDto, userId);
+        ForumThread saved = forumThreadRepository.save(mapped);
+        return forumThreadMapper.toResponseDto(saved);
     }
 
     @Override
@@ -115,6 +117,6 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
-    @PreAuthorize("@forumThreadServiceImpl.threadOwnerOrAdmin(#threadId)")
+    @PreAuthorize("@forumThreadServiceImpl.isThreadOwnerOrAdmin(#threadId)")
     public @interface IsThreadOwner {}
 }

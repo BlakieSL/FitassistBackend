@@ -53,8 +53,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public CommentResponseDto createComment(CommentCreateDto createDto) {
-        Comment comment = commentRepository.save(commentMapper.toEntity(createDto));
-        return commentMapper.toResponseDto(comment);
+        int userId = AuthorizationUtil.getUserId();
+        Comment mapped = commentMapper.toEntity(createDto, userId);
+        Comment saved = commentRepository.save(mapped);
+        return commentMapper.toResponseDto(saved);
     }
 
     @Override
