@@ -13,8 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CalculateActivityCaloriesRequestDto {
     @NotNull
-    private Integer userId;
-    @NotNull
     @Positive
     private int time = 1;
 }

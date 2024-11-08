@@ -61,7 +61,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    @IsCommentOwnerOrAdmin
     public void updateComment(int commentId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
@@ -75,7 +74,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    @IsCommentOwnerOrAdmin
     public void deleteComment(int commentId) {
         Comment comment = find(commentId);
         commentRepository.delete(comment);
@@ -137,9 +135,4 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = find(commentId);
         return AuthorizationUtil.isOwnerOrAdmin(comment.getUser().getId());
     }
-
-    @Target(ElementType.METHOD)
-    @Retention(RetentionPolicy.RUNTIME)
-    @PreAuthorize("@commentServiceImpl.isCommentOwnerOrAdmin(#commentId)")
-    public @interface IsCommentOwnerOrAdmin {}
 }

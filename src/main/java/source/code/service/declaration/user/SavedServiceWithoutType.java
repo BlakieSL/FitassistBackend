@@ -7,8 +7,8 @@ import source.code.model.user.BaseUserEntity;
 import java.util.List;
 
 public interface SavedServiceWithoutType {
-    void saveToUser(int userId, int entityId);
-    void deleteFromUser(int userId, int entityId);
-    List<BaseUserEntity> getAllFromUser(int userId);
+    void saveToUser(int entityId);
+    void deleteFromUser(int entityId);
+    List<BaseUserEntity> getAllFromUser();
     LikesAndSavesResponseDto calculateLikesAndSaves(int entityId);
 }

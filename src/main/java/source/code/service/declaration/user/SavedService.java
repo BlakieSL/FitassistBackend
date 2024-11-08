@@ -6,11 +6,11 @@ import source.code.model.user.BaseUserEntity;
 import java.util.List;
 
 public interface SavedService {
-    void saveToUser(int userId, int entityId, short type);
+    void saveToUser(int entityId, short type);
 
-    void deleteFromUser(int userId, int entityId, short type);
+    void deleteFromUser(int entityId, short type);
 
-    List<BaseUserEntity> getAllFromUser(int userId, short type);
+    List<BaseUserEntity> getAllFromUser(short type);
 
     LikesAndSavesResponseDto calculateLikesAndSaves(int entityId);
 }

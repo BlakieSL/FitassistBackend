@@ -20,38 +20,34 @@ public class DailyFoodController {
         this.dailyFoodService = dailyFoodService;
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<DailyFoodsResponseDto> getAllFoodsInCartByUser(@PathVariable int userId) {
-        DailyFoodsResponseDto cart = dailyFoodService.getFoodsFromDailyFoodItem(userId);
+    @GetMapping()
+    public ResponseEntity<DailyFoodsResponseDto> getAllFoodsInCartByUser() {
+        DailyFoodsResponseDto cart = dailyFoodService.getFoodsFromDailyFoodItem();
         return ResponseEntity.ok(cart);
     }
 
-    @PostMapping("/{userId}/add/{foodId}")
+    @PostMapping("/add/{foodId}")
     public ResponseEntity<Void> addDailyFoodToUser(
-            @PathVariable int userId,
             @PathVariable int foodId,
-            @Valid @RequestBody DailyFoodItemCreateDto request) {
-
-        dailyFoodService.addFoodToDailyFoodItem(userId, foodId, request);
+            @Valid @RequestBody DailyFoodItemCreateDto request
+    ) {
+        dailyFoodService.addFoodToDailyFoodItem(foodId, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/{userId}/remove/{foodId}")
-    public ResponseEntity<Void> removeFoodFromDailyCartFood(@PathVariable int userId,
-                                                            @PathVariable int foodId) {
-
-        dailyFoodService.removeFoodFromDailyFoodItem(userId, foodId);
+    @DeleteMapping("/remove/{foodId}")
+    public ResponseEntity<Void> removeFoodFromDailyCartFood(@PathVariable int foodId) {
+        dailyFoodService.removeFoodFromDailyFoodItem(foodId);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{userId}/modify-food/{foodId}")
+    @PatchMapping("/update/{foodId}")
     public ResponseEntity<Void> updateDailyCartFood(
-            @PathVariable int userId,
             @PathVariable int foodId,
             @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-
-        dailyFoodService.updateDailyFoodItem(userId, foodId, patch);
+            throws JsonPatchException, JsonProcessingException
+    {
+        dailyFoodService.updateDailyFoodItem(foodId, patch);
         return ResponseEntity.noContent().build();
     }
 }

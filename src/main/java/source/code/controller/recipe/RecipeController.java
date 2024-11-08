@@ -35,28 +35,35 @@ public class RecipeController {
     }
 
     @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<List<RecipeResponseDto>> getRecipesByCategory(@PathVariable int categoryId) {
+    public ResponseEntity<List<RecipeResponseDto>> getRecipesByCategory(
+            @PathVariable int categoryId
+    ) {
         List<RecipeResponseDto> recipes = recipeService.getRecipesByCategory(categoryId);
         return ResponseEntity.ok(recipes);
     }
 
     @PostMapping("/filter")
     public ResponseEntity<List<RecipeResponseDto>> getFilteredRecipes(
-            @Valid @RequestBody FilterDto filterDto) {
+            @Valid @RequestBody FilterDto filterDto
+    ) {
         List<RecipeResponseDto> filtered = recipeService.getFilteredRecipes(filterDto);
         return ResponseEntity.ok(filtered);
     }
 
     @PostMapping
     public ResponseEntity<RecipeResponseDto> createRecipe(
-            @Valid @RequestBody RecipeCreateDto recipeDto) {
+            @Valid @RequestBody RecipeCreateDto recipeDto
+    ) {
         RecipeResponseDto response = recipeService.createRecipe(recipeDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateRecipe(@PathVariable int id, @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
+    public ResponseEntity<Void> updateRecipe(
+            @PathVariable int id,
+            @RequestBody JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException
+    {
         recipeService.updateRecipe(id, patch);
         return ResponseEntity.noContent().build();
     }
