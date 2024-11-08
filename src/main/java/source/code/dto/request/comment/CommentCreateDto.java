@@ -16,7 +16,5 @@ public class CommentCreateDto {
     private String text;
     @NotNull
     private Integer threadId;
-    @NotNull
-    private Integer userId;
     private Integer parentCommentId;
 }

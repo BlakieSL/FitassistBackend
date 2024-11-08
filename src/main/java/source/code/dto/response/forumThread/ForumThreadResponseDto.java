@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -16,10 +17,9 @@ import java.util.List;
 public class ForumThreadResponseDto {
     private Integer id;
     private String title;
-    private LocalDate dateCreated;
+    private LocalDateTime dateCreated;
     private String text;
     private int views;
     private Integer userId;
     private Integer threadCategoryId;
-    private int commentsCount;
 }

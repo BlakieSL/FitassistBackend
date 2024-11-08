@@ -16,14 +16,10 @@ import source.code.model.plan.Plan;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlanInstruction extends TextBase {
-
-    @NotBlank
-    @Column(nullable = false)
     private String title;
 
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "plan_id", nullable = false)
+    @JoinColumn(name = "plan_id")
     private Plan plan;
 
     public static PlanInstruction createWithIdAndPlan(int id, Plan plan) {

@@ -13,6 +13,7 @@ import source.code.model.user.User;
 import source.code.model.user.UserThreadSubscription;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,7 +38,7 @@ public class ForumThread {
     @NotNull
     @PastOrPresent
     @Column(nullable = false)
-    private LocalDate dateCreated;
+    private LocalDateTime dateCreated;
 
     @NotBlank
     @Column(nullable = false)
@@ -66,5 +67,10 @@ public class ForumThread {
 
     public void incrementViews() {
         views++;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.dateCreated = LocalDateTime.now();
     }
 }

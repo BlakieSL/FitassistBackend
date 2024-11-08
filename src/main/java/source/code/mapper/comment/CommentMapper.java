@@ -14,6 +14,7 @@ import source.code.repository.ForumThreadRepository;
 import source.code.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Mapper(componentModel = "spring")
@@ -28,17 +29,17 @@ public abstract class CommentMapper {
     @Mapping(target = "threadId", source = "thread", qualifiedByName = "threadToThreadId")
     @Mapping(target = "userId", source = "user", qualifiedByName = "userToUserId")
     @Mapping(target = "parentCommentId", source = "parentComment", qualifiedByName = "parentCommentToParentCommentId")
-    @Mapping(target = "repliesIds", source = "replies", qualifiedByName = "repliesToRepliesIds")
+    @Mapping(target = "replies", ignore = true)
     public abstract CommentResponseDto toResponseDto(Comment comment);
 
     @Mapping(target = "text", source = "text")
     @Mapping(target = "thread", source = "threadId", qualifiedByName = "threadIdToThread")
-    @Mapping(target = "user", source = "userId", qualifiedByName = "userIdToUser")
+    @Mapping(target = "user", expression = "java(userIdToUser(userId))")
     @Mapping(target = "parentComment", source = "parentCommentId", qualifiedByName = "parentCommentIdToParentComment")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "replies", ignore = true)
     @Mapping(target = "userCommentLikes", ignore = true)
-    public abstract Comment toEntity(CommentCreateDto createDto);
+    public abstract Comment toEntity(CommentCreateDto createDto, @Context int userId);
 
     @BeanMapping(nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "text", source = "text")
@@ -63,14 +64,9 @@ public abstract class CommentMapper {
 
     @Named("parentCommentToParentCommentId")
     protected Integer parentCommentToParentCommentId(Comment parentComment) {
-        return parentComment.getId();
-    }
-
-    @Named("repliesToRepliesIds")
-    protected List<Integer> repliesToRepliesIds(Set<Comment> replies) {
-        return replies.stream()
+        return Optional.ofNullable(parentComment)
                 .map(Comment::getId)
-                .toList();
+                .orElse(null);
     }
 
     @Named("threadIdToThread")
@@ -87,7 +83,9 @@ public abstract class CommentMapper {
 
     @Named("parentCommentIdToParentComment")
     protected Comment parentCommentIdToParentComment(Integer parentCommentId) {
-        return commentRepository.findById(parentCommentId)
-                .orElseThrow(() -> RecordNotFoundException.of(Comment.class, parentCommentId));
+        return Optional.ofNullable(parentCommentId)
+                .map(id -> commentRepository.findById(id)
+                        .orElseThrow(() -> RecordNotFoundException.of(Comment.class, id)))
+                .orElse(null);
     }
 }

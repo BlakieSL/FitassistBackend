@@ -18,9 +18,8 @@ import source.code.model.exercise.Exercise;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExerciseTip extends TextBase {
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "exercise_id", nullable = false)
+    @JoinColumn(name = "exercise_id")
     private Exercise exercise;
 
     public static ExerciseTip createWithIdAndExercise(int id, Exercise exercise) {

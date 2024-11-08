@@ -1,9 +1,6 @@
 package source.code.mapper.recipe;
 
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 import source.code.dto.request.recipe.RecipeFoodCreateDto;
 import source.code.model.recipe.RecipeFood;
 
@@ -11,5 +8,8 @@ import source.code.model.recipe.RecipeFood;
 public abstract class RecipeFoodMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "recipe", ignore = true)
+    @Mapping(target = "food", ignore = true)
     public abstract void update(@MappingTarget RecipeFood recipeFood, RecipeFoodCreateDto updateDto);
 }

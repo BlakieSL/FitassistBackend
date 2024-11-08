@@ -14,7 +14,7 @@ import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/thread/")
+@RequestMapping("/api/thread")
 public class ForumThreadController {
     private final ForumThreadService forumThreadService;
 
@@ -34,11 +34,12 @@ public class ForumThreadController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping("/categoried/{categoryId}")
+    @GetMapping("/categories/{categoryId}")
     public ResponseEntity<List<ForumThreadResponseDto>> getForumThreadsByCategory(
             @PathVariable int categoryId
     ) {
-        List<ForumThreadResponseDto> responseDto = forumThreadService.getForumThreadsByCategory(categoryId);
+        List<ForumThreadResponseDto> responseDto = forumThreadService
+                .getForumThreadsByCategory(categoryId);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -61,8 +62,7 @@ public class ForumThreadController {
     }
 
     @DeleteMapping("/{forumThreadId}")
-    public ResponseEntity<Void> deleteForumThread(@PathVariable int forumThreadId)
-    {
+    public ResponseEntity<Void> deleteForumThread(@PathVariable int forumThreadId) {
         forumThreadService.deleteForumThread(forumThreadId);
         return ResponseEntity.ok().build();
     }

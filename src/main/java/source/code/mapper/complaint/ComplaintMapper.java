@@ -1,6 +1,7 @@
 package source.code.mapper.complaint;
 
 
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -26,14 +27,18 @@ public abstract class ComplaintMapper {
     private ForumThreadRepository threadRepository;
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "user", source = "userId", qualifiedByName = "toUserFromUserId")
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "user", expression = "java(toUserFromUserId(userId))")
     @Mapping(target = "comment", source = "parentId", qualifiedByName = "toCommentFromParentId")
-    public abstract CommentComplaint toCommentComplaint(ComplaintCreateDto createDto);
+    public abstract CommentComplaint toCommentComplaint(
+            ComplaintCreateDto createDto, @Context int userId);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "user", source = "userId", qualifiedByName = "toUserFromUserId")
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "user", expression = "java(toUserFromUserId(userId))")
     @Mapping(target = "thread", source = "parentId", qualifiedByName = "toThreadFromParentId")
-    public abstract ThreadComplaint toThreadComplaint(ComplaintCreateDto createDto);
+    public abstract ThreadComplaint toThreadComplaint(
+            ComplaintCreateDto createDto, @Context int userId);
 
     @Named("toUserFromUserId")
     protected User toUserFromUserId(Integer userId) {

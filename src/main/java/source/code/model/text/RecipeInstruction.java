@@ -16,14 +16,10 @@ import source.code.model.recipe.Recipe;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecipeInstruction extends TextBase {
-
-    @NotBlank
-    @Column(nullable = false)
     private String title;
 
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "recipe_id", nullable = false)
+    @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
     public static RecipeInstruction createWithIdAndRecipe(int id, Recipe recipe) {

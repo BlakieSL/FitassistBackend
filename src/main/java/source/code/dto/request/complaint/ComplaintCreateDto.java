@@ -16,8 +16,6 @@ public class ComplaintCreateDto {
     @NotNull
     private ComplaintBase.Reason reason;
     @NotNull
-    private Integer userId;
-    @NotNull
     private Integer parentId;
     @NotNull
     private ComplaintSubClass subClass;
