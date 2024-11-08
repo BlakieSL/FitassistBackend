@@ -17,8 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 public class ThreadComplaint extends ComplaintBase {
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "thread_id", nullable = false)
+    @JoinColumn(name = "thread_id")
     private ForumThread thread;
 }

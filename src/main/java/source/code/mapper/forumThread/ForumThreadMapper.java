@@ -30,19 +30,18 @@ public abstract class ForumThreadMapper {
     @Mapping(target = "views", source = "views")
     @Mapping(target = "userId", source = "user", qualifiedByName = "userToUserId")
     @Mapping(target = "threadCategoryId", source = "threadCategory", qualifiedByName = "threadCategoryToThreadCategoryId")
-    @Mapping(target = "commentIds", source = "comments", qualifiedByName = "commentsToCommentIds")
     public abstract ForumThreadResponseDto toResponseDto(ForumThread forumThread);
 
     @Mapping(target = "title", source = "title")
     @Mapping(target = "text", source = "text")
-    @Mapping(target = "user", source = "userId", qualifiedByName = "userIdToUser")
+    @Mapping(target = "user", expression = "java(userIdToUser(userId))")
     @Mapping(target = "threadCategory", source = "threadCategoryId", qualifiedByName = "threadCategoryIdToThreadCategory")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dateCreated", ignore = true)
     @Mapping(target = "views", ignore = true)
     @Mapping(target = "comments", ignore = true)
     @Mapping(target = "userThreadSubscriptions", ignore = true)
-    public abstract ForumThread toEntity(ForumThreadCreateDto createDto);
+    public abstract ForumThread toEntity(ForumThreadCreateDto createDto, @Context int userId);
 
     @BeanMapping(nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "title", source = "title")

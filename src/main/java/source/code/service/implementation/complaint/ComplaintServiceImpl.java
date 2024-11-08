@@ -3,6 +3,7 @@ package source.code.service.implementation.complaint;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.complaint.ComplaintCreateDto;
 import source.code.exception.RecordNotFoundException;
+import source.code.helper.User.AuthorizationUtil;
 import source.code.mapper.complaint.ComplaintMapper;
 import source.code.model.forum.CommentComplaint;
 import source.code.model.forum.ComplaintBase;
@@ -27,13 +28,20 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     public void createComplaint(ComplaintCreateDto complaintCreateDto) {
+        int userId = AuthorizationUtil.getUserId();
         switch (complaintCreateDto.getSubClass()){
             case COMMENT_COMPLAINT -> {
-                CommentComplaint complaint = complaintMapper.toCommentComplaint(complaintCreateDto);
+                CommentComplaint complaint = complaintMapper.toCommentComplaint(
+                        complaintCreateDto,
+                        userId
+                );
                 commentComplaintRepository.save(complaint);
             }
             case THREAD_COMPLAINT -> {
-                ThreadComplaint complaint = complaintMapper.toThreadComplaint(complaintCreateDto);
+                ThreadComplaint complaint = complaintMapper.toThreadComplaint(
+                        complaintCreateDto,
+                        userId
+                );
                 threadComplaintRepository.save(complaint);
             }
         }

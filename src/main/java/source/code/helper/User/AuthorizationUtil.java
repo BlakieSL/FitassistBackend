@@ -17,4 +17,11 @@ public class AuthorizationUtil {
 
         return isAdmin || ownerId == currentUserId;
     }
+
+    public static int getUserId() {
+        CustomAuthenticationToken auth = (CustomAuthenticationToken) SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+        return auth.getUserId();
+    }
 }
