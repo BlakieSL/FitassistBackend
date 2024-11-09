@@ -2,7 +2,7 @@ package source.code.service.implementation.selector;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import source.code.helper.Enum.SavedEntityType;
+import source.code.helper.Enum.model.SavedEntityType;
 import source.code.service.declaration.selector.SavedSelectorService;
 import source.code.service.declaration.user.SavedService;
 import source.code.service.declaration.user.SavedServiceWithoutType;

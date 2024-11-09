@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import source.code.event.events.Exercise.ExerciseCreateEvent;
 import source.code.event.events.Exercise.ExerciseDeleteEvent;
 import source.code.event.events.Exercise.ExerciseUpdateEvent;
-import source.code.helper.Enum.CacheNames;
+import source.code.helper.Enum.cache.CacheNames;
 import source.code.model.exercise.Exercise;
 import source.code.model.exercise.ExerciseTargetMuscle;
 import source.code.service.declaration.cache.CacheService;

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import source.code.event.events.User.UserDeleteEvent;
 import source.code.event.events.User.UserRegisterEvent;
 import source.code.event.events.User.UserUpdateEvent;
-import source.code.helper.Enum.CacheNames;
+import source.code.helper.Enum.cache.CacheNames;
 import source.code.model.user.User;
 import source.code.service.declaration.cache.CacheService;
 

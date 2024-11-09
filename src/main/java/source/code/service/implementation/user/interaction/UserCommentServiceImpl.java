@@ -1,4 +1,4 @@
-package source.code.service.implementation.user;
+package source.code.service.implementation.user.interaction;
 
 import org.springframework.stereotype.Service;
 import source.code.dto.response.comment.CommentResponseDto;
@@ -10,7 +10,6 @@ import source.code.model.user.UserCommentLikes;
 import source.code.repository.CommentRepository;
 import source.code.repository.UserCommentLikesRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.user.SavedService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
 import java.util.List;

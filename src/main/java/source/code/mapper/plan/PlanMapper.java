@@ -6,13 +6,12 @@ import source.code.dto.pojo.PlanCategoryShortDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.request.plan.PlanUpdateDto;
 import source.code.dto.response.PlanResponseDto;
+import source.code.exception.RecordNotFoundException;
 import source.code.model.other.ExpertiseLevel;
 import source.code.model.plan.*;
 import source.code.model.text.PlanInstruction;
-import source.code.repository.ExpertiseLevelRepository;
-import source.code.repository.PlanCategoryRepository;
-import source.code.repository.PlanDurationRepository;
-import source.code.repository.PlanTypeRepository;
+import source.code.model.user.User;
+import source.code.repository.*;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
 import java.util.List;
@@ -22,6 +21,8 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class PlanMapper {
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private RepositoryHelper repositoryHelper;
     @Autowired
@@ -37,17 +38,19 @@ public abstract class PlanMapper {
     @Mapping(target = "planType", source = "planType", qualifiedByName = "mapTypeToShortDto")
     @Mapping(target = "planDuration", source = "planDuration", qualifiedByName = "mapDurationToShortDto")
     @Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseLevelToShortDto")
+    @Mapping(target = "userId", source = "user", qualifiedByName = "userToUserId")
     public abstract PlanResponseDto toResponseDto(Plan plan);
 
     @Mapping(target = "planCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
     @Mapping(target = "planType", source = "planTypeId", qualifiedByName = "mapTypeIdToEntity")
     @Mapping(target = "planDuration", source = "planDurationId", qualifiedByName = "mapDurationIdToEntity")
     @Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevelIdToEntity")
+    @Mapping(target = "user", expression = "java(userIdToUser(userId))")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userPlans", ignore = true)
     @Mapping(target = "workouts", ignore = true)
     @Mapping(target = "planInstructions", ignore = true)
-    public abstract Plan toEntity(PlanCreateDto dto);
+    public abstract Plan toEntity(PlanCreateDto dto, @Context int userId);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "planCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
@@ -55,6 +58,7 @@ public abstract class PlanMapper {
     @Mapping(target = "planDuration", source = "planDurationId", qualifiedByName = "mapDurationIdToEntity")
     @Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevelIdToEntity")
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "user", ignore = true)
     @Mapping(target = "userPlans", ignore = true)
     @Mapping(target = "workouts", ignore = true)
     @Mapping(target = "planInstructions", ignore = true)
@@ -73,6 +77,17 @@ public abstract class PlanMapper {
                 }).collect(Collectors.toSet());
 
         plan.getPlanInstructions().addAll(instructions);
+    }
+
+    @Named("userToUserId")
+    protected Integer userToUserId(User user) {
+        return user.getId();
+    }
+
+    @Named("userIdToUser")
+    protected User userIdToUser(Integer userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
     }
 
     @Named("mapCategoryIdsToAssociations")

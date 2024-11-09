@@ -9,6 +9,8 @@ import lombok.Setter;
 import source.code.model.activity.DailyActivity;
 import source.code.model.food.DailyFood;
 import source.code.model.forum.*;
+import source.code.model.plan.Plan;
+import source.code.model.recipe.Recipe;
 import source.code.validation.ValidationGroups;
 import source.code.validation.email.UniqueEmailDomain;
 
@@ -88,6 +90,7 @@ public class User {
     @NotBlank
     @Column(name = "activity_level", nullable = false)
     private String activityLevel;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private DailyFood dailyFood;
 
@@ -119,13 +122,19 @@ public class User {
     private final Set<Comment> writtenComments = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private final Set<UserThreadSubscription> userThreadSubscriptions = new HashSet<>();;
+    private final Set<UserThreadSubscription> userThreadSubscriptions = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<ForumThread> createdForumThreads = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<ComplaintBase> complaints = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final Set<Recipe> recipes = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final Set<Plan> plans = new HashSet<>();
 
     public static User createWithId(int id) {
         User user = new User();

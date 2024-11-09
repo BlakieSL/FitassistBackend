@@ -12,4 +12,8 @@ public class RecipeUpdateEvent extends ApplicationEvent {
         super(source);
         this.recipe = recipe;
     }
+
+    public static RecipeUpdateEvent of(Object source, Recipe recipe) {
+        return new RecipeUpdateEvent(source, recipe);
+    }
 }

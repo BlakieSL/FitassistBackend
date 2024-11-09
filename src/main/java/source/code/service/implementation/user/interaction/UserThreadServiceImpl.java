@@ -1,4 +1,4 @@
-package source.code.service.implementation.user;
+package source.code.service.implementation.user.interaction;
 
 import org.springframework.stereotype.Service;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
@@ -10,8 +10,8 @@ import source.code.model.user.UserThreadSubscription;
 import source.code.repository.ForumThreadRepository;
 import source.code.repository.UserRepository;
 import source.code.repository.UserThreadSubscriptionRepository;
-import source.code.service.declaration.user.SavedService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
+import source.code.service.implementation.user.interaction.GenericSavedServiceWithoutType;
 
 import java.util.List;
 @Service("userThreadService")

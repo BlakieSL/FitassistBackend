@@ -3,7 +3,7 @@ package source.code.specification;
 import org.springframework.data.jpa.domain.Specification;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.dto.request.filter.FilterDto;
-import source.code.helper.Enum.FilterDataOption;
+import source.code.helper.Enum.filter.FilterDataOption;
 
 import java.util.List;
 

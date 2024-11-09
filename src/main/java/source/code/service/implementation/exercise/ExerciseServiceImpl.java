@@ -15,7 +15,7 @@ import source.code.dto.response.ExerciseResponseDto;
 import source.code.event.events.Exercise.ExerciseCreateEvent;
 import source.code.event.events.Exercise.ExerciseDeleteEvent;
 import source.code.event.events.Exercise.ExerciseUpdateEvent;
-import source.code.helper.Enum.CacheNames;
+import source.code.helper.Enum.cache.CacheNames;
 import source.code.mapper.exercise.ExerciseMapper;
 import source.code.model.exercise.Exercise;
 import source.code.model.exercise.ExerciseTargetMuscle;

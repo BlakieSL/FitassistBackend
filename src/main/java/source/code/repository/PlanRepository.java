@@ -11,7 +11,8 @@ import source.code.model.plan.Plan;
 import java.util.List;
 
 public interface PlanRepository
-        extends JpaRepository<Plan, Integer>, JpaSpecificationExecutor<Plan> {
+        extends JpaRepository<Plan, Integer>, JpaSpecificationExecutor<Plan>,
+        UserCreatorEntityRepository<Plan, Integer> {
     @EntityGraph(value = "Plan.withoutAssociations")
     @Query("SELECT p FROM Plan p")
     List<Plan> findAllWithoutAssociations();

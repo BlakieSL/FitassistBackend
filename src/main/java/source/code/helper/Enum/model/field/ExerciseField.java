@@ -1,4 +1,4 @@
-package source.code.helper.Enum.Model;
+package source.code.helper.Enum.model.field;
 
 public enum ExerciseField {
     TYPE("exerciseType"),

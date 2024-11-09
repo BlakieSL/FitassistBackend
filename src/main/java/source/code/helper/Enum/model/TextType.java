@@ -1,4 +1,4 @@
-package source.code.helper.Enum;
+package source.code.helper.Enum.model;
 
 public enum TextType {
     EXERCISE_INSTRUCTION,

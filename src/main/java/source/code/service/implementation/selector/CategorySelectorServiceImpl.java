@@ -2,7 +2,7 @@ package source.code.service.implementation.selector;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import source.code.helper.Enum.CategoryType;
+import source.code.helper.Enum.model.CategoryType;
 import source.code.service.declaration.category.CategoryService;
 import source.code.service.declaration.selector.CategorySelectorService;
 

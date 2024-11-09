@@ -11,6 +11,7 @@ import lombok.Setter;
 import source.code.helper.Search.IndexedEntity;
 import source.code.model.other.ExpertiseLevel;
 import source.code.model.text.PlanInstruction;
+import source.code.model.user.User;
 import source.code.model.user.UserPlan;
 import source.code.model.workout.Workout;
 
@@ -50,6 +51,11 @@ public class Plan implements IndexedEntity {
 
     @NotNull
     @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @NotNull
+    @ManyToOne
     @JoinColumn(name = "plan_type_id", nullable = false)
     private PlanType planType;
 
@@ -71,11 +77,11 @@ public class Plan implements IndexedEntity {
             cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
     private final Set<PlanCategoryAssociation> planCategoryAssociations = new HashSet<>();
 
-    @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE)
-    private final Set<UserPlan> userPlans = new HashSet<>();
-
     @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<Workout> workouts = new HashSet<>();
+
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE)
+    private final Set<UserPlan> userPlans = new HashSet<>();
 
     @Override
     public String getClassName() {

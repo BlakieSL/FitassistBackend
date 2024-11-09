@@ -52,6 +52,8 @@ public abstract class UserMapper {
     @Mapping(target = "userThreadSubscriptions", ignore = true)
     @Mapping(target = "createdForumThreads", ignore = true)
     @Mapping(target = "complaints", ignore = true)
+    @Mapping(target = "recipes", ignore = true)
+    @Mapping(target = "plans", ignore = true)
     public abstract User toEntity(UserCreateDto dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -71,6 +73,8 @@ public abstract class UserMapper {
     @Mapping(target = "userThreadSubscriptions", ignore = true)
     @Mapping(target = "createdForumThreads", ignore = true)
     @Mapping(target = "complaints", ignore = true)
+    @Mapping(target = "recipes", ignore = true)
+    @Mapping(target = "plans", ignore = true)
     public abstract void updateUserFromDto(@MappingTarget User user, UserUpdateDto request);
 
     //aftermappings

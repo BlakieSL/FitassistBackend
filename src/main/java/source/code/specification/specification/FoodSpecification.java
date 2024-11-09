@@ -6,8 +6,8 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
-import source.code.helper.Enum.Model.FoodField;
-import source.code.helper.Enum.Model.LikesAndSaves;
+import source.code.helper.Enum.model.field.FoodField;
+import source.code.helper.Enum.model.LikesAndSaves;
 import source.code.helper.TriFunction;
 import source.code.model.food.Food;
 

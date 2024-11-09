@@ -18,7 +18,7 @@ import source.code.dto.response.ActivityResponseDto;
 import source.code.event.events.Activity.ActivityCreateEvent;
 import source.code.event.events.Activity.ActivityDeleteEvent;
 import source.code.event.events.Activity.ActivityUpdateEvent;
-import source.code.helper.Enum.CacheNames;
+import source.code.helper.Enum.cache.CacheNames;
 import source.code.helper.User.AuthorizationUtil;
 import source.code.mapper.activity.ActivityMapper;
 import source.code.model.activity.Activity;

@@ -17,7 +17,7 @@ import source.code.dto.response.FoodResponseDto;
 import source.code.event.events.Food.FoodCreateEvent;
 import source.code.event.events.Food.FoodDeleteEvent;
 import source.code.event.events.Food.FoodUpdateEvent;
-import source.code.helper.Enum.CacheNames;
+import source.code.helper.Enum.cache.CacheNames;
 import source.code.mapper.food.FoodMapper;
 import source.code.model.food.Food;
 import source.code.repository.FoodRepository;

@@ -6,7 +6,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.response.text.BaseTextResponseDto;
-import source.code.helper.Enum.TextType;
+import source.code.helper.Enum.model.TextType;
 import source.code.service.declaration.selector.TextSelectorService;
 import source.code.service.declaration.text.TextService;
 

@@ -4,7 +4,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import source.code.event.events.Category.CategoryClearCacheEvent;
 import source.code.event.events.Text.TextCreateCacheEvent;
-import source.code.helper.Enum.CacheNames;
+import source.code.helper.Enum.cache.CacheNames;
 import source.code.service.declaration.cache.CacheService;
 
 @Component

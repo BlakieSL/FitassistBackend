@@ -18,4 +18,5 @@ public class RecipeResponseDto {
     private String name;
     private String description;
     private String text;
+    private Integer userId;
 }

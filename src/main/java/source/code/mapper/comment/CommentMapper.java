@@ -21,8 +21,10 @@ import java.util.Set;
 public abstract class CommentMapper {
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private CommentRepository commentRepository;
+
     @Autowired
     private ForumThreadRepository forumThreadRepository;
 
@@ -49,8 +51,7 @@ public abstract class CommentMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "replies", ignore = true)
     @Mapping(target = "userCommentLikes", ignore = true)
-    public abstract void update(
-            @MappingTarget Comment comment, CommentUpdateDto updateDto);
+    public abstract void update(@MappingTarget Comment comment, CommentUpdateDto updateDto);
 
     @Named("threadToThreadId")
     protected Integer threadToThreadId(ForumThread forumThread) {
