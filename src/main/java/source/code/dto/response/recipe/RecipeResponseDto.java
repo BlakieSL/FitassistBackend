@@ -1,10 +1,11 @@
-package source.code.dto.response;
+package source.code.dto.response.recipe;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.pojo.RecipeCategoryShortDto;
+import source.code.model.user.BaseUserEntity;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RecipeResponseDto {
+public class RecipeResponseDto implements BaseUserEntity {
     List<RecipeCategoryShortDto> categories;
     private Integer id;
     private String name;

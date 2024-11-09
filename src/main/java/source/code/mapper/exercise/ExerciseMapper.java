@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.pojo.TargetMuscleShortDto;
 import source.code.dto.request.exercise.ExerciseCreateDto;
 import source.code.dto.request.exercise.ExerciseUpdateDto;
-import source.code.dto.response.ExerciseResponseDto;
+import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.model.exercise.*;
 import source.code.model.other.Equipment;
 import source.code.model.other.ExpertiseLevel;

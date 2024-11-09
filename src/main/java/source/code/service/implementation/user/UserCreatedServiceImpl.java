@@ -1,12 +1,11 @@
 package source.code.service.implementation.user;
 
 import org.springframework.stereotype.Service;
-import source.code.dto.response.PlanResponseDto;
-import source.code.dto.response.RecipeResponseDto;
+import source.code.dto.response.plan.PlanResponseDto;
+import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.comment.CommentResponseDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.helper.Enum.model.CreatedEntityType;
 import source.code.helper.User.AuthorizationUtil;
 import source.code.mapper.comment.CommentMapper;
 import source.code.mapper.forumThread.ForumThreadMapper;
@@ -21,26 +20,22 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserCreatedServiceImpl implements UserCreatedService {
-
     private final UserRepository userRepository;
     private final PlanMapper planMapper;
     private final RecipeMapper recipeMapper;
     private final CommentMapper commentMapper;
     private final ForumThreadMapper forumThreadMapper;
-    private final ForumThreadRepository forumThreadRepository;
 
     public UserCreatedServiceImpl(UserRepository userRepository,
                                   PlanMapper planMapper,
                                   RecipeMapper recipeMapper,
                                   CommentMapper commentMapper,
-                                  ForumThreadMapper forumThreadMapper,
-                                  ForumThreadRepository forumThreadRepository) {
+                                  ForumThreadMapper forumThreadMapper) {
         this.userRepository = userRepository;
         this.planMapper = planMapper;
         this.recipeMapper = recipeMapper;
         this.commentMapper = commentMapper;
         this.forumThreadMapper = forumThreadMapper;
-        this.forumThreadRepository = forumThreadRepository;
     }
 
 

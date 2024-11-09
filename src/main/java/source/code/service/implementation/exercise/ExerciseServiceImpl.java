@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.request.exercise.ExerciseCreateDto;
 import source.code.dto.request.exercise.ExerciseUpdateDto;
 import source.code.dto.request.filter.FilterDto;
-import source.code.dto.response.ExerciseResponseDto;
+import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.event.events.Exercise.ExerciseCreateEvent;
 import source.code.event.events.Exercise.ExerciseDeleteEvent;
 import source.code.event.events.Exercise.ExerciseUpdateEvent;
