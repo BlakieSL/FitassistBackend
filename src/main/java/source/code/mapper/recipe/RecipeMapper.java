@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.pojo.RecipeCategoryShortDto;
 import source.code.dto.request.recipe.RecipeCreateDto;
 import source.code.dto.request.recipe.RecipeUpdateDto;
-import source.code.dto.response.RecipeResponseDto;
+import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.model.recipe.Recipe;
 import source.code.model.recipe.RecipeCategory;

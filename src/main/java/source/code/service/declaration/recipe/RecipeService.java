@@ -5,7 +5,7 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.recipe.RecipeCreateDto;
-import source.code.dto.response.RecipeResponseDto;
+import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.model.recipe.Recipe;
 
 import java.util.List;

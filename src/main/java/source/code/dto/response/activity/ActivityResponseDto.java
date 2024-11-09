@@ -1,13 +1,14 @@
-package source.code.dto.response;
+package source.code.dto.response.activity;
 
 import lombok.*;
+import source.code.model.user.BaseUserEntity;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ActivityResponseDto {
+public class ActivityResponseDto implements BaseUserEntity {
     private Integer id;
     private String name;
     private double met;

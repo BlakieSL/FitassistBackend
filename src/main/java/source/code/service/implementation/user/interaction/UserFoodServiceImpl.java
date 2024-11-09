@@ -1,7 +1,7 @@
 package source.code.service.implementation.user.interaction;
 
 import org.springframework.stereotype.Service;
-import source.code.dto.response.FoodResponseDto;
+import source.code.dto.response.food.FoodResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.food.FoodMapper;
 import source.code.model.food.Food;

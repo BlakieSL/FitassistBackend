@@ -1,7 +1,7 @@
 package source.code.service.implementation.user.interaction;
 
 import org.springframework.stereotype.Service;
-import source.code.dto.response.RecipeResponseDto;
+import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.recipe.Recipe;

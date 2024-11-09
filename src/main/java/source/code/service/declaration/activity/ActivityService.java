@@ -6,9 +6,9 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.request.activity.ActivityCreateDto;
 import source.code.dto.request.activity.CalculateActivityCaloriesRequestDto;
 import source.code.dto.request.filter.FilterDto;
-import source.code.dto.response.ActivityAverageMetResponseDto;
-import source.code.dto.response.ActivityCalculatedResponseDto;
-import source.code.dto.response.ActivityResponseDto;
+import source.code.dto.response.activity.ActivityAverageMetResponseDto;
+import source.code.dto.response.activity.ActivityCalculatedResponseDto;
+import source.code.dto.response.activity.ActivityResponseDto;
 import source.code.model.activity.Activity;
 
 import java.util.List;
