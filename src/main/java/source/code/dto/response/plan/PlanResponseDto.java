@@ -1,10 +1,11 @@
-package source.code.dto.response;
+package source.code.dto.response.plan;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.pojo.PlanCategoryShortDto;
+import source.code.model.user.BaseUserEntity;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlanResponseDto {
+public class PlanResponseDto implements BaseUserEntity {
     private Integer id;
     private String name;
     private String description;

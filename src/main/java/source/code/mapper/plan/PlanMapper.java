@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.pojo.PlanCategoryShortDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.request.plan.PlanUpdateDto;
-import source.code.dto.response.PlanResponseDto;
+import source.code.dto.response.plan.PlanResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.model.other.ExpertiseLevel;
 import source.code.model.plan.*;

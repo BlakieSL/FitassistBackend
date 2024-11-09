@@ -12,7 +12,7 @@ import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.request.plan.PlanUpdateDto;
 import source.code.dto.response.category.EquipmentResponseDto;
-import source.code.dto.response.PlanResponseDto;
+import source.code.dto.response.plan.PlanResponseDto;
 import source.code.event.events.Plan.PlanCreateEvent;
 import source.code.event.events.Plan.PlanDeleteEvent;
 import source.code.event.events.Plan.PlanUpdateEvent;

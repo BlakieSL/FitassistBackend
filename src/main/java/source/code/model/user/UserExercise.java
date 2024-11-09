@@ -14,7 +14,7 @@ import source.code.model.exercise.Exercise;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserExercise implements BaseUserEntity {
+public class UserExercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

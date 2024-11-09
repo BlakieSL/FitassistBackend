@@ -1,7 +1,7 @@
 package source.code.service.implementation.user.interaction;
 
 import org.springframework.stereotype.Service;
-import source.code.dto.response.ActivityResponseDto;
+import source.code.dto.response.activity.ActivityResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.activity.ActivityMapper;
 import source.code.model.activity.Activity;

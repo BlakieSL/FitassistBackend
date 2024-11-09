@@ -6,8 +6,8 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.food.CalculateFoodMacrosRequestDto;
 import source.code.dto.request.food.FoodCreateDto;
-import source.code.dto.response.FoodCalculatedMacrosResponseDto;
-import source.code.dto.response.FoodResponseDto;
+import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
+import source.code.dto.response.food.FoodResponseDto;
 import source.code.model.food.Food;
 
 import java.util.List;

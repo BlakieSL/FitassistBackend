@@ -5,7 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.response.ActivityCalculatedResponseDto;
+import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.model.activity.DailyActivityItem;
 import source.code.service.declaration.helpers.CalculationsService;
 

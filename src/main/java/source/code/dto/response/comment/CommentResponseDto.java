@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.model.user.BaseUserEntity;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
-public class CommentResponseDto {
+public class CommentResponseDto implements BaseUserEntity {
     private Integer id;
     private String text;
     private Integer threadId;

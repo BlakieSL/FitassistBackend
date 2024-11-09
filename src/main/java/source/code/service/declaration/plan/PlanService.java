@@ -6,7 +6,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.response.category.EquipmentResponseDto;
-import source.code.dto.response.PlanResponseDto;
+import source.code.dto.response.plan.PlanResponseDto;
 import source.code.model.plan.Plan;
 
 import java.util.List;

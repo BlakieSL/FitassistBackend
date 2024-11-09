@@ -1,4 +1,4 @@
-package source.code.dto.response;
+package source.code.dto.response.activity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

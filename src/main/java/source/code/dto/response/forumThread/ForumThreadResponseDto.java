@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.model.user.BaseUserEntity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
-public class ForumThreadResponseDto {
+public class ForumThreadResponseDto implements BaseUserEntity {
     private Integer id;
     private String title;
     private LocalDateTime dateCreated;

@@ -1,15 +1,16 @@
-package source.code.dto.response;
+package source.code.dto.response.food;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.model.user.BaseUserEntity;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FoodResponseDto {
+public class FoodResponseDto implements BaseUserEntity {
     private Integer id;
     private String name;
     private double calories;

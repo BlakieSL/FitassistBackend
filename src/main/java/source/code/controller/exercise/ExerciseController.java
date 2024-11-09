@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.exercise.ExerciseCreateDto;
 import source.code.dto.request.filter.FilterDto;
-import source.code.dto.response.ExerciseResponseDto;
+import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.service.declaration.exercise.ExerciseService;
 
 import java.util.List;

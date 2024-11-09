@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.recipe.RecipeCreateDto;
 import source.code.dto.request.recipe.RecipeUpdateDto;
-import source.code.dto.response.RecipeResponseDto;
+import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.event.events.Recipe.RecipeCreateEvent;
 import source.code.event.events.Recipe.RecipeDeleteEvent;
 import source.code.event.events.Recipe.RecipeUpdateEvent;

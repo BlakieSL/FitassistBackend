@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.response.category.EquipmentResponseDto;
-import source.code.dto.response.PlanResponseDto;
+import source.code.dto.response.plan.PlanResponseDto;
 import source.code.service.declaration.plan.PlanService;
 
 import java.util.List;
