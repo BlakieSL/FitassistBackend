@@ -19,7 +19,7 @@ import source.code.event.events.User.UserDeleteEvent;
 import source.code.event.events.User.UserRegisterEvent;
 import source.code.event.events.User.UserUpdateEvent;
 import source.code.exception.RecordNotFoundException;
-import source.code.helper.Enum.CacheNames;
+import source.code.helper.Enum.cache.CacheNames;
 import source.code.helper.User.UserDetailsHelper;
 import source.code.mapper.UserMapper;
 import source.code.model.user.User;

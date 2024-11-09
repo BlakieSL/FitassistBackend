@@ -16,7 +16,8 @@ import source.code.dto.response.PlanResponseDto;
 import source.code.event.events.Plan.PlanCreateEvent;
 import source.code.event.events.Plan.PlanDeleteEvent;
 import source.code.event.events.Plan.PlanUpdateEvent;
-import source.code.helper.Enum.CacheNames;
+import source.code.helper.Enum.cache.CacheNames;
+import source.code.helper.User.AuthorizationUtil;
 import source.code.mapper.plan.PlanMapper;
 import source.code.model.plan.Plan;
 import source.code.model.plan.PlanCategoryAssociation;
@@ -61,10 +62,12 @@ public class PlanServiceImpl implements PlanService {
     @Override
     @Transactional
     public PlanResponseDto createPlan(PlanCreateDto request) {
-        Plan plan = planRepository.save(planMapper.toEntity(request));
-        applicationEventPublisher.publishEvent(PlanCreateEvent.of(this, plan));
+        int userId = AuthorizationUtil.getUserId();
+        Plan mapped = planMapper.toEntity(request, userId);
+        Plan saved = planRepository.save(mapped);
+        applicationEventPublisher.publishEvent(PlanCreateEvent.of(this, saved));
 
-        return planMapper.toResponseDto(plan);
+        return planMapper.toResponseDto(saved);
     }
 
     @Override

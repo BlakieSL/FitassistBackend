@@ -1,5 +1,6 @@
 package source.code.event.events.Recipe;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 import source.code.model.recipe.Recipe;
@@ -11,5 +12,9 @@ public class RecipeCreateEvent extends ApplicationEvent {
     public RecipeCreateEvent(Object source, Recipe recipe) {
         super(source);
         this.recipe = recipe;
+    }
+
+    public static RecipeCreateEvent of(Object source, Recipe recipe) {
+        return new RecipeCreateEvent(source, recipe);
     }
 }

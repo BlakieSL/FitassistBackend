@@ -1,6 +1,6 @@
 package source.code.service.declaration.selector;
 
-import source.code.helper.Enum.SavedEntityType;
+import source.code.helper.Enum.model.SavedEntityType;
 import source.code.service.declaration.user.SavedService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 

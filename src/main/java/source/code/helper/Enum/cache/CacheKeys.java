@@ -1,4 +1,4 @@
-package source.code.helper.Enum;
+package source.code.helper.Enum.cache;
 
 public enum CacheKeys {
     ACTIVITY_CATEGORIES,

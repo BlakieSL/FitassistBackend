@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.helper.Enum.Model.ComplaintSubClass;
+import source.code.helper.Enum.model.ComplaintSubClass;
 import source.code.model.forum.ComplaintBase;
 
 @Getter

@@ -2,7 +2,7 @@ package source.code.service.implementation.selector;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import source.code.helper.Enum.TextType;
+import source.code.helper.Enum.model.TextType;
 import source.code.service.declaration.selector.TextSelectorService;
 import source.code.service.declaration.text.TextService;
 

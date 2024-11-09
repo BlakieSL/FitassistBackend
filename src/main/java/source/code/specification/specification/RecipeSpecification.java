@@ -6,8 +6,8 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
-import source.code.helper.Enum.Model.LikesAndSaves;
-import source.code.helper.Enum.Model.RecipeField;
+import source.code.helper.Enum.model.LikesAndSaves;
+import source.code.helper.Enum.model.field.RecipeField;
 import source.code.helper.TriFunction;
 import source.code.model.recipe.Recipe;
 import source.code.model.recipe.RecipeCategoryAssociation;
@@ -40,14 +40,14 @@ public class RecipeSpecification extends BaseSpecification<Recipe> {
                 LikesAndSaves.LIKES.name(),
                 (root, query, builder) -> handleLikesProperty(
                         root,
-                        LikesAndSaves.USER_EXERCISES.getFieldName(),
+                        LikesAndSaves.USER_RECIPES.getFieldName(),
                         query,
                         builder
                 ),
                 LikesAndSaves.SAVES.name(),
                 (root, query, builder) -> handleSavesProperty(
                         root,
-                        LikesAndSaves.USER_EXERCISES.getFieldName(),
+                        LikesAndSaves.USER_RECIPES.getFieldName(),
                         query,
                         builder
                 )

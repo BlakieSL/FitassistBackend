@@ -1,4 +1,4 @@
-package source.code.helper.Enum;
+package source.code.helper.Enum.filter;
 
 public enum FilterOperation {
     CONTAINS, DOES_NOT_CONTAIN, EQUAL, NOT_EQUAL, BEGINS_WITH,

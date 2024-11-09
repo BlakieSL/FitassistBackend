@@ -15,12 +15,12 @@ import source.code.dto.response.RecipeResponseDto;
 import source.code.event.events.Recipe.RecipeCreateEvent;
 import source.code.event.events.Recipe.RecipeDeleteEvent;
 import source.code.event.events.Recipe.RecipeUpdateEvent;
-import source.code.helper.Enum.CacheNames;
+import source.code.helper.Enum.cache.CacheNames;
+import source.code.helper.User.AuthorizationUtil;
 import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.recipe.Recipe;
 import source.code.model.recipe.RecipeCategoryAssociation;
 import source.code.repository.RecipeCategoryAssociationRepository;
-import source.code.repository.RecipeCategoryRepository;
 import source.code.repository.RecipeRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
@@ -39,7 +39,6 @@ public class RecipeServiceImpl implements RecipeService {
     private final ValidationService validationService;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final RepositoryHelper repositoryHelper;
-    private final RecipeCategoryRepository recipeCategoryRepository;
     private final RecipeCategoryAssociationRepository recipeCategoryAssociationRepository;
     private final RecipeRepository recipeRepository;
 
@@ -49,7 +48,6 @@ public class RecipeServiceImpl implements RecipeService {
                              ApplicationEventPublisher applicationEventPublisher,
                              RepositoryHelper repositoryHelper,
                              RecipeRepository recipeRepository,
-                             RecipeCategoryRepository recipeCategoryRepository,
                              RecipeCategoryAssociationRepository recipeCategoryAssociationRepository) {
         this.recipeMapper = recipeMapper;
         this.jsonPatchService = jsonPatchService;
@@ -57,17 +55,18 @@ public class RecipeServiceImpl implements RecipeService {
         this.applicationEventPublisher = applicationEventPublisher;
         this.repositoryHelper = repositoryHelper;
         this.recipeRepository = recipeRepository;
-        this.recipeCategoryRepository = recipeCategoryRepository;
         this.recipeCategoryAssociationRepository = recipeCategoryAssociationRepository;
     }
 
     @Override
     @Transactional
     public RecipeResponseDto createRecipe(RecipeCreateDto request) {
-        Recipe recipe = recipeRepository.save(recipeMapper.toEntity(request));
-        applicationEventPublisher.publishEvent(new RecipeCreateEvent(this, recipe));
+        int userId = AuthorizationUtil.getUserId();
+        Recipe mapped = recipeMapper.toEntity(request, userId);
+        Recipe saved = recipeRepository.save(mapped);
+        applicationEventPublisher.publishEvent(RecipeCreateEvent.of(this, saved));
 
-        return recipeMapper.toResponseDto(recipe);
+        return recipeMapper.toResponseDto(saved);
     }
 
     @Override
@@ -82,7 +81,7 @@ public class RecipeServiceImpl implements RecipeService {
         recipeMapper.updateRecipe(recipe, patchedRecipeUpdateDto);
         Recipe savedRecipe = recipeRepository.save(recipe);
 
-        applicationEventPublisher.publishEvent(new RecipeUpdateEvent(this, savedRecipe));
+        applicationEventPublisher.publishEvent(RecipeUpdateEvent.of(this, savedRecipe));
     }
 
     @Override
@@ -91,7 +90,7 @@ public class RecipeServiceImpl implements RecipeService {
         Recipe recipe = find(recipeId);
         recipeRepository.delete(recipe);
 
-        applicationEventPublisher.publishEvent(new RecipeDeleteEvent(this, recipe));
+        applicationEventPublisher.publishEvent(RecipeDeleteEvent.of(this, recipe));
     }
 
     @Override
