@@ -3,7 +3,7 @@ package source.code.controller.user;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.response.LikesAndSavesResponseDto;
-import source.code.helper.Enum.SavedEntityType;
+import source.code.helper.Enum.model.SavedEntityType;
 import source.code.model.user.BaseUserEntity;
 import source.code.service.declaration.selector.SavedSelectorService;
 import source.code.service.declaration.user.SavedService;

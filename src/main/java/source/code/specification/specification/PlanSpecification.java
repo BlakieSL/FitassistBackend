@@ -3,8 +3,8 @@ package source.code.specification.specification;
 import jakarta.persistence.criteria.*;
 import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
-import source.code.helper.Enum.Model.LikesAndSaves;
-import source.code.helper.Enum.Model.PlanField;
+import source.code.helper.Enum.model.LikesAndSaves;
+import source.code.helper.Enum.model.field.PlanField;
 import source.code.helper.TriFunction;
 import source.code.model.exercise.Exercise;
 import source.code.model.other.Equipment;
@@ -56,14 +56,14 @@ public class PlanSpecification extends BaseSpecification<Plan> {
                 LikesAndSaves.LIKES.name(),
                 (root, query, builder) -> handleLikesProperty(
                         root,
-                        LikesAndSaves.USER_ACTIVITIES.getFieldName(),
+                        LikesAndSaves.USER_PLANS.getFieldName(),
                         query,
                         builder
                 ),
                 LikesAndSaves.SAVES.name(),
                 (root, query, builder) -> handleSavesProperty(
                         root,
-                        LikesAndSaves.USER_ACTIVITIES.getFieldName(),
+                        LikesAndSaves.USER_PLANS.getFieldName(),
                         query,
                         builder
                 )

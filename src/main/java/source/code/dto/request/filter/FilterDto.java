@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.pojo.FilterCriteria;
-import source.code.helper.Enum.FilterDataOption;
+import source.code.helper.Enum.filter.FilterDataOption;
 
 import java.util.List;
 

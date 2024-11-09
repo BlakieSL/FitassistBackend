@@ -12,4 +12,8 @@ public class RecipeDeleteEvent extends ApplicationEvent {
         super(source);
         this.recipe = recipe;
     }
+
+    public static RecipeDeleteEvent of(Object source, Recipe recipe) {
+        return new RecipeDeleteEvent(source, recipe);
+    }
 }

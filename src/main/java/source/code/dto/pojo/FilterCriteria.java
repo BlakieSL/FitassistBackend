@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.helper.Enum.FilterOperation;
+import source.code.helper.Enum.filter.FilterOperation;
 
 @Getter
 @Setter

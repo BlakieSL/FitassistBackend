@@ -1,4 +1,4 @@
-package source.code.helper.Enum;
+package source.code.helper.Enum.cache;
 
 public class CacheNames {
     public static final String ALL_ACTIVITIES = "allActivities";

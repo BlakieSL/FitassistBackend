@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import source.code.event.events.Recipe.RecipeCreateEvent;
 import source.code.event.events.Recipe.RecipeDeleteEvent;
 import source.code.event.events.Recipe.RecipeUpdateEvent;
-import source.code.helper.Enum.CacheNames;
+import source.code.helper.Enum.cache.CacheNames;
 import source.code.model.recipe.Recipe;
 import source.code.model.recipe.RecipeCategoryAssociation;
 import source.code.service.declaration.cache.CacheService;
