@@ -1,5 +1,8 @@
 package source.code.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,8 +12,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import source.code.dto.request.activity.ActivityCreateDto;
+import source.code.dto.request.activity.ActivityUpdateDto;
 import source.code.dto.response.activity.ActivityResponseDto;
 import source.code.event.events.Activity.ActivityCreateEvent;
+import source.code.event.events.Activity.ActivityUpdateEvent;
 import source.code.mapper.activity.ActivityMapper;
 import source.code.model.activity.Activity;
 import source.code.repository.ActivityRepository;
@@ -42,8 +47,12 @@ public class ActivityServiceTest {
     @InjectMocks
     private ActivityServiceImpl activityService;
 
+    private Activity activity;
+    private JsonMergePatch patch;
     @BeforeEach
     void setUp() {
+        activity = new Activity();
+        patch = mock(JsonMergePatch.class);
     }
 
     @Test
@@ -60,11 +69,11 @@ public class ActivityServiceTest {
 
         ActivityResponseDto result = activityService.createActivity(dto);
 
-        assertEquals(responseDto, result);
-        assertEquals(activity, eventCaptor.getValue().getActivity());
+        verify(eventPublisher, times(1)).publishEvent(eventCaptor.capture());
         verify(activityMapper, times(1)).toEntity(dto);
         verify(activityRepository, times(1)).save(activity);
-        verify(eventPublisher, times(1)).publishEvent(eventCaptor.capture());
+        assertEquals(responseDto, result);
+        assertEquals(activity, eventCaptor.getValue().getActivity());
     }
 
     @Test
@@ -102,5 +111,107 @@ public class ActivityServiceTest {
         assertThrows(RuntimeException.class, () -> activityService.createActivity(dto));
     }
 
+    @Test
+    void updateActivity_shouldApplyPatchValidateSaveAndPublishEvent()
+            throws JsonPatchException, JsonProcessingException
+    {
+        int activityId = 1;
+        ActivityUpdateDto patchedDto = new ActivityUpdateDto();
+        ArgumentCaptor<ActivityUpdateEvent> eventCaptor = ArgumentCaptor
+                .forClass(ActivityUpdateEvent.class);
+
+        when(repositoryHelper.find(activityRepository, Activity.class, activityId))
+                .thenReturn(activity);
+        when(jsonPatchService.applyPatch(
+                patch,
+                activityMapper.toResponseDto(activity),
+                ActivityUpdateDto.class)
+        ).thenReturn(patchedDto);
+
+        when(activityRepository.save(activity)).thenReturn(activity);
+
+        // Act
+        activityService.updateActivity(activityId, patch);
+
+        // Assert
+        verify(jsonPatchService).applyPatch(
+                patch,
+                activityMapper.toResponseDto(activity),
+                ActivityUpdateDto.class
+        );
+        verify(validationService).validate(patchedDto);
+        verify(activityMapper).updateActivityFromDto(activity, patchedDto);
+        verify(activityRepository).save(activity);
+        verify(eventPublisher).publishEvent(eventCaptor.capture());
+
+        assertEquals(activity, eventCaptor.getValue().getActivity());
+    }
+
+
+    @Test
+    void updateActivity_shouldThrowExceptionWhenPatchFails()
+            throws JsonPatchException, JsonProcessingException
+    {
+        int activityId = 1;
+
+        when(repositoryHelper.find(activityRepository, Activity.class, activityId))
+                .thenReturn(activity);
+        when(jsonPatchService.applyPatch(
+                patch,
+                activityMapper.toResponseDto(activity),
+                ActivityUpdateDto.class)
+        ).thenThrow(new JsonPatchException("Patch error"));
+
+
+        assertThrows(JsonPatchException.class, () -> activityService
+                .updateActivity(activityId, patch));
+        verify(validationService, never()).validate(any());
+        verify(activityRepository, never()).save(any());
+        verify(eventPublisher, never()).publishEvent(any());
+    }
+
+    @Test
+    void updateActivity_shouldNotSaveOrPublishWhenValidationFails()
+            throws JsonPatchException, JsonProcessingException
+    {
+        int activityId = 1;
+        ActivityUpdateDto patchedDto = new ActivityUpdateDto();
+
+        when(repositoryHelper.find(activityRepository, Activity.class, activityId))
+                .thenReturn(activity);
+        when(jsonPatchService.applyPatch(
+                patch,
+                activityMapper.toResponseDto(activity),
+                ActivityUpdateDto.class)
+        ).thenReturn(patchedDto);
+
+        doThrow(new RuntimeException("Validation failed")).when(validationService).validate(patchedDto);
+
+
+        assertThrows(RuntimeException.class, () -> activityService.updateActivity(activityId, patch));
+        verify(activityRepository, never()).save(any());
+        verify(eventPublisher, never()).publishEvent(any());
+    }
+
+    @Test
+    void updateActivity_shouldNotPublishEventWhenSaveFails()
+            throws JsonPatchException, JsonProcessingException
+    {
+        int activityId = 1;
+        ActivityUpdateDto patchedDto = new ActivityUpdateDto();
+
+        when(repositoryHelper.find(activityRepository, Activity.class, activityId))
+                .thenReturn(activity);
+        when(jsonPatchService.applyPatch(
+                patch,
+                activityMapper.toResponseDto(activity),
+                ActivityUpdateDto.class)
+        ).thenReturn(patchedDto);
+
+        doThrow(new RuntimeException("Database error")).when(activityRepository).save(activity);
+
+        assertThrows(RuntimeException.class, () -> activityService.updateActivity(activityId, patch));
+        verify(eventPublisher, never()).publishEvent(any());
+    }
 
 }
