@@ -66,4 +66,5 @@ public class MediaServiceImpl implements MediaService {
     private Media find(int mediaId) {
         return repositoryHelper.find(mediaRepository, Media.class, mediaId);
     }
+
 }

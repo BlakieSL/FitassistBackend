@@ -3,16 +3,12 @@ package source.code.service.implementation.comment;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import source.code.auth.CustomAuthenticationToken;
 import source.code.dto.request.comment.CommentCreateDto;
 import source.code.dto.request.comment.CommentUpdateDto;
 import source.code.dto.response.comment.CommentResponseDto;
-import source.code.exception.RecordNotFoundException;
-import source.code.helper.User.AuthorizationUtil;
+import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.comment.CommentMapper;
 import source.code.model.forum.Comment;
 import source.code.repository.CommentRepository;
@@ -21,14 +17,7 @@ import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -129,10 +118,5 @@ public class CommentServiceImpl implements CommentService {
 
     private Comment find(int commentId) {
         return repositoryHelper.find(commentRepository, Comment.class, commentId);
-    }
-
-    public boolean isCommentOwnerOrAdmin(int commentId)  {
-        Comment comment = find(commentId);
-        return AuthorizationUtil.isOwnerOrAdmin(comment.getUser().getId());
     }
 }

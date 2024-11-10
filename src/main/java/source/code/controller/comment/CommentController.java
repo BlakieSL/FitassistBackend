@@ -6,18 +6,12 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import source.code.controller.forumThread.ForumThreadController;
 import source.code.dto.request.comment.CommentCreateDto;
 import source.code.dto.response.comment.CommentResponseDto;
+import source.code.helper.annotation.CommentOwnerOrAdmin;
 import source.code.service.declaration.comment.CommentService;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -37,7 +31,7 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
-    @IsCommentOwnerOrAdmin
+    @CommentOwnerOrAdmin
     @PatchMapping("/{commentId}")
     public ResponseEntity<Void> updateComment(
             @PathVariable int commentId,
@@ -48,7 +42,7 @@ public class CommentController {
         return ResponseEntity.noContent().build();
     }
 
-    @IsCommentOwnerOrAdmin
+    @CommentOwnerOrAdmin
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable int commentId) {
         commentService.deleteComment(commentId);
@@ -80,9 +74,4 @@ public class CommentController {
         List<CommentResponseDto> responseDtos = commentService.getReplies(commentId);
         return ResponseEntity.ok(responseDtos);
     }
-
-    @Target(ElementType.METHOD)
-    @Retention(RetentionPolicy.RUNTIME)
-    @PreAuthorize("@commentServiceImpl.isCommentOwnerOrAdmin(#commentId)")
-    public @interface IsCommentOwnerOrAdmin {}
 }

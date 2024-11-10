@@ -1,4 +1,4 @@
-package source.code.service.implementation.acitivity;
+package source.code.service.implementation.activity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
@@ -19,7 +19,7 @@ import source.code.event.events.Activity.ActivityCreateEvent;
 import source.code.event.events.Activity.ActivityDeleteEvent;
 import source.code.event.events.Activity.ActivityUpdateEvent;
 import source.code.helper.Enum.cache.CacheNames;
-import source.code.helper.User.AuthorizationUtil;
+import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.activity.ActivityMapper;
 import source.code.model.activity.Activity;
 import source.code.model.user.User;

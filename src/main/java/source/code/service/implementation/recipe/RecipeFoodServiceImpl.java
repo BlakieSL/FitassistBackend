@@ -73,7 +73,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
     }
 
     @Override
-    @CacheEvict(value = {CacheNames.FOODS_BY_RECIPE, CacheNames.RECIPES_BY_FOOD}, allEntries = true)
+    @CacheEvict(value = {CacheNames.FOODS_BY_RECIPE}, allEntries = true)
     @Transactional
     public void saveFoodToRecipe(int recipeId, int foodId, RecipeFoodCreateDto request) {
         if (isAlreadyAdded(recipeId, foodId)) {
@@ -89,7 +89,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
     }
 
     @Override
-    @CachePut(value = {CacheNames.FOODS_BY_RECIPE, CacheNames.RECIPES_BY_FOOD}, key = "#recipeId")
+    @CachePut(value = {CacheNames.FOODS_BY_RECIPE}, key = "#recipeId")
     @Transactional
     public void updateFoodRecipe(int recipeId, int foodId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException {
@@ -105,7 +105,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
     }
 
     @Override
-    @CacheEvict(value = {CacheNames.FOODS_BY_RECIPE, CacheNames.RECIPES_BY_FOOD}, key = "#recipeId")
+    @CacheEvict(value = {CacheNames.FOODS_BY_RECIPE}, key = "#recipeId")
     @Transactional
     public void deleteFoodFromRecipe(int foodId, int recipeId) {
         RecipeFood recipeFood = find(recipeId, foodId);
@@ -122,22 +122,9 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
     }
 
     @Override
-    @Cacheable(value = CacheNames.RECIPES_BY_FOOD, key = "#foodId")
-    public List<RecipeResponseDto> getRecipesByFood(int foodId) {
-        return recipeFoodRepository.findByFoodId(foodId).stream()
-                .map(RecipeFood::getRecipe)
-                .map(recipeMapper::toResponseDto)
-                .toList();
-    }
-
-    @Override
     public List<RecipeResponseDto> getRecipesByFoods(FilterRecipesByFoodsDto filter) {
         List<FilterCriteria> foodCriteriaList = filter.getFoodIds().stream()
-                .map(foodId -> FilterCriteria.of(
-                        "FOODS",
-                        foodId,
-                        FilterOperation.EQUAL
-                ))
+                .map(foodId -> FilterCriteria.of("FOODS", foodId, FilterOperation.EQUAL))
                 .toList();
 
         return recipeService.getFilteredRecipes(FilterDto.of(
@@ -145,7 +132,6 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
                 FilterDataOption.AND
         ));
     }
-
 
     private RecipeFood find(int recipeId, int foodId) {
         return recipeFoodRepository

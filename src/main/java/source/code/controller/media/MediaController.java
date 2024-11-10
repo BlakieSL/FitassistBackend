@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.media.MediaCreateDto;
 import source.code.dto.response.MediaResponseDto;
+import source.code.helper.annotation.AdminOnly;
+import source.code.helper.annotation.MediaConnectedEntityOwnerOrAdmin;
 import source.code.service.declaration.media.MediaService;
 
 import java.util.List;
@@ -20,16 +22,19 @@ public class MediaController {
     }
 
     @GetMapping("/all/{parentId}/{parentType}")
-    public ResponseEntity<List<MediaResponseDto>> getAllMediaForParent(@PathVariable int parentId,
-                                                                       @PathVariable short parentType) {
-
+    public ResponseEntity<List<MediaResponseDto>> getAllMediaForParent(
+            @PathVariable int parentId,
+            @PathVariable short parentType
+    ) {
         List<MediaResponseDto> mediaList = mediaService.getAllMediaForParent(parentId, parentType);
         return ResponseEntity.ok(mediaList);
     }
 
     @GetMapping("/first/{parentId}/{parentType}")
-    public ResponseEntity<MediaResponseDto> getFirstMediaForParent(@PathVariable int parentId,
-                                                                   @PathVariable short parentType) {
+    public ResponseEntity<MediaResponseDto> getFirstMediaForParent(
+            @PathVariable int parentId,
+            @PathVariable short parentType
+    ) {
         MediaResponseDto media = mediaService.getFirstMediaForParent(parentId, parentType);
         return ResponseEntity.ok(media);
     }
@@ -40,9 +45,11 @@ public class MediaController {
         return ResponseEntity.ok(media);
     }
 
+    @MediaConnectedEntityOwnerOrAdmin
     @PostMapping
     public ResponseEntity<MediaResponseDto> createMedia(
-            @Valid @ModelAttribute MediaCreateDto request) {
+            @Valid @ModelAttribute MediaCreateDto request
+    ) {
         MediaResponseDto response = mediaService.createMedia(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
