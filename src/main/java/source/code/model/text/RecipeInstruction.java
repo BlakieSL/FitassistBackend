@@ -10,7 +10,7 @@ import lombok.Setter;
 import source.code.model.recipe.Recipe;
 
 @Entity
-@DiscriminatorValue("RECIPE_INSTRUCTIONS")
+@DiscriminatorValue("RECIPE_INSTRUCTION")
 @Getter
 @Setter
 @AllArgsConstructor

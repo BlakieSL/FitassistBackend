@@ -1,4 +1,4 @@
-package source.code.helper.annotation;
+package source.code.annotation;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -9,5 +9,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@authAnnotationServiceImpl.isOwnerOrAdminForParentEntity(#request.parentType, #request.parentId)")
-public @interface MediaConnectedEntityOwnerOrAdmin {}
+@PreAuthorize("@authAnnotationServiceImpl.isMediaOwnerOrAdmin(#mediaId)")
+public @interface MediaOwnerOrAdminDeletion {
+}

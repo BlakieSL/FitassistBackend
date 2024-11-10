@@ -77,7 +77,7 @@ public abstract class ExerciseMapper {
         Set<ExerciseInstruction> instructions = dto.getInstructions().stream()
                 .map(instructionDto -> {
                     ExerciseInstruction instruction = ExerciseInstruction
-                            .createWithNumberAndText(instructionDto.getNumber(), instructionDto.getText());
+                            .of(instructionDto.getNumber(), instructionDto.getText());
                     instruction.setExercise(exercise);
                     return instruction;
                 }).collect(Collectors.toSet());

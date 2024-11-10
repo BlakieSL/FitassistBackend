@@ -6,8 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.media.MediaCreateDto;
 import source.code.dto.response.MediaResponseDto;
-import source.code.helper.annotation.AdminOnly;
-import source.code.helper.annotation.MediaConnectedEntityOwnerOrAdmin;
+import source.code.helper.Enum.model.MediaConnectedEntity;
+import source.code.annotation.MediaOwnerOrAdminCreation;
+import source.code.annotation.MediaOwnerOrAdminDeletion;
 import source.code.service.declaration.media.MediaService;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class MediaController {
     @GetMapping("/all/{parentId}/{parentType}")
     public ResponseEntity<List<MediaResponseDto>> getAllMediaForParent(
             @PathVariable int parentId,
-            @PathVariable short parentType
+            @PathVariable MediaConnectedEntity parentType
     ) {
         List<MediaResponseDto> mediaList = mediaService.getAllMediaForParent(parentId, parentType);
         return ResponseEntity.ok(mediaList);
@@ -33,7 +34,7 @@ public class MediaController {
     @GetMapping("/first/{parentId}/{parentType}")
     public ResponseEntity<MediaResponseDto> getFirstMediaForParent(
             @PathVariable int parentId,
-            @PathVariable short parentType
+            @PathVariable MediaConnectedEntity parentType
     ) {
         MediaResponseDto media = mediaService.getFirstMediaForParent(parentId, parentType);
         return ResponseEntity.ok(media);
@@ -45,7 +46,7 @@ public class MediaController {
         return ResponseEntity.ok(media);
     }
 
-    @MediaConnectedEntityOwnerOrAdmin
+    @MediaOwnerOrAdminCreation
     @PostMapping
     public ResponseEntity<MediaResponseDto> createMedia(
             @Valid @ModelAttribute MediaCreateDto request
@@ -54,6 +55,7 @@ public class MediaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @MediaOwnerOrAdminDeletion
     @DeleteMapping("/{mediaId}")
     public ResponseEntity<Void> removeMediaFromParent(@PathVariable int mediaId) {
         mediaService.deleteMedia(mediaId);
