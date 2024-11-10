@@ -1,5 +1,6 @@
 package source.code.service.implementation.annotation;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.helper.Enum.model.TextType;
@@ -9,11 +10,14 @@ import source.code.model.forum.ForumThread;
 import source.code.model.media.Media;
 import source.code.model.plan.Plan;
 import source.code.model.recipe.Recipe;
-import source.code.model.text.ExerciseInstruction;
 import source.code.model.text.PlanInstruction;
 import source.code.model.text.RecipeInstruction;
+import source.code.model.workout.Workout;
+import source.code.model.workout.WorkoutSet;
 import source.code.repository.*;
 import source.code.service.declaration.helpers.RepositoryHelper;
+
+import java.util.Optional;
 
 @Service
 public class AuthAnnotationServiceImpl {
@@ -26,6 +30,8 @@ public class AuthAnnotationServiceImpl {
     private final ExerciseInstructionRepository exerciseInstructionRepository;
     private final RecipeInstructionRepository recipeInstructionRepository;
     private final PlanInstructionRepository planInstructionRepository;
+    private final WorkoutRepository workoutRepository;
+    private final WorkoutSetRepository workoutSetRepository;
 
     public AuthAnnotationServiceImpl(CommentRepository commentRepository,
                                      RepositoryHelper repositoryHelper,
@@ -34,7 +40,9 @@ public class AuthAnnotationServiceImpl {
                                      RecipeRepository recipeRepository,
                                      MediaRepository mediaRepository, ExerciseInstructionRepository exerciseInstructionRepository,
                                      RecipeInstructionRepository recipeInstructionRepository,
-                                     PlanInstructionRepository planInstructionRepository) {
+                                     PlanInstructionRepository planInstructionRepository,
+                                     WorkoutRepository workoutRepository,
+                                     WorkoutSetRepository workoutSetRepository) {
         this.commentRepository = commentRepository;
         this.repositoryHelper = repositoryHelper;
         this.forumThreadRepository = forumThreadRepository;
@@ -44,6 +52,8 @@ public class AuthAnnotationServiceImpl {
         this.exerciseInstructionRepository = exerciseInstructionRepository;
         this.recipeInstructionRepository = recipeInstructionRepository;
         this.planInstructionRepository = planInstructionRepository;
+        this.workoutRepository = workoutRepository;
+        this.workoutSetRepository = workoutSetRepository;
     }
 
     public boolean isCommentOwnerOrAdmin(int commentId)  {
@@ -94,6 +104,24 @@ public class AuthAnnotationServiceImpl {
         return AuthorizationUtil.isOwnerOrAdmin(ownerId);
     }
 
+    public boolean isWorkoutOwnerOrAdmin(int workoutId) {
+        Workout workout = repositoryHelper.find(workoutRepository, Workout.class, workoutId);
+        return AuthorizationUtil.isOwnerOrAdmin(workout.getPlan().getUser().getId());
+    }
+
+    public boolean isWorkoutSetOwnerOrAdmin(int workoutSetId) {
+        WorkoutSet workoutSet = repositoryHelper.find(
+                workoutSetRepository,
+                WorkoutSet.class,
+                workoutSetId
+        );
+        return AuthorizationUtil.isOwnerOrAdmin(workoutSet
+                .getWorkout()
+                .getPlan()
+                .getUser()
+                .getId());
+    }
+
     private Integer findOwnerIdByParentTypeAndId(MediaConnectedEntity parentType, int parentId) {
         return switch (parentType) {
             case COMMENT -> repositoryHelper
@@ -111,5 +139,4 @@ public class AuthAnnotationServiceImpl {
             default -> null;
         };
     }
-
 }

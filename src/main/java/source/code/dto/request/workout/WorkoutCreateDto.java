@@ -24,5 +24,6 @@ public class WorkoutCreateDto {
     @PositiveOrZero
     private int time;
 
+    @NotNull
     private Integer planId;
 }
