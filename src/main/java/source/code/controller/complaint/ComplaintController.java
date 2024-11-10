@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.complaint.ComplaintCreateDto;
+import source.code.helper.annotation.AdminOnly;
 import source.code.service.declaration.complaint.ComplaintService;
 
 @RestController
@@ -23,6 +24,7 @@ public class ComplaintController {
         return ResponseEntity.noContent().build();
     }
 
+    @AdminOnly
     @PutMapping("/{complaintId}/resolve")
     public ResponseEntity<Void> resolveComplaint(@PathVariable int complaintId) {
         complaintService.resolveComplaint(complaintId);

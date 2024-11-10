@@ -1,4 +1,4 @@
-package source.code.helper.Search;
+package source.code.helper.search;
 
 public interface IndexedEntity {
     Integer getId();

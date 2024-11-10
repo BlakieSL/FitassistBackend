@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.category.CategoryCreateDto;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.helper.Enum.model.CategoryType;
+import source.code.helper.annotation.AdminOnly;
 import source.code.service.declaration.category.CategoryService;
 import source.code.service.declaration.selector.CategorySelectorService;
 
@@ -42,6 +43,7 @@ public class CategoryController {
         return ResponseEntity.ok(dto);
     }
 
+    @AdminOnly
     @PostMapping("/{categoryType}")
     public ResponseEntity<CategoryResponseDto> createCategory(
             @PathVariable CategoryType categoryType,
@@ -52,6 +54,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
+    @AdminOnly
     @PatchMapping("/{categoryType}/{id}")
     public ResponseEntity<Void> updateCategory(
             @PathVariable CategoryType categoryType,
@@ -64,6 +67,7 @@ public class CategoryController {
         return ResponseEntity.noContent().build();
     }
 
+    @AdminOnly
     @DeleteMapping("/{categoryType}/{id}")
     public ResponseEntity<Void> deleteCategory(
             @PathVariable CategoryType categoryType,

@@ -13,6 +13,7 @@ import source.code.dto.request.filter.FilterDto;
 import source.code.dto.response.activity.ActivityAverageMetResponseDto;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.dto.response.activity.ActivityResponseDto;
+import source.code.helper.annotation.AdminOnly;
 import source.code.service.declaration.activity.ActivityService;
 
 import java.util.List;
@@ -24,6 +25,33 @@ public class ActivityController {
 
     public ActivityController(ActivityService activityService) {
         this.activityService = activityService;
+    }
+
+    @AdminOnly
+    @PostMapping
+    public ResponseEntity<ActivityResponseDto> createActivity(
+            @Valid @RequestBody ActivityCreateDto dto)
+    {
+        ActivityResponseDto response = activityService.createActivity(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @AdminOnly
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updateActivity(
+            @PathVariable int id,
+            @RequestBody JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException
+    {
+        activityService.updateActivity(id, patch);
+        return ResponseEntity.noContent().build();
+    }
+
+    @AdminOnly
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteActivity(@PathVariable int id) {
+        activityService.deleteActivity(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
@@ -54,30 +82,6 @@ public class ActivityController {
     public ResponseEntity<ActivityAverageMetResponseDto> getAverageMet() {
         ActivityAverageMetResponseDto dto = activityService.getAverageMet();
         return ResponseEntity.ok(dto);
-    }
-
-    @PostMapping
-    public ResponseEntity<ActivityResponseDto> createActivity(
-            @Valid @RequestBody ActivityCreateDto dto)
-    {
-        ActivityResponseDto response = activityService.createActivity(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateActivity(
-            @PathVariable int id,
-            @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
-        activityService.updateActivity(id, patch);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteActivity(@PathVariable int id) {
-        activityService.deleteActivity(id);
-        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/calculate-calories")
