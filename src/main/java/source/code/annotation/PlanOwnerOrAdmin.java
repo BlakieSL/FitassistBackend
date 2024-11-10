@@ -1,4 +1,4 @@
-package source.code.helper.annotation;
+package source.code.annotation;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("hasRole('ADMIN')")
-public @interface AdminOnly {}
-
+@PreAuthorize("@authAnnotationServiceImpl.isPlanOwnerOrAdmin(#planId)")
+public @interface PlanOwnerOrAdmin {
+}

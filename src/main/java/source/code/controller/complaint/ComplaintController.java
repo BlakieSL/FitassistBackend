@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.complaint.ComplaintCreateDto;
-import source.code.helper.annotation.AdminOnly;
+import source.code.annotation.AdminOnly;
 import source.code.service.declaration.complaint.ComplaintService;
 
 @RestController

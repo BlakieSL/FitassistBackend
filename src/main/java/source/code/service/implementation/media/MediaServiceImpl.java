@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.request.media.MediaCreateDto;
 import source.code.dto.response.MediaResponseDto;
 import source.code.exception.RecordNotFoundException;
+import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.mapper.MediaMapper;
 import source.code.model.media.Media;
 import source.code.repository.MediaRepository;
@@ -42,14 +43,17 @@ public class MediaServiceImpl implements MediaService {
     }
 
     @Override
-    public List<MediaResponseDto> getAllMediaForParent(int parentId, short parentType) {
+    public List<MediaResponseDto> getAllMediaForParent(
+            int parentId,
+            MediaConnectedEntity parentType
+    ) {
         return mediaRepository.findByParentIdAndParentType(parentId, parentType).stream()
                 .map(mediaMapper::toDto)
                 .toList();
     }
 
     @Override
-    public MediaResponseDto getFirstMediaForParent(int parentId, short parentType) {
+    public MediaResponseDto getFirstMediaForParent(int parentId, MediaConnectedEntity parentType) {
         Media media = mediaRepository
                 .findFirstByParentIdAndParentTypeOrderByIdAsc(parentId, parentType)
                 .orElseThrow(() -> RecordNotFoundException.of(Media.class, parentId, parentType));

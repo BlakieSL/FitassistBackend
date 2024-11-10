@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.forumThread.ForumThreadCreateDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
-import source.code.helper.annotation.ThreadOwnerOrAdmin;
+import source.code.annotation.ThreadOwnerOrAdmin;
 import source.code.service.declaration.forumThread.ForumThreadService;
 
 import java.util.List;
