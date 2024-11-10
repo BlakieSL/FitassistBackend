@@ -5,16 +5,12 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.forumThread.ForumThreadCreateDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
+import source.code.helper.annotation.ThreadOwnerOrAdmin;
 import source.code.service.declaration.forumThread.ForumThreadService;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.List;
 
 @RestController
@@ -24,6 +20,32 @@ public class ForumThreadController {
 
     public ForumThreadController(ForumThreadService forumThreadService) {
         this.forumThreadService = forumThreadService;
+    }
+
+    @PostMapping
+    public ResponseEntity<ForumThreadResponseDto> createForumThread(
+            @Valid @RequestBody ForumThreadCreateDto createDto
+    ) {
+        ForumThreadResponseDto responseDto = forumThreadService.createForumThread(createDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @ThreadOwnerOrAdmin
+    @PatchMapping("/{forumThreadId}")
+    public ResponseEntity<Void> updateForumThread(
+            @PathVariable int forumThreadId,
+            @RequestBody JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException
+    {
+        forumThreadService.updateForumThread(forumThreadId, patch);
+        return ResponseEntity.ok().build();
+    }
+
+    @ThreadOwnerOrAdmin
+    @DeleteMapping("/{forumThreadId}")
+    public ResponseEntity<Void> deleteForumThread(@PathVariable int forumThreadId) {
+        forumThreadService.deleteForumThread(forumThreadId);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{forumThreadId}")
@@ -46,36 +68,4 @@ public class ForumThreadController {
                 .getForumThreadsByCategory(categoryId);
         return ResponseEntity.ok(responseDto);
     }
-
-    @IsThreadOwnerOrAdmin
-    @PostMapping
-    public ResponseEntity<ForumThreadResponseDto> createForumThread(
-            @Valid @RequestBody ForumThreadCreateDto createDto
-    ) {
-        ForumThreadResponseDto responseDto = forumThreadService.createForumThread(createDto);
-        return ResponseEntity.ok(responseDto);
-    }
-
-    @IsThreadOwnerOrAdmin
-    @PatchMapping("/{forumThreadId}")
-    public ResponseEntity<Void> updateForumThread(
-            @PathVariable int forumThreadId,
-            @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
-        forumThreadService.updateForumThread(forumThreadId, patch);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{forumThreadId}")
-    public ResponseEntity<Void> deleteForumThread(@PathVariable int forumThreadId) {
-        forumThreadService.deleteForumThread(forumThreadId);
-        return ResponseEntity.ok().build();
-    }
-
-
-    @Target(ElementType.METHOD)
-    @Retention(RetentionPolicy.RUNTIME)
-    @PreAuthorize("@forumThreadServiceImpl.isThreadOwnerOrAdmin(#threadId)")
-    public @interface IsThreadOwnerOrAdmin {}
 }

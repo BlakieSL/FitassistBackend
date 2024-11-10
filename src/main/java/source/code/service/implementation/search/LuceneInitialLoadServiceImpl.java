@@ -2,7 +2,7 @@ package source.code.service.implementation.search;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
-import source.code.helper.Search.IndexedEntity;
+import source.code.helper.search.IndexedEntity;
 import source.code.service.declaration.activity.ActivityService;
 import source.code.service.declaration.exercise.ExerciseService;
 import source.code.service.declaration.food.FoodService;

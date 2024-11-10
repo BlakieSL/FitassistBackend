@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.recipe.RecipeCreateDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
+import source.code.helper.annotation.RecipeOwnerOrAdmin;
 import source.code.service.declaration.recipe.RecipeService;
 
 import java.util.List;
@@ -21,6 +22,32 @@ public class RecipeController {
 
     public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
+    }
+
+    @PostMapping
+    public ResponseEntity<RecipeResponseDto> createRecipe(
+            @Valid @RequestBody RecipeCreateDto recipeDto
+    ) {
+        RecipeResponseDto response = recipeService.createRecipe(recipeDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @RecipeOwnerOrAdmin
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updateRecipe(
+            @PathVariable int id,
+            @RequestBody JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException
+    {
+        recipeService.updateRecipe(id, patch);
+        return ResponseEntity.noContent().build();
+    }
+
+    @RecipeOwnerOrAdmin
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRecipe(@PathVariable int id) {
+        recipeService.deleteRecipe(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
@@ -48,29 +75,5 @@ public class RecipeController {
     ) {
         List<RecipeResponseDto> filtered = recipeService.getFilteredRecipes(filterDto);
         return ResponseEntity.ok(filtered);
-    }
-
-    @PostMapping
-    public ResponseEntity<RecipeResponseDto> createRecipe(
-            @Valid @RequestBody RecipeCreateDto recipeDto
-    ) {
-        RecipeResponseDto response = recipeService.createRecipe(recipeDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateRecipe(
-            @PathVariable int id,
-            @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
-        recipeService.updateRecipe(id, patch);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRecipe(@PathVariable int id) {
-        recipeService.deleteRecipe(id);
-        return ResponseEntity.noContent().build();
     }
 }

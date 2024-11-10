@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.exercise.ExerciseCreateDto;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.response.exercise.ExerciseResponseDto;
+import source.code.helper.annotation.AdminOnly;
 import source.code.service.declaration.exercise.ExerciseService;
 
 import java.util.List;
@@ -21,6 +22,33 @@ public class ExerciseController {
 
     public ExerciseController(ExerciseService exerciseService) {
         this.exerciseService = exerciseService;
+    }
+
+    @AdminOnly
+    @PostMapping
+    public ResponseEntity<ExerciseResponseDto> createExercise(
+            @Valid @RequestBody ExerciseCreateDto dto
+    ) {
+        ExerciseResponseDto savedExercise = exerciseService.createExercise(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedExercise);
+    }
+
+    @AdminOnly
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updateExercise(
+            @PathVariable int id,
+            @RequestBody JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException
+    {
+        exerciseService.updateExercise(id, patch);
+        return ResponseEntity.noContent().build();
+    }
+
+    @AdminOnly
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteExercise(@PathVariable int id) {
+        exerciseService.deleteExercise(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
@@ -48,29 +76,5 @@ public class ExerciseController {
             @PathVariable int categoryId
     ) {
         return ResponseEntity.ok(exerciseService.getExercisesByCategory(categoryId));
-    }
-
-    @PostMapping
-    public ResponseEntity<ExerciseResponseDto> createExercise(
-            @Valid @RequestBody ExerciseCreateDto dto
-    ) {
-        ExerciseResponseDto savedExercise = exerciseService.createExercise(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedExercise);
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateExercise(
-            @PathVariable int id,
-            @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
-        exerciseService.updateExercise(id, patch);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteExercise(@PathVariable int id) {
-        exerciseService.deleteExercise(id);
-        return ResponseEntity.noContent().build();
     }
 }

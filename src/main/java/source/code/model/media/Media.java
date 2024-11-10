@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.helper.Enum.model.MediaConnectedEntity;
 
 @Entity
 @Table(name = "media")
@@ -24,7 +25,8 @@ public class Media {
     private byte[] image;
 
     @NotNull
-    private short parentType;
+    @Enumerated(EnumType.STRING)
+    private MediaConnectedEntity parentType;
 
     @NotNull
     @Column(name = "parent_id", nullable = false)

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.helper.Enum.model.MediaConnectedEntity;
 
 @Getter
 @Setter
@@ -12,6 +13,6 @@ import lombok.Setter;
 public class MediaResponseDto {
     private Integer id;
     private byte[] image;
-    private short parentType;
+    private MediaConnectedEntity parentType;
     private Integer parentId;
 }

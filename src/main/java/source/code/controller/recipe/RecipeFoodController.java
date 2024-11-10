@@ -12,6 +12,7 @@ import source.code.dto.request.recipe.FilterRecipesByFoodsDto;
 import source.code.dto.request.recipe.RecipeFoodCreateDto;
 import source.code.dto.response.food.FoodResponseDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
+import source.code.helper.annotation.RecipeOwnerOrAdmin;
 import source.code.service.declaration.recipe.RecipeFoodService;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class RecipeFoodController {
         this.objectMapper = objectMapper;
     }
 
+    @RecipeOwnerOrAdmin
     @PostMapping("/{recipeId}/add/{foodId}")
     public ResponseEntity<Void> addFoodToRecipe(
             @PathVariable int recipeId,
@@ -38,6 +40,7 @@ public class RecipeFoodController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @RecipeOwnerOrAdmin
     @DeleteMapping("/{recipeId}/remove/{foodId}")
     public ResponseEntity<Void> deleteFoodFromRecipe(
             @PathVariable int recipeId,
@@ -47,6 +50,7 @@ public class RecipeFoodController {
         return ResponseEntity.ok().build();
     }
 
+    @RecipeOwnerOrAdmin
     @PatchMapping("/{recipeId}/modify/{foodId}")
     public ResponseEntity<Void> updateFoodRecipe(
             @PathVariable int recipeId,
@@ -62,12 +66,6 @@ public class RecipeFoodController {
     public ResponseEntity<List<FoodResponseDto>> getFoodsByRecipe(@PathVariable int id) {
         List<FoodResponseDto> foods = recipeFoodService.getFoodsByRecipe(id);
         return ResponseEntity.ok(foods);
-    }
-
-    @GetMapping("/{id}/recipes")
-    public ResponseEntity<List<RecipeResponseDto>> getRecipesByFood(@PathVariable int id) {
-        List<RecipeResponseDto> recipes = recipeFoodService.getRecipesByFood(id);
-        return ResponseEntity.ok(recipes);
     }
 
     @PostMapping("/filter/foods")

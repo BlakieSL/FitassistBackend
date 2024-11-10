@@ -17,7 +17,7 @@ import source.code.event.events.Plan.PlanCreateEvent;
 import source.code.event.events.Plan.PlanDeleteEvent;
 import source.code.event.events.Plan.PlanUpdateEvent;
 import source.code.helper.Enum.cache.CacheNames;
-import source.code.helper.User.AuthorizationUtil;
+import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.plan.PlanMapper;
 import source.code.model.plan.Plan;
 import source.code.model.plan.PlanCategoryAssociation;

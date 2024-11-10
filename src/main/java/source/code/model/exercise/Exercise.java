@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.helper.Search.IndexedEntity;
+import source.code.helper.search.IndexedEntity;
 import source.code.model.other.Equipment;
 import source.code.model.other.ExpertiseLevel;
 import source.code.model.text.ExerciseInstruction;

@@ -3,13 +3,12 @@ package source.code.service.implementation.forumThread;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import source.code.dto.request.forumThread.ForumThreadCreateDto;
 import source.code.dto.request.forumThread.ForumThreadUpdateDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
-import source.code.helper.User.AuthorizationUtil;
+import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.forumThread.ForumThreadMapper;
 import source.code.model.forum.ForumThread;
 import source.code.repository.ForumThreadRepository;
@@ -18,12 +17,7 @@ import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ForumThreadServiceImpl implements ForumThreadService {
@@ -104,10 +98,5 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 
     private ForumThread find(int threadId) {
         return repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId);
-    }
-
-    public boolean isThreadOwnerOrAdmin(int threadId)  {
-        ForumThread thread = find(threadId);
-        return AuthorizationUtil.isOwnerOrAdmin(thread.getUser().getId());
     }
 }

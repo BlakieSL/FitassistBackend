@@ -11,6 +11,7 @@ import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.response.category.EquipmentResponseDto;
 import source.code.dto.response.plan.PlanResponseDto;
+import source.code.helper.annotation.PlanOwnerOrAdmin;
 import source.code.service.declaration.plan.PlanService;
 
 import java.util.List;
@@ -22,6 +23,28 @@ public class PlanController {
 
     public PlanController(PlanService planService) {
         this.planService = planService;
+    }
+
+    @PostMapping
+    public ResponseEntity<PlanResponseDto> createPlan(@Valid @RequestBody PlanCreateDto planDto) {
+        PlanResponseDto response = planService.createPlan(planDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PlanOwnerOrAdmin
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updatePlan(@PathVariable int id, @RequestBody JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException
+    {
+        planService.updatePlan(id, patch);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PlanOwnerOrAdmin
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePlan(@PathVariable int id) {
+        planService.deletePlan(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
@@ -54,25 +77,5 @@ public class PlanController {
             @Valid @RequestBody FilterDto filterDto) {
         List<PlanResponseDto> filtered = planService.getFilteredPlans(filterDto);
         return ResponseEntity.ok(filtered);
-    }
-
-    @PostMapping
-    public ResponseEntity<PlanResponseDto> createPlan(@Valid @RequestBody PlanCreateDto planDto) {
-        PlanResponseDto response = planService.createPlan(planDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<Void> updatePlan(@PathVariable int id, @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
-        planService.updatePlan(id, patch);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePlan(@PathVariable int id) {
-        planService.deletePlan(id);
-        return ResponseEntity.noContent().build();
     }
 }

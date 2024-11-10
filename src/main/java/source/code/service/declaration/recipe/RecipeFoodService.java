@@ -19,7 +19,5 @@ public interface RecipeFoodService {
 
     List<FoodResponseDto> getFoodsByRecipe(int recipeId);
 
-    List<RecipeResponseDto> getRecipesByFood(int foodId);
-
     List<RecipeResponseDto> getRecipesByFoods(FilterRecipesByFoodsDto filter);
 }

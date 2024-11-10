@@ -6,7 +6,7 @@ import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.comment.CommentResponseDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.helper.User.AuthorizationUtil;
+import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.comment.CommentMapper;
 import source.code.mapper.forumThread.ForumThreadMapper;
 import source.code.mapper.plan.PlanMapper;

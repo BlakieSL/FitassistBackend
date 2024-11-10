@@ -11,12 +11,10 @@ public class CacheNames {
 
     public static final String ALL_EXERCISES = "allExercises";
     public static final String EXERCISES = "exercises";
-    public static final String EXERCISES_BY_FIELD = "exercisesByField";
     public static final String EXERCISES_BY_CATEGORY = "exercisesByCategory";
 
     public static final String ALL_PLANS = "allPlans";
     public static final String PLANS = "plans";
-    public static final String PLANS_BY_FIELD = "plansByField";
     public static final String PLANS_BY_CATEGORY = "plansByCategory";
 
     public static final String ALL_RECIPES = "allRecipes";
@@ -30,7 +28,6 @@ public class CacheNames {
     public static final String USER_BY_ID = "userById";
     public static final String USER_ID_BY_EMAIL = "userIdByEmail";
 
-    public static final String RECIPES_BY_FOOD = "recipesByFood";
     public static final String FOODS_BY_RECIPE = "foodsByRecipe";
 
 }

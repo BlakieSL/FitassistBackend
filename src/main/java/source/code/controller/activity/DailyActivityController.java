@@ -6,6 +6,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
 import source.code.dto.response.DailyActivitiesResponseDto;
@@ -22,8 +23,7 @@ public class DailyActivityController {
 
     @GetMapping
     public ResponseEntity<DailyActivitiesResponseDto> getAllDailyActivitiesByUser() {
-        DailyActivitiesResponseDto activities = dailyActivityService.getActivitiesFromDailyActivity();
-        return ResponseEntity.ok(activities);
+        return ResponseEntity.ok(dailyActivityService.getActivitiesFromDailyActivity());
     }
 
     @PostMapping("/add/{activityId}")
@@ -35,12 +35,6 @@ public class DailyActivityController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/remove/{activityId}")
-    public ResponseEntity<Void> removeActivityFromDailyCartActivity(@PathVariable int activityId) {
-        dailyActivityService.removeActivityFromDailyActivity(activityId);
-        return ResponseEntity.noContent().build();
-    }
-
     @PatchMapping("/modify-activity/{activityId}")
     public ResponseEntity<Void> updateDailyCartActivity(
             @PathVariable int activityId,
@@ -48,6 +42,13 @@ public class DailyActivityController {
             throws JsonPatchException, JsonProcessingException
     {
         dailyActivityService.updateDailyActivityItem(activityId, patch);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.userId")
+    @DeleteMapping("/remove/{activityId}")
+    public ResponseEntity<Void> removeActivityFromDailyCartActivity(@PathVariable int activityId) {
+        dailyActivityService.removeActivityFromDailyActivity(activityId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.request.food.DailyFoodItemCreateDto;
 import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.helper.User.AuthorizationUtil;
+import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.daily.DailyFoodMapper;
 import source.code.model.food.DailyFood;
 import source.code.model.food.DailyFoodItem;
