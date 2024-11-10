@@ -12,7 +12,7 @@ import source.code.dto.request.food.CalculateFoodMacrosRequestDto;
 import source.code.dto.request.food.FoodCreateDto;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.food.FoodResponseDto;
-import source.code.helper.annotation.AdminOnly;
+import source.code.annotation.AdminOnly;
 import source.code.service.declaration.food.FoodService;
 
 import java.util.List;

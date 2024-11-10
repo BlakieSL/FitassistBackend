@@ -11,7 +11,7 @@ import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.response.category.EquipmentResponseDto;
 import source.code.dto.response.plan.PlanResponseDto;
-import source.code.helper.annotation.PlanOwnerOrAdmin;
+import source.code.annotation.PlanOwnerOrAdmin;
 import source.code.service.declaration.plan.PlanService;
 
 import java.util.List;

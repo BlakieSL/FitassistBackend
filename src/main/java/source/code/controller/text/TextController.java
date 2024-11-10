@@ -5,6 +5,7 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import source.code.annotation.TextOwnerOrAdmin;
 import source.code.dto.response.text.BaseTextResponseDto;
 import source.code.helper.Enum.model.TextType;
 import source.code.service.declaration.selector.TextSelectorService;
@@ -31,6 +32,7 @@ public class TextController {
         return ResponseEntity.ok(response);
     }
 
+    @TextOwnerOrAdmin
     @PatchMapping("/{id}/type/{type}")
     public ResponseEntity<Void> update(
             @PathVariable int id,
@@ -43,10 +45,11 @@ public class TextController {
         return ResponseEntity.noContent().build();
     }
 
+    @TextOwnerOrAdmin
     @DeleteMapping("/{id}/type/{type}")
     public ResponseEntity<Void> delete(@PathVariable int id, @PathVariable TextType type) {
         TextService textService = textSelectorService.getService(type);
         textService.deleteText(id);
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 }

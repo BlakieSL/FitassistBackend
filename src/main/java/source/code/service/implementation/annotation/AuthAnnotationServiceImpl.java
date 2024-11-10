@@ -2,15 +2,17 @@ package source.code.service.implementation.annotation;
 
 import org.springframework.stereotype.Service;
 import source.code.helper.Enum.model.MediaConnectedEntity;
+import source.code.helper.Enum.model.TextType;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.model.forum.Comment;
 import source.code.model.forum.ForumThread;
+import source.code.model.media.Media;
 import source.code.model.plan.Plan;
 import source.code.model.recipe.Recipe;
-import source.code.repository.CommentRepository;
-import source.code.repository.ForumThreadRepository;
-import source.code.repository.PlanRepository;
-import source.code.repository.RecipeRepository;
+import source.code.model.text.ExerciseInstruction;
+import source.code.model.text.PlanInstruction;
+import source.code.model.text.RecipeInstruction;
+import source.code.repository.*;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
 @Service
@@ -20,17 +22,28 @@ public class AuthAnnotationServiceImpl {
     private final ForumThreadRepository forumThreadRepository;
     private final PlanRepository planRepository;
     private final RecipeRepository recipeRepository;
+    private final MediaRepository mediaRepository;
+    private final ExerciseInstructionRepository exerciseInstructionRepository;
+    private final RecipeInstructionRepository recipeInstructionRepository;
+    private final PlanInstructionRepository planInstructionRepository;
 
     public AuthAnnotationServiceImpl(CommentRepository commentRepository,
                                      RepositoryHelper repositoryHelper,
                                      ForumThreadRepository forumThreadRepository,
                                      PlanRepository planRepository,
-                                     RecipeRepository recipeRepository) {
+                                     RecipeRepository recipeRepository,
+                                     MediaRepository mediaRepository, ExerciseInstructionRepository exerciseInstructionRepository,
+                                     RecipeInstructionRepository recipeInstructionRepository,
+                                     PlanInstructionRepository planInstructionRepository) {
         this.commentRepository = commentRepository;
         this.repositoryHelper = repositoryHelper;
         this.forumThreadRepository = forumThreadRepository;
         this.planRepository = planRepository;
         this.recipeRepository = recipeRepository;
+        this.mediaRepository = mediaRepository;
+        this.exerciseInstructionRepository = exerciseInstructionRepository;
+        this.recipeInstructionRepository = recipeInstructionRepository;
+        this.planInstructionRepository = planInstructionRepository;
     }
 
     public boolean isCommentOwnerOrAdmin(int commentId)  {
@@ -58,18 +71,45 @@ public class AuthAnnotationServiceImpl {
     }
 
     public boolean isOwnerOrAdminForParentEntity(MediaConnectedEntity parentType, int parentId) {
-        Integer ownerId = switch (parentType) {
-            case COMMENT -> repositoryHelper.find(commentRepository, Comment.class, parentId)
+        Integer ownerId = findOwnerIdByParentTypeAndId(parentType, parentId);
+        return AuthorizationUtil.isOwnerOrAdmin(ownerId);
+    }
+
+    public boolean isMediaOwnerOrAdmin(int mediaId) {
+        Media media = repositoryHelper.find(mediaRepository, Media.class, mediaId);
+        Integer ownerId = findOwnerIdByParentTypeAndId(media.getParentType(), media.getParentId());
+        return AuthorizationUtil.isOwnerOrAdmin(ownerId);
+    }
+
+    public boolean isTextOwnerOrAdmin(int id, TextType type) {
+        Integer ownerId = switch (type) {
+            case RECIPE_INSTRUCTION -> repositoryHelper
+                    .find(recipeInstructionRepository, RecipeInstruction.class, id)
+                    .getRecipe().getUser().getId();
+            case PLAN_INSTRUCTION -> repositoryHelper
+                    .find(planInstructionRepository, PlanInstruction.class, id)
+                    .getPlan().getUser().getId();
+            default -> null;
+        };
+        return AuthorizationUtil.isOwnerOrAdmin(ownerId);
+    }
+
+    private Integer findOwnerIdByParentTypeAndId(MediaConnectedEntity parentType, int parentId) {
+        return switch (parentType) {
+            case COMMENT -> repositoryHelper
+                    .find(commentRepository, Comment.class, parentId)
                     .getUser().getId();
-            case FORUM_THREAD -> repositoryHelper.find(forumThreadRepository, ForumThread.class, parentId)
+            case FORUM_THREAD -> repositoryHelper.
+                    find(forumThreadRepository, ForumThread.class, parentId)
                     .getUser().getId();
-            case PLAN -> repositoryHelper.find(planRepository, Plan.class, parentId)
+            case PLAN -> repositoryHelper
+                    .find(planRepository, Plan.class, parentId)
                     .getUser().getId();
-            case RECIPE -> repositoryHelper.find(recipeRepository, Recipe.class, parentId)
+            case RECIPE -> repositoryHelper
+                    .find(recipeRepository, Recipe.class, parentId)
                     .getUser().getId();
             default -> null;
         };
-
-        return AuthorizationUtil.isOwnerOrAdmin(ownerId);
     }
+
 }

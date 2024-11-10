@@ -12,7 +12,7 @@ import source.code.dto.request.recipe.FilterRecipesByFoodsDto;
 import source.code.dto.request.recipe.RecipeFoodCreateDto;
 import source.code.dto.response.food.FoodResponseDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
-import source.code.helper.annotation.RecipeOwnerOrAdmin;
+import source.code.annotation.RecipeOwnerOrAdmin;
 import source.code.service.declaration.recipe.RecipeFoodService;
 
 import java.util.List;
