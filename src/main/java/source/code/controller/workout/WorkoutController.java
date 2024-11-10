@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import source.code.annotation.WorkoutOwnerOrAdmin;
+import source.code.annotation.WorkoutOwnerOrAdminCreation;
 import source.code.dto.request.workout.WorkoutCreateDto;
 import source.code.dto.response.workout.WorkoutResponseDto;
 import source.code.service.declaration.workout.WorkoutService;
@@ -22,6 +24,33 @@ public class WorkoutController {
         this.workoutService = workoutService;
     }
 
+    @WorkoutOwnerOrAdminCreation
+    @PostMapping
+    public ResponseEntity<WorkoutResponseDto> createWorkout(
+            @Valid @RequestBody WorkoutCreateDto workoutDto
+    ) {
+        WorkoutResponseDto response = workoutService.createWorkout(workoutDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @WorkoutOwnerOrAdmin
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updateWorkout(
+            @PathVariable int id,
+            @RequestBody JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException
+    {
+        workoutService.updateWorkout(id, patch);
+        return ResponseEntity.noContent().build();
+    }
+
+    @WorkoutOwnerOrAdmin
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteWorkout(@PathVariable int id) {
+        workoutService.deleteWorkout(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<WorkoutResponseDto> getWorkout(@PathVariable int id) {
         WorkoutResponseDto workout = workoutService.getWorkout(id);
@@ -34,29 +63,5 @@ public class WorkoutController {
     ) {
         List<WorkoutResponseDto> workouts = workoutService.getAllWorkoutsForPlan(planId);
         return ResponseEntity.ok(workouts);
-    }
-
-    @PostMapping
-    public ResponseEntity<WorkoutResponseDto> createWorkout(
-            @Valid @RequestBody WorkoutCreateDto workoutDto
-    ) {
-        WorkoutResponseDto response = workoutService.createWorkout(workoutDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateWorkout(
-            @PathVariable int id,
-            @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
-        workoutService.updateWorkout(id, patch);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWorkout(@PathVariable int id) {
-        workoutService.deleteWorkout(id);
-        return ResponseEntity.noContent().build();
     }
 }
