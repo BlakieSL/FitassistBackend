@@ -12,4 +12,8 @@ public class ActivityCreateEvent extends ApplicationEvent {
         super(source);
         this.activity = activity;
     }
+
+    public static ActivityCreateEvent of(Object source, Activity activity) {
+        return new ActivityCreateEvent(source, activity);
+    }
 }

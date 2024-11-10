@@ -41,7 +41,7 @@ public class ActivityServiceImpl implements ActivityService {
     private final ActivityMapper activityMapper;
     private final ValidationService validationService;
     private final JsonPatchService jsonPatchService;
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final ApplicationEventPublisher eventPublisher;
     private final ActivityRepository activityRepository;
     private final UserRepository userRepository;
 
@@ -50,14 +50,14 @@ public class ActivityServiceImpl implements ActivityService {
             ActivityMapper activityMapper,
             ValidationService validationService,
             JsonPatchService jsonPatchService,
-            ApplicationEventPublisher applicationEventPublisher,
+            ApplicationEventPublisher eventPublisher,
             ActivityRepository activityRepository,
             UserRepository userRepository) {
         this.repositoryHelper = repositoryHelper;
         this.activityMapper = activityMapper;
         this.validationService = validationService;
         this.jsonPatchService = jsonPatchService;
-        this.applicationEventPublisher = applicationEventPublisher;
+        this.eventPublisher = eventPublisher;
         this.activityRepository = activityRepository;
         this.userRepository = userRepository;
     }
@@ -66,7 +66,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Transactional
     public ActivityResponseDto createActivity(ActivityCreateDto dto) {
         Activity activity = activityRepository.save(activityMapper.toEntity(dto));
-        publishEvent(new ActivityCreateEvent(this, activity));
+        eventPublisher.publishEvent(ActivityCreateEvent.of(this, activity));
 
         return activityMapper.toResponseDto(activity);
     }
@@ -77,13 +77,13 @@ public class ActivityServiceImpl implements ActivityService {
             throws JsonPatchException, JsonProcessingException
     {
         Activity activity = findActivity(activityId);
-        ActivityUpdateDto patchedActivityUpdateDto = applyPatchToActivity(activity, patch);
+        ActivityUpdateDto patched = applyPatchToActivity(activity, patch);
 
-        validationService.validate(patchedActivityUpdateDto);
-        activityMapper.updateActivityFromDto(activity, patchedActivityUpdateDto);
+        validationService.validate(patched);
+        activityMapper.updateActivityFromDto(activity, patched);
         Activity savedActivity = activityRepository.save(activity);
 
-        publishEvent(new ActivityUpdateEvent(this, savedActivity));
+        eventPublisher.publishEvent(ActivityUpdateEvent.of(this, savedActivity));
     }
 
     @Override
@@ -92,7 +92,7 @@ public class ActivityServiceImpl implements ActivityService {
         Activity activity = findActivity(activityId);
         activityRepository.delete(activity);
 
-        publishEvent(new ActivityDeleteEvent(this, activity));
+        eventPublisher.publishEvent(ActivityDeleteEvent.of(this, activity));
     }
 
     @Override
@@ -160,10 +160,6 @@ public class ActivityServiceImpl implements ActivityService {
     {
         ActivityResponseDto responseDto = activityMapper.toResponseDto(activity);
         return jsonPatchService.applyPatch(patch, responseDto, ActivityUpdateDto.class);
-    }
-
-    private void publishEvent(Object event) {
-        applicationEventPublisher.publishEvent(event);
     }
 
     private Activity findActivity(int activityId) {
