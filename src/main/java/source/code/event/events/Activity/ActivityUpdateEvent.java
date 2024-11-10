@@ -12,4 +12,8 @@ public class ActivityUpdateEvent extends ApplicationEvent {
         super(source);
         this.activity = activity;
     }
+
+    public static ActivityUpdateEvent of(Object source, Activity activity) {
+        return new ActivityUpdateEvent(source, activity);
+    }
 }

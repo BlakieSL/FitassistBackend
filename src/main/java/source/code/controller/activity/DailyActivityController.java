@@ -45,7 +45,6 @@ public class DailyActivityController {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.userId")
     @DeleteMapping("/remove/{activityId}")
     public ResponseEntity<Void> removeActivityFromDailyCartActivity(@PathVariable int activityId) {
         dailyActivityService.removeActivityFromDailyActivity(activityId);

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import source.code.annotation.IsOwnerOrAdmin;
 import source.code.auth.JwtService;
 import source.code.dto.request.RefreshTokenRequestDto;
 import source.code.dto.request.user.UserCreateDto;
@@ -73,8 +74,4 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @Target(ElementType.METHOD)
-    @Retention(RetentionPolicy.RUNTIME)
-    @PreAuthorize("@authorizationUtil.isOwnerOrAdmin(#id)")
-    public @interface IsOwnerOrAdmin {}
 }

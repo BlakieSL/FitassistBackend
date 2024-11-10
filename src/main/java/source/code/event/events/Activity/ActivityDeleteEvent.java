@@ -12,4 +12,8 @@ public class ActivityDeleteEvent extends ApplicationEvent {
         super(source);
         this.activity = activity;
     }
+
+    public static ActivityDeleteEvent of(Object source, Activity activity) {
+        return new ActivityDeleteEvent(source, activity);
+    }
 }
