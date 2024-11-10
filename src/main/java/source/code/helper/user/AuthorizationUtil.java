@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Component
 public class AuthorizationUtil {
-    public static boolean isOwnerOrAdmin(Integer own erId) {
+    public static boolean isOwnerOrAdmin(Integer ownerId) {
         CustomAuthenticationToken auth = (CustomAuthenticationToken) SecurityContextHolder
                 .getContext()
                 .getAuthentication();
