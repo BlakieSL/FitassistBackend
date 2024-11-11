@@ -22,8 +22,8 @@ public class SpecificationBuilder<T> {
 
     public Specification<T> build() {
         List<FilterCriteria> criteriaList = filterDto.getFilterCriteria();
-        if (criteriaList.isEmpty()) {
-            return null;
+        if (criteriaList == null || criteriaList.isEmpty()) {
+            return Specification.where(null);
         }
 
         Specification<T> result = specificationFactory.createSpecification(criteriaList.get(0));
