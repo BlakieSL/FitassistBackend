@@ -6,7 +6,6 @@ import source.code.auth.CustomAuthenticationToken;
 
 import java.util.Optional;
 
-@Component
 public class AuthorizationUtil {
     public static boolean isOwnerOrAdmin(Integer ownerId) {
         CustomAuthenticationToken auth = (CustomAuthenticationToken) SecurityContextHolder

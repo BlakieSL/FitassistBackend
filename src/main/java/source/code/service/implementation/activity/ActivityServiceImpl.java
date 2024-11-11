@@ -97,8 +97,9 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public ActivityCalculatedResponseDto calculateCaloriesBurned(
-            int activityId, CalculateActivityCaloriesRequestDto request)
-    {
+            int activityId,
+            CalculateActivityCaloriesRequestDto request
+    ) {
         int userId = AuthorizationUtil.getUserId();
         User user = findUser(userId);
         Activity activity = findActivity(activityId);
