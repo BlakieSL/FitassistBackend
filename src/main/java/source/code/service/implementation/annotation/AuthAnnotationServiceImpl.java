@@ -27,7 +27,6 @@ public class AuthAnnotationServiceImpl {
     private final PlanRepository planRepository;
     private final RecipeRepository recipeRepository;
     private final MediaRepository mediaRepository;
-    private final ExerciseInstructionRepository exerciseInstructionRepository;
     private final RecipeInstructionRepository recipeInstructionRepository;
     private final PlanInstructionRepository planInstructionRepository;
     private final WorkoutRepository workoutRepository;
@@ -38,7 +37,7 @@ public class AuthAnnotationServiceImpl {
                                      ForumThreadRepository forumThreadRepository,
                                      PlanRepository planRepository,
                                      RecipeRepository recipeRepository,
-                                     MediaRepository mediaRepository, ExerciseInstructionRepository exerciseInstructionRepository,
+                                     MediaRepository mediaRepository,
                                      RecipeInstructionRepository recipeInstructionRepository,
                                      PlanInstructionRepository planInstructionRepository,
                                      WorkoutRepository workoutRepository,
@@ -49,7 +48,6 @@ public class AuthAnnotationServiceImpl {
         this.planRepository = planRepository;
         this.recipeRepository = recipeRepository;
         this.mediaRepository = mediaRepository;
-        this.exerciseInstructionRepository = exerciseInstructionRepository;
         this.recipeInstructionRepository = recipeInstructionRepository;
         this.planInstructionRepository = planInstructionRepository;
         this.workoutRepository = workoutRepository;
