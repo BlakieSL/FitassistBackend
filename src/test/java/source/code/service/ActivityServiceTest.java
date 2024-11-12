@@ -99,7 +99,9 @@ public class ActivityServiceTest {
 
     @AfterEach
     void tearDown() {
-        mockedAuthorizationUtil.close();
+        if (mockedAuthorizationUtil != null) {
+            mockedAuthorizationUtil.close();
+        }
     }
 
     @Test
