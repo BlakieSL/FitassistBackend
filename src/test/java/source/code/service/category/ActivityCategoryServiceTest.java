@@ -1,5 +1,8 @@
 package source.code.service.category;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +14,7 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 import source.code.dto.request.category.CategoryCreateDto;
+import source.code.dto.request.category.CategoryUpdateDto;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.event.events.Activity.ActivityCreateEvent;
 import source.code.event.events.Category.CategoryClearCacheEvent;
@@ -57,13 +61,21 @@ public class ActivityCategoryServiceTest {
 
     private ActivityCategory category;
     private CategoryResponseDto responseDto;
-    String cacheKey;
+    private String cacheKey;
+    private JsonMergePatch patch;
+    private CategoryUpdateDto patchedDto;
+    private Cache cache;
+    private Cache.ValueWrapper cachedValueWrapper;
 
     @BeforeEach
     void setup() {
         category = new ActivityCategory();
         responseDto = new CategoryResponseDto();
         cacheKey = "testCacheKey";
+        patch = mock(JsonMergePatch.class);
+        patchedDto = new CategoryUpdateDto();
+        cache = mock(Cache.class);
+        cachedValueWrapper = mock(Cache.ValueWrapper.class);
     }
 
     @Test
@@ -96,45 +108,212 @@ public class ActivityCategoryServiceTest {
         assertEquals(cacheKey, eventCaptor.getValue().getCacheKey());
     }
 
-
-
-
-
     @Test
-    void getAllCategories_shouldNotInteractWithRepositoryWhenCacheHit() {
-        Cache cache = mock(Cache.class);
-        Cache.ValueWrapper cachedValue = mock(Cache.ValueWrapper.class);
-        List<CategoryResponseDto> cachedCategoriesList = List.of(responseDto);
+    void updateCategory_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+        int categoryId = 1;
+        when(repository.findById(categoryId)).thenReturn(Optional.of(category));
+        when(mapper.toResponseDto(category)).thenReturn(responseDto);
+        when(jsonPatchService.applyPatch(patch, responseDto, CategoryUpdateDto.class))
+                .thenReturn(patchedDto);
 
-        when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
-        when(cacheManager.getCache("allCategories")).thenReturn(cache);
-        when(cache.get(cacheKey)).thenReturn(cachedValue);
-        when(cachedValue.get()).thenReturn(cachedCategoriesList);
+        activityCategoryService.updateCategory(categoryId, patch);
 
-        List<CategoryResponseDto> result = activityCategoryService.getAllCategories();
-
-        assertEquals(cachedCategoriesList, result);
-        verify(cache).get(cacheKey);
+        verify(validationService).validate(patchedDto);
+        verify(mapper).updateEntityFromDto(category, patchedDto);
+        verify(repository).save(category);
     }
 
     @Test
-    void getAllCategories_shouldInteractWithRepositoryWhenCacheMiss() {
-        Cache cache = mock(Cache.class);
-        List<CategoryResponseDto> categoryResponseDtos = List.of(responseDto);
-        ActivityCategory mockEntity = new ActivityCategory();
+    void updateCategory_shouldPublishClearCacheEvent()
+            throws JsonPatchException, JsonProcessingException
+    {
+        int categoryId = 1;
+        ArgumentCaptor<CategoryClearCacheEvent> eventCaptor = ArgumentCaptor
+                .forClass(CategoryClearCacheEvent.class);
+        when(repository.findById(categoryId)).thenReturn(Optional.of(category));
+        when(mapper.toResponseDto(category)).thenReturn(responseDto);
+        when(jsonPatchService.applyPatch(patch, responseDto, CategoryUpdateDto.class))
+                .thenReturn(patchedDto);
+        when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
+
+        activityCategoryService.updateCategory(categoryId, patch);
+
+        verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
+        assertEquals(cacheKey, eventCaptor.getValue().getCacheKey());
+    }
+
+    @Test
+    void updateCategory_shouldThrowExceptionWhenCategoryNotFound() {
+        int nonExistentCategoryId = 999;
+        when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
+
+        assertThrows(RecordNotFoundException.class, () ->
+            activityCategoryService.updateCategory(nonExistentCategoryId, patch)
+        );
+
+        verifyNoInteractions(validationService, mapper, applicationEventPublisher, cacheKeyGenerator);
+        verify(repository, never()).save(category);
+    }
+
+    @Test
+    void updateCategory_shouldThrowExceptionWhenPatchFails()
+            throws JsonPatchException, JsonProcessingException
+    {
+        int categoryId = 1;
+        when(repository.findById(categoryId)).thenReturn(Optional.of(category));
+        when(mapper.toResponseDto(category)).thenReturn(responseDto);
+        when(jsonPatchService.applyPatch(patch, responseDto, CategoryUpdateDto.class))
+                .thenThrow(JsonPatchException.class);
+
+        assertThrows(JsonPatchException.class, () ->
+            activityCategoryService.updateCategory(categoryId, patch)
+        );
+        verifyNoInteractions(validationService, applicationEventPublisher, cacheKeyGenerator);
+        verify(repository, never()).save(category);
+    }
+
+    @Test
+    void updateCategory_shouldThrowExceptionWhenValidationFails()
+            throws JsonPatchException, JsonProcessingException
+    {
+        int categoryId = 1;
+        when(repository.findById(categoryId)).thenReturn(Optional.of(category));
+        when(mapper.toResponseDto(category)).thenReturn(responseDto);
+        when(jsonPatchService.applyPatch(patch, responseDto, CategoryUpdateDto.class))
+                .thenReturn(patchedDto);
+
+        doThrow(new IllegalArgumentException("Validation failed")).when(validationService)
+                .validate(patchedDto);
+
+        assertThrows(RuntimeException.class, () ->
+                activityCategoryService.updateCategory(categoryId, patch)
+        );
+        verify(validationService).validate(patchedDto);
+        verifyNoInteractions(applicationEventPublisher, cacheKeyGenerator);
+        verify(repository, never()).save(category);
+    }
+
+    @Test
+    void deleteCategory_shouldDelete() {
+        int categoryId = 1;
+        when(repository.findById(categoryId)).thenReturn(Optional.of(category));
+
+        activityCategoryService.deleteCategory(categoryId);
+
+        verify(repository).delete(category);
+    }
+
+    @Test
+    void deleteCategory_shouldPublishClearCacheEvent() {
+        int categoryId = 1;
+        ArgumentCaptor<CategoryClearCacheEvent> eventCaptor = ArgumentCaptor
+                .forClass(CategoryClearCacheEvent.class);
+        when(repository.findById(categoryId)).thenReturn(Optional.of(category));
+        when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
+
+        activityCategoryService.deleteCategory(categoryId);
+
+        verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
+        assertEquals(cacheKey, eventCaptor.getValue().getCacheKey());
+    }
+
+    @Test
+    void deleteCategory_shouldThrowExceptionWhenCategoryNotFound() {
+        int nonExistentCategoryId = 999;
+        when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
+
+        assertThrows(RecordNotFoundException.class, () ->
+                activityCategoryService.deleteCategory(nonExistentCategoryId)
+        );
+        verifyNoInteractions(applicationEventPublisher, cacheKeyGenerator);
+    }
+
+    @Test
+    void getAllCategories_shouldReturnCachedCategories() {
+        List<CategoryResponseDto> cachedCategories = List.of(responseDto);
+
+        when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
+        when(cacheManager.getCache("allCategories")).thenReturn(cache);
+        when(cache.get(cacheKey)).thenReturn(cachedValueWrapper);
+        when(cachedValueWrapper.get()).thenReturn(cachedCategories);
+
+        List<CategoryResponseDto> result = activityCategoryService.getAllCategories();
+
+        assertEquals(cachedCategories, result);
+    }
+
+    @Test
+    void getAllCategories_shouldFetchFromRepositoryAndPublishEventWhenCacheIsMissed() {
+        List<CategoryResponseDto> fetchedCategories = List.of(responseDto);
+        ArgumentCaptor<CategoryCreateCacheEvent> eventCaptor = ArgumentCaptor
+                .forClass(CategoryCreateCacheEvent.class);
 
         when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
         when(cacheManager.getCache("allCategories")).thenReturn(cache);
         when(cache.get(cacheKey)).thenReturn(null);
-        when(repository.findAll()).thenReturn(List.of(mockEntity));
-        when(mapper.toResponseDto(mockEntity)).thenReturn(responseDto);
+        when(repository.findAll()).thenReturn(List.of(category));
+        when(mapper.toResponseDto(category)).thenReturn(responseDto);
 
         List<CategoryResponseDto> result = activityCategoryService.getAllCategories();
 
         verify(repository).findAll();
-        verify(mapper).toResponseDto(mockEntity);
-        verify(applicationEventPublisher).publishEvent(any(CategoryCreateCacheEvent.class));
-        assertEquals(categoryResponseDtos.size(), result.size());
+        verify(mapper).toResponseDto(category);
+        verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
+        assertEquals(cacheKey, eventCaptor.getValue().getCacheKey());
+        assertEquals(fetchedCategories, result);
+    }
+
+    @Test
+    void getAllCategories_shouldThrowExceptionWhenCacheIsNull() {
+        when(cacheManager.getCache("allCategories")).thenReturn(null);
+
+        assertThrows(NullPointerException.class, () ->
+                activityCategoryService.getAllCategories()
+        );
+        verifyNoInteractions(repository, applicationEventPublisher);
+    }
+
+    @Test
+    void getAllCategories_shouldFetchFromRepositoryWhenCacheValueIsNull() {
+        when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
+        when(cacheManager.getCache("allCategories")).thenReturn(cache);
+        when(cache.get(cacheKey)).thenReturn(cachedValueWrapper);
+        when(cachedValueWrapper.get()).thenReturn(null);
+
+        List<CategoryResponseDto> result = activityCategoryService.getAllCategories();
+
+        verify(repository).findAll();
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void getAllCategories_shouldHandleUnexpectedCacheValueGracefully() {
+        when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
+        when(cacheManager.getCache("allCategories")).thenReturn(cache);
+        when(cache.get(cacheKey)).thenReturn(cachedValueWrapper);
+        when(cachedValueWrapper.get()).thenReturn("UnexpectedStringValue");
+
+        List<CategoryResponseDto> result = activityCategoryService.getAllCategories();
+
+        verify(repository).findAll();
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void getAllCategories_shouldHandleEmptyRepositoryResult() {
+        ArgumentCaptor<CategoryCreateCacheEvent> eventCaptor = ArgumentCaptor
+                .forClass(CategoryCreateCacheEvent.class);
+        when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
+        when(cacheManager.getCache("allCategories")).thenReturn(cache);
+        when(cache.get(cacheKey)).thenReturn(null);
+
+        when(repository.findAll()).thenReturn(List.of());
+
+        List<CategoryResponseDto> result = activityCategoryService.getAllCategories();
+
+        verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
+        assertEquals(cacheKey, eventCaptor.getValue().getCacheKey());
+        assertEquals(List.of(), result);
     }
 
     @Test
@@ -145,18 +324,18 @@ public class ActivityCategoryServiceTest {
 
         CategoryResponseDto result = activityCategoryService.getCategory(categoryId);
 
+        assertEquals(responseDto, result);
         verify(repository).findById(categoryId);
         verify(mapper).toResponseDto(category);
-        assertEquals(responseDto, result);
     }
 
     @Test
-    void getCategory_shouldThrowExceptionWhenNotFound() {
+    void getCategory_shouldThrowRecordNotFoundExceptionWhenCategoryNotFound() {
         int nonExistentCategoryId = 999;
-
         when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
+
         assertThrows(RecordNotFoundException.class, () ->
-            activityCategoryService.getCategory(nonExistentCategoryId)
+                activityCategoryService.getCategory(nonExistentCategoryId)
         );
 
         verify(repository).findById(nonExistentCategoryId);
