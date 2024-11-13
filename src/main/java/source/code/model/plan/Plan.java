@@ -87,4 +87,17 @@ public class Plan implements IndexedEntity {
     public String getClassName() {
         return this.getClass().getSimpleName();
     }
+
+    public static Plan of(Integer id, User user) {
+        Plan plan = new Plan();
+        plan.setId(id);
+        plan.setUser(user);
+        return plan;
+    }
+
+    public static Plan of(User user) {
+        Plan plan = new Plan();
+        plan.setUser(user);
+        return plan;
+    }
 }

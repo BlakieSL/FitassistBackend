@@ -31,47 +31,44 @@ public class CacheServiceTest {
     }
 
     @Test
-    void testEvictCache() {
+    void evictCache_shouldEvict() {
         when(cacheManager.getCache("testCache")).thenReturn(cache);
         cacheServiceImpl.evictCache("testCache", "testKey");
         verify(cache).evict("testKey");
     }
 
     @Test
-    void testClearCache() {
+    void clearCache_shouldClear() {
         when(cacheManager.getCache("testCache")).thenReturn(cache);
         cacheServiceImpl.clearCache("testCache");
         verify(cache).clear();
     }
 
     @Test
-    void testPutCache() {
+    void putCache_shouldPut() {
         when(cacheManager.getCache("testCache")).thenReturn(cache);
         cacheServiceImpl.putCache("testCache", "testKey", "testData");
         verify(cache).put("testKey", "testData");
     }
 
     @Test
-    void testEvictCacheWithNullCache() {
+    void evictCache_shouldThrowExceptionWhenCacheNull() {
         when(cacheManager.getCache("nonExistentCache")).thenReturn(null);
         assertThrows(NullPointerException.class, () ->
-                cacheServiceImpl.evictCache("nonExistentCache", "testKey")
-        );
+                cacheServiceImpl.evictCache("nonExistentCache", "testKey"));
     }
 
     @Test
-    void testClearCacheWithNullCache() {
+    void clearCache_shouldThrowExceptionWhenCacheNull() {
         when(cacheManager.getCache("nonExistentCache")).thenReturn(null);
         assertThrows(NullPointerException.class, () ->
-                cacheServiceImpl.clearCache("nonExistentCache")
-        );
+                cacheServiceImpl.clearCache("nonExistentCache"));
     }
 
     @Test
-    void testPutCacheWithNullCache() {
+    void putCache_shouldThrowExceptionWhenCacheNull() {
         when(cacheManager.getCache("nonExistentCache")).thenReturn(null);
         assertThrows(NullPointerException.class, () ->
-                cacheServiceImpl.putCache("nonExistentCache", "testKey", "testData")
-        );
+                cacheServiceImpl.putCache("nonExistentCache", "testKey", "testData"));
     }
 }

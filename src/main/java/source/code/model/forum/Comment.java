@@ -47,4 +47,11 @@ public class Comment {
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
     private final Set<UserCommentLikes> userCommentLikes = new HashSet<>();
+
+    public static Comment of(Integer id, User user) {
+        Comment comment = new Comment();
+        comment.setId(id);
+        comment.setUser(user);
+        return comment;
+    }
 }
