@@ -126,7 +126,11 @@ public abstract class GenericCategoryService<T> {
         Cache cache = Objects.requireNonNull(cacheManager.getCache("allCategories"));
         Cache.ValueWrapper cachedValue = cache.get(cacheKey);
 
-        return Optional.ofNullable(cachedValue)
-                .map(value -> (List<CategoryResponseDto>) value.get());
+        try {
+            return Optional.ofNullable(cachedValue)
+                    .map(value -> (List<CategoryResponseDto>) value.get());
+        } catch(ClassCastException exception) {
+            return Optional.empty();
+        }
     }
 }
