@@ -45,4 +45,18 @@ public class Workout {
     @OneToMany(mappedBy = "workout",
             cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
     private final Set<WorkoutSet> workoutSets = new HashSet<>();
+
+    public static Workout of(Integer id, Plan plan) {
+        Workout workout = new Workout();
+        workout.setId(id);
+        workout.setPlan(plan);
+        return workout;
+    }
+
+    public static Workout of(Plan plan) {
+        Workout workout = new Workout();
+        workout.setPlan(plan);
+        return workout;
+    }
 }
+
