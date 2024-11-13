@@ -73,4 +73,11 @@ public class ForumThread {
     public void prePersist() {
         this.dateCreated = LocalDateTime.now();
     }
+
+    public static ForumThread of(Integer id, User user) {
+        ForumThread forumThread = new ForumThread();
+        forumThread.setId(id);
+        forumThread.setUser(user);
+        return forumThread;
+    }
 }

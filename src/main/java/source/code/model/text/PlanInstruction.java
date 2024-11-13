@@ -1,8 +1,6 @@
 package source.code.model.text;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,18 +20,19 @@ public class PlanInstruction extends TextBase {
     @JoinColumn(name = "plan_id")
     private Plan plan;
 
-    public static PlanInstruction createWithIdAndPlan(int id, Plan plan) {
-        PlanInstruction instruction = new PlanInstruction();
-        instruction.setId(id);
-        instruction.setPlan(plan);
-        return instruction;
-    }
-
-    public static PlanInstruction createWithNumberTitleText(short number, String title, String text) {
+    public static PlanInstruction of(short number, String title, String text, Plan plan) {
         PlanInstruction instruction = new PlanInstruction();
         instruction.setNumber(number);
         instruction.setTitle(title);
         instruction.setText(text);
+        instruction.setPlan(plan);
+        return instruction;
+    }
+
+    public static PlanInstruction of(Integer id, Plan plan) {
+        PlanInstruction instruction = new PlanInstruction();
+        instruction.setId(id);
+        instruction.setPlan(plan);
         return instruction;
     }
 }

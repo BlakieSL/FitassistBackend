@@ -54,14 +54,12 @@ public abstract class RecipeMapper {
     @AfterMapping
     protected void setRecipeAssociations(@MappingTarget Recipe recipe, RecipeCreateDto dto) {
         Set<RecipeInstruction> instructions = dto.getInstructions().stream()
-                .map(instructionDto -> {
-                    RecipeInstruction instruction = RecipeInstruction
-                            .createWithNumberTitleText(instructionDto.getNumber(),
-                                    instructionDto.getText(), instructionDto.getText());
-
-                    instruction.setRecipe(recipe);
-                    return instruction;
-                }).collect(Collectors.toSet());
+                .map(instructionDto -> RecipeInstruction.of(
+                        instructionDto.getNumber(),
+                        instructionDto.getText(),
+                        instructionDto.getText(),
+                        recipe
+                )).collect(Collectors.toSet());
 
         recipe.getRecipeInstructions().addAll(instructions);
     }

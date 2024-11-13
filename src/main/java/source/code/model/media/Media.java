@@ -31,4 +31,12 @@ public class Media {
     @NotNull
     @Column(name = "parent_id", nullable = false)
     private Integer parentId;
+
+    public static Media of (Integer id, MediaConnectedEntity parentType, Integer parentId) {
+        Media media = new Media();
+        media.setId(id);
+        media.setParentType(parentType);
+        media.setParentId(parentId);
+        return media;
+    }
 }

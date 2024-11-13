@@ -67,14 +67,12 @@ public abstract class PlanMapper {
     @AfterMapping
     protected void setPlanAssociations(@MappingTarget Plan plan, PlanCreateDto dto) {
         Set<PlanInstruction> instructions = dto.getInstructions().stream()
-                .map(instructionDto -> {
-                    PlanInstruction instruction = PlanInstruction
-                            .createWithNumberTitleText(instructionDto.getNumber(),
-                                    instructionDto.getText(), instructionDto.getText());
-
-                    instruction.setPlan(plan);
-                    return instruction;
-                }).collect(Collectors.toSet());
+                .map(instructionDto -> PlanInstruction.of(
+                        instructionDto.getNumber(),
+                        instructionDto.getText(),
+                        instructionDto.getText(),
+                        plan
+                )).collect(Collectors.toSet());
 
         plan.getPlanInstructions().addAll(instructions);
     }

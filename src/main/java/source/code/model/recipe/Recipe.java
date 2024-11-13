@@ -70,4 +70,17 @@ public class Recipe implements IndexedEntity {
     public String getClassName() {
         return this.getClass().getSimpleName();
     }
+
+    public static Recipe of(Integer id, User user) {
+        Recipe recipe = new Recipe();
+        recipe.setId(id);
+        recipe.setUser(user);
+        return recipe;
+    }
+
+    public static Recipe of(User user) {
+        Recipe recipe = new Recipe();
+        recipe.setUser(user);
+        return recipe;
+    }
 }

@@ -57,7 +57,7 @@ public class AuthAnnotationServiceTest {
 
     private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
     private User user;
-    private int userId = 1;
+    private final int userId = 1;
 
     @BeforeEach
     void setUp() {
@@ -76,9 +76,7 @@ public class AuthAnnotationServiceTest {
     @Test
     void isCommentOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdmin() {
         int commentId = 1;
-        Comment comment = new Comment();
-        comment.setUser(user);
-        comment.setId(commentId);
+        Comment comment = Comment.of(commentId, user);
         when(repositoryHelper.find(commentRepository, Comment.class, commentId))
                 .thenReturn(comment);
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
@@ -92,9 +90,7 @@ public class AuthAnnotationServiceTest {
     @Test
     void isForumThreadOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdmin() {
         int forumThreadId = 1;
-        ForumThread forumThread = new ForumThread();
-        forumThread.setUser(user);
-        forumThread.setId(forumThreadId);
+        ForumThread forumThread = ForumThread.of(forumThreadId, user);
         when(repositoryHelper.find(forumThreadRepository, ForumThread.class, forumThreadId))
                 .thenReturn(forumThread);
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
@@ -108,9 +104,7 @@ public class AuthAnnotationServiceTest {
     @Test
     void isPlanOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdmin() {
         int planId = 1;
-        Plan plan = new Plan();
-        plan.setUser(user);
-        plan.setId(planId);
+        Plan plan = Plan.of(planId, user);
         when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
                 .thenReturn(true);
@@ -123,9 +117,7 @@ public class AuthAnnotationServiceTest {
     @Test
     void isRecipeOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdmin() {
         int recipeId = 1;
-        Recipe recipe = new Recipe();
-        recipe.setUser(user);
-        recipe.setId(recipeId);
+        Recipe recipe = Recipe.of(recipeId, user);
         when(repositoryHelper.find(recipeRepository, Recipe.class, recipeId)).thenReturn(recipe);
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
                 .thenReturn(true);
@@ -138,8 +130,7 @@ public class AuthAnnotationServiceTest {
     @Test
     void isOwnerOrAdminForParentEntity_shouldReturnTrueIfOwnerOrAdminForComment() {
         int commentId = 5;
-        Comment comment = new Comment();
-        comment.setUser(user);
+        Comment comment = Comment.of(commentId, user);
         when(repositoryHelper.find(commentRepository, Comment.class, commentId))
                 .thenReturn(comment);
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
@@ -154,8 +145,7 @@ public class AuthAnnotationServiceTest {
     @Test
     void isOwnerOrAdminForParentEntity_shouldReturnTrueIfOwnerOrAdminForForumThread() {
         int forumThreadId = 6;
-        ForumThread forumThread = new ForumThread();
-        forumThread.setUser(user);
+        ForumThread forumThread = ForumThread.of(forumThreadId, user);
         when(repositoryHelper.find(forumThreadRepository, ForumThread.class, forumThreadId))
                 .thenReturn(forumThread);
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
@@ -170,8 +160,7 @@ public class AuthAnnotationServiceTest {
     @Test
     void isOwnerOrAdminForParentEntity_shouldReturnTrueIfOwnerOrAdminForPlan() {
         int planId = 7;
-        Plan plan = new Plan();
-        plan.setUser(user);
+        Plan plan = Plan.of(planId, user);
         when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
                 .thenReturn(true);
@@ -185,8 +174,7 @@ public class AuthAnnotationServiceTest {
     @Test
     void isOwnerOrAdminForParentEntity_shouldReturnTrueIfOwnerOrAdminForRecipe() {
         int recipeId = 8;
-        Recipe recipe = new Recipe();
-        recipe.setUser(user);
+        Recipe recipe = Recipe.of(recipeId, user);
         when(repositoryHelper.find(recipeRepository, Recipe.class, recipeId)).thenReturn(recipe);
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
                 .thenReturn(true);
@@ -207,13 +195,12 @@ public class AuthAnnotationServiceTest {
                 .isOwnerOrAdminForParentEntity(MediaConnectedEntity.FOOD, foodId);
 
         assertTrue(result);
-        verify(repositoryHelper, never()).find(any(), any(), anyInt());
+        verifyNoInteractions(repositoryHelper);
     }
 
     @Test
     void isOwnerOrAdminForParentEntity_shouldCheckAdminOnlyWhenOwnerIsNullForActivity() {
         int activityId = 11;
-
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(null))
                 .thenReturn(false);
 
@@ -221,13 +208,12 @@ public class AuthAnnotationServiceTest {
                 .isOwnerOrAdminForParentEntity(MediaConnectedEntity.ACTIVITY, activityId);
 
         assertFalse(result);
-        verify(repositoryHelper, never()).find(any(), any(), anyInt());
+        verifyNoInteractions(repositoryHelper);
     }
 
     @Test
     void isOwnerOrAdminForParentEntity_shouldCheckAdminOnlyWhenOwnerIsNullForExercise() {
         int exerciseId = 12;
-
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(null))
                 .thenReturn(false);
 
@@ -235,21 +221,15 @@ public class AuthAnnotationServiceTest {
                 .isOwnerOrAdminForParentEntity(MediaConnectedEntity.EXERCISE, exerciseId);
 
         assertFalse(result);
-        verify(repositoryHelper, never()).find(any(), any(), anyInt());
+        verifyNoInteractions(repositoryHelper);
     }
 
     @Test
     void isMediaOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdminForPlan() {
         int mediaId = 6;
         int planId = 1;
-        Media media = new Media();
-        media.setParentType(MediaConnectedEntity.PLAN);
-        media.setParentId(planId);
-
-        Plan plan = new Plan();
-        plan.setId(planId);
-        plan.setUser(user);
-
+        Media media = Media.of(mediaId, MediaConnectedEntity.PLAN, planId);
+        Plan plan = Plan.of(planId, user);
         when(repositoryHelper.find(mediaRepository, Media.class, mediaId)).thenReturn(media);
         when(repositoryHelper.find(planRepository, Plan.class, media.getParentId()))
                 .thenReturn(plan);
@@ -265,13 +245,8 @@ public class AuthAnnotationServiceTest {
     void isMediaOwnerOrAdmin_shouldReturnFalseIfNotOwnerAndNotAdminForRecipe() {
         int mediaId = 7;
         int recipeId = 2;
-        Media media = new Media();
-        media.setParentType(MediaConnectedEntity.RECIPE);
-        media.setParentId(recipeId);
-
-        Recipe recipe = new Recipe();
-        recipe.setId(recipeId);
-        recipe.setUser(user);
+        Media media = Media.of(mediaId, MediaConnectedEntity.RECIPE, recipeId);
+        Recipe recipe = Recipe.of(recipeId, user);
 
         when(repositoryHelper.find(mediaRepository, Media.class, mediaId)).thenReturn(media);
         when(repositoryHelper.find(recipeRepository, Recipe.class, media.getParentId()))
@@ -287,10 +262,7 @@ public class AuthAnnotationServiceTest {
     @Test
     void isMediaOwnerOrAdmin_shouldReturnTrueIfAdmin() {
         int mediaId = 8;
-        Media media = new Media();
-        media.setParentType(MediaConnectedEntity.FOOD);
-        media.setParentId(10);
-
+        Media media = Media.of(mediaId, MediaConnectedEntity.FOOD, 10);
         when(repositoryHelper.find(mediaRepository, Media.class, mediaId)).thenReturn(media);
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(null))
                 .thenReturn(true);
@@ -303,11 +275,7 @@ public class AuthAnnotationServiceTest {
     @Test
     void isMediaOwnerOrAdmin_shouldReturnFalseIfNotAdmin() {
         int mediaId = 9;
-        Media media = new Media();
-        media.setId(mediaId);
-        media.setParentType(MediaConnectedEntity.EXERCISE);
-        media.setParentId(11);
-
+        Media media = Media.of(mediaId, MediaConnectedEntity.EXERCISE, 11);
         when(repositoryHelper.find(mediaRepository, Media.class, mediaId)).thenReturn(media);
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(null))
                 .thenReturn(false);
@@ -320,13 +288,8 @@ public class AuthAnnotationServiceTest {
     @Test
     void isTextOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdminForRecipeInstruction() {
         int recipeInstructionId = 7;
-        RecipeInstruction recipeInstruction = new RecipeInstruction();
-        recipeInstruction.setId(recipeInstructionId);
-
-        Recipe recipe = new Recipe();
-        recipe.setUser(user);
-        recipeInstruction.setRecipe(recipe);
-
+        Recipe recipe = Recipe.of(user);
+        RecipeInstruction recipeInstruction = RecipeInstruction.of(recipeInstructionId, recipe);
         when(repositoryHelper.find(
                 recipeInstructionRepository,
                 RecipeInstruction.class,
@@ -347,13 +310,8 @@ public class AuthAnnotationServiceTest {
     @Test
     void isTextOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdminForPlanInstruction() {
         int planInstructionId = 8;
-        PlanInstruction planInstruction = new PlanInstruction();
-        planInstruction.setId(planInstructionId);
-
-        Plan plan = new Plan();
-        plan.setUser(user);
-        planInstruction.setPlan(plan);
-
+        Plan plan = Plan.of(user);
+        PlanInstruction planInstruction = PlanInstruction.of(planInstructionId, plan);
         when(repositoryHelper.find(
                 planInstructionRepository,
                 PlanInstruction.class,
@@ -375,7 +333,6 @@ public class AuthAnnotationServiceTest {
     @Test
     void isTextOwnerOrAdmin_shouldReturnTrueForAdminWhenOwnerIdIsNullForExerciseInstruction() {
         int exerciseInstructionId = 10;
-
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(null))
                 .thenReturn(true);
 
@@ -388,7 +345,6 @@ public class AuthAnnotationServiceTest {
     @Test
     void isTextOwnerOrAdmin_shouldReturnFalseIfNotAdminWhenOwnerIdIsNullForExerciseInstruction() {
         int exerciseInstructionId = 11;
-
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(null))
                 .thenReturn(false);
 
@@ -402,13 +358,8 @@ public class AuthAnnotationServiceTest {
     @Test
     void isWorkoutOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdmin() {
         int workoutId = 8;
-        Workout workout = new Workout();
-        workout.setId(8);
-
-        Plan plan = new Plan();
-        plan.setUser(user);
-        workout.setPlan(plan);
-
+        Plan plan = Plan.of(user);
+        Workout workout = Workout.of(workoutId, plan);
         when(repositoryHelper.find(workoutRepository, Workout.class, workoutId)).thenReturn(workout);
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
                 .thenReturn(true);
@@ -421,16 +372,9 @@ public class AuthAnnotationServiceTest {
     @Test
     void isWorkoutSetOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdmin() {
         int workoutSetId = 9;
-        WorkoutSet workoutSet = new WorkoutSet();
-        workoutSet.setId(workoutSetId);
-
-        Workout workout = new Workout();
-        Plan plan = new Plan();
-
-        plan.setUser(user);
-        workout.setPlan(plan);
-        workoutSet.setWorkout(workout);
-
+        Plan plan = Plan.of(user);
+        Workout workout = Workout.of(plan);
+        WorkoutSet workoutSet = WorkoutSet.of(workoutSetId, workout);
         when(repositoryHelper.find(workoutSetRepository, WorkoutSet.class, workoutSetId))
                 .thenReturn(workoutSet);
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))

@@ -36,4 +36,11 @@ public class WorkoutSet {
     @ManyToOne
     @JoinColumn(name = "exercise_id", nullable = false)
     private Exercise exercise;
+
+    public static WorkoutSet of(Integer id, Workout workout) {
+        WorkoutSet workoutSet = new WorkoutSet();
+        workoutSet.setId(id);
+        workoutSet.setWorkout(workout);
+        return workoutSet;
+    }
 }
