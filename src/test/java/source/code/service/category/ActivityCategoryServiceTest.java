@@ -1,26 +1,28 @@
-package source.code.service;
+package source.code.service.category;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.cache.Cache;
-import org.springframework.data.jpa.repository.JpaRepository;
 import source.code.dto.request.category.CategoryCreateDto;
 import source.code.dto.response.category.CategoryResponseDto;
+import source.code.event.events.Activity.ActivityCreateEvent;
 import source.code.event.events.Category.CategoryClearCacheEvent;
 import source.code.event.events.Category.CategoryCreateCacheEvent;
 import source.code.exception.RecordNotFoundException;
-import source.code.mapper.category.BaseMapper;
+import source.code.mapper.category.ActivityCategoryMapper;
+import source.code.model.activity.ActivityCategory;
+import source.code.repository.ActivityCategoryRepository;
+import source.code.service.declaration.category.CategoryCacheKeyGenerator;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.ValidationService;
-import source.code.service.declaration.category.CategoryCacheKeyGenerator;
-import source.code.service.implementation.category.GenericCategoryService;
+import source.code.service.implementation.category.ActivityCategoryServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class GenericCategoryServiceTest {
+public class ActivityCategoryServiceTest {
     @Mock
     private ValidationService validationService;
 
@@ -36,7 +38,7 @@ public class GenericCategoryServiceTest {
     private JsonPatchService jsonPatchService;
 
     @Mock
-    private CategoryCacheKeyGenerator<Object> cacheKeyGenerator;
+    private CategoryCacheKeyGenerator<ActivityCategory> cacheKeyGenerator;
 
     @Mock
     private ApplicationEventPublisher applicationEventPublisher;
@@ -45,57 +47,71 @@ public class GenericCategoryServiceTest {
     private CacheManager cacheManager;
 
     @Mock
-    private JpaRepository<Object, Integer> repository;
+    private ActivityCategoryRepository repository;
 
     @Mock
-    private BaseMapper<Object> mapper;
+    private ActivityCategoryMapper mapper;
 
-    private GenericCategoryService<Object> genericCategoryService;
+    @InjectMocks
+    private ActivityCategoryServiceImpl activityCategoryService;
+
+    private ActivityCategory category;
+    private CategoryResponseDto responseDto;
+    String cacheKey;
 
     @BeforeEach
-    void setUp() {
-        genericCategoryService = new GenericCategoryService<>(
-                validationService,
-                jsonPatchService,
-                cacheKeyGenerator,
-                applicationEventPublisher,
-                cacheManager,
-                repository,
-                mapper
-        ) {};
+    void setup() {
+        category = new ActivityCategory();
+        responseDto = new CategoryResponseDto();
+        cacheKey = "testCacheKey";
     }
 
     @Test
     void createCategory_shouldCreate() {
         CategoryCreateDto request = new CategoryCreateDto();
-        Object mockEntity = new Object();
-        CategoryResponseDto mockResponseDto = new CategoryResponseDto();
 
-        when(mapper.toEntity(request)).thenReturn(mockEntity);
-        when(repository.save(mockEntity)).thenReturn(mockEntity);
-        when(mapper.toResponseDto(mockEntity)).thenReturn(mockResponseDto);
-        String cacheKey = "testCacheKey";
-        when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
+        when(mapper.toEntity(request)).thenReturn(category);
+        when(repository.save(category)).thenReturn(category);
+        when(mapper.toResponseDto(category)).thenReturn(responseDto);
 
-        CategoryResponseDto response = genericCategoryService.createCategory(request);
+        CategoryResponseDto result = activityCategoryService.createCategory(request);
 
-        verify(applicationEventPublisher).publishEvent(any(CategoryClearCacheEvent.class));
-        assertNotNull(response);
+        assertEquals(result, responseDto);
     }
 
     @Test
+    void createCategory_shouldPublishClearCacheEvent() {
+        CategoryCreateDto request = new CategoryCreateDto();
+        ArgumentCaptor<CategoryClearCacheEvent> eventCaptor = ArgumentCaptor
+                .forClass(CategoryClearCacheEvent.class);
+
+        when(mapper.toEntity(request)).thenReturn(category);
+        when(repository.save(category)).thenReturn(category);
+        when(mapper.toResponseDto(category)).thenReturn(responseDto);
+        when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
+
+        activityCategoryService.createCategory(request);
+
+        verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
+        assertEquals(cacheKey, eventCaptor.getValue().getCacheKey());
+    }
+
+
+
+
+
+    @Test
     void getAllCategories_shouldNotInteractWithRepositoryWhenCacheHit() {
-        String cacheKey = "testCacheKey";
         Cache cache = mock(Cache.class);
         Cache.ValueWrapper cachedValue = mock(Cache.ValueWrapper.class);
-        List<CategoryResponseDto> cachedCategoriesList = List.of(new CategoryResponseDto());
+        List<CategoryResponseDto> cachedCategoriesList = List.of(responseDto);
 
         when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
         when(cacheManager.getCache("allCategories")).thenReturn(cache);
         when(cache.get(cacheKey)).thenReturn(cachedValue);
         when(cachedValue.get()).thenReturn(cachedCategoriesList);
 
-        List<CategoryResponseDto> result = genericCategoryService.getAllCategories();
+        List<CategoryResponseDto> result = activityCategoryService.getAllCategories();
 
         assertEquals(cachedCategoriesList, result);
         verify(cache).get(cacheKey);
@@ -103,18 +119,17 @@ public class GenericCategoryServiceTest {
 
     @Test
     void getAllCategories_shouldInteractWithRepositoryWhenCacheMiss() {
-        String cacheKey = "testCacheKey";
         Cache cache = mock(Cache.class);
-        List<CategoryResponseDto> categoryResponseDtos = List.of(new CategoryResponseDto());
-        Object mockEntity = new Object();
+        List<CategoryResponseDto> categoryResponseDtos = List.of(responseDto);
+        ActivityCategory mockEntity = new ActivityCategory();
 
         when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
         when(cacheManager.getCache("allCategories")).thenReturn(cache);
         when(cache.get(cacheKey)).thenReturn(null);
         when(repository.findAll()).thenReturn(List.of(mockEntity));
-        when(mapper.toResponseDto(mockEntity)).thenReturn(new CategoryResponseDto());
+        when(mapper.toResponseDto(mockEntity)).thenReturn(responseDto);
 
-        List<CategoryResponseDto> result = genericCategoryService.getAllCategories();
+        List<CategoryResponseDto> result = activityCategoryService.getAllCategories();
 
         verify(repository).findAll();
         verify(mapper).toResponseDto(mockEntity);
@@ -125,13 +140,10 @@ public class GenericCategoryServiceTest {
     @Test
     void getCategory_shouldReturnCategoryWhenFound() {
         int categoryId = 1;
-        Object category = new Object();
-        CategoryResponseDto responseDto = new CategoryResponseDto();
-
         when(repository.findById(categoryId)).thenReturn(Optional.of(category));
         when(mapper.toResponseDto(category)).thenReturn(responseDto);
 
-        CategoryResponseDto result = genericCategoryService.getCategory(categoryId);
+        CategoryResponseDto result = activityCategoryService.getCategory(categoryId);
 
         verify(repository).findById(categoryId);
         verify(mapper).toResponseDto(category);
@@ -143,9 +155,9 @@ public class GenericCategoryServiceTest {
         int nonExistentCategoryId = 999;
 
         when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
-        assertThrows(RecordNotFoundException.class, () -> {
-            genericCategoryService.getCategory(nonExistentCategoryId);
-        });
+        assertThrows(RecordNotFoundException.class, () ->
+            activityCategoryService.getCategory(nonExistentCategoryId)
+        );
 
         verify(repository).findById(nonExistentCategoryId);
         verifyNoInteractions(mapper);
