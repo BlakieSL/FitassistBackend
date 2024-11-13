@@ -1,4 +1,4 @@
-package source.code.service;
+package source.code.service.annotation;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +16,7 @@ import source.code.model.forum.ForumThread;
 import source.code.model.media.Media;
 import source.code.model.plan.Plan;
 import source.code.model.recipe.Recipe;
+import source.code.model.text.PlanInstruction;
 import source.code.model.text.RecipeInstruction;
 import source.code.model.workout.Workout;
 import source.code.model.workout.WorkoutSet;
@@ -335,10 +336,41 @@ public class AuthAnnotationServiceTest {
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
                 .thenReturn(true);
 
-        boolean result = authAnnotationService.isTextOwnerOrAdmin(7, TextType.RECIPE_INSTRUCTION);
+        boolean result = authAnnotationService.isTextOwnerOrAdmin(
+                recipeInstructionId,
+                TextType.RECIPE_INSTRUCTION
+        );
 
         assertTrue(result);
     }
+
+    @Test
+    void isTextOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdminForPlanInstruction() {
+        int planInstructionId = 8;
+        PlanInstruction planInstruction = new PlanInstruction();
+        planInstruction.setId(planInstructionId);
+
+        Plan plan = new Plan();
+        plan.setUser(user);
+        planInstruction.setPlan(plan);
+
+        when(repositoryHelper.find(
+                planInstructionRepository,
+                PlanInstruction.class,
+                planInstructionId)
+        ).thenReturn(planInstruction);
+
+        mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
+                .thenReturn(true);
+
+        boolean result = authAnnotationService.isTextOwnerOrAdmin(
+                planInstructionId,
+                TextType.PLAN_INSTRUCTION
+        );
+
+        assertTrue(result);
+    }
+
 
     @Test
     void isTextOwnerOrAdmin_shouldReturnTrueForAdminWhenOwnerIdIsNullForExerciseInstruction() {
