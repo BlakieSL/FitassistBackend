@@ -16,7 +16,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import source.code.dto.request.category.CategoryCreateDto;
 import source.code.dto.request.category.CategoryUpdateDto;
 import source.code.dto.response.category.CategoryResponseDto;
-import source.code.event.events.Activity.ActivityCreateEvent;
 import source.code.event.events.Category.CategoryClearCacheEvent;
 import source.code.event.events.Category.CategoryCreateCacheEvent;
 import source.code.exception.RecordNotFoundException;
@@ -59,6 +58,7 @@ public class ActivityCategoryServiceTest {
     @InjectMocks
     private ActivityCategoryServiceImpl activityCategoryService;
 
+    private CategoryCreateDto createDto;
     private ActivityCategory category;
     private CategoryResponseDto responseDto;
     private String cacheKey;
@@ -69,6 +69,7 @@ public class ActivityCategoryServiceTest {
 
     @BeforeEach
     void setup() {
+        createDto = new CategoryCreateDto();
         category = new ActivityCategory();
         responseDto = new CategoryResponseDto();
         cacheKey = "testCacheKey";
@@ -80,29 +81,26 @@ public class ActivityCategoryServiceTest {
 
     @Test
     void createCategory_shouldCreate() {
-        CategoryCreateDto request = new CategoryCreateDto();
-
-        when(mapper.toEntity(request)).thenReturn(category);
+        when(mapper.toEntity(createDto)).thenReturn(category);
         when(repository.save(category)).thenReturn(category);
         when(mapper.toResponseDto(category)).thenReturn(responseDto);
 
-        CategoryResponseDto result = activityCategoryService.createCategory(request);
+        CategoryResponseDto result = activityCategoryService.createCategory(createDto);
 
         assertEquals(result, responseDto);
     }
 
     @Test
-    void createCategory_shouldPublishClearCacheEvent() {
-        CategoryCreateDto request = new CategoryCreateDto();
+    void createCategory_shouldPublishEvent() {
         ArgumentCaptor<CategoryClearCacheEvent> eventCaptor = ArgumentCaptor
                 .forClass(CategoryClearCacheEvent.class);
 
-        when(mapper.toEntity(request)).thenReturn(category);
+        when(mapper.toEntity(createDto)).thenReturn(category);
         when(repository.save(category)).thenReturn(category);
         when(mapper.toResponseDto(category)).thenReturn(responseDto);
         when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
 
-        activityCategoryService.createCategory(request);
+        activityCategoryService.createCategory(createDto);
 
         verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
         assertEquals(cacheKey, eventCaptor.getValue().getCacheKey());
@@ -124,12 +122,13 @@ public class ActivityCategoryServiceTest {
     }
 
     @Test
-    void updateCategory_shouldPublishClearCacheEvent()
+    void updateCategory_shouldPublishEvent()
             throws JsonPatchException, JsonProcessingException
     {
         int categoryId = 1;
         ArgumentCaptor<CategoryClearCacheEvent> eventCaptor = ArgumentCaptor
                 .forClass(CategoryClearCacheEvent.class);
+
         when(repository.findById(categoryId)).thenReturn(Optional.of(category));
         when(mapper.toResponseDto(category)).thenReturn(responseDto);
         when(jsonPatchService.applyPatch(patch, responseDto, CategoryUpdateDto.class))
@@ -148,8 +147,7 @@ public class ActivityCategoryServiceTest {
         when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () ->
-            activityCategoryService.updateCategory(nonExistentCategoryId, patch)
-        );
+            activityCategoryService.updateCategory(nonExistentCategoryId, patch));
 
         verifyNoInteractions(validationService, mapper, applicationEventPublisher, cacheKeyGenerator);
         verify(repository, never()).save(category);
@@ -166,8 +164,8 @@ public class ActivityCategoryServiceTest {
                 .thenThrow(JsonPatchException.class);
 
         assertThrows(JsonPatchException.class, () ->
-            activityCategoryService.updateCategory(categoryId, patch)
-        );
+            activityCategoryService.updateCategory(categoryId, patch));
+
         verifyNoInteractions(validationService, applicationEventPublisher, cacheKeyGenerator);
         verify(repository, never()).save(category);
     }
@@ -186,8 +184,8 @@ public class ActivityCategoryServiceTest {
                 .validate(patchedDto);
 
         assertThrows(RuntimeException.class, () ->
-                activityCategoryService.updateCategory(categoryId, patch)
-        );
+                activityCategoryService.updateCategory(categoryId, patch));
+
         verify(validationService).validate(patchedDto);
         verifyNoInteractions(applicationEventPublisher, cacheKeyGenerator);
         verify(repository, never()).save(category);
@@ -196,6 +194,7 @@ public class ActivityCategoryServiceTest {
     @Test
     void deleteCategory_shouldDelete() {
         int categoryId = 1;
+
         when(repository.findById(categoryId)).thenReturn(Optional.of(category));
 
         activityCategoryService.deleteCategory(categoryId);
@@ -204,10 +203,11 @@ public class ActivityCategoryServiceTest {
     }
 
     @Test
-    void deleteCategory_shouldPublishClearCacheEvent() {
+    void deleteCategory_shouldPublishEvent() {
         int categoryId = 1;
         ArgumentCaptor<CategoryClearCacheEvent> eventCaptor = ArgumentCaptor
                 .forClass(CategoryClearCacheEvent.class);
+
         when(repository.findById(categoryId)).thenReturn(Optional.of(category));
         when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
 
@@ -223,9 +223,10 @@ public class ActivityCategoryServiceTest {
         when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () ->
-                activityCategoryService.deleteCategory(nonExistentCategoryId)
-        );
+                activityCategoryService.deleteCategory(nonExistentCategoryId));
+
         verifyNoInteractions(applicationEventPublisher, cacheKeyGenerator);
+        verify(repository, never()).delete(category);
     }
 
     @Test
@@ -335,9 +336,7 @@ public class ActivityCategoryServiceTest {
         when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () ->
-                activityCategoryService.getCategory(nonExistentCategoryId)
-        );
-
+                activityCategoryService.getCategory(nonExistentCategoryId));
         verify(repository).findById(nonExistentCategoryId);
         verifyNoInteractions(mapper);
     }
