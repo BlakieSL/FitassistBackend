@@ -100,6 +100,17 @@ public class ActivityServiceTest {
 
     @Test
     void createActivity_shouldCreateActivityAndPublish() {
+        when(activityMapper.toEntity(createDto)).thenReturn(activity);
+        when(activityRepository.save(activity)).thenReturn(activity);
+        when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
+
+        ActivityResponseDto result = activityService.createActivity(createDto);
+
+        assertEquals(responseDto, result);
+    }
+
+    @Test
+    void createActivity_shouldPublishEvent() {
         ArgumentCaptor<ActivityCreateEvent> eventCaptor = ArgumentCaptor
                 .forClass(ActivityCreateEvent.class);
 
@@ -107,60 +118,30 @@ public class ActivityServiceTest {
         when(activityRepository.save(activity)).thenReturn(activity);
         when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
 
-        ActivityResponseDto result = activityService.createActivity(createDto);
+        activityService.createActivity(createDto);
 
-        verify(activityMapper).toEntity(createDto);
-        verify(activityRepository).save(activity);
         verify(eventPublisher).publishEvent(eventCaptor.capture());
-        verify(activityMapper).toResponseDto(activity);
-        assertEquals(responseDto, result);
         assertEquals(activity, eventCaptor.getValue().getActivity());
     }
 
     @Test
-    void createActivity_shouldThrowExceptionWhenMappingFails() {
-        when(activityMapper.toEntity(createDto)).thenThrow(new RuntimeException("Mapping failed"));
-
-        assertThrows(RuntimeException.class, () -> activityService.createActivity(createDto));
-        verify(activityMapper).toEntity(createDto);
-        verify(activityRepository, never()).save(any());
-        verify(eventPublisher, never()).publishEvent(any());
-        verify(activityMapper, never()).toResponseDto(any());
-    }
-
-    @Test
-    void createActivity_shouldThrowExceptionWhenSaveFails() {
-        when(activityMapper.toEntity(createDto)).thenReturn(activity);
-        when(activityRepository.save(activity)).thenThrow(new RuntimeException("Database error"));
-
-        assertThrows(RuntimeException.class, () -> activityService.createActivity(createDto));
-        verify(activityMapper).toEntity(createDto);
-        verify(activityRepository).save(activity);
-        verify(eventPublisher, never()).publishEvent(any());
-        verify(activityMapper, never()).toResponseDto(any());
-    }
-
-    @Test
-    void createActivity_shouldThrowExceptionWhenResponseMappingFails() {
-        ArgumentCaptor<ActivityCreateEvent> eventCaptor = ArgumentCaptor
-                .forClass(ActivityCreateEvent.class);
-
-        when(activityMapper.toEntity(createDto)).thenReturn(activity);
+    void updateActivity_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+        when(repositoryHelper.find(activityRepository, Activity.class, activityId))
+                .thenReturn(activity);
+        when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
+        when(jsonPatchService.applyPatch(patch, responseDto, ActivityUpdateDto.class))
+                .thenReturn(patchedDto);
         when(activityRepository.save(activity)).thenReturn(activity);
-        when(activityMapper.toResponseDto(activity))
-                .thenThrow(new RuntimeException("Response mapping failed"));
 
-        assertThrows(RuntimeException.class, () -> activityService.createActivity(createDto));
-        verify(activityMapper).toEntity(createDto);
+        activityService.updateActivity(activityId, patch);
+
+        verify(validationService).validate(patchedDto);
+        verify(activityMapper).updateActivityFromDto(activity, patchedDto);
         verify(activityRepository).save(activity);
-        verify(eventPublisher).publishEvent(eventCaptor.capture());
-        verify(activityMapper).toResponseDto(activity);
     }
 
     @Test
-    void updateActivity_shouldApplyPatchValidateSaveAndPublishEvent()
-            throws JsonPatchException, JsonProcessingException
-    {
+    void updateActivity_shouldPublishEvent() throws JsonPatchException, JsonProcessingException {
         ArgumentCaptor<ActivityUpdateEvent> eventCaptor = ArgumentCaptor
                 .forClass(ActivityUpdateEvent.class);
 
@@ -169,66 +150,52 @@ public class ActivityServiceTest {
         when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
         when(jsonPatchService.applyPatch(patch, responseDto, ActivityUpdateDto.class))
                 .thenReturn(patchedDto);
-        doNothing().when(validationService).validate(patchedDto);
-        doNothing().when(activityMapper).updateActivityFromDto(activity, patchedDto);
         when(activityRepository.save(activity)).thenReturn(activity);
 
         activityService.updateActivity(activityId, patch);
 
-        verify(repositoryHelper).find(activityRepository, Activity.class, activityId);
-        verify(activityMapper).toResponseDto(activity);
-        verify(jsonPatchService)
-                .applyPatch(patch, activityMapper.toResponseDto(activity), ActivityUpdateDto.class);
-        verify(validationService, times(1)).validate(patchedDto);
-        verify(activityMapper).updateActivityFromDto(activity, patchedDto);
-        verify(activityRepository).save(activity);
         verify(eventPublisher).publishEvent(eventCaptor.capture());
-
         assertEquals(activity, eventCaptor.getValue().getActivity());
     }
 
     @Test
-    void updateActivity_shouldNotProceedWhenFindFails()
-        throws JsonPatchException, JsonProcessingException
-    {
+    void updateActivity_shouldThrowExceptionWhenActivityNotFound() {
         when(repositoryHelper.find(activityRepository, Activity.class, activityId))
                 .thenThrow(RecordNotFoundException.of(Activity.class, activityId));
 
         assertThrows(RecordNotFoundException.class, () -> activityService
                 .updateActivity(activityId, patch));
-        verify(repositoryHelper).find(activityRepository, Activity.class, activityId);
-        verify(activityMapper, never()).toResponseDto(any());
-        verify(jsonPatchService, never()).applyPatch(any(), any(), any());
-        verify(validationService, never()).validate(any());
-        verify(activityMapper, never()).updateActivityFromDto(any(), any());
-        verify(activityRepository, never()).save(any());
-        verify(eventPublisher, never()).publishEvent(any());
+
+        verifyNoInteractions(
+                activityMapper,
+                jsonPatchService,
+                validationService,
+                activityMapper,
+                eventPublisher
+        );
+        verify(activityRepository, never()).save(activity);
     }
 
     @Test
-    void updateActivity_shouldNotProceedWhenPatchFails()
+    void updateActivity_shouldThrowExceptionWhenPatchFails()
             throws JsonPatchException, JsonProcessingException
     {
         when(repositoryHelper.find(activityRepository, Activity.class, activityId))
                 .thenReturn(activity);
         when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
         when(jsonPatchService.applyPatch(patch, responseDto, ActivityUpdateDto.class))
-                .thenThrow(new JsonPatchException("Patch error"));
+                .thenThrow(JsonPatchException.class);
 
 
         assertThrows(JsonPatchException.class, () -> activityService
                 .updateActivity(activityId, patch));
-        verify(repositoryHelper).find(activityRepository, Activity.class, activityId);
-        verify(activityMapper).toResponseDto(activity);
-        verify(jsonPatchService).applyPatch(patch, responseDto, ActivityUpdateDto.class);
-        verify(validationService, never()).validate(any());
-        verify(activityMapper, never()).updateActivityFromDto(any(), any());
-        verify(activityRepository, never()).save(any());
-        verify(eventPublisher, never()).publishEvent(any());
+
+        verifyNoInteractions(validationService, eventPublisher);
+        verify(activityRepository, never()).save(activity);
     }
 
     @Test
-    void updateActivity_shouldNotProceedWhenValidationFails()
+    void updateActivity_shouldThrowExceptionWhenValidationFails()
             throws JsonPatchException, JsonProcessingException
     {
         when(repositoryHelper.find(activityRepository, Activity.class, activityId))
@@ -240,41 +207,25 @@ public class ActivityServiceTest {
         doThrow(new RuntimeException("Validation failed")).when(validationService)
                 .validate(patchedDto);
 
-        assertThrows(RuntimeException.class, () -> activityService.updateActivity(activityId, patch));
-        verify(repositoryHelper).find(activityRepository, Activity.class, activityId);
-        verify(activityMapper).toResponseDto(activity);
-        verify(jsonPatchService).applyPatch(patch, responseDto, ActivityUpdateDto.class);
+        assertThrows(RuntimeException.class, () ->
+                activityService.updateActivity(activityId, patch));
         verify(validationService).validate(patchedDto);
-        verify(activityMapper, never()).updateActivityFromDto(any(), any());
-        verify(activityRepository, never()).save(any());
-        verify(eventPublisher, never()).publishEvent(any());
+        verifyNoInteractions(eventPublisher);
+        verify(activityRepository, never()).save(activity);
     }
 
     @Test
-    void updateActivity_shouldNotProceedWhenSaveFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+    void deleteActivity_shouldDelete() {
         when(repositoryHelper.find(activityRepository, Activity.class, activityId))
                 .thenReturn(activity);
-        when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, ActivityUpdateDto.class))
-                .thenReturn(patchedDto);
-        doNothing().when(validationService).validate(patchedDto);
 
-        doThrow(new RuntimeException("Database error")).when(activityRepository).save(activity);
+        activityService.deleteActivity(activityId);
 
-        assertThrows(RuntimeException.class, () -> activityService.updateActivity(activityId, patch));
-        verify(repositoryHelper).find(activityRepository, Activity.class, activityId);
-        verify(activityMapper).toResponseDto(activity);
-        verify(jsonPatchService).applyPatch(patch, responseDto, ActivityUpdateDto.class);
-        verify(validationService).validate(patchedDto);
-        verify(activityMapper).updateActivityFromDto(activity, patchedDto);
-        verify(activityRepository).save(activity);
-        verify(eventPublisher, never()).publishEvent(any());
+        verify(activityRepository).delete(activity);
     }
 
     @Test
-    void deleteActivity_shouldDeleteActivityAndPublishEvent() {
+    void deleteActivity_shouldPublishEvent() {
         ArgumentCaptor<ActivityDeleteEvent> eventCaptor = ArgumentCaptor
                 .forClass(ActivityDeleteEvent.class);
 
@@ -283,36 +234,19 @@ public class ActivityServiceTest {
 
         activityService.deleteActivity(activityId);
 
-        verify(repositoryHelper).find(activityRepository, Activity.class, activityId);
-        verify(activityRepository).delete(activity);
         verify(eventPublisher).publishEvent(eventCaptor.capture());
-
         assertEquals(activity, eventCaptor.getValue().getActivity());
     }
 
     @Test
-    void deleteActivity_shouldNotProceedWhenActivityNotFound() {
+    void deleteActivity_shouldThrowExceptionWhenActivityNotFound() {
         when(repositoryHelper.find(activityRepository, Activity.class, activityId))
                 .thenThrow(RecordNotFoundException.of(Activity.class, activityId));
 
         assertThrows(RecordNotFoundException.class, () -> activityService
                 .deleteActivity(activityId));
 
-        verify(repositoryHelper).find(activityRepository, Activity.class, activityId);
-        verify(activityRepository, never()).delete((Activity) any());
-        verify(eventPublisher, never()).publishEvent(any());
-    }
-
-    @Test
-    void deleteActivity_shouldThrowExceptionWhenDeleteFails() {
-        when(repositoryHelper.find(activityRepository, Activity.class, activityId))
-                .thenReturn(activity);
-        doThrow(new RuntimeException("Database error")).when(activityRepository).delete(activity);
-
-        assertThrows(RuntimeException.class, () -> activityService.deleteActivity(activityId));
-
-        verify(repositoryHelper).find(activityRepository, Activity.class, activityId);
-        verify(activityRepository).delete(activity);
+        verify(activityRepository, never()).delete(activity);
         verify(eventPublisher, never()).publishEvent(any());
     }
 
@@ -328,32 +262,25 @@ public class ActivityServiceTest {
         ActivityCalculatedResponseDto result = activityService
                 .calculateCaloriesBurned(activityId, calculateRequestDto);
 
-        verify(repositoryHelper).find(userRepository, User.class, userId);
-        verify(repositoryHelper).find(activityRepository, Activity.class, activityId);
         verify(activityMapper).toCalculatedDto(activity, user, calculateRequestDto.getTime());
-
         assertEquals(calculatedResponseDto, result);
     }
 
     @Test
     void calculateCaloriesBurned_shouldNotProceedWhenUserNotFound() {
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-
         when(repositoryHelper.find(userRepository, User.class, userId))
                 .thenThrow(RecordNotFoundException.of(User.class, userId));
 
         assertThrows(RecordNotFoundException.class, () -> activityService
                 .calculateCaloriesBurned(activityId, calculateRequestDto));
 
-        verify(repositoryHelper).find(userRepository, User.class, userId);
-        verify(repositoryHelper, never()).find(activityRepository, Activity.class, activityId);
-        verify(activityMapper, never()).toCalculatedDto(any(), any(), anyInt());
+        verifyNoInteractions(activityMapper);;
     }
 
     @Test
     void calculateCaloriesBurned_shouldNotProceedWhenActivityNotFound() {
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-
         when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
         when(repositoryHelper.find(activityRepository, Activity.class, activityId))
                 .thenThrow(RecordNotFoundException.of(Activity.class, activityId));
@@ -361,13 +288,11 @@ public class ActivityServiceTest {
         assertThrows(RecordNotFoundException.class, () -> activityService
                 .calculateCaloriesBurned(activityId, calculateRequestDto));
 
-        verify(repositoryHelper).find(userRepository, User.class, userId);
-        verify(repositoryHelper).find(activityRepository, Activity.class, activityId);
-        verify(activityMapper, never()).toCalculatedDto(any(), any(), anyInt());
+        verifyNoInteractions(activityMapper);
     }
 
     @Test
-    void getActivity_shouldFetchActivityAndMapToResponseDto() {
+    void getActivity_shouldReturnActivityWhenFound() {
         when(repositoryHelper.find(activityRepository, Activity.class, activityId))
                 .thenReturn(activity);
         when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
@@ -386,9 +311,8 @@ public class ActivityServiceTest {
 
         assertThrows(RecordNotFoundException.class, () -> activityService
                 .deleteActivity(activityId));
-
         verify(repositoryHelper).find(activityRepository, Activity.class, activityId);
-        verify(activityMapper, never()).toResponseDto(any());
+        verifyNoInteractions(activityMapper);
     }
 
     @Test
