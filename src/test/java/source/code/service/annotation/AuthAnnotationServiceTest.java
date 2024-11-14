@@ -247,7 +247,6 @@ public class AuthAnnotationServiceTest {
         int recipeId = 2;
         Media media = Media.of(mediaId, MediaConnectedEntity.RECIPE, recipeId);
         Recipe recipe = Recipe.of(recipeId, user);
-
         when(repositoryHelper.find(mediaRepository, Media.class, mediaId)).thenReturn(media);
         when(repositoryHelper.find(recipeRepository, Recipe.class, media.getParentId()))
                 .thenReturn(recipe);
