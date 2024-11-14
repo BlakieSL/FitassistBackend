@@ -25,50 +25,58 @@ public class CacheServiceTest {
     @InjectMocks
     private CacheServiceImpl cacheServiceImpl;
 
+    private String cacheName;
+    private String nonExistingCacheName;
+    private String cacheKey;
+    private String cacheData;
+
     @BeforeEach
     void setUp() {
-
+        cacheName = "testCache";
+        nonExistingCacheName = "nonExistentCache";
+        cacheKey = "testKey";
+        cacheData = "testData";
     }
 
     @Test
     void evictCache_shouldEvict() {
-        when(cacheManager.getCache("testCache")).thenReturn(cache);
-        cacheServiceImpl.evictCache("testCache", "testKey");
-        verify(cache).evict("testKey");
+        when(cacheManager.getCache(cacheName)).thenReturn(cache);
+        cacheServiceImpl.evictCache(cacheName, cacheKey);
+        verify(cache).evict(cacheKey);
     }
 
     @Test
     void clearCache_shouldClear() {
-        when(cacheManager.getCache("testCache")).thenReturn(cache);
-        cacheServiceImpl.clearCache("testCache");
+        when(cacheManager.getCache(cacheName)).thenReturn(cache);
+        cacheServiceImpl.clearCache(cacheName);
         verify(cache).clear();
     }
 
     @Test
     void putCache_shouldPut() {
-        when(cacheManager.getCache("testCache")).thenReturn(cache);
-        cacheServiceImpl.putCache("testCache", "testKey", "testData");
-        verify(cache).put("testKey", "testData");
+        when(cacheManager.getCache(cacheName)).thenReturn(cache);
+        cacheServiceImpl.putCache(cacheName, cacheKey, cacheData);
+        verify(cache).put(cacheKey, cacheData);
     }
 
     @Test
     void evictCache_shouldThrowExceptionWhenCacheNull() {
-        when(cacheManager.getCache("nonExistentCache")).thenReturn(null);
+        when(cacheManager.getCache(nonExistingCacheName)).thenReturn(null);
         assertThrows(NullPointerException.class, () ->
-                cacheServiceImpl.evictCache("nonExistentCache", "testKey"));
+                cacheServiceImpl.evictCache(nonExistingCacheName, cacheKey));
     }
 
     @Test
     void clearCache_shouldThrowExceptionWhenCacheNull() {
-        when(cacheManager.getCache("nonExistentCache")).thenReturn(null);
+        when(cacheManager.getCache(nonExistingCacheName)).thenReturn(null);
         assertThrows(NullPointerException.class, () ->
-                cacheServiceImpl.clearCache("nonExistentCache"));
+                cacheServiceImpl.clearCache(nonExistingCacheName));
     }
 
     @Test
     void putCache_shouldThrowExceptionWhenCacheNull() {
-        when(cacheManager.getCache("nonExistentCache")).thenReturn(null);
+        when(cacheManager.getCache(nonExistingCacheName)).thenReturn(null);
         assertThrows(NullPointerException.class, () ->
-                cacheServiceImpl.putCache("nonExistentCache", "testKey", "testData"));
+                cacheServiceImpl.putCache(nonExistingCacheName, cacheKey, cacheData));
     }
 }
