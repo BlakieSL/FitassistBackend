@@ -19,21 +19,22 @@ import source.code.dto.response.category.CategoryResponseDto;
 import source.code.event.events.Category.CategoryClearCacheEvent;
 import source.code.event.events.Category.CategoryCreateCacheEvent;
 import source.code.exception.RecordNotFoundException;
-import source.code.mapper.category.ActivityCategoryMapper;
-import source.code.model.activity.ActivityCategory;
-import source.code.repository.ActivityCategoryRepository;
+import source.code.mapper.category.PlanCategoryMapper;
+import source.code.model.plan.PlanCategory;
+import source.code.repository.PlanCategoryRepository;
 import source.code.service.declaration.category.CategoryCacheKeyGenerator;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.ValidationService;
-import source.code.service.implementation.category.ActivityCategoryServiceImpl;
+import source.code.service.implementation.category.PlanCategoryServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ActivityCategoryServiceTest {
+public class PlanCategoryServiceTest {
     @Mock
     private ValidationService validationService;
 
@@ -41,7 +42,7 @@ public class ActivityCategoryServiceTest {
     private JsonPatchService jsonPatchService;
 
     @Mock
-    private CategoryCacheKeyGenerator<ActivityCategory> cacheKeyGenerator;
+    private CategoryCacheKeyGenerator<PlanCategory> cacheKeyGenerator;
 
     @Mock
     private ApplicationEventPublisher applicationEventPublisher;
@@ -50,16 +51,16 @@ public class ActivityCategoryServiceTest {
     private CacheManager cacheManager;
 
     @Mock
-    private ActivityCategoryRepository repository;
+    private PlanCategoryRepository repository;
 
     @Mock
-    private ActivityCategoryMapper mapper;
+    private PlanCategoryMapper mapper;
 
     @InjectMocks
-    private ActivityCategoryServiceImpl activityCategoryService;
+    private PlanCategoryServiceImpl planCategoryService;
 
     private CategoryCreateDto createDto;
-    private ActivityCategory category;
+    private PlanCategory category;
     private CategoryResponseDto responseDto;
     private String cacheKey;
     private JsonMergePatch patch;
@@ -70,7 +71,7 @@ public class ActivityCategoryServiceTest {
     @BeforeEach
     void setup() {
         createDto = new CategoryCreateDto();
-        category = new ActivityCategory();
+        category = new PlanCategory();
         responseDto = new CategoryResponseDto();
         cacheKey = "testCacheKey";
         patch = mock(JsonMergePatch.class);
@@ -85,7 +86,7 @@ public class ActivityCategoryServiceTest {
         when(repository.save(category)).thenReturn(category);
         when(mapper.toResponseDto(category)).thenReturn(responseDto);
 
-        CategoryResponseDto result = activityCategoryService.createCategory(createDto);
+        CategoryResponseDto result = planCategoryService.createCategory(createDto);
 
         assertEquals(result, responseDto);
     }
@@ -100,7 +101,7 @@ public class ActivityCategoryServiceTest {
         when(mapper.toResponseDto(category)).thenReturn(responseDto);
         when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
 
-        activityCategoryService.createCategory(createDto);
+        planCategoryService.createCategory(createDto);
 
         verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
         assertEquals(cacheKey, eventCaptor.getValue().getCacheKey());
@@ -114,7 +115,7 @@ public class ActivityCategoryServiceTest {
         when(jsonPatchService.applyPatch(patch, responseDto, CategoryUpdateDto.class))
                 .thenReturn(patchedDto);
 
-        activityCategoryService.updateCategory(categoryId, patch);
+        planCategoryService.updateCategory(categoryId, patch);
 
         verify(validationService).validate(patchedDto);
         verify(mapper).updateEntityFromDto(category, patchedDto);
@@ -135,7 +136,7 @@ public class ActivityCategoryServiceTest {
                 .thenReturn(patchedDto);
         when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
 
-        activityCategoryService.updateCategory(categoryId, patch);
+        planCategoryService.updateCategory(categoryId, patch);
 
         verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
         assertEquals(cacheKey, eventCaptor.getValue().getCacheKey());
@@ -147,7 +148,7 @@ public class ActivityCategoryServiceTest {
         when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () ->
-            activityCategoryService.updateCategory(nonExistentCategoryId, patch));
+                planCategoryService.updateCategory(nonExistentCategoryId, patch));
 
         verifyNoInteractions(validationService, mapper, applicationEventPublisher, cacheKeyGenerator);
         verify(repository, never()).save(category);
@@ -164,7 +165,7 @@ public class ActivityCategoryServiceTest {
                 .thenThrow(JsonPatchException.class);
 
         assertThrows(JsonPatchException.class, () ->
-            activityCategoryService.updateCategory(categoryId, patch));
+                planCategoryService.updateCategory(categoryId, patch));
 
         verifyNoInteractions(validationService, applicationEventPublisher, cacheKeyGenerator);
         verify(repository, never()).save(category);
@@ -184,7 +185,7 @@ public class ActivityCategoryServiceTest {
                 .validate(patchedDto);
 
         assertThrows(RuntimeException.class, () ->
-                activityCategoryService.updateCategory(categoryId, patch));
+                planCategoryService.updateCategory(categoryId, patch));
 
         verify(validationService).validate(patchedDto);
         verifyNoInteractions(applicationEventPublisher, cacheKeyGenerator);
@@ -197,7 +198,7 @@ public class ActivityCategoryServiceTest {
 
         when(repository.findById(categoryId)).thenReturn(Optional.of(category));
 
-        activityCategoryService.deleteCategory(categoryId);
+        planCategoryService.deleteCategory(categoryId);
 
         verify(repository).delete(category);
     }
@@ -211,7 +212,7 @@ public class ActivityCategoryServiceTest {
         when(repository.findById(categoryId)).thenReturn(Optional.of(category));
         when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
 
-        activityCategoryService.deleteCategory(categoryId);
+        planCategoryService.deleteCategory(categoryId);
 
         verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
         assertEquals(cacheKey, eventCaptor.getValue().getCacheKey());
@@ -223,7 +224,7 @@ public class ActivityCategoryServiceTest {
         when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () ->
-                activityCategoryService.deleteCategory(nonExistentCategoryId));
+                planCategoryService.deleteCategory(nonExistentCategoryId));
 
         verifyNoInteractions(applicationEventPublisher, cacheKeyGenerator);
         verify(repository, never()).delete(category);
@@ -238,7 +239,7 @@ public class ActivityCategoryServiceTest {
         when(cache.get(cacheKey)).thenReturn(cachedValueWrapper);
         when(cachedValueWrapper.get()).thenReturn(cachedCategories);
 
-        List<CategoryResponseDto> result = activityCategoryService.getAllCategories();
+        List<CategoryResponseDto> result = planCategoryService.getAllCategories();
 
         assertEquals(cachedCategories, result);
     }
@@ -255,7 +256,7 @@ public class ActivityCategoryServiceTest {
         when(repository.findAll()).thenReturn(List.of(category));
         when(mapper.toResponseDto(category)).thenReturn(responseDto);
 
-        List<CategoryResponseDto> result = activityCategoryService.getAllCategories();
+        List<CategoryResponseDto> result = planCategoryService.getAllCategories();
 
         verify(repository).findAll();
         verify(mapper).toResponseDto(category);
@@ -269,7 +270,7 @@ public class ActivityCategoryServiceTest {
         when(cacheManager.getCache("allCategories")).thenReturn(null);
 
         assertThrows(NullPointerException.class, () ->
-                activityCategoryService.getAllCategories()
+                planCategoryService.getAllCategories()
         );
         verifyNoInteractions(repository, applicationEventPublisher);
     }
@@ -281,7 +282,7 @@ public class ActivityCategoryServiceTest {
         when(cache.get(cacheKey)).thenReturn(cachedValueWrapper);
         when(cachedValueWrapper.get()).thenReturn(null);
 
-        List<CategoryResponseDto> result = activityCategoryService.getAllCategories();
+        List<CategoryResponseDto> result = planCategoryService.getAllCategories();
 
         verify(repository).findAll();
         assertTrue(result.isEmpty());
@@ -294,7 +295,7 @@ public class ActivityCategoryServiceTest {
         when(cache.get(cacheKey)).thenReturn(cachedValueWrapper);
         when(cachedValueWrapper.get()).thenReturn("UnexpectedStringValue");
 
-        List<CategoryResponseDto> result = activityCategoryService.getAllCategories();
+        List<CategoryResponseDto> result = planCategoryService.getAllCategories();
 
         verify(repository).findAll();
         assertTrue(result.isEmpty());
@@ -310,7 +311,7 @@ public class ActivityCategoryServiceTest {
 
         when(repository.findAll()).thenReturn(List.of());
 
-        List<CategoryResponseDto> result = activityCategoryService.getAllCategories();
+        List<CategoryResponseDto> result = planCategoryService.getAllCategories();
 
         verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
         assertEquals(cacheKey, eventCaptor.getValue().getCacheKey());
@@ -323,7 +324,7 @@ public class ActivityCategoryServiceTest {
         when(repository.findById(categoryId)).thenReturn(Optional.of(category));
         when(mapper.toResponseDto(category)).thenReturn(responseDto);
 
-        CategoryResponseDto result = activityCategoryService.getCategory(categoryId);
+        CategoryResponseDto result = planCategoryService.getCategory(categoryId);
 
         assertEquals(responseDto, result);
     }
@@ -334,7 +335,7 @@ public class ActivityCategoryServiceTest {
         when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () ->
-                activityCategoryService.getCategory(nonExistentCategoryId));;
+                planCategoryService.getCategory(nonExistentCategoryId));;
         verifyNoInteractions(mapper);
     }
 }
