@@ -2,7 +2,7 @@ package source.code.helper.Enum.cache;
 
 public enum CacheKeys {
     ACTIVITY_CATEGORIES,
-    EXERCISE_CATEGORIES,
+    TARGET_MUSCLE,
     FOOD_CATEGORIES,
     PLAN_CATEGORIES,
     RECIPE_CATEGORIES,

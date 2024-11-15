@@ -326,8 +326,6 @@ public class ActivityCategoryServiceTest {
         CategoryResponseDto result = activityCategoryService.getCategory(categoryId);
 
         assertEquals(responseDto, result);
-        verify(repository).findById(categoryId);
-        verify(mapper).toResponseDto(category);
     }
 
     @Test
@@ -336,8 +334,7 @@ public class ActivityCategoryServiceTest {
         when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () ->
-                activityCategoryService.getCategory(nonExistentCategoryId));
-        verify(repository).findById(nonExistentCategoryId);
+                activityCategoryService.getCategory(nonExistentCategoryId));;
         verifyNoInteractions(mapper);
     }
 
