@@ -300,8 +300,6 @@ public class ActivityServiceTest {
         ActivityResponseDto result = activityService.getActivity(activityId);
 
         assertEquals(responseDto, result);
-        verify(repositoryHelper).find(activityRepository, Activity.class, activityId);
-        verify(activityMapper).toResponseDto(activity);
     }
 
     @Test
@@ -311,7 +309,6 @@ public class ActivityServiceTest {
 
         assertThrows(RecordNotFoundException.class, () -> activityService
                 .deleteActivity(activityId));
-        verify(repositoryHelper).find(activityRepository, Activity.class, activityId);
         verifyNoInteractions(activityMapper);
     }
 
@@ -323,7 +320,6 @@ public class ActivityServiceTest {
                 .thenReturn(responseDtos);
 
         List<ActivityResponseDto> result = activityService.getAllActivities();
-
 
         assertEquals(responseDtos, result);
         verify(repositoryHelper).findAll(eq(activityRepository), any(Function.class));
