@@ -101,6 +101,7 @@ public class CommentServiceImpl implements CommentService {
         List<Comment> replies = commentRepository.findAllByParentCommentId(comment.getId());
 
         List<CommentResponseDto> replyDtos = replies.stream()
+                .filter(reply -> !reply.getId().equals(comment.getId()))
                 .map(this::buildCommentHierarchy)
                 .toList();
 
