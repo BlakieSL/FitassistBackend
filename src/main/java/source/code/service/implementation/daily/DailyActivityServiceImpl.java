@@ -73,10 +73,8 @@ public class DailyActivityServiceImpl implements DailyActivityService {
         int userId = AuthorizationUtil.getUserId();
         DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
         Activity activity = repositoryHelper.find(activityRepository, Activity.class, activityId);
-        DailyActivityItem dailyActivityItem = getOrCreateDailyActivityItem(
-                dailyActivity, activity, dto.getTime());
 
-        updateOrAddDailyActivityItem(dailyActivity, dailyActivityItem);
+        updateOrAddDailyActivityItem(dailyActivity, activity, dto.getTime());
         dailyActivityRepository.save(dailyActivity);
     }
 
@@ -85,7 +83,8 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     public void removeActivityFromDailyActivity(int activityId) {
         int userId = AuthorizationUtil.getUserId();
         DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
-        DailyActivityItem dailyActivityItem = getDailyActivityItem(dailyActivity.getId(), activityId);
+        DailyActivityItem dailyActivityItem =
+                getDailyActivityItem(dailyActivity.getId(), activityId);
 
         dailyActivity.getDailyActivityItems().remove(dailyActivityItem);
         dailyActivityRepository.save(dailyActivity);
@@ -98,12 +97,14 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     {
         int userId = AuthorizationUtil.getUserId();
         DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
-        DailyActivityItem dailyActivityItem = getDailyActivityItem(dailyActivity.getId(), activityId);
+        DailyActivityItem dailyActivityItem =
+                getDailyActivityItem(dailyActivity.getId(), activityId);
 
-        DailyActivityItemCreateDto patchedDto = applyPatchToDailyActivityItem(dailyActivityItem, patch);
+        DailyActivityItemCreateDto patchedDto =
+                applyPatchToDailyActivityItem(dailyActivityItem, patch);
         validationService.validate(patchedDto);
 
-        updateDailyActivityItemTime(dailyActivityItem, patchedDto.getTime());
+        dailyActivityItem.setTime(patchedDto.getTime());
         dailyActivityRepository.save(dailyActivity);
     }
 
@@ -125,25 +126,28 @@ public class DailyActivityServiceImpl implements DailyActivityService {
                 ));
     }
 
-    private DailyActivityItem getOrCreateDailyActivityItem(
-            DailyActivity dailyActivity, Activity activity, int time
-    ) {
-        return dailyActivityItemRepository
-                .findByDailyActivityIdAndActivityId(dailyActivity.getId(), activity.getId())
-                .orElse(DailyActivityItem.of(activity, dailyActivity, time));
-    }
-
     private void updateOrAddDailyActivityItem(
-            DailyActivity dailyActivity, DailyActivityItem dailyActivityItem) {
-        if (existByDailyActivityAndItem(dailyActivityItem, dailyActivity)) {
-            dailyActivity.getDailyActivityItems().add(dailyActivityItem);
-        }
-        updateDailyActivityItemTime(dailyActivityItem, dailyActivityItem.getTime());
+            DailyActivity dailyActivity,
+            Activity activity,
+            int time
+    ) {
+        dailyActivityItemRepository
+                .findByDailyActivityIdAndActivityId(dailyActivity.getId(), activity.getId())
+                .ifPresentOrElse(
+                        foundItem -> {
+                            foundItem.setTime(foundItem.getTime() + time);
+                        },
+                        () -> {
+                            DailyActivityItem newItem = DailyActivityItem.of(
+                                    activity,
+                                    dailyActivity,
+                                    time
+                            );
+                            dailyActivity.getDailyActivityItems().add(newItem);
+                        }
+                );
     }
 
-    private void updateDailyActivityItemTime(DailyActivityItem dailyActivityItem, int time) {
-        dailyActivityItem.setTime(time);
-    }
 
     private DailyActivity getOrCreateDailyActivityForUser(int userId) {
         return dailyActivityRepository.findByUserId(userId)
@@ -157,8 +161,10 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     }
 
     private DailyActivityItemCreateDto applyPatchToDailyActivityItem(
-            DailyActivityItem dailyActivityItem, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
+            DailyActivityItem dailyActivityItem,
+            JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException
+    {
         DailyActivityItemCreateDto createDto = DailyActivityItemCreateDto
                 .of(dailyActivityItem.getTime());
         return jsonPatchService.applyPatch(patch, createDto, DailyActivityItemCreateDto.class);
@@ -167,14 +173,6 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     private DailyActivityItem getDailyActivityItem(int dailyActivityId, int activityId) {
         return dailyActivityItemRepository.findByDailyActivityIdAndActivityId(dailyActivityId, activityId)
                 .orElseThrow(() -> RecordNotFoundException.of(DailyActivityItem.class, activityId));
-    }
-
-    private boolean existByDailyActivityAndItem(DailyActivityItem dailyActivityItem,
-                                                DailyActivity dailyActivity) {
-        return dailyActivityItemRepository.existsByIdAndDailyActivityId(
-                dailyActivityItem.getId(),
-                dailyActivity.getId()
-        );
     }
 
     private void resetDailyActivity(DailyActivity dailyActivity) {

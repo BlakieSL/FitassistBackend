@@ -145,7 +145,8 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 
     private DailyFoodItemCreateDto applyPatchToDailyFoodItem(
             DailyFoodItem dailyFoodItem, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
+            throws JsonPatchException, JsonProcessingException
+    {
         DailyFoodItemCreateDto createDto = DailyFoodItemCreateDto.of(dailyFoodItem.getAmount());
         return jsonPatchService.applyPatch(patch, createDto, DailyFoodItemCreateDto.class);
     }

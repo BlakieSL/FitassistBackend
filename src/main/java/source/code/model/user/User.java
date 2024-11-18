@@ -136,10 +136,12 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<Plan> plans = new HashSet<>();
 
-    public static User createWithId(int id) {
+    public static User of(int id) {
         User user = new User();
         user.setId(id);
 
         return user;
     }
+
+
 }
