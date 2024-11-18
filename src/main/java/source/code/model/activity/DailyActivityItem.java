@@ -35,13 +35,14 @@ public class DailyActivityItem {
     private Activity activity;
 
     public static DailyActivityItem of(
-            Activity activity, DailyActivity dailyActivity, int time
+            Activity activity,
+            DailyActivity dailyActivity,
+            int time
     ) {
         DailyActivityItem dailyActivityItem = new DailyActivityItem();
         dailyActivityItem.setActivity(activity);
         dailyActivityItem.setDailyActivity(dailyActivity);
         dailyActivityItem.setTime(time);
-
         return dailyActivityItem;
     }
 }
