@@ -93,8 +93,9 @@ public class DailyActivityServiceTest {
     }
 
     @Test
-    void addActivityToDailyActivityItem_shouldAddActivity() {
+    void addActivityToDailyActivityItem_shouldUpdateExistingDailyActivityItemTime() {
         dailyActivity.getDailyActivityItems().add(dailyActivityItem);
+
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
         when(dailyActivityRepository.findByUserId(USER_ID)).thenReturn(Optional.of(dailyActivity));
         when(repositoryHelper.find(activityRepository, Activity.class, ACTIVITY_ID))
@@ -111,7 +112,7 @@ public class DailyActivityServiceTest {
     }
 
     @Test
-    void addActivityToDailyActivityItem_shouldCreateNewDailyActivityItemWhenNotFound() {
+    void addActivityToDailyActivityItem_shouldAddNewDailyActivityItem_whenNotFound() {
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
         when(dailyActivityRepository.findByUserId(USER_ID)).thenReturn(Optional.of(dailyActivity));
         when(repositoryHelper.find(activityRepository, Activity.class, ACTIVITY_ID))
@@ -127,4 +128,78 @@ public class DailyActivityServiceTest {
         assertEquals(dailyActivity.getDailyActivityItems().get(0).getTime(), createDto.getTime());
     }
 
+    @Test
+    void addActivityToDailyActivityItem_shouldCreateNewDailyActivity_whenNotFound() {
+        User user = new User();
+        user.setId(USER_ID);
+        DailyActivity newDailyActivity = DailyActivity.createForToday(user);
+        newDailyActivity.setId(1);
+        newDailyActivity.setUser(user);
+
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+        when(dailyActivityRepository.findByUserId(USER_ID)).thenReturn(Optional.empty());
+        when(repositoryHelper.find(userRepository, User.class, USER_ID)).thenReturn(user);
+        when(dailyActivityRepository.save(any(DailyActivity.class)))
+                .thenReturn(newDailyActivity);
+        when(repositoryHelper.find(activityRepository, Activity.class, ACTIVITY_ID))
+                .thenReturn(activity);
+        when(dailyActivityItemRepository.findByDailyActivityIdAndActivityId(
+                anyInt(),
+                eq(ACTIVITY_ID))
+        ).thenReturn(Optional.empty());
+
+        dailyActivityService.addActivityToDailyActivityItem(ACTIVITY_ID, createDto);
+
+        ArgumentCaptor<DailyActivity> dailyActivityCaptor = ArgumentCaptor
+                .forClass(DailyActivity.class);
+        verify(dailyActivityRepository, times(2))
+                .save(dailyActivityCaptor.capture());
+        DailyActivity savedDailyActivity = dailyActivityCaptor.getValue();
+        assertEquals(USER_ID, savedDailyActivity.getUser().getId());
+        assertEquals(
+                createDto.getTime(),
+                savedDailyActivity.getDailyActivityItems().get(0).getTime()
+        );
+    }
+
+    @Test
+    void removeActivityFromDailyActivity_shouldRemoveExistingDailyActivityItem() {
+        dailyActivity.getDailyActivityItems().add(dailyActivityItem);
+
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+        when(dailyActivityRepository.findByUserId(USER_ID)).thenReturn(Optional.of(dailyActivity));
+        when(dailyActivityItemRepository.findByDailyActivityIdAndActivityId(
+                dailyActivity.getId(),
+                ACTIVITY_ID)
+        ).thenReturn(Optional.of(dailyActivityItem));
+
+        dailyActivityService.removeActivityFromDailyActivity(ACTIVITY_ID);
+
+        verify(dailyActivityRepository).save(dailyActivity);
+        assertTrue(dailyActivity.getDailyActivityItems().isEmpty());
+    }
+
+    @Test
+    void removeActivityFromDailyActivity_shouldThrowException_whenDailyActivityItemNotFound() {
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+        when(dailyActivityRepository.findByUserId(USER_ID)).thenReturn(Optional.of(dailyActivity));
+        when(dailyActivityItemRepository.findByDailyActivityIdAndActivityId(
+                dailyActivity.getId(),
+                ACTIVITY_ID)
+        ).thenReturn(Optional.empty());
+
+        assertThrows(RecordNotFoundException.class, () ->
+                dailyActivityService.removeActivityFromDailyActivity(ACTIVITY_ID)
+        );
+    }
+
+    @Test
+    void removeActivityFromDailyActivity_shouldThrowException_whenDailyActivityNotFound() {
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+        when(dailyActivityRepository.findByUserId(USER_ID)).thenReturn(Optional.empty());
+
+        assertThrows(RecordNotFoundException.class, () ->
+                dailyActivityService.removeActivityFromDailyActivity(ACTIVITY_ID)
+        );
+    }
 }
