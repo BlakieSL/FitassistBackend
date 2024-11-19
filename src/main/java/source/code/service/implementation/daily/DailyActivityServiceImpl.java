@@ -82,7 +82,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     @Transactional
     public void removeActivityFromDailyActivity(int activityId) {
         int userId = AuthorizationUtil.getUserId();
-        DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
+        DailyActivity dailyActivity = getDailyActivityForUserOrThrow(userId);
         DailyActivityItem dailyActivityItem =
                 getDailyActivityItem(dailyActivity.getId(), activityId);
 
@@ -96,7 +96,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
             throws JsonPatchException, JsonProcessingException
     {
         int userId = AuthorizationUtil.getUserId();
-        DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
+        DailyActivity dailyActivity = getDailyActivityForUserOrThrow(userId);
         DailyActivityItem dailyActivityItem =
                 getDailyActivityItem(dailyActivity.getId(), activityId);
 
@@ -152,6 +152,11 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     private DailyActivity getOrCreateDailyActivityForUser(int userId) {
         return dailyActivityRepository.findByUserId(userId)
                 .orElseGet(() -> createDailyActivity(userId));
+    }
+
+    private DailyActivity getDailyActivityForUserOrThrow(int userId) {
+        return dailyActivityRepository.findByUserId(userId)
+                .orElseThrow(() -> RecordNotFoundException.of(DailyActivity.class, userId));
     }
 
     @Transactional
