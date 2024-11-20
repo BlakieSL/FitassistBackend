@@ -13,8 +13,6 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
-import source.code.dto.response.DailyActivitiesResponseDto;
-import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.daily.DailyActivityMapper;
@@ -31,8 +29,6 @@ import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.daily.DailyActivityServiceImpl;
 
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -163,7 +159,7 @@ public class DailyActivityServiceTest {
     }
 
     @Test
-    void removeActivityFromDailyActivity_shouldRemoveExistingDailyActivityItem() {
+    void removeActivityFromDailyActivityItem_shouldRemoveExistingDailyActivityItem() {
         dailyActivity.getDailyActivityItems().add(dailyActivityItem);
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
@@ -173,14 +169,14 @@ public class DailyActivityServiceTest {
                 ACTIVITY_ID)
         ).thenReturn(Optional.of(dailyActivityItem));
 
-        dailyActivityService.removeActivityFromDailyActivity(ACTIVITY_ID);
+        dailyActivityService.removeActivityFromDailyActivityItem(ACTIVITY_ID);
 
         verify(dailyActivityRepository).save(dailyActivity);
         assertTrue(dailyActivity.getDailyActivityItems().isEmpty());
     }
 
     @Test
-    void removeActivityFromDailyActivity_shouldThrowException_whenDailyActivityItemNotFound() {
+    void removeActivityFromDailyActivityItem_shouldThrowException_whenDailyActivityItemNotFound() {
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
         when(dailyActivityRepository.findByUserId(USER_ID)).thenReturn(Optional.of(dailyActivity));
         when(dailyActivityItemRepository.findByDailyActivityIdAndActivityId(
@@ -189,17 +185,106 @@ public class DailyActivityServiceTest {
         ).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () ->
-                dailyActivityService.removeActivityFromDailyActivity(ACTIVITY_ID)
+                dailyActivityService.removeActivityFromDailyActivityItem(ACTIVITY_ID)
         );
     }
 
     @Test
-    void removeActivityFromDailyActivity_shouldThrowException_whenDailyActivityNotFound() {
+    void removeActivityFromDailyActivityItem_shouldThrowException_whenDailyActivityNotFound() {
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
         when(dailyActivityRepository.findByUserId(USER_ID)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () ->
-                dailyActivityService.removeActivityFromDailyActivity(ACTIVITY_ID)
+                dailyActivityService.removeActivityFromDailyActivityItem(ACTIVITY_ID)
         );
+    }
+
+    @Test
+    void updateDailyActivityItem_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+        DailyActivityItemCreateDto patchedDto = new DailyActivityItemCreateDto();
+        patchedDto.setTime(120);
+
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+        when(dailyActivityRepository.findByUserId(USER_ID)).thenReturn(Optional.of(dailyActivity));
+        when(dailyActivityItemRepository.findByDailyActivityIdAndActivityId(
+                dailyActivity.getId(),
+                ACTIVITY_ID)
+        ).thenReturn(Optional.of(dailyActivityItem));
+        doReturn(patchedDto).when(jsonPatchService).applyPatch(any(JsonMergePatch.class), any(DailyActivityItemCreateDto.class), eq(DailyActivityItemCreateDto.class));
+
+        dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch);
+
+        verify(validationService).validate(patchedDto);
+        assertEquals(patchedDto.getTime(), dailyActivityItem.getTime());
+        verify(dailyActivityRepository).save(dailyActivity);
+    }
+
+    @Test
+    void updateDailyActivityItem_shouldThrowException_whenDailyActivityItemNotFound() {
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+        when(dailyActivityRepository.findByUserId(USER_ID)).thenReturn(Optional.of(dailyActivity));
+        when(dailyActivityItemRepository.findByDailyActivityIdAndActivityId(
+                dailyActivity.getId(),
+                ACTIVITY_ID)
+        ).thenReturn(Optional.empty());
+
+        assertThrows(RecordNotFoundException.class, () ->
+                dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch)
+        );
+    }
+
+    @Test
+    void updateDailyActivityItem_shouldThrowException_whenDailyActivityNotFound() {
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+        when(dailyActivityRepository.findByUserId(USER_ID)).thenReturn(Optional.empty());
+
+        assertThrows(RecordNotFoundException.class, () ->
+                dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch)
+        );
+    }
+
+    @Test
+    void updateDailyActivityItem_shouldThrowException_whenPatchFails()
+            throws JsonPatchException, JsonProcessingException
+    {
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+        when(dailyActivityRepository.findByUserId(USER_ID)).thenReturn(Optional.of(dailyActivity));
+        when(dailyActivityItemRepository.findByDailyActivityIdAndActivityId(
+                dailyActivity.getId(),
+                ACTIVITY_ID)
+        ).thenReturn(Optional.of(dailyActivityItem));
+        doThrow(JsonPatchException.class).when(jsonPatchService).applyPatch(any(JsonMergePatch.class), any(DailyActivityItemCreateDto.class), eq(DailyActivityItemCreateDto.class));
+
+        assertThrows(JsonPatchException.class, () ->
+                dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch)
+        );
+
+        verifyNoInteractions(validationService);
+        verify(dailyActivityRepository, never()).save(dailyActivity);
+    }
+    @Test
+    void updateDailyActivityItem_shouldThrowException_whenPatchValidationFails()
+            throws JsonPatchException, JsonProcessingException
+    {
+        DailyActivityItemCreateDto patchedDto = new DailyActivityItemCreateDto();
+        patchedDto.setTime(120);
+
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+        when(dailyActivityRepository.findByUserId(USER_ID)).thenReturn(Optional.of(dailyActivity));
+        when(dailyActivityItemRepository.findByDailyActivityIdAndActivityId(
+                dailyActivity.getId(),
+                ACTIVITY_ID)
+        ).thenReturn(Optional.of(dailyActivityItem));
+        doReturn(patchedDto).when(jsonPatchService).applyPatch(any(JsonMergePatch.class), any(DailyActivityItemCreateDto.class), eq(DailyActivityItemCreateDto.class));
+
+        doThrow(new RuntimeException("Validation failed")).when(validationService)
+                .validate(patchedDto);
+
+        assertThrows(RuntimeException.class, () ->
+                dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch)
+        );
+
+        verify(validationService).validate(patchedDto);
+        verify(dailyActivityRepository, never()).save(dailyActivity);
     }
 }

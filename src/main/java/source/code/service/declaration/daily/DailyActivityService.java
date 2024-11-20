@@ -9,7 +9,7 @@ import source.code.dto.response.DailyActivitiesResponseDto;
 public interface DailyActivityService {
     void addActivityToDailyActivityItem(int activityId, DailyActivityItemCreateDto dto);
 
-    void removeActivityFromDailyActivity(int activityId);
+    void removeActivityFromDailyActivityItem(int activityId);
 
     void updateDailyActivityItem(int activityId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
