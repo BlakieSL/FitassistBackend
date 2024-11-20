@@ -6,7 +6,6 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
 import source.code.dto.response.DailyActivitiesResponseDto;
@@ -47,7 +46,7 @@ public class DailyActivityController {
 
     @DeleteMapping("/remove/{activityId}")
     public ResponseEntity<Void> removeActivityFromDailyCartActivity(@PathVariable int activityId) {
-        dailyActivityService.removeActivityFromDailyActivity(activityId);
+        dailyActivityService.removeActivityFromDailyActivityItem(activityId);
         return ResponseEntity.noContent().build();
     }
 }

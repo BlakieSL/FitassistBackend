@@ -80,7 +80,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 
     @Override
     @Transactional
-    public void removeActivityFromDailyActivity(int activityId) {
+    public void removeActivityFromDailyActivityItem(int activityId) {
         int userId = AuthorizationUtil.getUserId();
         DailyActivity dailyActivity = getDailyActivityForUserOrThrow(userId);
         DailyActivityItem dailyActivityItem =
