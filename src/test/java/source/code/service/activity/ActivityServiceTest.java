@@ -204,7 +204,7 @@ public class ActivityServiceTest {
         when(jsonPatchService.applyPatch(patch, responseDto, ActivityUpdateDto.class))
                 .thenReturn(patchedDto);
 
-        doThrow(new RuntimeException("Validation failed")).when(validationService)
+        doThrow(new IllegalArgumentException("Validation failed")).when(validationService)
                 .validate(patchedDto);
 
         assertThrows(RuntimeException.class, () ->

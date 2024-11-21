@@ -13,6 +13,8 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
+import source.code.dto.response.DailyActivitiesResponseDto;
+import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.daily.DailyActivityMapper;
@@ -210,7 +212,11 @@ public class DailyActivityServiceTest {
                 dailyActivity.getId(),
                 ACTIVITY_ID)
         ).thenReturn(Optional.of(dailyActivityItem));
-        doReturn(patchedDto).when(jsonPatchService).applyPatch(any(JsonMergePatch.class), any(DailyActivityItemCreateDto.class), eq(DailyActivityItemCreateDto.class));
+        doReturn(patchedDto).when(jsonPatchService).applyPatch(
+                any(JsonMergePatch.class),
+                any(DailyActivityItemCreateDto.class),
+                eq(DailyActivityItemCreateDto.class)
+        );
 
         dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch);
 
@@ -229,8 +235,7 @@ public class DailyActivityServiceTest {
         ).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () ->
-                dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch)
-        );
+                dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch));
     }
 
     @Test
@@ -239,8 +244,7 @@ public class DailyActivityServiceTest {
         when(dailyActivityRepository.findByUserId(USER_ID)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () ->
-                dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch)
-        );
+                dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch));
     }
 
     @Test
@@ -253,7 +257,11 @@ public class DailyActivityServiceTest {
                 dailyActivity.getId(),
                 ACTIVITY_ID)
         ).thenReturn(Optional.of(dailyActivityItem));
-        doThrow(JsonPatchException.class).when(jsonPatchService).applyPatch(any(JsonMergePatch.class), any(DailyActivityItemCreateDto.class), eq(DailyActivityItemCreateDto.class));
+        doThrow(JsonPatchException.class).when(jsonPatchService).applyPatch(
+                any(JsonMergePatch.class),
+                any(DailyActivityItemCreateDto.class),
+                eq(DailyActivityItemCreateDto.class)
+        );
 
         assertThrows(JsonPatchException.class, () ->
                 dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch)
@@ -275,9 +283,13 @@ public class DailyActivityServiceTest {
                 dailyActivity.getId(),
                 ACTIVITY_ID)
         ).thenReturn(Optional.of(dailyActivityItem));
-        doReturn(patchedDto).when(jsonPatchService).applyPatch(any(JsonMergePatch.class), any(DailyActivityItemCreateDto.class), eq(DailyActivityItemCreateDto.class));
+        doReturn(patchedDto).when(jsonPatchService).applyPatch(
+                any(JsonMergePatch.class),
+                any(DailyActivityItemCreateDto.class),
+                eq(DailyActivityItemCreateDto.class)
+        );
 
-        doThrow(new RuntimeException("Validation failed")).when(validationService)
+        doThrow(new IllegalArgumentException("Validation failed")).when(validationService)
                 .validate(patchedDto);
 
         assertThrows(RuntimeException.class, () ->
@@ -286,5 +298,47 @@ public class DailyActivityServiceTest {
 
         verify(validationService).validate(patchedDto);
         verify(dailyActivityRepository, never()).save(dailyActivity);
+    }
+
+    @Test
+    void getActivitiesFromDailyActivity_shouldReturnActivities() {
+        User user = new User();
+        user.setId(USER_ID);
+        user.setWeight(70);
+        dailyActivity.setUser(user);
+        dailyActivity.getDailyActivityItems().add(dailyActivityItem);
+
+        ActivityCalculatedResponseDto calculatedResponseDto = new ActivityCalculatedResponseDto();
+        calculatedResponseDto.setCaloriesBurned(100);
+
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+        when(dailyActivityRepository.findByUserId(USER_ID)).thenReturn(Optional.of(dailyActivity));
+        when(dailyActivityMapper.toActivityCalculatedResponseDto(
+                dailyActivityItem,
+                user.getWeight())
+        ).thenReturn(calculatedResponseDto);
+
+        DailyActivitiesResponseDto result = dailyActivityService.getActivitiesFromDailyActivity();
+
+        assertEquals(1, result.getActivities().size());
+        assertEquals(100, result.getTotalCaloriesBurned());
+    }
+
+    @Test
+    void getActivitiesFromDailyActivity_shouldReturnEmptyActivities_whenDailyActivityNotFound() {
+        User user = new User();
+        user.setId(USER_ID);
+        user.setWeight(70);
+        DailyActivity newDailyActivity = DailyActivity.createForToday(user);
+        newDailyActivity.setUser(user);
+
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+        when(dailyActivityRepository.findByUserId(USER_ID)).thenReturn(Optional.empty());
+        when(dailyActivityRepository.save(any(DailyActivity.class))).thenReturn(newDailyActivity);
+
+        DailyActivitiesResponseDto result = dailyActivityService.getActivitiesFromDailyActivity();
+
+        assertTrue(result.getActivities().isEmpty());
+        assertEquals(0, result.getTotalCaloriesBurned());
     }
 }
