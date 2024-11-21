@@ -36,7 +36,7 @@ public class DailyFoodItem {
     @JoinColumn(name = "food_id", nullable = false)
     private Food food;
 
-    public static DailyFoodItem of(int amount, Food food, DailyFood dailyFood) {
+    public static DailyFoodItem of(Food food, DailyFood dailyFood, int amount) {
         DailyFoodItem dailyFoodItem = new DailyFoodItem();
         dailyFoodItem.setAmount(amount);
         dailyFoodItem.setFood(food);

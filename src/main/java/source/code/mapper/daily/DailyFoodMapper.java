@@ -40,11 +40,25 @@ public abstract class DailyFoodMapper {
     }
 
     public DailyFoodsResponseDto toDailyFoodsResponseDto(List<FoodCalculatedMacrosResponseDto> foods) {
-        double totalCalories = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getCalories).sum();
-        double totalCarbohydrates = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getCarbohydrates).sum();
-        double totalProtein = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getProtein).sum();
-        double totalFat = foods.stream().mapToDouble(FoodCalculatedMacrosResponseDto::getFat).sum();
+        double totalCalories = foods.stream()
+                .mapToDouble(FoodCalculatedMacrosResponseDto::getCalories)
+                .sum();
+        double totalCarbohydrates = foods.stream()
+                .mapToDouble(FoodCalculatedMacrosResponseDto::getCarbohydrates)
+                .sum();
+        double totalProtein = foods.stream()
+                .mapToDouble(FoodCalculatedMacrosResponseDto::getProtein)
+                .sum();
+        double totalFat = foods.stream()
+                .mapToDouble(FoodCalculatedMacrosResponseDto::getFat)
+                .sum();
 
-        return new DailyFoodsResponseDto(foods, totalCalories, totalCarbohydrates, totalProtein, totalFat);
+        return DailyFoodsResponseDto.of(
+                foods,
+                totalCalories,
+                totalCarbohydrates,
+                totalProtein,
+                totalFat
+        );
     }
 }
