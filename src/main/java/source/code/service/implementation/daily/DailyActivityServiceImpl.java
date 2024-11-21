@@ -104,7 +104,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
                 applyPatchToDailyActivityItem(dailyActivityItem, patch);
         validationService.validate(patchedDto);
 
-        dailyActivityItem.setTime(patchedDto.getTime());
+        updateTime(dailyActivityItem, patchedDto.getTime());
         dailyActivityRepository.save(dailyActivity);
     }
 
@@ -157,6 +157,10 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     private DailyActivity getDailyActivityForUserOrThrow(int userId) {
         return dailyActivityRepository.findByUserId(userId)
                 .orElseThrow(() -> RecordNotFoundException.of(DailyActivity.class, userId));
+    }
+
+    private void updateTime(DailyActivityItem dailyActivityItem, int time) {
+        dailyActivityItem.setTime(dailyActivityItem.getTime());
     }
 
     @Transactional

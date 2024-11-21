@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 public class DailyFoodsResponseDto {
     private List<FoodCalculatedMacrosResponseDto> foods;
