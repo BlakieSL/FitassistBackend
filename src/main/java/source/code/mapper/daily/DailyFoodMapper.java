@@ -10,6 +10,7 @@ import source.code.model.food.DailyFoodItem;
 import source.code.model.food.Food;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class DailyFoodMapper {
@@ -23,7 +24,8 @@ public abstract class DailyFoodMapper {
     @Mapping(target = "categoryName", source = "dailyFoodItem.food.foodCategory.name")
     @Mapping(target = "amount", source = "dailyFoodItem.amount")
     public abstract FoodCalculatedMacrosResponseDto toFoodCalculatedMacrosResponseDto(
-            DailyFoodItem dailyFoodItem);
+            DailyFoodItem dailyFoodItem
+    );
 
     @AfterMapping
     protected void setCalculatedMacros(
@@ -39,26 +41,14 @@ public abstract class DailyFoodMapper {
         responseDto.setCarbohydrates(food.getCarbohydrates() * factor);
     }
 
-    public DailyFoodsResponseDto toDailyFoodsResponseDto(List<FoodCalculatedMacrosResponseDto> foods) {
-        double totalCalories = foods.stream()
-                .mapToDouble(FoodCalculatedMacrosResponseDto::getCalories)
-                .sum();
-        double totalCarbohydrates = foods.stream()
-                .mapToDouble(FoodCalculatedMacrosResponseDto::getCarbohydrates)
-                .sum();
-        double totalProtein = foods.stream()
-                .mapToDouble(FoodCalculatedMacrosResponseDto::getProtein)
-                .sum();
-        double totalFat = foods.stream()
-                .mapToDouble(FoodCalculatedMacrosResponseDto::getFat)
-                .sum();
-
-        return DailyFoodsResponseDto.of(
-                foods,
-                totalCalories,
-                totalCarbohydrates,
-                totalProtein,
-                totalFat
-        );
+    public DailyFoodsResponseDto toDailyFoodsResponseDto(List<DailyFoodItem> dailyFoodItems) {
+        return dailyFoodItems.stream()
+                .map(this::toFoodCalculatedMacrosResponseDto)
+                .collect(
+                        Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                DailyFoodsResponseDto::create
+                        )
+                );
     }
 }

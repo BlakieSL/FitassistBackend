@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
+import source.code.model.food.Food;
 
 import java.util.List;
 
@@ -24,5 +25,31 @@ public class DailyFoodsResponseDto {
         responseDto.setFoods(foods);
 
         return responseDto;
+    }
+
+    public static DailyFoodsResponseDto create(List<FoodCalculatedMacrosResponseDto> foods) {
+        double totalCalories = foods.stream()
+                .mapToDouble(FoodCalculatedMacrosResponseDto::getCalories)
+                .sum();
+
+        double totalCarbohydrates = foods.stream()
+                .mapToDouble(FoodCalculatedMacrosResponseDto::getCarbohydrates)
+                .sum();
+
+        double totalProtein = foods.stream()
+                .mapToDouble(FoodCalculatedMacrosResponseDto::getProtein)
+                .sum();
+
+        double totalFat = foods.stream()
+                .mapToDouble(FoodCalculatedMacrosResponseDto::getFat)
+                .sum();
+
+        return new DailyFoodsResponseDto(
+                foods,
+                totalCalories,
+                totalCarbohydrates,
+                totalProtein,
+                totalFat
+        );
     }
 }
