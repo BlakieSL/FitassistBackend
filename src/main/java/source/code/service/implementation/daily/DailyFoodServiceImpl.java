@@ -3,6 +3,7 @@ package source.code.service.implementation.daily;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import io.reactivex.rxjava3.core.Single;
 import jakarta.transaction.Transactional;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,9 @@ import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class DailyFoodServiceImpl implements DailyFoodService {
@@ -106,13 +110,21 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     @Override
     public DailyFoodsResponseDto getFoodsFromDailyFoodItem() {
         int userId = AuthorizationUtil.getUserId();
-        DailyFood dailyFood = getOrCreateDailyFoodForUser(userId);
 
-        return dailyFoodMapper.toDailyFoodsResponseDto(dailyFood.getDailyFoodItems().stream()
-                .map(dailyFoodMapper::toFoodCalculatedMacrosResponseDto)
-                .toList()
-        );
+        return Optional.ofNullable(getOrCreateDailyFoodForUser(userId))
+                .map(DailyFood::getDailyFoodItems)
+                .filter(items -> !items.isEmpty())
+                .map(dailyFoodMapper::toDailyFoodsResponseDto)
+                .orElseGet(() -> DailyFoodsResponseDto.of(
+                        Collections.emptyList(),
+                        0,
+                        0,
+                        0,
+                        0)
+                );
     }
+
+
 
     private void updateOrAddDailyFoodItem(
             DailyFood dailyFood,
