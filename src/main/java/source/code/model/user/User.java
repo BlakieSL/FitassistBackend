@@ -27,8 +27,8 @@ import java.util.Set;
 public class User {
     private static final int NAME_MAX_LENGTH = 40;
     private static final int EMAIL_MAX_LENGTH = 50;
-    private static final int PASSWORD_MAX_LENGTH = 255;
-    private static final int PASSWORD_MIN_LENGTH = 8;
+    private static final int BCRYPT_HASHED_PASSWORD_MAX_LENGTH = 60;
+    private static final int BCRYPT_HASHED_PASSWORD_MIN_LENGTH = 60;
     private static final int GENDER_MAX_LENGTH = 6;
     private static final int GENDER_MIN_LENGTH = 4;
 
@@ -54,8 +54,8 @@ public class User {
     private String email;
 
     @NotBlank
-    @Size(min = PASSWORD_MIN_LENGTH, max = PASSWORD_MAX_LENGTH)
-    @Column(nullable = false)
+    @Size(min = BCRYPT_HASHED_PASSWORD_MIN_LENGTH, max = BCRYPT_HASHED_PASSWORD_MAX_LENGTH)
+    @Column(nullable = false, length = BCRYPT_HASHED_PASSWORD_MAX_LENGTH)
     private String password;
 
     @NotBlank
