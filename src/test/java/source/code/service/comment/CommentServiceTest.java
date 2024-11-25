@@ -110,8 +110,7 @@ public class CommentServiceTest {
 
     @Test
     void updateComment_shouldThrowExceptionWhenPatchFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(commentRepository, Comment.class, commentId)).thenReturn(comment);
         when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
         when(jsonPatchService.applyPatch(patch, responseDto, CommentUpdateDto.class))
@@ -125,8 +124,7 @@ public class CommentServiceTest {
 
     @Test
     void updateComment_shouldThrowExceptionWhenValidationFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(commentRepository, Comment.class, commentId)).thenReturn(comment);
         when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
         when(jsonPatchService.applyPatch(patch, responseDto, CommentUpdateDto.class)).thenReturn(patchedDto);
@@ -194,7 +192,8 @@ public class CommentServiceTest {
         int threadId = 1;
         List<Comment> comments = List.of(comment);
         List<CommentResponseDto> responseDtos = List.of(responseDto);
-        when(commentRepository.findAllByThreadIdAndParentCommentNull(threadId)).thenReturn(comments);
+        when(commentRepository.findAllByThreadIdAndParentCommentNull(threadId))
+                .thenReturn(comments);
         when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
 
         List<CommentResponseDto> result = commentService.getTopCommentsForThread(threadId);
@@ -204,7 +203,9 @@ public class CommentServiceTest {
 
     @Test
     void getReplies_shouldReturnReplies() {
-        comment.setId(commentId);
+        int directReplyId =2;
+        comment.setId(directReplyId);
+
         List<Comment> replies = List.of(comment);
         List<CommentResponseDto> responseDtos = List.of(responseDto);
         when(commentRepository.findAllByParentCommentId(commentId)).thenReturn(replies);
@@ -213,5 +214,56 @@ public class CommentServiceTest {
         List<CommentResponseDto> result = commentService.getReplies(commentId);
 
         assertEquals(responseDtos, result);
+    }
+
+    @Test
+    void getReplies_shouldFilterOutDirectSelfReplies() {
+        int commentId = 1;
+        Comment comment = new Comment();
+        comment.setId(commentId);
+
+        Comment selfReply = new Comment();
+        selfReply.setId(commentId);
+
+        List<Comment> replies = List.of(selfReply);
+        when(commentRepository.findAllByParentCommentId(commentId)).thenReturn(replies);
+
+        List<CommentResponseDto> result = commentService.getReplies(commentId);
+
+        assertTrue(result.isEmpty());
+        verify(commentRepository).findAllByParentCommentId(commentId);
+        verify(commentMapper, never()).toResponseDto(selfReply);
+    }
+
+    @Test
+    void getReplies_shouldFilterOutFurtherSelfReplies() {
+        int commentId = 1;
+        int replyId = 2;
+
+        Comment comment = new Comment();
+        comment.setId(commentId);
+
+        Comment directReply = new Comment();
+        directReply.setId(replyId);
+
+        Comment furtherSelfReply = new Comment();
+        furtherSelfReply.setId(replyId);
+
+        List<Comment> replies = List.of(directReply);
+        when(commentRepository.findAllByParentCommentId(commentId)).thenReturn(replies);
+        when(commentRepository.findAllByParentCommentId(replyId))
+                .thenReturn(List.of(furtherSelfReply));
+
+        CommentResponseDto directReplyDto = new CommentResponseDto();
+        directReplyDto.setId(replyId);
+        when(commentMapper.toResponseDto(directReply)).thenReturn(directReplyDto);
+
+        List<CommentResponseDto> result = commentService.getReplies(commentId);
+
+        assertTrue(result.get(0).getReplies().isEmpty());
+        verify(commentRepository).findAllByParentCommentId(commentId);
+        verify(commentRepository).findAllByParentCommentId(replyId);
+        verify(commentMapper).toResponseDto(directReply);
+        verify(commentMapper, never()).toResponseDto(furtherSelfReply);
     }
 }

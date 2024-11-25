@@ -91,6 +91,7 @@ public class CommentServiceImpl implements CommentService {
         List<Comment> directReplies = commentRepository.findAllByParentCommentId(commentId);
 
         return directReplies.stream()
+                .filter(reply -> !reply.getId().equals(commentId))
                 .map(this::buildCommentHierarchy)
                 .toList();
     }
