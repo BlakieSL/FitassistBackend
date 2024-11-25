@@ -31,6 +31,7 @@ import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.daily.DailyActivityServiceImpl;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -88,6 +89,17 @@ public class DailyActivityServiceTest {
         if (mockedAuthorizationUtil != null) {
             mockedAuthorizationUtil.close();
         }
+    }
+
+
+    @Test
+    void resetDailyCarts_shouldResetAndSaveDailyActivities() {
+        when(dailyActivityRepository.findAll()).thenReturn(List.of(dailyActivity));
+
+        dailyActivityService.resetDailyCarts();
+
+        verify(dailyActivityRepository).findAll();
+        verify(dailyActivityRepository).save(dailyActivity);
     }
 
     @Test

@@ -31,6 +31,7 @@ import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.daily.DailyFoodServiceImpl;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -88,6 +89,16 @@ public class DailyFoodServiceTest {
         if (mockedAuthorizationUtil != null) {
             mockedAuthorizationUtil.close();
         }
+    }
+
+    @Test
+    void resetDailyCarts_shouldResetAndSaveDailyFoods() {
+        when(dailyFoodRepository.findAll()).thenReturn(List.of(dailyFood));
+
+        dailyFoodService.resetDailyCarts();
+
+        verify(dailyFoodRepository).findAll();
+        verify(dailyFoodRepository).save(dailyFood);
     }
 
     @Test
