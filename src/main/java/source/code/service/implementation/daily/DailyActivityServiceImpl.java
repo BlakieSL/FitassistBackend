@@ -160,7 +160,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     }
 
     private void updateTime(DailyActivityItem dailyActivityItem, int time) {
-        dailyActivityItem.setTime(dailyActivityItem.getTime());
+        dailyActivityItem.setTime(time);
     }
 
     @Transactional

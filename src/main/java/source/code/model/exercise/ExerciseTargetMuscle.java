@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 public class ExerciseTargetMuscle {
     public static final String TARGET_MUSCLE = "targetMuscle";
 
