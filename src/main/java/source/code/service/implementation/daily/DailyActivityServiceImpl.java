@@ -15,7 +15,7 @@ import source.code.mapper.daily.DailyActivityMapper;
 import source.code.model.activity.Activity;
 import source.code.model.activity.DailyActivity;
 import source.code.model.activity.DailyActivityItem;
-import source.code.model.user.User;
+import source.code.model.user.profile.User;
 import source.code.repository.ActivityRepository;
 import source.code.repository.DailyActivityItemRepository;
 import source.code.repository.DailyActivityRepository;

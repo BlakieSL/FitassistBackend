@@ -1,7 +1,7 @@
 package source.code.service.declaration.user;
 
 import source.code.dto.response.LikesAndSavesResponseDto;
-import source.code.model.user.BaseUserEntity;
+import source.code.helper.BaseUserEntity;
 
 import java.util.List;
 

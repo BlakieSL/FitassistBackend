@@ -8,7 +8,7 @@ import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.dto.response.activity.ActivityResponseDto;
 import source.code.model.activity.Activity;
 import source.code.model.activity.ActivityCategory;
-import source.code.model.user.User;
+import source.code.model.user.profile.User;
 import source.code.repository.ActivityCategoryRepository;
 import source.code.service.declaration.helpers.CalculationsService;
 import source.code.service.declaration.helpers.RepositoryHelper;

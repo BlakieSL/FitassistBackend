@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.model.user.BaseUserEntity;
+import source.code.helper.BaseUserEntity;
 
 @Getter
 @Setter

@@ -1,4 +1,4 @@
-package source.code.model.user;
+package source.code.helper;
 
 public interface BaseUserEntity {
 }
