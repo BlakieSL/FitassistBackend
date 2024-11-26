@@ -40,8 +40,12 @@ public final class CalculationsServiceImpl implements CalculationsService {
 
     @Override
     public double calculateCaloricNeeds(
-            double weight, double height, int age,
-            String gender, String activityLevel, String goal
+            double weight,
+            double height,
+            int age,
+            String gender,
+            String activityLevel,
+            String goal
     ) {
         double bmr = calculateBMR(weight, height, age, gender);
         double tdee = calculateTDEE(bmr, activityLevel);
