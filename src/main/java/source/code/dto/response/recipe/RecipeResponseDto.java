@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.pojo.RecipeCategoryShortDto;
-import source.code.model.user.BaseUserEntity;
+import source.code.helper.BaseUserEntity;
 
 import java.util.List;
 

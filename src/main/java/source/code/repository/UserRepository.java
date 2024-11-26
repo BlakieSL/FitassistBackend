@@ -2,7 +2,7 @@ package source.code.repository;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import source.code.model.user.User;
+import source.code.model.user.profile.User;
 
 import java.util.Optional;
 

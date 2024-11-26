@@ -11,7 +11,7 @@ import source.code.model.recipe.Recipe;
 import source.code.model.recipe.RecipeCategory;
 import source.code.model.recipe.RecipeCategoryAssociation;
 import source.code.model.text.RecipeInstruction;
-import source.code.model.user.User;
+import source.code.model.user.profile.User;
 import source.code.repository.RecipeCategoryRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.RepositoryHelper;

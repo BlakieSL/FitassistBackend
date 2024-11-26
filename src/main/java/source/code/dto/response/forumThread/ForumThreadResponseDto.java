@@ -1,15 +1,12 @@
 package source.code.dto.response.forumThread;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.model.user.BaseUserEntity;
+import source.code.helper.BaseUserEntity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter

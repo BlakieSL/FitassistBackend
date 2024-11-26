@@ -29,7 +29,7 @@ import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.activity.ActivityMapper;
 import source.code.model.activity.Activity;
-import source.code.model.user.User;
+import source.code.model.user.profile.User;
 import source.code.repository.ActivityRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.JsonPatchService;

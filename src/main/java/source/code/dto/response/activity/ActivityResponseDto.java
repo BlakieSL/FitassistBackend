@@ -1,7 +1,7 @@
 package source.code.dto.response.activity;
 
 import lombok.*;
-import source.code.model.user.BaseUserEntity;
+import source.code.helper.BaseUserEntity;
 
 @Getter
 @Setter
