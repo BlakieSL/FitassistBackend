@@ -22,7 +22,7 @@ import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.cache.CacheNames;
 import source.code.helper.user.UserDetailsHelper;
 import source.code.mapper.UserMapper;
-import source.code.model.user.User;
+import source.code.model.user.profile.User;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
@@ -66,7 +66,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userMapper.addDefaultRole(user);
 
         User savedUser = userRepository.save(user);
-
         applicationEventPublisher.publishEvent(UserRegisterEvent.of(this, request));
 
         return userMapper.toResponse(savedUser);

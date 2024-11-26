@@ -5,13 +5,12 @@ import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.forumThread.ForumThreadMapper;
 import source.code.model.forum.ForumThread;
-import source.code.model.user.User;
+import source.code.model.user.profile.User;
 import source.code.model.user.UserThreadSubscription;
 import source.code.repository.ForumThreadRepository;
 import source.code.repository.UserRepository;
 import source.code.repository.UserThreadSubscriptionRepository;
 import source.code.service.declaration.user.SavedServiceWithoutType;
-import source.code.service.implementation.user.interaction.GenericSavedServiceWithoutType;
 
 import java.util.List;
 @Service("userThreadService")

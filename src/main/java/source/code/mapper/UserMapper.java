@@ -8,7 +8,7 @@ import source.code.dto.request.user.UserCreateDto;
 import source.code.dto.request.user.UserUpdateDto;
 import source.code.dto.response.user.UserResponseDto;
 import source.code.model.user.Role;
-import source.code.model.user.User;
+import source.code.model.user.profile.User;
 import source.code.repository.RoleRepository;
 import source.code.service.declaration.helpers.CalculationsService;
 

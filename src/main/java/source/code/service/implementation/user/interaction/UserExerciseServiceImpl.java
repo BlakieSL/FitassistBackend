@@ -5,7 +5,7 @@ import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.exercise.ExerciseMapper;
 import source.code.model.exercise.Exercise;
-import source.code.model.user.User;
+import source.code.model.user.profile.User;
 import source.code.model.user.UserExercise;
 import source.code.repository.ExerciseRepository;
 import source.code.repository.UserExerciseRepository;

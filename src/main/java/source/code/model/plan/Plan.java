@@ -11,7 +11,7 @@ import lombok.Setter;
 import source.code.helper.search.IndexedEntity;
 import source.code.model.other.ExpertiseLevel;
 import source.code.model.text.PlanInstruction;
-import source.code.model.user.User;
+import source.code.model.user.profile.User;
 import source.code.model.user.UserPlan;
 import source.code.model.workout.Workout;
 
