@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.helper.Enum.model.user.ActivityLevelType;
+import source.code.helper.Enum.model.user.GenderType;
+import source.code.helper.Enum.model.user.GoalType;
 import source.code.validation.email.UniqueEmailDomain;
 import source.code.validation.password.PasswordDigitsDomain;
 import source.code.validation.password.PasswordLowercaseDomain;
@@ -38,7 +41,7 @@ public class UserCreateDto {
     private String password;
     @Size(min = 4, max = 6)
     @NotBlank
-    private String gender;
+    private GenderType gender;
     @NotNull
     @Past
     private LocalDate birthday;
@@ -49,7 +52,7 @@ public class UserCreateDto {
     @Positive
     private double weight;
     @NotBlank
-    private String activityLevel;
+    private ActivityLevelType activityLevel;
     @NotBlank
-    private String goal;
+    private GoalType goal;
 }

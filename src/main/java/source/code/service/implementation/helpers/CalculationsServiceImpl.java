@@ -1,6 +1,10 @@
 package source.code.service.implementation.helpers;
 
 import org.springframework.stereotype.Service;
+import source.code.helper.Enum.model.user.ActivityLevelType;
+import source.code.helper.Enum.model.user.GenderType;
+import source.code.helper.Enum.model.user.GoalType;
+import source.code.model.activity.Activity;
 import source.code.service.declaration.helpers.CalculationsService;
 
 @Service
@@ -24,16 +28,15 @@ public final class CalculationsServiceImpl implements CalculationsService {
     private static final int CALORIE_DIVISOR = 200;
 
     @Override
-    public double calculateBMR(double weight, double height, int age, String gender) {
-        return switch (gender.toLowerCase()) {
-            case "male" -> calculateBMRForMale(weight, height, age);
-            case "female" -> calculateBMRForFemale(weight, height, age);
-            default -> 0;
+    public double calculateBMR(double weight, double height, int age, GenderType gender) {
+        return switch (gender) {
+            case MALE -> calculateBMRForMale(weight, height, age);
+            case FEMALE -> calculateBMRForFemale(weight, height, age);
         };
     }
 
     @Override
-    public double calculateTDEE(double bmr, String activityLevel) {
+    public double calculateTDEE(double bmr, ActivityLevelType activityLevel) {
         double activityFactor = getActivityFactor(activityLevel);
         return bmr * activityFactor;
     }
@@ -43,9 +46,9 @@ public final class CalculationsServiceImpl implements CalculationsService {
             double weight,
             double height,
             int age,
-            String gender,
-            String activityLevel,
-            String goal
+            GenderType gender,
+            ActivityLevelType activityLevel,
+            GoalType goal
     ) {
         double bmr = calculateBMR(weight, height, age, gender);
         double tdee = calculateTDEE(bmr, activityLevel);
@@ -71,22 +74,21 @@ public final class CalculationsServiceImpl implements CalculationsService {
                 FEMALE_CONSTANT;
     }
 
-    private double getActivityFactor(String activityLevel) {
-        return switch (activityLevel.toLowerCase()) {
-            case "sedentary" -> SEDENTARY_FACTOR;
-            case "lightly_active" -> LIGHTLY_ACTIVE_FACTOR;
-            case "moderately_active" -> MODERATELY_ACTIVE_FACTOR;
-            case "very_active" -> VERY_ACTIVE_FACTOR;
-            case "super_active" -> SUPER_ACTIVE_FACTOR;
-            default -> DEFAULT_FACTOR;
+    private double getActivityFactor(ActivityLevelType activityLevel) {
+        return switch (activityLevel) {
+            case SEDENTARY -> SEDENTARY_FACTOR;
+            case LIGHTLY_ACTIVE -> LIGHTLY_ACTIVE_FACTOR;
+            case MODERATELY_ACTIVE -> MODERATELY_ACTIVE_FACTOR;
+            case VERY_ACTIVE -> VERY_ACTIVE_FACTOR;
+            case SUPER_ACTIVE -> SUPER_ACTIVE_FACTOR;
         };
     }
 
-    private double adjustCaloricNeedsBasedOnGoal(double tdee, String goal) {
-        return switch (goal.toLowerCase()) {
-            case "maintain" -> tdee;
-            case "lose" -> tdee - CALORIE_DEFICIT;
-            case "build" -> tdee + CALORIE_SURPLUS;
+    private double adjustCaloricNeedsBasedOnGoal(double tdee, GoalType goal) {
+        return switch (goal) {
+            case MAINTAIN_WEIGHT -> tdee;
+            case LOSE_WEIGHT -> tdee - CALORIE_DEFICIT;
+            case BUILD_MUSCLE -> tdee + CALORIE_SURPLUS;
             default -> tdee;
         };
     }
