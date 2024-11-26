@@ -122,6 +122,7 @@ public abstract class UserMapper {
                 age,
                 user.getGender(),
                 request.getActivityLevel(),
-                request.getGoal());
+                request.getGoal()
+        );
     }
 }

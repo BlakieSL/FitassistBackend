@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.helper.Enum.model.user.ActivityLevelType;
+import source.code.helper.Enum.model.user.GenderType;
+import source.code.helper.Enum.model.user.GoalType;
 import source.code.model.activity.DailyActivity;
 import source.code.model.food.DailyFood;
 import source.code.model.forum.*;
@@ -59,9 +62,9 @@ public class User {
     private String password;
 
     @NotBlank
-    @Size(min = GENDER_MIN_LENGTH, max = GENDER_MAX_LENGTH)
-    @Column(nullable = false, length = GENDER_MAX_LENGTH)
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private GenderType gender;
 
     @NotNull
     @Past
@@ -84,12 +87,14 @@ public class User {
     private double calculatedCalories;
 
     @NotBlank
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String goal;
+    private GoalType goal;
 
     @NotBlank
+    @Enumerated(EnumType.STRING)
     @Column(name = "activity_level", nullable = false)
-    private String activityLevel;
+    private ActivityLevelType activityLevel;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private DailyFood dailyFood;
