@@ -121,7 +121,8 @@ public class PlanServiceTest {
     void updatePlan_shouldUpdate() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
         when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, PlanUpdateDto.class)).thenReturn(patchedDto);
+        when(jsonPatchService.applyPatch(patch, responseDto, PlanUpdateDto.class))
+                .thenReturn(patchedDto);
         when(planRepository.save(plan)).thenReturn(plan);
 
         planService.updatePlan(planId, patch);
@@ -150,7 +151,8 @@ public class PlanServiceTest {
 
     @Test
     void updatePlan_shouldThrowExceptionWhenPlanNotFound() {
-        when(repositoryHelper.find(planRepository, Plan.class, planId)).thenThrow(RecordNotFoundException.of(Plan.class, planId));
+        when(repositoryHelper.find(planRepository, Plan.class, planId))
+                .thenThrow(RecordNotFoundException.of(Plan.class, planId));
 
         assertThrows(RecordNotFoundException.class, () -> planService.updatePlan(planId, patch));
 
@@ -170,7 +172,8 @@ public class PlanServiceTest {
 
     @Test
     void deletePlan_shouldThrowExceptionWhenPlanNotFound() {
-        when(repositoryHelper.find(planRepository, Plan.class, planId)).thenThrow(RecordNotFoundException.of(Plan.class, planId));
+        when(repositoryHelper.find(planRepository, Plan.class, planId))
+                .thenThrow(RecordNotFoundException.of(Plan.class, planId));
 
         assertThrows(RecordNotFoundException.class, () -> planService.deletePlan(planId));
 
@@ -270,7 +273,8 @@ public class PlanServiceTest {
         PlanCategoryAssociation association = new PlanCategoryAssociation();
         association.setPlan(plan);
 
-        when(planCategoryAssociationRepository.findByPlanCategoryId(categoryId)).thenReturn(List.of(association));
+        when(planCategoryAssociationRepository.findByPlanCategoryId(categoryId))
+                .thenReturn(List.of(association));
         when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
 
         List<PlanResponseDto> result = planService.getPlansByCategory(categoryId);
@@ -284,7 +288,8 @@ public class PlanServiceTest {
     @Test
     void getPlansByCategory_shouldReturnEmptyListWhenNoPlans() {
         int categoryId = 1;
-        when(planCategoryAssociationRepository.findByPlanCategoryId(categoryId)).thenReturn(new ArrayList<>());
+        when(planCategoryAssociationRepository.findByPlanCategoryId(categoryId))
+                .thenReturn(new ArrayList<>());
 
         List<PlanResponseDto> result = planService.getPlansByCategory(categoryId);
 

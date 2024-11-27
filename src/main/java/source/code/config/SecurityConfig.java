@@ -12,7 +12,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -22,6 +21,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import source.code.auth.BearerTokenFilter;
 import source.code.auth.JwtAuthenticationFilter;
 import source.code.auth.JwtService;
+import source.code.auth.RateLimitingFilter;
 import source.code.service.implementation.user.UserServiceImpl;
 
 import java.util.Arrays;

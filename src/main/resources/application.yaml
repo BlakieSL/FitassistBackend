@@ -40,6 +40,7 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+
   threads:
     virtual:
       enabled: true
@@ -50,3 +51,8 @@ server:
 logging:
   level:
     org.springframework.cache: DEBUG
+rate-limiter:
+  user-rate: 8
+  user-interval: 1
+  key-rate: 5
+  key-interval: 1
