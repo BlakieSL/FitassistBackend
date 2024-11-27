@@ -5,6 +5,7 @@ import org.redisson.api.RateIntervalUnit;
 import org.redisson.api.RateType;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
+import source.code.config.RedissonRateLimitConfig;
 import source.code.service.declaration.rateLimiter.RedissonRateLimiterService;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,11 +14,14 @@ import java.util.concurrent.ConcurrentMap;
 @Service
 public class RedissonRateLimiterServiceImpl implements RedissonRateLimiterService {
     private final RedissonClient redissonClient;
+    private final RedissonRateLimitConfig rateLimitConfig;
     private final ConcurrentMap<Integer, RRateLimiter> rateLimiters = new ConcurrentHashMap<>();
-    private final ConcurrentMap<String, RRateLimiter> rateLimitersByKey = new ConcurrentHashMap<>(); // New map for generic keys
+    private final ConcurrentMap<String, RRateLimiter> rateLimitersByKey = new ConcurrentHashMap<>();
 
-    public RedissonRateLimiterServiceImpl(RedissonClient redissonClient) {
+    public RedissonRateLimiterServiceImpl(RedissonClient redissonClient,
+                                          RedissonRateLimitConfig rateLimitConfig) {
         this.redissonClient = redissonClient;
+        this.rateLimitConfig = rateLimitConfig;
     }
 
     @Override
@@ -29,9 +33,7 @@ public class RedissonRateLimiterServiceImpl implements RedissonRateLimiterServic
     @Override
     public boolean isAllowed(String key) {
         RRateLimiter rateLimiter = getRateLimiterForKey(key);
-        boolean allowed = rateLimiter.tryAcquire(1);
-        System.out.println("Key: " + key + " | Allowed: " + allowed);
-        return allowed;
+        return rateLimiter.tryAcquire(1);
     }
 
     private RRateLimiter getRateLimiterForUserId(int userId) {
@@ -41,11 +43,15 @@ public class RedissonRateLimiterServiceImpl implements RedissonRateLimiterServic
     private RRateLimiter createRateLimiterForUserId(int userId) {
         String rateLimiterName = "rateLimiter:user:" + userId;
         RRateLimiter rateLimiter = redissonClient.getRateLimiter(rateLimiterName);
-        rateLimiter.trySetRate(RateType.OVERALL, 8, 1, RateIntervalUnit.MINUTES);
+        rateLimiter.trySetRate(
+                RateType.OVERALL,
+                rateLimitConfig.getUserRate(),
+                rateLimitConfig.getUserInterval(),
+                RateIntervalUnit.MINUTES
+        );
         return rateLimiter;
     }
 
-    // New method to handle rate limiting for generic keys (non-auth endpoints)
     private RRateLimiter getRateLimiterForKey(String key) {
         return rateLimitersByKey.computeIfAbsent(key, this::createRateLimiterForKey);
     }
@@ -53,7 +59,12 @@ public class RedissonRateLimiterServiceImpl implements RedissonRateLimiterServic
     private RRateLimiter createRateLimiterForKey(String key) {
         String rateLimiterName = "rateLimiter:key:" + key;
         RRateLimiter rateLimiter = redissonClient.getRateLimiter(rateLimiterName);
-        rateLimiter.trySetRate(RateType.OVERALL, 5, 1, RateIntervalUnit.MINUTES); // Configurable rate for non-auth endpoints
+        rateLimiter.trySetRate(
+                RateType.OVERALL,
+                rateLimitConfig.getKeyRate(),
+                rateLimitConfig.getKeyInterval(),
+                RateIntervalUnit.MINUTES
+        );
         return rateLimiter;
     }
 }

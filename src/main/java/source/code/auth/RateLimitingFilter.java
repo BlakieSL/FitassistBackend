@@ -1,4 +1,4 @@
-package source.code.config;
+package source.code.auth;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
