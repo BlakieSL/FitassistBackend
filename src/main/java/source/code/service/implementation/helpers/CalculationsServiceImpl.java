@@ -89,7 +89,6 @@ public final class CalculationsServiceImpl implements CalculationsService {
             case MAINTAIN_WEIGHT -> tdee;
             case LOSE_WEIGHT -> tdee - CALORIE_DEFICIT;
             case BUILD_MUSCLE -> tdee + CALORIE_SURPLUS;
-            default -> tdee;
         };
     }
 }
