@@ -91,7 +91,7 @@ public class FoodServiceTest {
     }
 
     @Test
-    void createFood_shouldCreateFoodAndPublish() {
+    void createFood_shouldCreateFood() {
         when(foodMapper.toEntity(createDto)).thenReturn(food);
         when(foodRepository.save(food)).thenReturn(food);
         when(foodMapper.toResponseDto(food)).thenReturn(responseDto);
