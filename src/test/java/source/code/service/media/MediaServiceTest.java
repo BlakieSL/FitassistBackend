@@ -33,7 +33,6 @@ public class MediaServiceTest {
     private MediaRepository mediaRepository;
     @InjectMocks
     private MediaServiceImpl mediaService;
-
     private Media media;
     private MediaCreateDto createDto;
     private MediaResponseDto responseDto;
