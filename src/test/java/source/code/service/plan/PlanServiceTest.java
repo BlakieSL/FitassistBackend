@@ -161,6 +161,40 @@ public class PlanServiceTest {
     }
 
     @Test
+    void updatePlan_shouldThrowExceptionWhenPatchFails()
+            throws JsonPatchException, JsonProcessingException
+    {
+        when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
+        when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
+        when(jsonPatchService.applyPatch(patch, responseDto, PlanUpdateDto.class))
+                .thenThrow(JsonPatchException.class);
+
+        assertThrows(JsonPatchException.class, () -> planService.updatePlan(planId, patch));
+
+        verifyNoInteractions(validationService, eventPublisher);
+        verify(planRepository, never()).save(plan);
+    }
+
+    @Test
+    void updatePlan_shouldThrowExceptionWhenValidationFails()
+            throws JsonPatchException, JsonProcessingException
+    {
+        when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
+        when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
+        when(jsonPatchService.applyPatch(patch, responseDto, PlanUpdateDto.class))
+                .thenReturn(patchedDto);
+
+        doThrow(new IllegalArgumentException("Validation failed")).when(validationService)
+                .validate(patchedDto);
+
+        assertThrows(RuntimeException.class, () -> planService.updatePlan(planId, patch));
+
+        verify(validationService).validate(patchedDto);
+        verifyNoInteractions(eventPublisher);
+        verify(planRepository, never()).save(plan);
+    }
+
+    @Test
     void deletePlan_shouldDelete() {
         when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
 

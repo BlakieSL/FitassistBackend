@@ -10,7 +10,8 @@ import source.code.helper.Enum.filter.FilterOperation;
 @Setter
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
-public class FilterCriteria {
+public class
+FilterCriteria {
     private String filterKey;
     private Object value;
     private FilterOperation operation;
