@@ -28,9 +28,4 @@ public abstract class TextBase {
     @NotBlank
     @Column(nullable = false)
     private String text;
-
-    public TextBase(short number, String text) {
-        this.number = number;
-        this.text = text;
-    }
 }

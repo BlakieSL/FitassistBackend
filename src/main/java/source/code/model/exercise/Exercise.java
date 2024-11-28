@@ -88,19 +88,6 @@ public class Exercise implements IndexedEntity {
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE)
     private final Set<UserExercise> userExercises = new HashSet<>();
 
-    public static Exercise createWithId(int id) {
-        Exercise exercise = new Exercise();
-        exercise.setId(id);
-        return exercise;
-    }
-
-    public static Exercise createWithIdAndName(int id, String name) {
-        Exercise exercise = new Exercise();
-        exercise.setId(id);
-        exercise.setName(name);
-        return exercise;
-    }
-
     @Override
     public String getClassName() {
         return this.getClass().getSimpleName();
