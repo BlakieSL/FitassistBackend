@@ -63,4 +63,7 @@ public class Activity implements IndexedEntity {
         return activity;
     }
 
+    public static Activity of(Integer id, String name) {
+        return of(id, name, 0);
+    }
 }
