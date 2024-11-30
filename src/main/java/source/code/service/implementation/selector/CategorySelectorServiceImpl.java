@@ -14,11 +14,16 @@ public class CategorySelectorServiceImpl implements CategorySelectorService {
     private final CategoryService recipeCategoryService;
     private final CategoryService planCategoryService;
 
-    public CategorySelectorServiceImpl(@Qualifier("foodCategoryService") CategoryService foodCategoryService,
-                                       @Qualifier("activityCategoryService") CategoryService activityCategoryService,
-                                       @Qualifier("targetMuscleService") CategoryService targetMuscleService,
-                                       @Qualifier("recipeCategoryService") CategoryService recipeCategoryService,
-                                       @Qualifier("planCategoryService") CategoryService planCategoryService) {
+    public CategorySelectorServiceImpl(@Qualifier("foodCategoryService")
+                                       CategoryService foodCategoryService,
+                                       @Qualifier("activityCategoryService")
+                                       CategoryService activityCategoryService,
+                                       @Qualifier("targetMuscleService")
+                                       CategoryService targetMuscleService,
+                                       @Qualifier("recipeCategoryService")
+                                       CategoryService recipeCategoryService,
+                                       @Qualifier("planCategoryService")
+                                       CategoryService planCategoryService) {
         this.foodCategoryService = foodCategoryService;
         this.activityCategoryService = activityCategoryService;
         this.targetMuscleService = targetMuscleService;

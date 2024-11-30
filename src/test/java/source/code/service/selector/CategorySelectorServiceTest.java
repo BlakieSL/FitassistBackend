@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import source.code.helper.Enum.model.CategoryType;
 import source.code.service.declaration.category.CategoryService;
+import source.code.service.implementation.category.*;
 import source.code.service.implementation.selector.CategorySelectorServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -13,15 +14,15 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 public class CategorySelectorServiceTest {
 
     @Mock
-    private CategoryService foodCategoryService;
+    private FoodCategoryServiceImpl foodCategoryService;
     @Mock
-    private CategoryService activityCategoryService;
+    private ActivityCategoryServiceImpl activityCategoryService;
     @Mock
-    private CategoryService targetMuscleService;
+    private TargetMuscleServiceImpl targetMuscleService;
     @Mock
-    private CategoryService recipeCategoryService;
+    private RecipeCategoryServiceImpl recipeCategoryService;
     @Mock
-    private CategoryService planCategoryService;
+    private PlanCategoryServiceImpl planCategoryService;
 
     private CategorySelectorServiceImpl categorySelectorService;
 
