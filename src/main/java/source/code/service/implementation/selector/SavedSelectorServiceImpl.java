@@ -16,13 +16,20 @@ public class SavedSelectorServiceImpl implements SavedSelectorService {
     private final SavedService userRecipeService;
     private final SavedServiceWithoutType userCommentService;
     private final SavedServiceWithoutType userThreadService;
-    public SavedSelectorServiceImpl(@Qualifier("userActivityService") SavedService userActivityService,
-                                    @Qualifier("userExerciseService") SavedService userExerciseService,
-                                    @Qualifier("userFoodService") SavedService userFoodService,
-                                    @Qualifier("userPlanService") SavedService userPlanService,
-                                    @Qualifier("userRecipeService") SavedService userRecipeService,
-                                    @Qualifier("userCommentService") SavedServiceWithoutType userCommentService,
-                                    @Qualifier("userThreadService") SavedServiceWithoutType userThreadService) {
+    public SavedSelectorServiceImpl(@Qualifier("userActivityService")
+                                    SavedService userActivityService,
+                                    @Qualifier("userExerciseService")
+                                    SavedService userExerciseService,
+                                    @Qualifier("userFoodService")
+                                    SavedService userFoodService,
+                                    @Qualifier("userPlanService")
+                                    SavedService userPlanService,
+                                    @Qualifier("userRecipeService")
+                                    SavedService userRecipeService,
+                                    @Qualifier("userCommentService")
+                                    SavedServiceWithoutType userCommentService,
+                                    @Qualifier("userThreadService")
+                                    SavedServiceWithoutType userThreadService) {
         this.userActivityService = userActivityService;
         this.userExerciseService = userExerciseService;
         this.userFoodService = userFoodService;
@@ -52,6 +59,4 @@ public class SavedSelectorServiceImpl implements SavedSelectorService {
             default -> throw new IllegalStateException("Unexpected value: " + savedEntityType);
         };
     }
-
-
 }
