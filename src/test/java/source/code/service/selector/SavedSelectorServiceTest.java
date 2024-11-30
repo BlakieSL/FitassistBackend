@@ -1,0 +1,102 @@
+package source.code.service.selector;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import source.code.helper.Enum.model.SavedEntityType;
+import source.code.service.declaration.user.SavedService;
+import source.code.service.declaration.user.SavedServiceWithoutType;
+import source.code.service.implementation.selector.SavedSelectorServiceImpl;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class SavedSelectorServiceTest {
+
+    @Mock
+    private SavedService userActivityService;
+    @Mock
+    private SavedService userExerciseService;
+    @Mock
+    private SavedService userFoodService;
+    @Mock
+    private SavedService userPlanService;
+    @Mock
+    private SavedService userRecipeService;
+    @Mock
+    private SavedServiceWithoutType userCommentService;
+    @Mock
+    private SavedServiceWithoutType userThreadService;
+
+    private SavedSelectorServiceImpl savedSelectorService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        savedSelectorService = new SavedSelectorServiceImpl(
+                userActivityService,
+                userExerciseService,
+                userFoodService,
+                userPlanService,
+                userRecipeService,
+                userCommentService,
+                userThreadService
+        );
+    }
+
+    @Test
+    void getService_shouldReturnUserActivityService() {
+        assertSame(userActivityService, savedSelectorService.getService(SavedEntityType.ACTIVITY));
+    }
+
+    @Test
+    void getService_shouldReturnUserExerciseService() {
+        assertSame(userExerciseService, savedSelectorService.getService(SavedEntityType.EXERCISE));
+    }
+
+    @Test
+    void getService_shouldReturnUserFoodService() {
+        assertSame(userFoodService, savedSelectorService.getService(SavedEntityType.PLAN));
+    }
+
+    @Test
+    void getService_shouldReturnUserPlanService() {
+        assertSame(userPlanService, savedSelectorService.getService(SavedEntityType.FOOD));
+    }
+
+    @Test
+    void getService_shouldReturnUserRecipeService() {
+        assertSame(userRecipeService, savedSelectorService.getService(SavedEntityType.RECIPE));
+    }
+
+    @Test
+    void getService_shouldThrowExceptionForUnexpectedValue() {
+        assertThrows(IllegalStateException.class,
+                () -> savedSelectorService.getService(SavedEntityType.COMMENT)
+        );
+    }
+
+    @Test
+    void getServiceWithoutType_shouldReturnUserCommentService() {
+        assertSame(
+                userCommentService,
+                savedSelectorService.getServiceWithoutType(SavedEntityType.COMMENT)
+        );
+    }
+
+    @Test
+    void getServiceWithoutType_shouldReturnUserThreadService() {
+        assertSame(
+                userThreadService,
+                savedSelectorService.getServiceWithoutType(SavedEntityType.FORUM_THREAD)
+        );
+    }
+
+    @Test
+    void getServiceWithoutType_shouldThrowExceptionForUnexpectedValue() {
+        assertThrows(IllegalStateException.class,
+                () -> savedSelectorService.getServiceWithoutType(SavedEntityType.ACTIVITY)
+        );
+    }
+}
