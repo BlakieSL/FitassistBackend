@@ -96,11 +96,11 @@ public class User {
     @Column(name = "activity_level", nullable = false)
     private ActivityLevelType activityLevel;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private DailyFood dailyFood;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final Set<DailyFood> dailyFoods = new HashSet<>();
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private DailyActivity dailyActivity;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final Set<DailyActivity> dailyActivities = new HashSet<>();
 
     @ManyToMany
     private final Set<Role> roles = new HashSet<>();

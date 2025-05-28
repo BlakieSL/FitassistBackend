@@ -27,7 +27,8 @@ public class DailyActivity {
     @Column(nullable = false)
     private LocalDate date;
 
-    @OneToOne
+    @NotNull
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

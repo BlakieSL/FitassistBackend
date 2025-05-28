@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
@@ -58,15 +57,6 @@ public class DailyActivityServiceImpl implements DailyActivityService {
         this.dailyActivityItemRepository = dailyActivityItemRepository;
     }
 
-    @Scheduled(cron = "0 0 0 * * ?", zone = "GMT+2")
-    @Transactional
-    public void resetDailyCarts() {
-        dailyActivityRepository.findAll().forEach(cart -> {
-            resetDailyActivity(cart);
-            dailyActivityRepository.save(cart);
-        });
-    }
-
     @Override
     @Transactional
     public void addActivityToDailyActivityItem(int activityId, DailyActivityItemCreateDto dto) {
@@ -83,8 +73,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     public void removeActivityFromDailyActivityItem(int activityId) {
         int userId = AuthorizationUtil.getUserId();
         DailyActivity dailyActivity = getDailyActivityForUserOrThrow(userId);
-        DailyActivityItem dailyActivityItem =
-                getDailyActivityItem(dailyActivity.getId(), activityId);
+        DailyActivityItem dailyActivityItem = getDailyActivityItem(dailyActivity.getId(), activityId);
 
         dailyActivity.getDailyActivityItems().remove(dailyActivityItem);
         dailyActivityRepository.save(dailyActivity);
@@ -97,11 +86,9 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     {
         int userId = AuthorizationUtil.getUserId();
         DailyActivity dailyActivity = getDailyActivityForUserOrThrow(userId);
-        DailyActivityItem dailyActivityItem =
-                getDailyActivityItem(dailyActivity.getId(), activityId);
+        DailyActivityItem dailyActivityItem = getDailyActivityItem(dailyActivity.getId(), activityId);
 
-        DailyActivityItemCreateDto patchedDto =
-                applyPatchToDailyActivityItem(dailyActivityItem, patch);
+        DailyActivityItemCreateDto patchedDto = applyPatchToDailyActivityItem(dailyActivityItem, patch);
         validationService.validate(patchedDto);
 
         updateTime(dailyActivityItem, patchedDto.getTime());
@@ -109,6 +96,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     }
 
     @Override
+    @Transactional
     public DailyActivitiesResponseDto getActivitiesFromDailyActivity() {
         int userId = AuthorizationUtil.getUserId();
         DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
@@ -131,31 +119,23 @@ public class DailyActivityServiceImpl implements DailyActivityService {
             Activity activity,
             int time
     ) {
-        dailyActivityItemRepository
-                .findByDailyActivityIdAndActivityId(dailyActivity.getId(), activity.getId())
+        dailyActivityItemRepository.findByDailyActivityIdAndActivityId(dailyActivity.getId(), activity.getId())
                 .ifPresentOrElse(
-                        foundItem -> {
-                            foundItem.setTime(foundItem.getTime() + time);
-                        },
+                        foundItem -> foundItem.setTime(foundItem.getTime() + time),
                         () -> {
-                            DailyActivityItem newItem = DailyActivityItem.of(
-                                    activity,
-                                    dailyActivity,
-                                    time
-                            );
+                            DailyActivityItem newItem = DailyActivityItem.of(activity, dailyActivity, time);
                             dailyActivity.getDailyActivityItems().add(newItem);
                         }
                 );
     }
 
-
     private DailyActivity getOrCreateDailyActivityForUser(int userId) {
-        return dailyActivityRepository.findByUserId(userId)
+        return dailyActivityRepository.findByUserIdAndDate(userId, LocalDate.now())
                 .orElseGet(() -> createDailyActivity(userId));
     }
 
     private DailyActivity getDailyActivityForUserOrThrow(int userId) {
-        return dailyActivityRepository.findByUserId(userId)
+        return dailyActivityRepository.findByUserIdAndDate(userId, LocalDate.now())
                 .orElseThrow(() -> RecordNotFoundException.of(DailyActivity.class, userId));
     }
 
@@ -163,8 +143,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
         dailyActivityItem.setTime(time);
     }
 
-    @Transactional
-    public DailyActivity createDailyActivity(int userId) {
+    private DailyActivity createDailyActivity(int userId) {
         User user = repositoryHelper.find(userRepository, User.class, userId);
         return dailyActivityRepository.save(DailyActivity.createForToday(user));
     }
@@ -174,8 +153,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
             JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        DailyActivityItemCreateDto createDto = DailyActivityItemCreateDto
-                .of(dailyActivityItem.getTime());
+        DailyActivityItemCreateDto createDto = DailyActivityItemCreateDto.of(dailyActivityItem.getTime());
         return jsonPatchService.applyPatch(patch, createDto, DailyActivityItemCreateDto.class);
     }
 
@@ -183,10 +161,5 @@ public class DailyActivityServiceImpl implements DailyActivityService {
         return dailyActivityItemRepository.
                 findByDailyActivityIdAndActivityId(dailyActivityId, activityId)
                 .orElseThrow(() -> RecordNotFoundException.of(DailyActivityItem.class, activityId));
-    }
-
-    private void resetDailyActivity(DailyActivity dailyActivity) {
-        dailyActivity.setDate(LocalDate.now());
-        dailyActivity.getDailyActivityItems().clear();
     }
 }
