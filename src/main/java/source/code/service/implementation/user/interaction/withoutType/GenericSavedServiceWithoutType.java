@@ -1,4 +1,4 @@
-package source.code.service.implementation.user.interaction;
+package source.code.service.implementation.user.interaction.withoutType;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
