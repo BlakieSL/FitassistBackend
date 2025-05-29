@@ -1,4 +1,4 @@
-package source.code.service.implementation.user.interaction;
+package source.code.service.implementation.user.interaction.withoutType;
 
 import org.springframework.stereotype.Service;
 import source.code.dto.response.comment.CommentResponseDto;
@@ -69,6 +69,7 @@ public class UserCommentServiceImpl
 
     @Override
     protected long countLikes(int entityId) {
+
         return ((UserCommentLikesRepository) userEntityRepository)
                 .countAllByCommentId(entityId);
     }
