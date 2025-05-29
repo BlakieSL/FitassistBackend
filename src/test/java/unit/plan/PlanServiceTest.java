@@ -146,7 +146,6 @@ public class PlanServiceTest {
 
         verify(eventPublisher).publishEvent(eventCaptor.capture());
         assertEquals(plan, eventCaptor.getValue().getPlan());
-
     }
 
     @Test

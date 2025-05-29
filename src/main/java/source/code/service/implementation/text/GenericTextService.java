@@ -91,12 +91,10 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
                     applicationEventPublisher.publishEvent(TextCreateCacheEvent.of(
                             this,
                             cacheKey,
-                            responseDtos)
-                    );
+                            responseDtos));
 
                     return responseDtos;
                 });
-
     }
 
     private T findById(int id) {
