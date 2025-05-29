@@ -1,4 +1,4 @@
-package source.code.service.implementation.user.interaction;
+package source.code.service.implementation.user.interaction.withoutType;
 
 import org.springframework.stereotype.Service;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;

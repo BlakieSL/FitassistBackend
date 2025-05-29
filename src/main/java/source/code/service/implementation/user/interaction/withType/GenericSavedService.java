@@ -1,4 +1,4 @@
-package source.code.service.implementation.user.interaction;
+package source.code.service.implementation.user.interaction.withType;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
