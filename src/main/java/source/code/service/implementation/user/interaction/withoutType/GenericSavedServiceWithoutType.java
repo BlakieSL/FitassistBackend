@@ -75,7 +75,7 @@ public abstract class GenericSavedServiceWithoutType<T, U, R> implements SavedSe
         entityRepository.findById(entityId)
                 .orElseThrow(() -> RecordNotFoundException.of(entityType, entityId));
 
-        return LikesAndSavesResponseDto.of(countSaves(entityId), countLikes(entityId));
+        return LikesAndSavesResponseDto.of(countLikes(entityId), countSaves(entityId));
     }
 
     protected abstract boolean isAlreadySaved(int userId, int entityId);

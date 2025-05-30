@@ -32,7 +32,6 @@ import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.daily.DailyActivityServiceImpl;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
