@@ -1,4 +1,4 @@
-package unit.user;
+package unit.user.withoutType;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -210,6 +210,7 @@ public class UserCommentServiceTest {
         when(userCommentLikesRepository.countAllByCommentId(commentId)).thenReturn((long) likeCount);
 
         var result = userCommentService.calculateLikesAndSaves(commentId);
+
 
         assertEquals(likeCount, result.getLikes());
         assertEquals(0, result.getSaves());
