@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,11 +13,7 @@ import source.code.dto.pojo.UserCredentialsDto;
 import source.code.dto.request.user.UserCreateDto;
 import source.code.dto.request.user.UserUpdateDto;
 import source.code.dto.response.user.UserResponseDto;
-import source.code.event.events.User.UserDeleteEvent;
-import source.code.event.events.User.UserRegisterEvent;
-import source.code.event.events.User.UserUpdateEvent;
 import source.code.exception.RecordNotFoundException;
-import source.code.helper.Enum.cache.CacheNames;
 import source.code.helper.user.UserDetailsHelper;
 import source.code.mapper.UserMapper;
 import source.code.model.user.profile.User;
@@ -34,7 +28,6 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
-    private final ApplicationEventPublisher applicationEventPublisher;
     private final ValidationService validationService;
     private final JsonPatchService jsonPatchService;
     private final UserMapper userMapper;
@@ -42,14 +35,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final RepositoryHelper repositoryHelper;
     private final UserRepository userRepository;
 
-    public UserServiceImpl(ApplicationEventPublisher applicationEventPublisher,
-                           UserRepository userRepository,
+    public UserServiceImpl(UserRepository userRepository,
                            UserMapper userMapper,
                            ValidationService validationService,
                            JsonPatchServiceImpl jsonPatchService,
                            PasswordEncoder passwordEncoder,
                            RepositoryHelper repositoryHelper) {
-        this.applicationEventPublisher = applicationEventPublisher;
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.validationService = validationService;
@@ -66,7 +57,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userMapper.addDefaultRole(user);
 
         User savedUser = userRepository.save(user);
-        applicationEventPublisher.publishEvent(UserRegisterEvent.of(this, request));
 
         return userMapper.toResponse(savedUser);
     }
@@ -76,8 +66,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void deleteUser(int id) {
         User user = find(id);
         userRepository.delete(user);
-
-        applicationEventPublisher.publishEvent(UserDeleteEvent.of(this, user));
     }
 
     @Override
@@ -91,9 +79,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         validatePasswordIfNeeded(user, patchedUserUpdateDto);
         validationService.validate(patchedUserUpdateDto);
         userMapper.updateUserFromDto(user, patchedUserUpdateDto);
-        User savedUser = userRepository.save(user);
-
-        applicationEventPublisher.publishEvent(UserUpdateEvent.of(this, savedUser));
+        userRepository.save(user);
     }
 
     @Override
@@ -103,26 +89,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .orElseThrow(() -> RecordNotFoundException.of(User.class, username));
     }
 
-    private UserUpdateDto applyPatchToUser(JsonMergePatch patch, int userId)
-            throws JsonPatchException, JsonProcessingException
-    {
-        UserResponseDto userDto = getUser(userId);
-        return jsonPatchService.applyPatch(patch, userDto, UserUpdateDto.class);
-    }
-
     @Override
-    @Cacheable(value = CacheNames.USER_BY_ID, key = "#userId")
     public UserResponseDto getUser(int userId) {
         User user = find(userId);
         return userMapper.toResponse(user);
     }
 
     @Override
-    @Cacheable(value = CacheNames.USER_ID_BY_EMAIL, key = "#email")
     public int getUserIdByEmail(String email) {
         return userRepository.findByEmail(email)
                 .map(User::getId)
                 .orElseThrow(() -> RecordNotFoundException.of(User.class, email));
+    }
+
+    private UserUpdateDto applyPatchToUser(JsonMergePatch patch, int userId)
+            throws JsonPatchException, JsonProcessingException
+    {
+        UserResponseDto userDto = getUser(userId);
+        return jsonPatchService.applyPatch(patch, userDto, UserUpdateDto.class);
     }
 
     private void validatePasswordIfNeeded(User user, UserUpdateDto dto) {
@@ -139,7 +123,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
         return dto.getOldPassword() != null && dto.getPassword() != null;
     }
-
 
     private void validateOldPassword(User user, String oldPassword) {
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
