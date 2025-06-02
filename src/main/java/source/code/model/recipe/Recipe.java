@@ -57,7 +57,7 @@ public class Recipe implements IndexedEntity {
     private final Set<RecipeInstruction> recipeInstructions = new HashSet<>();
 
     @OneToMany(mappedBy = "recipe",
-            cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
+            cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)
