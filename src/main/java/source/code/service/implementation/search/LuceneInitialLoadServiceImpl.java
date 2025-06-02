@@ -1,6 +1,7 @@
 package source.code.service.implementation.search;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import source.code.helper.search.IndexedEntity;
 import source.code.service.declaration.activity.ActivityService;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Service
+@ConditionalOnProperty(name = "lucene.enabled", havingValue = "true", matchIfMissing = true)
 public class LuceneInitialLoadServiceImpl implements LuceneInitialLoadService {
     private static final String PATH = "src/main/resources/lucene-index";
     private final LuceneIndexService luceneIndexService;

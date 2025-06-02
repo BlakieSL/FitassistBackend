@@ -1,4 +1,7 @@
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
   cloud:
     aws:
       s3:
@@ -11,3 +14,5 @@ spring:
 s3:
   bucket:
     name: ${S3_BUCKET_NAME}
+lucene:
+  enabled: false

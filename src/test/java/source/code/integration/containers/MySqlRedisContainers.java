@@ -9,6 +9,13 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.containers.Network;
 import org.testcontainers.utility.DockerImageName;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
+
+import java.net.URI;
 
 @Testcontainers
 public class MySqlRedisContainers {
@@ -34,6 +41,9 @@ public class MySqlRedisContainers {
 
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
+        String endpoint = localStack.getEndpointOverride(LocalStackContainer.Service.S3).toString();
+        String bucketName = "test-bucket";
+
         registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
         registry.add("spring.datasource.username", mySQLContainer::getUsername);
         registry.add("spring.datasource.password", mySQLContainer::getPassword);
@@ -42,10 +52,25 @@ public class MySqlRedisContainers {
         registry.add("spring.data.redis.port", () -> redisContainer.getMappedPort(6379));
 
         registry.add("spring.cloud.aws.s3.enabled", () -> "true");
-        registry.add("spring.cloud.aws.s3.endpoint", () -> localStack.getEndpointOverride(LocalStackContainer.Service.S3).toString());
+        registry.add("spring.cloud.aws.s3.endpoint", () -> endpoint);
         registry.add("spring.cloud.aws.credentials.access-key", () -> "test");
         registry.add("spring.cloud.aws.credentials.secret-key", () -> "test");
         registry.add("spring.cloud.aws.region.static", () -> localStack.getRegion());
-        registry.add("s3.bucket.name", () -> "test-bucket");
+        registry.add("s3.bucket.name", () -> bucketName);
+        createS3Bucket(endpoint, bucketName);
+    }
+
+    private static void createS3Bucket(String endpoint, String bucketName) {
+        try {
+            S3Client s3Client = S3Client.builder()
+                    .endpointOverride(URI.create(endpoint))
+                    .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("test", "test")))
+                    .region(Region.of(localStack.getRegion()))
+                    .build();
+
+            s3Client.createBucket(builder -> builder.bucket(bucketName));
+        } catch (Exception e) {
+            System.err.println("S3 bucket creation failed: " + e.getMessage());
+        }
     }
 }
