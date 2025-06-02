@@ -12,7 +12,7 @@ import source.code.helper.Enum.model.MediaConnectedEntity;
 @AllArgsConstructor
 public class MediaResponseDto {
     private Integer id;
-    private byte[] image;
+    private String imageUrl;
     private MediaConnectedEntity parentType;
     private Integer parentId;
 }

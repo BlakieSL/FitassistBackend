@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.multipart.MultipartFile;
 import source.code.dto.request.media.MediaCreateDto;
 import source.code.dto.response.MediaResponseDto;
 import source.code.exception.RecordNotFoundException;
@@ -13,9 +14,11 @@ import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.mapper.MediaMapper;
 import source.code.model.media.Media;
 import source.code.repository.MediaRepository;
+import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.implementation.media.MediaServiceImpl;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,21 +26,28 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MediaServiceTest {
+    @Mock
+    private AwsS3Service s3Service;
 
     @Mock
     private MediaMapper mediaMapper;
+
     @Mock
     private RepositoryHelper repositoryHelper;
+
     @Mock
     private MediaRepository mediaRepository;
+
     @InjectMocks
     private MediaServiceImpl mediaService;
+
     private Media media;
     private MediaCreateDto createDto;
     private MediaResponseDto responseDto;
     private int mediaId;
     private int parentId;
     private MediaConnectedEntity parentType;
+    private MultipartFile image;
 
     @BeforeEach
     void setUp() {
@@ -47,13 +57,22 @@ public class MediaServiceTest {
         mediaId = 1;
         parentId = 1;
         parentType = MediaConnectedEntity.FOOD;
+        image = mock(MultipartFile.class);
     }
 
     @Test
-    void createMedia_shouldCreateMedia() {
-        when(mediaMapper.toEntity(createDto)).thenReturn(media);
+    void createMedia_shouldCreateMedia() throws IOException {
+        byte[] imageBytes = "randomImageBytes".getBytes();
+        String imageName = "randomImage.jpg";
+        String imageUrl = "http://example.com/randomImage.jpg";
+        createDto.setImage(image);
+
+        when(image.getBytes()).thenReturn(imageBytes);
+        when(s3Service.uploadImage(imageBytes)).thenReturn(imageName);
+        when(mediaMapper.toEntity(createDto, imageName)).thenReturn(media);
         when(mediaRepository.save(media)).thenReturn(media);
-        when(mediaMapper.toDto(media)).thenReturn(responseDto);
+        when(s3Service.getImage(imageName)).thenReturn(imageUrl);
+        when(mediaMapper.toDto(media, imageUrl)).thenReturn(responseDto);
 
         MediaResponseDto result = mediaService.createMedia(createDto);
 
@@ -82,9 +101,11 @@ public class MediaServiceTest {
 
     @Test
     void getAllMediaForParent_shouldReturnAllMediaForParent() {
+        String imageUrl = "http://example.com/image.jpg";
         when(mediaRepository.findByParentIdAndParentType(parentId, parentType))
                 .thenReturn(List.of(media));
-        when(mediaMapper.toDto(media)).thenReturn(responseDto);
+        when(s3Service.getImage(media.getImageName())).thenReturn(imageUrl);
+        when(mediaMapper.toDto(media, imageUrl)).thenReturn(responseDto);
 
         List<MediaResponseDto> result = mediaService.getAllMediaForParent(parentId, parentType);
 
@@ -94,9 +115,11 @@ public class MediaServiceTest {
 
     @Test
     void getFirstMediaForParent_shouldReturnFirstMediaForParent() {
+        String imageUrl = "http://example.com/image.jpg";
         when(mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(parentId, parentType))
                 .thenReturn(java.util.Optional.of(media));
-        when(mediaMapper.toDto(media)).thenReturn(responseDto);
+        when(s3Service.getImage(media.getImageName())).thenReturn(imageUrl);
+        when(mediaMapper.toDto(media, imageUrl)).thenReturn(responseDto);
 
         MediaResponseDto result = mediaService.getFirstMediaForParent(parentId, parentType);
 
@@ -113,8 +136,11 @@ public class MediaServiceTest {
 
     @Test
     void getMedia_shouldReturnMedia() {
+        String imageUrl = "http://example.com/image.jpg";
+
         when(repositoryHelper.find(mediaRepository, Media.class, mediaId)).thenReturn(media);
-        when(mediaMapper.toDto(media)).thenReturn(responseDto);
+        when(s3Service.getImage(media.getImageName())).thenReturn(imageUrl);
+        when(mediaMapper.toDto(media, imageUrl)).thenReturn(responseDto);
 
         MediaResponseDto result = mediaService.getMedia(mediaId);
 
