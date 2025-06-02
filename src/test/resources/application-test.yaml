@@ -1,0 +1,13 @@
+spring:
+  cloud:
+    aws:
+      s3:
+        enabled: true
+      credentials:
+        access-key: ${AWS_ACCESS_KEY_ID}
+        secret-key: ${AWS_SECRET_ACCESS_KEY}
+      region:
+        static: eu-central-1
+s3:
+  bucket:
+    name: ${S3_BUCKET_NAME}
