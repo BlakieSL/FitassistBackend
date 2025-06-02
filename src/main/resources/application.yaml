@@ -1,31 +1,15 @@
 spring:
   application:
     name: SimpleFullStackProject
-  devtools:
-    restart:
-      enabled: false
-  cache:
-    type: redis
   data:
     redis:
       host: localhost
       port: 6379
       connect-timeout: 60000
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: petadoptiontoken@gmail.com
-    password: ***REMOVED***
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
   datasource:
-    url: jdbc:mysql://localhost:3306/full_stack_project
+    url: jdbc:mysql://localhost:3308/main-db
     username: root
-    password: ***REMOVED***
+    password: root
   jpa:
     hibernate:
       naming:
@@ -36,14 +20,27 @@ spring:
       hibernate:
         format_sql: true
     open-in-view: false
+  cache:
+    type: redis
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-
   threads:
     virtual:
       enabled: true
+  cloud:
+    aws:
+      s3:
+        enabled: true
+      credentials:
+        access-key: ${AWS_ACCESS_KEY_ID}
+        secret-key: ${AWS_SECRET_ACCESS_KEY}
+      region:
+        static: eu-central-1
+s3:
+  bucket:
+    name: ${S3_BUCKET_NAME}
 jws:
   sharedKey: ***REMOVED***
 server:

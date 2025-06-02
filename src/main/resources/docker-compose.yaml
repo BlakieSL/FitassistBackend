@@ -1,0 +1,36 @@
+networks:
+  fitassist-network:
+    driver: bridge
+    name: fitassist-network
+
+services:
+  fitassist-redis:
+    image: redis
+    container_name: "fitassist-redis"
+    command: redis-server --bind 0.0.0.0
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - fitassist-network
+  main-sqldb:
+    image: mysql
+    container_name: "main-sqldb"
+    ports:
+      - "3308:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 10s
+      retries: 10
+      interval: 10s
+      start_period: 10s
+    environment:
+      MYSQL_DATABASE: main-db
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+      - fitassist-network

@@ -61,7 +61,7 @@ public class User {
     @Column(nullable = false, length = BCRYPT_HASHED_PASSWORD_MAX_LENGTH)
     private String password;
 
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private GenderType gender;
@@ -86,12 +86,12 @@ public class User {
     @Column(name = "calculated_calories", nullable = false)
     private double calculatedCalories;
 
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private GoalType goal;
 
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "activity_level", nullable = false)
     private ActivityLevelType activityLevel;

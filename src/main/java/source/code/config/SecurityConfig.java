@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -36,7 +38,7 @@ public class SecurityConfig {
 
     public SecurityConfig(JwtService jwtService,
                           @Lazy UserServiceImpl userServiceImpl,
-                          RateLimitingFilter rateLimitingFilter
+                          @Lazy RateLimitingFilter rateLimitingFilter
     ) {
         this.jwtService = jwtService;
         this.userServiceImpl = userServiceImpl;
@@ -52,7 +54,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(
             HttpSecurity http,
             MvcRequestMatcher.Builder mvc,
-            AuthenticationManagerBuilder authenticationManagerBuilder)
+            AuthenticationManagerBuilder authenticationManagerBuilder,
+            RequestMatcher requestMatcher)
             throws Exception {
         AuthenticationManager authenticationManager = authenticationManagerBuilder.getOrBuild();
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtService, userServiceImpl);
@@ -60,10 +63,7 @@ public class SecurityConfig {
         BearerTokenFilter bearerTokenFilter = new BearerTokenFilter(jwtService);
 
         http.authorizeHttpRequests(request -> request
-                .requestMatchers(
-                        "/api/users/register",
-                        "/api/users/login",
-                        "/api/users/refresh-token").permitAll()
+                .requestMatchers(requestMatcher).permitAll()
                 .anyRequest().authenticated());
         http.cors((cors) -> cors
                 .configurationSource(corsConfigurationSource()));
@@ -98,4 +98,12 @@ public class SecurityConfig {
         return source;
     }
 
+    @Bean
+    public RequestMatcher publicEndpointsMatcher(MvcRequestMatcher.Builder mvc) {
+        return new OrRequestMatcher(
+                mvc.pattern("/api/users/register"),
+                mvc.pattern("/api/users/login"),
+                mvc.pattern("/api/users/refresh-token")
+        );
+    }
 }
