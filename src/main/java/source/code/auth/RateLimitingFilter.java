@@ -7,6 +7,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Setter;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import source.code.service.declaration.rateLimiter.RedissonRateLimiterService;
@@ -19,13 +21,13 @@ import java.util.UUID;
 
 @Component
 public class RateLimitingFilter extends OncePerRequestFilter {
-
-    private static final List<String> NON_AUTH_ENDPOINTS = Arrays.asList("/api/users/login", "/api/users/register");
     private static final String RATE_LIMIT_COOKIE_NAME = "RateLimit-Id";
     private final RedissonRateLimiterService rateLimitingService;
+    private final RequestMatcher requestMatcher;
 
-    public RateLimitingFilter(RedissonRateLimiterService rateLimitingService) {
+    public RateLimitingFilter(RedissonRateLimiterService rateLimitingService, RequestMatcher requestMatcher) {
         this.rateLimitingService = rateLimitingService;
+        this.requestMatcher = requestMatcher;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        if (isNonAuthEndpoint(path)) {
+        if (isPublicEndpoint(request)) {
             String identifier = getOrCreateRateLimitCookie(request, response);
             if (!handleRateLimitingForNonAuth(identifier, path, response)) {
                 return;
@@ -48,8 +50,8 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean isNonAuthEndpoint(String path) {
-        return NON_AUTH_ENDPOINTS.contains(path);
+    private boolean isPublicEndpoint(HttpServletRequest request) {
+        return requestMatcher != null && requestMatcher.matches(request);
     }
 
     private Optional<String> extractToken(HttpServletRequest request) {

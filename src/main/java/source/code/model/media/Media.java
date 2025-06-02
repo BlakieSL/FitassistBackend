@@ -20,9 +20,8 @@ public class Media {
     private Integer id;
 
     @NotNull
-    @Lob
-    @Column(nullable = false, columnDefinition = "mediumblob")
-    private byte[] image;
+    @Column(nullable = false)
+    private String imageName;
 
     @NotNull
     @Enumerated(EnumType.STRING)

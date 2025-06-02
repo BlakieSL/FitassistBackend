@@ -39,8 +39,7 @@ public class UserCreateDto {
     @PasswordSpecialDomain
     @PasswordLowercaseDomain
     private String password;
-    @Size(min = 4, max = 6)
-    @NotBlank
+    @NotNull
     private GenderType gender;
     @NotNull
     @Past
@@ -51,8 +50,8 @@ public class UserCreateDto {
     @NotNull
     @Positive
     private double weight;
-    @NotBlank
+    @NotNull
     private ActivityLevelType activityLevel;
-    @NotBlank
+    @NotNull
     private GoalType goal;
 }
