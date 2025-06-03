@@ -51,6 +51,9 @@ public class MediaServiceImpl implements MediaService {
     @Transactional
     public void deleteMedia(int mediaId) {
         Media media = find(mediaId);
+
+        s3Service.deleteImage(media.getImageName());
+
         mediaRepository.delete(media);
     }
 
