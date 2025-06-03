@@ -1,15 +1,10 @@
 package source.code.integration.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlMergeMode;
-import org.springframework.web.bind.annotation.GetMapping;
-import source.code.auth.CustomAuthenticationToken;
 import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.integration.config.TestConfig;
 import source.code.integration.containers.MySqlRedisContainers;
@@ -22,10 +17,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import source.code.integration.utils.Utils;
 
-import java.util.List;
-import java.util.Map;
-
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -42,9 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MediaServiceTest extends MySqlRedisContainers {
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @WithMockUser
     @MediaSql
@@ -195,5 +183,53 @@ public class MediaServiceTest extends MySqlRedisContainers {
         ).andExpectAll(
                 status().isForbidden()
         );
+    }
+
+    @MediaSql
+    @Test
+    @DisplayName("DELETE - /{mediaId} - Should delete media when user is owner")
+    public void deleteMediaAsOwner() throws Exception {
+        Utils.setUserContext(1);
+
+        mockMvc.perform(delete("/api/media/3"))
+                .andExpectAll(
+                        status().isNoContent()
+                );
+    }
+
+    @MediaSql
+    @Test
+    @DisplayName("DELETE - /{mediaId} - Should delete media when user is admin")
+    public void deleteMediaAsAdmin() throws Exception {
+        Utils.setAdminContext(1);
+
+        mockMvc.perform(delete("/api/media/1"))
+                .andExpectAll(
+                        status().isNoContent()
+                );
+    }
+
+    @MediaSql
+    @Test
+    @DisplayName("DELETE - /{mediaId} - Should return 403 when user is not owner or admin")
+    public void deleteMediaWithoutPermission() throws Exception {
+        Utils.setUserContext(2);
+
+        mockMvc.perform(delete("/api/media/1"))
+                .andExpectAll(
+                        status().isForbidden()
+                );
+    }
+
+    @MediaSql
+    @Test
+    @DisplayName("DELETE - /{mediaId} - Should return 404 when media does not exist")
+    public void deleteNonExistingMedia() throws Exception {
+        Utils.setAdminContext(1);
+
+        mockMvc.perform(delete("/api/media/999"))
+                .andExpectAll(
+                        status().isNotFound()
+                );
     }
 }

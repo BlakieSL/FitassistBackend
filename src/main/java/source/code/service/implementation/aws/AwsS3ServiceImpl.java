@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import source.code.service.declaration.aws.AwsS3Service;
@@ -40,6 +41,16 @@ public class AwsS3ServiceImpl implements AwsS3Service {
     @Override
     public String getImage(String imageName) {
         return generatePresignedUrl(imageName);
+    }
+
+    @Override
+    public void deleteImage(String imageName) {
+        DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
+                .bucket(bucketName)
+                .key(imageName)
+                .build();
+
+        s3Client.deleteObject(deleteRequest);
     }
 
     private String generatePresignedUrl(String keyName) {
