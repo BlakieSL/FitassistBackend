@@ -1,7 +1,7 @@
 INSERT INTO media (imageName, parent_id, parentType) VALUES
 ('image1.jpg', 1, 'FOOD'),
 ('image2.png', 2, 'EXERCISE'),
-('image3.gif', 3, 'RECIPE'),
+('image3.gif', 1, 'RECIPE'),
 ('image4.jpeg', 4, 'COMMENT');
 
 INSERT INTO user (

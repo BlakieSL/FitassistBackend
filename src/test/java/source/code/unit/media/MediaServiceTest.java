@@ -82,11 +82,14 @@ public class MediaServiceTest {
 
     @Test
     void deleteMedia_shouldDeleteMedia() {
+        media.setImageName("randomImage.jpg");
         when(repositoryHelper.find(mediaRepository, Media.class, mediaId)).thenReturn(media);
+        doNothing().when(s3Service).deleteImage(media.getImageName());
 
         mediaService.deleteMedia(mediaId);
 
         verify(mediaRepository).delete(media);
+        verify(s3Service).deleteImage(media.getImageName());
     }
 
     @Test
