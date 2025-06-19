@@ -11,6 +11,7 @@ import source.code.model.daily.DailyFoodItem;
 import source.code.model.recipe.RecipeFood;
 import source.code.model.user.UserFood;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,22 +37,22 @@ public class Food implements IndexedEntity {
     @NotNull
     @Positive
     @Column(nullable = false)
-    private double calories;
+    private BigDecimal calories;
 
     @NotNull
     @PositiveOrZero
     @Column(nullable = false)
-    private double protein;
+    private BigDecimal protein;
 
     @NotNull
     @PositiveOrZero
     @Column(nullable = false)
-    private double fat;
+    private BigDecimal fat;
 
     @NotNull
     @PositiveOrZero
     @Column(nullable = false)
-    private double carbohydrates;
+    private BigDecimal carbohydrates;
 
     @NotNull
     @ManyToOne
@@ -66,12 +67,6 @@ public class Food implements IndexedEntity {
 
     @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
     private final Set<UserFood> userFoods = new HashSet<>();
-
-    public static Food createWithId(int id) {
-        Food food = new Food();
-        food.setId(id);
-        return food;
-    }
 
     @Override
     public String getClassName() {

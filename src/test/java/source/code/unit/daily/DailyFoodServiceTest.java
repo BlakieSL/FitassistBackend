@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.request.food.DailyFoodItemCreateDto;
-import source.code.dto.response.DailyFoodsResponseDto;
+import source.code.dto.response.daily.DailyFoodsResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.daily.DailyFoodMapper;
@@ -74,14 +74,16 @@ public class DailyFoodServiceTest {
         food = new Food();
         dailyFood = new DailyCart();
         dailyFoodItem = new DailyFoodItem();
+        dailyFoodItem.setQuantity(BigDecimal.valueOf(0));
         createDto = new DailyFoodItemCreateDto();
+        createDto.setQuantity(BigDecimal.valueOf(10));
         patch = mock(JsonMergePatch.class);
         mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
 
         food.setId(1);
         dailyFood.setId(1);
         dailyFoodItem.setId(1);
-        createDto.setAmount(100);
+        createDto.setQuantity(BigDecimal.valueOf(100));
     }
 
     @AfterEach
@@ -104,7 +106,7 @@ public class DailyFoodServiceTest {
         dailyFoodService.addFoodToDailyCart(FOOD_ID, createDto);
 
         verify(dailyFoodRepository).save(dailyFood);
-        assertEquals(dailyFood.getDailyFoodItems().get(0).getAmount(), createDto.getAmount());
+        assertEquals(dailyFood.getDailyFoodItems().get(0).getQuantity(), createDto.getQuantity());
     }
 
     @Test
@@ -118,7 +120,7 @@ public class DailyFoodServiceTest {
         dailyFoodService.addFoodToDailyCart(FOOD_ID, createDto);
 
         verify(dailyFoodRepository).save(dailyFood);
-        assertEquals(dailyFood.getDailyFoodItems().get(0).getAmount(), createDto.getAmount());
+        assertEquals(dailyFood.getDailyFoodItems().get(0).getQuantity(), createDto.getQuantity());
     }
 
     @Test
@@ -143,7 +145,7 @@ public class DailyFoodServiceTest {
         verify(dailyFoodRepository, times(2)).save(dailyFoodCaptor.capture());
         DailyCart savedDailyFood = dailyFoodCaptor.getValue();
         assertEquals(USER_ID, savedDailyFood.getUser().getId());
-        assertEquals(createDto.getAmount(), savedDailyFood.getDailyFoodItems().get(0).getAmount());
+        assertEquals(createDto.getQuantity(), savedDailyFood.getDailyFoodItems().get(0).getQuantity());
     }
 
     @Test
@@ -186,7 +188,7 @@ public class DailyFoodServiceTest {
     @Test
     void updateDailyFoodItem_shouldUpdate() throws JsonPatchException, JsonProcessingException {
         DailyFoodItemCreateDto patchedDto = new DailyFoodItemCreateDto();
-        patchedDto.setAmount(200);
+        patchedDto.setQuantity(BigDecimal.valueOf(200));
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
         when(dailyFoodRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyFood));
@@ -198,7 +200,7 @@ public class DailyFoodServiceTest {
         dailyFoodService.updateDailyFoodItem(FOOD_ID, patch);
 
         verify(validationService).validate(patchedDto);
-        assertEquals(patchedDto.getAmount(), dailyFoodItem.getAmount());
+        assertEquals(patchedDto.getQuantity(), dailyFoodItem.getQuantity());
         verify(dailyFoodRepository).save(dailyFood);
     }
 
@@ -246,7 +248,7 @@ public class DailyFoodServiceTest {
             throws JsonPatchException, JsonProcessingException
     {
         DailyFoodItemCreateDto patchedDto = new DailyFoodItemCreateDto();
-        patchedDto.setAmount(200);
+        patchedDto.setQuantity(BigDecimal.valueOf(200));
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
         when(dailyFoodRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyFood));
@@ -297,6 +299,6 @@ public class DailyFoodServiceTest {
         DailyFoodsResponseDto result = dailyFoodService.getFoodFromDailyCart();
 
         assertTrue(result.getFoods().isEmpty());
-        assertEquals(0, result.getTotalCalories());
+        assertEquals(BigDecimal.ZERO, result.getTotalCalories());
     }
 }

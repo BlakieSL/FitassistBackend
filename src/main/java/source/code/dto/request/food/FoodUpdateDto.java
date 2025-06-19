@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,12 +18,12 @@ public class FoodUpdateDto {
     @Size(max = 50)
     private String name;
     @Positive
-    private Double calories;
+    private BigDecimal calories;
     @PositiveOrZero
-    private Double protein;
+    private BigDecimal protein;
     @PositiveOrZero
-    private Double fat;
+    private BigDecimal fat;
     @PositiveOrZero
-    private Double carbohydrates;
+    private BigDecimal carbohydrates;
     private Integer categoryId;
 }

@@ -1,16 +1,14 @@
 package source.code.dto.request.food;
 
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 @Getter
 @Setter
 public class CalculateFoodMacrosRequestDto {
     @NotNull
-    @Positive
-    @Max(value = 1000)
-    private int amount;
+    private BigDecimal quantity;
 }
