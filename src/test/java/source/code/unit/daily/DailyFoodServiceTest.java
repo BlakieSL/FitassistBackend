@@ -18,9 +18,9 @@ import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.daily.DailyFoodMapper;
 import source.code.model.daily.DailyCart;
-import source.code.model.food.DailyFoodItem;
+import source.code.model.daily.DailyFoodItem;
 import source.code.model.food.Food;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.repository.DailyCartRepository;
 import source.code.repository.DailyFoodItemRepository;
 import source.code.repository.FoodRepository;
@@ -30,6 +30,7 @@ import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.daily.DailyFoodServiceImpl;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -285,7 +286,7 @@ public class DailyFoodServiceTest {
     void getFoodsFromDailyCart_shouldReturnEmptyFoods_whenDailyFoodNotFound() {
         User user = new User();
         user.setId(USER_ID);
-        user.setWeight(70);
+        user.setWeight(BigDecimal.valueOf(70));
         DailyCart newDailyFood = DailyCart.createForToday(user);
         newDailyFood.setUser(user);
 

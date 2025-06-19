@@ -11,7 +11,7 @@ import source.code.mapper.comment.CommentMapper;
 import source.code.mapper.forumThread.ForumThreadMapper;
 import source.code.mapper.plan.PlanMapper;
 import source.code.mapper.recipe.RecipeMapper;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.repository.*;
 import source.code.service.declaration.user.UserCreatedService;
 

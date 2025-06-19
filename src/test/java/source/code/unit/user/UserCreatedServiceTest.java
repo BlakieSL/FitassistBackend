@@ -24,7 +24,7 @@ import source.code.model.forum.Comment;
 import source.code.model.forum.ForumThread;
 import source.code.model.plan.Plan;
 import source.code.model.recipe.Recipe;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.repository.UserRepository;
 import source.code.service.implementation.user.UserCreatedServiceImpl;
 

@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.forum.ForumThread;
-import source.code.model.user.profile.User;
 
 @Entity
 @Table(name = "user_thread")

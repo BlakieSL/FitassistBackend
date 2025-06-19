@@ -5,15 +5,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.helper.Enum.model.user.ActivityLevelType;
-import source.code.helper.Enum.model.user.GenderType;
-import source.code.helper.Enum.model.user.GoalType;
+import source.code.helper.Enum.model.user.ActivityLevel;
+import source.code.helper.Enum.model.user.Gender;
+import source.code.helper.Enum.model.user.Goal;
 import source.code.validation.email.UniqueEmailDomain;
 import source.code.validation.password.PasswordDigitsDomain;
 import source.code.validation.password.PasswordLowercaseDomain;
 import source.code.validation.password.PasswordSpecialDomain;
 import source.code.validation.password.PasswordUppercaseDomain;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -23,10 +24,7 @@ import java.time.LocalDate;
 public class UserCreateDto {
     @Size(max = 40)
     @NotBlank
-    private String name;
-    @Size(max = 40)
-    @NotBlank
-    private String surname;
+    private String username;
     @Size(max = 50)
     @Email
     @NotBlank
@@ -40,18 +38,15 @@ public class UserCreateDto {
     @PasswordLowercaseDomain
     private String password;
     @NotNull
-    private GenderType gender;
+    private Gender gender;
     @NotNull
     @Past
     private LocalDate birthday;
-    @NotNull
+
     @Positive
-    private double height;
-    @NotNull
+    private BigDecimal height;
     @Positive
-    private double weight;
-    @NotNull
-    private ActivityLevelType activityLevel;
-    @NotNull
-    private GoalType goal;
+    private BigDecimal weight;
+    private ActivityLevel activityLevel;
+    private Goal goal;
 }

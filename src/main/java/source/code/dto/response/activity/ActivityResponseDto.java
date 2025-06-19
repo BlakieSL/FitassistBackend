@@ -3,6 +3,8 @@ package source.code.dto.response.activity;
 import lombok.*;
 import source.code.helper.BaseUserEntity;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -11,7 +13,7 @@ import source.code.helper.BaseUserEntity;
 public class ActivityResponseDto implements BaseUserEntity {
     private Integer id;
     private String name;
-    private double met;
+    private BigDecimal met;
     private String categoryName;
     private int categoryId;
 

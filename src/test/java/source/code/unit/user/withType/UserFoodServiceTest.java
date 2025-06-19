@@ -18,7 +18,7 @@ import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.food.FoodMapper;
 import source.code.model.food.Food;
 import source.code.model.user.UserFood;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.repository.FoodRepository;
 import source.code.repository.UserFoodRepository;
 import source.code.repository.UserRepository;
