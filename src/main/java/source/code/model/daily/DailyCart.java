@@ -1,4 +1,4 @@
-package source.code.model.activity;
+package source.code.model.daily;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.model.activity.DailyActivityItem;
+import source.code.model.food.DailyFoodItem;
 import source.code.model.user.profile.User;
 
 import java.time.LocalDate;
@@ -13,12 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "daily_activity")
-@Getter
-@Setter
+@Table(name = "daily_cart")
 @AllArgsConstructor
 @NoArgsConstructor
-public class DailyActivity {
+@Getter
+@Setter
+public class DailyCart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -32,16 +34,20 @@ public class DailyActivity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "dailyActivity",
+    @OneToMany(mappedBy = "dailyCart",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true)
     private final List<DailyActivityItem> dailyActivityItems = new ArrayList<>();
 
-    public static DailyActivity createForToday(User user) {
-        DailyActivity dailyActivity = new DailyActivity();
-        dailyActivity.setDate(LocalDate.now());
-        dailyActivity.setUser(user);
+    @OneToMany(mappedBy = "dailyCart",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+            orphanRemoval = true)
+    private final List<DailyFoodItem> dailyFoodItems = new ArrayList<>();
 
-        return dailyActivity;
+    public static DailyCart createForToday(User user) {
+        DailyCart dailyCart = new DailyCart();
+        dailyCart.setDate(LocalDate.now());
+        dailyCart.setUser(user);
+        return dailyCart;
     }
 }

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.model.daily.DailyCart;
 
 @Entity
 @Table(name = "daily_cart_activity")
@@ -26,8 +27,8 @@ public class DailyActivityItem {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "daily_activity_id", nullable = false)
-    private DailyActivity dailyActivity;
+    @JoinColumn(name = "daily_cart_id", nullable = false)
+    private DailyCart dailyCart;
 
     @NotNull
     @ManyToOne
@@ -36,12 +37,12 @@ public class DailyActivityItem {
 
     public static DailyActivityItem of(
             Activity activity,
-            DailyActivity dailyActivity,
+            DailyCart dailyCart,
             int time
     ) {
         DailyActivityItem dailyActivityItem = new DailyActivityItem();
         dailyActivityItem.setActivity(activity);
-        dailyActivityItem.setDailyActivity(dailyActivity);
+        dailyActivityItem.setDailyCart(dailyCart);
         dailyActivityItem.setTime(time);
         return dailyActivityItem;
     }
