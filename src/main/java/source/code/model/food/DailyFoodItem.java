@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.model.daily.DailyCart;
 
 @Entity
 @Table(name = "daily_cart_food")
@@ -29,18 +30,18 @@ public class DailyFoodItem {
     @ManyToOne
     @JoinColumn(name = "daily_cart_id", nullable = false)
     @JsonBackReference
-    private DailyFood dailyFood;
+    private DailyCart dailyCart;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "food_id", nullable = false)
     private Food food;
 
-    public static DailyFoodItem of(Food food, DailyFood dailyFood, int amount) {
+    public static DailyFoodItem of(Food food, DailyCart dailyCart, int amount) {
         DailyFoodItem dailyFoodItem = new DailyFoodItem();
         dailyFoodItem.setAmount(amount);
         dailyFoodItem.setFood(food);
-        dailyFoodItem.setDailyFood(dailyFood);
+        dailyFoodItem.setDailyCart(dailyCart);
         return dailyFoodItem;
     }
 }

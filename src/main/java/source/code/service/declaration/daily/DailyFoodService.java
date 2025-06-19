@@ -7,11 +7,11 @@ import source.code.dto.request.food.DailyFoodItemCreateDto;
 import source.code.dto.response.DailyFoodsResponseDto;
 
 public interface DailyFoodService {
-    void addFoodToDailyFoodItem(int foodId, DailyFoodItemCreateDto dto);
+    void addFoodToDailyCart(int foodId, DailyFoodItemCreateDto dto);
 
-    void removeFoodFromDailyFoodItem(int foodId);
+    void removeFoodFromDailyCart(int foodId);
 
     void updateDailyFoodItem(int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-    DailyFoodsResponseDto getFoodsFromDailyFoodItem();
+    DailyFoodsResponseDto getFoodFromDailyCart();
 }

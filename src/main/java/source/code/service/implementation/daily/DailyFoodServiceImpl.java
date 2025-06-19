@@ -4,19 +4,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.food.DailyFoodItemCreateDto;
 import source.code.dto.response.DailyFoodsResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.daily.DailyFoodMapper;
-import source.code.model.food.DailyFood;
+import source.code.model.daily.DailyCart;
 import source.code.model.food.DailyFoodItem;
 import source.code.model.food.Food;
 import source.code.model.user.profile.User;
+import source.code.repository.DailyCartRepository;
 import source.code.repository.DailyFoodItemRepository;
-import source.code.repository.DailyFoodRepository;
 import source.code.repository.FoodRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.daily.DailyFoodService;
@@ -34,7 +33,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     private final JsonPatchService jsonPatchService;
     private final DailyFoodMapper dailyFoodMapper;
     private final RepositoryHelper repositoryHelper;
-    private final DailyFoodRepository dailyFoodRepository;
+    private final DailyCartRepository dailyCartRepository;
     private final DailyFoodItemRepository dailyFoodItemRepository;
     private final FoodRepository foodRepository;
     private final UserRepository userRepository;
@@ -42,7 +41,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     public DailyFoodServiceImpl(
             ValidationService validationService,
             RepositoryHelper repositoryHelper,
-            DailyFoodRepository dailyFoodRepository,
+            DailyCartRepository dailyCartRepository,
             FoodRepository foodRepository,
             UserRepository userRepository,
             JsonPatchService jsonPatchService,
@@ -50,7 +49,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
             DailyFoodItemRepository dailyFoodItemRepository) {
         this.validationService = validationService;
         this.repositoryHelper = repositoryHelper;
-        this.dailyFoodRepository = dailyFoodRepository;
+        this.dailyCartRepository = dailyCartRepository;
         this.foodRepository = foodRepository;
         this.userRepository = userRepository;
         this.jsonPatchService = jsonPatchService;
@@ -60,24 +59,24 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 
     @Override
     @Transactional
-    public void addFoodToDailyFoodItem(int foodId, DailyFoodItemCreateDto dto) {
+    public void addFoodToDailyCart(int foodId, DailyFoodItemCreateDto dto) {
         int userId = AuthorizationUtil.getUserId();
-        DailyFood dailyFood = getOrCreateDailyFoodForUser(userId);
+        DailyCart dailyCart = getOrCreateDailyCartForUser(userId);
         Food food = repositoryHelper.find(foodRepository, Food.class, foodId);
 
-        updateOrAddDailyFoodItem(dailyFood, food, dto.getAmount());
-        dailyFoodRepository.save(dailyFood);
+        updateOrAddDailyFoodItem(dailyCart, food, dto.getAmount());
+        dailyCartRepository.save(dailyCart);
     }
 
     @Override
     @Transactional
-    public void removeFoodFromDailyFoodItem(int foodId) {
+    public void removeFoodFromDailyCart(int foodId) {
         int userId = AuthorizationUtil.getUserId();
-        DailyFood dailyFood = getDailyFoodForUserOrThrow(userId);
-        DailyFoodItem dailyFoodItem = getDailyFoodItem(dailyFood.getId(), foodId);
+        DailyCart dailyCart = getDailyFoodForUserOrThrow(userId);
+        DailyFoodItem dailyFoodItem = getDailyFoodItem(dailyCart.getId(), foodId);
 
-        dailyFood.getDailyFoodItems().remove(dailyFoodItem);
-        dailyFoodRepository.save(dailyFood);
+        dailyCart.getDailyFoodItems().remove(dailyFoodItem);
+        dailyCartRepository.save(dailyCart);
     }
 
     @Override
@@ -86,23 +85,23 @@ public class DailyFoodServiceImpl implements DailyFoodService {
             throws JsonPatchException, JsonProcessingException
     {
         int userId = AuthorizationUtil.getUserId();
-        DailyFood dailyFood = getDailyFoodForUserOrThrow(userId);
+        DailyCart dailyFood = getDailyFoodForUserOrThrow(userId);
         DailyFoodItem dailyFoodItem = getDailyFoodItem(dailyFood.getId(), foodId);
 
         DailyFoodItemCreateDto patchedDto = applyPatchToDailyFoodItem(dailyFoodItem, patch);
         validationService.validate(patchedDto);
 
         updateAmount(dailyFoodItem, patchedDto.getAmount());
-        dailyFoodRepository.save(dailyFood);
+        dailyCartRepository.save(dailyFood);
     }
 
     @Override
     @Transactional
-    public DailyFoodsResponseDto getFoodsFromDailyFoodItem() {
+    public DailyFoodsResponseDto getFoodFromDailyCart() {
         int userId = AuthorizationUtil.getUserId();
 
-        return Optional.ofNullable(getOrCreateDailyFoodForUser(userId))
-                .map(DailyFood::getDailyFoodItems)
+        return Optional.ofNullable(getOrCreateDailyCartForUser(userId))
+                .map(DailyCart::getDailyFoodItems)
                 .filter(items -> !items.isEmpty())
                 .map(dailyFoodMapper::toDailyFoodsResponseDto)
                 .orElseGet(() -> DailyFoodsResponseDto.of(
@@ -115,37 +114,37 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     }
 
     private void updateOrAddDailyFoodItem(
-            DailyFood dailyFood,
+            DailyCart dailyCart,
             Food food,
             int amount
     ) {
-        dailyFoodItemRepository.findByDailyFoodIdAndFoodId(dailyFood.getId(), food.getId())
+        dailyFoodItemRepository.findByDailyCartIdAndFoodId(dailyCart.getId(), food.getId())
                 .ifPresentOrElse(
                         foundItem -> foundItem.setAmount(foundItem.getAmount() + amount),
                         () -> {
-                            DailyFoodItem newItem = DailyFoodItem.of(food, dailyFood, amount);
-                            dailyFood.getDailyFoodItems().add(newItem);
+                            DailyFoodItem newItem = DailyFoodItem.of(food, dailyCart, amount);
+                            dailyCart.getDailyFoodItems().add(newItem);
                         }
                 );
     }
 
-    private DailyFood getOrCreateDailyFoodForUser(int userId) {
-        return dailyFoodRepository.findByUserIdAndDate(userId, LocalDate.now())
-                .orElseGet(() -> createDailyFood(userId));
+    private DailyCart getOrCreateDailyCartForUser(int userId) {
+        return dailyCartRepository.findByUserIdAndDate(userId, LocalDate.now())
+                .orElseGet(() -> createDailyCart(userId));
     }
 
-    private DailyFood getDailyFoodForUserOrThrow(int userId) {
-        return dailyFoodRepository.findByUserIdAndDate(userId, LocalDate.now())
-                .orElseThrow(() -> RecordNotFoundException.of(DailyFood.class, userId));
+    private DailyCart getDailyFoodForUserOrThrow(int userId) {
+        return dailyCartRepository.findByUserIdAndDate(userId, LocalDate.now())
+                .orElseThrow(() -> RecordNotFoundException.of(DailyCart.class, userId));
     }
 
     private void updateAmount(DailyFoodItem dailyFoodItem, int amount) {
         dailyFoodItem.setAmount(amount);
     }
 
-    public DailyFood createDailyFood(int userId) {
+    public DailyCart createDailyCart(int userId) {
         User user = repositoryHelper.find(userRepository, User.class, userId);
-        return dailyFoodRepository.save(DailyFood.createForToday(user));
+        return dailyCartRepository.save(DailyCart.createForToday(user));
     }
 
     private DailyFoodItemCreateDto applyPatchToDailyFoodItem(
@@ -157,7 +156,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     }
 
     private DailyFoodItem getDailyFoodItem(int dailyFoodId, int foodId) {
-        return dailyFoodItemRepository.findByDailyFoodIdAndFoodId(dailyFoodId, foodId)
+        return dailyFoodItemRepository.findByDailyCartIdAndFoodId(dailyFoodId, foodId)
                 .orElseThrow(() -> RecordNotFoundException.of(DailyFoodItem.class, foodId));
     }
 }

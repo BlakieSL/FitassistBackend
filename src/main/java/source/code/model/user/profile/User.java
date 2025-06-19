@@ -6,12 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.userdetails.UserDetails;
 import source.code.helper.Enum.model.user.ActivityLevelType;
 import source.code.helper.Enum.model.user.GenderType;
 import source.code.helper.Enum.model.user.GoalType;
-import source.code.model.activity.DailyActivity;
-import source.code.model.food.DailyFood;
+import source.code.model.daily.DailyCart;
 import source.code.model.forum.*;
 import source.code.model.plan.Plan;
 import source.code.model.recipe.Recipe;
@@ -97,10 +95,7 @@ public class User {
     private ActivityLevelType activityLevel;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private final Set<DailyFood> dailyFoods = new HashSet<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private final Set<DailyActivity> dailyActivities = new HashSet<>();
+    private final Set<DailyCart> dailyCarts = new HashSet<>();
 
     @ManyToMany
     private final Set<Role> roles = new HashSet<>();
@@ -147,6 +142,4 @@ public class User {
 
         return user;
     }
-
-
 }
