@@ -5,7 +5,7 @@ import source.code.dto.response.plan.PlanResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.plan.PlanMapper;
 import source.code.model.plan.Plan;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.model.user.UserPlan;
 import source.code.repository.PlanRepository;
 import source.code.repository.UserPlanRepository;

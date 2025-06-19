@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -12,7 +14,7 @@ import lombok.Setter;
 public class ActivityCalculatedResponseDto {
     private Integer id;
     private String name;
-    private double met;
+    private BigDecimal met;
     private String categoryName;
     private int categoryId;
     private int caloriesBurned;

@@ -5,7 +5,7 @@ import source.code.dto.response.activity.ActivityResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.activity.ActivityMapper;
 import source.code.model.activity.Activity;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.model.user.UserActivity;
 import source.code.repository.ActivityRepository;
 import source.code.repository.UserActivityRepository;

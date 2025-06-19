@@ -5,7 +5,7 @@ import source.code.dto.response.comment.CommentResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.comment.CommentMapper;
 import source.code.model.forum.Comment;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.model.user.UserCommentLikes;
 import source.code.repository.CommentRepository;
 import source.code.repository.UserCommentLikesRepository;

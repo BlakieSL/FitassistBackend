@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.model.user.profile.User;
 
 import java.util.HashSet;
 import java.util.Set;

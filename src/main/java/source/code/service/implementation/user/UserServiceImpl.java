@@ -16,7 +16,7 @@ import source.code.dto.response.user.UserResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.UserDetailsHelper;
 import source.code.mapper.UserMapper;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
@@ -53,7 +53,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     public UserResponseDto register(UserCreateDto request) {
         User user = userMapper.toEntity(request);
-        userMapper.setCalculatedCalories(user, request);
         userMapper.addDefaultRole(user);
 
         User savedUser = userRepository.save(user);

@@ -18,7 +18,7 @@ import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.recipe.Recipe;
 import source.code.model.user.UserRecipe;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;

@@ -8,10 +8,13 @@ import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.dto.response.activity.ActivityResponseDto;
 import source.code.model.activity.Activity;
 import source.code.model.activity.ActivityCategory;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.repository.ActivityCategoryRepository;
 import source.code.service.declaration.helpers.CalculationsService;
 import source.code.service.declaration.helpers.RepositoryHelper;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Mapper(componentModel = "spring")
 public abstract class  ActivityMapper {
@@ -33,10 +36,7 @@ public abstract class  ActivityMapper {
     @Mapping(target = "caloriesBurned", ignore = true)
     @Mapping(target = "time", ignore = true)
     public abstract ActivityCalculatedResponseDto toCalculatedDto(
-            Activity activity,
-            @Context User user,
-            @Context int time
-    );
+            Activity activity, @Context User user, @Context int time);
 
     @Mapping(target = "activityCategory", source = "categoryId", qualifiedByName = "categoryIdToActivityCategory")
     @Mapping(target = "id", ignore = true)
@@ -49,22 +49,19 @@ public abstract class  ActivityMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dailyActivityItems", ignore = true)
     @Mapping(target = "userActivities", ignore = true)
-    public abstract void updateActivityFromDto(
-            @MappingTarget Activity activity,
-            ActivityUpdateDto request
-    );
+    public abstract void updateActivityFromDto(@MappingTarget Activity activity, ActivityUpdateDto request);
 
     @AfterMapping
     protected void setCaloriesBurned(
             @MappingTarget ActivityCalculatedResponseDto dto, Activity activity,
             @Context User user, @Context int time
     ) {
-        int caloriesBurned = (int) calculationsService.calculateCaloriesBurned(
-                time,
-                user.getWeight(),
-                activity.getMet()
-        );
-        dto.setCaloriesBurned(caloriesBurned);
+        BigDecimal caloriesBurned = calculationsService.calculateCaloriesBurned(
+                time, user.getWeight(), activity.getMet());
+
+        int calories = caloriesBurned.setScale(0, RoundingMode.HALF_UP).intValue();
+
+        dto.setCaloriesBurned(calories);
         dto.setTime(time);
     }
 

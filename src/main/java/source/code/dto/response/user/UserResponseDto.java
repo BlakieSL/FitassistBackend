@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
@@ -18,14 +19,13 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class UserResponseDto implements Serializable {
     private Integer id;
-    private String name;
-    private String surname;
+    private String username;
     private String email;
     private String gender;
     private LocalDate birthday;
-    private double height;
-    private double weight;
-    private double calculatedCalories;
+    private BigDecimal height;
+    private BigDecimal weight;
+    private BigDecimal calculatedCalories;
     private String goal;
     private String activityLevel;
 }

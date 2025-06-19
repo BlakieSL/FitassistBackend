@@ -18,7 +18,7 @@ import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.exercise.ExerciseMapper;
 import source.code.model.exercise.Exercise;
 import source.code.model.user.UserExercise;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.repository.ExerciseRepository;
 import source.code.repository.UserExerciseRepository;
 import source.code.repository.UserRepository;

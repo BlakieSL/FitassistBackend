@@ -5,7 +5,7 @@ import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.recipe.Recipe;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.model.user.UserRecipe;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;

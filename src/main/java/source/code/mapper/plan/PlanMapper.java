@@ -10,7 +10,7 @@ import source.code.exception.RecordNotFoundException;
 import source.code.model.other.ExpertiseLevel;
 import source.code.model.plan.*;
 import source.code.model.text.PlanInstruction;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.repository.*;
 import source.code.service.declaration.helpers.RepositoryHelper;
 

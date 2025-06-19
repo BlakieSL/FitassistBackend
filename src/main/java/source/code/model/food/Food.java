@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.helper.search.IndexedEntity;
+import source.code.model.daily.DailyFoodItem;
 import source.code.model.recipe.RecipeFood;
 import source.code.model.user.UserFood;
 

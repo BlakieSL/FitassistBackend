@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -22,7 +24,7 @@ public class ActivityCreateDto {
 
     @NotNull
     @Positive
-    private double met;
+    private BigDecimal met;
 
     @NotNull
     private int categoryId;

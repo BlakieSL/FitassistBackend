@@ -6,25 +6,23 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import source.code.helper.Enum.model.user.ActivityLevelType;
-import source.code.helper.Enum.model.user.GenderType;
-import source.code.helper.Enum.model.user.GoalType;
+import source.code.helper.Enum.model.user.ActivityLevel;
+import source.code.helper.Enum.model.user.Gender;
+import source.code.helper.Enum.model.user.Goal;
 import source.code.validation.email.UniqueEmailDomain;
 import source.code.validation.password.PasswordDigitsDomain;
 import source.code.validation.password.PasswordLowercaseDomain;
 import source.code.validation.password.PasswordSpecialDomain;
 import source.code.validation.password.PasswordUppercaseDomain;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
 @Setter
 public class UserUpdateDto {
     @Size(max = 40)
-    private String name;
-
-    @Size(max = 40)
-    private String surname;
+    private String username;
 
     @Size(max = 50)
     @Email
@@ -39,20 +37,20 @@ public class UserUpdateDto {
     private String password;
 
     @Size(min = 4, max = 6)
-    private GenderType gender;
+    private Gender gender;
 
     @Past
     private LocalDate birthday;
 
     @Positive
-    private double height;
+    private BigDecimal height;
 
     @Positive
-    private double weight;
+    private BigDecimal weight;
 
-    private ActivityLevelType activityLevel;
+    private ActivityLevel activityLevel;
 
-    private GoalType goal;
+    private Goal goal;
 
     @PasswordDigitsDomain
     @PasswordUppercaseDomain

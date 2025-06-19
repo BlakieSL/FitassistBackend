@@ -9,7 +9,7 @@ import source.code.exception.RecordNotFoundException;
 import source.code.model.forum.Comment;
 import source.code.model.forum.ForumThread;
 import source.code.model.forum.ThreadCategory;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.repository.CommentRepository;
 import source.code.repository.ThreadCategoryRepository;
 import source.code.repository.UserRepository;

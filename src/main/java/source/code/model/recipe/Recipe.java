@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.helper.search.IndexedEntity;
 import source.code.model.text.RecipeInstruction;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.model.user.UserRecipe;
 
 import java.util.HashSet;

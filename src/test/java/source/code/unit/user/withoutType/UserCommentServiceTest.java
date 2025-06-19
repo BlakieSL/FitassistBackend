@@ -17,7 +17,7 @@ import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.comment.CommentMapper;
 import source.code.model.forum.Comment;
 import source.code.model.user.UserCommentLikes;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.repository.CommentRepository;
 import source.code.repository.UserCommentLikesRepository;
 import source.code.repository.UserRepository;

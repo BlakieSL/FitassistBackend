@@ -22,7 +22,7 @@ import source.code.helper.Enum.cache.CacheNames;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.activity.ActivityMapper;
 import source.code.model.activity.Activity;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.repository.ActivityRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.activity.ActivityService;
@@ -145,15 +145,6 @@ public class ActivityServiceImpl implements ActivityService {
         return activityRepository.findAllByActivityCategory_Id(categoryId).stream()
                 .map(activityMapper::toResponseDto)
                 .toList();
-    }
-
-    @Override
-    public ActivityAverageMetResponseDto getAverageMet() {
-        return ActivityAverageMetResponseDto.of(activityRepository.findAll().stream()
-                .mapToDouble(Activity::getMet)
-                .average()
-                .orElse(0.0)
-        );
     }
 
     private ActivityUpdateDto applyPatchToActivity(Activity activity, JsonMergePatch patch)

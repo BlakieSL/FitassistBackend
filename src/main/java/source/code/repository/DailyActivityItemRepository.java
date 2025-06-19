@@ -1,7 +1,7 @@
 package source.code.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import source.code.model.activity.DailyActivityItem;
+import source.code.model.daily.DailyActivityItem;
 
 import java.util.Optional;
 

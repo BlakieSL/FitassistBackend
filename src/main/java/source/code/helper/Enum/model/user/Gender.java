@@ -1,6 +1,6 @@
 package source.code.helper.Enum.model.user;
 
-public enum GenderType {
+public enum Gender {
     MALE,
     FEMALE
 }
