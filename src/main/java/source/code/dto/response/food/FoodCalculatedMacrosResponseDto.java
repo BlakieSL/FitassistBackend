@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -12,19 +14,11 @@ import lombok.Setter;
 public class FoodCalculatedMacrosResponseDto {
     private Integer id;
     private String name;
-    private double calories;
-    private double protein;
-    private double fat;
-    private double carbohydrates;
+    private BigDecimal calories;
+    private BigDecimal protein;
+    private BigDecimal fat;
+    private BigDecimal carbohydrates;
     private int categoryId;
     private String categoryName;
-    private int amount;
-
-    public static FoodCalculatedMacrosResponseDto createWithIdAmount(int id, int amount) {
-        FoodCalculatedMacrosResponseDto responseDto = new FoodCalculatedMacrosResponseDto();
-        responseDto.setId(id);
-        responseDto.setAmount(amount);
-
-        return responseDto;
-    }
+    private BigDecimal quantity;
 }

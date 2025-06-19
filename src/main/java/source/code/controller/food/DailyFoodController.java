@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.request.food.DailyFoodItemCreateDto;
-import source.code.dto.response.DailyFoodsResponseDto;
+import source.code.dto.response.daily.DailyFoodsResponseDto;
 import source.code.service.declaration.daily.DailyFoodService;
 
 @RestController

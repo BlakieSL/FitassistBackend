@@ -29,6 +29,8 @@ import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.FoodSpecification;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Service
@@ -92,7 +94,10 @@ public class FoodServiceImpl implements FoodService {
             int id, CalculateFoodMacrosRequestDto request
     ) {
         Food food = find(id);
-        double factor = (double) request.getAmount() / 100;
+        BigDecimal quantity = request.getQuantity();
+        BigDecimal divisor = new BigDecimal("100");
+
+        BigDecimal factor = quantity.divide(divisor, 10, RoundingMode.HALF_UP);
 
         return foodMapper.toDtoWithFactor(food, factor);
     }

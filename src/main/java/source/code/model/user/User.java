@@ -73,6 +73,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Goal goal;
 
+    @Column(name = "activity_level")
     @Enumerated(EnumType.STRING)
     private ActivityLevel activityLevel;
 

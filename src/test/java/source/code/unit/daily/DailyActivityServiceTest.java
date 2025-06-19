@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
-import source.code.dto.response.DailyActivitiesResponseDto;
+import source.code.dto.response.daily.DailyActivitiesResponseDto;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;

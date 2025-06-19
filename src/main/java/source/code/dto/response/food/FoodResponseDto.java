@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.helper.BaseUserEntity;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -13,10 +15,10 @@ import source.code.helper.BaseUserEntity;
 public class FoodResponseDto implements BaseUserEntity {
     private Integer id;
     private String name;
-    private double calories;
-    private double protein;
-    private double fat;
-    private double carbohydrates;
+    private BigDecimal calories;
+    private BigDecimal protein;
+    private BigDecimal fat;
+    private BigDecimal carbohydrates;
     private int categoryId;
     private String categoryName;
 }

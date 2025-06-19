@@ -4,11 +4,13 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import source.code.dto.response.DailyFoodsResponseDto;
+import source.code.dto.response.daily.DailyFoodsResponseDto;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
 import source.code.model.daily.DailyFoodItem;
 import source.code.model.food.Food;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +24,7 @@ public abstract class DailyFoodMapper {
     @Mapping(target = "carbohydrates", ignore = true)
     @Mapping(target = "categoryId", source = "dailyFoodItem.food.foodCategory.id")
     @Mapping(target = "categoryName", source = "dailyFoodItem.food.foodCategory.name")
-    @Mapping(target = "amount", source = "dailyFoodItem.amount")
+    @Mapping(target = "quantity", source = "dailyFoodItem.quantity")
     public abstract FoodCalculatedMacrosResponseDto toFoodCalculatedMacrosResponseDto(
             DailyFoodItem dailyFoodItem
     );
@@ -33,12 +35,28 @@ public abstract class DailyFoodMapper {
             DailyFoodItem dailyFoodItem
     ) {
         Food food = dailyFoodItem.getFood();
-        double factor = (double) dailyFoodItem.getAmount() / 100;
+        BigDecimal quantity = dailyFoodItem.getQuantity();
 
-        responseDto.setCalories(food.getCalories() * factor);
-        responseDto.setProtein(food.getProtein() * factor);
-        responseDto.setFat(food.getFat() * factor);
-        responseDto.setCarbohydrates(food.getCarbohydrates() * factor);
+        BigDecimal divisor = new BigDecimal("100");
+
+        BigDecimal factor = quantity.divide(divisor, 10, RoundingMode.HALF_UP);
+
+        responseDto.setCalories(
+                food.getCalories().multiply(factor)
+                        .setScale(1, RoundingMode.HALF_UP)
+        );
+        responseDto.setProtein(
+                food.getProtein().multiply(factor)
+                        .setScale(1, RoundingMode.HALF_UP)
+        );
+        responseDto.setFat(
+                food.getFat().multiply(factor)
+                        .setScale(1, RoundingMode.HALF_UP)
+        );
+        responseDto.setCarbohydrates(
+                food.getCarbohydrates().multiply(factor)
+                        .setScale(1, RoundingMode.HALF_UP)
+        );
     }
 
     public DailyFoodsResponseDto toDailyFoodsResponseDto(List<DailyFoodItem> dailyFoodItems) {

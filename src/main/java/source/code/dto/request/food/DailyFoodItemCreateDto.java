@@ -1,12 +1,12 @@
 package source.code.dto.request.food;
 
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -14,8 +14,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DailyFoodItemCreateDto {
     @NotNull
-    @Positive
-    @Max(value = 100)
-    private int amount;
-
+    private BigDecimal quantity;
 }

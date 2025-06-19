@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,16 +18,16 @@ public class FoodCreateDto {
     private String name;
     @NotNull
     @Positive
-    private double calories;
+    private BigDecimal calories;
     @NotNull
     @PositiveOrZero
-    private double protein;
+    private BigDecimal protein;
     @NotNull
     @PositiveOrZero
-    private double fat;
+    private BigDecimal fat;
     @NotNull
     @PositiveOrZero
-    private double carbohydrates;
+    private BigDecimal carbohydrates;
     @NotBlank
     private int categoryId;
 }
