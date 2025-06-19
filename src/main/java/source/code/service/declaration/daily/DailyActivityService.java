@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
-import source.code.dto.response.DailyActivitiesResponseDto;
+import source.code.dto.response.daily.DailyActivitiesResponseDto;
 
 public interface DailyActivityService {
     void addActivityToDailyCart(int activityId, DailyActivityItemCreateDto dto);

@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.food.Food;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "daily_cart_food")
 @Getter
@@ -24,7 +26,7 @@ public class DailyFoodItem {
     @NotNull
     @Positive
     @Column(nullable = false)
-    private int amount;
+    private BigDecimal quantity;
 
     @NotNull
     @ManyToOne
@@ -37,9 +39,9 @@ public class DailyFoodItem {
     @JoinColumn(name = "food_id", nullable = false)
     private Food food;
 
-    public static DailyFoodItem of(Food food, DailyCart dailyCart, int amount) {
+    public static DailyFoodItem of(Food food, DailyCart dailyCart, BigDecimal quantity) {
         DailyFoodItem dailyFoodItem = new DailyFoodItem();
-        dailyFoodItem.setAmount(amount);
+        dailyFoodItem.setQuantity(quantity);
         dailyFoodItem.setFood(food);
         dailyFoodItem.setDailyCart(dailyCart);
         return dailyFoodItem;

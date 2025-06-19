@@ -7,7 +7,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
-import source.code.dto.response.DailyActivitiesResponseDto;
+import source.code.dto.response.daily.DailyActivitiesResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.daily.DailyActivityMapper;

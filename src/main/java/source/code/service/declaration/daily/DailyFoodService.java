@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.request.food.DailyFoodItemCreateDto;
-import source.code.dto.response.DailyFoodsResponseDto;
+import source.code.dto.response.daily.DailyFoodsResponseDto;
 
 public interface DailyFoodService {
     void addFoodToDailyCart(int foodId, DailyFoodItemCreateDto dto);

@@ -6,7 +6,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.food.DailyFoodItemCreateDto;
-import source.code.dto.response.DailyFoodsResponseDto;
+import source.code.dto.response.daily.DailyFoodsResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.daily.DailyFoodMapper;
@@ -23,6 +23,7 @@ import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Optional;
@@ -64,7 +65,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
         DailyCart dailyCart = getOrCreateDailyCartForUser(userId);
         Food food = repositoryHelper.find(foodRepository, Food.class, foodId);
 
-        updateOrAddDailyFoodItem(dailyCart, food, dto.getAmount());
+        updateOrAddDailyFoodItem(dailyCart, food, dto.getQuantity());
         dailyCartRepository.save(dailyCart);
     }
 
@@ -91,7 +92,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
         DailyFoodItemCreateDto patchedDto = applyPatchToDailyFoodItem(dailyFoodItem, patch);
         validationService.validate(patchedDto);
 
-        updateAmount(dailyFoodItem, patchedDto.getAmount());
+        updateAmount(dailyFoodItem, patchedDto.getQuantity());
         dailyCartRepository.save(dailyFood);
     }
 
@@ -106,23 +107,26 @@ public class DailyFoodServiceImpl implements DailyFoodService {
                 .map(dailyFoodMapper::toDailyFoodsResponseDto)
                 .orElseGet(() -> DailyFoodsResponseDto.of(
                         Collections.emptyList(),
-                        0,
-                        0,
-                        0,
-                        0)
+                        BigDecimal.ZERO,
+                        BigDecimal.ZERO,
+                        BigDecimal.ZERO,
+                        BigDecimal.ZERO)
                 );
     }
 
     private void updateOrAddDailyFoodItem(
             DailyCart dailyCart,
             Food food,
-            int amount
+            BigDecimal quantity
     ) {
         dailyFoodItemRepository.findByDailyCartIdAndFoodId(dailyCart.getId(), food.getId())
                 .ifPresentOrElse(
-                        foundItem -> foundItem.setAmount(foundItem.getAmount() + amount),
+                        foundItem -> {
+                            BigDecimal newQuantity = foundItem.getQuantity().add(quantity);
+                            foundItem.setQuantity(newQuantity);
+                        },
                         () -> {
-                            DailyFoodItem newItem = DailyFoodItem.of(food, dailyCart, amount);
+                            DailyFoodItem newItem = DailyFoodItem.of(food, dailyCart, quantity);
                             dailyCart.getDailyFoodItems().add(newItem);
                         }
                 );
@@ -138,8 +142,8 @@ public class DailyFoodServiceImpl implements DailyFoodService {
                 .orElseThrow(() -> RecordNotFoundException.of(DailyCart.class, userId));
     }
 
-    private void updateAmount(DailyFoodItem dailyFoodItem, int amount) {
-        dailyFoodItem.setAmount(amount);
+    private void updateAmount(DailyFoodItem dailyFoodItem, BigDecimal quantity) {
+        dailyFoodItem.setQuantity(quantity);
     }
 
     public DailyCart createDailyCart(int userId) {
@@ -151,7 +155,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
             DailyFoodItem dailyFoodItem, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        DailyFoodItemCreateDto createDto = DailyFoodItemCreateDto.of(dailyFoodItem.getAmount());
+        DailyFoodItemCreateDto createDto = DailyFoodItemCreateDto.of(dailyFoodItem.getQuantity());
         return jsonPatchService.applyPatch(patch, createDto, DailyFoodItemCreateDto.class);
     }
 
