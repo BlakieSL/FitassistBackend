@@ -22,7 +22,7 @@ public class DailyActivityController {
 
     @GetMapping
     public ResponseEntity<DailyActivitiesResponseDto> getAllDailyActivitiesByUser() {
-        return ResponseEntity.ok(dailyActivityService.getActivitiesFromDailyActivity());
+        return ResponseEntity.ok(dailyActivityService.getActivitiesFromDailyCart());
     }
 
     @PostMapping("/add/{activityId}")
@@ -30,7 +30,7 @@ public class DailyActivityController {
             @PathVariable int activityId,
             @Valid @RequestBody DailyActivityItemCreateDto request
     ) {
-        dailyActivityService.addActivityToDailyActivityItem(activityId, request);
+        dailyActivityService.addActivityToDailyCart(activityId, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -46,7 +46,7 @@ public class DailyActivityController {
 
     @DeleteMapping("/remove/{activityId}")
     public ResponseEntity<Void> removeActivityFromDailyCartActivity(@PathVariable int activityId) {
-        dailyActivityService.removeActivityFromDailyActivityItem(activityId);
+        dailyActivityService.removeActivityFromDailyCart(activityId);
         return ResponseEntity.noContent().build();
     }
 }

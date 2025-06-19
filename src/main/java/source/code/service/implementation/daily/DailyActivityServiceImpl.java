@@ -12,12 +12,12 @@ import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.daily.DailyActivityMapper;
 import source.code.model.activity.Activity;
-import source.code.model.activity.DailyActivity;
 import source.code.model.activity.DailyActivityItem;
+import source.code.model.daily.DailyCart;
 import source.code.model.user.profile.User;
 import source.code.repository.ActivityRepository;
 import source.code.repository.DailyActivityItemRepository;
-import source.code.repository.DailyActivityRepository;
+import source.code.repository.DailyCartRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.daily.DailyActivityService;
 import source.code.service.declaration.helpers.JsonPatchService;
@@ -33,13 +33,13 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     private final ValidationService validationService;
     private final DailyActivityMapper dailyActivityMapper;
     private final RepositoryHelper repositoryHelper;
-    private final DailyActivityRepository dailyActivityRepository;
+    private final DailyCartRepository dailyCartRepository;
     private final DailyActivityItemRepository dailyActivityItemRepository;
     private final ActivityRepository activityRepository;
     private final UserRepository userRepository;
 
     public DailyActivityServiceImpl(
-            DailyActivityRepository dailyActivityRepository,
+            DailyCartRepository dailyCartRepository,
             UserRepository userRepository,
             ActivityRepository activityRepository,
             JsonPatchService jsonPatchService,
@@ -47,7 +47,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
             DailyActivityMapper dailyActivityMapper,
             RepositoryHelper repositoryHelper,
             DailyActivityItemRepository dailyActivityItemRepository) {
-        this.dailyActivityRepository = dailyActivityRepository;
+        this.dailyCartRepository = dailyCartRepository;
         this.userRepository = userRepository;
         this.activityRepository = activityRepository;
         this.jsonPatchService = jsonPatchService;
@@ -59,24 +59,24 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 
     @Override
     @Transactional
-    public void addActivityToDailyActivityItem(int activityId, DailyActivityItemCreateDto dto) {
+    public void addActivityToDailyCart(int activityId, DailyActivityItemCreateDto dto) {
         int userId = AuthorizationUtil.getUserId();
-        DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
+        DailyCart dailyCart = getOrCreateDailyCartForUser(userId);
         Activity activity = repositoryHelper.find(activityRepository, Activity.class, activityId);
 
-        updateOrAddDailyActivityItem(dailyActivity, activity, dto.getTime());
-        dailyActivityRepository.save(dailyActivity);
+        updateOrAddDailyActivityItem(dailyCart, activity, dto.getTime());
+        dailyCartRepository.save(dailyCart);
     }
 
     @Override
     @Transactional
-    public void removeActivityFromDailyActivityItem(int activityId) {
+    public void removeActivityFromDailyCart(int activityId) {
         int userId = AuthorizationUtil.getUserId();
-        DailyActivity dailyActivity = getDailyActivityForUserOrThrow(userId);
-        DailyActivityItem dailyActivityItem = getDailyActivityItem(dailyActivity.getId(), activityId);
+        DailyCart dailyCart = getDailyCartForUserOrThrow(userId);
+        DailyActivityItem dailyActivityItem = getDailyActivityItem(dailyCart.getId(), activityId);
 
-        dailyActivity.getDailyActivityItems().remove(dailyActivityItem);
-        dailyActivityRepository.save(dailyActivity);
+        dailyCart.getDailyActivityItems().remove(dailyActivityItem);
+        dailyCartRepository.save(dailyCart);
     }
 
     @Override
@@ -85,24 +85,24 @@ public class DailyActivityServiceImpl implements DailyActivityService {
             throws JsonPatchException, JsonProcessingException
     {
         int userId = AuthorizationUtil.getUserId();
-        DailyActivity dailyActivity = getDailyActivityForUserOrThrow(userId);
-        DailyActivityItem dailyActivityItem = getDailyActivityItem(dailyActivity.getId(), activityId);
+        DailyCart dailyCart = getDailyCartForUserOrThrow(userId);
+        DailyActivityItem dailyActivityItem = getDailyActivityItem(dailyCart.getId(), activityId);
 
         DailyActivityItemCreateDto patchedDto = applyPatchToDailyActivityItem(dailyActivityItem, patch);
         validationService.validate(patchedDto);
 
         updateTime(dailyActivityItem, patchedDto.getTime());
-        dailyActivityRepository.save(dailyActivity);
+        dailyCartRepository.save(dailyCart);
     }
 
     @Override
     @Transactional
-    public DailyActivitiesResponseDto getActivitiesFromDailyActivity() {
+    public DailyActivitiesResponseDto getActivitiesFromDailyCart() {
         int userId = AuthorizationUtil.getUserId();
-        DailyActivity dailyActivity = getOrCreateDailyActivityForUser(userId);
-        User user = dailyActivity.getUser();
+        DailyCart dailyCart = getOrCreateDailyCartForUser(userId);
+        User user = dailyCart.getUser();
 
-        return dailyActivity.getDailyActivityItems().stream()
+        return dailyCart.getDailyActivityItems().stream()
                 .map(dailyActivityItem -> dailyActivityMapper.toActivityCalculatedResponseDto(
                         dailyActivityItem,
                         user.getWeight()
@@ -115,37 +115,37 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     }
 
     private void updateOrAddDailyActivityItem(
-            DailyActivity dailyActivity,
+            DailyCart dailyCart,
             Activity activity,
             int time
     ) {
-        dailyActivityItemRepository.findByDailyActivityIdAndActivityId(dailyActivity.getId(), activity.getId())
+        dailyActivityItemRepository.findByDailyCartIdAndActivityId(dailyCart.getId(), activity.getId())
                 .ifPresentOrElse(
                         foundItem -> foundItem.setTime(foundItem.getTime() + time),
                         () -> {
-                            DailyActivityItem newItem = DailyActivityItem.of(activity, dailyActivity, time);
-                            dailyActivity.getDailyActivityItems().add(newItem);
+                            DailyActivityItem newItem = DailyActivityItem.of(activity, dailyCart, time);
+                            dailyCart.getDailyActivityItems().add(newItem);
                         }
                 );
     }
 
-    private DailyActivity getOrCreateDailyActivityForUser(int userId) {
-        return dailyActivityRepository.findByUserIdAndDate(userId, LocalDate.now())
-                .orElseGet(() -> createDailyActivity(userId));
+    private DailyCart getOrCreateDailyCartForUser(int userId) {
+        return dailyCartRepository.findByUserIdAndDate(userId, LocalDate.now())
+                .orElseGet(() -> createDailyCart(userId));
     }
 
-    private DailyActivity getDailyActivityForUserOrThrow(int userId) {
-        return dailyActivityRepository.findByUserIdAndDate(userId, LocalDate.now())
-                .orElseThrow(() -> RecordNotFoundException.of(DailyActivity.class, userId));
+    private DailyCart getDailyCartForUserOrThrow(int userId) {
+        return dailyCartRepository.findByUserIdAndDate(userId, LocalDate.now())
+                .orElseThrow(() -> RecordNotFoundException.of(DailyCart.class, userId));
     }
 
     private void updateTime(DailyActivityItem dailyActivityItem, int time) {
         dailyActivityItem.setTime(time);
     }
 
-    private DailyActivity createDailyActivity(int userId) {
+    private DailyCart createDailyCart(int userId) {
         User user = repositoryHelper.find(userRepository, User.class, userId);
-        return dailyActivityRepository.save(DailyActivity.createForToday(user));
+        return dailyCartRepository.save(DailyCart.createForToday(user));
     }
 
     private DailyActivityItemCreateDto applyPatchToDailyActivityItem(
@@ -159,7 +159,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 
     private DailyActivityItem getDailyActivityItem(int dailyActivityId, int activityId) {
         return dailyActivityItemRepository.
-                findByDailyActivityIdAndActivityId(dailyActivityId, activityId)
+                findByDailyCartIdAndActivityId(dailyActivityId, activityId)
                 .orElseThrow(() -> RecordNotFoundException.of(DailyActivityItem.class, activityId));
     }
 }

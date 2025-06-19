@@ -22,7 +22,7 @@ public class DailyFoodController {
 
     @GetMapping()
     public ResponseEntity<DailyFoodsResponseDto> getAllFoodsInCartByUser() {
-        DailyFoodsResponseDto cart = dailyFoodService.getFoodsFromDailyFoodItem();
+        DailyFoodsResponseDto cart = dailyFoodService.getFoodFromDailyCart();
         return ResponseEntity.ok(cart);
     }
 
@@ -31,13 +31,13 @@ public class DailyFoodController {
             @PathVariable int foodId,
             @Valid @RequestBody DailyFoodItemCreateDto request
     ) {
-        dailyFoodService.addFoodToDailyFoodItem(foodId, request);
+        dailyFoodService.addFoodToDailyCart(foodId, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/remove/{foodId}")
     public ResponseEntity<Void> removeFoodFromDailyCartFood(@PathVariable int foodId) {
-        dailyFoodService.removeFoodFromDailyFoodItem(foodId);
+        dailyFoodService.removeFoodFromDailyCart(foodId);
         return ResponseEntity.noContent().build();
     }
 
