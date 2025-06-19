@@ -12,9 +12,8 @@ INSERT INTO user (
     gender,
     goal,
     height,
-    name,
     password,
-    surname,
+    username,
     weight
 ) VALUES (
              'MODERATELY_ACTIVE',
@@ -24,7 +23,6 @@ INSERT INTO user (
              'MALE',
              'LOSE_WEIGHT',
              175.5,
-             'John',
              'Dimas@123',
              'Doe',
              80.3

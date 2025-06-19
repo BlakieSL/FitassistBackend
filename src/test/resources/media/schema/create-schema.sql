@@ -18,9 +18,8 @@ create table user
     gender              enum ('FEMALE', 'MALE')                                                                  not null,
     goal                enum ('BUILD_MUSCLE', 'LOSE_WEIGHT', 'MAINTAIN_WEIGHT')                                  not null,
     height              double                                                                                   not null,
-    name                varchar(40)                                                                              not null,
     password            varchar(60)                                                                              not null,
-    surname             varchar(40)                                                                              not null,
+    username            varchar(40)                                                                              not null,
     weight              double                                                                                   not null
 );
 

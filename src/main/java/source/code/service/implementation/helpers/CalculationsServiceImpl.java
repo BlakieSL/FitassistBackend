@@ -1,34 +1,42 @@
 package source.code.service.implementation.helpers;
 
 import org.springframework.stereotype.Service;
-import source.code.helper.Enum.model.user.ActivityLevelType;
-import source.code.helper.Enum.model.user.GenderType;
-import source.code.helper.Enum.model.user.GoalType;
-import source.code.model.activity.Activity;
+import source.code.helper.Enum.model.user.ActivityLevel;
+import source.code.helper.Enum.model.user.Gender;
+import source.code.helper.Enum.model.user.Goal;
 import source.code.service.declaration.helpers.CalculationsService;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Service
 public final class CalculationsServiceImpl implements CalculationsService {
-    private static final double MALE_WEIGHT_MULTIPLIER = 10.0;
-    private static final double MALE_HEIGHT_MULTIPLIER = 6.25;
-    private static final double MALE_AGE_MULTIPLIER = 5.0;
-    private static final double MALE_CONSTANT = 5.0;
-    private static final double FEMALE_WEIGHT_MULTIPLIER = 10.0;
-    private static final double FEMALE_HEIGHT_MULTIPLIER = 6.25;
-    private static final double FEMALE_AGE_MULTIPLIER = 5.0;
-    private static final double FEMALE_CONSTANT = -161.0;
-    private static final double SEDENTARY_FACTOR = 1.2;
-    private static final double LIGHTLY_ACTIVE_FACTOR = 1.375;
-    private static final double MODERATELY_ACTIVE_FACTOR = 1.55;
-    private static final double VERY_ACTIVE_FACTOR = 1.725;
-    private static final double SUPER_ACTIVE_FACTOR = 1.9;
-    private static final double DEFAULT_FACTOR = 1.2;
-    private static final int CALORIE_DEFICIT = 200;
-    private static final int CALORIE_SURPLUS = 200;
-    private static final int CALORIE_DIVISOR = 200;
+    private static final BigDecimal MALE_WEIGHT_MULTIPLIER = BigDecimal.valueOf(10.0);
+    private static final BigDecimal MALE_HEIGHT_MULTIPLIER = BigDecimal.valueOf(6.25);
+    private static final BigDecimal MALE_AGE_MULTIPLIER = BigDecimal.valueOf(5.0);
+    private static final BigDecimal MALE_CONSTANT = BigDecimal.valueOf(5.0);
+
+    private static final BigDecimal FEMALE_WEIGHT_MULTIPLIER = BigDecimal.valueOf(10.0);
+    private static final BigDecimal FEMALE_HEIGHT_MULTIPLIER = BigDecimal.valueOf(6.25);
+    private static final BigDecimal FEMALE_AGE_MULTIPLIER = BigDecimal.valueOf(5.0);
+    private static final BigDecimal FEMALE_CONSTANT = BigDecimal.valueOf(-161.0);
+
+    private static final BigDecimal SEDENTARY_FACTOR = BigDecimal.valueOf(1.2);
+    private static final BigDecimal LIGHTLY_ACTIVE_FACTOR = BigDecimal.valueOf(1.375);
+    private static final BigDecimal MODERATELY_ACTIVE_FACTOR = BigDecimal.valueOf(1.55);
+    private static final BigDecimal VERY_ACTIVE_FACTOR = BigDecimal.valueOf(1.725);
+    private static final BigDecimal SUPER_ACTIVE_FACTOR = BigDecimal.valueOf(1.9);
+    private static final BigDecimal DEFAULT_FACTOR = BigDecimal.valueOf(1.2);
+
+    private static final BigDecimal CALORIE_DEFICIT = BigDecimal.valueOf(200);
+    private static final BigDecimal CALORIE_SURPLUS = BigDecimal.valueOf(200);
+    private static final BigDecimal CALORIE_DIVISOR = BigDecimal.valueOf(200);
+    private static final int CALCULATION_SCALE = 10;
+    private static final int RESULT_SCALE = 2;
+    private static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
 
     @Override
-    public double calculateBMR(double weight, double height, int age, GenderType gender) {
+    public BigDecimal calculateBMR(BigDecimal weight, BigDecimal height, int age, Gender gender) {
         return switch (gender) {
             case MALE -> calculateBMRForMale(weight, height, age);
             case FEMALE -> calculateBMRForFemale(weight, height, age);
@@ -36,45 +44,53 @@ public final class CalculationsServiceImpl implements CalculationsService {
     }
 
     @Override
-    public double calculateTDEE(double bmr, ActivityLevelType activityLevel) {
-        double activityFactor = getActivityFactor(activityLevel);
-        return bmr * activityFactor;
+    public BigDecimal calculateTDEE(BigDecimal bmr, ActivityLevel activityLevel) {
+        BigDecimal activityFactor = getActivityFactor(activityLevel);
+        return bmr.multiply(activityFactor)
+                .setScale(RESULT_SCALE, ROUNDING_MODE);
     }
 
     @Override
-    public double calculateCaloricNeeds(
-            double weight,
-            double height,
+    public BigDecimal calculateCaloricNeeds(
+            BigDecimal weight,
+            BigDecimal height,
             int age,
-            GenderType gender,
-            ActivityLevelType activityLevel,
-            GoalType goal
+            Gender gender,
+            ActivityLevel activityLevel,
+            Goal goal
     ) {
-        double bmr = calculateBMR(weight, height, age, gender);
-        double tdee = calculateTDEE(bmr, activityLevel);
-        return adjustCaloricNeedsBasedOnGoal(tdee, goal);
+        BigDecimal bmr = calculateBMR(weight, height, age, gender);
+        BigDecimal tdee = calculateTDEE(bmr, activityLevel);
+        return adjustCaloricNeedsBasedOnGoal(tdee, goal)
+                .setScale(RESULT_SCALE, ROUNDING_MODE);
     }
 
     @Override
-    public double calculateCaloriesBurned(int time, double weight, double met) {
-        return (time * met * weight) / CALORIE_DIVISOR;
+    public BigDecimal calculateCaloriesBurned(int time, BigDecimal weight, BigDecimal met) {
+        BigDecimal timeBD = BigDecimal.valueOf(time);
+        return timeBD.multiply(met)
+                .multiply(weight)
+                .divide(CALORIE_DIVISOR, CALCULATION_SCALE, ROUNDING_MODE)
+                .setScale(RESULT_SCALE, ROUNDING_MODE);
     }
 
-    private double calculateBMRForMale(double weight, double height, int age) {
-        return MALE_WEIGHT_MULTIPLIER * weight +
-                MALE_HEIGHT_MULTIPLIER * height -
-                MALE_AGE_MULTIPLIER * age +
-                MALE_CONSTANT;
+    private BigDecimal calculateBMRForMale(BigDecimal weight, BigDecimal height, int age) {
+        BigDecimal ageBD = BigDecimal.valueOf(age);
+        return MALE_WEIGHT_MULTIPLIER.multiply(weight)
+                .add(MALE_HEIGHT_MULTIPLIER.multiply(height))
+                .subtract(MALE_AGE_MULTIPLIER.multiply(ageBD))
+                .add(MALE_CONSTANT);
     }
 
-    private double calculateBMRForFemale(double weight, double height, int age) {
-        return FEMALE_WEIGHT_MULTIPLIER * weight +
-                FEMALE_HEIGHT_MULTIPLIER * height -
-                FEMALE_AGE_MULTIPLIER * age +
-                FEMALE_CONSTANT;
+    private BigDecimal calculateBMRForFemale(BigDecimal weight, BigDecimal height, int age) {
+        BigDecimal ageBD = BigDecimal.valueOf(age);
+        return FEMALE_WEIGHT_MULTIPLIER.multiply(weight)
+                .add(FEMALE_HEIGHT_MULTIPLIER.multiply(height))
+                .subtract(FEMALE_AGE_MULTIPLIER.multiply(ageBD))
+                .add(FEMALE_CONSTANT);
     }
 
-    private double getActivityFactor(ActivityLevelType activityLevel) {
+    private BigDecimal getActivityFactor(ActivityLevel activityLevel) {
         return switch (activityLevel) {
             case SEDENTARY -> SEDENTARY_FACTOR;
             case LIGHTLY_ACTIVE -> LIGHTLY_ACTIVE_FACTOR;
@@ -84,11 +100,11 @@ public final class CalculationsServiceImpl implements CalculationsService {
         };
     }
 
-    private double adjustCaloricNeedsBasedOnGoal(double tdee, GoalType goal) {
+    private BigDecimal adjustCaloricNeedsBasedOnGoal(BigDecimal tdee, Goal goal) {
         return switch (goal) {
             case MAINTAIN_WEIGHT -> tdee;
-            case LOSE_WEIGHT -> tdee - CALORIE_DEFICIT;
-            case BUILD_MUSCLE -> tdee + CALORIE_SURPLUS;
+            case LOSE_WEIGHT -> tdee.subtract(CALORIE_DEFICIT);
+            case BUILD_MUSCLE -> tdee.add(CALORIE_SURPLUS);
         };
     }
 }

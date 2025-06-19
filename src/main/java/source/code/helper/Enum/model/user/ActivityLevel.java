@@ -1,6 +1,6 @@
 package source.code.helper.Enum.model.user;
 
-public enum ActivityLevelType {
+public enum ActivityLevel {
     SEDENTARY,
     LIGHTLY_ACTIVE,
     MODERATELY_ACTIVE,

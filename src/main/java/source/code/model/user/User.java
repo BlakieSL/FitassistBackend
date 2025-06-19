@@ -1,4 +1,4 @@
-package source.code.model.user.profile;
+package source.code.model.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -6,17 +6,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.helper.Enum.model.user.ActivityLevelType;
-import source.code.helper.Enum.model.user.GenderType;
-import source.code.helper.Enum.model.user.GoalType;
+import source.code.helper.Enum.model.user.ActivityLevel;
+import source.code.helper.Enum.model.user.Gender;
+import source.code.helper.Enum.model.user.Goal;
 import source.code.model.daily.DailyCart;
 import source.code.model.forum.*;
 import source.code.model.plan.Plan;
 import source.code.model.recipe.Recipe;
-import source.code.model.user.*;
 import source.code.validation.ValidationGroups;
 import source.code.validation.email.UniqueEmailDomain;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +28,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    private static final int NAME_MAX_LENGTH = 40;
+    private static final int USERNAME_MAX_LENGTH = 40;
     private static final int EMAIL_MAX_LENGTH = 50;
     private static final int BCRYPT_HASHED_PASSWORD_MAX_LENGTH = 60;
     private static final int BCRYPT_HASHED_PASSWORD_MIN_LENGTH = 60;
@@ -38,14 +38,9 @@ public class User {
     private Integer id;
 
     @NotBlank
-    @Size(max = NAME_MAX_LENGTH)
-    @Column(nullable = false, length = NAME_MAX_LENGTH)
-    private String name;
-
-    @NotBlank
-    @Size(max = NAME_MAX_LENGTH)
-    @Column(nullable = false, length = NAME_MAX_LENGTH)
-    private String surname;
+    @Size(max = USERNAME_MAX_LENGTH)
+    @Column(nullable = false, length = USERNAME_MAX_LENGTH)
+    private String username;
 
     @NotBlank
     @Size(max = EMAIL_MAX_LENGTH)
@@ -62,37 +57,24 @@ public class User {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private GenderType gender;
+    private Gender gender;
 
     @NotNull
     @Past
     @Column(nullable = false)
     private LocalDate birthday;
 
-    @NotNull
     @Positive
-    @Column(nullable = false)
-    private double height;
+    private BigDecimal height;
 
-    @NotNull
     @Positive
-    @Column(nullable = false)
-    private double weight;
+    private BigDecimal weight;
 
-    @NotNull
-    @Positive
-    @Column(name = "calculated_calories", nullable = false)
-    private double calculatedCalories;
-
-    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private GoalType goal;
+    private Goal goal;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "activity_level", nullable = false)
-    private ActivityLevelType activityLevel;
+    private ActivityLevel activityLevel;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<DailyCart> dailyCarts = new HashSet<>();

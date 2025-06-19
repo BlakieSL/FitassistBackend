@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.recipe.Recipe;
-import source.code.model.user.profile.User;
 
 @Entity
 @Table(name = "user_recipe")

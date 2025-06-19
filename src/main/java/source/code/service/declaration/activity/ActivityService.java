@@ -33,6 +33,4 @@ public interface ActivityService {
     List<ActivityResponseDto> getActivitiesByCategory(int categoryId);
 
     ActivityCalculatedResponseDto calculateCaloriesBurned(int id, CalculateActivityCaloriesRequestDto request);
-
-    ActivityAverageMetResponseDto getAverageMet();
 }

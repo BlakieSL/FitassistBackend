@@ -1,4 +1,4 @@
-package source.code.model.activity;
+package source.code.model.daily;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.model.daily.DailyCart;
+import source.code.model.activity.Activity;
 
 @Entity
 @Table(name = "daily_cart_activity")

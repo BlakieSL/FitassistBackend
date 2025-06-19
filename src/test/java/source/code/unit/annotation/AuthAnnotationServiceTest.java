@@ -18,7 +18,7 @@ import source.code.model.plan.Plan;
 import source.code.model.recipe.Recipe;
 import source.code.model.text.PlanInstruction;
 import source.code.model.text.RecipeInstruction;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.model.workout.Workout;
 import source.code.model.workout.WorkoutSet;
 import source.code.repository.*;

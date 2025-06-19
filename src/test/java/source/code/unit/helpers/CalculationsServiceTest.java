@@ -4,16 +4,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import source.code.helper.Enum.model.user.ActivityLevelType;
-import source.code.helper.Enum.model.user.GenderType;
-import source.code.helper.Enum.model.user.GoalType;
+import source.code.helper.Enum.model.user.ActivityLevel;
+import source.code.helper.Enum.model.user.Gender;
+import source.code.helper.Enum.model.user.Goal;
 import source.code.service.implementation.helpers.CalculationsServiceImpl;
+
+import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class CalculationsServiceTest {
-
     private CalculationsServiceImpl calculationsService;
 
     @BeforeEach
@@ -23,86 +24,86 @@ public class CalculationsServiceTest {
 
     @Test
     void calculateBMR_shouldCalculateBMRForMale() {
-        double weight = 70.0;
-        double height = 175.0;
+        BigDecimal weight = BigDecimal.valueOf(70);
+        BigDecimal height = BigDecimal.valueOf(175);
         int age = 25;
-        GenderType gender = GenderType.MALE;
+        Gender gender = Gender.MALE;
 
-        double result = calculationsService.calculateBMR(weight, height, age, gender);
+        BigDecimal result = calculationsService.calculateBMR(weight, height, age, gender);
 
-        assertEquals(1673.75, result);
+        assertEquals(new BigDecimal("1673.75"), result);
     }
 
     @Test
     void calculateBMR_shouldCalculateBMRForFemale() {
-        double weight = 60.0;
-        double height = 165.0;
+        BigDecimal weight = BigDecimal.valueOf(60);
+        BigDecimal height = BigDecimal.valueOf(165);
         int age = 30;
-        GenderType gender = GenderType.FEMALE;
+        Gender gender = Gender.FEMALE;
 
-        double result = calculationsService.calculateBMR(weight, height, age, gender);
+        BigDecimal result = calculationsService.calculateBMR(weight, height, age, gender);
 
-        assertEquals(1320.25, result);
+        assertEquals(new BigDecimal("1320.25"), result);
     }
 
     @Test
     void calculateTDEE_shouldCalculateTDEEForSedentary() {
-        double bmr = 1705.0;
-        ActivityLevelType activityLevel = ActivityLevelType.SEDENTARY;
+        BigDecimal bmr = BigDecimal.valueOf(1705);
+        ActivityLevel activityLevel = ActivityLevel.SEDENTARY;
 
-        double result = calculationsService.calculateTDEE(bmr, activityLevel);
+        BigDecimal result = calculationsService.calculateTDEE(bmr, activityLevel);
 
-        assertEquals(2046.0, result);
+        assertEquals(new BigDecimal("2046.00"), result);
     }
 
     @Test
     void calculateTDEE_shouldCalculateTDEEForSuperActive() {
-        double bmr = 1705.0;
-        ActivityLevelType activityLevel = ActivityLevelType.SUPER_ACTIVE;
+        BigDecimal bmr = BigDecimal.valueOf(1705);
+        ActivityLevel activityLevel = ActivityLevel.SUPER_ACTIVE;
 
-        double result = calculationsService.calculateTDEE(bmr, activityLevel);
+        BigDecimal result = calculationsService.calculateTDEE(bmr, activityLevel);
 
-        assertEquals(3239.5, result);
+        assertEquals(new BigDecimal("3239.50"), result);
     }
 
     @Test
     void calculateCaloricNeeds_shouldCalculateCaloricNeedsForLosingWeight() {
-        double weight = 70.0;
-        double height = 175.0;
+        BigDecimal weight = BigDecimal.valueOf(70);
+        BigDecimal height = BigDecimal.valueOf(175);
         int age = 25;
-        GenderType gender = GenderType.MALE;
-        ActivityLevelType activityLevel = ActivityLevelType.MODERATELY_ACTIVE;
-        GoalType goal = GoalType.LOSE_WEIGHT;
+        Gender gender = Gender.MALE;
+        ActivityLevel activityLevel = ActivityLevel.MODERATELY_ACTIVE;
+        Goal goal = Goal.LOSE_WEIGHT;
 
-        double result = calculationsService
+        BigDecimal result = calculationsService
                 .calculateCaloricNeeds(weight, height, age, gender, activityLevel, goal);
 
-        assertEquals(2394.3125, result);
+        assertEquals(new BigDecimal("2394.31"), result);
     }
 
     @Test
     void calculateCaloricNeeds_shouldCalculateCaloricNeedsForBuildingMuscle() {
-        double weight = 60.0;
-        double height = 165.0;
+        BigDecimal weight = BigDecimal.valueOf(60);
+        BigDecimal height = BigDecimal.valueOf(165);
         int age = 30;
-        GenderType gender = GenderType.FEMALE;
-        ActivityLevelType activityLevel = ActivityLevelType.VERY_ACTIVE;
-        GoalType goal = GoalType.BUILD_MUSCLE;
+        Gender gender = Gender.FEMALE;
+        ActivityLevel activityLevel = ActivityLevel.VERY_ACTIVE;
+        Goal goal = Goal.BUILD_MUSCLE;
 
-        double result = calculationsService
+        BigDecimal result = calculationsService
                 .calculateCaloricNeeds(weight, height, age, gender, activityLevel, goal);
 
-        assertEquals(2477.43125, result);
+        assertEquals(new BigDecimal("2477.43"), result);
     }
 
     @Test
     void calculateCaloriesBurned_shouldCalculateCaloriesBurned() {
         int time = 30;
-        double weight = 70.0;
-        double met = 8.0;
+        BigDecimal weight = BigDecimal.valueOf(70);
+        BigDecimal met = BigDecimal.valueOf(8);
 
-        double result = calculationsService.calculateCaloriesBurned(time, weight, met);
+        BigDecimal result = calculationsService.calculateCaloriesBurned(time, weight, met);
 
-        assertEquals(84.0, result);
+        assertEquals(new BigDecimal("84.00"), result);
     }
 }

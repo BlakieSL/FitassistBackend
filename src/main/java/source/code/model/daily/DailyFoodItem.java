@@ -1,4 +1,4 @@
-package source.code.model.food;
+package source.code.model.daily;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.model.daily.DailyCart;
+import source.code.model.food.Food;
 
 @Entity
 @Table(name = "daily_cart_food")

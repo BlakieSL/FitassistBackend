@@ -5,7 +5,7 @@ import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.forumThread.ForumThreadMapper;
 import source.code.model.forum.ForumThread;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.model.user.UserThreadSubscription;
 import source.code.repository.ForumThreadRepository;
 import source.code.repository.UserRepository;

@@ -6,9 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.model.activity.DailyActivityItem;
-import source.code.model.food.DailyFoodItem;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

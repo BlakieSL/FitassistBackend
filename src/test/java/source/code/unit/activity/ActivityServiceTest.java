@@ -29,7 +29,7 @@ import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.activity.ActivityMapper;
 import source.code.model.activity.Activity;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.repository.ActivityRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
@@ -428,26 +428,5 @@ public class ActivityServiceTest {
         assertTrue(result.isEmpty());
         verify(activityRepository).findAllByActivityCategory_Id(categoryId);
         verifyNoInteractions(activityMapper);
-    }
-
-    @Test
-    void getAverageMet_shouldReturnAverageMet() {
-        activity.setMet(5.0);
-        when(activityRepository.findAll()).thenReturn(List.of(activity));
-
-        ActivityAverageMetResponseDto result = activityService.getAverageMet();
-
-        assertEquals(5.0, result.getMet());
-        verify(activityRepository).findAll();
-    }
-
-    @Test
-    void getAverageMet_shouldReturnZeroWhenNoActivities() {
-        when(activityRepository.findAll()).thenReturn(new ArrayList<>());
-
-        ActivityAverageMetResponseDto result = activityService.getAverageMet();
-
-        assertEquals(0.0, result.getMet());
-        verify(activityRepository).findAll();
     }
 }

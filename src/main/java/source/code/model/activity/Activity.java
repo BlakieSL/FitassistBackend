@@ -10,8 +10,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.helper.search.IndexedEntity;
+import source.code.model.daily.DailyActivityItem;
 import source.code.model.user.UserActivity;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,7 +39,7 @@ public class Activity implements IndexedEntity {
     @NotNull
     @Positive
     @Column(nullable = false)
-    private double met;
+    private BigDecimal met;
 
     @NotNull
     @ManyToOne
@@ -55,7 +57,7 @@ public class Activity implements IndexedEntity {
         return this.getClass().getSimpleName();
     }
 
-    public static Activity of(int id, String name, double met) {
+    public static Activity of(int id, String name, BigDecimal met) {
         Activity activity = new Activity();
         activity.setId(id);
         activity.setName(name);
@@ -64,6 +66,6 @@ public class Activity implements IndexedEntity {
     }
 
     public static Activity of(Integer id, String name) {
-        return of(id, name, 0);
+        return of(id, name, BigDecimal.ZERO);
     }
 }

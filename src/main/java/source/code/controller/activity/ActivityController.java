@@ -78,12 +78,6 @@ public class ActivityController {
         return ResponseEntity.ok(filteredActivities);
     }
 
-    @GetMapping("/met")
-    public ResponseEntity<ActivityAverageMetResponseDto> getAverageMet() {
-        ActivityAverageMetResponseDto dto = activityService.getAverageMet();
-        return ResponseEntity.ok(dto);
-    }
-
     @PostMapping("/{id}/calculate-calories")
     public ResponseEntity<ActivityCalculatedResponseDto> calculateActivityCaloriesBurned(
             @PathVariable int id,

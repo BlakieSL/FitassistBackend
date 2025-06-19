@@ -19,9 +19,9 @@ import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.daily.DailyActivityMapper;
 import source.code.model.activity.Activity;
-import source.code.model.activity.DailyActivityItem;
+import source.code.model.daily.DailyActivityItem;
 import source.code.model.daily.DailyCart;
-import source.code.model.user.profile.User;
+import source.code.model.user.User;
 import source.code.repository.ActivityRepository;
 import source.code.repository.DailyActivityItemRepository;
 import source.code.repository.DailyCartRepository;
@@ -31,6 +31,7 @@ import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.daily.DailyActivityServiceImpl;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -305,7 +306,7 @@ public class DailyActivityServiceTest {
     void getActivitiesFromDailyCart_shouldReturnActivities() {
         User user = new User();
         user.setId(USER_ID);
-        user.setWeight(70);
+        user.setWeight(BigDecimal.valueOf(70));
         dailyCart.setUser(user);
         dailyCart.getDailyActivityItems().add(dailyActivityItem);
 
@@ -329,7 +330,7 @@ public class DailyActivityServiceTest {
     void getActivitiesFromDailyCart_shouldReturnEmptyActivities_whenDailyCartNotFound() {
         User user = new User();
         user.setId(USER_ID);
-        user.setWeight(70);
+        user.setWeight(BigDecimal.valueOf(70));
         DailyCart newDailyActivity = DailyCart.createForToday(user);
         newDailyActivity.setUser(user);
 
