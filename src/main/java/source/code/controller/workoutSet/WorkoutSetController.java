@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.annotation.WorkoutSetOwnerOrAdmin;
-import source.code.annotation.WorkoutSetOwnerOrAdminCreation;
 import source.code.dto.request.workoutSet.WorkoutSetCreateDto;
 import source.code.dto.response.workoutSet.WorkoutSetResponseDto;
 import source.code.service.declaration.workoutSet.WorkoutSetService;
@@ -23,7 +22,7 @@ public class WorkoutSetController {
         this.workoutSetService = workoutSetService;
     }
 
-    @WorkoutSetOwnerOrAdminCreation
+    //@WorkoutSetOwnerOrAdminCreation
     @PostMapping
     public ResponseEntity<WorkoutSetResponseDto> createWorkoutSet(
             @RequestBody WorkoutSetCreateDto workoutSetDto
@@ -56,12 +55,12 @@ public class WorkoutSetController {
         return ResponseEntity.ok(workoutSet);
     }
 
-    @GetMapping("/workouts/{workoutId}")
-    public ResponseEntity<List<WorkoutSetResponseDto>> getAllWorkoutSetsForWorkout(
-            @PathVariable int workoutId
+    @GetMapping("/workout-set-groups/{workoutSetGroupId}")
+    public ResponseEntity<List<WorkoutSetResponseDto>> getAllWorkoutSetsForWorkoutSetGroup(
+            @PathVariable int workoutSetGroupId
     ) {
         List<WorkoutSetResponseDto> workoutSets = workoutSetService
-                .getAllWorkoutSetsForWorkout(workoutId);
+                .getAllWorkoutSetsForWorkoutSetGroup(workoutSetGroupId);
         return ResponseEntity.ok(workoutSets);
     }
 }

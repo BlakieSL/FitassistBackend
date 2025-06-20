@@ -71,8 +71,8 @@ public class WorkoutSetServiceImpl implements WorkoutSetService {
     }
 
     @Override
-    public List<WorkoutSetResponseDto> getAllWorkoutSetsForWorkout(int workoutId) {
-        return workoutSetRepository.getAllByWorkoutId(workoutId).stream()
+    public List<WorkoutSetResponseDto> getAllWorkoutSetsForWorkoutSetGroup(int workoutSetGroupId) {
+        return workoutSetRepository.findAllByWorkoutSetGroupId(workoutSetGroupId).stream()
                 .map(workoutSetMapper::toResponseDto)
                 .toList();
     }

@@ -22,12 +22,12 @@ public abstract class WorkoutMapper {
 
     @Mapping(target = "plan", source = "planId", qualifiedByName = "mapPlanIdToPlan")
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "workoutSets", ignore = true)
+    @Mapping(target = "workoutSetGroups", ignore = true)
     public abstract Workout toEntity(WorkoutCreateDto createDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "workoutSets", ignore = true)
+    @Mapping(target = "workoutSetGroups", ignore = true)
     @Mapping(target = "plan", ignore = true)
     public abstract void updateWorkout(@MappingTarget Workout workout, WorkoutUpdateDto updateDto);
 

@@ -20,7 +20,8 @@ public interface PlanRepository
             "FROM Equipment e " +
             "JOIN e.exercises ex " +
             "JOIN ex.workoutSets ws " +
-            "JOIN ws.workout w " +
+            "JOIN ws.workoutSetGroup wsg " +
+            "JOIN wsg.workout w " +
             "JOIN w.plan p " +
             "WHERE p.id = :planId")
     List<EquipmentResponseDto> findAllEquipmentByPlanId(@Param("planId") int planId);

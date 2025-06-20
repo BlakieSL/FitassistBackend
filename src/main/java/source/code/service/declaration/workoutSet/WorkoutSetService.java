@@ -17,5 +17,5 @@ public interface WorkoutSetService {
 
     WorkoutSetResponseDto getWorkoutSet(int workoutSetId);
 
-    List<WorkoutSetResponseDto> getAllWorkoutSetsForWorkout(int workoutId);
+    List<WorkoutSetResponseDto> getAllWorkoutSetsForWorkoutSetGroup(int workoutSetGroupId);
 }

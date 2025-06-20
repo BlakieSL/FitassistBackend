@@ -15,6 +15,7 @@ import source.code.model.text.ExerciseInstruction;
 import source.code.model.text.ExerciseTip;
 import source.code.model.user.UserExercise;
 import source.code.model.workout.WorkoutSet;
+import source.code.model.workout.WorkoutSetGroup;
 
 import java.util.HashSet;
 import java.util.Set;

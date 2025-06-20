@@ -6,20 +6,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorkoutSetCreateDto {
+public class    WorkoutSetCreateDto {
     @NotNull
-    private double weight;
+    private BigDecimal weight;
 
     @NotNull
-    private int repetitions;
+    private BigDecimal repetitions;
 
     @NotNull
-    private int workoutId;
+    private Integer workoutSetGroupId;
 
     @NotNull
-    private int exerciseId;
+    private Integer exerciseId;
 }

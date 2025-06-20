@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -22,7 +24,7 @@ public class WorkoutCreateDto {
 
     @NotNull
     @PositiveOrZero
-    private int time;
+    private BigDecimal duration;
 
     @NotNull
     private Integer planId;
