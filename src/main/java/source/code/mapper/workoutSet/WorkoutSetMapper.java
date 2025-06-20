@@ -8,48 +8,41 @@ import source.code.dto.response.workoutSet.WorkoutSetResponseDto;
 import source.code.model.exercise.Exercise;
 import source.code.model.workout.Workout;
 import source.code.model.workout.WorkoutSet;
+import source.code.model.workout.WorkoutSetGroup;
 import source.code.repository.ExerciseRepository;
 import source.code.repository.WorkoutRepository;
+import source.code.repository.WorkoutSetGroupRepository;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
 @Mapper(componentModel = "spring")
 public abstract class WorkoutSetMapper {
     @Autowired
-    private WorkoutRepository workoutRepository;
+    private WorkoutSetGroupRepository workoutSetGroupRepository;
     @Autowired
     private ExerciseRepository exerciseRepository;
     @Autowired
     private RepositoryHelper repositoryHelper;
 
-    @Mapping(target = "workoutId", source = "workout", qualifiedByName = "mapWorkoutToWorkoutId")
-    @Mapping(target = "exerciseId", source = "exercise", qualifiedByName = "mapExerciseToExerciseId")
+    @Mapping(target = "workoutSetGroupId", source = "workoutSetGroup.id")
+    @Mapping(target = "exerciseId", source = "exercise.id")
     public abstract WorkoutSetResponseDto toResponseDto(WorkoutSet workoutSet);
 
-    @Mapping(target = "workout", source = "workoutId", qualifiedByName = "mapWorkoutIdToWorkout")
+    @Mapping(target = "workoutSetGroup", source = "workoutSetGroupId", qualifiedByName = "mapWorkoutSetGroupIdToWorkoutSetGroup")
     @Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExerciseIdToExercise")
     @Mapping(target = "id", ignore = true)
     public abstract WorkoutSet toEntity(WorkoutSetCreateDto createDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "workout", source = "workoutId", qualifiedByName = "mapWorkoutIdToWorkout")
+    @Mapping(target = "workoutSetGroup", source = "workoutSetGroupId", qualifiedByName = "mapWorkoutSetGroupIdToWorkoutSetGroup")
     @Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExerciseIdToExercise")
     @Mapping(target = "id", ignore = true)
     public abstract void updateWorkoutSet(
             @MappingTarget WorkoutSet workoutSet, WorkoutSetUpdateDto updateDto);
 
-    @Named("mapWorkoutToWorkoutId")
-    protected int mapWorkoutToWorkoutId(Workout workout) {
-        return workout.getId();
-    }
 
-    @Named("mapExerciseToExerciseId")
-    protected int mapExerciseToExerciseId(Exercise exercise) {
-        return exercise.getId();
-    }
-
-    @Named("mapWorkoutIdToWorkout")
-    protected Workout mapWorkoutIdToWorkout(int workoutId) {
-        return repositoryHelper.find(workoutRepository, Workout.class, workoutId);
+    @Named("mapWorkoutSetGroupIdToWorkoutSetGroup")
+    protected WorkoutSetGroup mapWorkoutSetGroupIdToWorkoutSetGroup(int workoutSetGroupId) {
+        return repositoryHelper.find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId);
     }
 
     @Named("mapExerciseIdToExercise")

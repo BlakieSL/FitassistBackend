@@ -202,28 +202,28 @@ public class WorkoutSetServiceTest {
     }
 
     @Test
-    @DisplayName("getAllWorkoutSetsForWorkout - Should return all WorkoutSets for a given Workout")
+    @DisplayName("getAllWorkoutSetsForWorkoutSetGroup - Should return all WorkoutSets for a given WorkoutSetGroup")
     public void getAllWorkoutSetsForWorkout_ShouldReturnAllWorkoutSetsForWorkout() {
-        int workoutId = 1;
-        when(workoutSetRepository.getAllByWorkoutId(workoutId)).thenReturn(List.of(workoutSet));
+        int workoutSetGroupId = 1;
+        when(workoutSetRepository.findAllByWorkoutSetGroupId(workoutSetGroupId)).thenReturn(List.of(workoutSet));
         when(workoutSetMapper.toResponseDto(workoutSet)).thenReturn(responseDto);
 
-        List<WorkoutSetResponseDto> result = workoutSetService.getAllWorkoutSetsForWorkout(workoutId);
+        List<WorkoutSetResponseDto> result = workoutSetService.getAllWorkoutSetsForWorkoutSetGroup(workoutSetGroupId);
 
-        verify(workoutSetRepository).getAllByWorkoutId(workoutId);
+        verify(workoutSetRepository).findAllByWorkoutSetGroupId(workoutSetGroupId);
         verify(workoutSetMapper).toResponseDto(workoutSet);
         assertEquals(1, result.size());
     }
 
     @Test
-    @DisplayName("getAllWorkoutSetsForWorkout - Should return empty list when no WorkoutSets found")
+    @DisplayName("getAllWorkoutSetsForWorkoutSetGroup - Should return empty list when no WorkoutSets found")
     public void getAllWorkoutSetsForWorkout_ShouldReturnEmptyListWhenNoWorkoutSetsFound() {
-        int workoutId = 1;
-        when(workoutSetRepository.getAllByWorkoutId(workoutId)).thenReturn(List.of());
+        int workoutSetGroupId = 1;
+        when(workoutSetRepository.findAllByWorkoutSetGroupId(workoutSetGroupId)).thenReturn(List.of());
 
-        List<WorkoutSetResponseDto> result = workoutSetService.getAllWorkoutSetsForWorkout(workoutId);
+        List<WorkoutSetResponseDto> result = workoutSetService.getAllWorkoutSetsForWorkoutSetGroup(workoutSetGroupId);
 
-        verify(workoutSetRepository).getAllByWorkoutId(workoutId);
+        verify(workoutSetRepository).findAllByWorkoutSetGroupId(workoutSetGroupId);
         assertEquals(0, result.size());
     }
 }

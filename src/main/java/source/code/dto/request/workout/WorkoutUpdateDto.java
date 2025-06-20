@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,5 +21,5 @@ public class WorkoutUpdateDto {
     private String name;
 
     @PositiveOrZero
-    private int time;
+    private BigDecimal duration;
 }

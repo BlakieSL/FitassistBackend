@@ -21,6 +21,7 @@ import source.code.model.text.RecipeInstruction;
 import source.code.model.user.User;
 import source.code.model.workout.Workout;
 import source.code.model.workout.WorkoutSet;
+import source.code.model.workout.WorkoutSetGroup;
 import source.code.repository.*;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.implementation.annotation.AuthAnnotationServiceImpl;
@@ -52,6 +53,9 @@ public class AuthAnnotationServiceTest {
     private WorkoutRepository workoutRepository;
     @Mock
     private WorkoutSetRepository workoutSetRepository;
+    @Mock
+    private WorkoutSetGroupRepository workoutSetGroupRepository;
+
     @InjectMocks
     private AuthAnnotationServiceImpl authAnnotationService;
 
@@ -373,13 +377,32 @@ public class AuthAnnotationServiceTest {
         int workoutSetId = 9;
         Plan plan = Plan.of(user);
         Workout workout = Workout.of(plan);
-        WorkoutSet workoutSet = WorkoutSet.of(workoutSetId, workout);
+        WorkoutSetGroup workoutSetGroup = WorkoutSetGroup.of(workout);
+        WorkoutSet workoutSet = WorkoutSet.of(workoutSetId, workoutSetGroup);
+
         when(repositoryHelper.find(workoutSetRepository, WorkoutSet.class, workoutSetId))
                 .thenReturn(workoutSet);
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
                 .thenReturn(true);
 
         boolean result = authAnnotationService.isWorkoutSetOwnerOrAdmin(workoutSetId);
+
+        assertTrue(result);
+    }
+
+    @Test
+    void isWorkoutSetGroupOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdmin() {
+        int workoutSetGroupId = 9;
+        Plan plan = Plan.of(user);
+        Workout workout = Workout.of(plan);
+        WorkoutSetGroup workoutSetGroup = WorkoutSetGroup.of(workout);
+
+        when(repositoryHelper.find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId))
+                .thenReturn(workoutSetGroup);
+        mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
+                .thenReturn(true);
+
+        boolean result = authAnnotationService.isWorkoutSetGroupOwnerOrAdmin(workoutSetGroupId);
 
         assertTrue(result);
     }
