@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.plan.Plan;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,7 +36,7 @@ public class Workout {
     @NotNull
     @PositiveOrZero
     @Column(nullable = false)
-    private int time;
+    private BigDecimal duration;
 
     @NotNull
     @ManyToOne
@@ -44,7 +45,7 @@ public class Workout {
 
     @OneToMany(mappedBy = "workout",
             cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
-    private final Set<WorkoutSet> workoutSets = new HashSet<>();
+    private final Set<WorkoutSetGroup> workoutSetGroups = new HashSet<>();
 
     public static Workout of(Integer id, Plan plan) {
         Workout workout = new Workout();

@@ -5,13 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutSetUpdateDto {
-    private double weight;
-    private int repetitions;
-    private int workoutId;
-    private int exerciseId;
+    private BigDecimal weight;
+    private BigDecimal repetitions;
+    private Integer workoutSetGroupId;
+    private Integer exerciseId;
 }

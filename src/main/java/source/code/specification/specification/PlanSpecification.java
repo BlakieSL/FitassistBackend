@@ -11,7 +11,7 @@ import source.code.model.other.Equipment;
 import source.code.model.plan.Plan;
 import source.code.model.plan.PlanCategoryAssociation;
 import source.code.model.workout.Workout;
-import source.code.model.workout.WorkoutSet;
+import source.code.model.workout.WorkoutSetGroup;
 
 import java.util.Map;
 import java.util.Optional;
@@ -76,8 +76,8 @@ public class PlanSpecification extends BaseSpecification<Plan> {
 
     private Predicate handleEquipmentProperty(Root<Plan> root, CriteriaBuilder builder) {
         Join<Plan, Workout> workoutJoin = root.join("workouts");
-        Join<Workout, WorkoutSet> workoutSetJoin = workoutJoin.join("workoutSets");
-        Join<WorkoutSet, Exercise> exerciseJoin = workoutSetJoin.join("exercise");
+        Join<Workout, WorkoutSetGroup> workoutSetJoin = workoutJoin.join("workoutSets");
+        Join<WorkoutSetGroup, Exercise> exerciseJoin = workoutSetJoin.join("exercise");
         Join<Exercise, Equipment> equipmentJoin = exerciseJoin.join("equipment");
 
         return switch (criteria.getOperation()) {
