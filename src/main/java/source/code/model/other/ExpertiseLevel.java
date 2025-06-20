@@ -12,6 +12,19 @@ import source.code.model.plan.Plan;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Represents a level of expertise or skill required for an activity or exercise.
+ *
+ * <p><strong>Known predefined values:</strong></p>
+ * <ul>
+ *     <li>{@code NOVICE}</li>
+ *     <li>{@code BEGINNER}</li>
+ *     <li>{@code INTERMEDIATE}</li>
+ *     <li>{@code ADVANCED}</li>
+ * </ul>
+ *
+ * <p>Note: These values are not hardcoded and may be extended or modified through the application.</p>
+ */
 @Entity
 @Table(name = "expertise_level")
 @Getter
@@ -29,13 +42,4 @@ public class ExpertiseLevel {
 
     @OneToMany(mappedBy = "expertiseLevel", cascade = CascadeType.REMOVE)
     private final Set<Exercise> exercises = new HashSet<>();
-
-    @OneToMany(mappedBy = "expertiseLevel", cascade = CascadeType.REMOVE)
-    private final Set<Plan> plans = new HashSet<>();
-
-    public static ExpertiseLevel createWithId(int id) {
-        ExpertiseLevel expertiseLevel = new ExpertiseLevel();
-        expertiseLevel.setId(id);
-        return expertiseLevel;
-    }
 }

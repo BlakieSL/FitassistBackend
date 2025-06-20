@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,5 +16,5 @@ import lombok.Setter;
 public class RecipeFoodCreateDto {
     @NotNull
     @Positive
-    private int amount = 100;
+    private BigDecimal quantity = BigDecimal.valueOf(100);
 }

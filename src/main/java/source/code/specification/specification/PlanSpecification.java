@@ -30,11 +30,6 @@ public class PlanSpecification extends BaseSpecification<Plan> {
                         PlanField.TYPE.getFieldName(),
                         builder
                 ),
-                PlanField.DURATION.name(),
-                (root, query, builder) -> handleNumericProperty(
-                        root.get(PlanField.DURATION.getFieldName()),
-                        builder
-                ),
                 PlanField.EXPERTISE_LEVEL.name(),
                 (root, query, builder) -> handleEntityProperty(
                         root,

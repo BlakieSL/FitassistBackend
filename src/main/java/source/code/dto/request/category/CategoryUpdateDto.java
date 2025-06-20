@@ -12,6 +12,4 @@ import lombok.Setter;
 public class CategoryUpdateDto {
     private Integer id;
     private String name;
-    private String iconUrl;
-    private String gradient;
 }

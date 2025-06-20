@@ -28,7 +28,6 @@ import java.util.Set;
 public class Plan implements IndexedEntity {
     private static final int NAME_MAX_LENGTH = 100;
     private static final int DESCRIPTION_MAX_LENGTH = 255;
-    private static final int TEXT_MAX_LENGTH = 10000;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,13 +40,8 @@ public class Plan implements IndexedEntity {
 
     @NotBlank
     @Size(max = DESCRIPTION_MAX_LENGTH)
-    @Column(nullable = false, length = DESCRIPTION_MAX_LENGTH)
+    @Column(nullable = false)
     private String description;
-
-    @NotBlank
-    @Size(max = TEXT_MAX_LENGTH)
-    @Column(nullable = false, length = TEXT_MAX_LENGTH)
-    private String text;
 
     @NotNull
     @ManyToOne
@@ -58,16 +52,6 @@ public class Plan implements IndexedEntity {
     @ManyToOne
     @JoinColumn(name = "plan_type_id", nullable = false)
     private PlanType planType;
-
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "expertise_level_id", nullable = false)
-    private ExpertiseLevel expertiseLevel;
-
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "plan_duration_id", nullable = false)
-    private PlanDuration planDuration;
 
     @OneToMany(mappedBy = "plan",
             cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)

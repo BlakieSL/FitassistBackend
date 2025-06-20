@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.food.Food;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "recipe_food")
 @Setter
@@ -25,7 +27,7 @@ public class RecipeFood {
     @NotNull
     @Positive
     @Column(nullable = false)
-    private int amount;
+    private BigDecimal quantity;
 
     @NotNull
     @ManyToOne
@@ -38,10 +40,10 @@ public class RecipeFood {
     private Food food;
 
     public static RecipeFood of(
-            int amount, Recipe recipe, Food food) {
+            BigDecimal quantity, Recipe recipe, Food food) {
 
         RecipeFood recipeFood = new RecipeFood();
-        recipeFood.setAmount(amount);
+        recipeFood.setQuantity(quantity);
         recipeFood.setRecipe(recipe);
         recipeFood.setFood(food);
 

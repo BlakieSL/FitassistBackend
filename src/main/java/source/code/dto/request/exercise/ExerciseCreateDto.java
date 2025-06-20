@@ -19,7 +19,6 @@ import java.util.List;
 public class ExerciseCreateDto {
     private static final int MAX_NAME_LENGTH = 100;
     private static final int MAX_DESCRIPTION_LENGTH = 255;
-    private static final int MAX_TEXT_LENGTH = 1000;
 
     @NotBlank
     @Size(max = MAX_NAME_LENGTH)
@@ -28,10 +27,6 @@ public class ExerciseCreateDto {
     @NotBlank
     @Size(max = MAX_DESCRIPTION_LENGTH)
     private String description;
-
-    @NotBlank
-    @Size(max = MAX_TEXT_LENGTH)
-    private String text;
 
     @NotNull
     private int equipmentId;
@@ -50,10 +45,4 @@ public class ExerciseCreateDto {
     private List<ExerciseInstructionCreateDto> instructions;
 
     private List<ExerciseTipCreateDto> tips;
-
-    public static ExerciseCreateDto createWithName(String name) {
-        ExerciseCreateDto createDto = new ExerciseCreateDto();
-        createDto.setName(name);
-        return createDto;
-    }
 }

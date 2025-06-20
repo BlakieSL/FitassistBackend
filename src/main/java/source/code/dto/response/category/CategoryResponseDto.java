@@ -15,8 +15,4 @@ public class CategoryResponseDto {
 
     @Size(max = NAME_MAX_LENGTH)
     private String name;
-
-    private String iconUrl;
-
-    private String gradient;
 }

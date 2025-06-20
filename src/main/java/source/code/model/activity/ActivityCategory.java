@@ -11,6 +11,23 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Represents a category of activity.
+ * Known predefined values (subject to change):
+ * <ul>
+ *     <li>{@code HOME}</li>
+ *     <li>{@code LAWN_OR_GARDEN}</li>
+ *     <li>{@code WALKING}</li>
+ *     <li>{@code TRANSPORTATION}</li>
+ *     <li>{@code OCCUPATION}</li>
+ *     <li>{@code SPORTS}</li>
+ *     <li>{@code WATER}</li>
+ *     <li>{@code WINTER}</li>
+ *     <li>{@code RELIGIOUS}</li>
+ * </ul>
+ *
+ * These values can be extended or modified via the application or admin interface.
+ */
 @Entity
 @Table(name = "activity_category")
 @Getter
@@ -28,19 +45,6 @@ public class ActivityCategory {
     @Size(max = NAME_MAX_LENGTH)
     private String name;
 
-    @NotBlank
-    private String iconUrl;
-
-    @NotBlank
-    private String gradient;
-
     @OneToMany(mappedBy = "activityCategory", cascade = CascadeType.REMOVE)
     private final Set<Activity> activities = new HashSet<>();
-
-    public static ActivityCategory createWithIdName(int id, String name) {
-        ActivityCategory activityCategory = new ActivityCategory();
-        activityCategory.setId(id);
-        activityCategory.setName(name);
-        return activityCategory;
-    }
 }

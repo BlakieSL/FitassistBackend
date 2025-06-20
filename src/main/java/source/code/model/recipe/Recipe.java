@@ -26,7 +26,6 @@ import java.util.Set;
 public class Recipe implements IndexedEntity {
     private static final int NAME_MAX_LENGTH = 100;
     private static final int DESCRIPTION_MAX_LENGTH = 255;
-    private static final int TEXT_MAX_LENGTH = 2000;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,11 +40,6 @@ public class Recipe implements IndexedEntity {
     @Size(max = DESCRIPTION_MAX_LENGTH)
     @Column(nullable = false)
     private String description;
-
-    @NotBlank
-    @Size(max = TEXT_MAX_LENGTH)
-    @Column(nullable = false, length = TEXT_MAX_LENGTH)
-    private String text;
 
     @NotNull
     @ManyToOne
