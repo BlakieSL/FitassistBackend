@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "exercise_target_muscle")
 @Getter
@@ -32,7 +34,7 @@ public class ExerciseTargetMuscle {
 
     @NotNull
     @Column(nullable = false)
-    private int priority;
+    private BigDecimal priority;
 
     public static ExerciseTargetMuscle createWithTargetMuscle(
             TargetMuscle targetMuscle) {
@@ -40,14 +42,5 @@ public class ExerciseTargetMuscle {
         exerciseTargetMuscle.setTargetMuscle(targetMuscle);
 
         return exerciseTargetMuscle;
-    }
-
-    public static ExerciseTargetMuscle createWithIdAndExerciseAndTurgetMuscle(
-            int id, Exercise exercise, TargetMuscle targetMuscle) {
-        ExerciseTargetMuscle association = new ExerciseTargetMuscle();
-        association.setId(id);
-        association.setExercise(exercise);
-        association.setTargetMuscle(targetMuscle);
-        return association;
     }
 }

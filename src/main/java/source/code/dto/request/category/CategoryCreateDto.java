@@ -17,10 +17,4 @@ public class CategoryCreateDto {
     @NotBlank
     @Size(max = NAME_MAX_LENGTH)
     private String name;
-
-    @NotBlank
-    private String iconUrl;
-
-    @NotBlank
-    private String gradient;
 }

@@ -28,18 +28,8 @@ public class PlanCreateDto {
     @Size(max = DESCRIPTION_MAX_LENGTH)
     private String description;
 
-    @NotBlank
-    @Size(max = TEXT_MAX_LENGTH)
-    private String text;
-
     @NotNull
     private int planTypeId;
-
-    @NotNull
-    private int expertiseLevelId;
-
-    @NotNull
-    private int planDurationId;
 
     private List<Integer> categoryIds;
 

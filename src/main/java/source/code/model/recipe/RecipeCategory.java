@@ -11,6 +11,23 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Represents a category used to classify recipes based on when or how they are typically consumed.
+ *
+ * <p><strong>Known predefined values:</strong></p>
+ * <ul>
+ *     <li>{@code BREAKFAST}</li>
+ *     <li>{@code LUNCH}</li>
+ *     <li>{@code DINNER}</li>
+ *     <li>{@code SNACK}</li>
+ *     <li>{@code DESSERT}</li>
+ *     <li>{@code APPETIZER}</li>
+ *     <li>{@code SIDE_DISH}</li>
+ *     <li>{@code MAIN_COURSE}</li>
+ * </ul>
+ *
+ * <p>Note: These values are not hardcoded and may be extended or modified through the application.</p>
+ */
 @Entity
 @Table(name = "recipe_category")
 @Getter
@@ -26,12 +43,6 @@ public class RecipeCategory {
     @NotBlank
     @Size(max = NAME_MAX_LENGTH)
     private String name;
-
-    @NotBlank
-    private String iconUrl;
-
-    @NotBlank
-    private String gradient;
 
     @OneToMany(mappedBy = "recipeCategory", cascade = CascadeType.ALL)
     private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();

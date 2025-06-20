@@ -30,21 +30,15 @@ public abstract class PlanMapper {
     @Autowired
     private PlanTypeRepository planTypeRepository;
     @Autowired
-    private PlanDurationRepository planDurationRepository;
-    @Autowired
     private ExpertiseLevelRepository expertiseLevelRepository;
 
     @Mapping(target = "categories", source = "planCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryShortDto")
     @Mapping(target = "planType", source = "planType", qualifiedByName = "mapTypeToShortDto")
-    @Mapping(target = "planDuration", source = "planDuration", qualifiedByName = "mapDurationToShortDto")
-    @Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseLevelToShortDto")
     @Mapping(target = "userId", source = "user", qualifiedByName = "userToUserId")
     public abstract PlanResponseDto toResponseDto(Plan plan);
 
     @Mapping(target = "planCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
     @Mapping(target = "planType", source = "planTypeId", qualifiedByName = "mapTypeIdToEntity")
-    @Mapping(target = "planDuration", source = "planDurationId", qualifiedByName = "mapDurationIdToEntity")
-    @Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevelIdToEntity")
     @Mapping(target = "user", expression = "java(userIdToUser(userId))")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userPlans", ignore = true)
@@ -55,8 +49,6 @@ public abstract class PlanMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "planCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
     @Mapping(target = "planType", source = "planTypeId", qualifiedByName = "mapTypeIdToEntity")
-    @Mapping(target = "planDuration", source = "planDurationId", qualifiedByName = "mapDurationIdToEntity")
-    @Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevelIdToEntity")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "userPlans", ignore = true)
@@ -117,28 +109,8 @@ public abstract class PlanMapper {
         return repositoryHelper.find(planTypeRepository, PlanType.class, planTypeId);
     }
 
-    @Named("mapDurationIdToEntity")
-    protected PlanDuration mapDurationIdToEntity(int planDurationId) {
-        return repositoryHelper.find(planDurationRepository, PlanDuration.class, planDurationId);
-    }
-
-    @Named("mapExpertiseLevelIdToEntity")
-    protected ExpertiseLevel mapExpertiseLevelIdToEntity(int expertiseLevelId) {
-        return repositoryHelper.find(expertiseLevelRepository, ExpertiseLevel.class, expertiseLevelId);
-    }
-
     @Named("mapTypeToShortDto")
     protected PlanCategoryShortDto mapTypeToShortDto(PlanType planType) {
         return new PlanCategoryShortDto(planType.getId(), planType.getName());
-    }
-
-    @Named("mapDurationToShortDto")
-    protected PlanCategoryShortDto mapDurationToShortDto(PlanDuration planDuration) {
-        return new PlanCategoryShortDto(planDuration.getId(), planDuration.getName());
-    }
-
-    @Named("mapExpertiseLevelToShortDto")
-    protected PlanCategoryShortDto mapExpertiseLevelToShortDto(ExpertiseLevel expertiseLevel) {
-        return new PlanCategoryShortDto(expertiseLevel.getId(), expertiseLevel.getName());
     }
 }

@@ -28,19 +28,6 @@ public class TargetMuscle {
     @Size(max = NAME_MAX_LENGTH)
     private String name;
 
-    @NotBlank
-    private String iconUrl;
-
-    @NotBlank
-    private String gradient;
-
     @OneToMany(mappedBy = "targetMuscle", cascade = CascadeType.REMOVE)
     private final Set<ExerciseTargetMuscle> exerciseTargetMuscles = new HashSet<>();
-
-    public static TargetMuscle createWithId(int id) {
-        TargetMuscle targetMuscle = new TargetMuscle();
-        targetMuscle.setId(id);
-        return targetMuscle;
-    }
-
 }
