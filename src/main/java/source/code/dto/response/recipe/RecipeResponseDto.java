@@ -18,6 +18,5 @@ public class RecipeResponseDto implements BaseUserEntity {
     private Integer id;
     private String name;
     private String description;
-    private String text;
     private Integer userId;
 }

@@ -30,6 +30,7 @@ import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.declaration.recipe.RecipeService;
 import source.code.service.implementation.recipe.RecipeFoodServiceImpl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,8 +77,8 @@ public class RecipeFoodServiceTest {
     void setUp() {
         recipe = new Recipe();
         food = new Food();
-        recipeFood = RecipeFood.of(100, recipe, food);
-        createDto = new RecipeFoodCreateDto(100);
+        recipeFood = RecipeFood.of(BigDecimal.valueOf(100), recipe, food);
+        createDto = new RecipeFoodCreateDto(BigDecimal.valueOf(100));
         patch = mock(JsonMergePatch.class);
         foodResponseDto = new FoodResponseDto();
         recipeId = 1;

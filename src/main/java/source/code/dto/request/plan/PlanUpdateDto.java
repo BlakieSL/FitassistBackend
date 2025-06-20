@@ -22,9 +22,6 @@ public class PlanUpdateDto {
     @Size(max = DESCRIPTION_MAX_LENGTH)
     private String description;
     @Size(max = TEXT_MAX_LENGTH)
-    private String text;
     private Integer planTypeId;
-    private Integer expertiseLevelId;
-    private Integer planDurationId;
     private List<Integer> categoryIds;
 }

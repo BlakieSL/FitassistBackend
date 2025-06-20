@@ -83,7 +83,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 
         Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
         Food food = repositoryHelper.find(foodRepository, Food.class, foodId);
-        RecipeFood recipeFood = RecipeFood.of(request.getAmount(), recipe, food);
+        RecipeFood recipeFood = RecipeFood.of(request.getQuantity(), recipe, food);
 
         recipeFoodRepository.save(recipeFood);
     }
@@ -95,7 +95,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
             throws JsonPatchException, JsonProcessingException {
 
         RecipeFood recipeFood = find(recipeId, foodId);
-        RecipeFoodCreateDto existingRecipeFoodDto = new RecipeFoodCreateDto(recipeFood.getAmount());
+        RecipeFoodCreateDto existingRecipeFoodDto = new RecipeFoodCreateDto(recipeFood.getQuantity());
         RecipeFoodCreateDto patchedDto = jsonPatchService
                 .applyPatch(patch, existingRecipeFoodDto, RecipeFoodCreateDto.class);
 

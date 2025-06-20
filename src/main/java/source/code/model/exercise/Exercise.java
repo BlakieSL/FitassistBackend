@@ -29,7 +29,6 @@ import java.util.Set;
 public class Exercise implements IndexedEntity {
     private static final int MAX_NAME_LENGTH = 100;
     private static final int MAX_DESCRIPTION_LENGTH = 255;
-    private static final int MAX_TEXT_LENGTH = 1000;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,13 +41,8 @@ public class Exercise implements IndexedEntity {
 
     @NotBlank
     @Size(max = MAX_DESCRIPTION_LENGTH)
-    @Column(nullable = false, length = MAX_DESCRIPTION_LENGTH)
+    @Column(nullable = false)
     private String description;
-
-    @NotBlank
-    @Size(max = MAX_TEXT_LENGTH)
-    @Column(nullable = false, length = MAX_TEXT_LENGTH)
-    private String text;
 
     @NotNull
     @ManyToOne
