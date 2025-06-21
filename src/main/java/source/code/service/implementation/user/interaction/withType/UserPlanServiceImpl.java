@@ -5,6 +5,7 @@ import source.code.dto.response.plan.PlanResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.plan.PlanMapper;
 import source.code.model.plan.Plan;
+import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.User;
 import source.code.model.user.UserPlan;
 import source.code.repository.PlanRepository;
@@ -31,18 +32,18 @@ public class UserPlanServiceImpl
     }
 
     @Override
-    protected boolean isAlreadySaved(int userId, int planId, short type) {
+    protected boolean isAlreadySaved(int userId, int planId, TypeOfInteraction type) {
         return ((UserPlanRepository) userEntityRepository)
                 .existsByUserIdAndPlanIdAndType(userId, planId, type);
     }
 
     @Override
-    protected UserPlan createUserEntity(User user, Plan entity, short type) {
+    protected UserPlan createUserEntity(User user, Plan entity, TypeOfInteraction type) {
         return UserPlan.createWithUserPlanType(user, entity, type);
     }
 
     @Override
-    protected UserPlan findUserEntity(int userId, int planId, short type) {
+    protected UserPlan findUserEntity(int userId, int planId, TypeOfInteraction type) {
         return ((UserPlanRepository) userEntityRepository)
                 .findByUserIdAndPlanIdAndType(userId, planId, type)
                 .orElseThrow(() -> RecordNotFoundException.of(
@@ -54,7 +55,7 @@ public class UserPlanServiceImpl
     }
 
     @Override
-    protected List<UserPlan> findAllByUserAndType(int userId, short type) {
+    protected List<UserPlan> findAllByUserAndType(int userId, TypeOfInteraction type) {
         return ((UserPlanRepository) userEntityRepository).findByUserIdAndType(userId, type);
     }
 
@@ -65,11 +66,11 @@ public class UserPlanServiceImpl
 
     @Override
     protected long countSaves(int planId) {
-        return ((UserPlanRepository) userEntityRepository).countByPlanIdAndType(planId, (short) 1);
+        return ((UserPlanRepository) userEntityRepository).countByPlanIdAndType(planId, TypeOfInteraction.SAVE);
     }
 
     @Override
     protected long countLikes(int planId) {
-        return ((UserPlanRepository) userEntityRepository).countByPlanIdAndType(planId, (short) 2);
+        return ((UserPlanRepository) userEntityRepository).countByPlanIdAndType(planId, TypeOfInteraction.LIKE);
     }
 }

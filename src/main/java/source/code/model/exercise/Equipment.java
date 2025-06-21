@@ -1,4 +1,4 @@
-package source.code.model.other;
+package source.code.model.exercise;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.model.exercise.Exercise;
 
 import java.util.HashSet;
 import java.util.Set;

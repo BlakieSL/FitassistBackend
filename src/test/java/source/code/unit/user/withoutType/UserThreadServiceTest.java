@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -15,12 +14,12 @@ import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.forumThread.ForumThreadMapper;
-import source.code.model.forum.ForumThread;
-import source.code.model.user.UserThreadSubscription;
+import source.code.model.thread.ForumThread;
+import source.code.model.user.UserThread;
 import source.code.model.user.User;
 import source.code.repository.ForumThreadRepository;
 import source.code.repository.UserRepository;
-import source.code.repository.UserThreadSubscriptionRepository;
+import source.code.repository.UserThreadRepository;
 import source.code.service.implementation.user.interaction.withoutType.UserThreadServiceImpl;
 
 import java.util.List;
@@ -31,22 +30,28 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UserThreadServiceTest {
+public class  UserThreadServiceTest {
     @Mock
-    private UserThreadSubscriptionRepository userThreadSubscriptionRepository;
+    private UserThreadRepository userThreadRepository;
     @Mock
     private ForumThreadRepository forumThreadRepository;
     @Mock
     private UserRepository userRepository;
     @Mock
     private ForumThreadMapper forumThreadMapper;
-    @InjectMocks
     private UserThreadServiceImpl userThreadService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
     @BeforeEach
     void setUp() {
         mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
+
+        userThreadService = new UserThreadServiceImpl(
+                userThreadRepository,
+                forumThreadRepository,
+                userRepository,
+                forumThreadMapper
+        );
     }
 
     @AfterEach
@@ -65,13 +70,13 @@ public class UserThreadServiceTest {
         ForumThread thread = new ForumThread();
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userThreadSubscriptionRepository.existsByUserIdAndForumThreadId(userId, threadId)).thenReturn(false);
+        when(userThreadRepository.existsByUserIdAndForumThreadId(userId, threadId)).thenReturn(false);
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(forumThreadRepository.findById(threadId)).thenReturn(Optional.of(thread));
 
         userThreadService.saveToUser(threadId);
 
-        verify(userThreadSubscriptionRepository).save(any(UserThreadSubscription.class));
+        verify(userThreadRepository).save(any(UserThread.class));
     }
 
     @Test
@@ -81,11 +86,11 @@ public class UserThreadServiceTest {
         int threadId = 100;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userThreadSubscriptionRepository.existsByUserIdAndForumThreadId(userId, threadId)).thenReturn(true);
+        when(userThreadRepository.existsByUserIdAndForumThreadId(userId, threadId)).thenReturn(true);
 
         assertThrows(NotUniqueRecordException.class, () -> userThreadService.saveToUser(threadId));
 
-        verify(userThreadSubscriptionRepository, never()).save(any());
+        verify(userThreadRepository, never()).save(any());
     }
 
     @Test
@@ -95,12 +100,12 @@ public class UserThreadServiceTest {
         int threadId = 100;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userThreadSubscriptionRepository.existsByUserIdAndForumThreadId(userId, threadId)).thenReturn(false);
+        when(userThreadRepository.existsByUserIdAndForumThreadId(userId, threadId)).thenReturn(false);
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> userThreadService.saveToUser(threadId));
 
-        verify(userThreadSubscriptionRepository, never()).save(any());
+        verify(userThreadRepository, never()).save(any());
     }
 
     @Test
@@ -111,13 +116,13 @@ public class UserThreadServiceTest {
         User user = new User();
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userThreadSubscriptionRepository.existsByUserIdAndForumThreadId(userId, threadId)).thenReturn(false);
+        when(userThreadRepository.existsByUserIdAndForumThreadId(userId, threadId)).thenReturn(false);
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(forumThreadRepository.findById(threadId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> userThreadService.saveToUser(threadId));
 
-        verify(userThreadSubscriptionRepository, never()).save(any());
+        verify(userThreadRepository, never()).save(any());
     }
 
     @Test
@@ -125,15 +130,15 @@ public class UserThreadServiceTest {
     public void deleteFromUser_ShouldDeleteFromUser() {
         int userId = 1;
         int threadId = 100;
-        UserThreadSubscription subscription = new UserThreadSubscription();
+        UserThread subscription = new UserThread();
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userThreadSubscriptionRepository.findByUserIdAndForumThreadId(userId, threadId))
+        when(userThreadRepository.findByUserIdAndForumThreadId(userId, threadId))
                 .thenReturn(Optional.of(subscription));
 
         userThreadService.deleteFromUser(threadId);
 
-        verify(userThreadSubscriptionRepository).delete(subscription);
+        verify(userThreadRepository).delete(subscription);
     }
 
     @Test
@@ -143,23 +148,23 @@ public class UserThreadServiceTest {
         int threadId = 100;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userThreadSubscriptionRepository.findByUserIdAndForumThreadId(userId, threadId))
+        when(userThreadRepository.findByUserIdAndForumThreadId(userId, threadId))
                 .thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> userThreadService.deleteFromUser(threadId));
 
-        verify(userThreadSubscriptionRepository, never()).delete(any());
+        verify(userThreadRepository, never()).delete(any());
     }
 
     @Test
     @DisplayName("getAllFromUser - Should return all saved threads from user")
     public void getAllFromUser_ShouldReturnAllSavedThreadsFromUser() {
         int userId = 1;
-        UserThreadSubscription sub1 = new UserThreadSubscription();
+        UserThread sub1 = new UserThread();
         ForumThread thread1 = new ForumThread();
         sub1.setForumThread(thread1);
 
-        UserThreadSubscription sub2 = new UserThreadSubscription();
+        UserThread sub2 = new UserThread();
         ForumThread thread2 = new ForumThread();
         sub2.setForumThread(thread2);
 
@@ -167,7 +172,7 @@ public class UserThreadServiceTest {
         ForumThreadResponseDto dto2 = new ForumThreadResponseDto();
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userThreadSubscriptionRepository.findAllByUserId(userId))
+        when(userThreadRepository.findAllByUserId(userId))
                 .thenReturn(List.of(sub1, sub2));
         when(forumThreadMapper.toResponseDto(thread1)).thenReturn(dto1);
         when(forumThreadMapper.toResponseDto(thread2)).thenReturn(dto2);
@@ -185,7 +190,7 @@ public class UserThreadServiceTest {
         int userId = 1;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userThreadSubscriptionRepository.findAllByUserId(userId))
+        when(userThreadRepository.findAllByUserId(userId))
                 .thenReturn(List.of());
 
         var result = userThreadService.getAllFromUser();

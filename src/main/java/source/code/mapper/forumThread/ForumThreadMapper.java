@@ -6,9 +6,9 @@ import source.code.dto.request.forumThread.ForumThreadCreateDto;
 import source.code.dto.request.forumThread.ForumThreadUpdateDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.model.forum.Comment;
-import source.code.model.forum.ForumThread;
-import source.code.model.forum.ThreadCategory;
+import source.code.model.thread.Comment;
+import source.code.model.thread.ForumThread;
+import source.code.model.thread.ThreadCategory;
 import source.code.model.user.User;
 import source.code.repository.CommentRepository;
 import source.code.repository.ThreadCategoryRepository;
@@ -40,7 +40,7 @@ public abstract class ForumThreadMapper {
     @Mapping(target = "dateCreated", ignore = true)
     @Mapping(target = "views", ignore = true)
     @Mapping(target = "comments", ignore = true)
-    @Mapping(target = "userThreadSubscriptions", ignore = true)
+    @Mapping(target = "userThreads", ignore = true)
     public abstract ForumThread toEntity(ForumThreadCreateDto createDto, @Context int userId);
 
     @BeanMapping(nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
@@ -52,7 +52,7 @@ public abstract class ForumThreadMapper {
     @Mapping(target = "dateCreated", ignore = true)
     @Mapping(target = "views", ignore = true)
     @Mapping(target = "comments", ignore = true)
-    @Mapping(target = "userThreadSubscriptions", ignore = true)
+    @Mapping(target = "userThreads", ignore = true)
     public abstract void update(@MappingTarget ForumThread forumThread, ForumThreadUpdateDto updateDto);
 
     @Named("userToUserId")

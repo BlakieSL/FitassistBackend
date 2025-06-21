@@ -15,17 +15,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class SavedSelectorServiceTest {
 
     @Mock
-    private SavedService userActivityService;
-    @Mock
-    private SavedService userExerciseService;
-    @Mock
-    private SavedService userFoodService;
+    private SavedService userCommentService;
     @Mock
     private SavedService userPlanService;
     @Mock
     private SavedService userRecipeService;
     @Mock
-    private SavedServiceWithoutType userCommentService;
+    private SavedServiceWithoutType userActivityService;
+    @Mock
+    private SavedServiceWithoutType userExerciseService;
+    @Mock
+    private SavedServiceWithoutType userFoodService;
     @Mock
     private SavedServiceWithoutType userThreadService;
 
@@ -35,34 +35,19 @@ public class SavedSelectorServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         savedSelectorService = new SavedSelectorServiceImpl(
-                userActivityService,
-                userExerciseService,
-                userFoodService,
                 userPlanService,
                 userRecipeService,
                 userCommentService,
+                userExerciseService,
+                userFoodService,
+                userActivityService,
                 userThreadService
         );
     }
 
     @Test
-    void getService_shouldReturnUserActivityService() {
-        assertSame(userActivityService, savedSelectorService.getService(SavedEntityType.ACTIVITY));
-    }
-
-    @Test
-    void getService_shouldReturnUserExerciseService() {
-        assertSame(userExerciseService, savedSelectorService.getService(SavedEntityType.EXERCISE));
-    }
-
-    @Test
-    void getService_shouldReturnUserFoodService() {
-        assertSame(userFoodService, savedSelectorService.getService(SavedEntityType.PLAN));
-    }
-
-    @Test
     void getService_shouldReturnUserPlanService() {
-        assertSame(userPlanService, savedSelectorService.getService(SavedEntityType.FOOD));
+        assertSame(userPlanService, savedSelectorService.getService(SavedEntityType.PLAN));
     }
 
     @Test
@@ -71,19 +56,17 @@ public class SavedSelectorServiceTest {
     }
 
     @Test
-    void getService_shouldThrowExceptionForUnexpectedValue() {
-        assertThrows(IllegalStateException.class,
-                () -> savedSelectorService.getService(SavedEntityType.COMMENT)
-        );
+    void getService_shouldReturnUserCommentService() {
+        assertSame(userCommentService, savedSelectorService.getService(SavedEntityType.COMMENT));
     }
 
     @Test
-    void getServiceWithoutType_shouldReturnUserCommentService() {
-        assertSame(
-                userCommentService,
-                savedSelectorService.getServiceWithoutType(SavedEntityType.COMMENT)
+    void getService_shouldThrowExceptionForUnexpectedValue() {
+        assertThrows(IllegalStateException.class,
+                () -> savedSelectorService.getService(SavedEntityType.FOOD)
         );
     }
+
 
     @Test
     void getServiceWithoutType_shouldReturnUserThreadService() {
@@ -94,9 +77,33 @@ public class SavedSelectorServiceTest {
     }
 
     @Test
+    void getServiceWithoutType_shouldReturnUserActivityService() {
+        assertSame(
+                userActivityService,
+                savedSelectorService.getServiceWithoutType(SavedEntityType.ACTIVITY)
+        );
+    }
+
+    @Test
+    void getServiceWithoutType_shouldReturnUserFoodService() {
+        assertSame(
+                userFoodService,
+                savedSelectorService.getServiceWithoutType(SavedEntityType.FOOD)
+        );
+    }
+
+    @Test
+    void getServiceWithoutType_shouldReturnUserExerciseService() {
+        assertSame(
+                userExerciseService,
+                savedSelectorService.getServiceWithoutType(SavedEntityType.EXERCISE)
+        );
+    }
+
+    @Test
     void getServiceWithoutType_shouldThrowExceptionForUnexpectedValue() {
         assertThrows(IllegalStateException.class,
-                () -> savedSelectorService.getServiceWithoutType(SavedEntityType.ACTIVITY)
+                () -> savedSelectorService.getServiceWithoutType(SavedEntityType.PLAN)
         );
     }
 }

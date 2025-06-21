@@ -1,4 +1,4 @@
-package source.code.unit.user.withType;
+package source.code.unit.user.withoutType;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +22,7 @@ import source.code.model.user.User;
 import source.code.repository.FoodRepository;
 import source.code.repository.UserFoodRepository;
 import source.code.repository.UserRepository;
-import source.code.service.implementation.user.interaction.withType.UserFoodServiceImpl;
+import source.code.service.implementation.user.interaction.withoutType.UserFoodServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,13 +41,19 @@ public class UserFoodServiceTest {
     private UserRepository userRepository;
     @Mock
     private FoodMapper foodMapper;
-    @InjectMocks
     private UserFoodServiceImpl userFoodService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
     @BeforeEach
     void setUp() {
         mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
+
+        userFoodService = new UserFoodServiceImpl(
+                userRepository,
+                foodRepository,
+                userFoodRepository,
+                foodMapper
+        );
     }
 
     @AfterEach
@@ -62,17 +68,16 @@ public class UserFoodServiceTest {
     public void saveToUser_ShouldSaveToUserWithType() {
         int userId = 1;
         int foodId = 100;
-        short type = 1;
         User user = new User();
         Food food = new Food();
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userFoodRepository.existsByUserIdAndFoodIdAndType(userId, foodId, type))
+        when(userFoodRepository.existsByUserIdAndFoodId(userId, foodId))
                 .thenReturn(false);
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(foodRepository.findById(foodId)).thenReturn(Optional.of(food));
 
-        userFoodService.saveToUser(foodId, type);
+        userFoodService.saveToUser(foodId);
 
         verify(userFoodRepository).save(any(UserFood.class));
     }
@@ -82,14 +87,13 @@ public class UserFoodServiceTest {
     public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
         int userId = 1;
         int foodId = 100;
-        short type = 1;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userFoodRepository.existsByUserIdAndFoodIdAndType(userId, foodId, type))
+        when(userFoodRepository.existsByUserIdAndFoodId(userId, foodId))
                 .thenReturn(true);
 
         assertThrows(NotUniqueRecordException.class,
-                () -> userFoodService.saveToUser(foodId, type));
+                () -> userFoodService.saveToUser(foodId));
 
         verify(userFoodRepository, never()).save(any());
     }
@@ -99,15 +103,14 @@ public class UserFoodServiceTest {
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
         int userId = 1;
         int foodId = 100;
-        short type = 1;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userFoodRepository.existsByUserIdAndFoodIdAndType(userId, foodId, type))
+        when(userFoodRepository.existsByUserIdAndFoodId(userId, foodId))
                 .thenReturn(false);
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class,
-                () -> userFoodService.saveToUser(foodId, type));
+                () -> userFoodService.saveToUser(foodId));
 
         verify(userFoodRepository, never()).save(any());
     }
@@ -117,17 +120,16 @@ public class UserFoodServiceTest {
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfFoodNotFound() {
         int userId = 1;
         int foodId = 100;
-        short type = 1;
         User user = new User();
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userFoodRepository.existsByUserIdAndFoodIdAndType(userId, foodId, type))
+        when(userFoodRepository.existsByUserIdAndFoodId(userId, foodId))
                 .thenReturn(false);
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(foodRepository.findById(foodId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class,
-                () -> userFoodService.saveToUser(foodId, type));
+                () -> userFoodService.saveToUser(foodId));
 
         verify(userFoodRepository, never()).save(any());
     }
@@ -137,14 +139,13 @@ public class UserFoodServiceTest {
     public void deleteFromUser_ShouldDeleteFromUser() {
         int userId = 1;
         int foodId = 100;
-        short type = 1;
-        UserFood userFood = UserFood.createWithUserFoodType(new User(), new Food(), type);
+        UserFood userFood = UserFood.of(new User(), new Food());
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userFoodRepository.findByUserIdAndFoodIdAndType(userId, foodId, type))
+        when(userFoodRepository.findByUserIdAndFoodId(userId, foodId))
                 .thenReturn(Optional.of(userFood));
 
-        userFoodService.deleteFromUser(foodId, type);
+        userFoodService.deleteFromUser(foodId);
 
         verify(userFoodRepository).delete(userFood);
     }
@@ -154,14 +155,13 @@ public class UserFoodServiceTest {
     public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserFoodNotFound() {
         int userId = 1;
         int foodId = 100;
-        short type = 1;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userFoodRepository.findByUserIdAndFoodIdAndType(userId, foodId, type))
+        when(userFoodRepository.findByUserIdAndFoodId(userId, foodId))
                 .thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class,
-                () -> userFoodService.deleteFromUser(foodId, type));
+                () -> userFoodService.deleteFromUser(foodId));
 
         verify(userFoodRepository, never()).delete(any());
     }
@@ -170,19 +170,18 @@ public class UserFoodServiceTest {
     @DisplayName("getAllFromUser - Should return all foods by type")
     public void getAllFromUser_ShouldReturnAllFoodsByType() {
         int userId = 1;
-        short type = 1;
-        UserFood food1 = UserFood.createWithUserFoodType(new User(), new Food(), type);
-        UserFood food2 = UserFood.createWithUserFoodType(new User(), new Food(), type);
+        UserFood food1 = UserFood.of(new User(), new Food());
+        UserFood food2 = UserFood.of(new User(), new Food());
         FoodResponseDto dto1 = new FoodResponseDto();
         FoodResponseDto dto2 = new FoodResponseDto();
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userFoodRepository.findByUserIdAndType(userId, type))
+        when(userFoodRepository.findByUserId(userId))
                 .thenReturn(List.of(food1, food2));
         when(foodMapper.toResponseDto(food1.getFood())).thenReturn(dto1);
         when(foodMapper.toResponseDto(food2.getFood())).thenReturn(dto2);
 
-        var result = userFoodService.getAllFromUser(type);
+        var result = userFoodService.getAllFromUser();
 
         assertEquals(2, result.size());
         assertTrue(result.contains((BaseUserEntity) dto1));
@@ -193,13 +192,11 @@ public class UserFoodServiceTest {
     @DisplayName("getAllFromUser - Should return empty list if no foods")
     public void getAllFromUser_ShouldReturnEmptyListIfNoFoods() {
         int userId = 1;
-        short type = 1;
-
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userFoodRepository.findByUserIdAndType(userId, type))
+        when(userFoodRepository.findByUserId(userId))
                 .thenReturn(List.of());
 
-        var result = userFoodService.getAllFromUser(type);
+        var result = userFoodService.getAllFromUser();
 
         assertTrue(result.isEmpty());
         verify(foodMapper, never()).toResponseDto(any());
@@ -210,22 +207,22 @@ public class UserFoodServiceTest {
     public void calculateLikesAndSaves_ShouldReturnCorrectCounts() {
         int foodId = 100;
         long saveCount = 5;
-        long likeCount = 10;
+        long likeCount = 0L;
         Food food = new Food();
 
         when(foodRepository.findById(foodId)).thenReturn(Optional.of(food));
-        when(userFoodRepository.countByFoodIdAndType(foodId, (short) 1))
-                .thenReturn(saveCount);
-        when(userFoodRepository.countByFoodIdAndType(foodId, (short) 2))
+        when(userFoodRepository.countByFoodId(foodId))
                 .thenReturn(likeCount);
+        when(userFoodRepository.countByFoodId(foodId))
+                .thenReturn(saveCount);
 
         var result = userFoodService.calculateLikesAndSaves(foodId);
 
         assertEquals(saveCount, result.getSaves());
         assertEquals(likeCount, result.getLikes());
         verify(foodRepository).findById(foodId);
-        verify(userFoodRepository).countByFoodIdAndType(foodId, (short) 1);
-        verify(userFoodRepository).countByFoodIdAndType(foodId, (short) 2);
+        verify(userFoodRepository).countByFoodId(foodId);
+        verify(userFoodRepository).countByFoodId(foodId);
     }
 
     @Test
@@ -238,6 +235,6 @@ public class UserFoodServiceTest {
         assertThrows(RecordNotFoundException.class,
                 () -> userFoodService.calculateLikesAndSaves(foodId));
 
-        verify(userFoodRepository, never()).countByFoodIdAndType(anyInt(), anyShort());
+        verify(userFoodRepository, never()).countByFoodId(anyInt());
     }
 }

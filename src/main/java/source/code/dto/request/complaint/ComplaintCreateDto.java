@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.helper.Enum.model.ComplaintSubClass;
-import source.code.model.forum.ComplaintBase;
+import source.code.model.complaint.ComplaintBase;
+import source.code.model.complaint.ComplaintReason;
 
 @Getter
 @Setter
@@ -14,7 +15,7 @@ import source.code.model.forum.ComplaintBase;
 @NoArgsConstructor
 public class ComplaintCreateDto {
     @NotNull
-    private ComplaintBase.Reason reason;
+    private ComplaintReason reason;
     @NotNull
     private Integer parentId;
     @NotNull

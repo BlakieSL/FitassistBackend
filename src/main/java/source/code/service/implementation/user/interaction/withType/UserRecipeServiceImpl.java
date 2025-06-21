@@ -5,6 +5,7 @@ import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.recipe.Recipe;
+import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.User;
 import source.code.model.user.UserRecipe;
 import source.code.repository.RecipeRepository;
@@ -33,18 +34,18 @@ public class UserRecipeServiceImpl
 
 
     @Override
-    protected boolean isAlreadySaved(int userId, int entityId, short type) {
+    protected boolean isAlreadySaved(int userId, int entityId, TypeOfInteraction type) {
         return ((UserRecipeRepository) userEntityRepository)
                 .existsByUserIdAndRecipeIdAndType(userId, entityId, type);
     }
 
     @Override
-    protected UserRecipe createUserEntity(User user, Recipe entity, short type) {
+    protected UserRecipe createUserEntity(User user, Recipe entity, TypeOfInteraction type) {
         return UserRecipe.createWithUserRecipeType(user, entity, type);
     }
 
     @Override
-    protected UserRecipe findUserEntity(int userId, int recipeId, short type) {
+    protected UserRecipe findUserEntity(int userId, int recipeId, TypeOfInteraction type) {
         return ((UserRecipeRepository) userEntityRepository)
                 .findByUserIdAndRecipeIdAndType(userId, recipeId, type)
                 .orElseThrow(() -> RecordNotFoundException.of(
@@ -56,7 +57,7 @@ public class UserRecipeServiceImpl
     }
 
     @Override
-    protected List<UserRecipe> findAllByUserAndType(int userId, short type) {
+    protected List<UserRecipe> findAllByUserAndType(int userId, TypeOfInteraction type) {
         return ((UserRecipeRepository) userEntityRepository).findByUserIdAndType(userId, type);
     }
 
@@ -68,12 +69,12 @@ public class UserRecipeServiceImpl
     @Override
     protected long countSaves(int recipeId) {
         return ((UserRecipeRepository) userEntityRepository)
-                .countByRecipeIdAndType(recipeId, (short) 1);
+                .countByRecipeIdAndType(recipeId, TypeOfInteraction.SAVE);
     }
 
     @Override
     protected long countLikes(int recipeId) {
         return ((UserRecipeRepository) userEntityRepository)
-                .countByRecipeIdAndType(recipeId, (short) 2);
+                .countByRecipeIdAndType(recipeId, TypeOfInteraction.LIKE);
     }
 }
