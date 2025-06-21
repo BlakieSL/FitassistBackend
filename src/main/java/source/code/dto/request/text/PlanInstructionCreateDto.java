@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PlanInstructionCreateDto {
     @NotNull
-    private short number;
+    private short orderIndex;
     @NotBlank
     private String title;
     @NotBlank

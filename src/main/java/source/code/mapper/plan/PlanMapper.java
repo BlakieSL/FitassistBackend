@@ -60,7 +60,7 @@ public abstract class PlanMapper {
     protected void setPlanAssociations(@MappingTarget Plan plan, PlanCreateDto dto) {
         Set<PlanInstruction> instructions = dto.getInstructions().stream()
                 .map(instructionDto -> PlanInstruction.of(
-                        instructionDto.getNumber(),
+                        instructionDto.getOrderIndex(),
                         instructionDto.getText(),
                         instructionDto.getText(),
                         plan

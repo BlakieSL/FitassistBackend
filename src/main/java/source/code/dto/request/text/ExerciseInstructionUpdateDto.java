@@ -10,6 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExerciseInstructionUpdateDto {
-    private short number;
+    private short orderIndex;
     private String text;
 }

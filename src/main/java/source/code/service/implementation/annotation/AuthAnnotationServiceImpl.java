@@ -5,7 +5,9 @@ import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.helper.Enum.model.TextType;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.model.forum.Comment;
+import source.code.model.forum.CommentComplaint;
 import source.code.model.forum.ForumThread;
+import source.code.model.forum.ThreadComplaint;
 import source.code.model.media.Media;
 import source.code.model.plan.Plan;
 import source.code.model.recipe.Recipe;
@@ -30,6 +32,8 @@ public class AuthAnnotationServiceImpl {
     private final WorkoutRepository workoutRepository;
     private final WorkoutSetRepository workoutSetRepository;
     private final WorkoutSetGroupRepository workoutSetGroupRepository;
+    private final CommentComplaintRepository commentComplaintRepository;
+    private final ThreadComplaintRepository threadComplaintRepository;
 
     public AuthAnnotationServiceImpl(CommentRepository commentRepository,
                                      RepositoryHelper repositoryHelper,
@@ -40,7 +44,7 @@ public class AuthAnnotationServiceImpl {
                                      RecipeInstructionRepository recipeInstructionRepository,
                                      PlanInstructionRepository planInstructionRepository,
                                      WorkoutRepository workoutRepository,
-                                     WorkoutSetRepository workoutSetRepository, WorkoutSetGroupRepository workoutSetGroupRepository) {
+                                     WorkoutSetRepository workoutSetRepository, WorkoutSetGroupRepository workoutSetGroupRepository, CommentComplaintRepository commentComplaintRepository, ThreadComplaintRepository threadComplaintRepository) {
         this.commentRepository = commentRepository;
         this.repositoryHelper = repositoryHelper;
         this.forumThreadRepository = forumThreadRepository;
@@ -52,6 +56,8 @@ public class AuthAnnotationServiceImpl {
         this.workoutRepository = workoutRepository;
         this.workoutSetRepository = workoutSetRepository;
         this.workoutSetGroupRepository = workoutSetGroupRepository;
+        this.commentComplaintRepository = commentComplaintRepository;
+        this.threadComplaintRepository = threadComplaintRepository;
     }
 
     public boolean isCommentOwnerOrAdmin(int commentId)  {
@@ -136,6 +142,12 @@ public class AuthAnnotationServiceImpl {
 
     private Integer findOwnerIdByParentTypeAndId(MediaConnectedEntity parentType, int parentId) {
         return switch (parentType) {
+            case COMMENT_COMPLAINT -> repositoryHelper
+                    .find(commentComplaintRepository, CommentComplaint.class, parentId)
+                    .getUser().getId();
+            case THREAD_COMPLAINT -> repositoryHelper
+                    .find(threadComplaintRepository, ThreadComplaint.class, parentId)
+                    .getUser().getId();
             case COMMENT -> repositoryHelper
                     .find(commentRepository, Comment.class, parentId)
                     .getUser().getId();

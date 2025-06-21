@@ -22,7 +22,7 @@ public class RecipeInstruction extends TextBase {
 
     public static RecipeInstruction of(short number, String title, String text, Recipe recipe) {
         RecipeInstruction instruction = new RecipeInstruction();
-        instruction.setNumber(number);
+        instruction.setOrderIndex(number);
         instruction.setTitle(title);
         instruction.setText(text);
         instruction.setRecipe(recipe);

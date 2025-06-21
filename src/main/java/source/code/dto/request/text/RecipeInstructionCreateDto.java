@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RecipeInstructionCreateDto {
     @NotNull
-    private short number;
+    private short orderIndex;
     @NotBlank
     private short title;
     @NotBlank

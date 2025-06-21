@@ -8,4 +8,6 @@ public enum MediaConnectedEntity {
     PLAN,
     COMMENT,
     FORUM_THREAD,
+    COMMENT_COMPLAINT,
+    THREAD_COMPLAINT,
 }

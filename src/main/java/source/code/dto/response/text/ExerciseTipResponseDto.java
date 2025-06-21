@@ -11,12 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ExerciseTipResponseDto implements BaseTextResponseDto {
     private Integer id;
-    private short number;
+    private short orderIndex;
     private String text;
-
-    public static ExerciseTipResponseDto createWithId(int id) {
-        ExerciseTipResponseDto responseDto = new ExerciseTipResponseDto();
-        responseDto.setId(id);
-        return responseDto;
-    }
 }

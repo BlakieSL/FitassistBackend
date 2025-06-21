@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecipeInstructionUpdateDto {
-    private short number;
+    private short orderIndex;
     private short title;
     private String text;
 }

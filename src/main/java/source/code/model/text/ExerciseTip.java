@@ -4,7 +4,6 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +30,7 @@ public class ExerciseTip extends TextBase {
 
     public static ExerciseTip createWithNumberAndText(short number, String text) {
         ExerciseTip tip = new ExerciseTip();
-        tip.setNumber(number);
+        tip.setOrderIndex(number);
         tip.setText(text);
         return tip;
     }

@@ -23,7 +23,7 @@ public class ExerciseInstruction extends TextBase {
 
     public static ExerciseInstruction of(short number, String text) {
         ExerciseInstruction instruction = new ExerciseInstruction();
-        instruction.setNumber(number);
+        instruction.setOrderIndex(number);
         instruction.setText(text);
         return instruction;
     }

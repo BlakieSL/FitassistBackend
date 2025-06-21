@@ -12,6 +12,6 @@ import lombok.Setter;
 public class PlanInstructionResponseDto implements BaseTextResponseDto {
     protected String title;
     private Integer id;
-    private short number;
+    private short orderIndex;
     private String text;
 }

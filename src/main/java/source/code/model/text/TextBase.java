@@ -23,7 +23,7 @@ public abstract class TextBase {
 
     @NotNull
     @Column(nullable = false)
-    private short number;
+    private short orderIndex;
 
     @NotBlank
     @Column(nullable = false)

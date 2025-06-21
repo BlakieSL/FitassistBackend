@@ -22,7 +22,7 @@ public class PlanInstruction extends TextBase {
 
     public static PlanInstruction of(short number, String title, String text, Plan plan) {
         PlanInstruction instruction = new PlanInstruction();
-        instruction.setNumber(number);
+        instruction.setOrderIndex(number);
         instruction.setTitle(title);
         instruction.setText(text);
         instruction.setPlan(plan);

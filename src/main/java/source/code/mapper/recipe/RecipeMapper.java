@@ -55,7 +55,7 @@ public abstract class RecipeMapper {
     protected void setRecipeAssociations(@MappingTarget Recipe recipe, RecipeCreateDto dto) {
         Set<RecipeInstruction> instructions = dto.getInstructions().stream()
                 .map(instructionDto -> RecipeInstruction.of(
-                        instructionDto.getNumber(),
+                        instructionDto.getOrderIndex(),
                         instructionDto.getText(),
                         instructionDto.getText(),
                         recipe
