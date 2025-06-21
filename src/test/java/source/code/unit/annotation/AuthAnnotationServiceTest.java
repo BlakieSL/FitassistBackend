@@ -12,7 +12,9 @@ import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.helper.Enum.model.TextType;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.model.forum.Comment;
+import source.code.model.forum.CommentComplaint;
 import source.code.model.forum.ForumThread;
+import source.code.model.forum.ThreadComplaint;
 import source.code.model.media.Media;
 import source.code.model.plan.Plan;
 import source.code.model.recipe.Recipe;
@@ -55,6 +57,10 @@ public class AuthAnnotationServiceTest {
     private WorkoutSetRepository workoutSetRepository;
     @Mock
     private WorkoutSetGroupRepository workoutSetGroupRepository;
+    @Mock
+    private CommentComplaintRepository commentComplaintRepository;
+    @Mock
+    private ThreadComplaintRepository threadComplaintRepository;
 
     @InjectMocks
     private AuthAnnotationServiceImpl authAnnotationService;
@@ -157,6 +163,36 @@ public class AuthAnnotationServiceTest {
 
         boolean result = authAnnotationService
                 .isOwnerOrAdminForParentEntity(MediaConnectedEntity.FORUM_THREAD, forumThreadId);
+
+        assertTrue(result);
+    }
+
+    @Test
+    void isOwnerOrAdminForParentEntity_shouldReturnTrueIfOwnerOrAdminForCommentComplaint() {
+        int commentComplaintId = 3;
+        CommentComplaint commentComplaint = CommentComplaint.of(commentComplaintId, user);
+        when(repositoryHelper.find(commentComplaintRepository, CommentComplaint.class, commentComplaintId))
+                .thenReturn(commentComplaint);
+        mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
+                .thenReturn(true);
+
+        boolean result = authAnnotationService
+                .isOwnerOrAdminForParentEntity(MediaConnectedEntity.COMMENT_COMPLAINT, commentComplaintId);
+
+        assertTrue(result);
+    }
+
+    @Test
+    void isOwnerOrAdminForParentEntity_shouldReturnTrueIfOwnerOrAdminForThreadComplaint() {
+        int threadComplaintId = 4;
+        ThreadComplaint threadComplaint = ThreadComplaint.of(threadComplaintId, user);
+        when(repositoryHelper.find(threadComplaintRepository, ThreadComplaint.class, threadComplaintId))
+                .thenReturn(threadComplaint);
+        mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
+                .thenReturn(true);
+
+        boolean result = authAnnotationService
+                .isOwnerOrAdminForParentEntity(MediaConnectedEntity.THREAD_COMPLAINT, threadComplaintId);
 
         assertTrue(result);
     }

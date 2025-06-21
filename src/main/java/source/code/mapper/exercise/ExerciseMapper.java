@@ -77,7 +77,7 @@ public abstract class ExerciseMapper {
         Set<ExerciseInstruction> instructions = dto.getInstructions().stream()
                 .map(instructionDto -> {
                     ExerciseInstruction instruction = ExerciseInstruction
-                            .of(instructionDto.getNumber(), instructionDto.getText());
+                            .of(instructionDto.getOrderIndex(), instructionDto.getText());
                     instruction.setExercise(exercise);
                     return instruction;
                 }).collect(Collectors.toSet());
@@ -88,7 +88,7 @@ public abstract class ExerciseMapper {
         Set<ExerciseTip> tips = dto.getTips().stream()
                 .map(tipDto -> {
                     ExerciseTip tip = ExerciseTip
-                            .createWithNumberAndText(tipDto.getNumber(), tipDto.getText());
+                            .createWithNumberAndText(tipDto.getOrderIndex(), tipDto.getText());
                     tip.setExercise(exercise);
                     return tip;
                 }).collect(Collectors.toSet());

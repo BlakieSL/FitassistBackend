@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ExerciseInstructionCreateDto {
     @NotNull
-    private short number;
+    private short orderIndex;
     @NotBlank
     private String text;
 }

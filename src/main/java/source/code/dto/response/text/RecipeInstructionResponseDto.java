@@ -11,13 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RecipeInstructionResponseDto implements BaseTextResponseDto {
     private Integer id;
-    private short number;
+    private short orderIndex;
     private String title;
     private String text;
-
-    public static RecipeInstructionResponseDto createWithId(int id) {
-        RecipeInstructionResponseDto responseDto = new RecipeInstructionResponseDto();
-        responseDto.setId(id);
-        return responseDto;
-    }
 }
