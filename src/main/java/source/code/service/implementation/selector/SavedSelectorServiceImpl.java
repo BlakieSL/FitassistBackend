@@ -9,25 +9,25 @@ import source.code.service.declaration.user.SavedServiceWithoutType;
 
 @Service
 public class SavedSelectorServiceImpl implements SavedSelectorService {
-    private final SavedService userActivityService;
-    private final SavedService userExerciseService;
-    private final SavedService userFoodService;
     private final SavedService userPlanService;
     private final SavedService userRecipeService;
-    private final SavedServiceWithoutType userCommentService;
+    private final SavedService userCommentService;
+    private final SavedServiceWithoutType userExerciseService;
+    private final SavedServiceWithoutType userFoodService;
+    private final SavedServiceWithoutType userActivityService;
     private final SavedServiceWithoutType userThreadService;
-    public SavedSelectorServiceImpl(@Qualifier("userActivityService")
-                                    SavedService userActivityService,
-                                    @Qualifier("userExerciseService")
-                                    SavedService userExerciseService,
-                                    @Qualifier("userFoodService")
-                                    SavedService userFoodService,
-                                    @Qualifier("userPlanService")
+    public SavedSelectorServiceImpl(@Qualifier("userPlanService")
                                     SavedService userPlanService,
                                     @Qualifier("userRecipeService")
                                     SavedService userRecipeService,
                                     @Qualifier("userCommentService")
-                                    SavedServiceWithoutType userCommentService,
+                                    SavedService userCommentService,
+                                    @Qualifier("userExerciseService")
+                                    SavedServiceWithoutType userExerciseService,
+                                    @Qualifier("userFoodService")
+                                    SavedServiceWithoutType userFoodService,
+                                    @Qualifier("userActivityService")
+                                    SavedServiceWithoutType userActivityService,
                                     @Qualifier("userThreadService")
                                     SavedServiceWithoutType userThreadService) {
         this.userActivityService = userActivityService;
@@ -42,11 +42,9 @@ public class SavedSelectorServiceImpl implements SavedSelectorService {
     @Override
     public SavedService getService(SavedEntityType savedEntityType) {
         return switch (savedEntityType) {
-            case ACTIVITY -> userActivityService;
-            case EXERCISE -> userExerciseService;
-            case PLAN -> userFoodService;
-            case FOOD -> userPlanService;
+            case PLAN -> userPlanService;
             case RECIPE -> userRecipeService;
+            case COMMENT -> userCommentService;
             default -> throw new IllegalStateException("Unexpected value: " + savedEntityType);
         };
     }
@@ -54,8 +52,10 @@ public class SavedSelectorServiceImpl implements SavedSelectorService {
     @Override
     public SavedServiceWithoutType getServiceWithoutType(SavedEntityType savedEntityType) {
         return switch (savedEntityType) {
-            case COMMENT -> userCommentService;
             case FORUM_THREAD -> userThreadService;
+            case ACTIVITY -> userActivityService;
+            case FOOD -> userFoodService;
+            case EXERCISE -> userExerciseService;
             default -> throw new IllegalStateException("Unexpected value: " + savedEntityType);
         };
     }

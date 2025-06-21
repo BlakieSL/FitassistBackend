@@ -17,7 +17,7 @@ import source.code.dto.response.comment.CommentResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.comment.CommentMapper;
-import source.code.model.forum.Comment;
+import source.code.model.thread.Comment;
 import source.code.repository.CommentRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;

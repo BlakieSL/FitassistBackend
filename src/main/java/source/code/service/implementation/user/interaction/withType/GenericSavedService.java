@@ -7,6 +7,7 @@ import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.helper.BaseUserEntity;
+import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.User;
 import source.code.repository.UserRepository;
 
@@ -33,7 +34,7 @@ public abstract class GenericSavedService<T, U, R> {
     }
 
     @Transactional
-    public void saveToUser(int entityId, short type) {
+    public void saveToUser(int entityId, TypeOfInteraction type) {
         int userId = AuthorizationUtil.getUserId();
         if (isAlreadySaved(userId, entityId, type)) {
             throw NotUniqueRecordException.of(
@@ -54,13 +55,13 @@ public abstract class GenericSavedService<T, U, R> {
     }
 
     @Transactional
-    public void deleteFromUser(int entityId, short type) {
+    public void deleteFromUser(int entityId, TypeOfInteraction type) {
         int userId = AuthorizationUtil.getUserId();
         U userEntity = findUserEntity(userId, entityId, type);
         userEntityRepository.delete(userEntity);
     }
 
-    public List<BaseUserEntity> getAllFromUser(short type) {
+    public List<BaseUserEntity> getAllFromUser(TypeOfInteraction type) {
         int userId = AuthorizationUtil.getUserId();
         return findAllByUserAndType(userId, type).stream()
                 .map(this::extractEntity)
@@ -75,13 +76,13 @@ public abstract class GenericSavedService<T, U, R> {
         return LikesAndSavesResponseDto.of(countLikes(entityId), countSaves(entityId));
     }
 
-    protected abstract boolean isAlreadySaved(int userId, int entityId, short type);
+    protected abstract boolean isAlreadySaved(int userId, int entityId, TypeOfInteraction type);
 
-    protected abstract U createUserEntity(User user, T entity, short type);
+    protected abstract U createUserEntity(User user, T entity, TypeOfInteraction type);
 
-    protected abstract U findUserEntity(int userId, int entityId, short type);
+    protected abstract U findUserEntity(int userId, int entityId, TypeOfInteraction type);
 
-    protected abstract List<U> findAllByUserAndType(int userId, short type);
+    protected abstract List<U> findAllByUserAndType(int userId, TypeOfInteraction type);
 
     protected abstract T extractEntity(U userEntity);
 

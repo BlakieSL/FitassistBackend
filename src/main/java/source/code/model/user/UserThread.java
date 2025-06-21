@@ -6,15 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.model.forum.Comment;
+import source.code.model.thread.ForumThread;
 
 @Entity
-@Table(name = "user_comment")
+@Table(name = "user_thread")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
-public class UserCommentLikes {
+@NoArgsConstructor
+public class UserThread {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -26,13 +26,13 @@ public class UserCommentLikes {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "comment_id", nullable = false)
-    private Comment comment;
+    @JoinColumn(name = "thread_id", nullable = false)
+    private ForumThread forumThread;
 
-    public static UserCommentLikes of(User user, Comment comment) {
-        UserCommentLikes userCommentLikes = new UserCommentLikes();
-        userCommentLikes.setUser(user);
-        userCommentLikes.setComment(comment);
-        return userCommentLikes;
+    public static UserThread of(User user, ForumThread forumThread) {
+        UserThread userThread = new UserThread();
+        userThread.setUser(user);
+        userThread.setForumThread(forumThread);
+        return userThread;
     }
 }

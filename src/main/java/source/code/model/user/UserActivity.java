@@ -29,17 +29,10 @@ public class UserActivity{
     @JoinColumn(name = "activity_id", nullable = false)
     private Activity activity;
 
-    @NotNull
-    @Column(nullable = false)
-    private short type;
-
-    public static UserActivity of(
-            User user, Activity activity, short type) {
-
+    public static UserActivity of(User user, Activity activity) {
         UserActivity userActivity = new UserActivity();
         userActivity.setUser(user);
         userActivity.setActivity(activity);
-        userActivity.setType(type);
 
         return userActivity;
     }

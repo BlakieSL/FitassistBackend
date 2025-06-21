@@ -7,13 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserActivityRepository extends JpaRepository<UserActivity, Integer> {
-    boolean existsByUserIdAndActivityIdAndType(int userId, int activityId, short type);
+    boolean existsByUserIdAndActivityId(int userId, int activityId);
 
-    Optional<UserActivity> findByUserIdAndActivityIdAndType(int userId, int activityId, short type);
+    Optional<UserActivity> findByUserIdAndActivityId(int userId, int activityId);
 
-    List<UserActivity> findByUserId(int userId);
+    List<UserActivity> findAllByUserId(int userId);
 
-    List<UserActivity> findByUserIdAndType(int userId, short type);
-
-    long countByActivityIdAndType(int activityId, short type);
+    long countByActivityId(int activityId);
 }

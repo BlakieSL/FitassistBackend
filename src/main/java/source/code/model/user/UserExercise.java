@@ -29,17 +29,10 @@ public class UserExercise {
     @JoinColumn(name = "exercise_id", nullable = false)
     private Exercise exercise;
 
-    @NotNull
-    @Column(nullable = false)
-    private short type;
-
-    public static UserExercise of(
-            User user, Exercise exercise, short type
-    ) {
+    public static UserExercise of(User user, Exercise exercise) {
         UserExercise userExercise = new UserExercise();
         userExercise.setUser(user);
         userExercise.setExercise(exercise);
-        userExercise.setType(type);
 
         return userExercise;
     }
