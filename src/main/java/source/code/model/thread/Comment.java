@@ -1,4 +1,4 @@
-package source.code.model.forum;
+package source.code.model.thread;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.user.User;
-import source.code.model.user.UserCommentLikes;
+import source.code.model.user.UserComment;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -46,7 +46,7 @@ public class Comment {
    private final Set<Comment> replies = new HashSet<>();
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
-    private final Set<UserCommentLikes> userCommentLikes = new HashSet<>();
+    private final Set<UserComment> userCommentLikes = new HashSet<>();
 
     public static Comment of(Integer id, User user) {
         Comment comment = new Comment();

@@ -17,6 +17,7 @@ import source.code.helper.BaseUserEntity;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.plan.PlanMapper;
 import source.code.model.plan.Plan;
+import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.UserPlan;
 import source.code.model.user.User;
 import source.code.repository.PlanRepository;
@@ -62,7 +63,7 @@ public class UserPlanServiceTest {
     public void saveToUser_ShouldSaveToUserWithType() {
         int userId = 1;
         int planId = 100;
-        short type = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
         User user = new User();
         Plan plan = new Plan();
 
@@ -82,7 +83,7 @@ public class UserPlanServiceTest {
     public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
         int userId = 1;
         int planId = 100;
-        short type = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type))
@@ -99,7 +100,7 @@ public class UserPlanServiceTest {
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
         int userId = 1;
         int planId = 100;
-        short type = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type))
@@ -117,7 +118,7 @@ public class UserPlanServiceTest {
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfPlanNotFound() {
         int userId = 1;
         int planId = 100;
-        short type = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
         User user = new User();
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
@@ -137,7 +138,7 @@ public class UserPlanServiceTest {
     public void deleteFromUser_ShouldDeleteFromUser() {
         int userId = 1;
         int planId = 100;
-        short type = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
         UserPlan userPlan = UserPlan.createWithUserPlanType(new User(), new Plan(), type);
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
@@ -154,7 +155,7 @@ public class UserPlanServiceTest {
     public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserPlanNotFound() {
         int userId = 1;
         int planId = 100;
-        short type = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userPlanRepository.findByUserIdAndPlanIdAndType(userId, planId, type))
@@ -170,7 +171,7 @@ public class UserPlanServiceTest {
     @DisplayName("getAllFromUser - Should return all plans by type")
     public void getAllFromUser_ShouldReturnAllPlansByType() {
         int userId = 1;
-        short type = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
         UserPlan plan1 = UserPlan.createWithUserPlanType(new User(), new Plan(), type);
         UserPlan plan2 = UserPlan.createWithUserPlanType(new User(), new Plan(), type);
         PlanResponseDto dto1 = new PlanResponseDto();
@@ -193,7 +194,7 @@ public class UserPlanServiceTest {
     @DisplayName("getAllFromUser - Should return empty list if no plans")
     public void getAllFromUser_ShouldReturnEmptyListIfNoPlans() {
         int userId = 1;
-        short type = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userPlanRepository.findByUserIdAndType(userId, type))
@@ -212,11 +213,13 @@ public class UserPlanServiceTest {
         long saveCount = 5;
         long likeCount = 10;
         Plan plan = new Plan();
+        TypeOfInteraction saveType = TypeOfInteraction.SAVE;
+        TypeOfInteraction likeType = TypeOfInteraction.LIKE;
 
         when(planRepository.findById(planId)).thenReturn(Optional.of(plan));
-        when(userPlanRepository.countByPlanIdAndType(planId, (short) 1))
+        when(userPlanRepository.countByPlanIdAndType(planId, saveType))
                 .thenReturn(saveCount);
-        when(userPlanRepository.countByPlanIdAndType(planId, (short) 2))
+        when(userPlanRepository.countByPlanIdAndType(planId, likeType))
                 .thenReturn(likeCount);
 
         var result = userPlanService.calculateLikesAndSaves(planId);
@@ -224,8 +227,8 @@ public class UserPlanServiceTest {
         assertEquals(saveCount, result.getSaves());
         assertEquals(likeCount, result.getLikes());
         verify(planRepository).findById(planId);
-        verify(userPlanRepository).countByPlanIdAndType(planId, (short) 1);
-        verify(userPlanRepository).countByPlanIdAndType(planId, (short) 2);
+        verify(userPlanRepository).countByPlanIdAndType(planId, saveType);
+        verify(userPlanRepository).countByPlanIdAndType(planId, likeType);
     }
 
     @Test
@@ -238,6 +241,6 @@ public class UserPlanServiceTest {
         assertThrows(RecordNotFoundException.class,
                 () -> userPlanService.calculateLikesAndSaves(planId));
 
-        verify(userPlanRepository, never()).countByPlanIdAndType(anyInt(), anyShort());
+        verify(userPlanRepository, never()).countByPlanIdAndType(anyInt(), any());
     }
 }

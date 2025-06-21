@@ -17,6 +17,7 @@ import source.code.helper.BaseUserEntity;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.recipe.Recipe;
+import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.UserRecipe;
 import source.code.model.user.User;
 import source.code.repository.RecipeRepository;
@@ -62,7 +63,7 @@ public class UserRecipeServiceTest {
     public void saveToUser_ShouldSaveToUserWithType() {
         int userId = 1;
         int recipeId = 100;
-        short type = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
         User user = new User();
         Recipe recipe = new Recipe();
 
@@ -82,7 +83,7 @@ public class UserRecipeServiceTest {
     public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
         int userId = 1;
         int recipeId = 100;
-        short type = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type))
@@ -99,8 +100,7 @@ public class UserRecipeServiceTest {
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
         int userId = 1;
         int recipeId = 100;
-        short type = 1;
-
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type))
                 .thenReturn(false);
@@ -117,7 +117,7 @@ public class UserRecipeServiceTest {
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfRecipeNotFound() {
         int userId = 1;
         int recipeId = 100;
-        short type = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
         User user = new User();
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
@@ -137,7 +137,7 @@ public class UserRecipeServiceTest {
     public void deleteFromUser_ShouldDeleteFromUser() {
         int userId = 1;
         int recipeId = 100;
-        short type = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
         UserRecipe userRecipe = UserRecipe.createWithUserRecipeType(new User(), new Recipe(), type);
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
@@ -154,7 +154,7 @@ public class UserRecipeServiceTest {
     public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserRecipeNotFound() {
         int userId = 1;
         int recipeId = 100;
-        short type = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userRecipeRepository.findByUserIdAndRecipeIdAndType(userId, recipeId, type))
@@ -170,7 +170,7 @@ public class UserRecipeServiceTest {
     @DisplayName("getAllFromUser - Should return all recipes by type")
     public void getAllFromUser_ShouldReturnAllRecipesByType() {
         int userId = 1;
-        short type = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
         UserRecipe recipe1 = UserRecipe.createWithUserRecipeType(new User(), new Recipe(), type);
         UserRecipe recipe2 = UserRecipe.createWithUserRecipeType(new User(), new Recipe(), type);
         RecipeResponseDto dto1 = new RecipeResponseDto();
@@ -193,7 +193,7 @@ public class UserRecipeServiceTest {
     @DisplayName("getAllFromUser - Should return empty list if no recipes")
     public void getAllFromUser_ShouldReturnEmptyListIfNoRecipes() {
         int userId = 1;
-        short type = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userRecipeRepository.findByUserIdAndType(userId, type))
@@ -212,11 +212,13 @@ public class UserRecipeServiceTest {
         long saveCount = 5;
         long likeCount = 10;
         Recipe recipe = new Recipe();
+        TypeOfInteraction saveType = TypeOfInteraction.SAVE;
+        TypeOfInteraction likeType = TypeOfInteraction.LIKE;
 
         when(recipeRepository.findById(recipeId)).thenReturn(Optional.of(recipe));
-        when(userRecipeRepository.countByRecipeIdAndType(recipeId, (short) 1))
+        when(userRecipeRepository.countByRecipeIdAndType(recipeId,saveType))
                 .thenReturn(saveCount);
-        when(userRecipeRepository.countByRecipeIdAndType(recipeId, (short) 2))
+        when(userRecipeRepository.countByRecipeIdAndType(recipeId, likeType))
                 .thenReturn(likeCount);
 
         var result = userRecipeService.calculateLikesAndSaves(recipeId);
@@ -224,8 +226,8 @@ public class UserRecipeServiceTest {
         assertEquals(saveCount, result.getSaves());
         assertEquals(likeCount, result.getLikes());
         verify(recipeRepository).findById(recipeId);
-        verify(userRecipeRepository).countByRecipeIdAndType(recipeId, (short) 1);
-        verify(userRecipeRepository).countByRecipeIdAndType(recipeId, (short) 2);
+        verify(userRecipeRepository).countByRecipeIdAndType(recipeId, saveType);
+        verify(userRecipeRepository).countByRecipeIdAndType(recipeId, likeType);
     }
 
     @Test
@@ -238,6 +240,6 @@ public class UserRecipeServiceTest {
         assertThrows(RecordNotFoundException.class,
                 () -> userRecipeService.calculateLikesAndSaves(recipeId));
 
-        verify(userRecipeRepository, never()).countByRecipeIdAndType(anyInt(), anyShort());
+        verify(userRecipeRepository, never()).countByRecipeIdAndType(anyInt(), any());
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.helper.Enum.model.SavedEntityType;
 import source.code.helper.BaseUserEntity;
+import source.code.model.user.TypeOfInteraction;
 import source.code.service.declaration.selector.SavedSelectorService;
 import source.code.service.declaration.user.SavedService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
@@ -23,7 +24,7 @@ public class SavedController {
     @GetMapping("/item-type/{itemType}/type/{type}")
     public ResponseEntity<List<BaseUserEntity>> getAllFromUser(
             @PathVariable SavedEntityType itemType,
-            @PathVariable short type
+            @PathVariable TypeOfInteraction type
     ) {
         SavedService savedService = savedSelectorService.getService(itemType);
         List<BaseUserEntity> dto = savedService.getAllFromUser(type);
@@ -44,7 +45,7 @@ public class SavedController {
     public ResponseEntity<Void> saveToUser(
             @PathVariable SavedEntityType itemType,
             @PathVariable int itemId,
-            @PathVariable short type
+            @PathVariable TypeOfInteraction type
     ) {
         SavedService savedService = savedSelectorService.getService(itemType);
         savedService.saveToUser(itemId, type);
@@ -55,7 +56,7 @@ public class SavedController {
     public ResponseEntity<Void> deleteFromUser(
             @PathVariable SavedEntityType itemType,
             @PathVariable int itemId,
-            @PathVariable short type
+            @PathVariable TypeOfInteraction type
     ) {
         SavedService savedService = savedSelectorService.getService(itemType);
         savedService.deleteFromUser(itemId, type);

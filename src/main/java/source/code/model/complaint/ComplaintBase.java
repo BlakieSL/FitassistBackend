@@ -1,4 +1,4 @@
-package source.code.model.forum;
+package source.code.model.complaint;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -24,26 +24,15 @@ public abstract class ComplaintBase {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ComplaintBase.Reason reason;
+    private ComplaintReason reason;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ComplaintBase.Status status = ComplaintBase.Status.PENDING;
+    private ComplaintStatus status = ComplaintStatus.PENDING;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    public enum Reason {
-        SPAM,
-        INAPPROPRIATE_CONTENT,
-        OTHER
-    }
-
-    public enum Status {
-        PENDING,
-        RESOLVED
-    }
 }

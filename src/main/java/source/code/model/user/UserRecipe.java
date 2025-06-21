@@ -30,11 +30,12 @@ public class UserRecipe {
     private Recipe recipe;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private short type;
+    private TypeOfInteraction type;
 
     public static UserRecipe createWithUserRecipeType(
-            User user, Recipe recipe, short type) {
+            User user, Recipe recipe, TypeOfInteraction type) {
 
         UserRecipe userRecipe = new UserRecipe();
         userRecipe.setUser(user);

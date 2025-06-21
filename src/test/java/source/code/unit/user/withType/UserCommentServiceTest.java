@@ -1,11 +1,10 @@
-package source.code.unit.user.withoutType;
+package source.code.unit.user.withType;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -15,13 +14,14 @@ import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.comment.CommentMapper;
-import source.code.model.forum.Comment;
-import source.code.model.user.UserCommentLikes;
+import source.code.model.thread.Comment;
+import source.code.model.user.TypeOfInteraction;
+import source.code.model.user.UserComment;
 import source.code.model.user.User;
 import source.code.repository.CommentRepository;
-import source.code.repository.UserCommentLikesRepository;
+import source.code.repository.UserCommentRepository;
 import source.code.repository.UserRepository;
-import source.code.service.implementation.user.interaction.withoutType.UserCommentServiceImpl;
+import source.code.service.implementation.user.interaction.withType.UserCommentServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class UserCommentServiceTest {
     @Mock
-    private UserCommentLikesRepository userCommentLikesRepository;
+    private UserCommentRepository userCommentRepository;
 
     @Mock
     private CommentRepository commentRepository;
@@ -44,7 +44,6 @@ public class UserCommentServiceTest {
     @Mock
     private CommentMapper commentMapper;
 
-    @InjectMocks
     private UserCommentServiceImpl userCommentService;
 
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
@@ -52,6 +51,13 @@ public class UserCommentServiceTest {
     @BeforeEach
     void setUp() {
         mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
+
+        userCommentService = new UserCommentServiceImpl(
+                userRepository,
+                commentRepository,
+                userCommentRepository,
+                commentMapper
+        );
     }
 
     @AfterEach
@@ -66,17 +72,18 @@ public class UserCommentServiceTest {
     public void saveToUser_ShouldSaveToUser() {
         int userId = 1;
         int commentId = 100;
+        TypeOfInteraction type = TypeOfInteraction.LIKE;
         User user = new User();
         Comment comment = new Comment();
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userCommentLikesRepository.existsByUserIdAndCommentId(userId, commentId)).thenReturn(false);
+        when(userCommentRepository.existsByUserIdAndCommentIdAndType(userId, commentId, type)).thenReturn(false);
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
 
-        userCommentService.saveToUser(commentId);
+        userCommentService.saveToUser(commentId, type);
 
-        verify(userCommentLikesRepository).save(any(UserCommentLikes.class));
+        verify(userCommentRepository).save(any(UserComment.class));
     }
 
     @Test
@@ -84,13 +91,14 @@ public class UserCommentServiceTest {
     public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
         int userId = 1;
         int commentId = 100;
+        TypeOfInteraction type = TypeOfInteraction.LIKE;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userCommentLikesRepository.existsByUserIdAndCommentId(userId, commentId)).thenReturn(true);
+        when(userCommentRepository.existsByUserIdAndCommentIdAndType(userId, commentId, type)).thenReturn(true);
 
-        assertThrows(NotUniqueRecordException.class, () -> userCommentService.saveToUser(commentId));
+        assertThrows(NotUniqueRecordException.class, () -> userCommentService.saveToUser(commentId, type));
 
-        verify(userCommentLikesRepository, never()).save(any());
+        verify(userCommentRepository, never()).save(any());
     }
 
     @Test
@@ -98,14 +106,15 @@ public class UserCommentServiceTest {
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
         int userId = 1;
         int commentId = 100;
+        TypeOfInteraction type = TypeOfInteraction.LIKE;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userCommentLikesRepository.existsByUserIdAndCommentId(userId, commentId)).thenReturn(false);
+        when(userCommentRepository.existsByUserIdAndCommentIdAndType(userId, commentId, type)).thenReturn(false);
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThrows(RecordNotFoundException.class, () -> userCommentService.saveToUser(commentId));
+        assertThrows(RecordNotFoundException.class, () -> userCommentService.saveToUser(commentId, type));
 
-        verify(userCommentLikesRepository, never()).save(any());
+        verify(userCommentRepository, never()).save(any());
     }
 
     @Test
@@ -114,15 +123,16 @@ public class UserCommentServiceTest {
         int userId = 1;
         int commentId = 100;
         User user = new User();
+        TypeOfInteraction type = TypeOfInteraction.LIKE;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userCommentLikesRepository.existsByUserIdAndCommentId(userId, commentId)).thenReturn(false);
+        when(userCommentRepository.existsByUserIdAndCommentIdAndType(userId, commentId, type)).thenReturn(false);
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
 
-        assertThrows(RecordNotFoundException.class, () -> userCommentService.saveToUser(commentId));
+        assertThrows(RecordNotFoundException.class, () -> userCommentService.saveToUser(commentId, type));
 
-        verify(userCommentLikesRepository, never()).save(any());
+        verify(userCommentRepository, never()).save(any());
     }
 
     @Test
@@ -130,15 +140,16 @@ public class UserCommentServiceTest {
     public void deleteFromUser_ShouldDeleteFromUser() {
         int userId = 1;
         int commentId = 100;
-        UserCommentLikes userCommentLike = new UserCommentLikes();
+        UserComment userCommentLike = new UserComment();
+        TypeOfInteraction type = TypeOfInteraction.LIKE;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userCommentLikesRepository.findByUserIdAndCommentId(userId, commentId))
+        when(userCommentRepository.findByUserIdAndCommentIdAndType(userId, commentId, type))
                 .thenReturn(Optional.of(userCommentLike));
 
-        userCommentService.deleteFromUser(commentId);
+        userCommentService.deleteFromUser(commentId, type);
 
-        verify(userCommentLikesRepository).delete(userCommentLike);
+        verify(userCommentRepository).delete(userCommentLike);
     }
 
     @Test
@@ -146,25 +157,27 @@ public class UserCommentServiceTest {
     public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserCommentLikeNotFound() {
         int userId = 1;
         int commentId = 100;
+        TypeOfInteraction type = TypeOfInteraction.LIKE;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userCommentLikesRepository.findByUserIdAndCommentId(userId, commentId))
+        when(userCommentRepository.findByUserIdAndCommentIdAndType(userId, commentId, type))
                 .thenReturn(Optional.empty());
 
-        assertThrows(RecordNotFoundException.class, () -> userCommentService.deleteFromUser(commentId));
+        assertThrows(RecordNotFoundException.class, () -> userCommentService.deleteFromUser(commentId, type));
 
-        verify(userCommentLikesRepository, never()).delete(any());
+        verify(userCommentRepository, never()).delete(any());
     }
 
     @Test
     @DisplayName("getAllFromUser - Should return all liked comments from user")
     public void getAllFromUser_ShouldReturnAllLikedCommentsFromUser() {
+        TypeOfInteraction type = TypeOfInteraction.LIKE;
         int userId = 1;
-        UserCommentLikes like1 = new UserCommentLikes();
+        UserComment like1 = new UserComment();
         Comment comment1 = new Comment();
         like1.setComment(comment1);
 
-        UserCommentLikes like2 = new UserCommentLikes();
+        UserComment like2 = new UserComment();
         Comment comment2 = new Comment();
         like2.setComment(comment2);
 
@@ -172,12 +185,12 @@ public class UserCommentServiceTest {
         CommentResponseDto dto2 = new CommentResponseDto();
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userCommentLikesRepository.findAllByUserId(userId))
+        when(userCommentRepository.findByUserIdAndType(userId, type))
                 .thenReturn(List.of(like1, like2));
         when(commentMapper.toResponseDto(comment1)).thenReturn(dto1);
         when(commentMapper.toResponseDto(comment2)).thenReturn(dto2);
 
-        var result = userCommentService.getAllFromUser();
+        var result = userCommentService.getAllFromUser(type);
 
         assertEquals(2, result.size());
         assertTrue(result.contains(dto1));
@@ -188,12 +201,13 @@ public class UserCommentServiceTest {
     @DisplayName("getAllFromUser - Should return empty list if no liked comments")
     public void getAllFromUser_ShouldReturnEmptyListIfNoLikedComments() {
         int userId = 1;
+        TypeOfInteraction type = TypeOfInteraction.LIKE;
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userCommentLikesRepository.findAllByUserId(userId))
+        when(userCommentRepository.findByUserIdAndType(userId, type))
                 .thenReturn(List.of());
 
-        var result = userCommentService.getAllFromUser();
+        var result = userCommentService.getAllFromUser(type);
 
         assertTrue(result.isEmpty());
         verify(commentMapper, never()).toResponseDto(any());
@@ -205,9 +219,10 @@ public class UserCommentServiceTest {
         int commentId = 100;
         int likeCount = 100;
         Comment comment = new Comment();
+        TypeOfInteraction type = TypeOfInteraction.LIKE;
 
         when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
-        when(userCommentLikesRepository.countAllByCommentId(commentId)).thenReturn((long) likeCount);
+        when(userCommentRepository.countByCommentIdAndType(commentId, type)).thenReturn((long) likeCount);
 
         var result = userCommentService.calculateLikesAndSaves(commentId);
 
@@ -215,7 +230,7 @@ public class UserCommentServiceTest {
         assertEquals(likeCount, result.getLikes());
         assertEquals(0, result.getSaves());
         verify(commentRepository).findById(commentId);
-        verify(userCommentLikesRepository).countAllByCommentId(commentId);
+        verify(userCommentRepository).countByCommentIdAndType(commentId, type);
     }
 
     @Test
@@ -227,6 +242,6 @@ public class UserCommentServiceTest {
 
         assertThrows(RecordNotFoundException.class, () -> userCommentService.calculateLikesAndSaves(commentId));
 
-        verify(userCommentLikesRepository, never()).countAllByCommentId(anyInt());
+        verify(userCommentRepository, never()).countByCommentIdAndType(anyInt(), any(TypeOfInteraction.class));
     }
 }

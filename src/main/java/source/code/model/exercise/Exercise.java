@@ -9,13 +9,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.helper.search.IndexedEntity;
-import source.code.model.other.Equipment;
-import source.code.model.other.ExpertiseLevel;
 import source.code.model.text.ExerciseInstruction;
 import source.code.model.text.ExerciseTip;
 import source.code.model.user.UserExercise;
 import source.code.model.workout.WorkoutSet;
-import source.code.model.workout.WorkoutSetGroup;
 
 import java.util.HashSet;
 import java.util.Set;

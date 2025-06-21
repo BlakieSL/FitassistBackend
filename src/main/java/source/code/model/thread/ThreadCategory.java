@@ -1,4 +1,4 @@
-package source.code.model.forum;
+package source.code.model.thread;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

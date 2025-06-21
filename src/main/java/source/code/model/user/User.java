@@ -9,10 +9,12 @@ import lombok.Setter;
 import source.code.helper.Enum.model.user.ActivityLevel;
 import source.code.helper.Enum.model.user.Gender;
 import source.code.helper.Enum.model.user.Goal;
+import source.code.model.complaint.ComplaintBase;
 import source.code.model.daily.DailyCart;
-import source.code.model.forum.*;
 import source.code.model.plan.Plan;
 import source.code.model.recipe.Recipe;
+import source.code.model.thread.Comment;
+import source.code.model.thread.ForumThread;
 import source.code.validation.ValidationGroups;
 import source.code.validation.email.UniqueEmailDomain;
 
@@ -99,13 +101,13 @@ public class User {
     private final Set<UserActivity> userActivities = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private final Set<UserCommentLikes> userCommentLikes = new HashSet<>();
+    private final Set<UserComment> userCommentLikes = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<Comment> writtenComments = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private final Set<UserThreadSubscription> userThreadSubscriptions = new HashSet<>();
+    private final Set<UserThread> userThreads = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<ForumThread> createdForumThreads = new HashSet<>();

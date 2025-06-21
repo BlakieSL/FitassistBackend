@@ -1,7 +1,7 @@
 package source.code.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import source.code.model.forum.Comment;
+import source.code.model.thread.Comment;
 
 import java.util.List;
 

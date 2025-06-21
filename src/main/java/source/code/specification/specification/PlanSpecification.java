@@ -7,7 +7,7 @@ import source.code.helper.Enum.model.LikesAndSaves;
 import source.code.helper.Enum.model.field.PlanField;
 import source.code.helper.TriFunction;
 import source.code.model.exercise.Exercise;
-import source.code.model.other.Equipment;
+import source.code.model.exercise.Equipment;
 import source.code.model.plan.Plan;
 import source.code.model.plan.PlanCategoryAssociation;
 import source.code.model.workout.Workout;

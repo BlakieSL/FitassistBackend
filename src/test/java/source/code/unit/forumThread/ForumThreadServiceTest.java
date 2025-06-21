@@ -17,7 +17,7 @@ import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.forumThread.ForumThreadMapper;
-import source.code.model.forum.ForumThread;
+import source.code.model.thread.ForumThread;
 import source.code.repository.ForumThreadRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;

@@ -1,7 +1,6 @@
 package source.code.model.user;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,17 +26,10 @@ public class UserFood {
     @JoinColumn(name = "food_id", nullable = false)
     private Food food;
 
-    @NotNull
-    @Column(nullable = false)
-    private short type;
-
-    public static UserFood createWithUserFoodType(
-            User user, Food food, short type) {
-
+    public static UserFood of(User user, Food food) {
         UserFood userFood = new UserFood();
         userFood.setUser(user);
         userFood.setFood(food);
-        userFood.setType(type);
 
         return userFood;
     }

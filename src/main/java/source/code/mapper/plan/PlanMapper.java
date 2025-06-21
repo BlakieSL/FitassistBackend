@@ -7,7 +7,6 @@ import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.request.plan.PlanUpdateDto;
 import source.code.dto.response.plan.PlanResponseDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.model.other.ExpertiseLevel;
 import source.code.model.plan.*;
 import source.code.model.text.PlanInstruction;
 import source.code.model.user.User;

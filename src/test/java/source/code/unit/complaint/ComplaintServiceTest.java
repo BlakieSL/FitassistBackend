@@ -13,9 +13,10 @@ import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.model.ComplaintSubClass;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.complaint.ComplaintMapper;
-import source.code.model.forum.CommentComplaint;
-import source.code.model.forum.ComplaintBase;
-import source.code.model.forum.ThreadComplaint;
+import source.code.model.complaint.CommentComplaint;
+import source.code.model.complaint.ComplaintBase;
+import source.code.model.complaint.ComplaintStatus;
+import source.code.model.complaint.ThreadComplaint;
 import source.code.repository.CommentComplaintRepository;
 import source.code.repository.ThreadComplaintRepository;
 import source.code.service.implementation.complaint.ComplaintServiceImpl;
@@ -90,7 +91,7 @@ public class ComplaintServiceTest {
 
         complaintService.resolveComplaint(COMPLAINT_ID);
 
-        assertEquals(ComplaintBase.Status.RESOLVED, commentComplaint.getStatus());
+        assertEquals(ComplaintStatus.RESOLVED, commentComplaint.getStatus());
         verify(commentComplaintRepository).findById(COMPLAINT_ID);
     }
 
