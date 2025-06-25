@@ -23,7 +23,7 @@ public class SpecificationBuilder<T> {
     public Specification<T> build() {
         List<FilterCriteria> criteriaList = filterDto.getFilterCriteria();
         if (criteriaList == null || criteriaList.isEmpty()) {
-            return Specification.where(null);
+            return (root, query, builder) -> null;
         }
 
         Specification<T> result = specificationFactory.createSpecification(criteriaList.get(0));
@@ -31,10 +31,13 @@ public class SpecificationBuilder<T> {
         for (int i = 1; i < criteriaList.size(); i++) {
             Specification<T> spec = specificationFactory.createSpecification(criteriaList.get(i));
 
-            result = filterDto.getDataOption() == FilterDataOption.AND
-                    ? Specification.where(result).and(spec)
-                    : Specification.where(result).or(spec);
+            if (filterDto.getDataOption() == FilterDataOption.AND) {
+                result = result.and(spec);
+            } else {
+                result = result.or(spec);
+            }
         }
+
         return result;
     }
 }

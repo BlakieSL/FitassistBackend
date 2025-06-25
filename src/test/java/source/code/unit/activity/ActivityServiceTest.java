@@ -402,31 +402,4 @@ public class ActivityServiceTest {
         assertTrue(result.isEmpty());
         verify(activityRepository).findAllWithoutAssociations();
     }
-
-    @Test
-    void getActivitiesByCategory_shouldReturnActivitiesForCategory() {
-        int categoryId = 1;
-        List<Activity> activities = List.of(activity);
-        when(activityRepository.findAllByActivityCategory_Id(categoryId)).thenReturn(activities);
-        when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
-
-        List<ActivityResponseDto> result = activityService.getActivitiesByCategory(categoryId);
-
-        assertEquals(1, result.size());
-        assertSame(responseDto, result.get(0));
-        verify(activityRepository).findAllByActivityCategory_Id(categoryId);
-        verify(activityMapper).toResponseDto(activity);
-    }
-
-    @Test
-    void getActivitiesByCategory_shouldReturnEmptyListWhenNoActivities() {
-        int categoryId = 1;
-        when(activityRepository.findAllByActivityCategory_Id(categoryId)).thenReturn(new ArrayList<>());
-
-        List<ActivityResponseDto> result = activityService.getActivitiesByCategory(categoryId);
-
-        assertTrue(result.isEmpty());
-        verify(activityRepository).findAllByActivityCategory_Id(categoryId);
-        verifyNoInteractions(activityMapper);
-    }
 }

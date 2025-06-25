@@ -3,7 +3,6 @@ package source.code.helper.Enum.cache;
 public class CacheNames {
     public static final String ALL_ACTIVITIES = "allActivities";
     public static final String ACTIVITIES = "activities";
-    public static final String ACTIVITIES_BY_CATEGORY = "activitiesByCategory";
 
     public static final String ALL_FOODS = "allFoods";
     public static final String FOODS = "foods";
@@ -25,9 +24,5 @@ public class CacheNames {
 
     public static final String ALL_TEXT_BY_PARENT = "allTextByParent";
 
-    public static final String USER_BY_ID = "userById";
-    public static final String USER_ID_BY_EMAIL = "userIdByEmail";
-
     public static final String FOODS_BY_RECIPE = "foodsByRecipe";
-
 }
