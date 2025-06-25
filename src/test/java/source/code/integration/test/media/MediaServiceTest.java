@@ -1,4 +1,4 @@
-package source.code.integration.test;
+package source.code.integration.test.media;
 
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;

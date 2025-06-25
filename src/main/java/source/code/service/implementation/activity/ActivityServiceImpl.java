@@ -108,7 +108,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    @Cacheable(value = CacheNames.ACTIVITIES, key = "#id")
+    @Cacheable(value = CacheNames.ACTIVITIES, key = "#activityId")
     public ActivityResponseDto getActivity(int activityId) {
         Activity activity = findActivity(activityId);
         return activityMapper.toResponseDto(activity);
@@ -137,14 +137,6 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public List<Activity> getAllActivityEntities() {
         return activityRepository.findAllWithoutAssociations();
-    }
-
-    @Override
-    @Cacheable(value = CacheNames.ACTIVITIES_BY_CATEGORY, key = "#categoryId")
-    public List<ActivityResponseDto> getActivitiesByCategory(int categoryId) {
-        return activityRepository.findAllByActivityCategory_Id(categoryId).stream()
-                .map(activityMapper::toResponseDto)
-                .toList();
     }
 
     private ActivityUpdateDto applyPatchToActivity(Activity activity, JsonMergePatch patch)

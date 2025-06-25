@@ -65,12 +65,6 @@ public class ActivityController {
         return ResponseEntity.ok(activityService.getAllActivities());
     }
 
-    @GetMapping("/categories/{categoryId}/")
-    public ResponseEntity<List<ActivityResponseDto>> getActivitiesByCategory(
-            @PathVariable int categoryId) {
-        return ResponseEntity.ok(activityService.getActivitiesByCategory(categoryId));
-    }
-
     @PostMapping("/filter")
     public ResponseEntity<List<ActivityResponseDto>> getFilteredActivities(
             @Valid @RequestBody FilterDto filterDto) {

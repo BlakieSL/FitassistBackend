@@ -16,15 +16,4 @@ public class ActivityResponseDto implements BaseUserEntity {
     private BigDecimal met;
     private String categoryName;
     private int categoryId;
-
-    public static ActivityResponseDto createWithIdCategoryNameCategoryId(
-            int id, String categoryName, int categoryId) {
-
-        ActivityResponseDto activityResponseDto = new ActivityResponseDto();
-        activityResponseDto.setId(id);
-        activityResponseDto.setCategoryName(categoryName);
-        activityResponseDto.setCategoryId(categoryId);
-
-        return activityResponseDto;
-    }
 }

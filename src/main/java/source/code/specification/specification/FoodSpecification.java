@@ -4,75 +4,73 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
+import source.code.exception.InvalidFilterKeyException;
 import source.code.helper.Enum.model.field.FoodField;
 import source.code.helper.Enum.model.LikesAndSaves;
-import source.code.helper.TriFunction;
 import source.code.model.food.Food;
 
-import java.util.Map;
-import java.util.Optional;
+public class FoodSpecification implements Specification<Food> {
+    private final FilterCriteria criteria;
 
-public class FoodSpecification extends BaseSpecification<Food> {
-
-    private final Map<String, TriFunction<Root<Food>,
-            CriteriaQuery<?>, CriteriaBuilder, Predicate>> fieldHandlers;
-
-    public FoodSpecification(@NonNull FilterCriteria criteria) {
-        super(criteria);
-
-        fieldHandlers = Map.of(
-                FoodField.CALORIES.name(),
-                (root, query, builder) -> handleNumericProperty(
-                        root.get(FoodField.CALORIES.getFieldName()),
-                        builder
-                ),
-                FoodField.PROTEIN.name(),
-                (root, query, builder) -> handleNumericProperty(
-                        root.get(FoodField.PROTEIN.getFieldName()),
-                        builder
-                ),
-                FoodField.FAT.name(),
-                (root, query, builder) -> handleNumericProperty(
-                        root.get(FoodField.FAT.getFieldName()),
-                        builder
-                ),
-                FoodField.CARBOHYDRATES.name(),
-                (root, query, builder) -> handleNumericProperty(
-                        root.get(FoodField.CARBOHYDRATES.getFieldName()),
-                        builder
-                ),
-                FoodField.CATEGORY.name(),
-                (root, query, builder) -> handleEntityProperty(
-                        root,
-                        FoodField.CATEGORY.getFieldName(),
-                        builder
-                ),
-                LikesAndSaves.LIKES.name(),
-                (root, query, builder) -> handleLikesProperty(
-                        root,
-                        LikesAndSaves.USER_FOODS.getFieldName(),
-                        query,
-                        builder
-                ),
-                LikesAndSaves.SAVES.name(),
-                (root, query, builder) -> handleSavesProperty(
-                        root,
-                        LikesAndSaves.USER_FOODS.getFieldName(),
-                        query,
-                        builder
-                )
-
-        );
+    public FoodSpecification(FilterCriteria criteria) {
+        this.criteria = criteria;
     }
 
     @Override
-    public Predicate toPredicate(@NonNull Root<Food> root, @NonNull CriteriaQuery<?> query,
+    public Predicate toPredicate(@NonNull Root<Food> root, CriteriaQuery<?> query,
                                  @NonNull CriteriaBuilder builder) {
-        return Optional.ofNullable(fieldHandlers.get(criteria.getFilterKey()))
-                .map(handler -> handler.apply(root, query, builder))
-                .orElseThrow(() -> new IllegalStateException("Unexpected filter key: " + criteria.getFilterKey()));
+        FoodField field;
+        try {
+            field = FoodField.valueOf(criteria.getFilterKey());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidFilterKeyException(criteria.getFilterKey());
+        }
+
+        return switch (field) {
+            case FoodField.CALORIES -> GenericSpecificationHelper.buildPredicateNumericProperty(
+                    builder,
+                    criteria,
+                    root.get(FoodField.CALORIES.getFieldName())
+            );
+            case FoodField.PROTEIN -> GenericSpecificationHelper.buildPredicateNumericProperty(
+                    builder,
+                    criteria,
+                    root.get(FoodField.PROTEIN.getFieldName())
+            );
+            case FoodField.FAT -> GenericSpecificationHelper.buildPredicateNumericProperty(
+                    builder,
+                    criteria,
+                    root.get(FoodField.FAT.getFieldName())
+            );
+            case FoodField.CARBOHYDRATES -> GenericSpecificationHelper.buildPredicateNumericProperty(
+                    builder,
+                    criteria,
+                    root.get(FoodField.CARBOHYDRATES.getFieldName())
+            );
+            case FoodField.CATEGORY -> GenericSpecificationHelper.buildPredicateEntityProperty(
+                    builder,
+                    criteria,
+                    root,
+                    FoodField.CATEGORY.getFieldName()
+            );
+            case FoodField.SAVE -> {
+                Predicate predicate = GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
+                        builder,
+                        criteria,
+                        root,
+                        LikesAndSaves.USER_FOODS.getFieldName(),
+                        null,
+                        null
+                );
+
+                query.groupBy(root.get("id"));
+
+                yield predicate;
+            }
+        };
     }
 
     public static FoodSpecification of(FilterCriteria criteria) {

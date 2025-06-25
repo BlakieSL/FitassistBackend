@@ -24,7 +24,7 @@ public class ActivityListener {
     public void handleActivityCreate(ActivityCreateEvent event) {
         Activity activity = event.getActivity();
 
-        clearCommonCache(activity);
+        clearCommonCache();
         luceneService.addEntity(activity);
     }
 
@@ -46,11 +46,10 @@ public class ActivityListener {
 
     public void clearCache(Activity activity) {
         cacheService.evictCache(CacheNames.ACTIVITIES, activity.getId());
-        clearCommonCache(activity);
+        clearCommonCache();
     }
 
-    public void clearCommonCache(Activity activity) {
+    public void clearCommonCache() {
         cacheService.clearCache(CacheNames.ALL_ACTIVITIES);
-        cacheService.evictCache(CacheNames.ACTIVITIES_BY_CATEGORY, activity.getActivityCategory().getId());
     }
 }

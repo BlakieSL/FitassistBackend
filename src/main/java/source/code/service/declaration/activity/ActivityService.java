@@ -30,7 +30,5 @@ public interface ActivityService {
 
     List<Activity> getAllActivityEntities();
 
-    List<ActivityResponseDto> getActivitiesByCategory(int categoryId);
-
     ActivityCalculatedResponseDto calculateCaloriesBurned(int id, CalculateActivityCaloriesRequestDto request);
 }

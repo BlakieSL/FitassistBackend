@@ -1,14 +1,16 @@
 package source.code.helper.Enum.model.field;
 
 public enum ExerciseField {
-    TYPE("exerciseType"),
+    SAVE,
     EXPERTISE_LEVEL("expertiseLevel"),
     EQUIPMENT("equipment"),
     MECHANICS_TYPE("mechanicsType"),
     FORCE_TYPE("forceType"),
     TARGET_MUSCLE("exerciseTargetMuscles");
 
-    private final String fieldName;
+    private String fieldName;
+
+    ExerciseField() {}
 
     ExerciseField(String fieldName) {
         this.fieldName = fieldName;
