@@ -4,61 +4,59 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
+import source.code.exception.InvalidFilterKeyException;
 import source.code.helper.Enum.model.field.ActivityField;
 import source.code.helper.Enum.model.LikesAndSaves;
-import source.code.helper.TriFunction;
 import source.code.model.activity.Activity;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+public class ActivitySpecification implements Specification<Activity> {
+    private final FilterCriteria criteria;
 
-public class ActivitySpecification extends BaseSpecification<Activity> {
-
-    private final Map<String, TriFunction<Root<Activity>,
-            CriteriaQuery<?>, CriteriaBuilder, Predicate>> fieldHandlers;
-
-    public ActivitySpecification(@NonNull FilterCriteria criteria) {
-        super(criteria);
-
-        fieldHandlers = Map.of(
-                ActivityField.CATEGORY.name(),
-                (root, query, builder) -> handleEntityProperty(
-                        root,
-                        ActivityField.CATEGORY.getFieldName(),
-                        builder
-                ),
-                ActivityField.MET.name(),
-                (root, query, builder) -> handleNumericProperty(
-                        root.get(ActivityField.MET.getFieldName()),
-                        builder
-                ),
-                LikesAndSaves.LIKES.name(),
-                (root, query, builder) -> handleLikesProperty(
-                        root,
-                        LikesAndSaves.USER_ACTIVITIES.getFieldName(),
-                        query,
-                        builder
-                ),
-                LikesAndSaves.SAVES.name(),
-                (root, query, builder) -> handleSavesProperty(
-                        root,
-                        LikesAndSaves.USER_ACTIVITIES.getFieldName(),
-                        query,
-                        builder
-                )
-        );
+    public ActivitySpecification(FilterCriteria criteria) {
+        this.criteria = criteria;
     }
 
     @Override
-    public Predicate toPredicate(@NonNull Root<Activity> root, @NonNull CriteriaQuery<?> query,
+    public Predicate toPredicate(@NonNull Root<Activity> root, CriteriaQuery<?> query,
                                  @NonNull CriteriaBuilder builder) {
-        return Optional.ofNullable(fieldHandlers.get(criteria.getFilterKey()))
-                .map(handler -> handler.apply(root, query, builder))
-                .orElseThrow(() -> new IllegalStateException(
-                        "Unexpected filter key: " + criteria.getFilterKey()));
+        ActivityField field;
+
+        try {
+            field = ActivityField.valueOf(criteria.getFilterKey());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidFilterKeyException(criteria.getFilterKey());
+        }
+
+        return switch (field) {
+            case ActivityField.CATEGORY -> GenericSpecificationHelper.buildPredicateEntityProperty(
+                    builder,
+                    criteria,
+                    root,
+                    ActivityField.CATEGORY.getFieldName()
+            );
+            case ActivityField.MET -> GenericSpecificationHelper.buildPredicateNumericProperty(
+                    builder,
+                    criteria,
+                    root.get(ActivityField.MET.getFieldName())
+            );
+            case ActivityField.SAVE -> {
+                Predicate predicate = GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
+                        builder,
+                        criteria,
+                        root,
+                        LikesAndSaves.USER_ACTIVITIES.getFieldName(),
+                        null,
+                        null
+                );
+
+                query.groupBy(root.get("id"));
+
+                yield  predicate;
+            }
+        };
     }
 
     public static ActivitySpecification of(FilterCriteria criteria) {

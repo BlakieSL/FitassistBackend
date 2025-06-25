@@ -1,16 +1,20 @@
 package source.code.helper.Enum.model.field;
 
 public enum PlanField {
+    LIKE,
+    SAVE,
     TYPE("planType"),
-    DURATION("planDuration"),
-    EXPERTISE_LEVEL("expertiseLevel"),
     EQUIPMENT("exercises.equipment"),
     CATEGORY("planCategoryAssociations");
 
-    private final String fieldName;
+    private String fieldName;
 
     PlanField(String fieldName) {
         this.fieldName = fieldName;
+    }
+
+    PlanField() {
+
     }
 
     public String getFieldName() {
