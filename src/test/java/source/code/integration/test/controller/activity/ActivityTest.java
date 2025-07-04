@@ -1,7 +1,5 @@
-package source.code.integration.test.activity;
+package source.code.integration.test.controller.activity;
 
-import com.esotericsoftware.kryo.util.ObjectMap;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.jdbc.SqlMergeMode;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -32,9 +31,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Sql(scripts = {
-        "classpath:activity/schema/drop-schema.sql",
-        "classpath:activity/schema/create-schema.sql",
+@SqlGroup({
+        @Sql(scripts = {
+                "classpath:activity/schema/drop-schema.sql",
+                "classpath:activity/schema/create-schema.sql",
+        }),
+        @Sql(scripts = {
+                "classpath:activity/schema/drop-schema.sql",
+        }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
 })
 @SqlMergeMode(value = SqlMergeMode.MergeMode.MERGE)
 @AutoConfigureMockMvc
@@ -341,6 +345,41 @@ public class ActivityTest extends MySqlRedisContainers {
                         .content(requestJson))
                 .andExpectAll(
                         status().isBadRequest()
+                );
+    }
+
+    @WithMockUser
+    @ActivitySql
+    @Test
+    @DisplayName("POST - /{id}/calculate-calories - Should calculate calories burned for an activity heath-related information already saved")
+    void calculateActivityCaloriesBurned() throws Exception {
+
+    }
+
+    @WithMockUser
+    @ActivitySql
+    @Test
+    @DisplayName("POST - /{id}/calculate-calories - Should calculate calories burned for an activity with health-related information provided in request")
+    void calculateActivityCaloriesBurnedWithHealthInfo() throws Exception {
+
+    }
+
+    @WithMockUser
+    @ActivitySql
+    @Test
+    @DisplayName("POST - /{id}/calculate-calories - Should return 400 when health-related information is not provided nor already saved")
+    void calculateActivityCaloriesBurnedWithoutHealthInfo() throws Exception {
+
+    }
+
+    @WithMockUser
+    @ActivitySql
+    @Test
+    @DisplayName("POST - /{id}/calculate-calories - Should return 404 when activity does not exist")
+    void calculateActivityCaloriesBurnedNotFound() throws Exception {
+        mockMvc.perform(post("/api/activities/999/calculate-calories"))
+                .andExpectAll(
+                        status().isNotFound()
                 );
     }
 }
