@@ -1,9 +1,10 @@
-package source.code.integration.test.media;
+package source.code.integration.test.controller.media;
 
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.jdbc.SqlMergeMode;
 import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.integration.config.TestConfig;
@@ -21,16 +22,21 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Sql(scripts = {
-        "classpath:media/schema/drop-schema.sql",
-        "classpath:media/schema/create-schema.sql",
+@SqlGroup({
+        @Sql(scripts = {
+                "classpath:media/schema/drop-schema.sql",
+                "classpath:media/schema/create-schema.sql",
+        }),
+        @Sql(scripts = {
+                "classpath:media/schema/drop-schema.sql"
+        }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
 })
 @SqlMergeMode(value = SqlMergeMode.MergeMode.MERGE)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @SpringBootTest
 @Import(TestConfig.class)
-public class MediaServiceTest extends MySqlRedisContainers {
+public class MediaTest extends MySqlRedisContainers {
     @Autowired
     private MockMvc mockMvc;
 

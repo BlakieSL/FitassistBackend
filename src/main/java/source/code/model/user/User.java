@@ -17,12 +17,14 @@ import source.code.model.thread.Comment;
 import source.code.model.thread.ForumThread;
 import source.code.validation.ValidationGroups;
 import source.code.validation.email.UniqueEmailDomain;
+import source.code.validation.healthRelatedInfo.HealthInformationShouldBeFullDomain;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+@HealthInformationShouldBeFullDomain
 @Entity
 @Table(name = "user")
 @Getter

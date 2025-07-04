@@ -1,4 +1,4 @@
-package source.code.integration.test.media;
+package source.code.integration.test.controller.media;
 
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;

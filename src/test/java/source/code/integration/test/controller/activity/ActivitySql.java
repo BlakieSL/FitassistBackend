@@ -1,4 +1,4 @@
-package source.code.integration.test.activity;
+package source.code.integration.test.controller.activity;
 
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;

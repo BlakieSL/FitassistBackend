@@ -37,6 +37,7 @@ import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.activity.ActivityServiceImpl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -256,13 +257,13 @@ public class ActivityServiceTest {
 
         when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
         when(repositoryHelper.find(activityRepository, Activity.class, activityId)).thenReturn(activity);
-        when(activityMapper.toCalculatedDto(activity, user, calculateRequestDto.getTime()))
+        when(activityMapper.toCalculatedDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime()))
                 .thenReturn(calculatedResponseDto);
 
         ActivityCalculatedResponseDto result = activityService
                 .calculateCaloriesBurned(activityId, calculateRequestDto);
 
-        verify(activityMapper).toCalculatedDto(activity, user, calculateRequestDto.getTime());
+        verify(activityMapper).toCalculatedDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime());
         assertEquals(calculatedResponseDto, result);
     }
 

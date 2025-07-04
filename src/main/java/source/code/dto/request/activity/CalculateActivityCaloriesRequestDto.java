@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -15,4 +17,6 @@ public class CalculateActivityCaloriesRequestDto {
     @NotNull
     @Positive
     private int time = 1;
+
+    private BigDecimal weight;
 }
