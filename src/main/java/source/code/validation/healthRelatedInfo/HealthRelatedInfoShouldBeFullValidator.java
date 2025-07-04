@@ -4,7 +4,7 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import source.code.model.user.User;
 
-public class HealthRelatedInformationShouldBeFullValidator implements ConstraintValidator<HealthInformationShouldBeFullDomain, User> {
+public class HealthRelatedInfoShouldBeFullValidator implements ConstraintValidator<HealthInfoShouldBeFullDomain, User> {
     @Override
     public boolean isValid(User user, ConstraintValidatorContext context) {
         if (allFieldsNull(user)) {
