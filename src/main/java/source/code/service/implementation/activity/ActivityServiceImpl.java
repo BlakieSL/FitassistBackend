@@ -100,11 +100,10 @@ public class ActivityServiceImpl implements ActivityService {
             int activityId,
             CalculateActivityCaloriesRequestDto request
     ) {
-        int userId = AuthorizationUtil.getUserId();
-        User user = findUser(userId);
         Activity activity = findActivity(activityId);
 
-        return activityMapper.toCalculatedDto(activity, user, request.getTime());
+        return activityMapper.toCalculatedDto(activity, request.getWeight(), request.getTime());
+
     }
 
     @Override
