@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import source.code.dto.pojo.FilterCriteria;
 import source.code.dto.request.activity.ActivityCreateDto;
+import source.code.dto.request.activity.CalculateActivityCaloriesRequestDto;
 import source.code.dto.request.filter.FilterDto;
 import source.code.helper.Enum.filter.FilterDataOption;
 import source.code.helper.Enum.filter.FilterOperation;
@@ -348,12 +349,21 @@ public class ActivityTest extends MySqlRedisContainers {
                 );
     }
 
-    @WithMockUser
     @ActivitySql
     @Test
     @DisplayName("POST - /{id}/calculate-calories - Should calculate calories burned for an activity heath-related information already saved")
     void calculateActivityCaloriesBurned() throws Exception {
+        Utils.setUserContext(1);
+        CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto();
+        request.setTime(60);
 
+        mockMvc.perform(post("/api/activities/1/calculate-calories")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.caloriesBurned").hasJsonPath()
+                );
     }
 
     @WithMockUser
@@ -361,15 +371,33 @@ public class ActivityTest extends MySqlRedisContainers {
     @Test
     @DisplayName("POST - /{id}/calculate-calories - Should calculate calories burned for an activity with health-related information provided in request")
     void calculateActivityCaloriesBurnedWithHealthInfo() throws Exception {
+        CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto();
+        request.setTime(60);
+        request.setWeight(new BigDecimal("80.0"));
 
+        mockMvc.perform(post("/api/activities/1/calculate-calories")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.caloriesBurned").hasJsonPath()
+                );
     }
 
-    @WithMockUser
     @ActivitySql
     @Test
     @DisplayName("POST - /{id}/calculate-calories - Should return 400 when health-related information is not provided nor already saved")
     void calculateActivityCaloriesBurnedWithoutHealthInfo() throws Exception {
+        Utils.setUserContext(2);
+        CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto();
+        request.setTime(60);
 
+        mockMvc.perform(post("/api/activities/1/calculate-calories")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpectAll(
+                        status().isBadRequest()
+                );
     }
 
     @WithMockUser
@@ -377,7 +405,13 @@ public class ActivityTest extends MySqlRedisContainers {
     @Test
     @DisplayName("POST - /{id}/calculate-calories - Should return 404 when activity does not exist")
     void calculateActivityCaloriesBurnedNotFound() throws Exception {
-        mockMvc.perform(post("/api/activities/999/calculate-calories"))
+        CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto();
+        request.setTime(60);
+        request.setWeight(new BigDecimal("80.0"));
+
+        mockMvc.perform(post("/api/activities/999/calculate-calories")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(
                         status().isNotFound()
                 );

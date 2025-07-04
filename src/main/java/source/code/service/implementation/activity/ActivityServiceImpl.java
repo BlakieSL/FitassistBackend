@@ -18,6 +18,7 @@ import source.code.dto.response.activity.ActivityResponseDto;
 import source.code.event.events.Activity.ActivityCreateEvent;
 import source.code.event.events.Activity.ActivityDeleteEvent;
 import source.code.event.events.Activity.ActivityUpdateEvent;
+import source.code.exception.WeightRequiredException;
 import source.code.helper.Enum.cache.CacheNames;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.activity.ActivityMapper;
@@ -33,6 +34,7 @@ import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.ActivitySpecification;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -102,8 +104,9 @@ public class ActivityServiceImpl implements ActivityService {
     ) {
         Activity activity = findActivity(activityId);
 
-        return activityMapper.toCalculatedDto(activity, request.getWeight(), request.getTime());
+        BigDecimal weight = resolveWeightForCalculation(request);
 
+        return activityMapper.toCalculatedDto(activity, weight, request.getTime());
     }
 
     @Override
@@ -151,5 +154,24 @@ public class ActivityServiceImpl implements ActivityService {
 
     private User findUser(int userId) {
         return repositoryHelper.find(userRepository, User.class, userId);
+    }
+
+
+    private BigDecimal resolveWeightForCalculation(CalculateActivityCaloriesRequestDto request) {
+        if (request.getWeight() != null) {
+            return request.getWeight();
+        }
+
+        int userId = AuthorizationUtil.getUserId();
+        User user = findUser(userId);
+
+        if (user.getWeight() != null) {
+            return user.getWeight();
+        }
+
+        throw new WeightRequiredException(
+                "Weight is required for calorie calculation. " +
+                        "Please provide it in the request or set it in your profile."
+        );
     }
 }

@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("test")
 @SpringBootTest
 @Import(TestConfig.class)
-public class UserTest extends MySqlRedisContainers {
+public class UserHealthRelatedInfoTest extends MySqlRedisContainers {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
 

@@ -17,7 +17,7 @@ INSERT INTO role (name) VALUES
 INSERT INTO user (activity_level, birthday, email, gender, goal, height, password, username, weight)
 VALUES
     ('MODERATELY_ACTIVE', '1990-05-15', 'john.doe@example.com', 'MALE', 'LOSE_WEIGHT', 180.0, '$2a$10$GzZ3UQwD4YkHxMqX6jBmKuVWJvAe9N7sXtYh1r5nF1I3dP7p6L2', 'john_doe', 75.5),
-    ('SEDENTARY', '1985-08-22', 'jane.smith@example.com', 'FEMALE', 'MAINTAIN_WEIGHT', 165.0, '$2a$10$GzZ3UQwD4YkHxMqX6jBmKuVWJvAe9N7sXtYh1r5nF1I3dP7p6L2', 'jane_smith', 62.3);
+    (null, '1985-08-22', 'jane.smith@example.com', 'FEMALE', null, null, '$2a$10$GzZ3UQwD4YkHxMqX6jBmKuVWJvAe9N7sXtYh1r5nF1I3dP7p6L2', 'jane_smith', null);
 
 INSERT INTO user_roles (users_id, roles_id) VALUES
     (1, 1),
