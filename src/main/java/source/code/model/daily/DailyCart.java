@@ -48,4 +48,11 @@ public class DailyCart {
         dailyCart.setUser(user);
         return dailyCart;
     }
+
+    public static DailyCart of(User user, LocalDate date) {
+        DailyCart dailyCart = new DailyCart();
+        dailyCart.setDate(date);
+        dailyCart.setUser(user);
+        return dailyCart;
+    }
 }
