@@ -9,5 +9,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@authorizationUtil.isOwnerOrAdmin(#id)")
-public @interface IsOwnerOrAdmin {}
+@PreAuthorize("@authAnnotationServiceImpl.isDailyCartOwner(#dailyActivityItemId)")
+public @interface DailyCartOwner {
+}

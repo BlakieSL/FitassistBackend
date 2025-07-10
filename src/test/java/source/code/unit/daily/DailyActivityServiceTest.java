@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import source.code.dto.request.activity.DailyActivitiesGetDto;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
 import source.code.dto.response.daily.DailyActivitiesResponseDto;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
@@ -320,7 +321,8 @@ public class DailyActivityServiceTest {
                 user.getWeight())
         ).thenReturn(calculatedResponseDto);
 
-        DailyActivitiesResponseDto result = dailyActivityService.getActivitiesFromDailyCart();
+        DailyActivitiesResponseDto result = dailyActivityService
+                .getActivitiesFromDailyCart(new DailyActivitiesGetDto(LocalDate.now()));
 
         assertEquals(1, result.getActivities().size());
         assertEquals(100, result.getTotalCaloriesBurned());
@@ -338,7 +340,8 @@ public class DailyActivityServiceTest {
         when(dailyCartRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.empty());
         when(dailyCartRepository.save(any(DailyCart.class))).thenReturn(newDailyActivity);
 
-        DailyActivitiesResponseDto result = dailyActivityService.getActivitiesFromDailyCart();
+        DailyActivitiesResponseDto result = dailyActivityService
+                .getActivitiesFromDailyCart(new DailyActivitiesGetDto(LocalDate.now()));
 
         assertTrue(result.getActivities().isEmpty());
         assertEquals(0, result.getTotalCaloriesBurned());

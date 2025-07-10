@@ -5,7 +5,9 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import source.code.dto.request.activity.DailyActivitiesGetDto;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
+import source.code.dto.request.activity.DailyActivityItemUpdateDto;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.dto.response.daily.DailyActivitiesResponseDto;
 import source.code.exception.RecordNotFoundException;
@@ -25,6 +27,8 @@ import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,7 +65,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     @Transactional
     public void addActivityToDailyCart(int activityId, DailyActivityItemCreateDto dto) {
         int userId = AuthorizationUtil.getUserId();
-        DailyCart dailyCart = getOrCreateDailyCartForUser(userId);
+        DailyCart dailyCart = getOrCreateDailyCartForUser(userId, dto.getDate());
         Activity activity = repositoryHelper.find(activityRepository, Activity.class, activityId);
 
         updateOrAddDailyActivityItem(dailyCart, activity, dto.getTime());
@@ -70,36 +74,37 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 
     @Override
     @Transactional
-    public void removeActivityFromDailyCart(int activityId) {
-        int userId = AuthorizationUtil.getUserId();
-        DailyCart dailyCart = getDailyCartForUserOrThrow(userId);
-        DailyActivityItem dailyActivityItem = getDailyActivityItem(dailyCart.getId(), activityId);
-
-        dailyCart.getDailyActivityItems().remove(dailyActivityItem);
-        dailyCartRepository.save(dailyCart);
+    public void removeActivityFromDailyCart(int dailyActivityItemId) {
+        DailyActivityItem dailyActivityItem = getDailyActivityItem(dailyActivityItemId);
+        dailyActivityItemRepository.delete(dailyActivityItem);
     }
 
     @Override
     @Transactional
-    public void updateDailyActivityItem(int activityId, JsonMergePatch patch)
+    public void updateDailyActivityItem(int dailyActivityItemId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        int userId = AuthorizationUtil.getUserId();
-        DailyCart dailyCart = getDailyCartForUserOrThrow(userId);
-        DailyActivityItem dailyActivityItem = getDailyActivityItem(dailyCart.getId(), activityId);
+        DailyActivityItem dailyActivityItem = getDailyActivityItem(dailyActivityItemId);
 
-        DailyActivityItemCreateDto patchedDto = applyPatchToDailyActivityItem(dailyActivityItem, patch);
+        DailyActivityItemUpdateDto patchedDto = applyPatchToDailyActivityItem(dailyActivityItem, patch);
         validationService.validate(patchedDto);
 
         updateTime(dailyActivityItem, patchedDto.getTime());
-        dailyCartRepository.save(dailyCart);
+        dailyActivityItemRepository.save(dailyActivityItem);
     }
 
     @Override
     @Transactional
-    public DailyActivitiesResponseDto getActivitiesFromDailyCart() {
+    public DailyActivitiesResponseDto getActivitiesFromDailyCart(DailyActivitiesGetDto request) {
         int userId = AuthorizationUtil.getUserId();
-        DailyCart dailyCart = getOrCreateDailyCartForUser(userId);
+        Optional<DailyCart> dailyCartOptional = getDailyCart(userId, request.getDate());
+
+        if (dailyCartOptional.isEmpty()) {
+            return DailyActivitiesResponseDto.of(Collections.emptyList(), 0);
+        }
+
+        DailyCart dailyCart = dailyCartOptional.get();
+
         User user = dailyCart.getUser();
 
         return dailyCart.getDailyActivityItems().stream()
@@ -129,37 +134,34 @@ public class DailyActivityServiceImpl implements DailyActivityService {
                 );
     }
 
-    private DailyCart getOrCreateDailyCartForUser(int userId) {
-        return dailyCartRepository.findByUserIdAndDate(userId, LocalDate.now())
-                .orElseGet(() -> createDailyCart(userId));
-    }
-
-    private DailyCart getDailyCartForUserOrThrow(int userId) {
-        return dailyCartRepository.findByUserIdAndDate(userId, LocalDate.now())
-                .orElseThrow(() -> RecordNotFoundException.of(DailyCart.class, userId));
-    }
-
     private void updateTime(DailyActivityItem dailyActivityItem, int time) {
         dailyActivityItem.setTime(time);
     }
 
-    private DailyCart createDailyCart(int userId) {
+    private DailyCart createDailyCart(int userId, LocalDate date) {
         User user = repositoryHelper.find(userRepository, User.class, userId);
-        return dailyCartRepository.save(DailyCart.createForToday(user));
+        return dailyCartRepository.save(DailyCart.of(user, date));
     }
 
-    private DailyActivityItemCreateDto applyPatchToDailyActivityItem(
+    private DailyActivityItemUpdateDto applyPatchToDailyActivityItem(
             DailyActivityItem dailyActivityItem,
             JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        DailyActivityItemCreateDto createDto = DailyActivityItemCreateDto.of(dailyActivityItem.getTime());
-        return jsonPatchService.applyPatch(patch, createDto, DailyActivityItemCreateDto.class);
+        DailyActivityItemUpdateDto updateDto = DailyActivityItemUpdateDto.of(dailyActivityItem.getTime());
+        return jsonPatchService.applyPatch(patch, updateDto, DailyActivityItemUpdateDto.class);
     }
 
-    private DailyActivityItem getDailyActivityItem(int dailyActivityId, int activityId) {
-        return dailyActivityItemRepository.
-                findByDailyCartIdAndActivityId(dailyActivityId, activityId)
-                .orElseThrow(() -> RecordNotFoundException.of(DailyActivityItem.class, activityId));
+    private DailyActivityItem getDailyActivityItem(int dailyActivityItemId) {
+        return repositoryHelper.find(dailyActivityItemRepository, DailyActivityItem.class, dailyActivityItemId);
+    }
+
+    private DailyCart getOrCreateDailyCartForUser(int userId, LocalDate date) {
+        return getDailyCart(userId, date)
+                .orElseGet(() -> createDailyCart(userId, date));
+    }
+
+    private Optional<DailyCart> getDailyCart(int userId, LocalDate date) {
+        return dailyCartRepository.findByUserIdAndDate(userId, date);
     }
 }
