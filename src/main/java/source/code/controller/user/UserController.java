@@ -6,10 +6,9 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import source.code.annotation.IsOwnerOrAdmin;
+import source.code.annotation.AccountOwnerOrAdmin;
 import source.code.auth.JwtService;
 import source.code.dto.request.RefreshTokenRequestDto;
 import source.code.dto.request.user.UserCreateDto;
@@ -17,11 +16,6 @@ import source.code.dto.response.AccessTokenResponseDto;
 import source.code.dto.response.user.UserResponseDto;
 import source.code.service.declaration.user.UserService;
 import source.code.validation.ValidationGroups;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 @RestController
 @RequestMapping(path = "/api/users")
@@ -36,7 +30,7 @@ public class UserController {
         this.jwtService = jwtService;
     }
 
-    @IsOwnerOrAdmin
+    @AccountOwnerOrAdmin
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> getUser(@PathVariable int id) {
         UserResponseDto user = userService.getUser(id);
@@ -56,7 +50,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @IsOwnerOrAdmin
+    @AccountOwnerOrAdmin
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateUser(
             @PathVariable int id,
@@ -67,7 +61,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @IsOwnerOrAdmin
+    @AccountOwnerOrAdmin
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable int id) {
         userService.deleteUser(id);

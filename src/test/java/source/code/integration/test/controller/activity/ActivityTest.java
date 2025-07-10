@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.jdbc.SqlMergeMode;
@@ -22,6 +23,7 @@ import source.code.helper.Enum.filter.FilterDataOption;
 import source.code.helper.Enum.filter.FilterOperation;
 import source.code.integration.config.TestConfig;
 import source.code.integration.containers.MySqlRedisContainers;
+import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
 import java.math.BigDecimal;
@@ -32,20 +34,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SqlGroup({
-        @Sql(scripts = {
-                "classpath:activity/schema/drop-schema.sql",
-                "classpath:activity/schema/create-schema.sql",
-        }),
-        @Sql(scripts = {
-                "classpath:activity/schema/drop-schema.sql",
-        }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
-})
-@SqlMergeMode(value = SqlMergeMode.MergeMode.MERGE)
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-@SpringBootTest
-@Import(TestConfig.class)
+@TestSetup
+@TestPropertySource(properties = "schema.name=activity")
 public class ActivityTest extends MySqlRedisContainers {
     @Autowired
     private MockMvc mockMvc;

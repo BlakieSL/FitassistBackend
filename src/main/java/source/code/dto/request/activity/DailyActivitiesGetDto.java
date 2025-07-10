@@ -2,7 +2,6 @@ package source.code.dto.request.activity;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,13 +11,9 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@AllArgsConstructor(staticName = "of")
+@AllArgsConstructor
 @NoArgsConstructor
-public class DailyActivityItemCreateDto {
-    @NotNull
-    @Positive
-    private int time;
-
+public class DailyActivitiesGetDto {
     @NotNull
     @PastOrPresent
     private LocalDate date;

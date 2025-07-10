@@ -27,7 +27,8 @@ INSERT INTO user_roles (users_id, roles_id) VALUES
 INSERT INTO daily_cart (date, user_id) VALUES
     ('2023-10-05', 1),
     ('2023-10-04', 1),
-    ('2023-10-05', 2);
+    ('2023-10-05', 2),
+    ('2023-10-06', 1);
 
 INSERT INTO daily_cart_activity (time, activity_id, daily_cart_id) VALUES
     (30, 1, 1),

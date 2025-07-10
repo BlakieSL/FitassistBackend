@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.helper.Enum.model.TextType;
 import source.code.helper.user.AuthorizationUtil;
+import source.code.model.daily.DailyActivityItem;
 import source.code.model.thread.Comment;
 import source.code.model.complaint.CommentComplaint;
 import source.code.model.thread.ForumThread;
@@ -34,6 +35,7 @@ public class AuthAnnotationServiceImpl {
     private final WorkoutSetGroupRepository workoutSetGroupRepository;
     private final CommentComplaintRepository commentComplaintRepository;
     private final ThreadComplaintRepository threadComplaintRepository;
+    private final DailyActivityItemRepository dailyActivityItemRepository;
 
     public AuthAnnotationServiceImpl(CommentRepository commentRepository,
                                      RepositoryHelper repositoryHelper,
@@ -44,7 +46,7 @@ public class AuthAnnotationServiceImpl {
                                      RecipeInstructionRepository recipeInstructionRepository,
                                      PlanInstructionRepository planInstructionRepository,
                                      WorkoutRepository workoutRepository,
-                                     WorkoutSetRepository workoutSetRepository, WorkoutSetGroupRepository workoutSetGroupRepository, CommentComplaintRepository commentComplaintRepository, ThreadComplaintRepository threadComplaintRepository) {
+                                     WorkoutSetRepository workoutSetRepository, WorkoutSetGroupRepository workoutSetGroupRepository, CommentComplaintRepository commentComplaintRepository, ThreadComplaintRepository threadComplaintRepository, DailyActivityItemRepository dailyActivityItemRepository) {
         this.commentRepository = commentRepository;
         this.repositoryHelper = repositoryHelper;
         this.forumThreadRepository = forumThreadRepository;
@@ -58,6 +60,7 @@ public class AuthAnnotationServiceImpl {
         this.workoutSetGroupRepository = workoutSetGroupRepository;
         this.commentComplaintRepository = commentComplaintRepository;
         this.threadComplaintRepository = threadComplaintRepository;
+        this.dailyActivityItemRepository = dailyActivityItemRepository;
     }
 
     public boolean isCommentOwnerOrAdmin(int commentId)  {
@@ -138,6 +141,13 @@ public class AuthAnnotationServiceImpl {
                 .getPlan()
                 .getUser()
                 .getId());
+    }
+
+    public boolean isDailyCartOwner(int dailyActivityItemId) {
+        DailyActivityItem dailyActivityItem = repositoryHelper
+                .find(dailyActivityItemRepository, DailyActivityItem.class, dailyActivityItemId);
+
+        return AuthorizationUtil.isOwnerOrAdmin(dailyActivityItem.getDailyCart().getUser().getId());
     }
 
     private Integer findOwnerIdByParentTypeAndId(MediaConnectedEntity parentType, int parentId) {
