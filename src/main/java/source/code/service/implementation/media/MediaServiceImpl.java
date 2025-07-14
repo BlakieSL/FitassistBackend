@@ -1,6 +1,7 @@
 package source.code.service.implementation.media;
 
 import jakarta.transaction.Transactional;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import source.code.dto.request.media.MediaCreateDto;

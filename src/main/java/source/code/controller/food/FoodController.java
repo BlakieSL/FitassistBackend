@@ -7,12 +7,12 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import source.code.annotation.AdminOnly;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.food.CalculateFoodMacrosRequestDto;
 import source.code.dto.request.food.FoodCreateDto;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.food.FoodResponseDto;
-import source.code.annotation.AdminOnly;
 import source.code.service.declaration.food.FoodService;
 
 import java.util.List;

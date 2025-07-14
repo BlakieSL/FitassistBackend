@@ -1,6 +1,5 @@
 package source.code.event.events.Recipe;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 import source.code.model.recipe.Recipe;

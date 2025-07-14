@@ -1,6 +1,5 @@
 package source.code.integration.utils;
 
-import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import source.code.auth.CustomAuthenticationToken;
