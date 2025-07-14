@@ -14,7 +14,6 @@ import source.code.helper.Enum.model.ComplaintSubClass;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.complaint.ComplaintMapper;
 import source.code.model.complaint.CommentComplaint;
-import source.code.model.complaint.ComplaintBase;
 import source.code.model.complaint.ComplaintStatus;
 import source.code.model.complaint.ThreadComplaint;
 import source.code.repository.CommentComplaintRepository;

@@ -1,7 +1,6 @@
 package source.code.helper.user;
 
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import source.code.auth.CustomAuthenticationToken;
 
 import java.util.Optional;

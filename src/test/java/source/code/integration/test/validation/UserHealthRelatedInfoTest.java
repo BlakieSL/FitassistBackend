@@ -1,6 +1,9 @@
 package source.code.integration.test.validation;
 
-import jakarta.validation.*;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,7 +14,7 @@ import source.code.helper.Enum.model.user.ActivityLevel;
 import source.code.helper.Enum.model.user.Gender;
 import source.code.helper.Enum.model.user.Goal;
 import source.code.integration.config.TestConfig;
-import source.code.integration.containers.MySqlRedisContainers;
+import source.code.integration.containers.MySqlRedisAwsContainers;
 import source.code.model.user.User;
 
 import java.math.BigDecimal;
@@ -26,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("test")
 @SpringBootTest
 @Import(TestConfig.class)
-public class UserHealthRelatedInfoTest extends MySqlRedisContainers {
+public class UserHealthRelatedInfoTest extends MySqlRedisAwsContainers {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
 

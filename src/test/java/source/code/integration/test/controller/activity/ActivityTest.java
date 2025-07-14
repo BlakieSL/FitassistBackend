@@ -4,31 +4,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlGroup;
-import org.springframework.test.context.jdbc.SqlMergeMode;
 import org.springframework.test.web.servlet.MockMvc;
-
 import source.code.dto.pojo.FilterCriteria;
 import source.code.dto.request.activity.ActivityCreateDto;
 import source.code.dto.request.activity.CalculateActivityCaloriesRequestDto;
 import source.code.dto.request.filter.FilterDto;
 import source.code.helper.Enum.filter.FilterDataOption;
 import source.code.helper.Enum.filter.FilterOperation;
-import source.code.integration.config.TestConfig;
-import source.code.integration.containers.MySqlRedisContainers;
+import source.code.integration.config.TestAwsConfig;
+import source.code.integration.containers.AwsS3ContainerInitializer;
+import source.code.integration.containers.MySqlContainerInitializer;
+import source.code.integration.containers.RedisContainerInitializer;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
 import java.math.BigDecimal;
 import java.util.List;
-
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -36,7 +31,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @TestSetup
 @TestPropertySource(properties = "schema.name=activity")
-public class ActivityTest extends MySqlRedisContainers {
+@ContextConfiguration(initializers = {MySqlContainerInitializer.class, RedisContainerInitializer.class, AwsS3ContainerInitializer.class})
+public class ActivityTest {
+
     @Autowired
     private MockMvc mockMvc;
 

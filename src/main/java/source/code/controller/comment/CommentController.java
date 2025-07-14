@@ -7,9 +7,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import source.code.annotation.CommentOwnerOrAdmin;
 import source.code.dto.request.comment.CommentCreateDto;
 import source.code.dto.response.comment.CommentResponseDto;
-import source.code.annotation.CommentOwnerOrAdmin;
 import source.code.service.declaration.comment.CommentService;
 
 import java.util.List;

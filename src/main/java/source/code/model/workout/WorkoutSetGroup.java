@@ -1,13 +1,11 @@
 package source.code.model.workout;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.model.exercise.Exercise;
 
 import java.util.HashSet;
 import java.util.Set;

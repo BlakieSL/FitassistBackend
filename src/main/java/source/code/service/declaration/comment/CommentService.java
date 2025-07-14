@@ -6,7 +6,6 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.request.comment.CommentCreateDto;
 import source.code.dto.response.comment.CommentResponseDto;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 public interface CommentService {

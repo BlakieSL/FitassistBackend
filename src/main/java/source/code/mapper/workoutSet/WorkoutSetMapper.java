@@ -6,11 +6,9 @@ import source.code.dto.request.workoutSet.WorkoutSetCreateDto;
 import source.code.dto.request.workoutSet.WorkoutSetUpdateDto;
 import source.code.dto.response.workoutSet.WorkoutSetResponseDto;
 import source.code.model.exercise.Exercise;
-import source.code.model.workout.Workout;
 import source.code.model.workout.WorkoutSet;
 import source.code.model.workout.WorkoutSetGroup;
 import source.code.repository.ExerciseRepository;
-import source.code.repository.WorkoutRepository;
 import source.code.repository.WorkoutSetGroupRepository;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
