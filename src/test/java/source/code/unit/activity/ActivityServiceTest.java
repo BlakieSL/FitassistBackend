@@ -252,10 +252,24 @@ public class ActivityServiceTest {
     }
 
     @Test
-    void calculateCaloriesBurned_shouldCalculateCaloriesForActivity() {
+    void calculateCaloriesBurned_shouldCalculateCaloriesForActivityWeightAlreadySaved() {
+        user.setWeight(BigDecimal.valueOf(80));
+        when(repositoryHelper.find(activityRepository, Activity.class, activityId)).thenReturn(activity);
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-
         when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
+        when(activityMapper.toCalculatedDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime()))
+                .thenReturn(calculatedResponseDto);
+
+        ActivityCalculatedResponseDto result = activityService
+                .calculateCaloriesBurned(activityId, calculateRequestDto);
+
+        verify(activityMapper).toCalculatedDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime());
+        assertEquals(calculatedResponseDto, result);
+    }
+
+    @Test
+    void calculateCaloriesBurned_shouldCalculateCaloriesForActivityWeightInRequest() {
+        calculateRequestDto.setWeight(BigDecimal.valueOf(80));
         when(repositoryHelper.find(activityRepository, Activity.class, activityId)).thenReturn(activity);
         when(activityMapper.toCalculatedDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime()))
                 .thenReturn(calculatedResponseDto);
@@ -268,21 +282,22 @@ public class ActivityServiceTest {
     }
 
     @Test
-    void calculateCaloriesBurned_shouldNotProceedWhenUserNotFound() {
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(repositoryHelper.find(userRepository, User.class, userId))
-                .thenThrow(RecordNotFoundException.of(User.class, userId));
+    void calculateCaloriesBurned_shouldCalculateCaloriesForActivityUsingWeightInRequestEvenIfAlreadySaved() {
+        user.setWeight(BigDecimal.valueOf(80));
+        calculateRequestDto.setWeight(BigDecimal.valueOf(80));
+        when(repositoryHelper.find(activityRepository, Activity.class, activityId)).thenReturn(activity);
+        when(activityMapper.toCalculatedDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime()))
+                .thenReturn(calculatedResponseDto);
 
-        assertThrows(RecordNotFoundException.class, () -> activityService
-                .calculateCaloriesBurned(activityId, calculateRequestDto));
+        ActivityCalculatedResponseDto result = activityService
+                .calculateCaloriesBurned(activityId, calculateRequestDto);
 
-        verifyNoInteractions(activityMapper);;
+        verify(activityMapper).toCalculatedDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime());
+        assertEquals(calculatedResponseDto, result);
     }
 
     @Test
     void calculateCaloriesBurned_shouldNotProceedWhenActivityNotFound() {
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
         when(repositoryHelper.find(activityRepository, Activity.class, activityId))
                 .thenThrow(RecordNotFoundException.of(Activity.class, activityId));
 
