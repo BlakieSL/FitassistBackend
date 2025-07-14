@@ -6,7 +6,6 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.request.forumThread.ForumThreadCreateDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 public interface ForumThreadService {

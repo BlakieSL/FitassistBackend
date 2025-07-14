@@ -6,15 +6,13 @@ import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.helper.Enum.model.LikesAndSaves;
 import source.code.helper.Enum.model.field.PlanField;
-import source.code.model.exercise.Exercise;
 import source.code.model.exercise.Equipment;
+import source.code.model.exercise.Exercise;
 import source.code.model.plan.Plan;
 import source.code.model.plan.PlanCategoryAssociation;
 import source.code.model.workout.Workout;
 import source.code.model.workout.WorkoutSet;
 import source.code.model.workout.WorkoutSetGroup;
-
-import java.util.Map;
 
 public class PlanSpecification implements Specification<Plan> {
     private final FilterCriteria criteria;

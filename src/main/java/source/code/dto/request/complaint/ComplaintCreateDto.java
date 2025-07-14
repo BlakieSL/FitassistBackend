@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.helper.Enum.model.ComplaintSubClass;
-import source.code.model.complaint.ComplaintBase;
 import source.code.model.complaint.ComplaintReason;
 
 @Getter

@@ -8,8 +8,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.exception.InvalidFilterKeyException;
-import source.code.helper.Enum.model.field.ActivityField;
 import source.code.helper.Enum.model.LikesAndSaves;
+import source.code.helper.Enum.model.field.ActivityField;
 import source.code.model.activity.Activity;
 
 public class ActivitySpecification implements Specification<Activity> {

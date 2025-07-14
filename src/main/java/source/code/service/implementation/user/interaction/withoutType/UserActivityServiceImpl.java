@@ -13,7 +13,6 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
 import java.util.List;
-import java.util.function.Function;
 
 @Service("userActivityService")
 public class UserActivityServiceImpl

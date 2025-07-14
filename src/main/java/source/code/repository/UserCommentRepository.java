@@ -1,7 +1,6 @@
 package source.code.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.UserComment;
 

@@ -7,14 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 import source.code.dto.request.activity.DailyActivitiesGetDto;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
 import source.code.dto.request.activity.DailyActivityItemUpdateDto;
-import source.code.integration.containers.MySqlRedisContainers;
+import source.code.integration.containers.MySqlRedisAwsContainers;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
-
 
 import java.time.LocalDate;
 
@@ -24,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @TestSetup
 @TestPropertySource(properties = "schema.name=activity")
-public class DailyActivityTest extends MySqlRedisContainers {
+public class DailyActivityTest extends MySqlRedisAwsContainers {
     @Autowired
     private MockMvc mockMvc;
 
