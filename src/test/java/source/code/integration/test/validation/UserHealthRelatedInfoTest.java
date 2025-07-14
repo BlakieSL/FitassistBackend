@@ -65,7 +65,7 @@ public class UserHealthRelatedInfoTest extends MySqlRedisContainers {
                 .anyMatch(v ->
                         v.getConstraintDescriptor().getAnnotation()
                                 .annotationType().getSimpleName()
-                                .equals("HealthInformationShouldBeFullDomain"));
+                                .equals("HealthInfoShouldBeFullDomain"));
 
         assertTrue(healthInfoErrorFound);
     }

@@ -37,3 +37,4 @@ out/
 .vscode/
 
 .fastRequest
+/src/main/resources/lucene-index/
