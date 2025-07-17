@@ -1,5 +1,6 @@
 package source.code.mapper.activity;
 
+import lombok.Setter;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.activity.ActivityCreateDto;
@@ -15,6 +16,7 @@ import source.code.service.declaration.helpers.RepositoryHelper;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+
 @Mapper(componentModel = "spring")
 public abstract class  ActivityMapper {
     @Autowired
@@ -22,7 +24,6 @@ public abstract class  ActivityMapper {
 
     @Autowired
     private RepositoryHelper repositoryHelper;
-
     @Autowired
     private CalculationsService calculationsService;
 

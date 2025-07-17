@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,12 +16,14 @@ import source.code.dto.request.activity.CalculateActivityCaloriesRequestDto;
 import source.code.dto.request.filter.FilterDto;
 import source.code.helper.Enum.filter.FilterDataOption;
 import source.code.helper.Enum.filter.FilterOperation;
-import source.code.integration.config.TestAwsConfig;
-import source.code.integration.containers.AwsS3ContainerInitializer;
+import source.code.integration.config.MockAwsS3Config;
+import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
+import source.code.integration.containers.MySqlRedisAwsContainers;
 import source.code.integration.containers.RedisContainerInitializer;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
+import source.code.repository.ActivityRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -30,9 +33,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestSetup
+@Import({MockAwsS3Config.class, MockRedisConfig.class})
 @TestPropertySource(properties = "schema.name=activity")
-@ContextConfiguration(initializers = {MySqlContainerInitializer.class, RedisContainerInitializer.class, AwsS3ContainerInitializer.class})
-public class ActivityTest {
+@ContextConfiguration(initializers = {MySqlContainerInitializer.class})
+public class ActivityTest  {
 
     @Autowired
     private MockMvc mockMvc;
