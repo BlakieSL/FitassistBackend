@@ -1,52 +1,86 @@
+-- Insert data for independent tables first
 INSERT INTO food_category (name) VALUES
-                                     ('FRUIT'),
-                                     ('VEGETABLE'),
-                                     ('GRAIN'),
-                                     ('MEAT'),
-                                     ('FISH'),
-                                     ('DAIRY'),
-                                     ('SEED'),
-                                     ('SPICE'),
-                                     ('OIL'),
-                                     ('BEVERAGE');
+                                     ('Fruits'), ('Vegetables'), ('Grains'), ('Proteins'), ('Dairy');
+
+INSERT INTO activity_category (name) VALUES
+                                         ('Cardio'), ('Strength'), ('Flexibility'), ('Balance'), ('Sports');
+
+INSERT INTO plan_type (name) VALUES
+                                 ('Weight Loss'), ('Muscle Gain'), ('Maintenance'), ('Athletic'), ('Rehabilitation');
+
+INSERT INTO plan_category (name) VALUES
+                                     ('Beginner'), ('Intermediate'), ('Advanced'), ('Short-Term'), ('Long-Term');
+
+INSERT INTO recipe_category (name) VALUES
+                                       ('Breakfast'), ('Lunch'), ('Dinner'), ('Snack'), ('Dessert');
+
+INSERT INTO equipment (name) VALUES
+                                 ('Dumbbells'), ('Resistance Bands'), ('Kettlebells'), ('Barbell'), ('Medicine Ball');
+
+INSERT INTO expertise_level (name) VALUES
+                                       ('Novice'), ('Beginner'), ('Intermediate'), ('Advanced'), ('Expert');
+
+INSERT INTO force_type (name) VALUES
+                                  ('Push'), ('Pull'), ('Static'), ('Dynamic'), ('Rotational');
+
+INSERT INTO mechanics_type (name) VALUES
+                                      ('Compound'), ('Isolation'), ('Plyometric'), ('Isometric'), ('Ballistic');
+
+INSERT INTO target_muscle (name) VALUES
+                                     ('Chest'), ('Back'), ('Legs'), ('Arms'), ('Core');
+
+INSERT INTO user (username, password, email) VALUES
+                                                 ('user1', 'pass1', 'user1@example.com'),
+                                                 ('user2', 'pass2', 'user2@example.com'),
+                                                 ('user3', 'pass3', 'user3@example.com'),
+                                                 ('user4', 'pass4', 'user4@example.com'),
+                                                 ('user5', 'pass5', 'user5@example.com');
 
 INSERT INTO food (name, calories, protein, fat, carbohydrates, food_category_id) VALUES
-                                                                                     ('Apple', 52.00, 0.30, 0.20, 13.80, 1),
-                                                                                     ('Banana', 89.00, 1.10, 0.30, 22.80, 1),
-                                                                                     ('Orange', 47.00, 0.90, 0.10, 11.80, 1);
+                                                                                     ('Apple', 52, 0.3, 0.2, 14, 1),
+                                                                                     ('Carrot', 41, 0.9, 0.2, 10, 2),
+                                                                                     ('Oats', 389, 17, 7, 66, 3),
+                                                                                     ('Chicken', 165, 31, 3.6, 0, 4),
+                                                                                     ('Yogurt', 59, 10, 0.4, 3.6, 5);
 
-INSERT INTO food (name, calories, protein, fat, carbohydrates, food_category_id) VALUES
-                                                                                     ('Carrot', 41.00, 0.90, 0.20, 9.60, 2),
-                                                                                     ('Broccoli', 34.00, 2.80, 0.40, 6.60, 2);
+INSERT INTO activity (met, name, activity_category_id) VALUES
+                                                           (7.0, 'Running', 1),
+                                                           (5.0, 'Weightlifting', 2),
+                                                           (3.0, 'Yoga', 3),
+                                                           (2.5, 'Tai Chi', 4),
+                                                           (8.0, 'Basketball', 5);
 
-INSERT INTO food (name, calories, protein, fat, carbohydrates, food_category_id) VALUES
-                                                                                     ('Brown Rice', 111.00, 2.60, 0.90, 23.00, 3),
-                                                                                     ('Quinoa', 120.00, 4.40, 1.90, 21.30, 3);
+INSERT INTO plan (description, name, plan_type_id, user_id) VALUES
+                                                                ('Weight loss program', 'Slim Down', 1, 1),
+                                                                ('Muscle building plan', 'Gain Muscle', 2, 2),
+                                                                ('Maintain current fitness', 'Stay Fit', 3, 3),
+                                                                ('Athletic performance', 'Peak Performance', 4, 4),
+                                                                ('Injury recovery', 'Recovery Plan', 5, 5);
 
-INSERT INTO food (name, calories, protein, fat, carbohydrates, food_category_id) VALUES
-                                                                                     ('Chicken Breast', 165.00, 31.00, 3.60, 0.00, 4),
-                                                                                     ('Ground Beef', 250.00, 26.00, 17.00, 0.00, 4);
+INSERT INTO recipe (description, name, user_id) VALUES
+                                                    ('Healthy breakfast', 'Morning Oats', 1),
+                                                    ('Quick lunch', 'Veggie Wrap', 2),
+                                                    ('Family dinner', 'Chicken Rice', 3),
+                                                    ('Afternoon snack', 'Yogurt Bowl', 4),
+                                                    ('Sweet treat', 'Fruit Parfait', 5);
 
-INSERT INTO food (name, calories, protein, fat, carbohydrates, food_category_id) VALUES
-                                                                                     ('Salmon', 208.00, 19.90, 13.60, 0.00, 5),
-                                                                                     ('Tuna', 132.00, 27.50, 1.40, 0.00, 5);
+INSERT INTO exercise (description, name, equipment_id, expertise_level_id, force_type_id, mechanics_type_id) VALUES
+                                                                                                                 ('Chest press', 'Bench Press', 4, 3, 1, 1),
+                                                                                                                 ('Back exercise', 'Pull-ups', 1, 2, 2, 1),
+                                                                                                                 ('Leg workout', 'Squats', 4, 2, 3, 1),
+                                                                                                                 ('Arm exercise', 'Bicep Curls', 1, 1, 2, 2),
+                                                                                                                 ('Core workout', 'Plank', 5, 1, 3, 4);
 
-INSERT INTO food (name, calories, protein, fat, carbohydrates, food_category_id) VALUES
-                                                                                     ('Milk', 42.00, 3.20, 1.00, 4.80, 6),
-                                                                                     ('Greek Yogurt', 59.00, 10.00, 0.30, 3.60, 6);
+-- Insert association tables
+INSERT INTO plan_category_association (plan_id, plan_category_id) VALUES
+                                                                      (1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
 
-INSERT INTO food (name, calories, protein, fat, carbohydrates, food_category_id) VALUES
-                                                                                     ('Chia Seeds', 486.00, 16.50, 30.70, 42.10, 7),
-                                                                                     ('Flax Seeds', 534.00, 18.30, 42.20, 28.90, 7);
+INSERT INTO recipe_category_association (recipe_id, recipe_category_id) VALUES
+                                                                            (1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
 
-INSERT INTO food (name, calories, protein, fat, carbohydrates, food_category_id) VALUES
-                                                                                     ('Cinnamon', 247.00, 0.40, 1.20, 80.60, 8),
-                                                                                     ('Turmeric', 312.00, 9.68, 3.25, 64.90, 8);
-
-INSERT INTO food (name, calories, protein, fat, carbohydrates, food_category_id) VALUES
-                                                                                     ('Olive Oil', 884.00, 0.00, 100.00, 0.00, 9),
-                                                                                     ('Coconut Oil', 862.00, 0.00, 100.00, 0.00, 9);
-
-INSERT INTO food (name, calories, protein, fat, carbohydrates, food_category_id) VALUES
-                                                                                     ('Green Tea', 0.00, 0.00, 0.00, 0.00, 10),
-                                                                                     ('Orange Juice', 45.00, 0.50, 0.20, 10.40, 10);
+INSERT INTO exercise_target_muscle (priority, exercise_id, target_muscle_id) VALUES
+                                                                                 (1.0, 1, 1),
+                                                                                 (1.0, 2, 2),
+                                                                                 (1.0, 3, 3),
+                                                                                 (1.0, 4, 4),
+                                                                                 (1.0, 5, 5);
