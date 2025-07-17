@@ -14,5 +14,7 @@ spring:
 s3:
   bucket:
     name: ${S3_BUCKET_NAME}
+redis-flag:
+  enabled: false
 lucene:
   enabled: false

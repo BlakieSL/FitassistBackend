@@ -7,6 +7,7 @@ spring:
       host: localhost
       port: 6379
 
+
   datasource:
     url: jdbc:mysql://localhost:3308/main-db
     username: root
@@ -41,6 +42,9 @@ spring:
         secret-key: ${AWS_SECRET_ACCESS_KEY}
       region:
         static: eu-central-1
+
+redis-flag:
+  enabled: true
 
 s3:
   bucket:
