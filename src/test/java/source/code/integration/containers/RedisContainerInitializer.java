@@ -4,7 +4,9 @@ import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
+@Testcontainers
 public class RedisContainerInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
     static GenericContainer<?> redisContainer = new GenericContainer<>("redis:latest")
             .withExposedPorts(6379);

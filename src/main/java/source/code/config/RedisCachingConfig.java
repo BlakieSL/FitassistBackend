@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -21,10 +22,12 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+
 @EnableAutoConfiguration(exclude = RedisRepositoriesAutoConfiguration.class)
 @Configuration
 @EnableCaching
 public class RedisCachingConfig {
+    @ConditionalOnProperty(name = "redis-flag.enabled", havingValue = "true")
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         ObjectMapper javaTimeMapper = new ObjectMapper();

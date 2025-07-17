@@ -4,13 +4,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import source.code.dto.request.activity.DailyActivitiesGetDto;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
 import source.code.dto.request.activity.DailyActivityItemUpdateDto;
+import source.code.integration.config.MockAwsS3Config;
+import source.code.integration.config.MockRedisConfig;
+import source.code.integration.containers.MySqlContainerInitializer;
 import source.code.integration.containers.MySqlRedisAwsContainers;
+import source.code.integration.containers.RedisContainerInitializer;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
@@ -21,8 +27,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestSetup
+@Import({MockAwsS3Config.class, MockRedisConfig.class})
 @TestPropertySource(properties = "schema.name=activity")
-public class DailyActivityTest extends MySqlRedisAwsContainers {
+@ContextConfiguration(initializers = {MySqlContainerInitializer.class})
+public class DailyActivityTest {
     @Autowired
     private MockMvc mockMvc;
 

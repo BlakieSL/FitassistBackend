@@ -4,6 +4,7 @@ import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.testcontainers.containers.localstack.LocalStackContainer;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -12,7 +13,9 @@ import software.amazon.awssdk.services.s3.S3Client;
 
 import java.net.URI;
 
+@Testcontainers
 public class AwsS3ContainerInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+
     static LocalStackContainer localStack = new LocalStackContainer(
             DockerImageName.parse("localstack/localstack:4.4"))
             .withServices(LocalStackContainer.Service.S3);

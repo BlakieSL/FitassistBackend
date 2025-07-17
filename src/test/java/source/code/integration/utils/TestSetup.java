@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlMergeMode;
-import source.code.integration.config.TestConfig;
+import source.code.integration.config.MockRateLimitingConfig;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -19,7 +19,6 @@ import java.lang.annotation.Target;
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @SpringBootTest
-@Import(TestConfig.class)
 @Sql(scripts = {
         "classpath:${schema.name}/schema/drop-schema.sql",
         "classpath:${schema.name}/schema/create-schema.sql"
