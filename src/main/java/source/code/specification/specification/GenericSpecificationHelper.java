@@ -6,6 +6,8 @@ import source.code.exception.InvalidFilterOperationException;
 import source.code.exception.InvalidFilterValueException;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GenericSpecificationHelper {
 
@@ -62,24 +64,23 @@ public class GenericSpecificationHelper {
             String targetTypeFieldName,
             Object typeValue
     ) {
-        Join<T, Object> userEntityJoin = root.join(joinProperty, JoinType.LEFT);
+        Subquery<Long> subquery = builder.createQuery(Long.class).subquery(Long.class);
+        Root<T> subRoot = subquery.from(root.getModel().getJavaType());
 
-        Predicate predicate = builder.conjunction();
-        if (typeValue != null) {
-            Predicate typeFilter = builder.or(
-                    builder.isNull(userEntityJoin.get(targetTypeFieldName)),
-                    builder.equal(userEntityJoin.get(targetTypeFieldName), typeValue)
-            );
-            predicate = builder.and(predicate, typeFilter);
+        Join<T, Object> subJoin = subRoot.join(joinProperty, JoinType.LEFT);
+
+        List<Predicate> subqueryPredicates = new ArrayList<>();
+        subqueryPredicates.add(builder.equal(subRoot.get("id"), root.get("id")));
+
+        if (typeValue != null && targetTypeFieldName != null) {
+            subqueryPredicates.add(builder.equal(subJoin.get(targetTypeFieldName), typeValue));
         }
 
-        Expression<Long> countExpression = builder.coalesce(
-                builder.count(userEntityJoin.get("id")),
-                0L
-        );
+        subquery.where(subqueryPredicates.toArray(new Predicate[0]));
 
-        Predicate rangePredicate = createRangePredicate(countExpression, builder, criteria);
-        return builder.and(predicate, rangePredicate);
+        subquery.select(builder.count(subJoin));
+
+        return createRangePredicate(subquery, builder, criteria);
     }
 
     private static Predicate createRangePredicate(Expression<Long> countExpression, CriteriaBuilder builder,
