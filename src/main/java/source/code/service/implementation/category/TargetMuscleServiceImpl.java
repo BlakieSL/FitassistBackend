@@ -17,19 +17,27 @@ public class TargetMuscleServiceImpl
         extends GenericCategoryService<TargetMuscle>
         implements CategoryService {
 
+    private final TargetMuscleRepository targetMuscleRepository;
+
     protected TargetMuscleServiceImpl(ValidationService validationService,
                                       JsonPatchService jsonPatchService,
                                       CategoryCacheKeyGenerator<TargetMuscle> cacheKeyGenerator,
                                       ApplicationEventPublisher applicationEventPublisher,
                                       CacheManager cacheManager,
-                                      TargetMuscleRepository repository,
+                                      TargetMuscleRepository targetMuscleRepository,
                                       TargetMuscleMapper mapper) {
         super(validationService,
                 jsonPatchService,
                 cacheKeyGenerator,
                 applicationEventPublisher,
                 cacheManager,
-                repository,
+                targetMuscleRepository,
                 mapper);
+        this.targetMuscleRepository = targetMuscleRepository;
+    }
+
+    @Override
+    protected boolean hasAssociatedEntities(int categoryId) {
+        return targetMuscleRepository.existsByIdAndExerciseTargetMusclesIsNotEmpty(categoryId);
     }
 }

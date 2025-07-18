@@ -50,6 +50,6 @@ public class FoodCategory {
     @Size(max = MAX_NAME_LENGTH)
     private String name;
 
-    @OneToMany(mappedBy = "foodCategory", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "foodCategory")
     private final Set<Food> foods = new HashSet<>();
 }

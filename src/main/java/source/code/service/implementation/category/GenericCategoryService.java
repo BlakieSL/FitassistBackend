@@ -13,8 +13,12 @@ import source.code.dto.request.category.CategoryUpdateDto;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.event.events.Category.CategoryClearCacheEvent;
 import source.code.event.events.Category.CategoryCreateCacheEvent;
+import source.code.exception.ConflictDeletionException;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.category.BaseMapper;
+import source.code.model.exercise.TargetMuscle;
+import source.code.model.plan.PlanCategory;
+import source.code.model.recipe.RecipeCategory;
 import source.code.service.declaration.category.CategoryCacheKeyGenerator;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.ValidationService;
@@ -31,6 +35,7 @@ public abstract class GenericCategoryService<T> {
     protected final CacheManager cacheManager;
     protected final JpaRepository<T, Integer> repository;
     protected final BaseMapper<T> mapper;
+    protected abstract boolean hasAssociatedEntities(int categoryId);
 
     protected GenericCategoryService(ValidationService validationService,
                                      JsonPatchService jsonPatchService,
@@ -79,7 +84,13 @@ public abstract class GenericCategoryService<T> {
 
     @Transactional
     public void deleteCategory(int categoryId) {
-        repository.delete(find(categoryId));
+        T category = find(categoryId);
+
+        if (hasAssociatedEntities(categoryId)) {
+            throw new ConflictDeletionException("Cannot delete plan category with associated plans.");
+        }
+
+        repository.delete(category);
 
         applicationEventPublisher.publishEvent(CategoryClearCacheEvent.of(
                 this,

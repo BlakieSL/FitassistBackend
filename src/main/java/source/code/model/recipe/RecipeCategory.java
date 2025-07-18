@@ -44,6 +44,6 @@ public class RecipeCategory {
     @Size(max = NAME_MAX_LENGTH)
     private String name;
 
-    @OneToMany(mappedBy = "recipeCategory", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "recipeCategory")
     private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();
 }

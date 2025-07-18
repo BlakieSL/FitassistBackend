@@ -7,5 +7,5 @@ import source.code.model.activity.ActivityCategory;
 import java.util.Optional;
 
 public interface ActivityCategoryRepository extends JpaRepository<ActivityCategory, Integer> {
-    Optional<ActivityCategory> findByName(String name);
+    boolean existsByIdAndActivitiesIsNotEmpty(Integer id);
 }

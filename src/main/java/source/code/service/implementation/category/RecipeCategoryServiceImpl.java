@@ -16,19 +16,27 @@ public class RecipeCategoryServiceImpl
         extends GenericCategoryService<RecipeCategory>
         implements CategoryService {
 
+    private final RecipeCategoryRepository recipeCategoryRepository;
+
     protected RecipeCategoryServiceImpl(ValidationService validationService,
                                         JsonPatchService jsonPatchService,
                                         CategoryCacheKeyGenerator<RecipeCategory> cacheKeyGenerator,
                                         ApplicationEventPublisher applicationEventPublisher,
                                         CacheManager cacheManager,
-                                        RecipeCategoryRepository repository,
+                                        RecipeCategoryRepository recipeCategoryRepository,
                                         RecipeCategoryMapper mapper) {
         super(validationService,
                 jsonPatchService,
                 cacheKeyGenerator,
                 applicationEventPublisher,
                 cacheManager,
-                repository,
+                recipeCategoryRepository,
                 mapper);
+        this.recipeCategoryRepository = recipeCategoryRepository;
+    }
+
+    @Override
+    protected boolean hasAssociatedEntities(int categoryId) {
+        return recipeCategoryRepository.existsByIdAndRecipeCategoryAssociationsIsNotEmpty(categoryId);
     }
 }
