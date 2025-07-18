@@ -13,8 +13,8 @@ import org.springframework.test.context.ActiveProfiles;
 import source.code.helper.Enum.model.user.ActivityLevel;
 import source.code.helper.Enum.model.user.Gender;
 import source.code.helper.Enum.model.user.Goal;
-import source.code.integration.config.MockRateLimitingConfig;
 import source.code.integration.config.MockAwsS3Config;
+import source.code.integration.config.MockRateLimitingConfig;
 import source.code.integration.containers.MySqlRedisAwsContainers;
 import source.code.model.user.User;
 
