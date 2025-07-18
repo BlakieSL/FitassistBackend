@@ -28,6 +28,6 @@ public class TargetMuscle {
     @Size(max = NAME_MAX_LENGTH)
     private String name;
 
-    @OneToMany(mappedBy = "targetMuscle", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "targetMuscle")
     private final Set<ExerciseTargetMuscle> exerciseTargetMuscles = new HashSet<>();
 }

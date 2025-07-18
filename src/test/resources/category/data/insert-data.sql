@@ -84,3 +84,13 @@ INSERT INTO exercise_target_muscle (priority, exercise_id, target_muscle_id) VAL
                                                                                  (1.0, 3, 3),
                                                                                  (1.0, 4, 4),
                                                                                  (1.0, 5, 5);
+
+INSERT INTO food_category (name) VALUES ('Fruits1');
+
+INSERT INTO activity_category (name) VALUES ('Cardio1');
+
+INSERT INTO target_muscle (name) VALUES ('Chest1');
+
+INSERT INTO plan_category (name) VALUES ('Beginner1');
+
+INSERT INTO recipe_category (name) VALUES ('Breakfast1');

@@ -6,5 +6,5 @@ import source.code.model.recipe.RecipeCategory;
 import java.util.Optional;
 
 public interface RecipeCategoryRepository extends JpaRepository<RecipeCategory, Integer> {
-    Optional<RecipeCategory> findByName(String name);
+    boolean existsByIdAndRecipeCategoryAssociationsIsNotEmpty(Integer id);
 }
