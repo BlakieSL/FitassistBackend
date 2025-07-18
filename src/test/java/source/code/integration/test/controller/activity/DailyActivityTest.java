@@ -15,8 +15,6 @@ import source.code.dto.request.activity.DailyActivityItemUpdateDto;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
-import source.code.integration.containers.MySqlRedisAwsContainers;
-import source.code.integration.containers.RedisContainerInitializer;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 

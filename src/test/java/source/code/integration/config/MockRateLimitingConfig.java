@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import source.code.auth.RateLimitingFilter;
-import source.code.service.declaration.rateLimiter.RedissonRateLimiterService;
 
 import java.io.IOException;
 

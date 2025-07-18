@@ -1,6 +1,5 @@
 package source.code.mapper.activity;
 
-import lombok.Setter;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.activity.ActivityCreateDto;
