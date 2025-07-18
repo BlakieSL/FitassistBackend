@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS user_exercise;
+DROP TABLE IF EXISTS exercise_target_muscle;
+DROP TABLE IF EXISTS exercise;
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS expertise_level;
+DROP TABLE IF EXISTS mechanics_type;
+DROP TABLE IF EXISTS force_type;
+DROP TABLE IF EXISTS equipment;
+DROP TABLE IF EXISTS target_muscle;

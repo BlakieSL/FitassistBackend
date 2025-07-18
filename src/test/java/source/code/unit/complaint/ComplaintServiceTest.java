@@ -17,6 +17,7 @@ import source.code.model.complaint.CommentComplaint;
 import source.code.model.complaint.ComplaintStatus;
 import source.code.model.complaint.ThreadComplaint;
 import source.code.repository.CommentComplaintRepository;
+import source.code.repository.ComplaintRepository;
 import source.code.repository.ThreadComplaintRepository;
 import source.code.service.implementation.complaint.ComplaintServiceImpl;
 
@@ -32,6 +33,8 @@ public class ComplaintServiceTest {
     private static final int COMPLAINT_ID = 1;
     private static final int INVALID_COMPLAINT_ID = 999;
 
+    @Mock
+    private ComplaintRepository complaintRepository;
     @Mock
     private ComplaintMapper complaintMapper;
     @Mock
@@ -85,22 +88,23 @@ public class ComplaintServiceTest {
 
     @Test
     void resolveComplaint_shouldResolveCommentComplaint() {
-        when(commentComplaintRepository.findById(COMPLAINT_ID))
+        when(complaintRepository.findById(COMPLAINT_ID))
                 .thenReturn(Optional.of(commentComplaint));
 
         complaintService.resolveComplaint(COMPLAINT_ID);
 
         assertEquals(ComplaintStatus.RESOLVED, commentComplaint.getStatus());
-        verify(commentComplaintRepository).findById(COMPLAINT_ID);
+        verify(complaintRepository, times(1)).findById(any(Integer.class));
+        verify(commentComplaintRepository, times(1)).save(commentComplaint);
     }
 
     @Test
     void resolveComplaint_shouldThrowExceptionWhenComplaintNotFound() {
-        when(commentComplaintRepository.findById(INVALID_COMPLAINT_ID))
+        when(complaintRepository.findById(INVALID_COMPLAINT_ID))
                 .thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> complaintService
                 .resolveComplaint(INVALID_COMPLAINT_ID));
-        verify(commentComplaintRepository).findById(INVALID_COMPLAINT_ID);
+        verify(complaintRepository, times(1)).findById(INVALID_COMPLAINT_ID);
     }
 }

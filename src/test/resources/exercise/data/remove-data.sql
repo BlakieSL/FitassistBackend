@@ -1,0 +1,9 @@
+delete from user_exercise;
+delete from exercise_target_muscle;
+delete from exercise;
+delete from user;
+delete from expertise_level;
+delete from mechanics_type;
+delete from force_type;
+delete from equipment;
+delete from target_muscle;
