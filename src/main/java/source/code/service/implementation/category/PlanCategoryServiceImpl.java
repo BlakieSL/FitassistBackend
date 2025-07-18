@@ -15,19 +15,27 @@ import source.code.service.declaration.helpers.ValidationService;
 public class PlanCategoryServiceImpl
         extends GenericCategoryService<PlanCategory>
         implements CategoryService {
+    private final PlanCategoryRepository planCategoryRepository;
+
     protected PlanCategoryServiceImpl(ValidationService validationService,
                                       JsonPatchService jsonPatchService,
                                       CategoryCacheKeyGenerator<PlanCategory> cacheKeyGenerator,
                                       ApplicationEventPublisher applicationEventPublisher,
                                       CacheManager cacheManager,
-                                      PlanCategoryRepository repository,
+                                      PlanCategoryRepository planCategoryRepository,
                                       PlanCategoryMapper mapper) {
         super(validationService,
                 jsonPatchService,
                 cacheKeyGenerator,
                 applicationEventPublisher,
                 cacheManager,
-                repository,
+                planCategoryRepository,
                 mapper);
+        this.planCategoryRepository = planCategoryRepository;
+    }
+
+    @Override
+    protected boolean hasAssociatedEntities(int categoryId) {
+        return planCategoryRepository.existsByIdAndPlanCategoryAssociationsIsNotEmpty(categoryId);
     }
 }

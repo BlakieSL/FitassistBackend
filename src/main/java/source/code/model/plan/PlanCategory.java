@@ -28,6 +28,6 @@ public class PlanCategory {
     @Size(max = NAME_MAX_LENGTH)
     private String name;
 
-    @OneToMany(mappedBy = "planCategory", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "planCategory")
     private final Set<PlanCategoryAssociation> planCategoryAssociations = new HashSet<>();
 }

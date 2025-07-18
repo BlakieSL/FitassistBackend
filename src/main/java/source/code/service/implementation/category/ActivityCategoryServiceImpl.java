@@ -16,19 +16,27 @@ public class ActivityCategoryServiceImpl
         extends GenericCategoryService<ActivityCategory>
         implements CategoryService {
 
+    private final ActivityCategoryRepository activityCategoryRepository;
+
     protected ActivityCategoryServiceImpl(ValidationService validationService,
                                           JsonPatchService jsonPatchService,
                                           CategoryCacheKeyGenerator<ActivityCategory> cacheKeyGenerator,
                                           ApplicationEventPublisher applicationEventPublisher,
                                           CacheManager cacheManager,
-                                          ActivityCategoryRepository repository,
+                                          ActivityCategoryRepository activityCategoryRepository,
                                           ActivityCategoryMapper mapper) {
         super(validationService,
                 jsonPatchService,
                 cacheKeyGenerator,
                 applicationEventPublisher,
                 cacheManager,
-                repository,
+                activityCategoryRepository,
                 mapper);
+        this.activityCategoryRepository = activityCategoryRepository;
+    }
+
+    @Override
+    protected boolean hasAssociatedEntities(int categoryId) {
+        return activityCategoryRepository.existsByIdAndActivitiesIsNotEmpty(categoryId);
     }
 }
