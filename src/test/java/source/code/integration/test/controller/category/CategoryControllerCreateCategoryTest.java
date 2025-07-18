@@ -12,13 +12,12 @@ import source.code.dto.request.category.CategoryCreateDto;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
-import source.code.integration.test.controller.category.CategorySql;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestSetup
 @Import({MockAwsS3Config.class, MockRedisConfig.class})
