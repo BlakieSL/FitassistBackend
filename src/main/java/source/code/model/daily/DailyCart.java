@@ -35,12 +35,12 @@ public class DailyCart {
     @OneToMany(mappedBy = "dailyCart",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true)
-    private final List<DailyActivityItem> dailyActivityItems = new ArrayList<>();
+    private final List<DailyCartActivity> dailyCartActivities = new ArrayList<>();
 
     @OneToMany(mappedBy = "dailyCart",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true)
-    private final List<DailyFoodItem> dailyFoodItems = new ArrayList<>();
+    private final List<DailyCartFood> dailyCartFoods = new ArrayList<>();
 
     public static DailyCart createForToday(User user) {
         DailyCart dailyCart = new DailyCart();

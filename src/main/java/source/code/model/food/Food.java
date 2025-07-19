@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.helper.search.IndexedEntity;
-import source.code.model.daily.DailyFoodItem;
+import source.code.model.daily.DailyCartFood;
 import source.code.model.recipe.RecipeFood;
 import source.code.model.user.UserFood;
 
@@ -60,7 +60,7 @@ public class Food implements IndexedEntity {
     private FoodCategory foodCategory;
 
     @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
-    private final Set<DailyFoodItem> dailyFoodItems = new HashSet<>();
+    private final Set<DailyCartFood> dailyCartFoods = new HashSet<>();
 
     @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
     private final Set<RecipeFood> recipeFoods = new HashSet<>();
