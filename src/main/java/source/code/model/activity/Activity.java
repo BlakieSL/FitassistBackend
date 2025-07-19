@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.helper.search.IndexedEntity;
-import source.code.model.daily.DailyActivityItem;
+import source.code.model.daily.DailyCartActivity;
 import source.code.model.user.UserActivity;
 
 import java.math.BigDecimal;
@@ -47,7 +47,7 @@ public class Activity implements IndexedEntity {
     private ActivityCategory activityCategory;
 
     @OneToMany(mappedBy = "activity", cascade = CascadeType.REMOVE)
-    private final Set<DailyActivityItem> dailyActivityItems = new HashSet<>();
+    private final Set<DailyCartActivity> dailyCartActivities = new HashSet<>();
 
     @OneToMany(mappedBy = "activity", cascade = CascadeType.REMOVE)
     private final Set<UserActivity> userActivities = new HashSet<>();
