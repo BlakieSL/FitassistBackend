@@ -15,7 +15,7 @@ import source.code.model.activity.Activity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DailyActivityItem {
+public class DailyCartActivity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -35,15 +35,15 @@ public class DailyActivityItem {
     @JoinColumn(name = "activity_id", nullable = false)
     private Activity activity;
 
-    public static DailyActivityItem of(
+    public static DailyCartActivity of(
             Activity activity,
             DailyCart dailyCart,
             int time
     ) {
-        DailyActivityItem dailyActivityItem = new DailyActivityItem();
-        dailyActivityItem.setActivity(activity);
-        dailyActivityItem.setDailyCart(dailyCart);
-        dailyActivityItem.setTime(time);
-        return dailyActivityItem;
+        DailyCartActivity dailyCartActivity = new DailyCartActivity();
+        dailyCartActivity.setActivity(activity);
+        dailyCartActivity.setDailyCart(dailyCart);
+        dailyCartActivity.setTime(time);
+        return dailyCartActivity;
     }
 }

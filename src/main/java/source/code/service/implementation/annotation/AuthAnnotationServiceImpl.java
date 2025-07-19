@@ -6,7 +6,7 @@ import source.code.helper.Enum.model.TextType;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.model.complaint.CommentComplaint;
 import source.code.model.complaint.ThreadComplaint;
-import source.code.model.daily.DailyActivityItem;
+import source.code.model.daily.DailyCartActivity;
 import source.code.model.media.Media;
 import source.code.model.plan.Plan;
 import source.code.model.recipe.Recipe;
@@ -144,10 +144,10 @@ public class AuthAnnotationServiceImpl {
     }
 
     public boolean isDailyCartOwner(int dailyActivityItemId) {
-        DailyActivityItem dailyActivityItem = repositoryHelper
-                .find(dailyActivityItemRepository, DailyActivityItem.class, dailyActivityItemId);
+        DailyCartActivity dailyCartActivity = repositoryHelper
+                .find(dailyActivityItemRepository, DailyCartActivity.class, dailyActivityItemId);
 
-        return AuthorizationUtil.isOwnerOrAdmin(dailyActivityItem.getDailyCart().getUser().getId());
+        return AuthorizationUtil.isOwnerOrAdmin(dailyCartActivity.getDailyCart().getUser().getId());
     }
 
     private Integer findOwnerIdByParentTypeAndId(MediaConnectedEntity parentType, int parentId) {

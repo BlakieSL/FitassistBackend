@@ -12,17 +12,26 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import source.code.dto.request.food.DailyFoodItemCreateDto;
+import source.code.dto.request.activity.DailyActivitiesGetDto;
+import source.code.dto.request.activity.DailyActivityItemUpdateDto;
+import source.code.dto.request.food.DailyCartFoodCreateDto;
+import source.code.dto.request.food.DailyCartFoodGetDto;
+import source.code.dto.request.food.DailyCartFoodUpdateDto;
+import source.code.dto.response.activity.ActivityCalculatedResponseDto;
+import source.code.dto.response.daily.DailyActivitiesResponseDto;
 import source.code.dto.response.daily.DailyFoodsResponseDto;
+import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.daily.DailyFoodMapper;
+import source.code.model.activity.Activity;
 import source.code.model.daily.DailyCart;
-import source.code.model.daily.DailyFoodItem;
+import source.code.model.daily.DailyCartActivity;
+import source.code.model.daily.DailyCartFood;
 import source.code.model.food.Food;
 import source.code.model.user.User;
 import source.code.repository.DailyCartRepository;
-import source.code.repository.DailyFoodItemRepository;
+import source.code.repository.DailyCartFoodRepository;
 import source.code.repository.FoodRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
@@ -52,9 +61,9 @@ public class DailyFoodServiceTest {
     @Mock
     private RepositoryHelper repositoryHelper;
     @Mock
-    private DailyCartRepository dailyFoodRepository;
+    private DailyCartRepository dailyCartRepository;
     @Mock
-    private DailyFoodItemRepository dailyFoodItemRepository;
+    private DailyCartFoodRepository dailyCartFoodRepository;
     @Mock
     private FoodRepository foodRepository;
     @Mock
@@ -63,26 +72,26 @@ public class DailyFoodServiceTest {
     private DailyFoodServiceImpl dailyFoodService;
 
     private Food food;
-    private DailyCart dailyFood;
-    private DailyFoodItem dailyFoodItem;
-    private DailyFoodItemCreateDto createDto;
+    private DailyCart dailyCart;
+    private DailyCartFood dailyCartFood;
+    private DailyCartFoodCreateDto createDto;
     private JsonMergePatch patch;
     private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
 
     @BeforeEach
     void setUp() {
         food = new Food();
-        dailyFood = new DailyCart();
-        dailyFoodItem = new DailyFoodItem();
-        dailyFoodItem.setQuantity(BigDecimal.valueOf(0));
-        createDto = new DailyFoodItemCreateDto();
+        dailyCart = new DailyCart();
+        dailyCartFood = new DailyCartFood();
+        dailyCartFood.setQuantity(BigDecimal.valueOf(0));
+        createDto = new DailyCartFoodCreateDto();
         createDto.setQuantity(BigDecimal.valueOf(10));
         patch = mock(JsonMergePatch.class);
         mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
 
         food.setId(1);
-        dailyFood.setId(1);
-        dailyFoodItem.setId(1);
+        dailyCart.setId(1);
+        dailyCartFood.setId(1);
         createDto.setQuantity(BigDecimal.valueOf(100));
     }
 
@@ -95,90 +104,86 @@ public class DailyFoodServiceTest {
 
     @Test
     void addFoodToDailyCart_shouldUpdateExistingDailyFoodToDailyCartAmount() {
-        dailyFood.getDailyFoodItems().add(dailyFoodItem);
-
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyFoodRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyFood));
+        when(dailyCartRepository.findByUserIdAndDate(anyInt(), any()))
+                .thenReturn(Optional.of(dailyCart));
         when(repositoryHelper.find(foodRepository, Food.class, FOOD_ID)).thenReturn(food);
-        when(dailyFoodItemRepository.findByDailyCartIdAndFoodId(dailyFood.getId(), FOOD_ID))
-                .thenReturn(Optional.of(dailyFoodItem));
+        when(dailyCartFoodRepository.findByDailyCartIdAndFoodId(dailyCart.getId(), FOOD_ID))
+                .thenReturn(Optional.of(dailyCartFood));
 
         dailyFoodService.addFoodToDailyCart(FOOD_ID, createDto);
 
-        verify(dailyFoodRepository).save(dailyFood);
-        assertEquals(dailyFood.getDailyFoodItems().get(0).getQuantity(), createDto.getQuantity());
+        verify(dailyCartRepository, times(1)).save(any(DailyCart.class));
     }
 
     @Test
     void addFoodToDailyCart_shouldAddNewDailyFoodToDailyCart_whenNotFound() {
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyFoodRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyFood));
-        when(repositoryHelper.find(foodRepository, Food.class, FOOD_ID)).thenReturn(food);
-        when(dailyFoodItemRepository.findByDailyCartIdAndFoodId(dailyFood.getId(), FOOD_ID))
+        when(dailyCartRepository.findByUserIdAndDate(anyInt(), any()))
                 .thenReturn(Optional.empty());
+        when(repositoryHelper.find(foodRepository, Food.class, FOOD_ID)).thenReturn(food);
+        when(repositoryHelper.find(userRepository, User.class, USER_ID))
+                .thenReturn(new User());
+        when(dailyCartRepository.save(any()))
+                .thenReturn(dailyCart);
+        when(dailyCartFoodRepository.findByDailyCartIdAndFoodId(dailyCart.getId(), FOOD_ID))
+                .thenReturn(Optional.of(dailyCartFood));
 
         dailyFoodService.addFoodToDailyCart(FOOD_ID, createDto);
 
-        verify(dailyFoodRepository).save(dailyFood);
-        assertEquals(dailyFood.getDailyFoodItems().get(0).getQuantity(), createDto.getQuantity());
+        verify(dailyCartRepository, times(2)).save(any(DailyCart.class));
     }
 
     @Test
-    void addFoodToDailyCart_shouldCreateNewDailyFood_whenNotFound() {
+    void addFoodToDailyCart_shouldCreateNewDailyCart_whenNotFound() {
         User user = new User();
         user.setId(USER_ID);
-        DailyCart newDailyFood = DailyCart.createForToday(user);
-        newDailyFood.setId(1);
-        newDailyFood.setUser(user);
+        DailyCart newDailyCart = DailyCart.createForToday(user);
+        newDailyCart.setId(1);
+        newDailyCart.setUser(user);
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyFoodRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.empty());
+        when(dailyCartRepository.findByUserIdAndDate(eq(USER_ID), any())).thenReturn(Optional.empty());
         when(repositoryHelper.find(userRepository, User.class, USER_ID)).thenReturn(user);
-        when(dailyFoodRepository.save(any(DailyCart.class))).thenReturn(newDailyFood);
-        when(repositoryHelper.find(foodRepository, Food.class, FOOD_ID)).thenReturn(food);
-        when(dailyFoodItemRepository.findByDailyCartIdAndFoodId(anyInt(), eq(FOOD_ID)))
-                .thenReturn(Optional.empty());
+        when(dailyCartRepository.save(any(DailyCart.class)))
+                .thenReturn(newDailyCart);
+        when(repositoryHelper.find(foodRepository, Food.class, FOOD_ID))
+                .thenReturn(food);
+        when(dailyCartFoodRepository.findByDailyCartIdAndFoodId(
+                anyInt(),
+                eq(FOOD_ID))
+        ).thenReturn(Optional.empty());
 
         dailyFoodService.addFoodToDailyCart(FOOD_ID, createDto);
 
-        ArgumentCaptor<DailyCart> dailyFoodCaptor = ArgumentCaptor.forClass(DailyCart.class);
-        verify(dailyFoodRepository, times(2)).save(dailyFoodCaptor.capture());
+        ArgumentCaptor<DailyCart> dailyFoodCaptor = ArgumentCaptor
+                .forClass(DailyCart.class);
+        verify(dailyCartRepository, times(2))
+                .save(dailyFoodCaptor.capture());
         DailyCart savedDailyFood = dailyFoodCaptor.getValue();
         assertEquals(USER_ID, savedDailyFood.getUser().getId());
-        assertEquals(createDto.getQuantity(), savedDailyFood.getDailyFoodItems().get(0).getQuantity());
-    }
-
-    @Test
-    void removeFoodFromDailyCart_shouldRemoveExistingDailyFoodFromDailyCart() {
-        dailyFood.getDailyFoodItems().add(dailyFoodItem);
-
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyFoodRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyFood));
-        when(dailyFoodItemRepository.findByDailyCartIdAndFoodId(dailyFood.getId(), FOOD_ID))
-                .thenReturn(Optional.of(dailyFoodItem));
-
-        dailyFoodService.removeFoodFromDailyCart(FOOD_ID);
-
-        verify(dailyFoodRepository).save(dailyFood);
-        assertTrue(dailyFood.getDailyFoodItems().isEmpty());
-    }
-
-    @Test
-    void removeFoodFromDailyCart_shouldThrowException_whenDailyFoodFromDailyCartNotFound() {
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyFoodRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyFood));
-        when(dailyFoodItemRepository.findByDailyCartIdAndFoodId(dailyFood.getId(), FOOD_ID))
-                .thenReturn(Optional.empty());
-
-        assertThrows(RecordNotFoundException.class, () ->
-                dailyFoodService.removeFoodFromDailyCart(FOOD_ID)
+        assertEquals(
+                createDto.getQuantity(),
+                savedDailyFood.getDailyCartFoods().get(0).getQuantity()
         );
     }
 
     @Test
-    void removeFoodFromDailyCart_shouldThrowException_whenDailyFoodNotFound() {
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyFoodRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.empty());
+    void removeFoodFromDailyCart_shouldRemoveExistingDailyFoodFromDailyCart() {
+        when(repositoryHelper.find(dailyCartFoodRepository,DailyCartFood.class, FOOD_ID))
+                .thenReturn(dailyCartFood);
+        doNothing().when(dailyCartFoodRepository).delete(dailyCartFood);
+
+
+        dailyFoodService.removeFoodFromDailyCart(FOOD_ID);
+
+        verify(dailyCartFoodRepository).delete(dailyCartFood);
+    }
+
+    @Test
+    void removeFoodFromDailyCart_shouldThrowException_whenDailyFoodFromDailyCartNotFound() {
+        when(repositoryHelper.find(dailyCartFoodRepository, DailyCartFood.class, FOOD_ID))
+                .thenThrow(new RecordNotFoundException(DailyCartActivity.class, FOOD_ID));
 
         assertThrows(RecordNotFoundException.class, () ->
                 dailyFoodService.removeFoodFromDailyCart(FOOD_ID)
@@ -187,75 +192,71 @@ public class DailyFoodServiceTest {
 
     @Test
     void updateDailyFoodItem_shouldUpdate() throws JsonPatchException, JsonProcessingException {
-        DailyFoodItemCreateDto patchedDto = new DailyFoodItemCreateDto();
-        patchedDto.setQuantity(BigDecimal.valueOf(200));
+        DailyCartFoodUpdateDto patchedDto = new DailyCartFoodUpdateDto();
+        patchedDto.setQuantity(BigDecimal.valueOf(120));
 
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyFoodRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyFood));
-        when(dailyFoodItemRepository.findByDailyCartIdAndFoodId(dailyFood.getId(), FOOD_ID))
-                .thenReturn(Optional.of(dailyFoodItem));
-        doReturn(patchedDto).when(jsonPatchService).applyPatch(any(JsonMergePatch.class),
-                any(DailyFoodItemCreateDto.class), eq(DailyFoodItemCreateDto.class));
+        when(repositoryHelper.find(dailyCartFoodRepository, DailyCartFood.class, FOOD_ID))
+                .thenReturn(dailyCartFood);
+
+        doReturn(patchedDto).when(jsonPatchService).applyPatch(
+                any(JsonMergePatch.class),
+                any(DailyCartFoodUpdateDto.class),
+                eq(DailyCartFoodUpdateDto.class)
+        );
 
         dailyFoodService.updateDailyFoodItem(FOOD_ID, patch);
 
         verify(validationService).validate(patchedDto);
-        assertEquals(patchedDto.getQuantity(), dailyFoodItem.getQuantity());
-        verify(dailyFoodRepository).save(dailyFood);
+        assertEquals(patchedDto.getQuantity(), dailyCartFood.getQuantity());
+        verify(dailyCartFoodRepository).save(dailyCartFood);
     }
 
     @Test
     void updateDailyFoodItem_shouldThrowException_whenDailyFoodItemNotFound() {
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyFoodRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyFood));
-        when(dailyFoodItemRepository.findByDailyCartIdAndFoodId(dailyFood.getId(), FOOD_ID))
-                .thenReturn(Optional.empty());
+        when(repositoryHelper.find(dailyCartFoodRepository, DailyCartFood.class, FOOD_ID))
+                .thenThrow(RecordNotFoundException.class);
 
         assertThrows(RecordNotFoundException.class, () ->
                 dailyFoodService.updateDailyFoodItem(FOOD_ID, patch));
-    }
 
-    @Test
-    void updateDailyFoodItem_shouldThrowException_whenDailyFoodNotFound() {
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyFoodRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.empty());
-
-        assertThrows(RecordNotFoundException.class, () ->
-                dailyFoodService.updateDailyFoodItem(FOOD_ID, patch));
+        verifyNoInteractions(validationService);
+        verify(dailyCartFoodRepository, never()).save(any());
     }
 
     @Test
     void updateDailyFoodItem_shouldThrowException_whenPatchFails()
             throws JsonPatchException, JsonProcessingException
     {
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyFoodRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyFood));
-        when(dailyFoodItemRepository.findByDailyCartIdAndFoodId(dailyFood.getId(), FOOD_ID))
-                .thenReturn(Optional.of(dailyFoodItem));
-        doThrow(JsonPatchException.class).when(jsonPatchService).applyPatch(any(JsonMergePatch.class),
-                any(DailyFoodItemCreateDto.class), eq(DailyFoodItemCreateDto.class));
+        when(repositoryHelper.find(dailyCartFoodRepository, DailyCartFood.class, FOOD_ID))
+                .thenReturn(dailyCartFood);
+        doThrow(JsonPatchException.class).when(jsonPatchService).applyPatch(
+                any(JsonMergePatch.class),
+                any(DailyCartFoodUpdateDto.class),
+                eq(DailyCartFoodUpdateDto.class)
+        );
 
         assertThrows(JsonPatchException.class, () ->
                 dailyFoodService.updateDailyFoodItem(FOOD_ID, patch)
         );
 
         verifyNoInteractions(validationService);
-        verify(dailyFoodRepository, never()).save(dailyFood);
+        verify(dailyCartFoodRepository, never()).save(any());
     }
 
     @Test
     void updateDailyFoodItem_shouldThrowException_whenPatchValidationFails()
             throws JsonPatchException, JsonProcessingException
     {
-        DailyFoodItemCreateDto patchedDto = new DailyFoodItemCreateDto();
-        patchedDto.setQuantity(BigDecimal.valueOf(200));
+        DailyCartFoodUpdateDto patchedDto = new DailyCartFoodUpdateDto();
+        patchedDto.setQuantity(BigDecimal.valueOf(120));
 
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyFoodRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyFood));
-        when(dailyFoodItemRepository.findByDailyCartIdAndFoodId(dailyFood.getId(), FOOD_ID))
-                .thenReturn(Optional.of(dailyFoodItem));
-        doReturn(patchedDto).when(jsonPatchService).applyPatch(any(JsonMergePatch.class),
-                any(DailyFoodItemCreateDto.class), eq(DailyFoodItemCreateDto.class));
+        when(repositoryHelper.find(dailyCartFoodRepository, DailyCartFood.class, FOOD_ID))
+                .thenReturn(dailyCartFood);
+        doReturn(patchedDto).when(jsonPatchService).applyPatch(
+                any(JsonMergePatch.class),
+                any(DailyCartFoodUpdateDto.class),
+                eq(DailyCartFoodUpdateDto.class)
+        );
 
         doThrow(new IllegalArgumentException("Validation failed")).when(validationService)
                 .validate(patchedDto);
@@ -265,23 +266,35 @@ public class DailyFoodServiceTest {
         );
 
         verify(validationService).validate(patchedDto);
-        verify(dailyFoodRepository, never()).save(dailyFood);
+        verify(dailyCartFoodRepository, never()).save(any());
     }
 
     @Test
     void getFoodsFromDailyCart_shouldReturnFoods() {
-        dailyFood.getDailyFoodItems().add(dailyFoodItem);
+        User user = new User();
+        user.setId(USER_ID);
+        user.setWeight(BigDecimal.valueOf(70));
+        dailyCart.setUser(user);
+        dailyCart.getDailyCartFoods().add(dailyCartFood);
+
+        FoodCalculatedMacrosResponseDto calculatedResponseDto = new FoodCalculatedMacrosResponseDto();
+        calculatedResponseDto.setCalories(BigDecimal.valueOf(100));
+        calculatedResponseDto.setCarbohydrates(BigDecimal.valueOf(20));
+        calculatedResponseDto.setProtein(BigDecimal.valueOf(10));
+        calculatedResponseDto.setFat(BigDecimal.valueOf(5));
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyFoodRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyFood));
-        when(dailyFoodMapper.toDailyFoodsResponseDto(anyList()))
-                .thenReturn(new DailyFoodsResponseDto());
+        when(dailyCartRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyCart));
+        when(dailyFoodMapper.toFoodCalculatedMacrosResponseDto(dailyCartFood)).thenReturn(calculatedResponseDto);
 
-        DailyFoodsResponseDto result = dailyFoodService.getFoodFromDailyCart();
+        DailyFoodsResponseDto result = dailyFoodService
+                .getFoodFromDailyCart(new DailyCartFoodGetDto(LocalDate.now()));
 
-        assertNotNull(result);
-        verify(dailyFoodRepository).findByUserIdAndDate(USER_ID, LocalDate.now());
-        verify(dailyFoodMapper).toDailyFoodsResponseDto(anyList());
+        assertEquals(1, result.getFoods().size());
+        assertEquals(BigDecimal.valueOf(100.0), result.getTotalCalories());
+        assertEquals(BigDecimal.valueOf(20.0), result.getTotalCarbohydrates());
+        assertEquals(BigDecimal.valueOf(10.0), result.getTotalProtein());
+        assertEquals(BigDecimal.valueOf(5.0), result.getTotalFat());
     }
 
     @Test
@@ -289,16 +302,15 @@ public class DailyFoodServiceTest {
         User user = new User();
         user.setId(USER_ID);
         user.setWeight(BigDecimal.valueOf(70));
-        DailyCart newDailyFood = DailyCart.createForToday(user);
-        newDailyFood.setUser(user);
+        DailyCart newDailyCart = DailyCart.createForToday(user);
+        newDailyCart.setUser(user);
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyFoodRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.empty());
-        when(dailyFoodRepository.save(any(DailyCart.class))).thenReturn(newDailyFood);
+        when(dailyCartRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.empty());
 
-        DailyFoodsResponseDto result = dailyFoodService.getFoodFromDailyCart();
+        DailyFoodsResponseDto result = dailyFoodService
+                .getFoodFromDailyCart(new DailyCartFoodGetDto(LocalDate.now()));
 
         assertTrue(result.getFoods().isEmpty());
-        assertEquals(BigDecimal.ZERO, result.getTotalCalories());
     }
 }

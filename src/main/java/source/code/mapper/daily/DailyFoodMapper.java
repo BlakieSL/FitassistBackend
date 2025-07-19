@@ -6,7 +6,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import source.code.dto.response.daily.DailyFoodsResponseDto;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
-import source.code.model.daily.DailyFoodItem;
+import source.code.model.daily.DailyCartFood;
 import source.code.model.food.Food;
 
 import java.math.BigDecimal;
@@ -16,26 +16,26 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class DailyFoodMapper {
-    @Mapping(target = "id", source = "dailyFoodItem.food.id")
-    @Mapping(target = "name", source = "dailyFoodItem.food.name")
+    @Mapping(target = "id", source = "dailyCartFood.food.id")
+    @Mapping(target = "name", source = "dailyCartFood.food.name")
     @Mapping(target = "calories", ignore = true)
     @Mapping(target = "protein", ignore = true)
     @Mapping(target = "fat", ignore = true)
     @Mapping(target = "carbohydrates", ignore = true)
-    @Mapping(target = "categoryId", source = "dailyFoodItem.food.foodCategory.id")
-    @Mapping(target = "categoryName", source = "dailyFoodItem.food.foodCategory.name")
-    @Mapping(target = "quantity", source = "dailyFoodItem.quantity")
+    @Mapping(target = "categoryId", source = "dailyCartFood.food.foodCategory.id")
+    @Mapping(target = "categoryName", source = "dailyCartFood.food.foodCategory.name")
+    @Mapping(target = "quantity", source = "dailyCartFood.quantity")
     public abstract FoodCalculatedMacrosResponseDto toFoodCalculatedMacrosResponseDto(
-            DailyFoodItem dailyFoodItem
+            DailyCartFood dailyCartFood
     );
 
     @AfterMapping
     protected void setCalculatedMacros(
             @MappingTarget FoodCalculatedMacrosResponseDto responseDto,
-            DailyFoodItem dailyFoodItem
+            DailyCartFood dailyCartFood
     ) {
-        Food food = dailyFoodItem.getFood();
-        BigDecimal quantity = dailyFoodItem.getQuantity();
+        Food food = dailyCartFood.getFood();
+        BigDecimal quantity = dailyCartFood.getQuantity();
 
         BigDecimal divisor = new BigDecimal("100");
 
@@ -59,8 +59,8 @@ public abstract class DailyFoodMapper {
         );
     }
 
-    public DailyFoodsResponseDto toDailyFoodsResponseDto(List<DailyFoodItem> dailyFoodItems) {
-        return dailyFoodItems.stream()
+    public DailyFoodsResponseDto toDailyFoodsResponseDto(List<DailyCartFood> dailyCartFoods) {
+        return dailyCartFoods.stream()
                 .map(this::toFoodCalculatedMacrosResponseDto)
                 .collect(
                         Collectors.collectingAndThen(

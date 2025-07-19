@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DailyFoodItem {
+public class DailyCartFood {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -39,11 +39,11 @@ public class DailyFoodItem {
     @JoinColumn(name = "food_id", nullable = false)
     private Food food;
 
-    public static DailyFoodItem of(Food food, DailyCart dailyCart, BigDecimal quantity) {
-        DailyFoodItem dailyFoodItem = new DailyFoodItem();
-        dailyFoodItem.setQuantity(quantity);
-        dailyFoodItem.setFood(food);
-        dailyFoodItem.setDailyCart(dailyCart);
-        return dailyFoodItem;
+    public static DailyCartFood of(Food food, DailyCart dailyCart, BigDecimal quantity) {
+        DailyCartFood dailyCartFood = new DailyCartFood();
+        dailyCartFood.setQuantity(quantity);
+        dailyCartFood.setFood(food);
+        dailyCartFood.setDailyCart(dailyCart);
+        return dailyCartFood;
     }
 }

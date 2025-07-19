@@ -3,7 +3,7 @@ package source.code.mapper.daily;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
-import source.code.model.daily.DailyActivityItem;
+import source.code.model.daily.DailyCartActivity;
 import source.code.service.declaration.helpers.CalculationsService;
 
 import java.math.BigDecimal;
@@ -14,24 +14,24 @@ public abstract class DailyActivityMapper {
     @Autowired
     private CalculationsService calculationsService;
 
-    @Mapping(target = "id", source = "dailyActivityItem.activity.id")
-    @Mapping(target = "name", source = "dailyActivityItem.activity.name")
-    @Mapping(target = "met", source = "dailyActivityItem.activity.met")
-    @Mapping(target = "categoryName", source = "dailyActivityItem.activity.activityCategory.name")
-    @Mapping(target = "categoryId", source = "dailyActivityItem.activity.activityCategory.id")
+    @Mapping(target = "id", source = "dailyCartActivity.activity.id")
+    @Mapping(target = "name", source = "dailyCartActivity.activity.name")
+    @Mapping(target = "met", source = "dailyCartActivity.activity.met")
+    @Mapping(target = "categoryName", source = "dailyCartActivity.activity.activityCategory.name")
+    @Mapping(target = "categoryId", source = "dailyCartActivity.activity.activityCategory.id")
     @Mapping(target = "caloriesBurned", ignore = true)
-    @Mapping(target = "time", source = "dailyActivityItem.time")
+    @Mapping(target = "time", source = "dailyCartActivity.time")
     public abstract ActivityCalculatedResponseDto toActivityCalculatedResponseDto(
-            DailyActivityItem dailyActivityItem, BigDecimal userWeight);
+            DailyCartActivity dailyCartActivity, BigDecimal userWeight);
 
     @AfterMapping
     protected void setCaloriesBurned(
             @MappingTarget ActivityCalculatedResponseDto responseDto,
-            DailyActivityItem dailyActivityItem,
+            DailyCartActivity dailyCartActivity,
             @Context BigDecimal userWeight) {
 
         BigDecimal caloriesBurned = calculationsService.calculateCaloriesBurned(
-                dailyActivityItem.getTime(), userWeight, dailyActivityItem.getActivity().getMet());
+                dailyCartActivity.getTime(), userWeight, dailyCartActivity.getActivity().getMet());
 
         responseDto.setCaloriesBurned(caloriesBurned.setScale(0, RoundingMode.HALF_UP).intValue());
     }
