@@ -62,19 +62,16 @@ public class Exercise implements IndexedEntity {
     @JoinColumn(name = "force_type_id", nullable = false)
     private ForceType forceType;
 
-    @OneToMany(mappedBy = "exercise",
-            cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
+    @OneToMany(mappedBy = "exercise", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private final Set<ExerciseInstruction> exerciseInstructions = new HashSet<>();
 
-    @OneToMany(mappedBy = "exercise",
-            cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
+    @OneToMany(mappedBy = "exercise", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private final Set<ExerciseTip> exerciseTips = new HashSet<>();
 
-    @OneToMany(mappedBy = "exercise",
-            cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "exercise", cascade = {CascadeType.REMOVE}, fetch = FetchType.EAGER , orphanRemoval = true)
     private final Set<ExerciseTargetMuscle> exerciseTargetMuscles = new HashSet<>();
 
-    @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "exercise", orphanRemoval = true)
     private final Set<WorkoutSet> workoutSets = new HashSet<>();
 
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE)
