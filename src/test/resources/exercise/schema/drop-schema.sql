@@ -1,7 +1,19 @@
+DROP TABLE IF EXISTS workout_set;
+DROP TABLE IF EXISTS workout_set_group;
+DROP TABLE IF EXISTS workout;
+
+DROP TABLE IF EXISTS plan;
+DROP TABLE IF EXISTS plan_type;
+
+DROP TABLE IF EXISTS text;
+
 DROP TABLE IF EXISTS user_exercise;
 DROP TABLE IF EXISTS exercise_target_muscle;
+
 DROP TABLE IF EXISTS exercise;
+
 DROP TABLE IF EXISTS user;
+
 DROP TABLE IF EXISTS expertise_level;
 DROP TABLE IF EXISTS mechanics_type;
 DROP TABLE IF EXISTS force_type;
