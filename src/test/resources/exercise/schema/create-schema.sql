@@ -93,3 +93,77 @@ create table user_exercise
     constraint FKkq87ibl7n9bls7n474jh3wrfm
         foreign key (user_id) references user (id)
 );
+
+create table text
+(
+    type        varchar(31)  not null,
+    id          int auto_increment
+        primary key,
+    orderIndex  smallint     not null,
+    text        varchar(255) not null,
+    title       varchar(255) null,
+    exercise_id int          null,
+    plan_id     int          null,
+    recipe_id   int          null,
+    constraint FK3vpv1nlpyjyeu70pxsveqncs9
+        foreign key (exercise_id) references exercise (id)
+);
+
+create table plan_type
+(
+    id   int auto_increment
+        primary key,
+    name varchar(255) not null
+);
+
+create table plan
+(
+    id           int auto_increment
+        primary key,
+    description  varchar(255) not null,
+    name         varchar(100) not null,
+    plan_type_id int          not null,
+    user_id      int          not null,
+    constraint FK271ok4ss5pcte25w6o3hvv60x
+        foreign key (user_id) references user (id),
+    constraint FKt7sis5umk6kofuhe2lawg6oje
+        foreign key (plan_type_id) references plan_type (id)
+);
+
+
+create table workout
+(
+    id       int auto_increment
+        primary key,
+    duration decimal(38, 2) not null,
+    name     varchar(50)    not null,
+    plan_id  int            not null,
+    constraint FK2ijomxprmdq73lr3kwu4mhh20
+        foreign key (plan_id) references plan (id)
+);
+
+create table workout_set_group
+(
+    id          int auto_increment
+        primary key,
+    orderIndex  int not null,
+    restSeconds int not null,
+    workout_id  int not null,
+    constraint FKdm91qulyw807de6ydwcm8bky4
+        foreign key (workout_id) references workout (id)
+);
+
+
+create table workout_set
+(
+    id                   int auto_increment
+        primary key,
+    repetitions          decimal(38, 2) not null,
+    weight               decimal(38, 2) not null,
+    exercise_id          int            not null,
+    workout_set_group_id int            not null,
+    constraint FKhg1c36fv3o7wlsv0w31m7un18
+        foreign key (exercise_id) references exercise (id),
+    constraint FKqt2vub0hl6yhxaul5hwpbjwwe
+        foreign key (workout_set_group_id) references workout_set_group (id)
+);
