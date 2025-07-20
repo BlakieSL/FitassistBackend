@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import source.code.annotation.DailyCartOwner;
 import source.code.dto.request.food.DailyCartFoodCreateDto;
 import source.code.dto.request.food.DailyCartFoodGetDto;
 import source.code.dto.response.daily.DailyFoodsResponseDto;
@@ -27,21 +28,23 @@ public class DailyFoodController {
         return ResponseEntity.ok(cart);
     }
 
-    @PostMapping("/add/{dailyCartFoodId}")
+    @PostMapping("/add/{foodId}")
     public ResponseEntity<Void> addDailyFoodToUser(
-            @PathVariable int dailyCartFoodId,
+            @PathVariable int foodId,
             @Valid @RequestBody DailyCartFoodCreateDto request
     ) {
-        dailyFoodService.addFoodToDailyCart(dailyCartFoodId, request);
+        dailyFoodService.addFoodToDailyCart(foodId, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @DailyCartOwner
     @DeleteMapping("/remove/{dailyCartFoodId}")
     public ResponseEntity<Void> removeFoodFromDailyCartFood(@PathVariable int dailyCartFoodId) {
         dailyFoodService.removeFoodFromDailyCart(dailyCartFoodId);
         return ResponseEntity.noContent().build();
     }
 
+    @DailyCartOwner
     @PatchMapping("/update/{dailyCartFoodId}")
     public ResponseEntity<Void> updateDailyCartFood(
             @PathVariable int dailyCartFoodId,

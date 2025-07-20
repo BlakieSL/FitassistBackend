@@ -42,7 +42,7 @@ public class DailyCart {
             orphanRemoval = true)
     private final List<DailyCartFood> dailyCartFoods = new ArrayList<>();
 
-    public static DailyCart createForToday(User user) {
+    public static DailyCart createDate(User user) {
         DailyCart dailyCart = new DailyCart();
         dailyCart.setDate(LocalDate.now());
         dailyCart.setUser(user);

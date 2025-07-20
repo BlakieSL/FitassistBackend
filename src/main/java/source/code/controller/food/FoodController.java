@@ -34,7 +34,6 @@ public class FoodController {
     }
 
     @AdminOnly
-
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateFood(@PathVariable int id, @RequestBody JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
