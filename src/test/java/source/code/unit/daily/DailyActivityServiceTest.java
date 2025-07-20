@@ -135,7 +135,7 @@ public class DailyActivityServiceTest {
     void addActivityToDailyActivityItem_shouldCreateNewDailyCart_whenNotFound() {
         User user = new User();
         user.setId(USER_ID);
-        DailyCart newDailyActivity = DailyCart.createForToday(user);
+        DailyCart newDailyActivity = DailyCart.createDate(user);
         newDailyActivity.setId(1);
         newDailyActivity.setUser(user);
 
@@ -296,7 +296,7 @@ public class DailyActivityServiceTest {
         User user = new User();
         user.setId(USER_ID);
         user.setWeight(BigDecimal.valueOf(70));
-        DailyCart newDailyActivity = DailyCart.createForToday(user);
+        DailyCart newDailyActivity = DailyCart.createDate(user);
         newDailyActivity.setUser(user);
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);

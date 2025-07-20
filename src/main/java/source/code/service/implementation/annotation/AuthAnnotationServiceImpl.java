@@ -7,6 +7,7 @@ import source.code.helper.user.AuthorizationUtil;
 import source.code.model.complaint.CommentComplaint;
 import source.code.model.complaint.ThreadComplaint;
 import source.code.model.daily.DailyCartActivity;
+import source.code.model.daily.DailyCartFood;
 import source.code.model.media.Media;
 import source.code.model.plan.Plan;
 import source.code.model.recipe.Recipe;
@@ -36,6 +37,7 @@ public class AuthAnnotationServiceImpl {
     private final CommentComplaintRepository commentComplaintRepository;
     private final ThreadComplaintRepository threadComplaintRepository;
     private final DailyActivityItemRepository dailyActivityItemRepository;
+    private final DailyCartFoodRepository dailyCartFoodRepository;
 
     public AuthAnnotationServiceImpl(CommentRepository commentRepository,
                                      RepositoryHelper repositoryHelper,
@@ -46,7 +48,7 @@ public class AuthAnnotationServiceImpl {
                                      RecipeInstructionRepository recipeInstructionRepository,
                                      PlanInstructionRepository planInstructionRepository,
                                      WorkoutRepository workoutRepository,
-                                     WorkoutSetRepository workoutSetRepository, WorkoutSetGroupRepository workoutSetGroupRepository, CommentComplaintRepository commentComplaintRepository, ThreadComplaintRepository threadComplaintRepository, DailyActivityItemRepository dailyActivityItemRepository) {
+                                     WorkoutSetRepository workoutSetRepository, WorkoutSetGroupRepository workoutSetGroupRepository, CommentComplaintRepository commentComplaintRepository, ThreadComplaintRepository threadComplaintRepository, DailyActivityItemRepository dailyActivityItemRepository, DailyCartFoodRepository dailyCartFoodRepository) {
         this.commentRepository = commentRepository;
         this.repositoryHelper = repositoryHelper;
         this.forumThreadRepository = forumThreadRepository;
@@ -61,6 +63,7 @@ public class AuthAnnotationServiceImpl {
         this.commentComplaintRepository = commentComplaintRepository;
         this.threadComplaintRepository = threadComplaintRepository;
         this.dailyActivityItemRepository = dailyActivityItemRepository;
+        this.dailyCartFoodRepository = dailyCartFoodRepository;
     }
 
     public boolean isCommentOwnerOrAdmin(int commentId)  {
@@ -143,11 +146,24 @@ public class AuthAnnotationServiceImpl {
                 .getId());
     }
 
-    public boolean isDailyCartOwner(int dailyActivityItemId) {
-        DailyCartActivity dailyCartActivity = repositoryHelper
-                .find(dailyActivityItemRepository, DailyCartActivity.class, dailyActivityItemId);
+    public boolean isDailyCartOwner(Integer dailyActivityItemId, Integer dailyCartFoodId) {
+        Integer userId = null;
 
-        return AuthorizationUtil.isOwnerOrAdmin(dailyCartActivity.getDailyCart().getUser().getId());
+        if (dailyActivityItemId != null) {
+            DailyCartActivity dailyCartActivity = repositoryHelper
+                    .find(dailyActivityItemRepository, DailyCartActivity.class, dailyActivityItemId);
+            userId = dailyCartActivity.getDailyCart().getUser().getId();
+        } else if (dailyCartFoodId != null) {
+            DailyCartFood dailyCartFood = repositoryHelper
+                    .find(dailyCartFoodRepository, DailyCartFood.class, dailyCartFoodId);
+            userId = dailyCartFood.getDailyCart().getUser().getId();
+        }
+
+        if (userId == null) {
+            return false;
+        }
+
+        return AuthorizationUtil.isOwnerOrAdmin(userId);
     }
 
     private Integer findOwnerIdByParentTypeAndId(MediaConnectedEntity parentType, int parentId) {
