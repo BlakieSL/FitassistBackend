@@ -364,31 +364,4 @@ public class FoodServiceTest {
         assertTrue(result.isEmpty());
         verify(foodRepository).findAllWithoutAssociations();
     }
-
-    @Test
-    void getFoodsByCategory_shouldReturnFoodsForCategory() {
-        int categoryId = 1;
-        List<Food> foods = List.of(food);
-        when(foodRepository.findAllByFoodCategory_Id(categoryId)).thenReturn(foods);
-        when(foodMapper.toResponseDto(food)).thenReturn(responseDto);
-
-        List<FoodResponseDto> result = foodService.getFoodsByCategory(categoryId);
-
-        assertEquals(1, result.size());
-        assertSame(responseDto, result.get(0));
-        verify(foodRepository).findAllByFoodCategory_Id(categoryId);
-        verify(foodMapper).toResponseDto(food);
-    }
-
-    @Test
-    void getFoodsByCategory_shouldReturnEmptyListWhenNoFoods() {
-        int categoryId = 1;
-        when(foodRepository.findAllByFoodCategory_Id(categoryId)).thenReturn(new ArrayList<>());
-
-        List<FoodResponseDto> result = foodService.getFoodsByCategory(categoryId);
-
-        assertTrue(result.isEmpty());
-        verify(foodRepository).findAllByFoodCategory_Id(categoryId);
-        verifyNoInteractions(foodMapper);
-    }
 }

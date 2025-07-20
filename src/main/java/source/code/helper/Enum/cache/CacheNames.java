@@ -6,7 +6,6 @@ public class CacheNames {
 
     public static final String ALL_FOODS = "allFoods";
     public static final String FOODS = "foods";
-    public static final String FOODS_BY_CATEGORY = "foodsByCategory";
 
     public static final String ALL_EXERCISES = "allExercises";
     public static final String EXERCISES = "exercises";

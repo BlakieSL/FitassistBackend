@@ -87,3 +87,15 @@ create table daily_cart_food
     constraint FKfh3vkst24iavc3i6btr26f2md
         foreign key (food_id) references food (id)
 );
+
+create table user_food
+(
+    id      int auto_increment
+        primary key,
+    food_id int not null,
+    user_id int not null,
+    constraint FK1g8eq16xsqum2d2ojkk3hx4x9
+        foreign key (food_id) references food (id),
+    constraint FKcljbolfn2gnq75ujw985r4aa7
+        foreign key (user_id) references user (id)
+);

@@ -28,6 +28,4 @@ public interface FoodService {
     List<Food> getAllFoodEntities();
 
     FoodCalculatedMacrosResponseDto calculateFoodMacros(int foodId, CalculateFoodMacrosRequestDto request);
-
-    List<FoodResponseDto> getFoodsByCategory(int categoryId);
 }

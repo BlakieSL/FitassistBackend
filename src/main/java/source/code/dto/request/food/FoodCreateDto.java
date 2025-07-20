@@ -28,6 +28,6 @@ public class FoodCreateDto {
     @NotNull
     @PositiveOrZero
     private BigDecimal carbohydrates;
-    @NotBlank
+    @NotNull
     private int categoryId;
 }

@@ -65,3 +65,6 @@ INSERT INTO daily_cart_activity (daily_cart_id, activity_id, time) VALUES
                                                                        (5, 4, 40),
                                                                        (6, 3, 50),
                                                                        (6, 5, 30);
+
+INSERT INTO user_food (food_id, user_id)
+VALUES (1,1);
