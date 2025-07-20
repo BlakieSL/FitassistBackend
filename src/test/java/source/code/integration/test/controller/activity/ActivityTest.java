@@ -63,7 +63,6 @@ public class ActivityTest  {
                 );
     }
 
-    @ActivitySql
     @Test
     @DisplayName("POST - / - Should return 403 when user is not admin")
     void createActivityNotAdmin() throws Exception {
@@ -97,7 +96,6 @@ public class ActivityTest  {
                 .andExpectAll(status().isNoContent());
     }
 
-    @ActivitySql
     @Test
     @DisplayName("PATCH - /{id} - Should return 403 when user is not admin")
     void updateActivityNotAdmin() throws Exception {
@@ -114,7 +112,6 @@ public class ActivityTest  {
                 .andExpectAll(status().isForbidden());
     }
 
-    @ActivitySql
     @Test
     @DisplayName("PATCH - /{id} - Should return 404 when activity does not exist")
     void updateActivityNotFound() throws Exception {

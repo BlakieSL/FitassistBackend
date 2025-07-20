@@ -1,5 +1,6 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
+DROP TABLE IF EXISTS user_food;
 DROP TABLE IF EXISTS daily_cart_activity;
 DROP TABLE IF EXISTS daily_cart_food;
 DROP TABLE IF EXISTS daily_cart;

@@ -62,7 +62,7 @@ public class Food implements IndexedEntity {
     @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
     private final Set<DailyCartFood> dailyCartFoods = new HashSet<>();
 
-    @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "food")
     private final Set<RecipeFood> recipeFoods = new HashSet<>();
 
     @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)

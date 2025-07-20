@@ -51,6 +51,5 @@ public class FoodListener {
 
     private void clearCommonCache(Food food) {
         cacheService.clearCache(CacheNames.ALL_FOODS);
-        cacheService.evictCache(CacheNames.FOODS_BY_CATEGORY, food.getFoodCategory().getId());
     }
 }
