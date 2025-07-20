@@ -1,3 +1,4 @@
+delete from user_food;
 delete from daily_cart_activity;
 delete from daily_cart_food;
 delete from daily_cart;
@@ -9,3 +10,4 @@ delete from food;
 delete from food_category;
 
 delete from user;
+

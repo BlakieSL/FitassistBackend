@@ -132,13 +132,6 @@ public class FoodServiceImpl implements FoodService {
         return foodRepository.findAllWithoutAssociations();
     }
 
-    @Override
-    @Cacheable(value = CacheNames.FOODS_BY_CATEGORY, key = "#categoryId")
-    public List<FoodResponseDto> getFoodsByCategory(int categoryId) {
-        return foodRepository.findAllByFoodCategory_Id(categoryId).stream()
-                .map(foodMapper::toResponseDto)
-                .toList();
-    }
 
     private Food find(int foodId) {
         return repositoryHelper.find(foodRepository, Food.class, foodId);

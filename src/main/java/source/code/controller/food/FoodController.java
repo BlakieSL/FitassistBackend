@@ -60,12 +60,6 @@ public class FoodController {
         return ResponseEntity.ok(foodService.getAllFoods());
     }
 
-    @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<List<FoodResponseDto>> getFoodsByCategory(@PathVariable int categoryId) {
-        List<FoodResponseDto> foods = foodService.getFoodsByCategory(categoryId);
-        return ResponseEntity.ok(foods);
-    }
-
     @PostMapping("/filter")
     public ResponseEntity<List<FoodResponseDto>> getFilteredFoods(
             @Valid @RequestBody FilterDto filterDto) {
