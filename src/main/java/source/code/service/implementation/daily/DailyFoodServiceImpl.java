@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import source.code.dto.request.food.DailyCartFoodGetDto;
 import source.code.dto.request.food.DailyCartFoodUpdateDto;
 import source.code.dto.request.food.DailyCartFoodCreateDto;
-import source.code.dto.response.daily.DailyActivitiesResponseDto;
 import source.code.dto.response.daily.DailyFoodsResponseDto;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.daily.DailyFoodMapper;
@@ -28,6 +27,7 @@ import source.code.service.declaration.helpers.ValidationService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -97,17 +97,14 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     public DailyFoodsResponseDto getFoodFromDailyCart(DailyCartFoodGetDto request) {
         int userId = AuthorizationUtil.getUserId();
 
-        Optional<DailyCart> dailyCartOptional = getDailyCart(userId, request.getDate());
-
-        if (dailyCartOptional.isEmpty()) {
-            return DailyFoodsResponseDto.of(Collections.emptyList());
-        }
-
-        DailyCart dailyCart = dailyCartOptional.get();
-
-        return DailyFoodsResponseDto.create(dailyCart.getDailyCartFoods().stream()
-                .map(dailyFoodMapper::toFoodCalculatedMacrosResponseDto)
-                .toList());
+        return dailyCartRepository.findByUserIdAndDate(userId, request.getDate())
+                .map(dailyCart -> {
+                    List<DailyCartFood> foods = dailyCartFoodRepository.findAllByDailyCartId(dailyCart.getId());
+                    return DailyFoodsResponseDto.create(foods.stream()
+                            .map(dailyFoodMapper::toFoodCalculatedMacrosResponseDto)
+                            .toList());
+                })
+                .orElse(DailyFoodsResponseDto.of(Collections.emptyList()));
     }
 
     private void updateOrAddDailyFoodItem(
@@ -132,9 +129,9 @@ public class DailyFoodServiceImpl implements DailyFoodService {
         dailyCartFood.setQuantity(quantity);
     }
 
-    public DailyCart createDailyCart(int userId) {
+    public DailyCart createDailyCart(int userId, LocalDate date) {
         User user = repositoryHelper.find(userRepository, User.class, userId);
-        return dailyCartRepository.save(DailyCart.createForToday(user));
+        return dailyCartRepository.save(DailyCart.of(user, date));
     }
 
     private DailyCartFoodUpdateDto applyPatchToDailyFoodItem(
@@ -147,7 +144,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 
     private DailyCart getOrCreateDailyCartForUser(int userId, LocalDate date) {
         return dailyCartRepository.findByUserIdAndDate(userId, date)
-                .orElseGet(() -> createDailyCart(userId));
+                .orElseGet(() -> createDailyCart(userId, date));
     }
 
     private DailyCartFood getDailyCartFood(int dailyCartFoodId) {

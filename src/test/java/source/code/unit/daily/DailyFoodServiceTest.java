@@ -12,19 +12,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import source.code.dto.request.activity.DailyActivitiesGetDto;
-import source.code.dto.request.activity.DailyActivityItemUpdateDto;
 import source.code.dto.request.food.DailyCartFoodCreateDto;
 import source.code.dto.request.food.DailyCartFoodGetDto;
 import source.code.dto.request.food.DailyCartFoodUpdateDto;
-import source.code.dto.response.activity.ActivityCalculatedResponseDto;
-import source.code.dto.response.daily.DailyActivitiesResponseDto;
 import source.code.dto.response.daily.DailyFoodsResponseDto;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.daily.DailyFoodMapper;
-import source.code.model.activity.Activity;
 import source.code.model.daily.DailyCart;
 import source.code.model.daily.DailyCartActivity;
 import source.code.model.daily.DailyCartFood;
@@ -41,6 +36,7 @@ import source.code.service.implementation.daily.DailyFoodServiceImpl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -138,7 +134,7 @@ public class DailyFoodServiceTest {
     void addFoodToDailyCart_shouldCreateNewDailyCart_whenNotFound() {
         User user = new User();
         user.setId(USER_ID);
-        DailyCart newDailyCart = DailyCart.createForToday(user);
+        DailyCart newDailyCart = DailyCart.createDate(user);
         newDailyCart.setId(1);
         newDailyCart.setUser(user);
 
@@ -285,6 +281,8 @@ public class DailyFoodServiceTest {
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
         when(dailyCartRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyCart));
+        when(dailyCartFoodRepository.findAllByDailyCartId(dailyCart.getId()))
+                .thenReturn(List.of(dailyCartFood));
         when(dailyFoodMapper.toFoodCalculatedMacrosResponseDto(dailyCartFood)).thenReturn(calculatedResponseDto);
 
         DailyFoodsResponseDto result = dailyFoodService
@@ -302,7 +300,7 @@ public class DailyFoodServiceTest {
         User user = new User();
         user.setId(USER_ID);
         user.setWeight(BigDecimal.valueOf(70));
-        DailyCart newDailyCart = DailyCart.createForToday(user);
+        DailyCart newDailyCart = DailyCart.createDate(user);
         newDailyCart.setUser(user);
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
