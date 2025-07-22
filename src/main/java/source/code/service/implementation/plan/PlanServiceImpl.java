@@ -43,11 +43,7 @@ public class PlanServiceImpl implements PlanService {
     private final PlanMapper planMapper;
     private final RepositoryHelper repositoryHelper;
     private final PlanRepository planRepository;
-    private final PlanInstructionRepository planInstructionRepository;
     private final TextRepository textRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     public PlanServiceImpl(PlanMapper planMapper,
                            JsonPatchService jsonPatchService,
@@ -55,14 +51,13 @@ public class PlanServiceImpl implements PlanService {
                            ApplicationEventPublisher applicationEventPublisher,
                            RepositoryHelper repositoryHelper,
                            PlanRepository planRepository,
-                           PlanInstructionRepository planInstructionRepository, TextRepository textRepository) {
+                           TextRepository textRepository) {
         this.planMapper = planMapper;
         this.jsonPatchService = jsonPatchService;
         this.validationService = validationService;
         this.applicationEventPublisher = applicationEventPublisher;
         this.repositoryHelper = repositoryHelper;
         this.planRepository = planRepository;
-        this.planInstructionRepository = planInstructionRepository;
         this.textRepository = textRepository;
     }
 
@@ -132,7 +127,6 @@ public class PlanServiceImpl implements PlanService {
     public List<Plan> getAllPlanEntities() {
         return planRepository.findAllWithoutAssociations();
     }
-
 
     private Plan find(int planId) {
         return repositoryHelper.find(planRepository, Plan.class, planId);

@@ -52,14 +52,5 @@ public class RecipeListener {
 
     private void clearCommonCache(Recipe recipe) {
         cacheService.clearCache(CacheNames.ALL_RECIPES);
-        clearRecipesByCategoryCache(recipe);
-    }
-
-    private void clearRecipesByCategoryCache(Recipe recipe) {
-        if (recipe.getRecipeCategoryAssociations() != null) {
-            for (RecipeCategoryAssociation association : recipe.getRecipeCategoryAssociations()) {
-                cacheService.evictCache(CacheNames.RECIPES_BY_CATEGORY, association.getRecipeCategory().getId());
-            }
-        }
     }
 }

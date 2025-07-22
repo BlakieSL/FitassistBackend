@@ -46,12 +46,10 @@ public class Recipe implements IndexedEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "recipe",
-            cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
+    @OneToMany(mappedBy = "recipe", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
     private final Set<RecipeInstruction> recipeInstructions = new HashSet<>();
 
-    @OneToMany(mappedBy = "recipe",
-            cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
     private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)

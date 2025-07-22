@@ -29,6 +29,7 @@ import source.code.model.plan.Plan;
 import source.code.model.plan.PlanCategoryAssociation;
 import source.code.repository.PlanCategoryAssociationRepository;
 import source.code.repository.PlanRepository;
+import source.code.repository.TextRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
@@ -58,6 +59,9 @@ public class PlanServiceTest {
     private ValidationService validationService;
     @Mock
     private ApplicationEventPublisher eventPublisher;
+    @Mock
+    private TextRepository textRepository;
+
     @InjectMocks
     private PlanServiceImpl planService;
 
@@ -238,25 +242,25 @@ public class PlanServiceTest {
     void getAllPlans_shouldReturnAllPlans() {
         List<PlanResponseDto> responseDtos = List.of(responseDto);
 
-        when(repositoryHelper.findAll(eq(planRepository), any(Function.class)))
-                .thenReturn(responseDtos);
+        when(planRepository.findAllWithAssociations()).thenReturn(List.of(plan));
+        when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
 
         List<PlanResponseDto> result = planService.getAllPlans();
 
         assertEquals(responseDtos, result);
-        verify(repositoryHelper).findAll(eq(planRepository), any(Function.class));
+        verify(planRepository).findAllWithAssociations();
     }
 
     @Test
     void getAllPlans_shouldReturnEmptyListWhenNoPlans() {
         List<PlanResponseDto> responseDtos = List.of();
-        when(repositoryHelper.findAll(eq(planRepository), any(Function.class)))
-                .thenReturn(responseDtos);
+
+        when(planRepository.findAllWithAssociations()).thenReturn(new ArrayList<>());
 
         List<PlanResponseDto> result = planService.getAllPlans();
 
         assertTrue(result.isEmpty());
-        verify(repositoryHelper).findAll(eq(planRepository), any(Function.class));
+        verify(planRepository).findAllWithAssociations();
     }
 
     @Test
