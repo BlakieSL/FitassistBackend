@@ -1,4 +1,4 @@
-package source.code.integration.test.controller.exercise;
+package source.code.integration.test.controller.plan;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -28,9 +28,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @TestSetup
 @Import({MockAwsS3Config.class, MockRedisConfig.class})
-@TestPropertySource(properties = "schema.name=exercise")
+@TestPropertySource(properties = "schema.name=plan")
 @ContextConfiguration(initializers = {MySqlContainerInitializer.class})
-public class ExerciseControllerFilterTest {
+public class PlanControllerFilterTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -42,15 +42,88 @@ public class ExerciseControllerFilterTest {
         return FilterDto.of(List.of(criteria), FilterDataOption.AND);
     }
 
-    @ExerciseSql
+    @PlanSql
     @Test
-    @DisplayName("POST - /filter - Should retrieve filtered exercises by expertise level")
-    void getFilteredExercises() throws Exception {
+    @DisplayName("POST - /filter - Should retrieve filtered plans by plan type")
+    void filterPlansByPlanType() throws Exception {
         Utils.setUserContext(1);
-        FilterDto filterDto = buildFilterDto("EXPERTISE_LEVEL", 1, FilterOperation.EQUAL);
+        FilterDto filterDto = buildFilterDto("TYPE", 1, FilterOperation.EQUAL);
         String json = objectMapper.writeValueAsString(filterDto);
 
-        mockMvc.perform(post("/api/exercises/filter")
+        mockMvc.perform(post("/api/plans/filter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", hasSize(5))
+                );
+    }
+
+    @PlanSql
+    @Test
+    @DisplayName("POST - /filter - Should retrieve filtered plans by plan category")
+    void filterPlansByPlanCategory() throws Exception {
+        Utils.setUserContext(1);
+        FilterDto filterDto = buildFilterDto("CATEGORY", 1, FilterOperation.EQUAL);
+        String json = objectMapper.writeValueAsString(filterDto);
+
+        mockMvc.perform(post("/api/plans/filter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", hasSize(3)),
+                        jsonPath("$[*].name", containsInAnyOrder(
+                                "Beginner Strength", "Powerlifting", "Home Workout"
+                        )),
+                        jsonPath("$[*].categories[?(@.id == 1)].name",
+                                everyItem(is("Strength Training")))
+                );
+    }
+
+    @PlanSql
+    @Test
+    @DisplayName("POST - /filter - Should retrieve filtered plans by plan like")
+    void filterPlansByPlanLike() throws Exception {
+        Utils.setUserContext(1);
+        FilterDto filterDto = buildFilterDto("LIKE", 1, FilterOperation.EQUAL);
+        String json = objectMapper.writeValueAsString(filterDto);
+
+        mockMvc.perform(post("/api/plans/filter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", hasSize(6))
+                );
+    }
+
+    @PlanSql
+    @Test
+    @DisplayName("POST - /filter - Should retrieve filtered plans by plan save")
+    void filterPlansByPlanSave() throws Exception {
+        Utils.setUserContext(1);
+        FilterDto filterDto = buildFilterDto("SAVE", 1, FilterOperation.EQUAL);
+        String json = objectMapper.writeValueAsString(filterDto);
+
+        mockMvc.perform(post("/api/plans/filter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", hasSize(6))
+                );
+    }
+
+    @PlanSql
+    @Test
+    @DisplayName("POST - /filter - Should retrieve filtered plans by plan equipment")
+    void filterPlansByPlanEquipment() throws Exception {
+        Utils.setUserContext(1);
+        FilterDto filterDto = buildFilterDto("EQUIPMENT", 1, FilterOperation.EQUAL);
+        String json = objectMapper.writeValueAsString(filterDto);
+
+        mockMvc.perform(post("/api/plans/filter")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpectAll(
@@ -59,129 +132,44 @@ public class ExerciseControllerFilterTest {
                 );
     }
 
-    @ExerciseSql
-    @Test
-    @DisplayName("POST - /filter - Should retrieve filtered exercises by equipment")
-    void getFilteredExercisesByEquipment() throws Exception {
-        Utils.setUserContext(1);
-        FilterDto filterDto = buildFilterDto("EQUIPMENT", 4, FilterOperation.EQUAL);
-        String json = objectMapper.writeValueAsString(filterDto);
-
-        mockMvc.perform(post("/api/exercises/filter")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$", hasSize(2))
-                );
-    }
-
-    @ExerciseSql
-    @Test
-    @DisplayName("POST - /filter - Should retrieve filtered exercises by mechanics type")
-    void getFilteredExercisesByMechanicsType() throws Exception {
-        Utils.setUserContext(1);
-        FilterDto filterDto = buildFilterDto("MECHANICS_TYPE", 1, FilterOperation.EQUAL);
-        String json = objectMapper.writeValueAsString(filterDto);
-
-        mockMvc.perform(post("/api/exercises/filter")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$", hasSize(3))
-                );
-    }
-
-    @ExerciseSql
-    @Test
-    @DisplayName("POST - /filter - Should retrieve filtered exercises by force type")
-    void getFilteredExercisesByForceType() throws Exception {
-        Utils.setUserContext(1);
-        FilterDto filterDto = buildFilterDto("FORCE_TYPE", 3, FilterOperation.EQUAL);
-        String json = objectMapper.writeValueAsString(filterDto);
-
-        mockMvc.perform(post("/api/exercises/filter")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$", hasSize(2))
-                );
-    }
-
-    @ExerciseSql
-    @Test
-    @DisplayName("POST - /filter - Should retrieve filtered exercises by target muscle")
-    void getFilteredExercisesByTargetMuscle() throws Exception {
-        Utils.setUserContext(1);
-        FilterDto filterDto = buildFilterDto("TARGET_MUSCLE", 2, FilterOperation.EQUAL);
-        String json = objectMapper.writeValueAsString(filterDto);
-
-        mockMvc.perform(post("/api/exercises/filter")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$", hasSize(1))
-                );
-    }
-
-    @ExerciseSql
-    @Test
-    @DisplayName("POST - /filter - Should retrieve filtered exercises by saves")
-    void getFilteredExercisesBySaves() throws Exception {
-        Utils.setUserContext(1);
-        FilterDto filterDto = buildFilterDto("SAVE", 0, FilterOperation.GREATER_THAN);
-        String json = objectMapper.writeValueAsString(filterDto);
-
-        mockMvc.perform(post("/api/exercises/filter")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$", hasSize(2))
-                );
-    }
-
-    @ExerciseSql
+    @PlanSql
     @Test
     @DisplayName("POST - /filter - Should return 400, when invalid filter key")
-    void getFilteredExercisesWithInvalidKey() throws Exception {
+    void filterPlansInvalidFilterKey() throws Exception {
         Utils.setUserContext(1);
         FilterDto filterDto = buildFilterDto("invalidKey", "value", FilterOperation.EQUAL);
         String json = objectMapper.writeValueAsString(filterDto);
 
-        mockMvc.perform(post("/api/exercises/filter")
+        mockMvc.perform(post("/api/plans/filter")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isBadRequest());
     }
 
-    @ExerciseSql
+    @PlanSql
     @Test
     @DisplayName("POST - /filter - Should return 400, when invalid filter value")
-    void getFilteredExercisesWithInvalidValue() throws Exception {
+    void filterPlansInvalidFilterValue() throws Exception {
         Utils.setUserContext(1);
-        FilterDto filterDto = buildFilterDto("EXPERTISE_LEVEL", "invalidValue", FilterOperation.EQUAL);
+        FilterDto filterDto = buildFilterDto("TYPE", "invalidValue", FilterOperation.EQUAL);
         String json = objectMapper.writeValueAsString(filterDto);
 
-        mockMvc.perform(post("/api/exercises/filter")
+        mockMvc.perform(post("/api/plans/filter")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isBadRequest());
     }
 
-    @ExerciseSql
+    @PlanSql
     @Test
-    @DisplayName("POST - /filter - Should return 400, when invlaid filter operation")
-    void getFilteredExercisesWithInvalidOperation() throws Exception {
+    @DisplayName("POST - /filter - Should return 400, when invalid filter operation")
+    void filterPlansInvalidFilterOperation() throws Exception {
         Utils.setUserContext(1);
 
         String requestJson = """
                 {
                     "filterCriteria": [{
-                        "filterKey": "EXPERTISE_LEVEL",
+                        "filterKey": "TYPE",
                         "value": 1,
                         "operation": "CONTAINS"
                     }],
@@ -189,10 +177,9 @@ public class ExerciseControllerFilterTest {
                 }
                 """;
 
-        mockMvc.perform(post("/api/exercises/filter")
+        mockMvc.perform(post("/api/plans/filter")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isBadRequest());
     }
-
 }

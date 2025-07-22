@@ -52,15 +52,5 @@ public class PlanListener {
 
     private void clearCommonCache(Plan plan) {
         cacheService.clearCache(CacheNames.ALL_PLANS);
-        clearPlansByCategoryCache(plan);
-    }
-
-    private void clearPlansByCategoryCache(Plan plan) {
-        if (plan.getPlanCategoryAssociations() != null) {
-            for (PlanCategoryAssociation association : plan.getPlanCategoryAssociations()) {
-                cacheService.evictCache(CacheNames.PLANS_BY_CATEGORY,
-                        association.getPlanCategory().getId());
-            }
-        }
     }
 }

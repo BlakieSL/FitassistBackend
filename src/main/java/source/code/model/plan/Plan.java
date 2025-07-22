@@ -53,14 +53,14 @@ public class Plan implements IndexedEntity {
     private PlanType planType;
 
     @OneToMany(mappedBy = "plan",
-            cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
+            cascade = {CascadeType.PERSIST}, orphanRemoval = true)
     private final Set<PlanInstruction> planInstructions = new HashSet<>();
 
     @OneToMany(mappedBy = "plan",
             cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
     private final Set<PlanCategoryAssociation> planCategoryAssociations = new HashSet<>();
 
-    @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "plan", orphanRemoval = true)
     private final Set<Workout> workouts = new HashSet<>();
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE)

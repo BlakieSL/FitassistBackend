@@ -63,6 +63,10 @@ public abstract class PlanMapper {
 
     @AfterMapping
     protected void setPlanAssociations(@MappingTarget Plan plan, PlanCreateDto dto) {
+        if (dto.getInstructions() == null) {
+            return;
+        }
+
         Set<PlanInstruction> instructions = dto.getInstructions().stream()
                 .map(instructionDto -> PlanInstruction.of(
                         instructionDto.getOrderIndex(),

@@ -25,8 +25,4 @@ public interface PlanService {
     List<PlanResponseDto> getFilteredPlans(FilterDto filter);
 
     List<Plan> getAllPlanEntities();
-
-    List<PlanResponseDto> getPlansByCategory(int categoryId);
-
-    List<EquipmentResponseDto> getAllEquipment(int planId);
 }
