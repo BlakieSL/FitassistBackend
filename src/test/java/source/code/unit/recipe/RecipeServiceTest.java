@@ -35,6 +35,7 @@ import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.recipe.RecipeServiceImpl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -236,25 +237,27 @@ public class RecipeServiceTest {
     void getAllRecipes_shouldReturnAllRecipes() {
         List<RecipeResponseDto> responseDtos = List.of(responseDto);
 
-        when(repositoryHelper.findAll(eq(recipeRepository), any(Function.class)))
-                .thenReturn(responseDtos);
+        when(recipeRepository.findAllWithAssociations())
+                .thenReturn(List.of(recipe));
+        when(recipeMapper.toResponseDto(recipe)).thenReturn(responseDto);
 
         List<RecipeResponseDto> result = recipeService.getAllRecipes();
 
         assertEquals(responseDtos, result);
-        verify(repositoryHelper).findAll(eq(recipeRepository), any(Function.class));
+        verify(recipeRepository).findAllWithAssociations();
     }
 
     @Test
     void getAllRecipes_shouldReturnEmptyListWhenNoRecipes() {
         List<RecipeResponseDto> responseDtos = List.of();
-        when(repositoryHelper.findAll(eq(recipeRepository), any(Function.class)))
-                .thenReturn(responseDtos);
+
+        when(recipeRepository.findAllWithAssociations())
+                .thenReturn(Collections.emptyList());
 
         List<RecipeResponseDto> result = recipeService.getAllRecipes();
 
         assertTrue(result.isEmpty());
-        verify(repositoryHelper).findAll(eq(recipeRepository), any(Function.class));
+        verify(recipeRepository).findAllWithAssociations();
     }
 
     @Test
@@ -295,37 +298,6 @@ public class RecipeServiceTest {
 
         assertTrue(result.isEmpty());
         verify(recipeRepository).findAll(any(Specification.class));
-        verifyNoInteractions(recipeMapper);
-    }
-
-    @Test
-    void getRecipesByCategory_shouldReturnRecipesForCategory() {
-        int categoryId = 1;
-        RecipeCategoryAssociation association = new RecipeCategoryAssociation();
-        association.setRecipe(recipe);
-
-        when(recipeCategoryAssociationRepository.findByRecipeCategoryId(categoryId))
-                .thenReturn(List.of(association));
-        when(recipeMapper.toResponseDto(recipe)).thenReturn(responseDto);
-
-        List<RecipeResponseDto> result = recipeService.getRecipesByCategory(categoryId);
-
-        assertEquals(1, result.size());
-        assertSame(responseDto, result.get(0));
-        verify(recipeCategoryAssociationRepository).findByRecipeCategoryId(categoryId);
-        verify(recipeMapper).toResponseDto(recipe);
-    }
-
-    @Test
-    void getRecipesByCategory_shouldReturnEmptyListWhenNoRecipes() {
-        int categoryId = 1;
-        when(recipeCategoryAssociationRepository.findByRecipeCategoryId(categoryId))
-                .thenReturn(new ArrayList<>());
-
-        List<RecipeResponseDto> result = recipeService.getRecipesByCategory(categoryId);
-
-        assertTrue(result.isEmpty());
-        verify(recipeCategoryAssociationRepository).findByRecipeCategoryId(categoryId);
         verifyNoInteractions(recipeMapper);
     }
 }

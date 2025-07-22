@@ -61,14 +61,6 @@ public class RecipeController {
         return ResponseEntity.ok(recipeService.getAllRecipes());
     }
 
-    @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<List<RecipeResponseDto>> getRecipesByCategory(
-            @PathVariable int categoryId
-    ) {
-        List<RecipeResponseDto> recipes = recipeService.getRecipesByCategory(categoryId);
-        return ResponseEntity.ok(recipes);
-    }
-
     @PostMapping("/filter")
     public ResponseEntity<List<RecipeResponseDto>> getFilteredRecipes(
             @Valid @RequestBody FilterDto filterDto

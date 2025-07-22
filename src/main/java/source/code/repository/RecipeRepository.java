@@ -13,4 +13,8 @@ public interface RecipeRepository
     @EntityGraph(value = "Recipe.withoutAssociations")
     @Query("SELECT r FROM Recipe r")
     List<Recipe> findAllWithoutAssociations();
+
+    @EntityGraph(attributePaths = {"user", "recipeCategoryAssociations.recipeCategory"})
+    @Query("SELECT r FROM Recipe r")
+    List<Recipe> findAllWithAssociations();
 }

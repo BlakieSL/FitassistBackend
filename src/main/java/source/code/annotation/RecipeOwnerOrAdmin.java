@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@authAnnotationServiceImpl.isRecipeOwnerOrAdmin(#recipeId)")
+@PreAuthorize("@authAnnotationServiceImpl.isRecipeOwnerOrAdmin(#id)")
 public @interface RecipeOwnerOrAdmin { }

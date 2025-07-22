@@ -35,3 +35,23 @@ create table recipe
         foreign key (user_id) references user (id)
 );
 
+
+
+create table recipe_category
+(
+    id   int auto_increment
+        primary key,
+    name varchar(50) not null
+);
+
+create table recipe_category_association
+(
+    id                 int auto_increment
+        primary key,
+    recipe_id          int not null,
+    recipe_category_id int not null,
+    constraint FK6xwmj5n0uvwbko8wsc2exjm6s
+        foreign key (recipe_category_id) references recipe_category (id),
+    constraint FKchpnhktvdy9xwv8ndmahb8r9r
+        foreign key (recipe_id) references recipe (id)
+);
