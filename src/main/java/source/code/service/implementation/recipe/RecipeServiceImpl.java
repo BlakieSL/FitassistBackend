@@ -39,24 +39,21 @@ public class RecipeServiceImpl implements RecipeService {
     private final ValidationService validationService;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final RepositoryHelper repositoryHelper;
-    private final RecipeCategoryAssociationRepository recipeCategoryAssociationRepository;
-    private final RecipeRepository recipeRepository;
+  private final RecipeRepository recipeRepository;
 
     public RecipeServiceImpl(RecipeMapper recipeMapper,
                              JsonPatchService jsonPatchService,
                              ValidationService validationService,
                              ApplicationEventPublisher applicationEventPublisher,
                              RepositoryHelper repositoryHelper,
-                             RecipeRepository recipeRepository,
-                             RecipeCategoryAssociationRepository recipeCategoryAssociationRepository) {
+                             RecipeRepository recipeRepository) {
         this.recipeMapper = recipeMapper;
         this.jsonPatchService = jsonPatchService;
         this.validationService = validationService;
         this.applicationEventPublisher = applicationEventPublisher;
         this.repositoryHelper = repositoryHelper;
         this.recipeRepository = recipeRepository;
-        this.recipeCategoryAssociationRepository = recipeCategoryAssociationRepository;
-    }
+  }
 
     @Override
     @Transactional
@@ -103,7 +100,9 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     @Cacheable(value = CacheNames.ALL_RECIPES)
     public List<RecipeResponseDto> getAllRecipes() {
-        return repositoryHelper.findAll(recipeRepository, recipeMapper::toResponseDto);
+        return recipeRepository.findAllWithAssociations().stream()
+                .map(recipeMapper::toResponseDto)
+                .toList();
     }
 
     @Override
@@ -120,15 +119,6 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public List<Recipe> getAllRecipeEntities() {
         return recipeRepository.findAllWithoutAssociations();
-    }
-
-    @Override
-    @Cacheable(value = CacheNames.RECIPES_BY_CATEGORY, key = "#categoryId")
-    public List<RecipeResponseDto> getRecipesByCategory(int categoryId) {
-        return recipeCategoryAssociationRepository.findByRecipeCategoryId(categoryId).stream()
-                .map(RecipeCategoryAssociation::getRecipe)
-                .map(recipeMapper::toResponseDto)
-                .toList();
     }
 
     private Recipe find(int recipeId) {

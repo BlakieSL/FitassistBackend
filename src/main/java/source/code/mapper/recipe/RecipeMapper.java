@@ -53,6 +53,9 @@ public abstract class RecipeMapper {
 
     @AfterMapping
     protected void setRecipeAssociations(@MappingTarget Recipe recipe, RecipeCreateDto dto) {
+        if (dto.getInstructions() == null) {
+            return;
+        }
         Set<RecipeInstruction> instructions = dto.getInstructions().stream()
                 .map(instructionDto -> RecipeInstruction.of(
                         instructionDto.getOrderIndex(),
