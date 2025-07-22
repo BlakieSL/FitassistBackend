@@ -7,6 +7,7 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
+import source.code.exception.InvalidFilterKeyException;
 import source.code.helper.Enum.model.LikesAndSaves;
 import source.code.helper.Enum.model.field.RecipeField;
 import source.code.model.recipe.Recipe;
@@ -31,7 +32,7 @@ public class RecipeSpecification implements Specification<Recipe> {
         try {
             field = RecipeField.valueOf(criteria.getFilterKey());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid filter key: " + criteria.getFilterKey());
+            throw new InvalidFilterKeyException("Invalid filter key: " + criteria.getFilterKey());
         }
 
         return switch (field) {

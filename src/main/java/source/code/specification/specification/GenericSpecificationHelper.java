@@ -56,7 +56,7 @@ public class GenericSpecificationHelper {
         };
     }
 
-    public static <T> Predicate buildPredicateUserEntityInteractionRange(
+    public static <T> Predicate   buildPredicateUserEntityInteractionRange(
             CriteriaBuilder builder,
             FilterCriteria criteria,
             Root<T> root,
@@ -73,11 +73,23 @@ public class GenericSpecificationHelper {
         subqueryPredicates.add(builder.equal(subRoot.get("id"), root.get("id")));
 
         if (typeValue != null && targetTypeFieldName != null) {
-            subqueryPredicates.add(builder.equal(subJoin.get(targetTypeFieldName), typeValue));
+
+            if (typeValue instanceof Enum<?>) {
+                subqueryPredicates.add(builder.equal(
+                        subJoin.get(targetTypeFieldName),
+                        typeValue
+                ));
+            }
+
+            else {
+                subqueryPredicates.add(builder.equal(
+                        subJoin.get(targetTypeFieldName),
+                        typeValue.toString()
+                ));
+            }
         }
 
         subquery.where(subqueryPredicates.toArray(new Predicate[0]));
-
         subquery.select(builder.count(subJoin));
 
         return createRangePredicate(subquery, builder, criteria);

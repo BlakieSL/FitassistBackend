@@ -3,6 +3,8 @@ package source.code.service.implementation.plan;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
@@ -11,7 +13,6 @@ import org.springframework.stereotype.Service;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.request.plan.PlanUpdateDto;
-import source.code.dto.response.category.EquipmentResponseDto;
 import source.code.dto.response.plan.PlanResponseDto;
 import source.code.event.events.Plan.PlanCreateEvent;
 import source.code.event.events.Plan.PlanDeleteEvent;
@@ -20,9 +21,10 @@ import source.code.helper.Enum.cache.CacheNames;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.plan.PlanMapper;
 import source.code.model.plan.Plan;
-import source.code.model.plan.PlanCategoryAssociation;
 import source.code.repository.PlanCategoryAssociationRepository;
+import source.code.repository.PlanInstructionRepository;
 import source.code.repository.PlanRepository;
+import source.code.repository.TextRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
@@ -41,7 +43,11 @@ public class PlanServiceImpl implements PlanService {
     private final PlanMapper planMapper;
     private final RepositoryHelper repositoryHelper;
     private final PlanRepository planRepository;
-    private final PlanCategoryAssociationRepository planCategoryAssociationRepository;
+    private final PlanInstructionRepository planInstructionRepository;
+    private final TextRepository textRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public PlanServiceImpl(PlanMapper planMapper,
                            JsonPatchService jsonPatchService,
@@ -49,14 +55,15 @@ public class PlanServiceImpl implements PlanService {
                            ApplicationEventPublisher applicationEventPublisher,
                            RepositoryHelper repositoryHelper,
                            PlanRepository planRepository,
-                           PlanCategoryAssociationRepository planCategoryAssociationRepository) {
+                           PlanInstructionRepository planInstructionRepository, TextRepository textRepository) {
         this.planMapper = planMapper;
         this.jsonPatchService = jsonPatchService;
         this.validationService = validationService;
         this.applicationEventPublisher = applicationEventPublisher;
         this.repositoryHelper = repositoryHelper;
         this.planRepository = planRepository;
-        this.planCategoryAssociationRepository = planCategoryAssociationRepository;
+        this.planInstructionRepository = planInstructionRepository;
+        this.textRepository = textRepository;
     }
 
     @Override
@@ -88,6 +95,8 @@ public class PlanServiceImpl implements PlanService {
     @Transactional
     public void deletePlan(int planId) {
         Plan plan = find(planId);
+
+        textRepository.deleteByPlanId(planId);
         planRepository.delete(plan);
 
         applicationEventPublisher.publishEvent(PlanDeleteEvent.of(this, plan));
@@ -103,7 +112,9 @@ public class PlanServiceImpl implements PlanService {
     @Override
     @Cacheable(value = CacheNames.ALL_PLANS)
     public List<PlanResponseDto> getAllPlans() {
-        return repositoryHelper.findAll(planRepository, planMapper::toResponseDto);
+        return planRepository.findAllWithAssociations().stream()
+                .map(planMapper::toResponseDto)
+                .toList();
     }
 
     @Override
@@ -115,20 +126,6 @@ public class PlanServiceImpl implements PlanService {
         return planRepository.findAll(specification).stream()
                 .map(planMapper::toResponseDto)
                 .toList();
-    }
-
-    @Override
-    @Cacheable(value = CacheNames.PLANS_BY_CATEGORY, key = "#categoryId")
-    public List<PlanResponseDto> getPlansByCategory(int categoryId) {
-        return planCategoryAssociationRepository.findByPlanCategoryId(categoryId).stream()
-                .map(PlanCategoryAssociation::getPlan)
-                .map(planMapper::toResponseDto)
-                .toList();
-    }
-
-    @Override
-    public List<EquipmentResponseDto> getAllEquipment(int planId) {
-        return planRepository.findAllEquipmentByPlanId(planId);
     }
 
     @Override

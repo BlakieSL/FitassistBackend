@@ -4,6 +4,7 @@ import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
+import source.code.exception.InvalidFilterKeyException;
 import source.code.helper.Enum.model.LikesAndSaves;
 import source.code.helper.Enum.model.field.PlanField;
 import source.code.model.exercise.Equipment;
@@ -28,7 +29,7 @@ public class PlanSpecification implements Specification<Plan> {
         try {
             field = PlanField.valueOf(criteria.getFilterKey());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid filter key: " + criteria.getFilterKey());
+            throw new InvalidFilterKeyException("Invalid filter key: " + criteria.getFilterKey());
         }
 
         return switch (field) {
@@ -45,24 +46,15 @@ public class PlanSpecification implements Specification<Plan> {
                     PlanField.CATEGORY.getFieldName(),
                     PlanCategoryAssociation.PLAN_CATEGORY
             );
-            case PlanField.LIKE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
+            case PlanField.LIKE, PlanField.SAVE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
                     builder,
                     criteria,
                     root,
                     LikesAndSaves.USER_PLANS.getFieldName(),
                     "type",
-                    PlanField.LIKE
-            );
-            case PlanField.SAVE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
-                    builder,
-                    criteria,
-                    root,
-                    LikesAndSaves.USER_PLANS.getFieldName(),
-                    "type",
-                    PlanField.SAVE
+                    field.getInteractionType()
             );
             case PlanField.EQUIPMENT -> handleEquipmentProperty(root, builder);
-
         };
     }
 
