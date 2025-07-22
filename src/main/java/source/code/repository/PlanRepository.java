@@ -16,6 +16,12 @@ public interface PlanRepository
     @Query("SELECT p FROM Plan p")
     List<Plan> findAllWithoutAssociations();
 
+    @EntityGraph(attributePaths = {"user", "planType", "planCategoryAssociations.planCategory"})
+    @Query("SELECT p FROM Plan p")
+    List<Plan> findAllWithAssociations();
+
+
+
     @Query("SELECT DISTINCT new source.code.dto.response.category.EquipmentResponseDto(e.id, e.name) " +
             "FROM Equipment e " +
             "JOIN e.exercises ex " +
@@ -25,4 +31,6 @@ public interface PlanRepository
             "JOIN w.plan p " +
             "WHERE p.id = :planId")
     List<EquipmentResponseDto> findAllEquipmentByPlanId(@Param("planId") int planId);
+
+
 }

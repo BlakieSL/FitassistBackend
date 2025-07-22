@@ -32,18 +32,18 @@ public class PlanController {
     }
 
     @PlanOwnerOrAdmin
-    @PatchMapping("/{id}")
-    public ResponseEntity<Void> updatePlan(@PathVariable int id, @RequestBody JsonMergePatch patch)
+    @PatchMapping("/{planId}")
+    public ResponseEntity<Void> updatePlan(@PathVariable int planId, @RequestBody JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        planService.updatePlan(id, patch);
+        planService.updatePlan(planId, patch);
         return ResponseEntity.noContent().build();
     }
 
     @PlanOwnerOrAdmin
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePlan(@PathVariable int id) {
-        planService.deletePlan(id);
+    @DeleteMapping("/{planId}")
+    public ResponseEntity<Void> deletePlan(@PathVariable int planId) {
+        planService.deletePlan(planId);
         return ResponseEntity.noContent().build();
     }
 
@@ -56,19 +56,6 @@ public class PlanController {
     @GetMapping
     public ResponseEntity<List<PlanResponseDto>> getAllPlans() {
         List<PlanResponseDto> plans = planService.getAllPlans();
-        return ResponseEntity.ok(plans);
-    }
-
-    @GetMapping("/{id}/equipment")
-    public ResponseEntity<List<EquipmentResponseDto>> getAllEquipment(@PathVariable int id) {
-        List<EquipmentResponseDto> equipment = planService.getAllEquipment(id);
-        return ResponseEntity.ok(equipment);
-    }
-
-
-    @GetMapping("/{categoryId}/categories")
-    public ResponseEntity<List<PlanResponseDto>> getPlansByCategory(@PathVariable int categoryId) {
-        List<PlanResponseDto> plans = planService.getPlansByCategory(categoryId);
         return ResponseEntity.ok(plans);
     }
 

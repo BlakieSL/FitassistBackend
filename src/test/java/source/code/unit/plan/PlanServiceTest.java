@@ -298,36 +298,6 @@ public class PlanServiceTest {
         assertTrue(result.isEmpty());
         verify(planRepository).findAll(any(Specification.class));
         verifyNoInteractions(planMapper);
-    }
 
-    @Test
-    void getPlansByCategory_shouldReturnPlansForCategory() {
-        int categoryId = 1;
-        PlanCategoryAssociation association = new PlanCategoryAssociation();
-        association.setPlan(plan);
-
-        when(planCategoryAssociationRepository.findByPlanCategoryId(categoryId))
-                .thenReturn(List.of(association));
-        when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
-
-        List<PlanResponseDto> result = planService.getPlansByCategory(categoryId);
-
-        assertEquals(1, result.size());
-        assertSame(responseDto, result.get(0));
-        verify(planCategoryAssociationRepository).findByPlanCategoryId(categoryId);
-        verify(planMapper).toResponseDto(plan);
-    }
-
-    @Test
-    void getPlansByCategory_shouldReturnEmptyListWhenNoPlans() {
-        int categoryId = 1;
-        when(planCategoryAssociationRepository.findByPlanCategoryId(categoryId))
-                .thenReturn(new ArrayList<>());
-
-        List<PlanResponseDto> result = planService.getPlansByCategory(categoryId);
-
-        assertTrue(result.isEmpty());
-        verify(planCategoryAssociationRepository).findByPlanCategoryId(categoryId);
-        verifyNoInteractions(planMapper);
     }
 }
