@@ -50,8 +50,8 @@ public class MySqlRedisAwsContainers {
 
         registry.add("spring.cloud.aws.s3.enabled", () -> "true");
         registry.add("spring.cloud.aws.s3.endpoint", () -> endpoint);
-        registry.add("spring.cloud.aws.credentials.access-key", () -> "test");
-        registry.add("spring.cloud.aws.credentials.secret-key", () -> "test");
+        registry.add("spring.cloud.aws.credentials.access-key", () -> "text");
+        registry.add("spring.cloud.aws.credentials.secret-key", () -> "text");
         registry.add("spring.cloud.aws.region.static", () -> localStack.getRegion());
         registry.add("s3.bucket.name", () -> bucketName);
         createS3Bucket(endpoint, bucketName);
@@ -61,7 +61,7 @@ public class MySqlRedisAwsContainers {
         try {
             S3Client s3Client = S3Client.builder()
                     .endpointOverride(URI.create(endpoint))
-                    .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("test", "test")))
+                    .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("text", "text")))
                     .region(Region.of(localStack.getRegion()))
                     .build();
 
