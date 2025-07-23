@@ -43,7 +43,7 @@ public class AwsS3ContainerInitializer implements ApplicationContextInitializer<
         try {
             S3Client s3Client = S3Client.builder()
                     .endpointOverride(URI.create(localStack.getEndpointOverride(LocalStackContainer.Service.S3).toString()))
-                    .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("test", "test")))
+                    .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("text", "text")))
                     .region(Region.of(localStack.getRegion()))
                     .build();
 
