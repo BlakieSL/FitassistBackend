@@ -12,7 +12,7 @@ import source.code.mapper.forumThread.ForumThreadMapper;
 import source.code.mapper.plan.PlanMapper;
 import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.user.User;
-import source.code.repository.UserRepository;
+import source.code.repository.*;
 import source.code.service.declaration.user.UserCreatedService;
 
 import java.util.List;
@@ -25,51 +25,59 @@ public class UserCreatedServiceImpl implements UserCreatedService {
     private final RecipeMapper recipeMapper;
     private final CommentMapper commentMapper;
     private final ForumThreadMapper forumThreadMapper;
+    private final PlanRepository planRepository;
+    private final RecipeRepository recipeRepository;
+    private final UserCommentRepository userCommentRepository;
+    private final CommentRepository commentRepository;
+    private final ForumThreadRepository forumThreadRepository;
 
     public UserCreatedServiceImpl(UserRepository userRepository,
                                   PlanMapper planMapper,
                                   RecipeMapper recipeMapper,
                                   CommentMapper commentMapper,
-                                  ForumThreadMapper forumThreadMapper) {
+                                  ForumThreadMapper forumThreadMapper, PlanRepository planRepository, RecipeRepository recipeRepository, UserCommentRepository userCommentRepository, CommentRepository commentRepository, ForumThreadRepository forumThreadRepository) {
         this.userRepository = userRepository;
         this.planMapper = planMapper;
         this.recipeMapper = recipeMapper;
         this.commentMapper = commentMapper;
         this.forumThreadMapper = forumThreadMapper;
+        this.planRepository = planRepository;
+        this.recipeRepository = recipeRepository;
+        this.userCommentRepository = userCommentRepository;
+        this.commentRepository = commentRepository;
+        this.forumThreadRepository = forumThreadRepository;
     }
 
 
     @Override
     public List<PlanResponseDto> getCreatedPlans() {
-        return getUser().getPlans().stream()
+        return planRepository.findAllByUser_Id(getUserId()).stream()
                 .map(planMapper::toResponseDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<RecipeResponseDto> getCreatedRecipes() {
-        return getUser().getRecipes().stream()
+        return  recipeRepository.findAllByUser_Id(getUserId()).stream()
                 .map(recipeMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<CommentResponseDto> getCreatedComments() {
-        return getUser().getWrittenComments().stream()
+        return commentRepository.findAllByUser_Id(getUserId()).stream()
                 .map(commentMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<ForumThreadResponseDto> getCreatedThreads() {
-        return getUser().getCreatedForumThreads().stream()
+        return forumThreadRepository.findAllByUser_Id(getUserId()).stream()
                 .map(forumThreadMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
 
-    private User getUser() {
-        int userId = AuthorizationUtil.getUserId();
-        return userRepository.findById(userId)
-                .orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
+    private int getUserId() {
+        return AuthorizationUtil.getUserId();
     }
 }
