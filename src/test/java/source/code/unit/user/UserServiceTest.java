@@ -263,7 +263,7 @@ public class UserServiceTest {
         UserCredentialsDto credentialsDto = new UserCredentialsDto();
         credentialsDto.setEmail(username);
         credentialsDto.setPassword("encodedPassword");
-        credentialsDto.setRoles(Set.of("USER"));
+        credentialsDto.setRoles(Set.of("user"));
 
         when(userRepository.findUserWithRolesByEmail(username)).thenReturn(Optional.of(user));
         when(userMapper.toDetails(user)).thenReturn(credentialsDto);
