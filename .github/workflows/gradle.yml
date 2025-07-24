@@ -9,9 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 21
@@ -20,6 +17,11 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         
+    - name: Setup Testcontainers Cloud Client
+      uses: atomicjar/testcontainers-cloud-setup-action@v1
+      with:
+         token: ${{ secrets.TC_CLOUD_TOKEN }}
+         
     - name: Check project structure
       run: |
         ls -la
