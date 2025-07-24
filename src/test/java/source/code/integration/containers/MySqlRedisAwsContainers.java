@@ -17,11 +17,11 @@ import java.net.URI;
 @Testcontainers
 public class MySqlRedisAwsContainers {
 
-    static GenericContainer<?> redisContainer = new GenericContainer<>("redis:latest")
+    static GenericContainer<?> redisContainer = new GenericContainer<>("8.0.3-bookworm")
             .withExposedPorts(6379);
 
 
-    static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:latest")
+    static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("8.0.43")
             .withDatabaseName("main-db")
             .withUsername("root")
             .withPassword("root");

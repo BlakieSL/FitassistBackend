@@ -178,7 +178,7 @@ public class UserControllerTest {
     @Test
     @DisplayName("PATCH - /{id} - Should return 404 when user not found")
     void updateUserNotFound() throws Exception {
-        Utils.setUserContext(1);
+        Utils.setAdminContext(1);
 
         int id = 999;
         var patch = """
