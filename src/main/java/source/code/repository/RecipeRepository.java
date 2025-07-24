@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import source.code.model.recipe.Recipe;
 
 import java.util.List;
+import java.util.jar.JarFile;
 
 public interface RecipeRepository
         extends JpaRepository<Recipe, Integer>, JpaSpecificationExecutor<Recipe> {
@@ -17,4 +18,6 @@ public interface RecipeRepository
     @EntityGraph(attributePaths = {"user", "recipeCategoryAssociations.recipeCategory"})
     @Query("SELECT r FROM Recipe r")
     List<Recipe> findAllWithAssociations();
+
+    List<Recipe> findAllByUser_Id(Integer userId);
 }
