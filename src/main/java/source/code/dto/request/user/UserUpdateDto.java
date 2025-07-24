@@ -36,7 +36,6 @@ public class UserUpdateDto {
     @PasswordLowercaseDomain
     private String password;
 
-    @Size(min = 4, max = 6)
     private Gender gender;
 
     @Past

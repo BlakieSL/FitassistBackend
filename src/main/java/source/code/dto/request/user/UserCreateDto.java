@@ -49,4 +49,19 @@ public class UserCreateDto {
     private BigDecimal weight;
     private ActivityLevel activityLevel;
     private Goal goal;
+
+    public static UserCreateDto of(
+            String username,
+            String email,
+            String password,
+            Gender gender,
+            LocalDate birthday) {
+        UserCreateDto userCreateDto = new UserCreateDto();
+        userCreateDto.setUsername(username);
+        userCreateDto.setEmail(email);
+        userCreateDto.setPassword(password);
+        userCreateDto.setGender(gender);
+        userCreateDto.setBirthday(birthday);
+        return userCreateDto;
+    }
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import source.code.exception.InvalidRefreshTokenException;
 import source.code.exception.JwtAuthenticationException;
 
 import java.text.ParseException;
@@ -52,6 +53,35 @@ public class JwtService {
                 authorities,
                 60 * 24 * 7,
                 REFRESH_TOKEN_TYPE);
+    }
+
+    public String refreshAccessToken(String refreshToken) {
+        try {
+            SignedJWT signedJWT = (SignedJWT) JWTParser.parse(refreshToken);
+            verifySignature(signedJWT);
+            verifyExpirationTime(signedJWT);
+
+            JWTClaimsSet claims = signedJWT.getJWTClaimsSet();
+
+            String subject = claims.getSubject();
+            if (subject == null) {
+                throw new InvalidRefreshTokenException("Refresh token has no subject");
+            }
+
+            Integer userId = claims.getIntegerClaim("userId");
+            if (userId == null) {
+                throw new InvalidRefreshTokenException("Refresh token has no user ID");
+            }
+
+            List<String> authorities = claims.getStringListClaim("authorities");
+            if (authorities == null) {
+                throw new InvalidRefreshTokenException("Refresh token has no authorities");
+            }
+
+            return createAccessToken(subject, userId, authorities);
+        } catch (ParseException e) {
+            throw new InvalidRefreshTokenException("Invalid refresh token");
+        }
     }
 
     public String createSignedJWT(
@@ -103,21 +133,6 @@ public class JwtService {
             return new CustomAuthenticationToken(subject, userId, null, authorities);
         } catch (ParseException e) {
             throw new JwtAuthenticationException("Missing or invalid claims in JWT");
-        }
-    }
-
-    public String refreshAccessToken(String refreshToken) {
-        try {
-            SignedJWT signedJWT = (SignedJWT) JWTParser.parse(refreshToken);
-            verifySignature(signedJWT);
-            verifyExpirationTime(signedJWT);
-            return createAccessToken(
-                    signedJWT.getJWTClaimsSet().getSubject(),
-                    signedJWT.getJWTClaimsSet().getIntegerClaim("userId"),
-                    signedJWT.getJWTClaimsSet().getStringListClaim("authorities")
-            );
-        } catch (ParseException e) {
-            throw new JwtAuthenticationException("Invalid refresh token");
         }
     }
 

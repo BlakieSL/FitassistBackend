@@ -104,8 +104,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private UserUpdateDto applyPatchToUser(JsonMergePatch patch, int userId)
             throws JsonPatchException, JsonProcessingException
     {
-        UserResponseDto userDto = getUser(userId);
-        return jsonPatchService.applyPatch(patch, userDto, UserUpdateDto.class);
+        return jsonPatchService.createFromPatch(patch, UserUpdateDto.class);
     }
 
     private void validatePasswordIfNeeded(User user, UserUpdateDto dto) {

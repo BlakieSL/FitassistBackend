@@ -119,19 +119,6 @@ public class AuthAnnotationServiceImpl {
         return AuthorizationUtil.isOwnerOrAdmin(workout.getPlan().getUser().getId());
     }
 
-    public boolean isWorkoutSetGroupOwnerOrAdmin(int workoutSetGroupId) {
-        WorkoutSetGroup workoutSetGroup = repositoryHelper.find(
-                workoutSetGroupRepository,
-                WorkoutSetGroup.class,
-                workoutSetGroupId
-        );
-        return AuthorizationUtil.isOwnerOrAdmin(workoutSetGroup
-                .getWorkout()
-                .getPlan()
-                .getUser()
-                .getId());
-    }
-
     public boolean isWorkoutSetOwnerOrAdmin(int workoutSetId) {
         WorkoutSet workoutSet = repositoryHelper.find(
                 workoutSetRepository,
@@ -140,6 +127,19 @@ public class AuthAnnotationServiceImpl {
         );
         return AuthorizationUtil.isOwnerOrAdmin(workoutSet
                 .getWorkoutSetGroup()
+                .getWorkout()
+                .getPlan()
+                .getUser()
+                .getId());
+    }
+
+    public boolean isWorkoutSetGroupOwnerOrAdmin(int workoutSetGroupId) {
+        WorkoutSetGroup workoutSetGroup = repositoryHelper.find(
+                workoutSetGroupRepository,
+                WorkoutSetGroup.class,
+                workoutSetGroupId
+        );
+        return AuthorizationUtil.isOwnerOrAdmin(workoutSetGroup
                 .getWorkout()
                 .getPlan()
                 .getUser()
