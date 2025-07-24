@@ -34,7 +34,7 @@ public class WorkoutSetGroup {
     @JoinColumn(name = "workout_id", nullable = false)
     private Workout workout;
 
-    @OneToMany(mappedBy = "workoutSetGroup", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "workoutSetGroup", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private Set<WorkoutSet> workoutSets = new HashSet<>();
 
     public static WorkoutSetGroup of(Integer id, Workout workout) {

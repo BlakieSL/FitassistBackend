@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
 DELETE FROM expertise_level;
 DELETE FROM equipment;
 DELETE FROM force_type;
@@ -35,3 +37,5 @@ DELETE FROM exercise;
 DELETE FROM activity;
 DELETE FROM food;
 DELETE FROM user;
+
+SET FOREIGN_KEY_CHECKS = 1;

@@ -3,6 +3,7 @@ package source.code.service.implementation.workoutSetGroup;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.workoutSetGroup.WorkoutSetGroupCreateDto;
 import source.code.dto.request.workoutSetGroup.WorkoutSetGroupUpdateDto;
@@ -37,12 +38,14 @@ public class WorkoutSetGroupServiceImpl implements WorkoutSetGroupService {
         this.workoutSetGroupMapper = workoutSetGroupMapper;
     }
 
+    @Transactional
     @Override
     public WorkoutSetGroupResponseDto createWorkoutSetGroup(WorkoutSetGroupCreateDto createDto) {
         WorkoutSetGroup workoutSetGroup = workoutSetGroupRepository.save(workoutSetGroupMapper.toEntity(createDto));
         return workoutSetGroupMapper.toResponseDto(workoutSetGroup);
     }
 
+    @Transactional
     @Override
     public void updateWorkoutSetGroup(int workoutSetGroupId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
         WorkoutSetGroup workoutSetGroup = find(workoutSetGroupId);
@@ -53,6 +56,7 @@ public class WorkoutSetGroupServiceImpl implements WorkoutSetGroupService {
         workoutSetGroupRepository.save(workoutSetGroup);
     }
 
+    @Transactional
     @Override
     public void deleteWorkoutSetGroup(int workoutSetGroupId) {
         WorkoutSetGroup workoutSetGroup = find(workoutSetGroupId);
