@@ -20,30 +20,29 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserCreatedServiceImpl implements UserCreatedService {
-    private final UserRepository userRepository;
     private final PlanMapper planMapper;
     private final RecipeMapper recipeMapper;
     private final CommentMapper commentMapper;
     private final ForumThreadMapper forumThreadMapper;
     private final PlanRepository planRepository;
     private final RecipeRepository recipeRepository;
-    private final UserCommentRepository userCommentRepository;
     private final CommentRepository commentRepository;
     private final ForumThreadRepository forumThreadRepository;
 
-    public UserCreatedServiceImpl(UserRepository userRepository,
-                                  PlanMapper planMapper,
+    public UserCreatedServiceImpl(PlanMapper planMapper,
                                   RecipeMapper recipeMapper,
                                   CommentMapper commentMapper,
-                                  ForumThreadMapper forumThreadMapper, PlanRepository planRepository, RecipeRepository recipeRepository, UserCommentRepository userCommentRepository, CommentRepository commentRepository, ForumThreadRepository forumThreadRepository) {
-        this.userRepository = userRepository;
+                                  ForumThreadMapper forumThreadMapper,
+                                  PlanRepository planRepository,
+                                  RecipeRepository recipeRepository,
+                                  CommentRepository commentRepository,
+                                  ForumThreadRepository forumThreadRepository) {
         this.planMapper = planMapper;
         this.recipeMapper = recipeMapper;
         this.commentMapper = commentMapper;
         this.forumThreadMapper = forumThreadMapper;
         this.planRepository = planRepository;
         this.recipeRepository = recipeRepository;
-        this.userCommentRepository = userCommentRepository;
         this.commentRepository = commentRepository;
         this.forumThreadRepository = forumThreadRepository;
     }
