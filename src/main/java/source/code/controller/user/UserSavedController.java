@@ -1,5 +1,6 @@
 package source.code.controller.user;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.dto.response.LikesAndSavesResponseDto;
@@ -14,10 +15,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/user-saved")
-public class SavedController {
+public class UserSavedController {
     private final SavedSelectorService savedSelectorService;
 
-    public SavedController(SavedSelectorService savedSelectorService) {
+    public UserSavedController(SavedSelectorService savedSelectorService) {
         this.savedSelectorService = savedSelectorService;
     }
 
@@ -49,7 +50,7 @@ public class SavedController {
     ) {
         SavedService savedService = savedSelectorService.getService(itemType);
         savedService.saveToUser(itemId, type);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/item-type/{itemType}/{itemId}/type/{type}")
@@ -81,7 +82,7 @@ public class SavedController {
         SavedServiceWithoutType savedServiceWithoutType = savedSelectorService
                 .getServiceWithoutType(itemType);
         savedServiceWithoutType.saveToUser(itemId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/item-type/{itemType}/{itemId}")
