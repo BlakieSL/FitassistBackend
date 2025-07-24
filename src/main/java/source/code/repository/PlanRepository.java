@@ -32,5 +32,5 @@ public interface PlanRepository
             "WHERE p.id = :planId")
     List<EquipmentResponseDto> findAllEquipmentByPlanId(@Param("planId") int planId);
 
-
+    List<Plan> findAllByUser_Id(int userId);
 }
