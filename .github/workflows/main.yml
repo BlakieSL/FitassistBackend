@@ -1,0 +1,36 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        
+    - name: Check project structure
+      run: |
+        ls -la
+        find . -name "*.gradle" -o -name "*.gradle.kts" | head -10
+        cat build.gradle* | head -50
+    - name: Build project
+      run: ./gradlew build --info --stacktrace
+      env:
+        TESTCONTAINERS_RYUK_DISABLED: "true"
+      
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        files: |
+          **/build/test-results/test/TEST-*.xml 
