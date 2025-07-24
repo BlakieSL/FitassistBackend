@@ -112,8 +112,7 @@ public class UserServiceTest {
     @DisplayName("updateUser - Should update common")
     void updateUser_ShouldUpdate() throws Exception {
         when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-        when(userMapper.toResponse(user)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(eq(patch), any(UserResponseDto.class), eq(UserUpdateDto.class)))
+        when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class)))
                 .thenReturn(updateDto);
         doNothing().when(validationService).validate(updateDto);
         doNothing().when(userMapper).updateUserFromDto(user, updateDto);
@@ -121,7 +120,7 @@ public class UserServiceTest {
 
         userService.updateUser(userId, patch);
 
-        verify(repositoryHelper, times(2)).find(userRepository, User.class, userId);
+        verify(repositoryHelper, times(1)).find(userRepository, User.class, userId);
         verify(validationService).validate(updateDto);
         verify(userMapper).updateUserFromDto(user, updateDto);
         verify(userRepository).save(user);
@@ -137,8 +136,7 @@ public class UserServiceTest {
         updateDto.setPassword("newPassword");
 
         when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-        when(userMapper.toResponse(user)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(eq(patch), any(UserResponseDto.class), eq(UserUpdateDto.class)))
+        when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class)))
                 .thenReturn(updateDto);
         doNothing().when(validationService).validate(updateDto);
         doNothing().when(userMapper).updateUserFromDto(user, updateDto);
@@ -149,7 +147,7 @@ public class UserServiceTest {
 
         userService.updateUser(userId, patch);
 
-        verify(repositoryHelper, times(2)).find(userRepository, User.class, userId);
+        verify(repositoryHelper, times(1)).find(userRepository, User.class, userId);
         verify(validationService).validate(updateDto);
         verify(userMapper).updateUserFromDto(user, updateDto);
         verify(userRepository).save(user);
@@ -171,8 +169,7 @@ public class UserServiceTest {
     @DisplayName("updateUser - Should throw exception when patch fails")
     void updateUser_ShouldThrowExceptionWhenPatchFails() throws Exception {
         when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-        when(userMapper.toResponse(user)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(eq(patch), any(UserResponseDto.class), eq(UserUpdateDto.class)))
+        when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class)))
                 .thenThrow(JsonPatchException.class);
 
         assertThrows(JsonPatchException.class, () -> userService.updateUser(userId, patch));
@@ -187,8 +184,7 @@ public class UserServiceTest {
         updateDto.setOldPassword(null);
 
         when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-        when(userMapper.toResponse(user)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(eq(patch), any(UserResponseDto.class), eq(UserUpdateDto.class)))
+        when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class)))
                 .thenReturn(updateDto);
 
         assertThrows(IllegalArgumentException.class,
@@ -205,8 +201,7 @@ public class UserServiceTest {
         updateDto.setOldPassword("currentPassword");
 
         when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-        when(userMapper.toResponse(user)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(eq(patch), any(UserResponseDto.class), eq(UserUpdateDto.class)))
+        when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class)))
                 .thenReturn(updateDto);
         doNothing().when(validationService).validate(updateDto);
         doNothing().when(userMapper).updateUserFromDto(user, updateDto);
@@ -214,7 +209,7 @@ public class UserServiceTest {
 
         userService.updateUser(userId, patch);
 
-        verify(repositoryHelper, times(2)).find(userRepository, User.class, userId);
+        verify(repositoryHelper, times(1)).find(userRepository, User.class, userId);
         verify(validationService).validate(updateDto);
         verify(userMapper).updateUserFromDto(user, updateDto);
         verify(userRepository).save(user);
@@ -229,8 +224,7 @@ public class UserServiceTest {
         updateDto.setPassword("newPassword");
 
         when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-        when(userMapper.toResponse(user)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(eq(patch), any(UserResponseDto.class), eq(UserUpdateDto.class)))
+        when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class)))
                 .thenReturn(updateDto);
         when(passwordEncoder.matches("wrongPassword", "encodedPassword")).thenReturn(false);
 
@@ -244,8 +238,7 @@ public class UserServiceTest {
     @DisplayName("updateUser - Should throw exception when validation fails")
     void updateUser_ShouldThrowExceptionWhenValidationFails() throws Exception {
         when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-        when(userMapper.toResponse(user)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(eq(patch), any(UserResponseDto.class), eq(UserUpdateDto.class)))
+        when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class)))
                 .thenReturn(updateDto);
         doThrow(IllegalArgumentException.class)
                 .when(validationService).validate(updateDto);

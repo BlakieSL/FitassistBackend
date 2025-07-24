@@ -25,7 +25,7 @@ import source.code.model.recipe.Recipe;
 import source.code.model.thread.Comment;
 import source.code.model.thread.ForumThread;
 import source.code.model.user.User;
-import source.code.repository.UserRepository;
+import source.code.repository.*;
 import source.code.service.implementation.user.UserCreatedServiceImpl;
 
 import java.util.List;
@@ -37,7 +37,14 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class UserCreatedServiceTest {
     @Mock
-    private UserRepository userRepository;
+    private PlanRepository planRepository;
+    @Mock
+    private RecipeRepository recipeRepository;
+    @Mock
+    private CommentRepository commentRepository;
+    @Mock
+    private ForumThreadRepository forumThreadRepository;
+
     @Mock
     private PlanMapper planMapper;
     @Mock
@@ -73,11 +80,11 @@ public class UserCreatedServiceTest {
         Plan plan2 = new Plan();
         user.getPlans().add(plan1);
         user.getPlans().add(plan2);
-
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-
         PlanResponseDto dto1 = new PlanResponseDto();
         PlanResponseDto dto2 = new PlanResponseDto();
+
+        when(planRepository.findAllByUser_Id(userId)).thenReturn(List.of(plan1, plan2));
+
         when(planMapper.toResponseDto(plan1)).thenReturn(dto1);
         when(planMapper.toResponseDto(plan2)).thenReturn(dto2);
 
@@ -87,7 +94,7 @@ public class UserCreatedServiceTest {
         assertEquals(2, result.size());
         assertTrue(result.contains(dto1));
         assertTrue(result.contains(dto2));
-        verify(userRepository).findById(userId);
+        verify(planRepository).findAllByUser_Id(userId);
         verify(planMapper, times(2)).toResponseDto(any(Plan.class));
     }
 
@@ -99,28 +106,16 @@ public class UserCreatedServiceTest {
 
         User user = new User();
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(planRepository.findAllByUser_Id(userId)).thenReturn(List.of());
 
         List<PlanResponseDto> result = userCreatedService.getCreatedPlans();
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(userRepository).findById(userId);
+        verify(planRepository).findAllByUser_Id(userId);
         verifyNoInteractions(planMapper);
     }
 
-    @Test
-    @DisplayName("getCreatedPlans - Should throw RecordNotFoundException when user not found")
-    public void getCreatedPlans_ShouldThrowRecordNotFoundException() {
-        int userId = 1;
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-        assertThrows(RecordNotFoundException.class, () -> userCreatedService.getCreatedPlans());
-
-        verify(userRepository).findById(userId);
-        verifyNoInteractions(planMapper);
-    }
 
     @Test
     @DisplayName("getCreatedRecipes - Should return mapped RecipeResponseDto list")
@@ -134,7 +129,7 @@ public class UserCreatedServiceTest {
         user.getRecipes().add(recipe1);
         user.getRecipes().add(recipe2);
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(recipeRepository.findAllByUser_Id(userId)).thenReturn(List.of(recipe1, recipe2));
 
         RecipeResponseDto dto1 = new RecipeResponseDto();
         RecipeResponseDto dto2 = new RecipeResponseDto();
@@ -147,7 +142,7 @@ public class UserCreatedServiceTest {
         assertEquals(2, result.size());
         assertTrue(result.contains(dto1));
         assertTrue(result.contains(dto2));
-        verify(userRepository).findById(userId);
+        verify(recipeRepository).findAllByUser_Id(userId);
         verify(recipeMapper, times(2)).toResponseDto(any(Recipe.class));
     }
 
@@ -158,28 +153,17 @@ public class UserCreatedServiceTest {
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
         User user = new User();
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        when(recipeRepository.findAllByUser_Id(userId)).thenReturn(List.of());
 
         List<RecipeResponseDto> result = userCreatedService.getCreatedRecipes();
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(userRepository).findById(userId);
+        verify(recipeRepository).findAllByUser_Id(userId);
         verifyNoInteractions(recipeMapper);
     }
 
-    @Test
-    @DisplayName("getCreatedRecipes - Should throw RecordNotFoundException when user not found")
-    public void getCreatedRecipes_ShouldThrowRecordNotFoundException() {
-        int userId = 1;
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-        assertThrows(RecordNotFoundException.class, () -> userCreatedService.getCreatedRecipes());
-
-        verify(userRepository).findById(userId);
-        verifyNoInteractions(recipeMapper);
-    }
 
     @Test
     @DisplayName("getCreatedComments - Should return mapped CommentResponseDto list")
@@ -195,7 +179,8 @@ public class UserCreatedServiceTest {
         user.getWrittenComments().add(comment1);
         user.getWrittenComments().add(comment2);
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(commentRepository.findAllByUser_Id(userId)).thenReturn(List.of(comment1, comment2));
+
         when(commentMapper.toResponseDto(comment1)).thenReturn(dto1);
         when(commentMapper.toResponseDto(comment2)).thenReturn(dto2);
 
@@ -205,7 +190,7 @@ public class UserCreatedServiceTest {
         assertEquals(2, result.size());
         assertTrue(result.contains(dto1));
         assertTrue(result.contains(dto2));
-        verify(userRepository).findById(userId);
+        verify(commentRepository).findAllByUser_Id(userId);
         verify(commentMapper, times(2)).toResponseDto(any(Comment.class));
     }
 
@@ -216,28 +201,16 @@ public class UserCreatedServiceTest {
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
         User user = new User();
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(commentRepository.findAllByUser_Id(userId)).thenReturn(List.of());
 
         List<CommentResponseDto> result = userCreatedService.getCreatedComments();
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(userRepository).findById(userId);
+        verify(commentRepository).findAllByUser_Id(userId);
         verifyNoInteractions(commentMapper);
     }
 
-    @Test
-    @DisplayName("getCreatedComments - Should throw RecordNotFoundException when user not found")
-    public void getCreatedComments_ShouldThrowRecordNotFoundException() {
-        int userId = 1;
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-        assertThrows(RecordNotFoundException.class, () -> userCreatedService.getCreatedComments());
-
-        verify(userRepository).findById(userId);
-        verifyNoInteractions(commentMapper);
-    }
 
     @Test
     @DisplayName("getCreatedThreads - Should return mapped ForumThreadResponseDto list")
@@ -253,7 +226,7 @@ public class UserCreatedServiceTest {
         user.getCreatedForumThreads().add(thread1);
         user.getCreatedForumThreads().add(thread2);
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(forumThreadRepository.findAllByUser_Id(userId)).thenReturn(List.of(thread1, thread2));
         when(forumThreadMapper.toResponseDto(thread1)).thenReturn(dto1);
         when(forumThreadMapper.toResponseDto(thread2)).thenReturn(dto2);
 
@@ -263,7 +236,7 @@ public class UserCreatedServiceTest {
         assertEquals(2, result.size());
         assertTrue(result.contains(dto1));
         assertTrue(result.contains(dto2));
-        verify(userRepository).findById(userId);
+        verify(forumThreadRepository).findAllByUser_Id(userId);
         verify(forumThreadMapper, times(2)).toResponseDto(any(ForumThread.class));
     }
 
@@ -274,26 +247,13 @@ public class UserCreatedServiceTest {
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
         User user = new User();
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(forumThreadRepository.findAllByUser_Id(userId)).thenReturn(List.of());
 
         List<ForumThreadResponseDto> result = userCreatedService.getCreatedThreads();
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(userRepository).findById(userId);
-        verifyNoInteractions(forumThreadMapper);
-    }
-
-    @Test
-    @DisplayName("getCreatedThreads - Should throw RecordNotFoundException when user not found")
-    public void getCreatedThreads_ShouldThrowRecordNotFoundException() {
-        int userId = 1;
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-        assertThrows(RecordNotFoundException.class, () -> userCreatedService.getCreatedThreads());
-
-        verify(userRepository).findById(userId);
+        verify(forumThreadRepository).findAllByUser_Id(userId);
         verifyNoInteractions(forumThreadMapper);
     }
 }

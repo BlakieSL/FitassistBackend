@@ -138,7 +138,7 @@ public class UserSavedControllerWithTypeTest {
         Utils.setUserContext(2);
 
         mockMvc.perform(post("/api/user-saved/item-type/COMMENT/1/type/SAVE"))
-                .andExpectAll(status().isNoContent());
+                .andExpectAll(status().isCreated());
     }
 
     @UserSavedSql
@@ -148,7 +148,7 @@ public class UserSavedControllerWithTypeTest {
         Utils.setUserContext(1);
 
         mockMvc.perform(post("/api/user-saved/item-type/PLAN/1/type/LIKE"))
-                .andExpectAll(status().isNoContent());
+                .andExpectAll(status().isCreated());
     }
 
     @UserSavedSql
