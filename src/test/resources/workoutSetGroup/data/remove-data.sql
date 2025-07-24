@@ -1,0 +1,13 @@
+DELETE FROM workout_set;
+DELETE FROM workout_set_group;
+DELETE FROM workout;
+DELETE FROM plan;
+DELETE FROM plan_type;
+DELETE FROM exercise;
+DELETE FROM mechanics_type;
+DELETE FROM force_type;
+DELETE FROM expertise_level;
+DELETE FROM equipment;
+DELETE FROM user_roles;
+DELETE FROM user;
+DELETE FROM role;
