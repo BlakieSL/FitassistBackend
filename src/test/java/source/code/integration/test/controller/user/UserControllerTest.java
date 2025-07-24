@@ -1,0 +1,284 @@
+package source.code.integration.test.controller.user;
+
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
+import source.code.dto.request.user.UserCreateDto;
+import source.code.helper.Enum.model.user.Gender;
+import source.code.integration.config.MockAwsS3Config;
+import source.code.integration.config.MockRedisConfig;
+import source.code.integration.containers.MySqlContainerInitializer;
+import source.code.integration.utils.TestSetup;
+import source.code.integration.utils.Utils;
+
+import java.time.LocalDate;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@TestSetup
+@Import({MockAwsS3Config.class, MockRedisConfig.class})
+@TestPropertySource(properties = "schema.name=general")
+@ContextConfiguration(initializers = {MySqlContainerInitializer.class})
+public class UserControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @UserSql
+    @Test
+    @DisplayName("GET - /{id} - Should retrieve a user by id when owner")
+    void getUser() throws Exception {
+        Utils.setUserContext(1);
+
+        mockMvc.perform(get("/api/users/1"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.id").value(1),
+                        jsonPath("$.username").value("user1")
+                );
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("GET - /{id} - Should retrieve a user by id when admin")
+    void getUserAsAdmin() throws Exception {
+        Utils.setAdminContext(2);
+        mockMvc.perform(get("/api/users/1"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.id").value(1),
+                        jsonPath("$.username").value("user1")
+                );
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("GET - /{id} - Should return 404 when not found")
+    void getNonExistentUser() throws Exception {
+        Utils.setAdminContext(2);
+
+        mockMvc.perform(get("/api/users/999"))
+                .andExpect(status().isNotFound());
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("GET - /{id} - Should return 403 when not owner or admin")
+    void getUserForbidden() throws Exception {
+        Utils.setUserContext(2);
+
+        mockMvc.perform(get("/api/users/1"))
+                .andExpect(status().isForbidden());
+    }
+
+    @WithAnonymousUser
+    @UserSql
+    @Test
+    @DisplayName("POST - /register - Should register a new user")
+    void registerUser() throws Exception {
+        var request = UserCreateDto.of(
+                "newUser",
+                "newUser@gmail.com",
+                "Dimas@123",
+                Gender.FEMALE,
+                LocalDate.of(2020, 1, 1)
+        );
+
+        mockMvc.perform(post("/api/users/register")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpectAll(
+                        status().isCreated(),
+                        jsonPath("$.id").exists(),
+                        jsonPath("$.username").value("newUser")
+                );
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("PATCH - /{id} - Should update user when owner")
+    void updateUser() throws Exception {
+        Utils.setUserContext(1);
+        int id = 1;
+        var patch = """
+            {
+                "username": "updatedUser1"
+            }
+            """;
+
+        mockMvc.perform(patch("/api/users/{id}", id)
+                        .contentType("application/json")
+                        .content(patch))
+                .andExpectAll(status().isNoContent());
+
+        mockMvc.perform(get("/api/users/{id}", id))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.username").value("updatedUser1")
+                );
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("PATCH - /{id} - Should update user when admin")
+    void updateUserAsAdmin() throws Exception {
+        Utils.setAdminContext(2);
+
+        int id = 1;
+        var patch = """
+            {
+                "email": "updated1@gmail.com"
+            }
+            """;
+
+        mockMvc.perform(patch("/api/users/{id}", id)
+                        .contentType("application/json")
+                        .content(patch))
+                .andExpectAll(status().isNoContent());
+
+        mockMvc.perform(get("/api/users/{id}", id))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.email").value("updated1@gmail.com")
+                );
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("PATCH - /{id} - Should return 403 when not owner or admin")
+    void updateUserForbidden() throws Exception {
+        Utils.setUserContext(3);
+
+        int id = 1;
+        var patch = """
+            {
+                "username": "updatedUser1"
+            }
+            """;
+
+        mockMvc.perform(patch("/api/users/{id}", id)
+                        .contentType("application/json")
+                        .content(patch))
+                .andExpectAll(status().isForbidden());
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("PATCH - /{id} - Should return 404 when user not found")
+    void updateUserNotFound() throws Exception {
+        Utils.setUserContext(1);
+
+        int id = 999;
+        var patch = """
+            {
+                "username": "updatedUser1"
+            }
+            """;
+
+        mockMvc.perform(patch("/api/users/{id}", id)
+                        .contentType("application/json")
+                        .content(patch))
+                .andExpectAll(status().isNotFound());
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("PATCH - /{id} - Should return 400 when invalid patch request")
+    void updateUserInvalidPatch() throws Exception {
+        Utils.setUserContext(1);
+
+        int id = 1;
+        var patch = """
+            {
+                "username": "updatedUser1updatedUser1updatedUser1updatedUser1"
+            }
+            """;
+
+        mockMvc.perform(patch("/api/users/{id}", id)
+                        .contentType("application/json")
+                        .content(patch))
+                .andExpectAll(status().isBadRequest());
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("PATCH - /{id} - Should ignore invalid fields in patch")
+    void updateUserIgnoreInvalidFields() throws Exception {
+        Utils.setUserContext(1);
+
+
+        int id = 1;
+        var patch = """
+            {
+                "invalidFieldName": "updatedUser1"
+            }
+            """;
+
+        mockMvc.perform(patch("/api/users/{id}", id)
+                        .contentType("application/json")
+                        .content(patch))
+                .andExpectAll(status().isNoContent());
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("DELETE - /{id} - Should delete user when owner")
+    void deleteUser() throws Exception {
+        Utils.setUserContext(1);
+        int id = 1;
+
+        mockMvc.perform(delete("/api/users/{id}", id))
+                .andExpectAll(status().isNoContent());
+
+        mockMvc.perform(get("/api/users/{id}", id))
+                .andExpect(status().isNotFound());
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("DELETE - /{id} - Should delete user when admin")
+    void deleteUserAsAdmin() throws Exception {
+        Utils.setAdminContext(2);
+        int id = 1;
+
+        mockMvc.perform(delete("/api/users/{id}", id))
+                .andExpectAll(status().isNoContent());
+
+        mockMvc.perform(get("/api/users/{id}", id))
+                .andExpect(status().isNotFound());
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("DELETE - /{id} - Should return 403 when not owner or admin")
+    void deleteUserForbidden() throws Exception {
+        Utils.setUserContext(3);
+        int id = 1;
+
+        mockMvc.perform(get("/api/users/{id}", id))
+                .andExpect(status().isForbidden());
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("DELETE - /{id} - Should return 404 when user not found")
+    void deleteUserNotFound() throws Exception {
+        Utils.setAdminContext(1);
+        int id = 999;
+
+        mockMvc.perform(delete("/api/users/{id}", id))
+                .andExpectAll(status().isNotFound());
+    }
+}

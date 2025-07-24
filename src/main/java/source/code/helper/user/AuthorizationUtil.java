@@ -1,10 +1,12 @@
 package source.code.helper.user;
 
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 import source.code.auth.CustomAuthenticationToken;
 
 import java.util.Optional;
 
+@Service
 public class AuthorizationUtil {
     public static boolean isOwnerOrAdmin(Integer ownerId) {
         CustomAuthenticationToken auth = (CustomAuthenticationToken) SecurityContextHolder

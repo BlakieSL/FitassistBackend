@@ -24,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(properties = "schema.name=general")
 @ContextConfiguration(initializers = {MySqlContainerInitializer.class})
 public class WorkoutSetGroupControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -125,6 +124,44 @@ public class WorkoutSetGroupControllerTest {
                         .contentType("application/json")
                         .content(patch))
                 .andExpectAll(status().isForbidden());
+    }
+
+    @WorkoutSetGroupSql
+    @Test
+    @DisplayName("PATCH - /{id} - Should return 400 when request body is invalid")
+    void updateWorkoutSetGroupBadRequest() throws Exception {
+        Utils.setUserContext(1);
+
+        int id = 1;
+        var patch = """
+                {
+                    "restSeconds": -10
+                }
+                """;
+
+        mockMvc.perform(patch("/api/workout-set-groups/{id}", id)
+                        .contentType("application/json")
+                        .content(patch))
+                .andExpectAll(status().isBadRequest());
+    }
+
+    @WorkoutSetGroupSql
+    @Test
+    @DisplayName("PATCH - /{id} - Should ignore invalid fields in patch")
+    void updateWorkoutSetGroupIgnoreInvalidFields() throws Exception {
+        Utils.setUserContext(1);
+
+        int id = 1;
+        var patch = """
+                {
+                    "random": 90
+                }
+                """;
+
+        mockMvc.perform(patch("/api/workout-set-groups/{id}", id)
+                        .contentType("application/json")
+                        .content(patch))
+                .andExpectAll(status().isNoContent());
     }
 
     @WorkoutSetGroupSql
