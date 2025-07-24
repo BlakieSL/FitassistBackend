@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequestDto dtoRequest) {
+    public ResponseEntity<AccessTokenResponseDto> refreshToken(@Valid @RequestBody RefreshTokenRequestDto dtoRequest) {
         String newAccessToken = jwtService.refreshAccessToken(dtoRequest.getRefreshToken());
         AccessTokenResponseDto accessTokenResponseDto = AccessTokenResponseDto.of(newAccessToken);
         return ResponseEntity.ok(accessTokenResponseDto);

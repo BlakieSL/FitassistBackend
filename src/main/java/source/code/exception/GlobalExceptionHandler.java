@@ -110,6 +110,12 @@ public class GlobalExceptionHandler {
                 .body("Access is denied: " + e.getMessage());
     }
 
+    @ExceptionHandler(InvalidRefreshTokenException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleInvalidRefreshTokenException(InvalidRefreshTokenException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
     @ExceptionHandler(JwtAuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<String> handleJwtAuthenticationException(JwtAuthenticationException e) {
