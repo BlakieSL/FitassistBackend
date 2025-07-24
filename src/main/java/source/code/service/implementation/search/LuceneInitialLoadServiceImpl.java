@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Service
-@ConditionalOnProperty(name = "lucene.enabled", havingValue = "true", matchIfMissing = true)
 public class LuceneInitialLoadServiceImpl implements LuceneInitialLoadService {
     private static final String PATH = "src/main/resources/lucene-index";
     private final LuceneIndexService luceneIndexService;
