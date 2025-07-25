@@ -78,7 +78,7 @@ public class ActivityServiceImpl implements ActivityService {
             throws JsonPatchException, JsonProcessingException
     {
         Activity activity = findActivity(activityId);
-        ActivityUpdateDto patched = applyPatchToActivity(activity, patch);
+        ActivityUpdateDto patched = applyPatchToActivity(patch);
 
         validationService.validate(patched);
         activityMapper.updateActivityFromDto(activity, patched);
@@ -140,11 +140,10 @@ public class ActivityServiceImpl implements ActivityService {
         return activityRepository.findAllWithoutAssociations();
     }
 
-    private ActivityUpdateDto applyPatchToActivity(Activity activity, JsonMergePatch patch)
+    private ActivityUpdateDto applyPatchToActivity(JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        ActivityResponseDto responseDto = activityMapper.toResponseDto(activity);
-        return jsonPatchService.applyPatch(patch, responseDto, ActivityUpdateDto.class);
+        return jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class);
     }
 
     private Activity findActivity(int activityId) {

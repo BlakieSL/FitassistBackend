@@ -111,8 +111,7 @@ public class PlanCategoryServiceTest {
     void updateCategory_shouldUpdate() throws JsonPatchException, JsonProcessingException {
         int categoryId = 1;
         when(repository.findById(categoryId)).thenReturn(Optional.of(category));
-        when(mapper.toResponseDto(category)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, CategoryUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class))
                 .thenReturn(patchedDto);
 
         planCategoryService.updateCategory(categoryId, patch);
@@ -131,8 +130,7 @@ public class PlanCategoryServiceTest {
                 .forClass(CategoryClearCacheEvent.class);
 
         when(repository.findById(categoryId)).thenReturn(Optional.of(category));
-        when(mapper.toResponseDto(category)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, CategoryUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class))
                 .thenReturn(patchedDto);
         when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
 
@@ -160,8 +158,7 @@ public class PlanCategoryServiceTest {
     {
         int categoryId = 1;
         when(repository.findById(categoryId)).thenReturn(Optional.of(category));
-        when(mapper.toResponseDto(category)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, CategoryUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class))
                 .thenThrow(JsonPatchException.class);
 
         assertThrows(JsonPatchException.class, () ->
@@ -177,8 +174,7 @@ public class PlanCategoryServiceTest {
     {
         int categoryId = 1;
         when(repository.findById(categoryId)).thenReturn(Optional.of(category));
-        when(mapper.toResponseDto(category)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, CategoryUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class))
                 .thenReturn(patchedDto);
 
         doThrow(new IllegalArgumentException("Validation failed")).when(validationService)

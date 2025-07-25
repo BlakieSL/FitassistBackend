@@ -99,8 +99,7 @@ public class ExerciseInstructionServiceTest {
         var responseDto = new ExerciseInstructionResponseDto();
 
         when(repository.findById(id)).thenReturn(Optional.of(entity));
-        when(mapper.toExerciseInstructionResponseDto(entity)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(any(JsonMergePatch.class), eq(responseDto), eq(ExerciseInstructionUpdateDto.class)))
+        when(jsonPatchService.createFromPatch(any(JsonMergePatch.class), eq(ExerciseInstructionUpdateDto.class)))
                 .thenReturn(updateDto);
         doNothing().when(validationService).validate(updateDto);
         doNothing().when(mapper).updateExerciseInstruction(entity, updateDto);
@@ -110,7 +109,7 @@ public class ExerciseInstructionServiceTest {
         service.updateText(id, mock(JsonMergePatch.class));
 
         verify(repository).findById(id);
-        verify(jsonPatchService).applyPatch(any(JsonMergePatch.class), eq(responseDto), eq(ExerciseInstructionUpdateDto.class));
+        verify(jsonPatchService).createFromPatch(any(JsonMergePatch.class), eq(ExerciseInstructionUpdateDto.class));
         verify(validationService).validate(updateDto);
         verify(mapper).updateExerciseInstruction(entity, updateDto);
         verify(repository).save(entity);
@@ -127,7 +126,7 @@ public class ExerciseInstructionServiceTest {
         assertThrows(RecordNotFoundException.class, () -> service.updateText(id, mock(JsonMergePatch.class)));
 
         verify(repository).findById(id);
-        verify(jsonPatchService, never()).applyPatch(any(), any(), any());
+        verify(jsonPatchService, never()).createFromPatch(any(), any());
         verify(validationService, never()).validate(any());
         verify(mapper, never()).updateExerciseInstruction(any(), any());
         verify(repository, never()).save(any());
@@ -142,8 +141,7 @@ public class ExerciseInstructionServiceTest {
         var responseDto = new ExerciseInstructionResponseDto();
 
         when(repository.findById(id)).thenReturn(Optional.of(entity));
-        when(mapper.toExerciseInstructionResponseDto(entity)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(any(), any(), any()))
+        when(jsonPatchService.createFromPatch(any(), any()))
                 .thenThrow(JsonPatchException.class);
 
         assertThrows(JsonPatchException.class, () -> service.updateText(id, mock(JsonMergePatch.class)));
@@ -162,15 +160,14 @@ public class ExerciseInstructionServiceTest {
         var responseDto = new ExerciseInstructionResponseDto();
 
         when(repository.findById(id)).thenReturn(Optional.of(entity));
-        when(mapper.toExerciseInstructionResponseDto(entity)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(any(JsonMergePatch.class), eq(responseDto), eq(ExerciseInstructionUpdateDto.class)))
+        when(jsonPatchService.createFromPatch(any(), any()))
                 .thenReturn(updateDto);
         doThrow(IllegalArgumentException.class).when(validationService).validate(updateDto);
 
         assertThrows(IllegalArgumentException.class, () -> service.updateText(id, mock(JsonMergePatch.class)));
 
         verify(repository).findById(id);
-        verify(jsonPatchService).applyPatch(any(JsonMergePatch.class), eq(responseDto), eq(ExerciseInstructionUpdateDto.class));
+        verify(jsonPatchService).createFromPatch(any(), any());
         verify(validationService).validate(updateDto);
         verify(mapper, never()).updateExerciseInstruction(any(), any());
         verify(repository, never()).save(any());

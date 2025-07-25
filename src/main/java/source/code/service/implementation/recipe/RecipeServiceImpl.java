@@ -72,7 +72,7 @@ public class RecipeServiceImpl implements RecipeService {
             throws JsonPatchException, JsonProcessingException
     {
         Recipe recipe = find(recipeId);
-        RecipeUpdateDto patchedRecipeUpdateDto = applyPatchToRecipe(recipe, patch);
+        RecipeUpdateDto patchedRecipeUpdateDto = applyPatchToRecipe(patch);
 
         validationService.validate(patchedRecipeUpdateDto);
         recipeMapper.updateRecipe(recipe, patchedRecipeUpdateDto);
@@ -125,10 +125,9 @@ public class RecipeServiceImpl implements RecipeService {
         return repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
     }
 
-    private RecipeUpdateDto applyPatchToRecipe(Recipe recipe, JsonMergePatch patch)
+    private RecipeUpdateDto applyPatchToRecipe(JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        RecipeResponseDto responseDto = recipeMapper.toResponseDto(recipe);
-        return jsonPatchService.applyPatch(patch, responseDto, RecipeUpdateDto.class);
+        return jsonPatchService.createFromPatch(patch, RecipeUpdateDto.class);
     }
 }

@@ -86,8 +86,7 @@ public class CommentServiceTest {
     @Test
     void updateComment_shouldUpdate() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(commentRepository, Comment.class, commentId)).thenReturn(comment);
-        when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, CommentUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class))
                 .thenReturn(patchedDto);
 
         commentService.updateComment(commentId, patch);
@@ -111,8 +110,7 @@ public class CommentServiceTest {
     void updateComment_shouldThrowExceptionWhenPatchFails()
             throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(commentRepository, Comment.class, commentId)).thenReturn(comment);
-        when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, CommentUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class))
                 .thenThrow(JsonPatchException.class);
 
         assertThrows(JsonPatchException.class, () -> commentService.updateComment(commentId, patch));
@@ -125,8 +123,7 @@ public class CommentServiceTest {
     void updateComment_shouldThrowExceptionWhenValidationFails()
             throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(commentRepository, Comment.class, commentId)).thenReturn(comment);
-        when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, CommentUpdateDto.class)).thenReturn(patchedDto);
+        when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class)).thenReturn(patchedDto);
 
         doThrow(new RuntimeException("Validation failed")).when(validationService).validate(patchedDto);
 

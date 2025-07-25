@@ -124,8 +124,7 @@ public class PlanServiceTest {
     @Test
     void updatePlan_shouldUpdate() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
-        when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, PlanUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class))
                 .thenReturn(patchedDto);
         when(planRepository.save(plan)).thenReturn(plan);
 
@@ -141,8 +140,7 @@ public class PlanServiceTest {
         ArgumentCaptor<PlanUpdateEvent> eventCaptor = ArgumentCaptor
                 .forClass(PlanUpdateEvent.class);
         when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
-        when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, PlanUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class))
                 .thenReturn(patchedDto);
         when(planRepository.save(plan)).thenReturn(plan);
 
@@ -168,8 +166,7 @@ public class PlanServiceTest {
             throws JsonPatchException, JsonProcessingException
     {
         when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
-        when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, PlanUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class))
                 .thenThrow(JsonPatchException.class);
 
         assertThrows(JsonPatchException.class, () -> planService.updatePlan(planId, patch));
@@ -183,8 +180,7 @@ public class PlanServiceTest {
             throws JsonPatchException, JsonProcessingException
     {
         when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
-        when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, PlanUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class))
                 .thenReturn(patchedDto);
 
         doThrow(new IllegalArgumentException("Validation failed")).when(validationService)

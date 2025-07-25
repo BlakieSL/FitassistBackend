@@ -54,7 +54,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
             throws JsonPatchException, JsonProcessingException
     {
         ForumThread thread = find(threadId);
-        ForumThreadUpdateDto patched = applyPatchToForumThread(thread, patch);
+        ForumThreadUpdateDto patched = applyPatchToForumThread(patch);
 
         validationService.validate(patched);
         forumThreadMapper.update(thread, patched);
@@ -88,12 +88,10 @@ public class ForumThreadServiceImpl implements ForumThreadService {
                 .toList();
     }
 
-    private ForumThreadUpdateDto applyPatchToForumThread(
-            ForumThread forumThread, JsonMergePatch patch)
+    private ForumThreadUpdateDto applyPatchToForumThread(JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        ForumThreadResponseDto responseDto = forumThreadMapper.toResponseDto(forumThread);
-        return jsonPatchService.applyPatch(patch, responseDto, ForumThreadUpdateDto.class);
+        return jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class);
     }
 
     private ForumThread find(int threadId) {

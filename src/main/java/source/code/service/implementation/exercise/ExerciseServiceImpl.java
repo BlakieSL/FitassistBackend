@@ -72,7 +72,7 @@ public class ExerciseServiceImpl implements ExerciseService {
             throws JsonPatchException, JsonProcessingException
     {
         Exercise exercise = find(exerciseId);
-        ExerciseUpdateDto patchedExerciseUpdateDto = applyPatchToExercise(exercise, patch);
+        ExerciseUpdateDto patchedExerciseUpdateDto = applyPatchToExercise(patch);
 
         validationService.validate(patchedExerciseUpdateDto);
         exerciseMapper.updateExerciseFromDto(exercise, patchedExerciseUpdateDto);
@@ -135,10 +135,8 @@ public class ExerciseServiceImpl implements ExerciseService {
         return repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId);
     }
 
-    private ExerciseUpdateDto applyPatchToExercise(Exercise exercise, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
-        ExerciseResponseDto responseDto = exerciseMapper.toResponseDto(exercise);
-        return jsonPatchService.applyPatch(patch, responseDto, ExerciseUpdateDto.class);
+    private ExerciseUpdateDto applyPatchToExercise(JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException {
+        return jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class);
     }
 }

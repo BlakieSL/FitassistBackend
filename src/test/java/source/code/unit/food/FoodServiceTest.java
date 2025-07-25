@@ -119,8 +119,7 @@ public class FoodServiceTest {
     @Test
     void updateFood_shouldUpdate() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(foodRepository, Food.class, foodId)).thenReturn(food);
-        when(foodMapper.toResponseDto(food)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, FoodUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, FoodUpdateDto.class))
                 .thenReturn(patchedDto);
         when(foodRepository.save(food)).thenReturn(food);
 
@@ -136,8 +135,7 @@ public class FoodServiceTest {
         ArgumentCaptor<FoodUpdateEvent> eventCaptor = ArgumentCaptor.forClass(FoodUpdateEvent.class);
 
         when(repositoryHelper.find(foodRepository, Food.class, foodId)).thenReturn(food);
-        when(foodMapper.toResponseDto(food)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, FoodUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, FoodUpdateDto.class))
                 .thenReturn(patchedDto);
         when(foodRepository.save(food)).thenReturn(food);
 
@@ -163,8 +161,7 @@ public class FoodServiceTest {
             throws JsonPatchException, JsonProcessingException
     {
         when(repositoryHelper.find(foodRepository, Food.class, foodId)).thenReturn(food);
-        when(foodMapper.toResponseDto(food)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, FoodUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, FoodUpdateDto.class))
                 .thenThrow(JsonPatchException.class);
 
         assertThrows(JsonPatchException.class, () -> foodService.updateFood(foodId, patch));
@@ -178,8 +175,7 @@ public class FoodServiceTest {
             throws JsonPatchException, JsonProcessingException
     {
         when(repositoryHelper.find(foodRepository, Food.class, foodId)).thenReturn(food);
-        when(foodMapper.toResponseDto(food)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, FoodUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, FoodUpdateDto.class))
                 .thenReturn(patchedDto);
 
         doThrow(new IllegalArgumentException("Validation failed")).when(validationService)

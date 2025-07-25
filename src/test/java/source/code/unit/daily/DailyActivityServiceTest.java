@@ -195,9 +195,8 @@ public class DailyActivityServiceTest {
         when(repositoryHelper.find(dailyActivityItemRepository, DailyCartActivity.class, ACTIVITY_ID))
                 .thenReturn(dailyCartActivity);
 
-        doReturn(patchedDto).when(jsonPatchService).applyPatch(
+        doReturn(patchedDto).when(jsonPatchService).createFromPatch(
                 any(JsonMergePatch.class),
-                any(DailyActivityItemUpdateDto.class),
                 eq(DailyActivityItemUpdateDto.class)
         );
 
@@ -226,9 +225,8 @@ public class DailyActivityServiceTest {
     {
         when(repositoryHelper.find(dailyActivityItemRepository, DailyCartActivity.class, ACTIVITY_ID))
                 .thenReturn(dailyCartActivity);
-        doThrow(JsonPatchException.class).when(jsonPatchService).applyPatch(
+        doThrow(JsonPatchException.class).when(jsonPatchService).createFromPatch(
                 any(JsonMergePatch.class),
-                any(DailyActivityItemUpdateDto.class),
                 eq(DailyActivityItemUpdateDto.class)
         );
 
@@ -249,9 +247,8 @@ public class DailyActivityServiceTest {
 
         when(repositoryHelper.find(dailyActivityItemRepository, DailyCartActivity.class, ACTIVITY_ID))
                 .thenReturn(dailyCartActivity);
-        doReturn(patchedDto).when(jsonPatchService).applyPatch(
+        doReturn(patchedDto).when(jsonPatchService).createFromPatch(
                 any(JsonMergePatch.class),
-                any(DailyActivityItemUpdateDto.class),
                 eq(DailyActivityItemUpdateDto.class)
         );
 

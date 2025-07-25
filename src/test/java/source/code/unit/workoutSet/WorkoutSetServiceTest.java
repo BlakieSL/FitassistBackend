@@ -83,8 +83,7 @@ public class WorkoutSetServiceTest {
     @DisplayName("updateWorkoutSet - Should update an existing WorkoutSet")
     public void updateWorkoutSet_ShouldUpdateExistingWorkoutSet() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(workoutSetRepository, WorkoutSet.class, workoutSetId)).thenReturn(workoutSet);
-        when(workoutSetMapper.toResponseDto(workoutSet)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(eq(patch), any(WorkoutSetResponseDto.class), eq(WorkoutSetUpdateDto.class)))
+        when(jsonPatchService.createFromPatch(eq(patch), eq(WorkoutSetUpdateDto.class)))
                 .thenReturn(updateDto);
         doNothing().when(validationService).validate(updateDto);
         doNothing().when(workoutSetMapper).updateWorkoutSet(workoutSet, updateDto);
@@ -93,8 +92,7 @@ public class WorkoutSetServiceTest {
         workoutSetService.updateWorkoutSet(workoutSetId, patch);
 
         verify(repositoryHelper).find(workoutSetRepository, WorkoutSet.class, workoutSetId);
-        verify(workoutSetMapper).toResponseDto(workoutSet);
-        verify(jsonPatchService).applyPatch(eq(patch), any(WorkoutSetResponseDto.class), eq(WorkoutSetUpdateDto.class));
+        verify(jsonPatchService).createFromPatch(eq(patch), eq(WorkoutSetUpdateDto.class));
         verify(validationService).validate(updateDto);
         verify(workoutSetMapper).updateWorkoutSet(workoutSet, updateDto);
         verify(workoutSetRepository).save(workoutSet);
@@ -110,7 +108,7 @@ public class WorkoutSetServiceTest {
 
         verify(repositoryHelper).find(workoutSetRepository, WorkoutSet.class, workoutSetId);
         verify(workoutSetMapper, never()).toResponseDto(workoutSet);
-        verify(jsonPatchService, never()).applyPatch(any(), any(), any());
+        verify(jsonPatchService, never()).createFromPatch(any(), any());
         verify(validationService, never()).validate(any());
         verify(workoutSetMapper, never()).updateWorkoutSet(any(), any());
         verify(workoutSetRepository, never()).save(any());
@@ -120,16 +118,14 @@ public class WorkoutSetServiceTest {
     @DisplayName("updateWorkoutSet - Should throw exception when validation fails")
     public void updateWorkoutSet_ShouldThrowExceptionWhenValidationFails() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(workoutSetRepository, WorkoutSet.class, workoutSetId)).thenReturn(workoutSet);
-        when(workoutSetMapper.toResponseDto(workoutSet)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(eq(patch), any(WorkoutSetResponseDto.class), eq(WorkoutSetUpdateDto.class)))
+        when(jsonPatchService.createFromPatch(eq(patch), eq(WorkoutSetUpdateDto.class)))
                 .thenReturn(updateDto);
         doThrow(IllegalArgumentException.class).when(validationService).validate(updateDto);
 
         assertThrows(IllegalArgumentException.class, () -> workoutSetService.updateWorkoutSet(workoutSetId, patch));
 
         verify(repositoryHelper).find(workoutSetRepository, WorkoutSet.class, workoutSetId);
-        verify(workoutSetMapper).toResponseDto(workoutSet);
-        verify(jsonPatchService).applyPatch(eq(patch), any(WorkoutSetResponseDto.class), eq(WorkoutSetUpdateDto.class));
+        verify(jsonPatchService).createFromPatch(eq(patch), eq(WorkoutSetUpdateDto.class));
         verify(validationService).validate(updateDto);
         verify(workoutSetMapper, never()).updateWorkoutSet(any(), any());
         verify(workoutSetRepository, never()).save(any());
@@ -139,15 +135,13 @@ public class WorkoutSetServiceTest {
     @DisplayName("updateWorkoutSet - Should throw exception when patch fails")
     public void updateWorkoutSet_ShouldThrowExceptionWhenPatchFails() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(workoutSetRepository, WorkoutSet.class, workoutSetId)).thenReturn(workoutSet);
-        when(workoutSetMapper.toResponseDto(workoutSet)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(eq(patch), any(WorkoutSetResponseDto.class), eq(WorkoutSetUpdateDto.class)))
+        when(jsonPatchService.createFromPatch(eq(patch), eq(WorkoutSetUpdateDto.class)))
                 .thenThrow(JsonPatchException.class);
 
         assertThrows(JsonPatchException.class, () -> workoutSetService.updateWorkoutSet(workoutSetId, patch));
 
         verify(repositoryHelper).find(workoutSetRepository, WorkoutSet.class, workoutSetId);
-        verify(workoutSetMapper).toResponseDto(workoutSet);
-        verify(jsonPatchService).applyPatch(eq(patch), any(WorkoutSetResponseDto.class), eq(WorkoutSetUpdateDto.class));
+        verify(jsonPatchService).createFromPatch(eq(patch), eq(WorkoutSetUpdateDto.class));
         verify(validationService, never()).validate(any());
         verify(workoutSetMapper, never()).updateWorkoutSet(any(), any());
         verify(workoutSetRepository, never()).save(any());

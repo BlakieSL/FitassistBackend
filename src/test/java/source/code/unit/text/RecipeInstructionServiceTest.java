@@ -99,8 +99,7 @@ public class RecipeInstructionServiceTest {
         var responseDto = new RecipeInstructionResponseDto();
 
         when(repository.findById(id)).thenReturn(Optional.of(entity));
-        when(mapper.toRecipeInstructionResponseDto(entity)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(any(JsonMergePatch.class), eq(responseDto), eq(RecipeInstructionUpdateDto.class)))
+        when(jsonPatchService.createFromPatch(any(), any()))
                 .thenReturn(updateDto);
         doNothing().when(validationService).validate(updateDto);
         doNothing().when(mapper).updateRecipeInstruction(entity, updateDto);
@@ -110,7 +109,7 @@ public class RecipeInstructionServiceTest {
         service.updateText(id, mock(JsonMergePatch.class));
 
         verify(repository).findById(id);
-        verify(jsonPatchService).applyPatch(any(JsonMergePatch.class), eq(responseDto), eq(RecipeInstructionUpdateDto.class));
+        verify(jsonPatchService).createFromPatch(any(), any());
         verify(validationService).validate(updateDto);
         verify(mapper).updateRecipeInstruction(entity, updateDto);
         verify(repository).save(entity);
@@ -127,7 +126,7 @@ public class RecipeInstructionServiceTest {
         assertThrows(RecordNotFoundException.class, () -> service.updateText(id, mock(JsonMergePatch.class)));
 
         verify(repository).findById(id);
-        verify(jsonPatchService, never()).applyPatch(any(), any(), any());
+        verify(jsonPatchService, never()).createFromPatch(any(), any());
         verify(validationService, never()).validate(any());
         verify(mapper, never()).updateRecipeInstruction(any(), any());
         verify(repository, never()).save(any());
@@ -142,8 +141,7 @@ public class RecipeInstructionServiceTest {
         var responseDto = new RecipeInstructionResponseDto();
 
         when(repository.findById(id)).thenReturn(Optional.of(entity));
-        when(mapper.toRecipeInstructionResponseDto(entity)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(any(), any(), any()))
+        when(jsonPatchService.createFromPatch(any(), any()))
                 .thenThrow(JsonPatchException.class);
 
         assertThrows(JsonPatchException.class, () -> service.updateText(id, mock(JsonMergePatch.class)));
@@ -162,15 +160,14 @@ public class RecipeInstructionServiceTest {
         var responseDto = new RecipeInstructionResponseDto();
 
         when(repository.findById(id)).thenReturn(Optional.of(entity));
-        when(mapper.toRecipeInstructionResponseDto(entity)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(any(JsonMergePatch.class), eq(responseDto), eq(RecipeInstructionUpdateDto.class)))
+        when(jsonPatchService.createFromPatch(any(), any()))
                 .thenReturn(updateDto);
         doThrow(IllegalArgumentException.class).when(validationService).validate(updateDto);
 
         assertThrows(IllegalArgumentException.class, () -> service.updateText(id, mock(JsonMergePatch.class)));
 
         verify(repository).findById(id);
-        verify(jsonPatchService).applyPatch(any(JsonMergePatch.class), eq(responseDto), eq(RecipeInstructionUpdateDto.class));
+        verify(jsonPatchService).createFromPatch(any(), any());
         verify(validationService).validate(updateDto);
         verify(mapper, never()).updateRecipeInstruction(any(), any());
         verify(repository, never()).save(any());

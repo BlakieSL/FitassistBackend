@@ -118,8 +118,7 @@ public class ExerciseServiceTest {
     void updateExercise_shouldUpdate() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId))
                 .thenReturn(exercise);
-        when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, ExerciseUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class))
                 .thenReturn(patchedDto);
         when(exerciseRepository.save(exercise)).thenReturn(exercise);
 
@@ -137,8 +136,7 @@ public class ExerciseServiceTest {
 
         when(repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId))
                 .thenReturn(exercise);
-        when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, ExerciseUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class))
                 .thenReturn(patchedDto);
         when(exerciseRepository.save(exercise)).thenReturn(exercise);
 
@@ -167,8 +165,7 @@ public class ExerciseServiceTest {
     {
         when(repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId))
                 .thenReturn(exercise);
-        when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, ExerciseUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class))
                 .thenThrow(JsonPatchException.class);
 
         assertThrows(JsonPatchException.class,
@@ -185,8 +182,7 @@ public class ExerciseServiceTest {
     {
         when(repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId))
                 .thenReturn(exercise);
-        when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, ExerciseUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class))
                 .thenReturn(patchedDto);
 
         doThrow(new IllegalArgumentException("Validation failed")).when(validationService)

@@ -135,9 +135,8 @@ public class RecipeFoodServiceTest {
     @Test
     void updateFoodRecipe_shouldUpdateFoodRecipe() throws JsonPatchException, JsonProcessingException {
         when(recipeFoodRepository.findByRecipeIdAndFoodId(recipeId, foodId)).thenReturn(Optional.of(recipeFood));
-        doReturn(createDto).when(jsonPatchService).applyPatch(
+        doReturn(createDto).when(jsonPatchService).createFromPatch(
                 eq(patch),
-                any(RecipeFoodCreateDto.class),
                 eq(RecipeFoodCreateDto.class)
         );
 
