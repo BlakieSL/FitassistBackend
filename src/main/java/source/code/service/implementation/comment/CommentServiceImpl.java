@@ -54,11 +54,11 @@ public class CommentServiceImpl implements CommentService {
             throws JsonPatchException, JsonProcessingException
     {
         Comment comment = find(commentId);
-        CommentUpdateDto patched = applyPatchToComment(comment, patch);
+        CommentUpdateDto patched = applyPatchToComment(patch);
 
         validationService.validate(patched);
         commentMapper.update(comment, patched);
-        Comment saved = commentRepository.save(comment);
+        commentRepository.save(comment);
     }
 
     @Override
@@ -111,11 +111,10 @@ public class CommentServiceImpl implements CommentService {
         return commentDto;
     }
 
-    public CommentUpdateDto applyPatchToComment(Comment comment, JsonMergePatch patch)
+    public CommentUpdateDto applyPatchToComment(JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        CommentResponseDto responseDto = commentMapper.toResponseDto(comment);
-        return jsonPatchService.applyPatch(patch, responseDto, CommentUpdateDto.class);
+        return jsonPatchService.createFromPatch(patch, CommentUpdateDto.class);
     }
 
     private Comment find(int commentId) {

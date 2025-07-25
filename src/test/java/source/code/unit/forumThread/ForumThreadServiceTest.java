@@ -87,8 +87,7 @@ public class ForumThreadServiceTest {
     void updateForumThread_shouldUpdate() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
                 .thenReturn(forumThread);
-        when(forumThreadMapper.toResponseDto(forumThread)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, ForumThreadUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class))
                 .thenReturn(patchedDto);
         when(forumThreadRepository.save(forumThread)).thenReturn(forumThread);
 
@@ -118,8 +117,7 @@ public class ForumThreadServiceTest {
     {
         when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
                 .thenReturn(forumThread);
-        when(forumThreadMapper.toResponseDto(forumThread)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, ForumThreadUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class))
                 .thenReturn(patchedDto);
 
         doThrow(new IllegalArgumentException("Validation failed")).when(validationService)

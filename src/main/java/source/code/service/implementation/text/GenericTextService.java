@@ -68,7 +68,7 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
             throws JsonPatchException, JsonProcessingException
     {
         T entity = findById(id);
-        U patched = applyPatch(entity, patch);
+        U patched = applyPatch(patch);
 
         validationService.validate(patched);
         update.accept(entity, patched);
@@ -102,11 +102,10 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
                 .orElseThrow(() -> RecordNotFoundException.of(getClass(), id));
     }
 
-    private U applyPatch(T entity, JsonMergePatch patch)
+    private U applyPatch(JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        R response = toResponse.apply(entity);
-        return jsonPatchService.applyPatch(patch, response, entityType);
+        return jsonPatchService.createFromPatch(patch, entityType);
     }
 
     private Optional<List<BaseTextResponseDto>> getCachedText(String cacheKey) {

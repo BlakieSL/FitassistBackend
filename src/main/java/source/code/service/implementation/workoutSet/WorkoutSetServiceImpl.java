@@ -50,7 +50,7 @@ public class WorkoutSetServiceImpl implements WorkoutSetService {
     public void updateWorkoutSet(int workoutSetId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException {
         WorkoutSet workoutSet = find(workoutSetId);
-        WorkoutSetUpdateDto patched = applyPatchToWorkoutSet(workoutSet, patch);
+        WorkoutSetUpdateDto patched = applyPatchToWorkoutSet(patch);
 
         validationService.validate(patched);
         workoutSetMapper.updateWorkoutSet(workoutSet, patched);
@@ -81,10 +81,9 @@ public class WorkoutSetServiceImpl implements WorkoutSetService {
         return repositoryHelper.find(workoutSetRepository, WorkoutSet.class, workoutId);
     }
 
-    private WorkoutSetUpdateDto applyPatchToWorkoutSet(WorkoutSet workoutSet, JsonMergePatch patch)
+    private WorkoutSetUpdateDto applyPatchToWorkoutSet(JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        WorkoutSetResponseDto responseDto = workoutSetMapper.toResponseDto(workoutSet);
-        return jsonPatchService.applyPatch(patch, responseDto, WorkoutSetUpdateDto.class);
+        return jsonPatchService.createFromPatch(patch, WorkoutSetUpdateDto.class);
     }
 }
