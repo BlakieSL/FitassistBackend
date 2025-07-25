@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.testcontainers.shaded.org.checkerframework.checker.units.qual.C;
 import source.code.helper.search.IndexedEntity;
 import source.code.model.text.PlanInstruction;
 import source.code.model.user.User;
@@ -41,6 +42,10 @@ public class Plan implements IndexedEntity {
     @Size(max = DESCRIPTION_MAX_LENGTH)
     @Column(nullable = false)
     private String description;
+
+    @NotNull
+    @Column(nullable = false, name = "is_public")
+    private Boolean isPublic = false;
 
     @NotNull
     @ManyToOne

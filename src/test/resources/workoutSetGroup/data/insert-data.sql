@@ -25,8 +25,8 @@ VALUES (1, 'Standard pushup exercise', 'Pushups', 1, 1, 1, 1);
 
 INSERT INTO plan_type (id, name) VALUES (1, 'Fitness');
 
-INSERT INTO plan (id, description, name, plan_type_id, user_id)
-VALUES (1, 'Beginner workout plan', 'Beginner Plan', 1, 1);
+INSERT INTO plan (is_public, id, description, name, plan_type_id, user_id)
+VALUES (true, 1, 'Beginner workout plan', 'Beginner Plan', 1, 1);
 
 INSERT INTO workout (id, duration, name, plan_id)
 VALUES (1, 30.0, 'Morning Workout', 1);

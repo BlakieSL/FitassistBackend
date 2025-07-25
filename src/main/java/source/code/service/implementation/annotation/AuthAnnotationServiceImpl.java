@@ -85,6 +85,14 @@ public class AuthAnnotationServiceImpl {
         return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
     }
 
+    public boolean isPublicPlanOrOwnerOrAdmin(int id) {
+        Plan plan = repositoryHelper.find(planRepository, Plan.class, id);
+        if (plan.getIsPublic()) {
+            return true;
+        }
+        return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
+    }
+
     public boolean isRecipeOwnerOrAdmin(int recipeId) {
         Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
         return AuthorizationUtil.isOwnerOrAdmin(recipe.getUser().getId());

@@ -28,6 +28,8 @@ public class PlanCreateDto {
     @Size(max = DESCRIPTION_MAX_LENGTH)
     private String description;
 
+    private Boolean isPublic = false;
+
     @NotNull
     private int planTypeId;
 

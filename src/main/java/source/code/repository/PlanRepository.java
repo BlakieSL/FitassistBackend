@@ -17,8 +17,14 @@ public interface PlanRepository
     List<Plan> findAllWithoutAssociations();
 
     @EntityGraph(attributePaths = {"user", "planType", "planCategoryAssociations.planCategory"})
-    @Query("SELECT p FROM Plan p")
-    List<Plan> findAllWithAssociations();
+    @Query("SELECT p FROM Plan p WHERE " +
+            "(:isPrivate IS NULL AND p.isPublic = true) OR " +
+            "(:isPrivate = false AND p.isPublic = true) OR " +
+            "(:isPrivate = true AND p.user.id = :userId)")
+    List<Plan> findAllWithAssociations(
+            @Param("isPrivate") Boolean isPrivate,
+            @Param("userId") int userId
+    );
 
 
 

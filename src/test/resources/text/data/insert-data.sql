@@ -31,8 +31,8 @@ VALUES (1, 'Healthy carrot soup', 'Carrot Soup', 1);
 
 INSERT INTO plan_type (id, name) VALUES (1, 'Fitness');
 
-INSERT INTO plan (id, description, name, plan_type_id, user_id)
-VALUES (3, 'Beginner workout plan', 'Beginner Plan', 1, 1);
+INSERT INTO plan (is_public, id, description, name, plan_type_id, user_id)
+VALUES (true, 3, 'Beginner workout plan', 'Beginner Plan', 1, 1);
 
 INSERT INTO text (type, orderIndex, text, exercise_id) VALUES
                                                            ('EXERCISE_INSTRUCTION', 0, 'Starting position: Lie prone...', 1),

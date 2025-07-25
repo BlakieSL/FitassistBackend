@@ -19,6 +19,7 @@ public class PlanUpdateDto {
     private String name;
     @Size(max = DESCRIPTION_MAX_LENGTH)
     private String description;
+    private Boolean isPublic;
     private Integer planTypeId;
     private List<Integer> categoryIds;
 }

@@ -106,8 +106,8 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @Cacheable(value = CacheNames.ALL_PLANS)
-    public List<PlanResponseDto> getAllPlans() {
-        return planRepository.findAllWithAssociations().stream()
+    public List<PlanResponseDto> getAllPlans(Boolean isPrivate) {
+        return planRepository.findAllWithAssociations(isPrivate, AuthorizationUtil.getUserId()).stream()
                 .map(planMapper::toResponseDto)
                 .toList();
     }

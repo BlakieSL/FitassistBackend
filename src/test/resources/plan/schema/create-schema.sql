@@ -206,6 +206,7 @@ create table plan
         primary key,
     description  varchar(255) not null,
     name         varchar(100) not null,
+    is_public BOOLEAN NOT NULL,
     plan_type_id int          not null,
     user_id      int          not null,
     constraint FK271ok4ss5pcte25w6o3hvv60x

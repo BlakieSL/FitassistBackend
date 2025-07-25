@@ -17,6 +17,7 @@ public class PlanResponseDto implements BaseUserEntity {
     private Integer id;
     private String name;
     private String description;
+    private Boolean isPublic;
     private Integer userId;
     private PlanCategoryShortDto planType;
     private List<PlanCategoryShortDto> categories;

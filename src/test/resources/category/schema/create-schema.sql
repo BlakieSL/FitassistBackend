@@ -51,6 +51,7 @@ CREATE TABLE plan (
                       id INT AUTO_INCREMENT PRIMARY KEY,
                       description VARCHAR(255) NOT NULL,
                       name VARCHAR(100) NOT NULL,
+                      is_public BOOLEAN NOT NULL,
                       plan_type_id INT NOT NULL,
                       user_id INT NOT NULL,
                       CONSTRAINT fk_plan_type
