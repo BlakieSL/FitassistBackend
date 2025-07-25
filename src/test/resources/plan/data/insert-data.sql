@@ -143,19 +143,20 @@ INSERT INTO exercise_target_muscle (exercise_id, target_muscle_id, priority) VAL
 (35, 9, 1.0), (35, 3, 0.7), (35, 1, 0.6),
 (36, 1, 1.0), (36, 3, 0.8), (36, 5, 0.7);
 
-INSERT INTO plan (description, name, plan_type_id, user_id) VALUES
-('12-week strength program', 'Beginner Strength', 1, 1),
-('High protein meal plan', 'Muscle Gain Diet', 2, 1),
-('30-day cardio challenge', 'Cardio Blast', 1, 2),
-('Flexibility routine', 'Morning Yoga', 3, 2),
-('Weight loss program', 'Fat Burner', 3, 3),
-('Meal prep guide', 'Clean Eating', 2, 3),
-('Advanced strength', 'Powerlifting', 1, 4),
-('Recovery plan', 'Post-Workout', 4, 4),
-('Running program', '5K Training', 1, 5),
-('Nutrition guide', 'Race Fuel', 2, 5),
-('Bodyweight routine', 'Home Workout', 1, 6),
-('Mediterranean diet', 'Healthy Eating', 2, 6);
+INSERT INTO plan (is_public, description, name, plan_type_id, user_id) VALUES
+(true, '12-week strength program', 'Beginner Strength', 1, 1),
+(true, 'High protein meal plan', 'Muscle Gain Diet', 2, 1),
+(true, '30-day cardio challenge', 'Cardio Blast', 1, 2),
+(true, 'Flexibility routine', 'Morning Yoga', 3, 2),
+(true, 'Weight loss program', 'Fat Burner', 3, 3),
+(true, 'Meal prep guide', 'Clean Eating', 2, 3),
+(true, 'Advanced strength', 'Powerlifting', 1, 4),
+(true, 'Recovery plan', 'Post-Workout', 4, 4),
+(true, 'Running program', '5K Training', 1, 5),
+(true, 'Nutrition guide', 'Race Fuel', 2, 5),
+(true, 'Bodyweight routine', 'Home Workout', 1, 6),
+(true, 'Mediterranean diet', 'Healthy Eating', 2, 6),
+(false, 'Upper body strength', 'Push Day', 1, 1);
 
 INSERT INTO plan_category_association (plan_id, plan_category_id) VALUES
 (1, 1), (1, 4), (1, 8),

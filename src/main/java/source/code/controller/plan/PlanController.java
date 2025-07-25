@@ -7,10 +7,10 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.annotation.PlanOwnerOrAdmin;
+import source.code.annotation.plan.PlanOwnerOrAdmin;
+import source.code.annotation.plan.PublicPlanOrOwnerOrAdmin;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.plan.PlanCreateDto;
-import source.code.dto.response.category.EquipmentResponseDto;
 import source.code.dto.response.plan.PlanResponseDto;
 import source.code.service.declaration.plan.PlanService;
 
@@ -47,15 +47,17 @@ public class PlanController {
         return ResponseEntity.noContent().build();
     }
 
+    @PublicPlanOrOwnerOrAdmin
     @GetMapping("/{id}")
     public ResponseEntity<PlanResponseDto> getPlan(@PathVariable int id) {
         PlanResponseDto plan = planService.getPlan(id);
         return ResponseEntity.ok(plan);
     }
 
-    @GetMapping
-    public ResponseEntity<List<PlanResponseDto>> getAllPlans() {
-        List<PlanResponseDto> plans = planService.getAllPlans();
+    @GetMapping({"/private", "/private/{isPrivate}"})
+    public ResponseEntity<List<PlanResponseDto>> getAllPlans(
+            @PathVariable(required = false) Boolean isPrivate) {
+        List<PlanResponseDto> plans = planService.getAllPlans(isPrivate);
         return ResponseEntity.ok(plans);
     }
 

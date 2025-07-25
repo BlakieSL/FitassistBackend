@@ -1,4 +1,4 @@
-package source.code.annotation;
+package source.code.annotation.plan;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 

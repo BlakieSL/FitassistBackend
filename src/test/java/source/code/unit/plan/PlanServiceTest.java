@@ -235,28 +235,33 @@ public class PlanServiceTest {
     }
 
     @Test
-    void getAllPlans_shouldReturnAllPlans() {
-        List<PlanResponseDto> responseDtos = List.of(responseDto);
+    void getAllPlans_shouldReturnPrivatePlans() {
+        Boolean isPrivate = true;
+        int userId = 1;
 
-        when(planRepository.findAllWithAssociations()).thenReturn(List.of(plan));
-        when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+        when(planRepository.findAllWithAssociations(eq(isPrivate), eq(userId)))
+                .thenReturn(List.of(plan));
 
-        List<PlanResponseDto> result = planService.getAllPlans();
+        List<PlanResponseDto> result = planService.getAllPlans(isPrivate);
 
-        assertEquals(responseDtos, result);
-        verify(planRepository).findAllWithAssociations();
+        assertFalse(result.isEmpty());
+        verify(planRepository).findAllWithAssociations(eq(isPrivate), eq(userId));
     }
 
     @Test
     void getAllPlans_shouldReturnEmptyListWhenNoPlans() {
-        List<PlanResponseDto> responseDtos = List.of();
+        Boolean isPrivate = false;
+        int userId = 1;
 
-        when(planRepository.findAllWithAssociations()).thenReturn(new ArrayList<>());
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+        when(planRepository.findAllWithAssociations(any(Boolean.class), eq(userId)))
+                .thenReturn(new ArrayList<>());
 
-        List<PlanResponseDto> result = planService.getAllPlans();
+        List<PlanResponseDto> result = planService.getAllPlans(isPrivate);
 
         assertTrue(result.isEmpty());
-        verify(planRepository).findAllWithAssociations();
+        verify(planRepository).findAllWithAssociations(eq(isPrivate), eq(userId));
     }
 
     @Test

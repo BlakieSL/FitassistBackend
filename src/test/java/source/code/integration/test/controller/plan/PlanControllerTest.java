@@ -11,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
@@ -191,22 +192,54 @@ public class PlanControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @WithMockUser
     @PlanSql
     @Test
-    @DisplayName("GET - / - Should retrieve all plans")
+    @DisplayName("GET - /{id} - Should return 403 when not owner or admin and plan is private")
+    void getPrivatePlanForbidden() throws Exception {
+        Utils.setUserContext(2);
+        mockMvc.perform(get("/api/plans/13")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+    }
+
+    @PlanSql
+    @Test
+    @DisplayName("GET - /private/{isPrivate} - Should retrieve all public plans when isPrivate is null")
     void getAllPlans() throws Exception {
-        mockMvc.perform(get("/api/plans")
+        Utils.setUserContext(1);
+        mockMvc.perform(get("/api/plans/private")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(12)));
     }
 
-    @WithMockUser
+    @PlanSql
+    @Test
+    @DisplayName("GET - /private/{isPrivate} - Should retrieve all public plans when isPrivate is false")
+    void getAllPublicPlans() throws Exception {
+        Utils.setUserContext(1);
+        mockMvc.perform(get("/api/plans/private/false", false)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(12)));
+    }
+
+    @PlanSql
+    @Test
+    @DisplayName("GET - /private/{isPrivate} - Should retrieve all private plans when isPrivate is true")
+    void getAllPrivatePlans() throws Exception {
+        Utils.setUserContext(1);
+        mockMvc.perform(get("/api/plans/private/true", true)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)));
+    }
+
     @Test
     @DisplayName("GET - / - Should return empty list when no plans exist")
     void getAllPlansEmpty() throws Exception {
-        mockMvc.perform(get("/api/plans")
+        Utils.setUserContext(1);
+        mockMvc.perform(get("/api/plans/private")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));

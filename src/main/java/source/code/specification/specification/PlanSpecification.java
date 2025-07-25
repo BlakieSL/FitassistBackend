@@ -7,6 +7,7 @@ import source.code.dto.pojo.FilterCriteria;
 import source.code.exception.InvalidFilterKeyException;
 import source.code.helper.Enum.model.LikesAndSaves;
 import source.code.helper.Enum.model.field.PlanField;
+import source.code.helper.user.AuthorizationUtil;
 import source.code.model.exercise.Equipment;
 import source.code.model.exercise.Exercise;
 import source.code.model.plan.Plan;
@@ -25,6 +26,13 @@ public class PlanSpecification implements Specification<Plan> {
     @Override
     public Predicate toPredicate(@NonNull Root<Plan> root, CriteriaQuery<?> query,
                                  @NonNull CriteriaBuilder builder) {
+        Predicate publicPredicate;
+        if (criteria.getIsPublic() != null && !criteria.getIsPublic()) {
+            publicPredicate = builder.equal(root.get("user").get("id"), AuthorizationUtil.getUserId());
+        } else {
+            publicPredicate = builder.isTrue(root.get("isPublic"));
+        }
+
         PlanField field;
         try {
             field = PlanField.valueOf(criteria.getFilterKey());
@@ -32,7 +40,7 @@ public class PlanSpecification implements Specification<Plan> {
             throw new InvalidFilterKeyException("Invalid filter key: " + criteria.getFilterKey());
         }
 
-        return switch (field) {
+        Predicate fieldPredicate = switch (field) {
             case PlanField.TYPE -> GenericSpecificationHelper.buildPredicateEntityProperty(
                     builder,
                     criteria,
@@ -56,6 +64,8 @@ public class PlanSpecification implements Specification<Plan> {
             );
             case PlanField.EQUIPMENT -> handleEquipmentProperty(root, builder);
         };
+
+        return builder.and(publicPredicate, fieldPredicate);
     }
 
     private Predicate handleEquipmentProperty(Root<Plan> root, CriteriaBuilder builder) {
