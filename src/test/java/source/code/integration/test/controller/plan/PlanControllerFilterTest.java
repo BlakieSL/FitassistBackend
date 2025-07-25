@@ -18,7 +18,9 @@ import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
+import source.code.repository.PlanRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
@@ -36,15 +38,36 @@ public class PlanControllerFilterTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private PlanRepository planRepository;
 
     private FilterDto buildFilterDto(String filterKey, Object value, FilterOperation operation) {
         FilterCriteria criteria = FilterCriteria.of(filterKey, value, operation);
-        return FilterDto.of(List.of(criteria), FilterDataOption.AND);
+        return FilterDto.of(new ArrayList<>(List.of(criteria)), FilterDataOption.AND);
     }
 
     @PlanSql
     @Test
-    @DisplayName("POST - /filter - Should retrieve filtered plans by plan type")
+    @DisplayName("POST - /filter - Should retrieve private plans when isPublic = false by filtered by type")
+    void filterPrivatePlansByType() throws Exception {
+        Utils.setUserContext(1);
+        FilterDto filterDto = buildFilterDto("TYPE", 1, FilterOperation.EQUAL);
+        filterDto.getFilterCriteria().add(FilterCriteria.of("isPublic", false, FilterOperation.EQUAL));
+
+        String json = objectMapper.writeValueAsString(filterDto);
+
+        mockMvc.perform(post("/api/plans/filter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", hasSize(2))
+                );
+    }
+
+    @PlanSql
+    @Test
+    @DisplayName("POST - /filter - Should retrieve filtered plans by plan type (Default isPublic = true), so should return 5/6 because 1 is private")
     void filterPlansByPlanType() throws Exception {
         Utils.setUserContext(1);
         FilterDto filterDto = buildFilterDto("TYPE", 1, FilterOperation.EQUAL);

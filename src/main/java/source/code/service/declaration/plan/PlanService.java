@@ -20,7 +20,7 @@ public interface PlanService {
 
     PlanResponseDto getPlan(int id);
 
-    List<PlanResponseDto> getAllPlans();
+    List<PlanResponseDto> getAllPlans(Boolean isPrivate);
 
     List<PlanResponseDto> getFilteredPlans(FilterDto filter);
 

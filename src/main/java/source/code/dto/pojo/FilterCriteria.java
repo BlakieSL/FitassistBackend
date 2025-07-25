@@ -15,4 +15,15 @@ FilterCriteria {
     private String filterKey;
     private Object value;
     private FilterOperation operation;
+    private Boolean isPublic;
+
+
+
+    public static FilterCriteria of (String filterKey, Object value, FilterOperation operation) {
+        var criteria = new FilterCriteria();
+        criteria.setFilterKey(filterKey);
+        criteria.setValue(value);
+        criteria.setOperation(operation);
+        return criteria;
+    }
 }

@@ -50,12 +50,12 @@ INSERT INTO activity (met, name, activity_category_id) VALUES
                                                            (2.5, 'Tai Chi', 4),
                                                            (8.0, 'Basketball', 5);
 
-INSERT INTO plan (description, name, plan_type_id, user_id) VALUES
-                                                                ('Weight loss program', 'Slim Down', 1, 1),
-                                                                ('Muscle building plan', 'Gain Muscle', 2, 2),
-                                                                ('Maintain current fitness', 'Stay Fit', 3, 3),
-                                                                ('Athletic performance', 'Peak Performance', 4, 4),
-                                                                ('Injury recovery', 'Recovery Plan', 5, 5);
+INSERT INTO plan (is_public, description, name, plan_type_id, user_id) VALUES
+                                                                (true, 'Weight loss program', 'Slim Down', 1, 1),
+                                                                (true, 'Muscle building plan', 'Gain Muscle', 2, 2),
+                                                                (true, 'Maintain current fitness', 'Stay Fit', 3, 3),
+                                                                (true, 'Athletic performance', 'Peak Performance', 4, 4),
+                                                                (true, 'Injury recovery', 'Recovery Plan', 5, 5);
 
 INSERT INTO recipe (description, name, user_id) VALUES
                                                     ('Healthy breakfast', 'Morning Oats', 1),

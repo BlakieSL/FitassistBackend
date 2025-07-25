@@ -84,10 +84,10 @@ INSERT INTO recipe_food (recipe_id, food_id, quantity) VALUES
                                                            (2, 2, 150.00), (2, 3, 100.00),
                                                            (3, 5, 150.00), (3, 1, 100.00);
 
-INSERT INTO plan (name, description, user_id, plan_type_id) VALUES
-                                                                ('Summer Cut', '12-week fat loss program', 1, 3),
-                                                                ('Strength Builder', '6-month strength program', 2, 2),
-                                                                ('Balanced Lifestyle', 'General fitness maintenance', 3, 3);
+INSERT INTO plan (is_public, name, description, user_id, plan_type_id) VALUES
+                                                                (true, 'Summer Cut', '12-week fat loss program', 1, 3),
+                                                                (true, 'Strength Builder', '6-month strength program', 2, 2),
+                                                                (true, 'Balanced Lifestyle', 'General fitness maintenance', 3, 3);
 
 INSERT INTO plan_category_association (plan_id, plan_category_id) VALUES
                                                                       (1, 1),
