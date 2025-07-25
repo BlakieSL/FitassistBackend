@@ -8,7 +8,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 public class RedisContainerInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-    static GenericContainer<?> redisContainer = new GenericContainer<>("8.0.3-bookworm")
+    static GenericContainer<?> redisContainer = new GenericContainer<>("redis:8.0.3-bookworm")
             .withExposedPorts(6379);
 
     static {
