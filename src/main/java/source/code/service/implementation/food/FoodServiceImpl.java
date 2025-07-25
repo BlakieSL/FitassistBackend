@@ -72,7 +72,7 @@ public class FoodServiceImpl implements FoodService {
             throws JsonPatchException, JsonProcessingException
     {
         Food food = find(foodId);
-        FoodUpdateDto patchedFoodUpdateDto = applyPatchToFood(food, patch);
+        FoodUpdateDto patchedFoodUpdateDto = applyPatchToFood(patch);
 
         validationService.validate(patchedFoodUpdateDto);
         foodMapper.updateFood(food, patchedFoodUpdateDto);
@@ -137,10 +137,9 @@ public class FoodServiceImpl implements FoodService {
         return repositoryHelper.find(foodRepository, Food.class, foodId);
     }
 
-    private FoodUpdateDto applyPatchToFood(Food food, JsonMergePatch patch)
+    private FoodUpdateDto applyPatchToFood(JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        FoodResponseDto responseDto = foodMapper.toResponseDto(food);
-        return jsonPatchService.applyPatch(patch, responseDto, FoodUpdateDto.class);
+        return jsonPatchService.createFromPatch(patch, FoodUpdateDto.class);
     }
 }

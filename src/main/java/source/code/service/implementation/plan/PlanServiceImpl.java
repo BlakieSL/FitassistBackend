@@ -77,7 +77,7 @@ public class PlanServiceImpl implements PlanService {
     public void updatePlan(int planId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException {
         Plan plan = find(planId);
-        PlanUpdateDto patchedPlanUpdateDto = applyPatchToPlan(plan, patch);
+        PlanUpdateDto patchedPlanUpdateDto = applyPatchToPlan(patch);
 
         validationService.validate(patchedPlanUpdateDto);
         planMapper.updatePlan(plan, patchedPlanUpdateDto);
@@ -132,10 +132,9 @@ public class PlanServiceImpl implements PlanService {
         return repositoryHelper.find(planRepository, Plan.class, planId);
     }
 
-    private PlanUpdateDto applyPatchToPlan(Plan plan, JsonMergePatch patch)
+    private PlanUpdateDto applyPatchToPlan(JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        PlanResponseDto responseDto = planMapper.toResponseDto(plan);
-        return jsonPatchService.applyPatch(patch, responseDto, PlanUpdateDto.class);
+        return jsonPatchService.createFromPatch(patch, PlanUpdateDto.class);
     }
 }

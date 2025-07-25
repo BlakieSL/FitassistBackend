@@ -85,7 +85,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     {
         DailyCartFood dailyCartFood = getDailyCartFood(dailyCartFoodId);
 
-        DailyCartFoodUpdateDto patchedDto = applyPatchToDailyFoodItem(dailyCartFood, patch);
+        DailyCartFoodUpdateDto patchedDto = applyPatchToDailyFoodItem(patch);
         validationService.validate(patchedDto);
 
         updateAmount(dailyCartFood, patchedDto.getQuantity());
@@ -134,12 +134,9 @@ public class DailyFoodServiceImpl implements DailyFoodService {
         return dailyCartRepository.save(DailyCart.of(user, date));
     }
 
-    private DailyCartFoodUpdateDto applyPatchToDailyFoodItem(
-            DailyCartFood dailyCartFood, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
-        DailyCartFoodUpdateDto createDto = DailyCartFoodUpdateDto.of(dailyCartFood.getQuantity());
-        return jsonPatchService.applyPatch(patch, createDto, DailyCartFoodUpdateDto.class);
+    private DailyCartFoodUpdateDto applyPatchToDailyFoodItem(JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException {
+        return jsonPatchService.createFromPatch(patch, DailyCartFoodUpdateDto.class);
     }
 
     private DailyCart getOrCreateDailyCartForUser(int userId, LocalDate date) {

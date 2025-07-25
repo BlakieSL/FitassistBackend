@@ -51,7 +51,7 @@ public class WorkoutServiceImpl implements WorkoutService {
             throws JsonPatchException, JsonProcessingException
     {
         Workout workout = find(workoutId);
-        WorkoutUpdateDto patched = applyPatchToWorkout(workout, patch);
+        WorkoutUpdateDto patched = applyPatchToWorkout(patch);
 
         validationService.validate(patched);
         workoutMapper.updateWorkout(workout, patched);
@@ -82,10 +82,9 @@ public class WorkoutServiceImpl implements WorkoutService {
         return repositoryHelper.find(workoutRepository, Workout.class, workoutId);
     }
 
-    private WorkoutUpdateDto applyPatchToWorkout(Workout workout, JsonMergePatch patch)
+    private WorkoutUpdateDto applyPatchToWorkout(JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        WorkoutResponseDto responseDto = workoutMapper.toResponseDto(workout);
-        return jsonPatchService.applyPatch(patch, responseDto, WorkoutUpdateDto.class);
+        return jsonPatchService.createFromPatch(patch, WorkoutUpdateDto.class);
     }
 }

@@ -85,7 +85,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     {
         DailyCartActivity dailyCartActivity = getDailyCartActivity(dailyActivityItemId);
 
-        DailyActivityItemUpdateDto patchedDto = applyPatchToDailyActivityItem(dailyCartActivity, patch);
+        DailyActivityItemUpdateDto patchedDto = applyPatchToDailyActivityItem(patch);
         validationService.validate(patchedDto);
 
         updateTime(dailyCartActivity, patchedDto.getTime());
@@ -142,13 +142,9 @@ public class DailyActivityServiceImpl implements DailyActivityService {
         return dailyCartRepository.save(DailyCart.of(user, date));
     }
 
-    private DailyActivityItemUpdateDto applyPatchToDailyActivityItem(
-            DailyCartActivity dailyCartActivity,
-            JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
-        DailyActivityItemUpdateDto updateDto = DailyActivityItemUpdateDto.of(dailyCartActivity.getTime());
-        return jsonPatchService.applyPatch(patch, updateDto, DailyActivityItemUpdateDto.class);
+    private DailyActivityItemUpdateDto applyPatchToDailyActivityItem(JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException {
+        return jsonPatchService.createFromPatch(patch, DailyActivityItemUpdateDto.class);
     }
 
     private DailyCartActivity getDailyCartActivity(int dailyActivityItemId) {

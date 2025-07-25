@@ -49,7 +49,7 @@ public class WorkoutSetGroupServiceImpl implements WorkoutSetGroupService {
     @Override
     public void updateWorkoutSetGroup(int workoutSetGroupId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
         WorkoutSetGroup workoutSetGroup = find(workoutSetGroupId);
-        WorkoutSetGroupUpdateDto patched = applyPatchToWorkoutSetGroup(workoutSetGroup, patch);
+        WorkoutSetGroupUpdateDto patched = applyPatchToWorkoutSetGroup(patch);
 
         validationService.validate(patched);
         workoutSetGroupMapper.updateWorkoutSetGroup(workoutSetGroup, patched);
@@ -80,8 +80,8 @@ public class WorkoutSetGroupServiceImpl implements WorkoutSetGroupService {
         return repositoryHelper.find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId);
     }
 
-    private WorkoutSetGroupUpdateDto applyPatchToWorkoutSetGroup(WorkoutSetGroup workoutSetGroup, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
-        WorkoutSetGroupResponseDto responseDto = workoutSetGroupMapper.toResponseDto(workoutSetGroup);
-        return jsonPatchService.applyPatch(patch, responseDto, WorkoutSetGroupUpdateDto.class);
+    private WorkoutSetGroupUpdateDto applyPatchToWorkoutSetGroup(JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException {
+        return jsonPatchService.createFromPatch(patch, WorkoutSetGroupUpdateDto.class);
     }
 }

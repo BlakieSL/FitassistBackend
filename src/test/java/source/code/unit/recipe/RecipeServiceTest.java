@@ -122,8 +122,7 @@ public class RecipeServiceTest {
     @Test
     void updateRecipe_shouldUpdateRecipe() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(recipeRepository, Recipe.class, recipeId)).thenReturn(recipe);
-        when(recipeMapper.toResponseDto(recipe)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, RecipeUpdateDto.class)).thenReturn(patchedDto);
+        when(jsonPatchService.createFromPatch(patch, RecipeUpdateDto.class)).thenReturn(patchedDto);
         when(recipeRepository.save(recipe)).thenReturn(recipe);
 
         recipeService.updateRecipe(recipeId, patch);
@@ -137,8 +136,7 @@ public class RecipeServiceTest {
     void updateRecipe_shouldPublishEvent() throws JsonPatchException, JsonProcessingException {
         ArgumentCaptor<RecipeUpdateEvent> eventCaptor = ArgumentCaptor.forClass(RecipeUpdateEvent.class);
         when(repositoryHelper.find(recipeRepository, Recipe.class, recipeId)).thenReturn(recipe);
-        when(recipeMapper.toResponseDto(recipe)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, RecipeUpdateDto.class)).thenReturn(patchedDto);
+        when(jsonPatchService.createFromPatch(patch, RecipeUpdateDto.class)).thenReturn(patchedDto);
         when(recipeRepository.save(recipe)).thenReturn(recipe);
 
         recipeService.updateRecipe(recipeId, patch);
@@ -163,8 +161,7 @@ public class RecipeServiceTest {
             throws JsonPatchException, JsonProcessingException
     {
         when(repositoryHelper.find(recipeRepository, Recipe.class, recipeId)).thenReturn(recipe);
-        when(recipeMapper.toResponseDto(recipe)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, RecipeUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, RecipeUpdateDto.class))
                 .thenThrow(JsonPatchException.class);
 
         assertThrows(JsonPatchException.class, () -> recipeService.updateRecipe(recipeId, patch));
@@ -178,8 +175,7 @@ public class RecipeServiceTest {
             throws JsonPatchException, JsonProcessingException
     {
         when(repositoryHelper.find(recipeRepository, Recipe.class, recipeId)).thenReturn(recipe);
-        when(recipeMapper.toResponseDto(recipe)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, RecipeUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, RecipeUpdateDto.class))
                 .thenReturn(patchedDto);
 
         doThrow(new IllegalArgumentException("Validation failed")).when(validationService)

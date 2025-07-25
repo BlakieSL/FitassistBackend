@@ -128,8 +128,7 @@ public class ActivityServiceTest {
     void updateActivity_shouldUpdate() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(activityRepository, Activity.class, activityId))
                 .thenReturn(activity);
-        when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, ActivityUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class))
                 .thenReturn(patchedDto);
         when(activityRepository.save(activity)).thenReturn(activity);
 
@@ -147,8 +146,7 @@ public class ActivityServiceTest {
 
         when(repositoryHelper.find(activityRepository, Activity.class, activityId))
                 .thenReturn(activity);
-        when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, ActivityUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class))
                 .thenReturn(patchedDto);
         when(activityRepository.save(activity)).thenReturn(activity);
 
@@ -182,8 +180,7 @@ public class ActivityServiceTest {
     {
         when(repositoryHelper.find(activityRepository, Activity.class, activityId))
                 .thenReturn(activity);
-        when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, ActivityUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class))
                 .thenThrow(JsonPatchException.class);
 
 
@@ -200,8 +197,7 @@ public class ActivityServiceTest {
     {
         when(repositoryHelper.find(activityRepository, Activity.class, activityId))
                 .thenReturn(activity);
-        when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
-        when(jsonPatchService.applyPatch(patch, responseDto, ActivityUpdateDto.class))
+        when(jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class))
                 .thenReturn(patchedDto);
 
         doThrow(new IllegalArgumentException("Validation failed")).when(validationService)

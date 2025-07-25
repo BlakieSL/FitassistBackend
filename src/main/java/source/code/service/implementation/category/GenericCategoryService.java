@@ -67,7 +67,7 @@ public abstract class GenericCategoryService<T> {
             throws JsonPatchException, JsonProcessingException
     {
         T category = find(categoryId);
-        CategoryUpdateDto patchedCategory = applyPatchToCategory(category, patch);
+        CategoryUpdateDto patchedCategory = applyPatchToCategory(patch);
 
         validationService.validate(patchedCategory);
         mapper.updateEntityFromDto(category, patchedCategory);
@@ -124,10 +124,9 @@ public abstract class GenericCategoryService<T> {
                 .orElseThrow(() -> RecordNotFoundException.of(getClass(), categoryId));
     }
 
-    private CategoryUpdateDto applyPatchToCategory(T category, JsonMergePatch patch)
+    private CategoryUpdateDto applyPatchToCategory(JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException {
-        CategoryResponseDto response = mapper.toResponseDto(category);
-        return jsonPatchService.applyPatch(patch, response, CategoryUpdateDto.class);
+        return jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class);
     }
 
     private Optional<List<CategoryResponseDto>> getCachedCategories(String cacheKey) {

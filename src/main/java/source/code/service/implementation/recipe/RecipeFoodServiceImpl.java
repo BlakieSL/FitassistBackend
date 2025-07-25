@@ -95,9 +95,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
             throws JsonPatchException, JsonProcessingException {
 
         RecipeFood recipeFood = find(recipeId, foodId);
-        RecipeFoodCreateDto existingRecipeFoodDto = new RecipeFoodCreateDto(recipeFood.getQuantity());
-        RecipeFoodCreateDto patchedDto = jsonPatchService
-                .applyPatch(patch, existingRecipeFoodDto, RecipeFoodCreateDto.class);
+        RecipeFoodCreateDto patchedDto = jsonPatchService.createFromPatch(patch, RecipeFoodCreateDto.class);
 
         validationService.validate(patchedDto);
         recipeFoodMapper.update(recipeFood, patchedDto);

@@ -194,9 +194,8 @@ public class DailyFoodServiceTest {
         when(repositoryHelper.find(dailyCartFoodRepository, DailyCartFood.class, FOOD_ID))
                 .thenReturn(dailyCartFood);
 
-        doReturn(patchedDto).when(jsonPatchService).applyPatch(
+        doReturn(patchedDto).when(jsonPatchService).createFromPatch(
                 any(JsonMergePatch.class),
-                any(DailyCartFoodUpdateDto.class),
                 eq(DailyCartFoodUpdateDto.class)
         );
 
@@ -225,9 +224,8 @@ public class DailyFoodServiceTest {
     {
         when(repositoryHelper.find(dailyCartFoodRepository, DailyCartFood.class, FOOD_ID))
                 .thenReturn(dailyCartFood);
-        doThrow(JsonPatchException.class).when(jsonPatchService).applyPatch(
+        doThrow(JsonPatchException.class).when(jsonPatchService).createFromPatch(
                 any(JsonMergePatch.class),
-                any(DailyCartFoodUpdateDto.class),
                 eq(DailyCartFoodUpdateDto.class)
         );
 
@@ -248,9 +246,8 @@ public class DailyFoodServiceTest {
 
         when(repositoryHelper.find(dailyCartFoodRepository, DailyCartFood.class, FOOD_ID))
                 .thenReturn(dailyCartFood);
-        doReturn(patchedDto).when(jsonPatchService).applyPatch(
+        doReturn(patchedDto).when(jsonPatchService).createFromPatch(
                 any(JsonMergePatch.class),
-                any(DailyCartFoodUpdateDto.class),
                 eq(DailyCartFoodUpdateDto.class)
         );
 
