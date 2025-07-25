@@ -98,8 +98,8 @@ public class AuthAnnotationServiceImpl {
         return AuthorizationUtil.isOwnerOrAdmin(recipe.getUser().getId());
     }
 
-    public boolean isPublicRecipeOrOwnerOrAdmin(int id) {
-        Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, id);
+    public boolean isPublicRecipeOrOwnerOrAdmin(int recipeId) {
+        Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
         if (recipe.getIsPublic()) {
             return true;
         }
