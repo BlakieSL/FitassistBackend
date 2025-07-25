@@ -26,8 +26,8 @@ INSERT INTO food_category (id, name) VALUES (1, 'Vegetables');
 INSERT INTO food (id, calories, carbohydrates, fat, name, protein, food_category_id)
 VALUES (1, 35.0, 7.0, 0.2, 'Carrot', 0.8, 1);
 
-INSERT INTO recipe (id, description, name, user_id)
-VALUES (1, 'Healthy carrot soup', 'Carrot Soup', 1);
+INSERT INTO recipe (is_public, id, description, name, user_id)
+VALUES (true, 1, 'Healthy carrot soup', 'Carrot Soup', 1);
 
 INSERT INTO plan_type (id, name) VALUES (1, 'Fitness');
 

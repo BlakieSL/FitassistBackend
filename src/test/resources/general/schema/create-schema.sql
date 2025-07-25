@@ -233,6 +233,7 @@ create table recipe
         primary key,
     description varchar(255) not null,
     name        varchar(100) not null,
+    is_public   BOOLEAN NOT NULL,
     user_id     int          not null,
     constraint FKc8o8io8s0f7nqcd3429u6cxjs
         foreign key (user_id) references user (id)

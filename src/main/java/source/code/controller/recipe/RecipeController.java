@@ -7,7 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.annotation.RecipeOwnerOrAdmin;
+import source.code.annotation.recipe.PublicRecipeOrOwnerOrAdmin;
+import source.code.annotation.recipe.RecipeOwnerOrAdmin;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.recipe.RecipeCreateDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
@@ -50,15 +51,16 @@ public class RecipeController {
         return ResponseEntity.noContent().build();
     }
 
+    @PublicRecipeOrOwnerOrAdmin
     @GetMapping("/{id}")
     public ResponseEntity<RecipeResponseDto> getRecipe(@PathVariable int id) {
         RecipeResponseDto recipe = recipeService.getRecipe(id);
         return ResponseEntity.ok(recipe);
     }
 
-    @GetMapping
-    public ResponseEntity<List<RecipeResponseDto>> getAllRecipes() {
-        return ResponseEntity.ok(recipeService.getAllRecipes());
+    @GetMapping({"/private", "/private/{isPrivate}"})
+    public ResponseEntity<List<RecipeResponseDto>> getAllRecipes(@PathVariable(required = false) Boolean isPrivate) {
+        return ResponseEntity.ok(recipeService.getAllRecipes(isPrivate));
     }
 
     @PostMapping("/filter")

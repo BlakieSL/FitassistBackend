@@ -177,8 +177,7 @@ public class PlanControllerTest {
     @Test
     @DisplayName("GET - /{id} - Should retrieve an existing plan")
     void getPlan() throws Exception {
-        mockMvc.perform(get("/api/plans/1")
-                .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/plans/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1));
     }
@@ -207,10 +206,11 @@ public class PlanControllerTest {
     @DisplayName("GET - /private/{isPrivate} - Should retrieve all public plans when isPrivate is null")
     void getAllPlans() throws Exception {
         Utils.setUserContext(1);
-        mockMvc.perform(get("/api/plans/private")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(12)));
+        mockMvc.perform(get("/api/plans/private"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", hasSize(12))
+                );
     }
 
     @PlanSql
@@ -218,10 +218,11 @@ public class PlanControllerTest {
     @DisplayName("GET - /private/{isPrivate} - Should retrieve all public plans when isPrivate is false")
     void getAllPublicPlans() throws Exception {
         Utils.setUserContext(1);
-        mockMvc.perform(get("/api/plans/private/false", false)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(12)));
+        mockMvc.perform(get("/api/plans/private/false"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", hasSize(12))
+                );
     }
 
     @PlanSql
@@ -229,7 +230,7 @@ public class PlanControllerTest {
     @DisplayName("GET - /private/{isPrivate} - Should retrieve all private plans when isPrivate is true")
     void getAllPrivatePlans() throws Exception {
         Utils.setUserContext(1);
-        mockMvc.perform(get("/api/plans/private/true", true)
+        mockMvc.perform(get("/api/plans/private/true")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)));

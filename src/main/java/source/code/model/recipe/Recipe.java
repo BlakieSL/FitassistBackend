@@ -42,6 +42,10 @@ public class Recipe implements IndexedEntity {
     private String description;
 
     @NotNull
+    @Column(nullable = false, name = "is_public")
+    private Boolean isPublic = false;
+
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

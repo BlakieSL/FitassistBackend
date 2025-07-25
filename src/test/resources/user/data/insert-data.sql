@@ -69,10 +69,10 @@ INSERT INTO exercise_target_muscle (exercise_id, target_muscle_id, priority) VAL
                                                                                  (3, 3, 1.00),
                                                                                  (4, 4, 1.00);
 
-INSERT INTO recipe (name, description, user_id) VALUES
-                                                    ('Protein Shake', 'Quick post-workout shake', 1),
-                                                    ('Chicken & Rice', 'Simple meal prep recipe', 2),
-                                                    ('Greek Yogurt Parfait', 'Healthy breakfast option', 3);
+INSERT INTO recipe (is_public, name, description, user_id) VALUES
+                                                    (true, 'Protein Shake', 'Quick post-workout shake', 1),
+                                                    (true, 'Chicken & Rice', 'Simple meal prep recipe', 2),
+                                                    (true, 'Greek Yogurt Parfait', 'Healthy breakfast option', 3);
 
 INSERT INTO recipe_category_association (recipe_id, recipe_category_id) VALUES
                                                                             (1, 4),

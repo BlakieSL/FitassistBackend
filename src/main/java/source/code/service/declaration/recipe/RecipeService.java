@@ -19,7 +19,7 @@ public interface RecipeService {
 
     RecipeResponseDto getRecipe(int id);
 
-    List<RecipeResponseDto> getAllRecipes();
+    List<RecipeResponseDto> getAllRecipes(Boolean isPrivate);
 
     List<RecipeResponseDto> getFilteredRecipes(FilterDto filter);
 

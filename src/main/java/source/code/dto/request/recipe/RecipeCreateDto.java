@@ -26,6 +26,8 @@ public class RecipeCreateDto {
     @Size(max = DESCRIPTION_MAX_LENGTH)
     private String description;
 
+    private Boolean isPublic = false;
+
     private List<Integer> categoryIds;
 
     private List<RecipeInstructionCreateDto> instructions;

@@ -232,28 +232,33 @@ public class RecipeServiceTest {
     @Test
     void getAllRecipes_shouldReturnAllRecipes() {
         List<RecipeResponseDto> responseDtos = List.of(responseDto);
+        Boolean isPrivate = true;
+        int userId = 1;
 
-        when(recipeRepository.findAllWithAssociations())
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+        when(recipeRepository.findAllWithAssociations(eq(isPrivate), eq(userId)))
                 .thenReturn(List.of(recipe));
         when(recipeMapper.toResponseDto(recipe)).thenReturn(responseDto);
 
-        List<RecipeResponseDto> result = recipeService.getAllRecipes();
+        List<RecipeResponseDto> result = recipeService.getAllRecipes(isPrivate);
 
         assertEquals(responseDtos, result);
-        verify(recipeRepository).findAllWithAssociations();
+        verify(recipeRepository).findAllWithAssociations(eq(isPrivate), eq(userId));
     }
 
     @Test
     void getAllRecipes_shouldReturnEmptyListWhenNoRecipes() {
-        List<RecipeResponseDto> responseDtos = List.of();
+        Boolean isPrivate = false;
+        int userId = 1;
 
-        when(recipeRepository.findAllWithAssociations())
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+        when(recipeRepository.findAllWithAssociations(eq(isPrivate), eq(userId)))
                 .thenReturn(Collections.emptyList());
 
-        List<RecipeResponseDto> result = recipeService.getAllRecipes();
+        List<RecipeResponseDto> result = recipeService.getAllRecipes(isPrivate);
 
         assertTrue(result.isEmpty());
-        verify(recipeRepository).findAllWithAssociations();
+        verify(recipeRepository).findAllWithAssociations(eq(isPrivate), eq(userId));
     }
 
     @Test

@@ -30,6 +30,7 @@ create table recipe
     description varchar(255)  not null,
     name        varchar(100)  not null,
     text        varchar(2000) not null,
+    is_public   boolean       not null,
     user_id     int           not null,
     constraint FKc8o8io8s0f7nqcd3429u6cxjs
         foreign key (user_id) references user (id)
