@@ -83,6 +83,7 @@ CREATE TABLE recipe (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         description VARCHAR(255) NOT NULL,
                         name VARCHAR(100) NOT NULL,
+                        is_public BOOLEAN NOT NULL,
                         user_id INT NOT NULL,
                         CONSTRAINT fk_user_recipe
                             FOREIGN KEY (user_id)

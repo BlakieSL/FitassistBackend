@@ -10,6 +10,7 @@ import source.code.dto.pojo.FilterCriteria;
 import source.code.exception.InvalidFilterKeyException;
 import source.code.helper.Enum.model.LikesAndSaves;
 import source.code.helper.Enum.model.field.RecipeField;
+import source.code.helper.user.AuthorizationUtil;
 import source.code.model.recipe.Recipe;
 import source.code.model.recipe.RecipeCategoryAssociation;
 import source.code.model.recipe.RecipeFood;
@@ -27,15 +28,21 @@ public class RecipeSpecification implements Specification<Recipe> {
             @NonNull Root<Recipe> root, CriteriaQuery<?> query,
             @NonNull CriteriaBuilder builder
     ) {
-        RecipeField field;
+        Predicate publicPredicate;
+        if (criteria.getIsPublic() != null && !criteria.getIsPublic()) {
+            publicPredicate = builder.equal(root.get("user").get("id"), AuthorizationUtil.getUserId());
+        } else {
+            publicPredicate = builder.isTrue(root.get("isPublic"));
+        }
 
+        RecipeField field;
         try {
             field = RecipeField.valueOf(criteria.getFilterKey());
         } catch (IllegalArgumentException e) {
             throw new InvalidFilterKeyException("Invalid filter key: " + criteria.getFilterKey());
         }
 
-        return switch (field) {
+        Predicate fieldPredicate =  switch (field) {
             case RecipeField.CATEGORY -> GenericSpecificationHelper.buildPredicateJoinProperty(
                     builder,
                     criteria,
@@ -67,6 +74,7 @@ public class RecipeSpecification implements Specification<Recipe> {
                     TypeOfInteraction.LIKE
             );
         };
+        return builder.and(publicPredicate, fieldPredicate);
     }
 
     public static RecipeSpecification of(FilterCriteria criteria) {

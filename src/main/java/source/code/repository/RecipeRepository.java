@@ -1,5 +1,6 @@
 package source.code.repository;
 
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -16,8 +17,14 @@ public interface RecipeRepository
     List<Recipe> findAllWithoutAssociations();
 
     @EntityGraph(attributePaths = {"user", "recipeCategoryAssociations.recipeCategory"})
-    @Query("SELECT r FROM Recipe r")
-    List<Recipe> findAllWithAssociations();
+    @Query("SELECT r FROM Recipe r WHERE " +
+            "(:isPrivate IS NULL AND r.isPublic = true) OR " +
+            "(:isPrivate = false AND r.isPublic = true) OR " +
+            "(:isPrivate = true AND r.user.id = :userId)")
+    List<Recipe> findAllWithAssociations(
+            @Param("isPrivate") Boolean isPrivate,
+            @Param("userId") int userId
+    );
 
     List<Recipe> findAllByUser_Id(Integer userId);
 }

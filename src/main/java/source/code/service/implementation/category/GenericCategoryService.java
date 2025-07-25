@@ -95,7 +95,6 @@ public abstract class GenericCategoryService<T> {
         );
     }
 
-
     public List<CategoryResponseDto> getAllCategories() {
         String cacheKey = cacheKeyGenerator.generateCacheKey();
 

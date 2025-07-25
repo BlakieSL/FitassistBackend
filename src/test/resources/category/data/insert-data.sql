@@ -57,12 +57,12 @@ INSERT INTO plan (is_public, description, name, plan_type_id, user_id) VALUES
                                                                 (true, 'Athletic performance', 'Peak Performance', 4, 4),
                                                                 (true, 'Injury recovery', 'Recovery Plan', 5, 5);
 
-INSERT INTO recipe (description, name, user_id) VALUES
-                                                    ('Healthy breakfast', 'Morning Oats', 1),
-                                                    ('Quick lunch', 'Veggie Wrap', 2),
-                                                    ('Family dinner', 'Chicken Rice', 3),
-                                                    ('Afternoon snack', 'Yogurt Bowl', 4),
-                                                    ('Sweet treat', 'Fruit Parfait', 5);
+INSERT INTO recipe (is_public, description, name, user_id) VALUES
+                                                    (true,'Healthy breakfast', 'Morning Oats', 1),
+                                                    (true, 'Quick lunch', 'Veggie Wrap', 2),
+                                                    (true, 'Family dinner', 'Chicken Rice', 3),
+                                                    (true, 'Afternoon snack', 'Yogurt Bowl', 4),
+                                                    (true, 'Sweet treat', 'Fruit Parfait', 5);
 
 INSERT INTO exercise (description, name, equipment_id, expertise_level_id, force_type_id, mechanics_type_id) VALUES
                                                                                                                  ('Chest press', 'Bench Press', 4, 3, 1, 1),

@@ -99,8 +99,8 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     @Cacheable(value = CacheNames.ALL_RECIPES)
-    public List<RecipeResponseDto> getAllRecipes() {
-        return recipeRepository.findAllWithAssociations().stream()
+    public List<RecipeResponseDto> getAllRecipes(Boolean isPrivate) {
+        return recipeRepository.findAllWithAssociations(isPrivate, AuthorizationUtil.getUserId()).stream()
                 .map(recipeMapper::toResponseDto)
                 .toList();
     }

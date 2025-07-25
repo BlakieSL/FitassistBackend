@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
+import source.code.integration.test.controller.plan.PlanSql;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
@@ -169,7 +170,6 @@ public class RecipeControllerTest {
     @Test
     @DisplayName("GET - /{id} - Should return a recipe by ID")
     void getRecipeById() throws Exception {
-        Utils.setUserContext(1);
         mockMvc.perform(get("/api/recipes/1"))
                 .andExpectAll(
                         status().isOk(),
@@ -182,31 +182,61 @@ public class RecipeControllerTest {
     @Test
     @DisplayName("GET - /{id} - Should return 404 when recipe not found")
     void getRecipeByIdNotFound() throws Exception {
-        Utils.setUserContext(1);
         mockMvc.perform(get("/api/recipes/999"))
                 .andExpect(status().isNotFound());
     }
 
-    @WithMockUser
     @RecipeSql
     @Test
-    @DisplayName("GET - / - Should return all recipes")
+    @DisplayName("GET - /{id} - Should return 403 when not owner or admin and recipe is private")
+    void getRecipeByIdForbidden() throws Exception {
+        Utils.setUserContext(3);
+        mockMvc.perform(get("/api/recipes/4"))
+                .andExpect(status().isForbidden());
+    }
+
+    @RecipeSql
+    @Test
+    @DisplayName("GET - /private/{isPrivate} - Should return all public recipes when isPrivate is null")
     void getAllRecipes() throws Exception {
         Utils.setUserContext(1);
-        mockMvc.perform(get("/api/recipes"))
+
+        mockMvc.perform(get("/api/recipes/private"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(3)),
-                        jsonPath("$[0].name").value("Vegetable Stir Fry")
+                        jsonPath("$", hasSize(3))
                 );
     }
 
-    @WithMockUser
+    @RecipeSql
     @Test
-    @DisplayName("GET - / - Should return empty list when no recipes")
+    @DisplayName("GET - /private/{isPrivate} - Should return all public recipes when isPrivate is false")
+    void getAllPublicRecipes() throws Exception {
+        Utils.setUserContext(1);
+        mockMvc.perform(get("/api/recipes/private/false"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", hasSize(3))
+                );
+    }
+
+    @RecipeSql
+    @Test
+    @DisplayName("GET - /private/{isPrivate} - Should return all private recipes when isPrivate is true")
+    void getAllPrivateRecipes() throws Exception {
+        Utils.setUserContext(1);
+        mockMvc.perform(get("/api/recipes/private/true"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", hasSize(4))
+                );
+    }
+
+    @Test
+    @DisplayName("GET - /private/{isPrivate} - Should return empty list when no recipes")
     void getAllRecipesEmpty() throws Exception {
         Utils.setUserContext(1);
-        mockMvc.perform(get("/api/recipes"))
+        mockMvc.perform(get("/api/recipes/private"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$", hasSize(0))
