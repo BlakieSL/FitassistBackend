@@ -50,6 +50,9 @@ s3:
   bucket:
     name: ${S3_BUCKET_NAME}
 
+lucene:
+    enabled: true
+
 jws:
   sharedKey: 1234567890qwertyuiopasdfghjklzxcvbnmaskdjfjasdhfjasdgfoweqryuieqwhzcnxvb32u46832tgdnsabfwry3210478gfdxhzbDSOFY1320486321Thgf9d761328947gdsafhga03128412360gasdfhbgcvnbaskhdfga
 

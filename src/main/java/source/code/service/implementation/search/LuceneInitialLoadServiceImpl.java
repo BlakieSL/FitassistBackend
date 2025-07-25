@@ -4,9 +4,13 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import source.code.helper.search.IndexedEntity;
 import source.code.service.declaration.activity.ActivityService;
@@ -36,6 +40,9 @@ public class LuceneInitialLoadServiceImpl implements LuceneInitialLoadService {
     private final PlanService planService;
     private static final Logger LOGGER = LoggerFactory.getLogger(LuceneInitialLoadServiceImpl.class);
 
+    @Value("${lucene.enabled}")
+    private Boolean luceneEnabled;
+
     public LuceneInitialLoadServiceImpl(LuceneIndexService luceneIndexService,
                                         FoodService foodService,
                                         ActivityService activityService,
@@ -57,28 +64,27 @@ public class LuceneInitialLoadServiceImpl implements LuceneInitialLoadService {
         LOGGER.info("Lucene index directory cleared.");
     }
 
-    @PostConstruct
+    @EventListener(ApplicationReadyEvent.class)
     @Override
     public void indexAll() {
-        clearIndexDirectory();
+        if (luceneEnabled) {
+            try {
+                clearIndexDirectory();
 
-        List<IndexedEntity> allEntities = List.of();
-
-        try {
-            allEntities = Stream.of(
-                    foodService.getAllFoodEntities(),
-                    activityService.getAllActivityEntities(),
-                    exerciseService.getAllExerciseEntities(),
-                    recipeService.getAllRecipeEntities(),
-                    planService.getAllPlanEntities()
-            ).flatMap(List::stream)
-                    .map(entity -> (IndexedEntity) entity)
-                    .toList();
-        } catch (Exception ex) {
-            LOGGER.error("DB was not initialized yet, skipping indexing", ex);
+                List<IndexedEntity> allEntities = Stream.of(
+                                foodService.getAllFoodEntities(),
+                                activityService.getAllActivityEntities(),
+                                exerciseService.getAllExerciseEntities(),
+                                recipeService.getAllRecipeEntities(),
+                                planService.getAllPlanEntities()
+                        ).flatMap(List::stream)
+                        .map(entity -> (IndexedEntity) entity)
+                        .toList();
+                luceneIndexService.indexEntities(allEntities);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
-        luceneIndexService.indexEntities(allEntities);
     }
 
     @Override
