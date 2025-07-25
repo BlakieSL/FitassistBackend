@@ -62,9 +62,10 @@ public class RecipeFoodController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}/foods")
-    public ResponseEntity<List<FoodResponseDto>> getFoodsByRecipe(@PathVariable int id) {
-        List<FoodResponseDto> foods = recipeFoodService.getFoodsByRecipe(id);
+    @RecipeOwnerOrAdmin
+    @GetMapping("/{recipeId}/foods")
+    public ResponseEntity<List<FoodResponseDto>> getFoodsByRecipe(@PathVariable int recipeId) {
+        List<FoodResponseDto> foods = recipeFoodService.getFoodsByRecipe(recipeId);
         return ResponseEntity.ok(foods);
     }
 
