@@ -23,6 +23,7 @@ jobs:
         ls -la
         find . -name "*.gradle" -o -name "*.gradle.kts" | head -10
         cat build.gradle* | head -50
+
     - name: Build project
       run: ./gradlew build --info --stacktrace
       env:
@@ -33,4 +34,4 @@ jobs:
       if: always()
       with:
         files: |
-          **/build/test-results/test/TEST-*.xml 
+          **/build/test-results/test/TEST-*.xml
