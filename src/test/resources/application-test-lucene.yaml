@@ -18,4 +18,4 @@ s3:
 redis-flag:
   enabled: false
 lucene:
-    enabled: false
+  enabled: true

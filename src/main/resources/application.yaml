@@ -50,6 +50,9 @@ s3:
   bucket:
     name: ${S3_BUCKET_NAME}
 
+lucene:
+    enabled: true
+
 jws:
   sharedKey: ***REMOVED***
 
