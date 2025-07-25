@@ -46,14 +46,17 @@ public class PlanControllerFilterTest {
         return FilterDto.of(new ArrayList<>(List.of(criteria)), FilterDataOption.AND);
     }
 
+    private FilterDto buildFilterDto(String filterKey, Object value, FilterOperation operation, Boolean isPublic) {
+        FilterCriteria criteria = FilterCriteria.of(filterKey, value, operation, isPublic);
+        return FilterDto.of(new ArrayList<>(List.of(criteria)), FilterDataOption.AND);
+    }
+
     @PlanSql
     @Test
     @DisplayName("POST - /filter - Should retrieve private plans when isPublic = false by filtered by type")
     void filterPrivatePlansByType() throws Exception {
         Utils.setUserContext(1);
-        FilterDto filterDto = buildFilterDto("TYPE", 1, FilterOperation.EQUAL);
-        filterDto.getFilterCriteria().add(FilterCriteria.of("isPublic", false, FilterOperation.EQUAL));
-
+        FilterDto filterDto = buildFilterDto("TYPE", 1, FilterOperation.EQUAL, false);
         String json = objectMapper.writeValueAsString(filterDto);
 
         mockMvc.perform(post("/api/plans/filter")
