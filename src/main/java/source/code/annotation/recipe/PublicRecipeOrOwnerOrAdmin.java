@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@authAnnotationServiceImpl.isPublicRecipeOrOwnerOrAdmin(#id)")
+@PreAuthorize("@authAnnotationServiceImpl.isPublicRecipeOrOwnerOrAdmin(#recipeId)")
 public @interface PublicRecipeOrOwnerOrAdmin {
 }

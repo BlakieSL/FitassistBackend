@@ -34,27 +34,27 @@ public class RecipeController {
     }
 
     @RecipeOwnerOrAdmin
-    @PatchMapping("/{id}")
+    @PatchMapping("/{recipeId}")
     public ResponseEntity<Void> updateRecipe(
-            @PathVariable int id,
+            @PathVariable int recipeId,
             @RequestBody JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        recipeService.updateRecipe(id, patch);
+        recipeService.updateRecipe(recipeId, patch);
         return ResponseEntity.noContent().build();
     }
 
     @RecipeOwnerOrAdmin
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRecipe(@PathVariable int id) {
-        recipeService.deleteRecipe(id);
+    @DeleteMapping("/{recipeId}")
+    public ResponseEntity<Void> deleteRecipe(@PathVariable int recipeId) {
+        recipeService.deleteRecipe(recipeId);
         return ResponseEntity.noContent().build();
     }
 
     @PublicRecipeOrOwnerOrAdmin
-    @GetMapping("/{id}")
-    public ResponseEntity<RecipeResponseDto> getRecipe(@PathVariable int id) {
-        RecipeResponseDto recipe = recipeService.getRecipe(id);
+    @GetMapping("/{recipeId}")
+    public ResponseEntity<RecipeResponseDto> getRecipe(@PathVariable int recipeId) {
+        RecipeResponseDto recipe = recipeService.getRecipe(recipeId);
         return ResponseEntity.ok(recipe);
     }
 
