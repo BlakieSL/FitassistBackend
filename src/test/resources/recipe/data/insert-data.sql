@@ -20,11 +20,12 @@ VALUES
     (2, 'High-Protein'),
     (3, 'Quick Meals');
 
-INSERT INTO recipe (id, name, description, user_id)
+INSERT INTO recipe (is_public, id, name, description, user_id)
 VALUES
-    (1, 'Vegetable Stir Fry', 'Healthy vegetable dish', 1),
-    (2, 'Grilled Chicken', 'High protein meal', 1),
-    (3, 'Chicken Rice Bowl', 'Balanced meal with protein and carbs', 1);
+    (true, 1, 'Vegetable Stir Fry', 'Healthy vegetable dish', 1),
+    (true, 2, 'Grilled Chicken', 'High protein meal', 1),
+    (true, 3, 'Chicken Rice Bowl', 'Balanced meal with protein and carbs', 1),
+    (false, 4, 'Secret Recipe', 'This is a private recipe', 1);
 
 INSERT INTO recipe_category_association (id, recipe_id, recipe_category_id)
 VALUES

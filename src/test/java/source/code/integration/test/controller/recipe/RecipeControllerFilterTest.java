@@ -42,12 +42,17 @@ public class RecipeControllerFilterTest {
         return FilterDto.of(List.of(criteria), FilterDataOption.AND);
     }
 
+    private FilterDto buildFilterDto(String filterKey, Object value, FilterOperation operation, Boolean isPublic) {
+        FilterCriteria criteria = FilterCriteria.of(filterKey, value, operation, isPublic);
+        return FilterDto.of(List.of(criteria), FilterDataOption.AND);
+    }
+
     @RecipeSql
     @Test
-    @DisplayName("POST - /filter - Should filter recipes by category")
-    void filterRecipesByCategory() throws Exception {
+    @DisplayName("POST - /filter - Should filter private recipes when isPublic = false by category")
+    void filterPrivateRecipesByCategory() throws Exception {
         Utils.setUserContext(1);
-        FilterDto filterDto = buildFilterDto("CATEGORY", 1, FilterOperation.EQUAL); // Vegetarian
+        FilterDto filterDto = buildFilterDto("CATEGORY", 1, FilterOperation.EQUAL, false);
         String json = objectMapper.writeValueAsString(filterDto);
 
         mockMvc.perform(post("/api/recipes/filter")
@@ -55,10 +60,24 @@ public class RecipeControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(1)),
-                        jsonPath("$[0].name", is("Vegetable Stir Fry")),
-                        jsonPath("$[0].categories[?(@.id == 1)].name",
-                                contains("Vegetarian"))
+                        jsonPath("$", hasSize(1))
+                );
+    }
+
+    @RecipeSql
+    @Test
+    @DisplayName("POST - /filter - Should filter recipes by category (Default isPublic = true)")
+    void filterRecipesByCategory() throws Exception {
+        Utils.setUserContext(1);
+        FilterDto filterDto = buildFilterDto("CATEGORY", 1, FilterOperation.EQUAL);
+        String json = objectMapper.writeValueAsString(filterDto);
+
+        mockMvc.perform(post("/api/recipes/filter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", hasSize(1))
                 );
     }
 

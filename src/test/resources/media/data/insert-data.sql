@@ -29,8 +29,8 @@ INSERT INTO user (
          );
 
 
-INSERT INTO recipe (description,name,text,user_id) VALUES (
-             'A healthy chicken salad with avocado and quinoa.',
+INSERT INTO recipe (is_public, description,name,text,user_id) VALUES (
+             true, 'A healthy chicken salad with avocado and quinoa.',
              'Chicken Quinoa Salad',
              'Mix cooked quinoa, grilled chicken breast, avocado, cherry tomatoes, and olive oil.',
              1
