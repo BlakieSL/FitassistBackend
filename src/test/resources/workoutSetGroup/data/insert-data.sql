@@ -26,13 +26,17 @@ VALUES (1, 'Standard pushup exercise', 'Pushups', 1, 1, 1, 1);
 INSERT INTO plan_type (id, name) VALUES (1, 'Fitness');
 
 INSERT INTO plan (is_public, id, description, name, plan_type_id, user_id)
-VALUES (true, 1, 'Beginner workout plan', 'Beginner Plan', 1, 1);
+VALUES (true, 1, 'Beginner workout plan', 'Beginner Plan', 1, 1),
+         (false, 2, 'Advanced workout plan', 'Advanced Plan', 1, 2);
 
 INSERT INTO workout (id, duration, name, plan_id)
-VALUES (1, 30.0, 'Morning Workout', 1);
+VALUES (1, 30.0, 'Morning Workout', 1),
+        (2, 45.0, 'Evening Workout', 2);
 
 INSERT INTO workout_set_group (id, orderIndex, restSeconds, workout_id)
-VALUES (1, 1, 60, 1);
+VALUES (1, 1, 60, 1),
+       (2,1, 90, 2);
 
 INSERT INTO workout_set (id, repetitions, weight, exercise_id, workout_set_group_id)
-VALUES (1, 10.0, 20.0, 1, 1);
+VALUES (1, 10.0, 20.0, 1, 1),
+(2, 10.0, 20.0, 1, 2);
