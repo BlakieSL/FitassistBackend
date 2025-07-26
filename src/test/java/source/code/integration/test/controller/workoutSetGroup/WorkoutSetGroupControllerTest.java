@@ -216,6 +216,7 @@ public class WorkoutSetGroupControllerTest {
     }
 
     @WithMockUser
+    @WorkoutSetGroupSql
     @Test
     @DisplayName("GET - /{workoutSetGroupId} - Should return an existing Workout Set Group when public")
     void getWorkoutSetGroupPublic() throws Exception {
