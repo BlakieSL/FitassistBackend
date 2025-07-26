@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.C;
 import source.code.helper.search.IndexedEntity;
 import source.code.model.text.PlanInstruction;
 import source.code.model.user.User;

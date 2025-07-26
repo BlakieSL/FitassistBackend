@@ -7,13 +7,8 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import source.code.dto.response.food.FoodResponseDto;
 import source.code.dto.response.search.SearchResponseDto;
-import source.code.model.food.Food;
-import source.code.service.declaration.food.FoodService;
 import source.code.service.declaration.search.LuceneSearchService;
 
 import java.io.IOException;

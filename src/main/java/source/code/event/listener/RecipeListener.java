@@ -7,7 +7,6 @@ import source.code.event.events.Recipe.RecipeDeleteEvent;
 import source.code.event.events.Recipe.RecipeUpdateEvent;
 import source.code.helper.Enum.cache.CacheNames;
 import source.code.model.recipe.Recipe;
-import source.code.model.recipe.RecipeCategoryAssociation;
 import source.code.service.declaration.cache.CacheService;
 import source.code.service.declaration.search.LuceneIndexService;
 

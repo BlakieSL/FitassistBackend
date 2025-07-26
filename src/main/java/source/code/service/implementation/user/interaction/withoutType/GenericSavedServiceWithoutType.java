@@ -62,8 +62,7 @@ public abstract class GenericSavedServiceWithoutType<T, U, R> implements SavedSe
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser() {
-        int userId = AuthorizationUtil.getUserId();
+    public List<BaseUserEntity> getAllFromUser(int userId) {
         return findAllByUser(userId).stream()
                 .map(this::extractEntity)
                 .map(entity -> (BaseUserEntity) map.apply(entity))

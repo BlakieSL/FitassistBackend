@@ -174,13 +174,12 @@ public class UserExerciseServiceTest {
         ExerciseResponseDto dto1 = new ExerciseResponseDto();
         ExerciseResponseDto dto2 = new ExerciseResponseDto();
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userExerciseRepository.findByUserId(userId))
                 .thenReturn(List.of(exercise1, exercise2));
         when(exerciseMapper.toResponseDto(exercise1.getExercise())).thenReturn(dto1);
         when(exerciseMapper.toResponseDto(exercise2.getExercise())).thenReturn(dto2);
 
-        var result = userExerciseService.getAllFromUser();
+        var result = userExerciseService.getAllFromUser(userId);
 
         assertEquals(2, result.size());
         assertTrue(result.contains((BaseUserEntity) dto1));
@@ -193,11 +192,10 @@ public class UserExerciseServiceTest {
         int userId = 1;
         short type = 1;
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userExerciseRepository.findByUserId(userId))
                 .thenReturn(List.of());
 
-        var result = userExerciseService.getAllFromUser();
+        var result = userExerciseService.getAllFromUser(userId);
 
         assertTrue(result.isEmpty());
         verify(exerciseMapper, never()).toResponseDto(any());

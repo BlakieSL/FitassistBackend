@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import source.code.model.thread.Comment;
 
 import java.util.List;
-import java.util.jar.JarFile;
 
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findAllByThreadIdAndParentCommentNull(int threadId);
