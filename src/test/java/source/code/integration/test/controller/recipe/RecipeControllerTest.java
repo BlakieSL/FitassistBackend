@@ -14,14 +14,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
-import source.code.integration.test.controller.plan.PlanSql;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
-
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestSetup
 @Import({MockAwsS3Config.class, MockRedisConfig.class})

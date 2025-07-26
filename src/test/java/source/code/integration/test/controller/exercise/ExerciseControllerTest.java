@@ -10,7 +10,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import source.code.dto.request.exercise.ExerciseCreateDto;
-import source.code.dto.request.text.ExerciseInstructionCreateDto;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
@@ -18,11 +17,10 @@ import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
 import java.util.Collections;
-import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestSetup
 @Import({MockAwsS3Config.class, MockRedisConfig.class})

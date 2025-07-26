@@ -79,12 +79,12 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
                 textCacheKeyGenerator.generateCacheKey(saved)));
     }
 
-    public List<BaseTextResponseDto> getAllByParent(int exerciseId) {
-        String cacheKey = textCacheKeyGenerator.generateCacheKeyForParent(exerciseId);
+    public List<BaseTextResponseDto> getAllByParent(int id) {
+        String cacheKey = textCacheKeyGenerator.generateCacheKeyForParent(id);
 
         return getCachedText(cacheKey)
                 .orElseGet(() -> {
-                    List<BaseTextResponseDto> responseDtos = getAllByParentId(exerciseId).stream()
+                    List<BaseTextResponseDto> responseDtos = getAllByParentId(id).stream()
                             .map(entity -> (BaseTextResponseDto) toResponse.apply(entity))
                             .toList();
 

@@ -8,15 +8,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import software.amazon.awssdk.annotations.SdkInternalApi;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 

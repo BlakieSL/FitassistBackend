@@ -1,4 +1,5 @@
-package source.code.annotation;
+package source.code.annotation.text;
+
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -9,5 +10,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@authAnnotationServiceImpl.isTextOwnerOrAdmin(#id, #type)")
-public @interface TextOwnerOrAdmin {}
+@PreAuthorize("@authAnnotationServiceImpl.idPublicTextOrOwnerOrAdmin(#parentId, #type)")
+public @interface PublicTextOrOwnerOrAdmin {
+}

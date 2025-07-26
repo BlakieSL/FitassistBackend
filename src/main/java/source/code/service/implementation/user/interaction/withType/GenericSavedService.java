@@ -61,8 +61,7 @@ public abstract class GenericSavedService<T, U, R> {
         userEntityRepository.delete(userEntity);
     }
 
-    public List<BaseUserEntity> getAllFromUser(TypeOfInteraction type) {
-        int userId = AuthorizationUtil.getUserId();
+    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type) {
         return findAllByUserAndType(userId, type).stream()
                 .map(this::extractEntity)
                 .map(entity -> (BaseUserEntity) map.apply(entity))

@@ -5,7 +5,8 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.annotation.TextOwnerOrAdmin;
+import source.code.annotation.text.PublicTextOrOwnerOrAdmin;
+import source.code.annotation.text.TextOwnerOrAdmin;
 import source.code.dto.response.text.BaseTextResponseDto;
 import source.code.helper.Enum.model.TextType;
 import source.code.service.declaration.selector.TextSelectorService;
@@ -22,13 +23,14 @@ public class TextController {
         this.textSelectorService = textSelectorService;
     }
 
-    @GetMapping("/{id}/type/{type}")
+    @PublicTextOrOwnerOrAdmin
+    @GetMapping("/{parentId}/type/{type}")
     public ResponseEntity<List<BaseTextResponseDto>> getAll(
-            @PathVariable int id,
+            @PathVariable int parentId,
             @PathVariable TextType type
     ) {
         TextService textService = textSelectorService.getService(type);
-        List<BaseTextResponseDto> response = textService.getAllByParent(id);
+        List<BaseTextResponseDto> response = textService.getAllByParent(parentId);
         return ResponseEntity.ok(response);
     }
 

@@ -26,7 +26,6 @@ import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.recipe.Recipe;
-import source.code.model.recipe.RecipeCategoryAssociation;
 import source.code.repository.RecipeCategoryAssociationRepository;
 import source.code.repository.RecipeRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
@@ -37,7 +36,6 @@ import source.code.service.implementation.recipe.RecipeServiceImpl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

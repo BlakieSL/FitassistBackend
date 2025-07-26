@@ -26,7 +26,6 @@ import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.plan.PlanMapper;
 import source.code.model.plan.Plan;
-import source.code.model.plan.PlanCategoryAssociation;
 import source.code.repository.PlanCategoryAssociationRepository;
 import source.code.repository.PlanRepository;
 import source.code.repository.TextRepository;
@@ -37,7 +36,6 @@ import source.code.service.implementation.plan.PlanServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

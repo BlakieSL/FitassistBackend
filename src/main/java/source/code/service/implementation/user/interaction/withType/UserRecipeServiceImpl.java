@@ -2,6 +2,7 @@ package source.code.service.implementation.user.interaction.withType;
 
 import org.springframework.stereotype.Service;
 import source.code.dto.response.recipe.RecipeResponseDto;
+import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.recipe.Recipe;
@@ -41,6 +42,9 @@ public class UserRecipeServiceImpl
 
     @Override
     protected UserRecipe createUserEntity(User user, Recipe entity, TypeOfInteraction type) {
+        if (!entity.getIsPublic()) {
+            throw new NotSupportedInteractionTypeException("Cannot save private recipe");
+        }
         return UserRecipe.createWithUserRecipeType(user, entity, type);
     }
 

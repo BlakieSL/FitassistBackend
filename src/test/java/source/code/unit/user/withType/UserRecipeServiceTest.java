@@ -11,6 +11,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.response.recipe.RecipeResponseDto;
+import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
@@ -66,6 +67,7 @@ public class UserRecipeServiceTest {
         TypeOfInteraction type = TypeOfInteraction.SAVE;
         User user = new User();
         Recipe recipe = new Recipe();
+        recipe.setIsPublic(true);
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type))
@@ -76,6 +78,28 @@ public class UserRecipeServiceTest {
         userRecipeService.saveToUser(recipeId, type);
 
         verify(userRecipeRepository).save(any(UserRecipe.class));
+    }
+
+    @Test
+    @DisplayName("saveToUser - Should throw exception if recipe is private")
+    public void saveToUser_ShouldThrowNotSupportedInteractionTypeExceptionIfRecipeIsPrivate() {
+        int userId = 1;
+        int recipeId = 100;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
+        User user = new User();
+        Recipe recipe = new Recipe();
+        recipe.setIsPublic(false);
+
+        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+        when(userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type))
+                .thenReturn(false);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(recipeRepository.findById(recipeId)).thenReturn(Optional.of(recipe));
+
+        assertThrows(NotSupportedInteractionTypeException.class,
+                () -> userRecipeService.saveToUser(recipeId, type));
+
+        verify(userRecipeRepository, never()).save(any());
     }
 
     @Test
@@ -176,13 +200,12 @@ public class UserRecipeServiceTest {
         RecipeResponseDto dto1 = new RecipeResponseDto();
         RecipeResponseDto dto2 = new RecipeResponseDto();
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userRecipeRepository.findByUserIdAndType(userId, type))
                 .thenReturn(List.of(recipe1, recipe2));
         when(recipeMapper.toResponseDto(recipe1.getRecipe())).thenReturn(dto1);
         when(recipeMapper.toResponseDto(recipe2.getRecipe())).thenReturn(dto2);
 
-        var result = userRecipeService.getAllFromUser(type);
+        var result = userRecipeService.getAllFromUser(userId, type);
 
         assertEquals(2, result.size());
         assertTrue(result.contains((BaseUserEntity) dto1));
@@ -195,11 +218,10 @@ public class UserRecipeServiceTest {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userRecipeRepository.findByUserIdAndType(userId, type))
                 .thenReturn(List.of());
 
-        var result = userRecipeService.getAllFromUser(type);
+        var result = userRecipeService.getAllFromUser(userId, type);
 
         assertTrue(result.isEmpty());
         verify(recipeMapper, never()).toResponseDto(any());

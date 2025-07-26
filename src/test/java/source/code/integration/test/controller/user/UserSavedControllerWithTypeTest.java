@@ -17,7 +17,8 @@ import source.code.integration.utils.Utils;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestSetup
 @Import({MockAwsS3Config.class, MockRedisConfig.class})
@@ -31,24 +32,24 @@ public class UserSavedControllerWithTypeTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @WithMockUser
     @UserSavedSql
     @Test
-    @DisplayName("GET - /item-type/{itemType}/type/{type} - Should return all saved items of a specific type SAVE")
+    @DisplayName("GET - /item-type/{itemType}/type/{type}/user/{userId} - Should return all public saved items of a specific type SAVE")
     void getAllFromUserSave() throws Exception {
-        Utils.setUserContext(1);
-        mockMvc.perform(get("/api/user-saved/item-type/PLAN/type/SAVE"))
+        mockMvc.perform(get("/api/user-saved/item-type/PLAN/type/SAVE/user/1"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$").value(hasSize(1))
                 );
     }
 
+    @WithMockUser
     @UserSavedSql
     @Test
-    @DisplayName("GET - /item-type/{itemType}/type/{type} - Should return all saved items of a specific type LIKE")
+    @DisplayName("GET - /item-type/{itemType}/type/{type} - Should return all public saved items of a specific type LIKE")
     void getAllFromUserLike() throws Exception {
-        Utils.setUserContext(1);
-        mockMvc.perform(get("/api/user-saved/item-type/COMMENT/type/LIKE"))
+        mockMvc.perform(get("/api/user-saved/item-type/COMMENT/type/LIKE/user/1"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$", hasSize(1))
@@ -135,10 +136,20 @@ public class UserSavedControllerWithTypeTest {
     @Test
     @DisplayName("POST - /item-type/{itemType}/{itemId}/type/{type} - Should save when item already liked but not saved")
     void saveToUserLikeNotSaved() throws Exception {
+        Utils.setUserContext(1);
+
+        mockMvc.perform(post("/api/user-saved/item-type/PLAN/1/type/LIKE"))
+                .andExpectAll(status().isCreated());
+    }
+
+    @UserSavedSql
+    @Test
+    @DisplayName("POST - /item-type/{itemType}/{itemId}/type/{type} - Should return 400 when trying to SAVE comment(forbidden interaction for this entity")
+    void saveToUserSAVEComment() throws Exception {
         Utils.setUserContext(2);
 
         mockMvc.perform(post("/api/user-saved/item-type/COMMENT/1/type/SAVE"))
-                .andExpectAll(status().isCreated());
+                .andExpectAll(status().isBadRequest());
     }
 
     @UserSavedSql

@@ -3,6 +3,7 @@ package source.code.service.implementation.user.interaction.withType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.comment.CommentResponseDto;
+import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.comment.CommentMapper;
 import source.code.model.thread.Comment;
@@ -35,6 +36,9 @@ public class UserCommentServiceImpl
 
     @Override
     protected UserComment createUserEntity(User user, Comment entity, TypeOfInteraction type) {
+        if (type == TypeOfInteraction.SAVE) {
+            throw new NotSupportedInteractionTypeException("Cannot save a comment as a saved entity.");
+        }
         return UserComment.of(user, entity, type);
     }
 

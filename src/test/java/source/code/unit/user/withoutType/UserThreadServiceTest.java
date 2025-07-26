@@ -171,13 +171,12 @@ public class  UserThreadServiceTest {
         ForumThreadResponseDto dto1 = new ForumThreadResponseDto();
         ForumThreadResponseDto dto2 = new ForumThreadResponseDto();
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userThreadRepository.findAllByUserId(userId))
                 .thenReturn(List.of(sub1, sub2));
         when(forumThreadMapper.toResponseDto(thread1)).thenReturn(dto1);
         when(forumThreadMapper.toResponseDto(thread2)).thenReturn(dto2);
 
-        var result = userThreadService.getAllFromUser();
+        var result = userThreadService.getAllFromUser(userId);
 
         assertEquals(2, result.size());
         assertTrue(result.contains(dto1));
@@ -189,11 +188,10 @@ public class  UserThreadServiceTest {
     public void getAllFromUser_ShouldReturnEmptyListIfNoSavedThreads() {
         int userId = 1;
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userThreadRepository.findAllByUserId(userId))
                 .thenReturn(List.of());
 
-        var result = userThreadService.getAllFromUser();
+        var result = userThreadService.getAllFromUser(userId);
 
         assertTrue(result.isEmpty());
         verify(forumThreadMapper, never()).toResponseDto(any());

@@ -32,13 +32,12 @@ public class UserSavedControllerWithoutTypeTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @WithMockUser
     @UserSavedSql
     @Test
-    @DisplayName("GET - /item-type/{itemType} - Should return all saved items of a specific type")
+    @DisplayName("GET - /item-type/{itemType}/user/{userId} - Should return all saved items of a specific type")
     void getAllFromUser() throws Exception {
-        Utils.setUserContext(1);
-
-        mockMvc.perform(get("/api/user-saved/item-type/ACTIVITY"))
+        mockMvc.perform(get("/api/user-saved/item-type/ACTIVITY/user/1"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$").value(hasSize(2))

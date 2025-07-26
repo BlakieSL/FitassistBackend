@@ -8,12 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import source.code.model.recipe.Recipe;
 
 import java.util.List;
-import java.util.jar.JarFile;
 
 public interface RecipeRepository
         extends JpaRepository<Recipe, Integer>, JpaSpecificationExecutor<Recipe> {
     @EntityGraph(value = "Recipe.withoutAssociations")
-    @Query("SELECT r FROM Recipe r")
+    @Query("SELECT r FROM Recipe r WHERE r.isPublic = true")
     List<Recipe> findAllWithoutAssociations();
 
     @EntityGraph(attributePaths = {"user", "recipeCategoryAssociations.recipeCategory"})
@@ -26,5 +25,11 @@ public interface RecipeRepository
             @Param("userId") int userId
     );
 
-    List<Recipe> findAllByUser_Id(Integer userId);
+    @Query("""
+        SELECT r FROM Recipe r
+        WHERE ((:isPrivate IS NULL OR :isPrivate = false) AND (r.isPublic = true AND r.user.id = :userId)) OR
+              (:isPrivate = true AND r.user.id = :userId)
+""")
+    List<Recipe> findAllByUser_Id(@Param("isPrivate") Boolean isPrivate,
+                                  @Param("userId") int userId);
 }
