@@ -7,8 +7,10 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.annotation.WorkoutOwnerOrAdmin;
-import source.code.annotation.WorkoutOwnerOrAdminCreation;
+import source.code.annotation.workout.PublicPlanOwnerOrAdminAcceptWorkoutId;
+import source.code.annotation.workout.WorkoutOwnerOrAdmin;
+import source.code.annotation.workout.WorkoutOwnerOrAdminCreation;
+import source.code.annotation.plan.PublicPlanOrOwnerOrAdmin;
 import source.code.dto.request.workout.WorkoutCreateDto;
 import source.code.dto.response.workout.WorkoutResponseDto;
 import source.code.service.declaration.workout.WorkoutService;
@@ -51,12 +53,14 @@ public class WorkoutController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<WorkoutResponseDto> getWorkout(@PathVariable int id) {
-        WorkoutResponseDto workout = workoutService.getWorkout(id);
+    @PublicPlanOwnerOrAdminAcceptWorkoutId
+    @GetMapping("/{workoutId}")
+    public ResponseEntity<WorkoutResponseDto> getWorkout(@PathVariable int workoutId) {
+        WorkoutResponseDto workout = workoutService.getWorkout(workoutId);
         return ResponseEntity.ok(workout);
     }
 
+    @PublicPlanOrOwnerOrAdmin
     @GetMapping("/plans/{planId}")
     public ResponseEntity<List<WorkoutResponseDto>> getAllWorkoutsForPlan(
             @PathVariable int planId

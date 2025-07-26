@@ -6,8 +6,10 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.annotation.WorkoutSetOwnerOrAdmin;
-import source.code.annotation.WorkoutSetOwnerOrAdminCreation;
+import source.code.annotation.workoutSet.PublicPlanOwnerOrAdminAcceptWorkoutSetGroupId;
+import source.code.annotation.workoutSet.WorkoutSetOwnerOrAdmin;
+import source.code.annotation.workoutSet.WorkoutSetOwnerOrAdminCreation;
+import source.code.annotation.workoutSetGroup.PublicPlanOwnerOrAdminAcceptWorkoutSetId;
 import source.code.dto.request.workoutSet.WorkoutSetCreateDto;
 import source.code.dto.response.workoutSet.WorkoutSetResponseDto;
 import source.code.service.declaration.workoutSet.WorkoutSetService;
@@ -50,12 +52,14 @@ public class WorkoutSetController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<WorkoutSetResponseDto> getWorkoutSet(@PathVariable int id) {
-        WorkoutSetResponseDto workoutSet = workoutSetService.getWorkoutSet(id);
+    @PublicPlanOwnerOrAdminAcceptWorkoutSetId
+    @GetMapping("/{workoutSetId}")
+    public ResponseEntity<WorkoutSetResponseDto> getWorkoutSet(@PathVariable int workoutSetId) {
+        WorkoutSetResponseDto workoutSet = workoutSetService.getWorkoutSet(workoutSetId);
         return ResponseEntity.ok(workoutSet);
     }
 
+    @PublicPlanOwnerOrAdminAcceptWorkoutSetGroupId
     @GetMapping("/workout-set-groups/{workoutSetGroupId}")
     public ResponseEntity<List<WorkoutSetResponseDto>> getAllWorkoutSetsForWorkoutSetGroup(
             @PathVariable int workoutSetGroupId

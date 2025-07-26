@@ -48,9 +48,9 @@ public class PlanController {
     }
 
     @PublicPlanOrOwnerOrAdmin
-    @GetMapping("/{id}")
-    public ResponseEntity<PlanResponseDto> getPlan(@PathVariable int id) {
-        PlanResponseDto plan = planService.getPlan(id);
+    @GetMapping("/{planId}")
+    public ResponseEntity<PlanResponseDto> getPlan(@PathVariable int planId) {
+        PlanResponseDto plan = planService.getPlan(planId);
         return ResponseEntity.ok(plan);
     }
 
