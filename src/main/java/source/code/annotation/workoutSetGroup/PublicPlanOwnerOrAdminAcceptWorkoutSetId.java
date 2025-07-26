@@ -1,4 +1,5 @@
-package source.code.annotation;
+package source.code.annotation.workoutSetGroup;
+
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -9,6 +10,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@authAnnotationServiceImpl.isWorkoutSetOwnerOrAdmin(#id)")
-public @interface WorkoutSetOwnerOrAdmin {
+@PreAuthorize("@authAnnotationServiceImpl.isPublicWorkoutSetOrOwnerOrAdmin(#workoutSetId)")
+public @interface PublicPlanOwnerOrAdminAcceptWorkoutSetId {
 }

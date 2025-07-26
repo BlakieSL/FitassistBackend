@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.config.annotation.web.socket.EnableWebSocketSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -225,11 +226,11 @@ public class WorkoutControllerTest {
                 .andExpectAll(status().isForbidden());
     }
 
-    @WithMockUser
     @WorkoutSql
     @Test
-    @DisplayName("GET - /{id} - Should get Workout by ID")
+    @DisplayName("GET - /{id} - Should get Workout by ID when owner")
     void getWorkout() throws Exception {
+        Utils.setUserContext(1);
         int id = 1;
 
         mockMvc.perform(get("/api/workouts/{id}", id))
@@ -242,8 +243,35 @@ public class WorkoutControllerTest {
                 );
     }
 
-    @WithMockUser
     @WorkoutSql
+    @Test
+    @DisplayName("GET - /{id} - Should get Workout by ID when admin")
+    void getWorkoutAdmin() throws Exception {
+        Utils.setAdminContext(2);
+        int id = 1;
+
+        mockMvc.perform(get("/api/workouts/{id}", id))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.id").value(id),
+                        jsonPath("$.name").value("Morning Workout"),
+                        jsonPath("$.duration").value(30.0),
+                        jsonPath("$.planId").value(1)
+                );
+    }
+
+    @WorkoutSql
+    @Test
+    @DisplayName("GET - /{id} - Should return 403 when user is not owner or admin and Plan is private")
+    void getWorkoutForbidden() throws Exception {
+        Utils.setUserContext(1);
+        int id = 2;
+
+        mockMvc.perform(get("/api/workouts/{id}", id))
+                .andExpectAll(status().isForbidden());
+    }
+
+    @WithMockUser
     @Test
     @DisplayName("GET - /{id} - Should return 404 when Workout not found")
     void getWorkoutNotFound() throws Exception {
@@ -256,7 +284,7 @@ public class WorkoutControllerTest {
     @WithMockUser
     @WorkoutSql
     @Test
-    @DisplayName("GET - /plans/{planId} - Should get all Workouts for a Plan")
+    @DisplayName("GET - /plans/{planId} - Should get all Workouts for a Plan when public")
     void getAllWorkoutsForPlan() throws Exception {
         int planId = 1;
 
@@ -271,17 +299,60 @@ public class WorkoutControllerTest {
                 );
     }
 
-    @WithMockUser
+    @WorkoutSql
     @Test
-    @DisplayName("GET - /plans/{planId} - Should return empty list when no Workouts found")
-    void getAllWorkoutsForPlanEmpty() throws Exception {
-        int planId = 999;
+    @DisplayName("GET - /plans/{planId} - Should get all Workouts for a Plan when owner")
+    void getAllWorkoutsForPlanOwner() throws Exception {
+        Utils.setUserContext(1);
+        int planId = 1;
 
         mockMvc.perform(get("/api/workouts/plans/{planId}", planId))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$").isArray(),
-                        jsonPath("$").isEmpty()
+                        jsonPath("$[0].id").value(1),
+                        jsonPath("$[0].name").value("Morning Workout"),
+                        jsonPath("$[0].duration").value(30.0),
+                        jsonPath("$[0].planId").value(planId)
                 );
+    }
+
+    @WorkoutSql
+    @Test
+    @DisplayName("GET - /plans/{planId} - Should get all Workouts for a Plan when admin")
+    void getAllWorkoutsForPlanAdmin() throws Exception {
+        Utils.setAdminContext(2);
+        int planId = 1;
+
+        mockMvc.perform(get("/api/workouts/plans/{planId}", planId))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").isArray(),
+                        jsonPath("$[0].id").value(1),
+                        jsonPath("$[0].name").value("Morning Workout"),
+                        jsonPath("$[0].duration").value(30.0),
+                        jsonPath("$[0].planId").value(planId)
+                );
+    }
+
+    @WorkoutSql
+    @Test
+    @DisplayName("GET - /plans/{planId} - Should return 403 when user is not owner or admin and Plan is private")
+    void getAllWorkoutsForPlanForbidden() throws Exception {
+        Utils.setUserContext(1);
+        int planId = 2;
+
+        mockMvc.perform(get("/api/workouts/plans/{planId}", planId))
+                .andExpectAll(status().isForbidden());
+    }
+
+    @WithMockUser
+    @Test
+    @DisplayName("GET - /plans/{planId} - Should return 404 when Plan not found")
+    void getAllWorkoutsForPlanEmpty() throws Exception {
+        int planId = 999;
+
+        mockMvc.perform(get("/api/workouts/plans/{planId}", planId))
+                .andExpectAll(status().isNotFound());
     }
 }

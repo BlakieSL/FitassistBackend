@@ -85,8 +85,8 @@ public class AuthAnnotationServiceImpl {
         return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
     }
 
-    public boolean isPublicPlanOrOwnerOrAdmin(int id) {
-        Plan plan = repositoryHelper.find(planRepository, Plan.class, id);
+    public boolean isPublicPlanOrOwnerOrAdmin(int planId) {
+        Plan plan = repositoryHelper.find(planRepository, Plan.class, planId);
         if (plan.getIsPublic()) {
             return true;
         }
@@ -160,6 +160,15 @@ public class AuthAnnotationServiceImpl {
         return AuthorizationUtil.isOwnerOrAdmin(workout.getPlan().getUser().getId());
     }
 
+    public boolean isPublicWorkoutOrOwnerOrAdmin(int workoutId) {
+        Workout workout = repositoryHelper.find(workoutRepository, Workout.class, workoutId);
+        var plan = workout.getPlan();
+        if (plan.getIsPublic()) {
+            return true;
+        }
+        return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
+    }
+
     public boolean isWorkoutSetOwnerOrAdmin(int workoutSetId) {
         WorkoutSet workoutSet = repositoryHelper.find(
                 workoutSetRepository,
@@ -174,6 +183,16 @@ public class AuthAnnotationServiceImpl {
                 .getId());
     }
 
+    public boolean isPublicWorkoutSetOrOwnerOrAdmin(int workoutSetId) {
+        WorkoutSet workoutSet = repositoryHelper
+                .find(workoutSetRepository, WorkoutSet.class, workoutSetId);
+        var plan = workoutSet.getWorkoutSetGroup().getWorkout().getPlan();
+        if (plan.getIsPublic()) {
+            return true;
+        }
+        return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
+    }
+
     public boolean isWorkoutSetGroupOwnerOrAdmin(int workoutSetGroupId) {
         WorkoutSetGroup workoutSetGroup = repositoryHelper.find(
                 workoutSetGroupRepository,
@@ -186,6 +205,18 @@ public class AuthAnnotationServiceImpl {
                 .getUser()
                 .getId());
     }
+
+    public boolean isPublicWorkoutSetGroupOrOwnerOrAdmin(int workoutSetGroupId) {
+        WorkoutSetGroup workoutSetGroup = repositoryHelper
+                .find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId);
+
+        var plan = workoutSetGroup.getWorkout().getPlan();
+        if (plan.getIsPublic()) {
+            return true;
+        }
+        return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
+    }
+
 
     public boolean isDailyCartOwner(Integer dailyActivityItemId, Integer dailyCartFoodId) {
         Integer userId = null;
