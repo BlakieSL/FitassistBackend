@@ -13,7 +13,7 @@ import java.util.List;
 public interface PlanRepository
         extends JpaRepository<Plan, Integer>, JpaSpecificationExecutor<Plan>{
     @EntityGraph(value = "Plan.withoutAssociations")
-    @Query("SELECT p FROM Plan p")
+    @Query("SELECT p FROM Plan p WHERE p.isPublic = true")
     List<Plan> findAllWithoutAssociations();
 
     @EntityGraph(attributePaths = {"user", "planType", "planCategoryAssociations.planCategory"})
@@ -26,8 +26,6 @@ public interface PlanRepository
             @Param("userId") int userId
     );
 
-
-
     @Query("SELECT DISTINCT new source.code.dto.response.category.EquipmentResponseDto(e.id, e.name) " +
             "FROM Equipment e " +
             "JOIN e.exercises ex " +
@@ -38,5 +36,11 @@ public interface PlanRepository
             "WHERE p.id = :planId")
     List<EquipmentResponseDto> findAllEquipmentByPlanId(@Param("planId") int planId);
 
-    List<Plan> findAllByUser_Id(int userId);
+    @Query("""
+        SELECT p FROM Plan p
+        WHERE ((:isPrivate IS NULL OR :isPrivate = false) AND (p.isPublic = true AND p.user.id = :userId)) OR
+              (:isPrivate = true AND p.user.id = :userId)
+""")
+    List<Plan> findAllByUser_Id(@Param("isPrivate") Boolean isPrivate,
+                                @Param("userId") int userId);
 }

@@ -130,6 +130,31 @@ public class AuthAnnotationServiceImpl {
         return AuthorizationUtil.isOwnerOrAdmin(ownerId);
     }
 
+    public boolean idPublicTextOrOwnerOrAdmin(int parentId, TextType type) {
+        boolean isPublic = false;
+        Integer ownerId = switch (type) {
+            case RECIPE_INSTRUCTION -> {
+                Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, parentId);
+
+                isPublic = recipe.getIsPublic();
+                yield recipe.getUser().getId();
+            }
+            case PLAN_INSTRUCTION -> {
+                Plan plan = repositoryHelper.find(planRepository, Plan.class, parentId);
+
+                isPublic = plan.getIsPublic();
+                yield plan.getUser().getId();
+            }
+            default -> null;
+        };
+
+        if (isPublic) {
+            return true;
+        }
+
+        return AuthorizationUtil.isOwnerOrAdmin(ownerId);
+    }
+
     public boolean isWorkoutOwnerOrAdmin(int workoutId) {
         Workout workout = repositoryHelper.find(workoutRepository, Workout.class, workoutId);
         return AuthorizationUtil.isOwnerOrAdmin(workout.getPlan().getUser().getId());

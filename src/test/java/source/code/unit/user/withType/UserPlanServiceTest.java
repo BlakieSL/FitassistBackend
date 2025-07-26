@@ -11,6 +11,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.response.plan.PlanResponseDto;
+import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
@@ -66,6 +67,7 @@ public class UserPlanServiceTest {
         TypeOfInteraction type = TypeOfInteraction.SAVE;
         User user = new User();
         Plan plan = new Plan();
+        plan.setIsPublic(true);
 
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type))
@@ -76,6 +78,28 @@ public class UserPlanServiceTest {
         userPlanService.saveToUser(planId, type);
 
         verify(userPlanRepository).save(any(UserPlan.class));
+    }
+
+    @Test
+    @DisplayName("saveToUser - Should throw exception if plan is private")
+    public void saveToUser_ShouldThrowNotSupportedInteractionTypeExceptionIfPlanIsPrivate() {
+        int userId = 1;
+        int planId = 100;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
+        User user = new User();
+        Plan plan = new Plan();
+        plan.setIsPublic(false);
+
+        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+        when(userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type))
+                .thenReturn(false);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(planRepository.findById(planId)).thenReturn(Optional.of(plan));
+
+        assertThrows(NotSupportedInteractionTypeException.class,
+                () -> userPlanService.saveToUser(planId, type));
+
+        verify(userPlanRepository, never()).save(any());
     }
 
     @Test
@@ -177,13 +201,12 @@ public class UserPlanServiceTest {
         PlanResponseDto dto1 = new PlanResponseDto();
         PlanResponseDto dto2 = new PlanResponseDto();
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userPlanRepository.findByUserIdAndType(userId, type))
                 .thenReturn(List.of(plan1, plan2));
         when(planMapper.toResponseDto(plan1.getPlan())).thenReturn(dto1);
         when(planMapper.toResponseDto(plan2.getPlan())).thenReturn(dto2);
 
-        var result = userPlanService.getAllFromUser(type);
+        var result = userPlanService.getAllFromUser(userId, type);
 
         assertEquals(2, result.size());
         assertTrue(result.contains((BaseUserEntity) dto1));
@@ -196,11 +219,10 @@ public class UserPlanServiceTest {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userPlanRepository.findByUserIdAndType(userId, type))
                 .thenReturn(List.of());
 
-        var result = userPlanService.getAllFromUser(type);
+        var result = userPlanService.getAllFromUser(userId, type);
 
         assertTrue(result.isEmpty());
         verify(planMapper, never()).toResponseDto(any());

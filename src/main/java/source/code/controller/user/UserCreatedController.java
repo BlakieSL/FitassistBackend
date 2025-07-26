@@ -2,6 +2,7 @@ package source.code.controller.user;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import source.code.dto.response.comment.CommentResponseDto;
@@ -21,27 +22,27 @@ public class UserCreatedController {
         this.userCreatedService = userCreatedService;
     }
 
-    @GetMapping("/plans")
-    public ResponseEntity<List<PlanResponseDto>> getUserPlans() {
-        List<PlanResponseDto> plans = userCreatedService.getCreatedPlans();
+    @GetMapping("/plans/user/{userId}")
+    public ResponseEntity<List<PlanResponseDto>> getUserPlans(@PathVariable int userId) {
+        List<PlanResponseDto> plans = userCreatedService.getCreatedPlans(userId);
         return ResponseEntity.ok(plans);
     }
 
-    @GetMapping("/recipes")
-    public ResponseEntity<List<RecipeResponseDto>> getUserRecipes() {
-        List<RecipeResponseDto> recipes = userCreatedService.getCreatedRecipes();
+    @GetMapping("/recipes/user/{userId}")
+    public ResponseEntity<List<RecipeResponseDto>> getUserRecipes(@PathVariable int userId) {
+        List<RecipeResponseDto> recipes = userCreatedService.getCreatedRecipes(userId);
         return ResponseEntity.ok(recipes);
     }
 
-    @GetMapping("/comments")
-    public ResponseEntity<List<CommentResponseDto>> getUserComments() {
-        List<CommentResponseDto> comments = userCreatedService.getCreatedComments();
+    @GetMapping("/comments/user/{userId}")
+    public ResponseEntity<List<CommentResponseDto>> getUserComments(@PathVariable int userId) {
+        List<CommentResponseDto> comments = userCreatedService.getCreatedComments(userId);
         return ResponseEntity.ok(comments);
     }
 
-    @GetMapping("/threads")
-    public ResponseEntity<List<ForumThreadResponseDto>> getUserThreads() {
-        List<ForumThreadResponseDto> threads = userCreatedService.getCreatedThreads();
+    @GetMapping("/threads/user/{userId}")
+    public ResponseEntity<List<ForumThreadResponseDto>> getUserThreads(@PathVariable int userId) {
+        List<ForumThreadResponseDto> threads = userCreatedService.getCreatedThreads(userId);
         return ResponseEntity.ok(threads);
     }
 }

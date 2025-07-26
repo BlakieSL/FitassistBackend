@@ -14,7 +14,6 @@ import source.code.dto.response.comment.CommentResponseDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
-import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.comment.CommentMapper;
 import source.code.mapper.forumThread.ForumThreadMapper;
@@ -25,11 +24,13 @@ import source.code.model.recipe.Recipe;
 import source.code.model.thread.Comment;
 import source.code.model.thread.ForumThread;
 import source.code.model.user.User;
-import source.code.repository.*;
+import source.code.repository.CommentRepository;
+import source.code.repository.ForumThreadRepository;
+import source.code.repository.PlanRepository;
+import source.code.repository.RecipeRepository;
 import source.code.service.implementation.user.UserCreatedServiceImpl;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -83,18 +84,18 @@ public class UserCreatedServiceTest {
         PlanResponseDto dto1 = new PlanResponseDto();
         PlanResponseDto dto2 = new PlanResponseDto();
 
-        when(planRepository.findAllByUser_Id(userId)).thenReturn(List.of(plan1, plan2));
+        when(planRepository.findAllByUser_Id(anyBoolean(), anyInt())).thenReturn(List.of(plan1, plan2));
 
         when(planMapper.toResponseDto(plan1)).thenReturn(dto1);
         when(planMapper.toResponseDto(plan2)).thenReturn(dto2);
 
-        List<PlanResponseDto> result = userCreatedService.getCreatedPlans();
+        List<PlanResponseDto> result = userCreatedService.getCreatedPlans(userId);
 
         assertNotNull(result);
         assertEquals(2, result.size());
         assertTrue(result.contains(dto1));
         assertTrue(result.contains(dto2));
-        verify(planRepository).findAllByUser_Id(userId);
+        verify(planRepository).findAllByUser_Id(anyBoolean(), anyInt());
         verify(planMapper, times(2)).toResponseDto(any(Plan.class));
     }
 
@@ -106,16 +107,15 @@ public class UserCreatedServiceTest {
 
         User user = new User();
 
-        when(planRepository.findAllByUser_Id(userId)).thenReturn(List.of());
+        when(planRepository.findAllByUser_Id(anyBoolean(), anyInt())).thenReturn(List.of());
 
-        List<PlanResponseDto> result = userCreatedService.getCreatedPlans();
+        List<PlanResponseDto> result = userCreatedService.getCreatedPlans(userId);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(planRepository).findAllByUser_Id(userId);
+        verify(planRepository).findAllByUser_Id(anyBoolean(), anyInt());
         verifyNoInteractions(planMapper);
     }
-
 
     @Test
     @DisplayName("getCreatedRecipes - Should return mapped RecipeResponseDto list")
@@ -129,20 +129,20 @@ public class UserCreatedServiceTest {
         user.getRecipes().add(recipe1);
         user.getRecipes().add(recipe2);
 
-        when(recipeRepository.findAllByUser_Id(userId)).thenReturn(List.of(recipe1, recipe2));
+        when(recipeRepository.findAllByUser_Id(anyBoolean(), anyInt())).thenReturn(List.of(recipe1, recipe2));
 
         RecipeResponseDto dto1 = new RecipeResponseDto();
         RecipeResponseDto dto2 = new RecipeResponseDto();
         when(recipeMapper.toResponseDto(recipe1)).thenReturn(dto1);
         when(recipeMapper.toResponseDto(recipe2)).thenReturn(dto2);
 
-        List<RecipeResponseDto> result = userCreatedService.getCreatedRecipes();
+        List<RecipeResponseDto> result = userCreatedService.getCreatedRecipes(userId);
 
         assertNotNull(result);
         assertEquals(2, result.size());
         assertTrue(result.contains(dto1));
         assertTrue(result.contains(dto2));
-        verify(recipeRepository).findAllByUser_Id(userId);
+        verify(recipeRepository).findAllByUser_Id(anyBoolean(), anyInt());
         verify(recipeMapper, times(2)).toResponseDto(any(Recipe.class));
     }
 
@@ -154,13 +154,13 @@ public class UserCreatedServiceTest {
 
         User user = new User();
 
-        when(recipeRepository.findAllByUser_Id(userId)).thenReturn(List.of());
+        when(recipeRepository.findAllByUser_Id(anyBoolean(), anyInt())).thenReturn(List.of());
 
-        List<RecipeResponseDto> result = userCreatedService.getCreatedRecipes();
+        List<RecipeResponseDto> result = userCreatedService.getCreatedRecipes(userId);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(recipeRepository).findAllByUser_Id(userId);
+        verify(recipeRepository).findAllByUser_Id(anyBoolean(), anyInt());
         verifyNoInteractions(recipeMapper);
     }
 
@@ -184,7 +184,7 @@ public class UserCreatedServiceTest {
         when(commentMapper.toResponseDto(comment1)).thenReturn(dto1);
         when(commentMapper.toResponseDto(comment2)).thenReturn(dto2);
 
-        List<CommentResponseDto> result = userCreatedService.getCreatedComments();
+        List<CommentResponseDto> result = userCreatedService.getCreatedComments(userId);
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -203,7 +203,7 @@ public class UserCreatedServiceTest {
         User user = new User();
         when(commentRepository.findAllByUser_Id(userId)).thenReturn(List.of());
 
-        List<CommentResponseDto> result = userCreatedService.getCreatedComments();
+        List<CommentResponseDto> result = userCreatedService.getCreatedComments(userId);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -230,7 +230,7 @@ public class UserCreatedServiceTest {
         when(forumThreadMapper.toResponseDto(thread1)).thenReturn(dto1);
         when(forumThreadMapper.toResponseDto(thread2)).thenReturn(dto2);
 
-        List<ForumThreadResponseDto> result = userCreatedService.getCreatedThreads();
+        List<ForumThreadResponseDto> result = userCreatedService.getCreatedThreads(userId);
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -249,7 +249,7 @@ public class UserCreatedServiceTest {
         User user = new User();
         when(forumThreadRepository.findAllByUser_Id(userId)).thenReturn(List.of());
 
-        List<ForumThreadResponseDto> result = userCreatedService.getCreatedThreads();
+        List<ForumThreadResponseDto> result = userCreatedService.getCreatedThreads(userId);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());

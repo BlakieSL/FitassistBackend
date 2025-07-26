@@ -174,13 +174,12 @@ public class UserFoodServiceTest {
         FoodResponseDto dto1 = new FoodResponseDto();
         FoodResponseDto dto2 = new FoodResponseDto();
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userFoodRepository.findByUserId(userId))
                 .thenReturn(List.of(food1, food2));
         when(foodMapper.toResponseDto(food1.getFood())).thenReturn(dto1);
         when(foodMapper.toResponseDto(food2.getFood())).thenReturn(dto2);
 
-        var result = userFoodService.getAllFromUser();
+        var result = userFoodService.getAllFromUser(userId);
 
         assertEquals(2, result.size());
         assertTrue(result.contains((BaseUserEntity) dto1));
@@ -191,11 +190,10 @@ public class UserFoodServiceTest {
     @DisplayName("getAllFromUser - Should return empty list if no foods")
     public void getAllFromUser_ShouldReturnEmptyListIfNoFoods() {
         int userId = 1;
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userFoodRepository.findByUserId(userId))
                 .thenReturn(List.of());
 
-        var result = userFoodService.getAllFromUser();
+        var result = userFoodService.getAllFromUser(userId);
 
         assertTrue(result.isEmpty());
         verify(foodMapper, never()).toResponseDto(any());

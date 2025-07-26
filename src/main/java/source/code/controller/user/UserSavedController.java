@@ -22,13 +22,14 @@ public class UserSavedController {
         this.savedSelectorService = savedSelectorService;
     }
 
-    @GetMapping("/item-type/{itemType}/type/{type}")
+    @GetMapping("/item-type/{itemType}/type/{type}/user/{userId}")
     public ResponseEntity<List<BaseUserEntity>> getAllFromUser(
             @PathVariable SavedEntityType itemType,
-            @PathVariable TypeOfInteraction type
+            @PathVariable TypeOfInteraction type,
+            @PathVariable int userId
     ) {
         SavedService savedService = savedSelectorService.getService(itemType);
-        List<BaseUserEntity> dto = savedService.getAllFromUser(type);
+        List<BaseUserEntity> dto = savedService.getAllFromUser(userId, type);
         return ResponseEntity.ok(dto);
     }
 
@@ -64,13 +65,16 @@ public class UserSavedController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/item-type/{itemType}")
+
+
+    @GetMapping("/item-type/{itemType}/user/{userId}")
     public ResponseEntity<List<BaseUserEntity>> getAllFromUserWithoutType(
-            @PathVariable SavedEntityType itemType
+            @PathVariable SavedEntityType itemType,
+            @PathVariable("userId") int userId
     ) {
         SavedServiceWithoutType savedServiceWithoutType = savedSelectorService
                 .getServiceWithoutType(itemType);
-        List<BaseUserEntity> dto = savedServiceWithoutType.getAllFromUser();
+        List<BaseUserEntity> dto = savedServiceWithoutType.getAllFromUser(userId);
         return ResponseEntity.ok(dto);
     }
 

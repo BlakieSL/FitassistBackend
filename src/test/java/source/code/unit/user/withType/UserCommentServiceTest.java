@@ -10,6 +10,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.response.comment.CommentResponseDto;
+import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
@@ -84,6 +85,23 @@ public class UserCommentServiceTest {
         userCommentService.saveToUser(commentId, type);
 
         verify(userCommentRepository).save(any(UserComment.class));
+    }
+
+    @Test
+    @DisplayName("saveToUser - Should throw exception if type is SAVE")
+    public void saveToUser_ShouldThrowNotSupportedInteractionTypeExceptionIfTypeIsSave() {
+        int userId = 1;
+        int commentId = 100;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
+
+        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+        when(userCommentRepository.existsByUserIdAndCommentIdAndType(userId, commentId, type)).thenReturn(false);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(new User()));
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(new Comment()));
+
+        assertThrows(NotSupportedInteractionTypeException.class, () -> userCommentService.saveToUser(commentId, type));
+
+        verify(userCommentRepository, never()).save(any());
     }
 
     @Test
@@ -184,13 +202,12 @@ public class UserCommentServiceTest {
         CommentResponseDto dto1 = new CommentResponseDto();
         CommentResponseDto dto2 = new CommentResponseDto();
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userCommentRepository.findByUserIdAndType(userId, type))
                 .thenReturn(List.of(like1, like2));
         when(commentMapper.toResponseDto(comment1)).thenReturn(dto1);
         when(commentMapper.toResponseDto(comment2)).thenReturn(dto2);
 
-        var result = userCommentService.getAllFromUser(type);
+        var result = userCommentService.getAllFromUser(userId, type);
 
         assertEquals(2, result.size());
         assertTrue(result.contains(dto1));
@@ -203,11 +220,10 @@ public class UserCommentServiceTest {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.LIKE;
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(userCommentRepository.findByUserIdAndType(userId, type))
                 .thenReturn(List.of());
 
-        var result = userCommentService.getAllFromUser(type);
+        var result = userCommentService.getAllFromUser(userId, type);
 
         assertTrue(result.isEmpty());
         verify(commentMapper, never()).toResponseDto(any());

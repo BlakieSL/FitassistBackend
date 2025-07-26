@@ -1,23 +1,21 @@
-DELETE FROM user_exercise WHERE id = 1;
+DELETE FROM user_exercise;
 
-DELETE FROM text WHERE plan_id = 3;
-DELETE FROM text WHERE recipe_id = 1;
-DELETE FROM text WHERE exercise_id = 1;
+DELETE FROM text;
 
-DELETE FROM plan WHERE id = 3;
-DELETE FROM plan_type WHERE id = 1;
+DELETE FROM plan;
+DELETE FROM plan_type;
 
-DELETE FROM recipe WHERE id = 1;
+DELETE FROM recipe;
 
-DELETE FROM food WHERE id = 1;
-DELETE FROM food_category WHERE id = 1;
+DELETE FROM food;
+DELETE FROM food_category;
 
-DELETE FROM exercise WHERE id = 1;
-DELETE FROM mechanics_type WHERE id = 1;
-DELETE FROM force_type WHERE id = 1;
-DELETE FROM expertise_level WHERE id = 1;
-DELETE FROM equipment WHERE id = 1;
+DELETE FROM exercise;
+DELETE FROM mechanics_type;
+DELETE FROM force_type;
+DELETE FROM expertise_level;
+DELETE FROM equipment;
 
-DELETE FROM user_roles WHERE users_id IN (1, 2, 3);
-DELETE FROM user WHERE id IN (1, 2, 3);
-DELETE FROM role WHERE id IN (1, 2);
+DELETE FROM user_roles;
+DELETE FROM user;
+DELETE FROM role;

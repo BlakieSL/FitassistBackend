@@ -2,7 +2,9 @@ package source.code.service.implementation.user.interaction.withType;
 
 import org.springframework.stereotype.Service;
 import source.code.dto.response.plan.PlanResponseDto;
+import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.exception.RecordNotFoundException;
+import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.plan.PlanMapper;
 import source.code.model.plan.Plan;
 import source.code.model.user.TypeOfInteraction;
@@ -39,6 +41,9 @@ public class UserPlanServiceImpl
 
     @Override
     protected UserPlan createUserEntity(User user, Plan entity, TypeOfInteraction type) {
+        if (!entity.getIsPublic()) {
+            throw new NotSupportedInteractionTypeException("Cannot save private plan");
+        }
         return UserPlan.createWithUserPlanType(user, entity, type);
     }
 
@@ -73,4 +78,11 @@ public class UserPlanServiceImpl
     protected long countLikes(int planId) {
         return ((UserPlanRepository) userEntityRepository).countByPlanIdAndType(planId, TypeOfInteraction.LIKE);
     }
-}
+
+    private boolean isCurrentUser(int userId) {
+        return getUserId() == userId;
+    }
+
+    private int getUserId() {
+        return AuthorizationUtil.getUserId();
+    }}
