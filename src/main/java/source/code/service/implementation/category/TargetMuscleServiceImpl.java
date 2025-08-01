@@ -40,4 +40,9 @@ public class TargetMuscleServiceImpl
     protected boolean hasAssociatedEntities(int categoryId) {
         return targetMuscleRepository.existsByIdAndExerciseTargetMusclesIsNotEmpty(categoryId);
     }
+
+    @Override
+    protected Class<TargetMuscle> getEntityClass() {
+        return TargetMuscle.class;
+    }
 }
