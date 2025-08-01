@@ -34,10 +34,6 @@ public class RedisCachingConfig {
         javaTimeMapper.registerModule(new JavaTimeModule());
         javaTimeMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        Jackson2JsonRedisSerializer<UserResponseDto> userResponseSerializer =
-                new Jackson2JsonRedisSerializer<>(javaTimeMapper, UserResponseDto.class);
-
-
         RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(60))
                 .serializeKeysWith(RedisSerializationContext
@@ -47,22 +43,9 @@ public class RedisCachingConfig {
                         .SerializationPair
                         .fromSerializer(new Jackson2JsonRedisSerializer<>(javaTimeMapper, Object.class)));
 
-        RedisCacheConfiguration userCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(60))
-                .serializeKeysWith(RedisSerializationContext
-                        .SerializationPair
-                        .fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext
-                        .SerializationPair
-                        .fromSerializer(userResponseSerializer));
-
-
-        Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
-        cacheConfigurations.put("userById", userCacheConfig);
 
         return RedisCacheManager.builder(redisConnectionFactory)
                 .cacheDefaults(defaultCacheConfig)
-                .withInitialCacheConfigurations(cacheConfigurations)
                 .build();
     }
 }
