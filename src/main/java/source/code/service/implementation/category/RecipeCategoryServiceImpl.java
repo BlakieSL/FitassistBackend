@@ -39,4 +39,9 @@ public class RecipeCategoryServiceImpl
     protected boolean hasAssociatedEntities(int categoryId) {
         return recipeCategoryRepository.existsByIdAndRecipeCategoryAssociationsIsNotEmpty(categoryId);
     }
+
+    @Override
+    protected Class<RecipeCategory> getEntityClass() {
+        return RecipeCategory.class;
+    }
 }
