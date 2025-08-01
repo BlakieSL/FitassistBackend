@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,6 +24,7 @@ import source.code.validation.ValidationGroups;
 public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     public UserController(
             UserService userService,
@@ -46,6 +49,10 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<UserResponseDto> registerUser(@Valid @RequestBody UserCreateDto request) {
+        LOGGER.info("Thread info: id={}, isVirtual={}, name={}",
+                Thread.currentThread().threadId(),
+                Thread.currentThread().isVirtual(),
+                Thread.currentThread().getName());
         UserResponseDto response = userService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

@@ -6,6 +6,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 import source.code.annotation.DailyCartOwner;
 import source.code.dto.request.activity.DailyActivitiesGetDto;
