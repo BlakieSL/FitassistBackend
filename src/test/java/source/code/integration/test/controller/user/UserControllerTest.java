@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({MockAwsS3Config.class, MockRedisConfig.class})
 @TestPropertySource(properties = "schema.name=general")
 @ContextConfiguration(initializers = {MySqlContainerInitializer.class})
-public class UserControllerTest {
+public class    UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
