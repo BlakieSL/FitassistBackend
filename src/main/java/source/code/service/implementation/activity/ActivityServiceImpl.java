@@ -17,6 +17,7 @@ import source.code.dto.response.activity.ActivityResponseDto;
 import source.code.event.events.Activity.ActivityCreateEvent;
 import source.code.event.events.Activity.ActivityDeleteEvent;
 import source.code.event.events.Activity.ActivityUpdateEvent;
+import source.code.exception.RecordNotFoundException;
 import source.code.exception.WeightRequiredException;
 import source.code.helper.Enum.cache.CacheNames;
 import source.code.helper.user.AuthorizationUtil;
@@ -90,7 +91,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     @Transactional
     public void deleteActivity(int activityId) {
-        Activity activity = findActivity(activityId);
+        Activity activity = findActivityWithoutAssociations(activityId);
         activityRepository.delete(activity);
 
         eventPublisher.publishEvent(ActivityDeleteEvent.of(this, activity));
@@ -98,8 +99,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public ActivityCalculatedResponseDto calculateCaloriesBurned(
-            int activityId,
-            CalculateActivityCaloriesRequestDto request
+            int activityId, CalculateActivityCaloriesRequestDto request
     ) {
         Activity activity = findActivity(activityId);
 
@@ -118,7 +118,9 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     @Cacheable(value = CacheNames.ALL_ACTIVITIES)
     public List<ActivityResponseDto> getAllActivities() {
-        return repositoryHelper.findAll(activityRepository, activityMapper::toResponseDto);
+        return activityRepository.findAllWithActivityCategory().stream()
+                .map(activityMapper::toResponseDto)
+                .toList();
     }
 
     @Override
@@ -148,6 +150,11 @@ public class ActivityServiceImpl implements ActivityService {
 
     private Activity findActivity(int activityId) {
         return repositoryHelper.find(activityRepository, Activity.class, activityId);
+    }
+
+    private Activity findActivityWithoutAssociations(int activityId) {
+        return activityRepository.findByIdWithAssociations(activityId)
+                .orElseThrow(() -> new RecordNotFoundException(Activity.class, activityId));
     }
 
     private User findUser(int userId) {

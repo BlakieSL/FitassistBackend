@@ -7,12 +7,19 @@ import org.springframework.data.jpa.repository.Query;
 import source.code.model.activity.Activity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ActivityRepository
         extends JpaRepository<Activity, Integer>, JpaSpecificationExecutor<Activity> {
-    List<Activity> findAllByActivityCategory_Id(int categoryId);
-
     @EntityGraph(value = "Activity.withoutAssociations")
     @Query("SELECT a FROM Activity a")
     List<Activity> findAllWithoutAssociations();
+
+    @EntityGraph(value = "Activity.withAssociations")
+    @Query("SELECT a FROM Activity a WHERE a.id = :id")
+    Optional<Activity> findByIdWithAssociations(int id);
+
+    @EntityGraph(attributePaths = {"activityCategory"})
+    @Query("SELECT a FROM Activity a")
+    List<Activity> findAllWithActivityCategory();
 }
