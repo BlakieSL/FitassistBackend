@@ -26,16 +26,6 @@ public interface PlanRepository
             @Param("userId") int userId
     );
 
-    @Query("SELECT DISTINCT new source.code.dto.response.category.EquipmentResponseDto(e.id, e.name) " +
-            "FROM Equipment e " +
-            "JOIN e.exercises ex " +
-            "JOIN ex.workoutSets ws " +
-            "JOIN ws.workoutSetGroup wsg " +
-            "JOIN wsg.workout w " +
-            "JOIN w.plan p " +
-            "WHERE p.id = :planId")
-    List<EquipmentResponseDto> findAllEquipmentByPlanId(@Param("planId") int planId);
-
     @Query("""
         SELECT p FROM Plan p
         WHERE ((:isPrivate IS NULL OR :isPrivate = false) AND (p.isPublic = true AND p.user.id = :userId)) OR

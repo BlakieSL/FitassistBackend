@@ -20,6 +20,10 @@ import java.util.Set;
 @Entity
 @Table(name = "activity")
 @NamedEntityGraph(name = "Activity.withoutAssociations", attributeNodes = {})
+@NamedEntityGraph(name = "Activity.withAssociations", attributeNodes = {
+        @NamedAttributeNode("dailyCartActivities"),
+        @NamedAttributeNode("userActivities")
+})
 @Getter
 @Setter
 @AllArgsConstructor

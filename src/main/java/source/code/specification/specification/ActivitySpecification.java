@@ -1,9 +1,6 @@
 package source.code.specification.specification;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
@@ -22,6 +19,7 @@ public class ActivitySpecification implements Specification<Activity> {
     @Override
     public Predicate toPredicate(@NonNull Root<Activity> root, CriteriaQuery<?> query,
                                  @NonNull CriteriaBuilder builder) {
+        root.fetch("activityCategory", JoinType.LEFT);
         ActivityField field;
 
         try {
