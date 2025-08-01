@@ -38,4 +38,9 @@ public class PlanCategoryServiceImpl
     protected boolean hasAssociatedEntities(int categoryId) {
         return planCategoryRepository.existsByIdAndPlanCategoryAssociationsIsNotEmpty(categoryId);
     }
+
+    @Override
+    protected Class<PlanCategory> getEntityClass() {
+        return PlanCategory.class;
+    }
 }

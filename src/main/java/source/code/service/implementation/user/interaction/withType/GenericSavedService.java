@@ -37,11 +37,7 @@ public abstract class GenericSavedService<T, U, R> {
     public void saveToUser(int entityId, TypeOfInteraction type) {
         int userId = AuthorizationUtil.getUserId();
         if (isAlreadySaved(userId, entityId, type)) {
-            throw NotUniqueRecordException.of(
-                    "User with id: " + userId
-                            + " already has entity with id: " + entityId
-                            + " and type: " + type
-            );
+            throw new NotUniqueRecordException(User.class, userId, entityId, type);
         }
 
         User user = userRepository.findById(userId)

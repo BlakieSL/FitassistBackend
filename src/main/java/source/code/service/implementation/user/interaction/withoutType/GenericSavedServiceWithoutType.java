@@ -38,9 +38,7 @@ public abstract class GenericSavedServiceWithoutType<T, U, R> implements SavedSe
     public void saveToUser(int entityId) {
         int userId = AuthorizationUtil.getUserId();
         if (isAlreadySaved(userId, entityId)) {
-            throw NotUniqueRecordException.of(
-                    "User with id: " + userId + " already has entity with id: " + entityId
-            );
+            throw new NotUniqueRecordException(User.class, userId, entityId);
         }
 
         User user = userRepository.findById(userId)

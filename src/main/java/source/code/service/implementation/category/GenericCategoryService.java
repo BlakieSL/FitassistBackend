@@ -33,6 +33,7 @@ public abstract class GenericCategoryService<T> {
     protected final JpaRepository<T, Integer> repository;
     protected final BaseMapper<T> mapper;
     protected abstract boolean hasAssociatedEntities(int categoryId);
+    protected abstract Class<T> getEntityClass();
 
     protected GenericCategoryService(ValidationService validationService,
                                      JsonPatchService jsonPatchService,
@@ -84,7 +85,7 @@ public abstract class GenericCategoryService<T> {
         T category = find(categoryId);
 
         if (hasAssociatedEntities(categoryId)) {
-            throw new ConflictDeletionException("Cannot delete plan category with associated plans.");
+            throw new ConflictDeletionException(getEntityClass(), categoryId);
         }
 
         repository.delete(category);
@@ -120,7 +121,7 @@ public abstract class GenericCategoryService<T> {
 
     private T find(int categoryId) {
         return repository.findById(categoryId)
-                .orElseThrow(() -> RecordNotFoundException.of(getClass(), categoryId));
+                .orElseThrow(() -> RecordNotFoundException.of(getEntityClass(), categoryId));
     }
 
     private CategoryUpdateDto applyPatchToCategory(JsonMergePatch patch)

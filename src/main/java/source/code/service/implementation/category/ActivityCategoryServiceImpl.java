@@ -39,4 +39,9 @@ public class ActivityCategoryServiceImpl
     protected boolean hasAssociatedEntities(int categoryId) {
         return activityCategoryRepository.existsByIdAndActivitiesIsNotEmpty(categoryId);
     }
+
+    @Override
+    protected Class<ActivityCategory> getEntityClass() {
+        return ActivityCategory.class;
+    }
 }

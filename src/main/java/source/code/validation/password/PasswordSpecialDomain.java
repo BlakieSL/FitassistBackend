@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PasswordSpecialDomain {
-    String message() default "{com.example.lab10.PasswordSpecialDomain.message}";
+    String message() default "{PasswordSpecialDomain.message}";
 
     Class<?>[] groups() default {};
 

@@ -49,10 +49,6 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<UserResponseDto> registerUser(@Valid @RequestBody UserCreateDto request) {
-        LOGGER.info("Thread info: id={}, isVirtual={}, name={}",
-                Thread.currentThread().threadId(),
-                Thread.currentThread().isVirtual(),
-                Thread.currentThread().getName());
         UserResponseDto response = userService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

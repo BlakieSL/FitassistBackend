@@ -1,11 +1,14 @@
 package source.code.exception;
 
-public class NotUniqueRecordException extends RuntimeException {
-    public NotUniqueRecordException(String message) {
-        super(message);
-    }
+import static org.hibernate.internal.util.collections.ArrayHelper.toStringArray;
 
-    public static NotUniqueRecordException of(String message) {
-        return new NotUniqueRecordException(message);
+public class NotUniqueRecordException extends LocalizedException {
+    public <T> NotUniqueRecordException(Class<T> entityClass, Object... identifiers) {
+        super(
+                "NotUniqueRecordException.message",
+                null,
+                entityClass.getSimpleName(),
+                String.join(", ", toStringArray(identifiers))
+        );
     }
 }

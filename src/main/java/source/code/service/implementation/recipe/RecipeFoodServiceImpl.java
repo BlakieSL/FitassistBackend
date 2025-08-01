@@ -77,8 +77,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
     @Transactional
     public void saveFoodToRecipe(int recipeId, int foodId, RecipeFoodCreateDto request) {
         if (isAlreadyAdded(recipeId, foodId)) {
-            throw new NotUniqueRecordException(
-                    "Recipe with id: " + recipeId + " already has food with id: " + foodId);
+           throw new NotUniqueRecordException(RecipeFood.class, recipeId, foodId);
         }
 
         Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
