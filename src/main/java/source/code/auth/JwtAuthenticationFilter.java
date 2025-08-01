@@ -13,7 +13,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import source.code.service.implementation.user.UserServiceImpl;
 
@@ -21,7 +20,8 @@ import java.io.IOException;
 
 public class JwtAuthenticationFilter extends HttpFilter {
 
-    private static final RequestMatcher defaultRequestMatcher = new AntPathRequestMatcher("/api/users/login", "POST");
+    private static final RequestMatcher defaultRequestMatcher = (request) -> 
+            "/api/users/login".equals(request.getRequestURI()) && "POST".equals(request.getMethod());
     private final AuthenticationManager authenticationManager;
     private final AuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
     private final AuthenticationSuccessHandler successHandler;
