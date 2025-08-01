@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +19,12 @@ import source.code.service.declaration.activity.ActivityService;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping(path = "/api/activities")
 public class ActivityController {
     private final ActivityService activityService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActivityController.class);
 
     public ActivityController(ActivityService activityService) {
         this.activityService = activityService;

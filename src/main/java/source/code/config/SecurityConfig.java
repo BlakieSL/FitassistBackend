@@ -91,9 +91,17 @@ public class SecurityConfig {
     @Bean
     public RequestMatcher publicEndpointsMatcher() {
         return new OrRequestMatcher(
-                (request) -> "/api/users/register".equals(request.getRequestURI()) && "POST".equals(request.getMethod()),
-                (request) -> "/api/users/login".equals(request.getRequestURI()) && "POST".equals(request.getMethod()),
-                (request) -> "/api/users/refresh-token".equals(request.getRequestURI()) && "POST".equals(request.getMethod())
-        );
+                (request) ->
+                        "/api/users/register".equals(request.getRequestURI()) &&
+                                "POST".equals(request.getMethod()),
+                (request) ->
+                        "/api/users/login".equals(request.getRequestURI()) &&
+                                "POST".equals(request.getMethod()),
+                (request) ->
+                        "/api/users/refresh-token".equals(request.getRequestURI()) &&
+                                "POST".equals(request.getMethod()),
+                (request) ->
+                        "/api/virtual-threads/thread-info".equals(request.getRequestURI()) &&
+                                "GET".equals(request.getMethod()));
     }
 }

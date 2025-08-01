@@ -55,7 +55,7 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
             TopDocs topDocs = searcher.search(mainQuery.build(), 10);
 
             for (var scoreDoc : topDocs.scoreDocs) {
-                Document doc = searcher.doc(scoreDoc.doc);
+                Document doc = searcher.storedFields().document(scoreDoc.doc);
                 results.add(convertDocumentToEntity(doc));
             }
         } catch (IOException e) {
