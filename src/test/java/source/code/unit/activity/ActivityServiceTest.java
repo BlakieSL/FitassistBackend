@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.MessageSource;
 import org.springframework.data.jpa.domain.Specification;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.dto.request.activity.ActivityCreateDto;
@@ -39,6 +40,7 @@ import source.code.service.implementation.activity.ActivityServiceImpl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -212,8 +214,8 @@ public class ActivityServiceTest {
 
     @Test
     void deleteActivity_shouldDelete() {
-        when(repositoryHelper.find(activityRepository, Activity.class, activityId))
-                .thenReturn(activity);
+        when(activityRepository.findByIdWithAssociations(activityId))
+                .thenReturn(Optional.of(activity));
 
         activityService.deleteActivity(activityId);
 
@@ -225,8 +227,8 @@ public class ActivityServiceTest {
         ArgumentCaptor<ActivityDeleteEvent> eventCaptor = ArgumentCaptor
                 .forClass(ActivityDeleteEvent.class);
 
-        when(repositoryHelper.find(activityRepository, Activity.class, activityId))
-                .thenReturn(activity);
+        when(activityRepository.findByIdWithAssociations(activityId))
+                .thenReturn(Optional.of(activity));
 
         activityService.deleteActivity(activityId);
 
@@ -236,8 +238,8 @@ public class ActivityServiceTest {
 
     @Test
     void deleteActivity_shouldThrowExceptionWhenActivityNotFound() {
-        when(repositoryHelper.find(activityRepository, Activity.class, activityId))
-                .thenThrow(RecordNotFoundException.of(Activity.class, activityId));
+        when(activityRepository.findByIdWithAssociations(activityId))
+                .thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> activityService
                 .deleteActivity(activityId));
@@ -319,33 +321,35 @@ public class ActivityServiceTest {
                 .thenThrow(RecordNotFoundException.of(Activity.class, activityId));
 
         assertThrows(RecordNotFoundException.class, () -> activityService
-                .deleteActivity(activityId));
+                .getActivity(activityId));
         verifyNoInteractions(activityMapper);
     }
 
     @Test
     void getAllActivities_shouldReturnAllActivities() {
+        List<Activity> activities = List.of(activity);
         List<ActivityResponseDto> responseDtos = List.of(responseDto);
 
-        when(repositoryHelper.findAll(eq(activityRepository), any(Function.class)))
-                .thenReturn(responseDtos);
+        when(activityRepository.findAllWithActivityCategory())
+                .thenReturn(activities);
+        when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
 
         List<ActivityResponseDto> result = activityService.getAllActivities();
 
         assertEquals(responseDtos, result);
-        verify(repositoryHelper).findAll(eq(activityRepository), any(Function.class));
+        verify(activityRepository).findAllWithActivityCategory();
     }
 
     @Test
     void getAllActivities_shouldReturnEmptyListWhenNoActivities() {
-        List<ActivityResponseDto> responseDtos = List.of();
-        when(repositoryHelper.findAll(eq(activityRepository), any(Function.class)))
-                .thenReturn(responseDtos);
+        List<Activity> activities = List.of();
+        when(activityRepository.findAllWithActivityCategory())
+                .thenReturn(activities);
 
         List<ActivityResponseDto> result = activityService.getAllActivities();
 
         assertTrue(result.isEmpty());
-        verify(repositoryHelper).findAll(eq(activityRepository), any(Function.class));
+        verify(activityRepository).findAllWithActivityCategory();
     }
 
     @Test
