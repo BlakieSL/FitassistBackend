@@ -91,7 +91,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     @Transactional
     public void deleteActivity(int activityId) {
-        Activity activity = findActivityWithoutAssociations(activityId);
+        Activity activity = findActivityWithAssociations(activityId);
         activityRepository.delete(activity);
 
         eventPublisher.publishEvent(ActivityDeleteEvent.of(this, activity));
@@ -152,7 +152,7 @@ public class ActivityServiceImpl implements ActivityService {
         return repositoryHelper.find(activityRepository, Activity.class, activityId);
     }
 
-    private Activity findActivityWithoutAssociations(int activityId) {
+    private Activity findActivityWithAssociations(int activityId) {
         return activityRepository.findByIdWithAssociations(activityId)
                 .orElseThrow(() -> new RecordNotFoundException(Activity.class, activityId));
     }
