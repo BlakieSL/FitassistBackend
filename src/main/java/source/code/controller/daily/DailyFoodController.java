@@ -1,4 +1,4 @@
-package source.code.controller.food;
+package source.code.controller.daily;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;

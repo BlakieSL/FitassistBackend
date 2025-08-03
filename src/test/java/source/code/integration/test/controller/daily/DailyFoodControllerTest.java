@@ -1,4 +1,4 @@
-package source.code.integration.test.controller.food;
+package source.code.integration.test.controller.daily;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +16,7 @@ import source.code.dto.request.food.DailyCartFoodUpdateDto;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
+import source.code.integration.test.controller.food.FoodSql;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
