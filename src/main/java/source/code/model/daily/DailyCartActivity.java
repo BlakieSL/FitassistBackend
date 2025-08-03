@@ -11,6 +11,7 @@ import source.code.model.activity.Activity;
 
 @Entity
 @Table(name = "daily_cart_activity")
+@NamedEntityGraph(name = "DailyCartActivity.withoutAssociations", attributeNodes = {})
 @Getter
 @Setter
 @AllArgsConstructor

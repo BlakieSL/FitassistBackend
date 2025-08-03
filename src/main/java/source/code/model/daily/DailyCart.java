@@ -2,6 +2,7 @@ package source.code.model.daily;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jdk.jfr.Name;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "daily_cart")
+@NamedEntityGraph(name = "DailyCart.withAssociations", attributeNodes = {})
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

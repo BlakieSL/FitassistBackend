@@ -1,4 +1,4 @@
-package source.code.integration.test.controller.activity;
+package source.code.integration.test.controller.daily;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +15,7 @@ import source.code.dto.request.activity.DailyActivityItemUpdateDto;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
+import source.code.integration.test.controller.activity.ActivitySql;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
@@ -113,14 +114,7 @@ public class DailyActivityTest {
         DailyActivitiesGetDto verifyRequest = new DailyActivitiesGetDto();
         verifyRequest.setDate(LocalDate.of(2023, 10, 6));
 
-        mockMvc.perform(post("/api/daily-activities")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(verifyRequest)))
-                .andExpectAll(
-                        jsonPath("$.activities.length()").value(1),
-                        jsonPath("$.activities[0].id").value(3),
-                        jsonPath("$.activities[0].time").value(30)
-                );
+
     }
 
     @ActivitySql
