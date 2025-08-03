@@ -166,8 +166,8 @@ public class DailyFoodServiceTest {
 
     @Test
     void removeFoodFromDailyCart_shouldRemoveExistingDailyFoodFromDailyCart() {
-        when(repositoryHelper.find(dailyCartFoodRepository,DailyCartFood.class, FOOD_ID))
-                .thenReturn(dailyCartFood);
+        when(dailyCartFoodRepository.findByIdWithoutAssociations(FOOD_ID))
+                .thenReturn(Optional.of(dailyCartFood));
         doNothing().when(dailyCartFoodRepository).delete(dailyCartFood);
 
 
@@ -178,8 +178,8 @@ public class DailyFoodServiceTest {
 
     @Test
     void removeFoodFromDailyCart_shouldThrowException_whenDailyFoodFromDailyCartNotFound() {
-        when(repositoryHelper.find(dailyCartFoodRepository, DailyCartFood.class, FOOD_ID))
-                .thenThrow(new RecordNotFoundException(DailyCartActivity.class, FOOD_ID));
+        when(dailyCartFoodRepository.findByIdWithoutAssociations(FOOD_ID))
+                .thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () ->
                 dailyFoodService.removeFoodFromDailyCart(FOOD_ID)
@@ -191,8 +191,8 @@ public class DailyFoodServiceTest {
         DailyCartFoodUpdateDto patchedDto = new DailyCartFoodUpdateDto();
         patchedDto.setQuantity(BigDecimal.valueOf(120));
 
-        when(repositoryHelper.find(dailyCartFoodRepository, DailyCartFood.class, FOOD_ID))
-                .thenReturn(dailyCartFood);
+        when(dailyCartFoodRepository.findByIdWithoutAssociations(FOOD_ID))
+                .thenReturn(Optional.of(dailyCartFood));
 
         doReturn(patchedDto).when(jsonPatchService).createFromPatch(
                 any(JsonMergePatch.class),
@@ -208,8 +208,8 @@ public class DailyFoodServiceTest {
 
     @Test
     void updateDailyFoodItem_shouldThrowException_whenDailyFoodItemNotFound() {
-        when(repositoryHelper.find(dailyCartFoodRepository, DailyCartFood.class, FOOD_ID))
-                .thenThrow(RecordNotFoundException.class);
+        when(dailyCartFoodRepository.findByIdWithoutAssociations(FOOD_ID))
+                .thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () ->
                 dailyFoodService.updateDailyFoodItem(FOOD_ID, patch));
@@ -222,8 +222,8 @@ public class DailyFoodServiceTest {
     void updateDailyFoodItem_shouldThrowException_whenPatchFails()
             throws JsonPatchException, JsonProcessingException
     {
-        when(repositoryHelper.find(dailyCartFoodRepository, DailyCartFood.class, FOOD_ID))
-                .thenReturn(dailyCartFood);
+        when(dailyCartFoodRepository.findByIdWithoutAssociations(FOOD_ID))
+                .thenReturn(Optional.of(dailyCartFood));
         doThrow(JsonPatchException.class).when(jsonPatchService).createFromPatch(
                 any(JsonMergePatch.class),
                 eq(DailyCartFoodUpdateDto.class)
@@ -244,8 +244,8 @@ public class DailyFoodServiceTest {
         DailyCartFoodUpdateDto patchedDto = new DailyCartFoodUpdateDto();
         patchedDto.setQuantity(BigDecimal.valueOf(120));
 
-        when(repositoryHelper.find(dailyCartFoodRepository, DailyCartFood.class, FOOD_ID))
-                .thenReturn(dailyCartFood);
+        when(dailyCartFoodRepository.findByIdWithoutAssociations(FOOD_ID))
+                .thenReturn(Optional.of(dailyCartFood));
         doReturn(patchedDto).when(jsonPatchService).createFromPatch(
                 any(JsonMergePatch.class),
                 eq(DailyCartFoodUpdateDto.class)
@@ -277,9 +277,7 @@ public class DailyFoodServiceTest {
         calculatedResponseDto.setFat(BigDecimal.valueOf(5));
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyCartRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyCart));
-        when(dailyCartFoodRepository.findAllByDailyCartId(dailyCart.getId()))
-                .thenReturn(List.of(dailyCartFood));
+        when(dailyCartRepository.findByUserIdAndDateWithFoodAssociations(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyCart));
         when(dailyFoodMapper.toFoodCalculatedMacrosResponseDto(dailyCartFood)).thenReturn(calculatedResponseDto);
 
         DailyFoodsResponseDto result = dailyFoodService
@@ -301,7 +299,7 @@ public class DailyFoodServiceTest {
         newDailyCart.setUser(user);
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyCartRepository.findByUserIdAndDate(USER_ID, LocalDate.now())).thenReturn(Optional.empty());
+        when(dailyCartRepository.findByUserIdAndDateWithFoodAssociations(USER_ID, LocalDate.now())).thenReturn(Optional.empty());
 
         DailyFoodsResponseDto result = dailyFoodService
                 .getFoodFromDailyCart(new DailyCartFoodGetDto(LocalDate.now()));

@@ -9,6 +9,7 @@ import source.code.dto.request.food.DailyCartFoodCreateDto;
 import source.code.dto.request.food.DailyCartFoodGetDto;
 import source.code.dto.request.food.DailyCartFoodUpdateDto;
 import source.code.dto.response.daily.DailyFoodsResponseDto;
+import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.daily.DailyFoodMapper;
 import source.code.model.daily.DailyCart;
@@ -74,7 +75,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     @Override
     @Transactional
     public void removeFoodFromDailyCart(int dailyCartFoodId) {
-        DailyCartFood dailyCartFood = getDailyCartFood(dailyCartFoodId);
+        DailyCartFood dailyCartFood = findWithoutAssociations(dailyCartFoodId);
         dailyCartFoodRepository.delete(dailyCartFood);
     }
 
@@ -83,7 +84,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     public void updateDailyFoodItem(int dailyCartFoodId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        DailyCartFood dailyCartFood = getDailyCartFood(dailyCartFoodId);
+        DailyCartFood dailyCartFood = findWithoutAssociations(dailyCartFoodId);
 
         DailyCartFoodUpdateDto patchedDto = applyPatchToDailyFoodItem(patch);
         validationService.validate(patchedDto);
@@ -93,28 +94,21 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     }
 
     @Override
-    @Transactional
     public DailyFoodsResponseDto getFoodFromDailyCart(DailyCartFoodGetDto request) {
         int userId = AuthorizationUtil.getUserId();
 
-        return dailyCartRepository.findByUserIdAndDate(userId, request.getDate())
-                .map(dailyCart -> {
-                    List<DailyCartFood> foods = dailyCartFoodRepository.findAllByDailyCartId(dailyCart.getId());
-                    return DailyFoodsResponseDto.create(foods.stream()
-                            .map(dailyFoodMapper::toFoodCalculatedMacrosResponseDto)
-                            .toList());
-                })
+        return dailyCartRepository
+                .findByUserIdAndDateWithFoodAssociations(userId, request.getDate())
+                .map(dailyCart -> DailyFoodsResponseDto.create(dailyCart.getDailyCartFoods().stream()
+                        .map(dailyFoodMapper::toFoodCalculatedMacrosResponseDto)
+                        .toList()))
                 .orElse(DailyFoodsResponseDto.of(Collections.emptyList()));
     }
 
-    private void updateOrAddDailyFoodItem(
-            DailyCart dailyCart,
-            Food food,
-            BigDecimal quantity
-    ) {
-        dailyCartFoodRepository.findByDailyCartIdAndFoodId(dailyCart.getId(), food.getId())
-                .ifPresentOrElse(
-                        foundItem -> {
+    private void updateOrAddDailyFoodItem(DailyCart dailyCart, Food food, BigDecimal quantity) {
+        dailyCartFoodRepository
+                .findByDailyCartIdAndFoodId(dailyCart.getId(), food.getId())
+                .ifPresentOrElse(foundItem -> {
                             BigDecimal newQuantity = foundItem.getQuantity().add(quantity);
                             foundItem.setQuantity(newQuantity);
                         },
@@ -144,11 +138,8 @@ public class DailyFoodServiceImpl implements DailyFoodService {
                 .orElseGet(() -> createDailyCart(userId, date));
     }
 
-    private DailyCartFood getDailyCartFood(int dailyCartFoodId) {
-        return repositoryHelper.find(dailyCartFoodRepository, DailyCartFood.class, dailyCartFoodId);
+    private DailyCartFood findWithoutAssociations(int dailyCartFoodId) {
+        return dailyCartFoodRepository.findByIdWithoutAssociations(dailyCartFoodId)
+                .orElseThrow(() -> new RecordNotFoundException(DailyCartFood.class, dailyCartFoodId));
     }
-    private Optional<DailyCart> getDailyCart(int userId, LocalDate date) {
-        return dailyCartRepository.findByUserIdAndDate(userId, date);
-    }
-
 }
