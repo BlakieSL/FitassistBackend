@@ -37,7 +37,7 @@ public class AuthAnnotationServiceImpl {
     private final WorkoutSetGroupRepository workoutSetGroupRepository;
     private final CommentComplaintRepository commentComplaintRepository;
     private final ThreadComplaintRepository threadComplaintRepository;
-    private final DailyActivityItemRepository dailyActivityItemRepository;
+    private final DailyCartActivityRepository dailyCartActivityRepository;
     private final DailyCartFoodRepository dailyCartFoodRepository;
 
     public AuthAnnotationServiceImpl(CommentRepository commentRepository,
@@ -49,7 +49,7 @@ public class AuthAnnotationServiceImpl {
                                      RecipeInstructionRepository recipeInstructionRepository,
                                      PlanInstructionRepository planInstructionRepository,
                                      WorkoutRepository workoutRepository,
-                                     WorkoutSetRepository workoutSetRepository, WorkoutSetGroupRepository workoutSetGroupRepository, CommentComplaintRepository commentComplaintRepository, ThreadComplaintRepository threadComplaintRepository, DailyActivityItemRepository dailyActivityItemRepository, DailyCartFoodRepository dailyCartFoodRepository) {
+                                     WorkoutSetRepository workoutSetRepository, WorkoutSetGroupRepository workoutSetGroupRepository, CommentComplaintRepository commentComplaintRepository, ThreadComplaintRepository threadComplaintRepository, DailyCartActivityRepository dailyCartActivityRepository, DailyCartFoodRepository dailyCartFoodRepository) {
         this.commentRepository = commentRepository;
         this.repositoryHelper = repositoryHelper;
         this.forumThreadRepository = forumThreadRepository;
@@ -63,7 +63,7 @@ public class AuthAnnotationServiceImpl {
         this.workoutSetGroupRepository = workoutSetGroupRepository;
         this.commentComplaintRepository = commentComplaintRepository;
         this.threadComplaintRepository = threadComplaintRepository;
-        this.dailyActivityItemRepository = dailyActivityItemRepository;
+        this.dailyCartActivityRepository = dailyCartActivityRepository;
         this.dailyCartFoodRepository = dailyCartFoodRepository;
     }
 
@@ -219,16 +219,16 @@ public class AuthAnnotationServiceImpl {
     }
 
 
-    public boolean isDailyCartOwner(Integer dailyActivityItemId, Integer dailyCartFoodId) {
+    public boolean isDailyCartOwner(Integer dailyCartActivityId, Integer dailyCartFoodId) {
         Integer userId = null;
 
-        if (dailyActivityItemId != null) {
-            DailyCartActivity dailyCartActivity = dailyActivityItemRepository.findByIdWithUser(dailyActivityItemId)
-                    .orElseThrow(() -> new RecordNotFoundException(DailyCartActivity.class, dailyActivityItemId));
+        if (dailyCartActivityId != null) {
+            DailyCartActivity dailyCartActivity = dailyCartActivityRepository.findByIdWithUser(dailyCartActivityId)
+                    .orElseThrow(() -> new RecordNotFoundException(DailyCartActivity.class, dailyCartActivityId));
             userId = dailyCartActivity.getDailyCart().getUser().getId();
         } else if (dailyCartFoodId != null) {
-            DailyCartFood dailyCartFood = repositoryHelper
-                    .find(dailyCartFoodRepository, DailyCartFood.class, dailyCartFoodId);
+            DailyCartFood dailyCartFood = dailyCartFoodRepository.findByIdWithUser(dailyCartFoodId)
+                    .orElseThrow(() -> new RecordNotFoundException(DailyCartFood.class, dailyCartFoodId));
             userId = dailyCartFood.getDailyCart().getUser().getId();
         }
 
