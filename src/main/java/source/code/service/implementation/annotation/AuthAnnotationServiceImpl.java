@@ -1,6 +1,7 @@
 package source.code.service.implementation.annotation;
 
 import org.springframework.stereotype.Service;
+import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.helper.Enum.model.TextType;
 import source.code.helper.user.AuthorizationUtil;
@@ -222,8 +223,8 @@ public class AuthAnnotationServiceImpl {
         Integer userId = null;
 
         if (dailyActivityItemId != null) {
-            DailyCartActivity dailyCartActivity = repositoryHelper
-                    .find(dailyActivityItemRepository, DailyCartActivity.class, dailyActivityItemId);
+            DailyCartActivity dailyCartActivity = dailyActivityItemRepository.findByIdWithUser(dailyActivityItemId)
+                    .orElseThrow(() -> new RecordNotFoundException(DailyCartActivity.class, dailyActivityItemId));
             userId = dailyCartActivity.getDailyCart().getUser().getId();
         } else if (dailyCartFoodId != null) {
             DailyCartFood dailyCartFood = repositoryHelper

@@ -10,6 +10,7 @@ import source.code.dto.request.activity.DailyActivityItemCreateDto;
 import source.code.dto.request.activity.DailyActivityItemUpdateDto;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.dto.response.daily.DailyActivitiesResponseDto;
+import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.daily.DailyActivityMapper;
 import source.code.model.activity.Activity;
@@ -74,7 +75,8 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     @Override
     @Transactional
     public void removeActivityFromDailyCart(int dailyActivityItemId) {
-        DailyCartActivity dailyCartActivity = getDailyCartActivity(dailyActivityItemId);
+        DailyCartActivity dailyCartActivity = dailyActivityItemRepository.findByIdWithoutAssociations(dailyActivityItemId)
+                .orElseThrow(() -> new RecordNotFoundException(DailyCartActivity.class, dailyActivityItemId));
         dailyActivityItemRepository.delete(dailyCartActivity);
     }
 
@@ -83,7 +85,8 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     public void updateDailyActivityItem(int dailyActivityItemId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        DailyCartActivity dailyCartActivity = getDailyCartActivity(dailyActivityItemId);
+        DailyCartActivity dailyCartActivity = dailyActivityItemRepository.findByIdWithUser(dailyActivityItemId)
+                .orElseThrow(() -> new RecordNotFoundException(DailyCartActivity.class, dailyActivityItemId));
 
         DailyActivityItemUpdateDto patchedDto = applyPatchToDailyActivityItem(patch);
         validationService.validate(patchedDto);
@@ -93,37 +96,25 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     }
 
     @Override
-    @Transactional
     public DailyActivitiesResponseDto getActivitiesFromDailyCart(DailyActivitiesGetDto request) {
         int userId = AuthorizationUtil.getUserId();
-        Optional<DailyCart> dailyCartOptional = getDailyCart(userId, request.getDate());
 
-        if (dailyCartOptional.isEmpty()) {
-            return DailyActivitiesResponseDto.of(Collections.emptyList(), 0);
-        }
-
-        DailyCart dailyCart = dailyCartOptional.get();
-
-        User user = dailyCart.getUser();
-
-        return dailyCart.getDailyCartActivities().stream()
-                .map(dailyActivityItem -> dailyActivityMapper.toActivityCalculatedResponseDto(
-                        dailyActivityItem,
-                        user.getWeight()
-                ))
-                .collect(Collectors.teeing(
-                        Collectors.toList(),
-                        Collectors.summingInt(ActivityCalculatedResponseDto::getCaloriesBurned),
-                        DailyActivitiesResponseDto::of
-                ));
+        return dailyCartRepository
+                .findByUserIdAndDateWithAssociations(userId, request.getDate())
+                .map(dailyCart -> dailyCart.getDailyCartActivities().stream()
+                        .map(dailyActivityItem -> dailyActivityMapper.toActivityCalculatedResponseDto(
+                                dailyActivityItem,
+                                dailyCart.getUser().getWeight()))
+                        .collect(Collectors.teeing(
+                                Collectors.toList(),
+                                Collectors.summingInt(ActivityCalculatedResponseDto::getCaloriesBurned),
+                                DailyActivitiesResponseDto::of)))
+                .orElse(DailyActivitiesResponseDto.of(Collections.emptyList(), 0));
     }
 
-    private void updateOrAddDailyActivityItem(
-            DailyCart dailyCart,
-            Activity activity,
-            int time
-    ) {
-        dailyActivityItemRepository.findByDailyCartIdAndActivityId(dailyCart.getId(), activity.getId())
+    private void updateOrAddDailyActivityItem(DailyCart dailyCart, Activity activity, int time) {
+        dailyActivityItemRepository
+                .findByDailyCartIdAndActivityId(dailyCart.getId(), activity.getId())
                 .ifPresentOrElse(
                         foundItem -> foundItem.setTime(foundItem.getTime() + time),
                         () -> {
@@ -147,16 +138,8 @@ public class DailyActivityServiceImpl implements DailyActivityService {
         return jsonPatchService.createFromPatch(patch, DailyActivityItemUpdateDto.class);
     }
 
-    private DailyCartActivity getDailyCartActivity(int dailyActivityItemId) {
-        return repositoryHelper.find(dailyActivityItemRepository, DailyCartActivity.class, dailyActivityItemId);
-    }
-
     private DailyCart getOrCreateDailyCartForUser(int userId, LocalDate date) {
-        return getDailyCart(userId, date)
+        return dailyCartRepository.findByUserIdAndDate(userId, date)
                 .orElseGet(() -> createDailyCart(userId, date));
-    }
-
-    private Optional<DailyCart> getDailyCart(int userId, LocalDate date) {
-        return dailyCartRepository.findByUserIdAndDate(userId, date);
     }
 }
