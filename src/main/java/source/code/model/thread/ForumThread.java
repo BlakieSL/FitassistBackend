@@ -18,6 +18,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "thread")
+@NamedEntityGraph(name = "Thread.withoutAssociations", attributeNodes = {})
 @Getter
 @Setter
 @AllArgsConstructor

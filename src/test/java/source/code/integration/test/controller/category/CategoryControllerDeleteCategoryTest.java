@@ -26,9 +26,6 @@ public class CategoryControllerDeleteCategoryTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @CategorySql
     @Test
     @DisplayName("DELETE /FOOD/{id} - Should delete a food category when not associated with any food items")
