@@ -26,10 +26,6 @@ public class CategoryControllerGetCategoryTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-
     @CategorySql
     @WithMockUser
     @Test

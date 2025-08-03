@@ -12,10 +12,14 @@ import source.code.model.user.User;
 @Table(name = "complaint")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
+@NamedEntityGraph(
+        name = "ComplaintBase.withoutAssociations",
+        attributeNodes = {}
+)
 @Getter
 @Setter
-@AllArgsConstructor()
-@NoArgsConstructor()
+@AllArgsConstructor
+@NoArgsConstructor
 public abstract class ComplaintBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
