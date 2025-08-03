@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "daily_cart_food")
+@NamedEntityGraph(name = "DailyCartFood.withoutAssociations", attributeNodes = {})
 @Getter
 @Setter
 @AllArgsConstructor
