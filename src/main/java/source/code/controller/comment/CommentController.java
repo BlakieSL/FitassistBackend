@@ -33,11 +33,8 @@ public class CommentController {
 
     @CommentOwnerOrAdmin
     @PatchMapping("/{commentId}")
-    public ResponseEntity<Void> updateComment(
-            @PathVariable int commentId,
-            @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+    public ResponseEntity<Void> updateComment(@PathVariable int commentId, @RequestBody JsonMergePatch patch)
+            throws JsonPatchException, JsonProcessingException {
         commentService.updateComment(commentId, patch);
         return ResponseEntity.noContent().build();
     }

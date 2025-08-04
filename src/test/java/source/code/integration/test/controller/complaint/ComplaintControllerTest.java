@@ -52,7 +52,6 @@ public class ComplaintControllerTest {
                 );
     }
 
-    @WithMockUser
     @ComplaintSql
     @Test
     @DisplayName("POST - / - Should create a comment complaint")
