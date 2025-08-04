@@ -32,7 +32,6 @@ INSERT INTO comment (text, parent_comment_id, thread_id, user_id) VALUES
                                                                       ('Lentils and quinoa are great options', NULL, 3, 4),
                                                                       ('How many days per week is this program?', NULL, 4, 3),
                                                                       ('Congrats on your achievement!', NULL, 5, 5),
-
                                                                       ('I prefer Cronometer for micronutrients', 1, 1, 3),
                                                                       ('Thanks for the tip!', 2, 2, 2),
                                                                       ('Don''t forget about tofu and tempeh', 3, 3, 5),
