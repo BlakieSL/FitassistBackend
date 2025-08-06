@@ -15,6 +15,7 @@ import source.code.integration.containers.MySqlContainerInitializer;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -236,7 +237,9 @@ public class CommentControllerTest {
         mockMvc.perform(get("/api/comments/replies/1"))
                 .andExpectAll(
                         status().isOk(),
-                         jsonPath("$").isNotEmpty()
+                         jsonPath("$").isNotEmpty(),
+                        jsonPath("$[0].replies", hasSize(1)),
+                        jsonPath("$[0].replies.[0].replies", hasSize(1))
                 );
     }
 
