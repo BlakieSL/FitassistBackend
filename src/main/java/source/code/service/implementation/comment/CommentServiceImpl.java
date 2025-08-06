@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import source.code.dto.request.comment.CommentCreateDto;
 import source.code.dto.request.comment.CommentUpdateDto;
 import source.code.dto.response.comment.CommentResponseDto;
+import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.comment.CommentMapper;
 import source.code.model.thread.Comment;
@@ -17,25 +18,22 @@ import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CommentServiceImpl implements CommentService {
     private final JsonPatchService jsonPatchService;
     private final ValidationService validationService;
     private final CommentMapper commentMapper;
-    private final RepositoryHelper repositoryHelper;
     private final CommentRepository commentRepository;
 
     public CommentServiceImpl(JsonPatchService jsonPatchService,
                               ValidationService validationService,
                               CommentMapper commentMapper,
-                              RepositoryHelper repositoryHelper,
                               CommentRepository commentRepository) {
         this.jsonPatchService = jsonPatchService;
         this.validationService = validationService;
         this.commentMapper = commentMapper;
-        this.repositoryHelper = repositoryHelper;
         this.commentRepository = commentRepository;
     }
 
@@ -53,7 +51,9 @@ public class CommentServiceImpl implements CommentService {
     public void updateComment(int commentId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        Comment comment = find(commentId);
+        Comment comment = commentRepository.findByIdWithoutAssociations(commentId)
+                .orElseThrow(() -> new RecordNotFoundException(Comment.class, commentId));
+
         CommentUpdateDto patched = applyPatchToComment(patch);
 
         validationService.validate(patched);
@@ -64,13 +64,13 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteComment(int commentId) {
-        Comment comment = find(commentId);
-        commentRepository.delete(comment);
+        commentRepository.deleteCommentDirectly(commentId);
     }
 
     @Override
     public CommentResponseDto getComment(int commentId) {
-        Comment comment = find(commentId);
+        Comment comment = commentRepository.findByIdWithoutAssociations(commentId)
+                .orElseThrow(() -> new RecordNotFoundException(Comment.class, commentId));
         return commentMapper.toResponseDto(comment);
     }
 
@@ -86,38 +86,42 @@ public class CommentServiceImpl implements CommentService {
                 .toList();
     }
 
-    @Override
     public List<CommentResponseDto> getReplies(int commentId) {
-        List<Comment> directReplies = commentRepository.findAllByParentCommentId(commentId);
+        List<Object[]> results = commentRepository.findCommentHierarchy(commentId);
 
-        return directReplies.stream()
-                .filter(reply -> !reply.getId().equals(commentId))
-                .map(this::buildCommentHierarchy)
+        if (results.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Map<Integer, CommentResponseDto> dtoMap = new HashMap<>();
+
+        for (var row : results) {
+            CommentResponseDto dto = new CommentResponseDto();
+            dto.setId((Integer) row[0]);
+            dto.setText((String) row[1]);
+            dto.setThreadId((Integer) row[2]);
+            dto.setUserId((Integer) row[3]);
+            dto.setParentCommentId((Integer) row[4]);
+            dto.setReplies(new ArrayList<>());
+            dtoMap.put(dto.getId(), dto);
+        }
+
+        for (var dto : dtoMap.values()) {
+            Integer parentId = dto.getParentCommentId();
+            if (parentId != null && dtoMap.containsKey(parentId)) {
+                dtoMap.get(parentId).getReplies().add(dto);
+            }
+        }
+
+        return dtoMap.values().stream()
+                .filter(dto -> commentId == dto.getParentCommentId())
+                .sorted(Comparator.comparing(CommentResponseDto::getId))
                 .toList();
-    }
-
-    private CommentResponseDto buildCommentHierarchy(Comment comment) {
-        CommentResponseDto commentDto = commentMapper.toResponseDto(comment);
-
-        List<Comment> replies = commentRepository.findAllByParentCommentId(comment.getId());
-
-        List<CommentResponseDto> replyDtos = replies.stream()
-                .filter(reply -> !reply.getId().equals(comment.getId()))
-                .map(this::buildCommentHierarchy)
-                .toList();
-
-        commentDto.setReplies(replyDtos);
-
-        return commentDto;
     }
 
     public CommentUpdateDto applyPatchToComment(JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
         return jsonPatchService.createFromPatch(patch, CommentUpdateDto.class);
-    }
-
-    private Comment find(int commentId) {
-        return repositoryHelper.find(commentRepository, Comment.class, commentId);
     }
 }

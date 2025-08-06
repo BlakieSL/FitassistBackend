@@ -40,7 +40,7 @@ CREATE TABLE comment (
                          user_id           INT NOT NULL,
                          CONSTRAINT FK8kcum44fvpupyw6f5baccx25c FOREIGN KEY (user_id) REFERENCES user (id),
                          CONSTRAINT FKehf7mvstlwwl8fy9ahfo515rm FOREIGN KEY (thread_id) REFERENCES thread (id),
-                         CONSTRAINT FKhvh0e2ybgg16bpu229a5teje7 FOREIGN KEY (parent_comment_id) REFERENCES comment (id)
+                         CONSTRAINT FKhvh0e2ybgg16bpu229a5teje7 FOREIGN KEY (parent_comment_id) REFERENCES comment (id) ON DELETE CASCADE
 );
 
 -- Create complaint table

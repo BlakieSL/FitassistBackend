@@ -312,7 +312,7 @@ create table comment
     constraint FKehf7mvstlwwl8fy9ahfo515rm
         foreign key (thread_id) references thread (id),
     constraint FKhvh0e2ybgg16bpu229a5teje7
-        foreign key (parent_comment_id) references comment (id)
+        foreign key (parent_comment_id) references comment (id) ON DELETE CASCADE
 );
 
 create table complaint
@@ -353,7 +353,7 @@ create table user_comment
     comment_id int                              not null,
     user_id    int                              not null,
     constraint FK8run8dgvadrrwcwe5xpdscynm
-        foreign key (comment_id) references comment (id),
+        foreign key (comment_id) references comment (id) ON DELETE CASCADE,
     constraint FKornrskknlmumgdhlohpbcvrw5
         foreign key (user_id) references user (id)
 );

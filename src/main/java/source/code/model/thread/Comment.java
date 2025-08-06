@@ -16,6 +16,7 @@ import java.util.Set;
 @Entity
 @Table(name = "comment")
 @NamedEntityGraph(name = "Comment.withoutAssociations", attributeNodes = {})
+@NamedEntityGraph(name = "Comment.withAssociations", includeAllAttributes = true)
 @Getter
 @Setter
 @AllArgsConstructor
@@ -39,14 +40,14 @@ public class Comment {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-   @ManyToOne
-   @JoinColumn(name = "parent_comment_id")
-   private Comment parentComment;
+    @ManyToOne
+    @JoinColumn(name = "parent_comment_id")
+    private Comment parentComment;
 
-   @OneToMany(mappedBy = "parentComment", cascade = CascadeType.REMOVE)
+   @OneToMany(mappedBy = "parentComment") // cascade REMOVE is kinda bugged for this recursive relationship so i will use cascade on db level
    private final Set<Comment> replies = new HashSet<>();
 
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "comment")
     private final Set<UserComment> userCommentLikes = new HashSet<>();
 
     public static Comment of(Integer id, User user) {
