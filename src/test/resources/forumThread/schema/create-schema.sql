@@ -51,7 +51,7 @@ CREATE TABLE comment (
                          CONSTRAINT FKehf7mvstlwwl8fy9ahfo515rm
                              FOREIGN KEY (thread_id) REFERENCES thread (id),
                          CONSTRAINT FKhvh0e2ybgg16bpu229a5teje7
-                             FOREIGN KEY (parent_comment_id) REFERENCES comment (id)
+                             FOREIGN KEY (parent_comment_id) REFERENCES comment (id) ON DELETE CASCADE
 );
 
 CREATE TABLE user_comment (
@@ -60,7 +60,7 @@ CREATE TABLE user_comment (
                               comment_id INT NOT NULL,
                               user_id    INT NOT NULL,
                               CONSTRAINT FK8run8dgvadrrwcwe5xpdscynm
-                                  FOREIGN KEY (comment_id) REFERENCES comment (id),
+                                  FOREIGN KEY (comment_id) REFERENCES comment (id) ON DELETE CASCADE,
                               CONSTRAINT FKornrskknlmumgdhlohpbcvrw5
                                   FOREIGN KEY (user_id) REFERENCES user (id)
 );

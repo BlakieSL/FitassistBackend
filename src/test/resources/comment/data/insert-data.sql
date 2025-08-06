@@ -33,8 +33,8 @@ INSERT INTO comment (text, parent_comment_id, thread_id, user_id) VALUES
                                                                       ('How many days per week is this program?', NULL, 4, 3),
                                                                       ('Congrats on your achievement!', NULL, 5, 5),
                                                                       ('I prefer Cronometer for micronutrients', 1, 1, 3),
-                                                                      ('Thanks for the tip!', 2, 2, 2),
-                                                                      ('Don''t forget about tofu and tempeh', 3, 3, 5),
+                                                                      ('Thanks for the tip!', 6, 2, 2),
+                                                                      ('Don''t forget about tofu and tempeh', 7, 3, 5),
                                                                       ('It''s a 5-day split program', 4, 4, 4),
                                                                       ('Thank you! It was hard work', 5, 5, 1);
 

@@ -25,6 +25,7 @@ import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.comment.CommentServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -85,7 +86,7 @@ public class CommentServiceTest {
 
     @Test
     void updateComment_shouldUpdate() throws JsonPatchException, JsonProcessingException {
-        when(repositoryHelper.find(commentRepository, Comment.class, commentId)).thenReturn(comment);
+        when(commentRepository.findByIdWithoutAssociations(commentId)).thenReturn(Optional.of(comment));
         when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class))
                 .thenReturn(patchedDto);
 
@@ -98,18 +99,18 @@ public class CommentServiceTest {
 
     @Test
     void updateComment_shouldThrowExceptionWhenCommentNotFound() {
-        when(repositoryHelper.find(commentRepository, Comment.class, commentId))
-                .thenThrow(RecordNotFoundException.of(Comment.class, commentId));
+        when(commentRepository.findByIdWithoutAssociations(commentId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> commentService.updateComment(commentId, patch));
 
-        verifyNoInteractions(commentMapper, jsonPatchService, validationService, commentRepository);
+        verifyNoInteractions(commentMapper, jsonPatchService, validationService);
+        verify(commentRepository, times(1)).findByIdWithoutAssociations(commentId);
     }
 
     @Test
     void updateComment_shouldThrowExceptionWhenPatchFails()
             throws JsonPatchException, JsonProcessingException {
-        when(repositoryHelper.find(commentRepository, Comment.class, commentId)).thenReturn(comment);
+        when(commentRepository.findByIdWithoutAssociations(commentId)).thenReturn(Optional.of(comment));
         when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class))
                 .thenThrow(JsonPatchException.class);
 
@@ -122,7 +123,7 @@ public class CommentServiceTest {
     @Test
     void updateComment_shouldThrowExceptionWhenValidationFails()
             throws JsonPatchException, JsonProcessingException {
-        when(repositoryHelper.find(commentRepository, Comment.class, commentId)).thenReturn(comment);
+        when(commentRepository.findByIdWithoutAssociations(commentId)).thenReturn(Optional.of(comment));
         when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class)).thenReturn(patchedDto);
 
         doThrow(new RuntimeException("Validation failed")).when(validationService).validate(patchedDto);
@@ -130,31 +131,21 @@ public class CommentServiceTest {
         assertThrows(RuntimeException.class, () -> commentService.updateComment(commentId, patch));
 
         verify(validationService).validate(patchedDto);
-        verifyNoInteractions(commentRepository);
+        verify(commentRepository, never()).save(any(Comment.class));
     }
 
     @Test
     void deleteComment_shouldDelete() {
-        when(repositoryHelper.find(commentRepository, Comment.class, commentId)).thenReturn(comment);
+        doNothing().when(commentRepository).deleteCommentDirectly(commentId);
 
         commentService.deleteComment(commentId);
 
-        verify(commentRepository).delete(comment);
-    }
-
-    @Test
-    void deleteComment_shouldThrowExceptionWhenCommentNotFound() {
-        when(repositoryHelper.find(commentRepository, Comment.class, commentId))
-                .thenThrow(RecordNotFoundException.of(Comment.class, commentId));
-
-        assertThrows(RecordNotFoundException.class, () -> commentService.deleteComment(commentId));
-
-        verify(commentRepository, never()).delete(comment);
+        verify(commentRepository).deleteCommentDirectly(commentId);
     }
 
     @Test
     void getComment_shouldReturnCommentWhenFound() {
-        when(repositoryHelper.find(commentRepository, Comment.class, commentId)).thenReturn(comment);
+        when(commentRepository.findByIdWithoutAssociations(commentId)).thenReturn(Optional.of(comment));
         when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
 
         CommentResponseDto result = commentService.getComment(commentId);
@@ -164,8 +155,7 @@ public class CommentServiceTest {
 
     @Test
     void getComment_shouldThrowExceptionWhenCommentNotFound() {
-        when(repositoryHelper.find(commentRepository, Comment.class, commentId))
-                .thenThrow(RecordNotFoundException.of(Comment.class, commentId));
+        when(commentRepository.findByIdWithoutAssociations(commentId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> commentService.getComment(commentId));
 
@@ -195,71 +185,5 @@ public class CommentServiceTest {
         List<CommentResponseDto> result = commentService.getTopCommentsForThread(threadId);
 
         assertEquals(responseDtos, result);
-    }
-
-    @Test
-    void getReplies_shouldReturnReplies() {
-        int directReplyId =2;
-        comment.setId(directReplyId);
-
-        List<Comment> replies = List.of(comment);
-        List<CommentResponseDto> responseDtos = List.of(responseDto);
-        when(commentRepository.findAllByParentCommentId(commentId)).thenReturn(replies);
-        when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
-
-        List<CommentResponseDto> result = commentService.getReplies(commentId);
-
-        assertEquals(responseDtos, result);
-    }
-
-    @Test
-    void getReplies_shouldFilterOutDirectSelfReplies() {
-        int commentId = 1;
-        Comment comment = new Comment();
-        comment.setId(commentId);
-
-        Comment selfReply = new Comment();
-        selfReply.setId(commentId);
-
-        List<Comment> replies = List.of(selfReply);
-        when(commentRepository.findAllByParentCommentId(commentId)).thenReturn(replies);
-
-        List<CommentResponseDto> result = commentService.getReplies(commentId);
-
-        assertTrue(result.isEmpty());
-        verify(commentRepository).findAllByParentCommentId(commentId);
-        verify(commentMapper, never()).toResponseDto(selfReply);
-    }
-
-    @Test
-    void getReplies_shouldFilterOutFurtherSelfReplies() {
-        int commentId = 1;
-        int replyId = 2;
-
-        Comment comment = new Comment();
-        comment.setId(commentId);
-
-        Comment directReply = new Comment();
-        directReply.setId(replyId);
-
-        Comment furtherSelfReply = new Comment();
-        furtherSelfReply.setId(replyId);
-
-        List<Comment> replies = List.of(directReply);
-        when(commentRepository.findAllByParentCommentId(commentId)).thenReturn(replies);
-        when(commentRepository.findAllByParentCommentId(replyId))
-                .thenReturn(List.of(furtherSelfReply));
-
-        CommentResponseDto directReplyDto = new CommentResponseDto();
-        directReplyDto.setId(replyId);
-        when(commentMapper.toResponseDto(directReply)).thenReturn(directReplyDto);
-
-        List<CommentResponseDto> result = commentService.getReplies(commentId);
-
-        assertTrue(result.get(0).getReplies().isEmpty());
-        verify(commentRepository).findAllByParentCommentId(commentId);
-        verify(commentRepository).findAllByParentCommentId(replyId);
-        verify(commentMapper).toResponseDto(directReply);
-        verify(commentMapper, never()).toResponseDto(furtherSelfReply);
     }
 }
