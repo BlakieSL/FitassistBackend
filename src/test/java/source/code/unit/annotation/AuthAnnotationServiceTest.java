@@ -28,6 +28,8 @@ import source.code.repository.*;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.implementation.annotation.AuthAnnotationServiceImpl;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -87,8 +89,8 @@ public class AuthAnnotationServiceTest {
     void isCommentOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdmin() {
         int commentId = 1;
         Comment comment = Comment.of(commentId, user);
-        when(repositoryHelper.find(commentRepository, Comment.class, commentId))
-                .thenReturn(comment);
+        when(commentRepository.findByIdWithoutAssociations(commentId))
+                .thenReturn(Optional.of(comment));
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
                 .thenReturn(true);
 
