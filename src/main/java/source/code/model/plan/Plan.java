@@ -47,7 +47,7 @@ public class Plan implements IndexedEntity {
     private Boolean isPublic = false;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
