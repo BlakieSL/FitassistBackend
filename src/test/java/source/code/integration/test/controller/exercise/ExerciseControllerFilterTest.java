@@ -55,7 +55,8 @@ public class ExerciseControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(2))
+                        jsonPath("$", hasSize(2)),
+                        jsonPath("$[0].expertiseLevel.id").value(1)
                 );
     }
 

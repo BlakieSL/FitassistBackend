@@ -15,6 +15,7 @@ public class GenericSpecificationHelper {
         throw new UnsupportedOperationException("Utility class");
     }
 
+    // to use this method you need to first fetch the joinProperty
     public static <T> Predicate buildPredicateEntityProperty(
             CriteriaBuilder builder,
             FilterCriteria criteria,
@@ -22,21 +23,20 @@ public class GenericSpecificationHelper {
             String joinProperty
     ) {
         int value = validateAndGetId(criteria);
-        return buildIdBasedPredicate(builder, criteria, root.join(joinProperty).get("id"), value);
+        return buildIdBasedPredicate(builder, criteria, root.get(joinProperty).get("id"), value);
     }
 
-    public static <T> Predicate buildPredicateJoinProperty(
+    public static <T, J> Predicate buildPredicateJoinProperty(
             CriteriaBuilder builder,
             FilterCriteria criteria,
-            Root<T> root,
-            String joinProperty,
+            Join<T, J> join,
             String subJoinProperty
     ) {
         Object value = validateAndGetId(criteria);
         return buildIdBasedPredicate(
                 builder,
                 criteria,
-                root.join(joinProperty).join(subJoinProperty).get("id"),
+                join.get(subJoinProperty).get("id"),
                 value
         );
     }
