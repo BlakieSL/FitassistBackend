@@ -1,21 +1,24 @@
 package source.code.specification.specification;
 
 import jakarta.persistence.criteria.*;
+import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
-import source.code.exception.InvalidFilterKeyException;
 import source.code.helper.Enum.model.LikesAndSaves;
 import source.code.helper.Enum.model.field.PlanField;
-import source.code.helper.user.AuthorizationUtil;
 import source.code.model.exercise.Equipment;
 import source.code.model.exercise.Exercise;
 import source.code.model.plan.Plan;
 import source.code.model.plan.PlanCategoryAssociation;
+import source.code.model.user.TypeOfInteraction;
 import source.code.model.workout.Workout;
 import source.code.model.workout.WorkoutSet;
 import source.code.model.workout.WorkoutSetGroup;
+import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 
+
+@AllArgsConstructor(staticName = "of")
 public class PlanSpecification implements Specification<Plan> {
     private static final String PLAN_CATEGORY_ASSOCIATIONS_FIELD = "planCategoryAssociations";
     private static final String PLAN_CATEGORY_FIELD = "planCategory";
@@ -30,62 +33,36 @@ public class PlanSpecification implements Specification<Plan> {
     private static final String TYPE_FIELD = "type";
     private static final String ID_FIELD = "id";
 
-    private final transient FilterCriteria criteria;
-
-    public PlanSpecification(@NonNull FilterCriteria criteria) {
-        this.criteria = criteria;
-    }
-
-    public static PlanSpecification of(@NonNull FilterCriteria criteria) {
-        return new PlanSpecification(criteria);
-    }
+    private final FilterCriteria criteria;
+    private final SpecificationDependencies dependencies;
 
     @Override
     public Predicate toPredicate(@NonNull Root<Plan> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
-        initializeFetches(root);
+        dependencies.getFetchInitializer().initializeFetches(root, PLAN_TYPE_FIELD);
+        initializeComplexFetches(root);
 
-        Predicate publicPredicate = buildPublicPredicate(root, builder);
-        Predicate fieldPredicate = buildPredicateForField(builder, root, resolvePlanField(criteria));
+        Predicate visibilityPredicate = dependencies.getVisibilityPredicateBuilder()
+                .buildVisibilityPredicate(builder, root, criteria, USER_FIELD, ID_FIELD, IS_PUBLIC_FIELD);
 
-        return builder.and(publicPredicate, fieldPredicate);
+        PlanField field = dependencies.getFieldResolver().resolveField(criteria, PlanField.class);
+        Predicate fieldPredicate = buildPredicateForField(builder, root, field);
+
+        return builder.and(visibilityPredicate, fieldPredicate);
     }
 
-    private void initializeFetches(Root<Plan> root) {
+    private void initializeComplexFetches(Root<Plan> root) {
         Fetch<Plan, PlanCategoryAssociation> categoryAssociationsFetch =
                 root.fetch(PLAN_CATEGORY_ASSOCIATIONS_FIELD, JoinType.LEFT);
         categoryAssociationsFetch.fetch(PLAN_CATEGORY_FIELD, JoinType.LEFT);
-        root.fetch(PLAN_TYPE_FIELD, JoinType.LEFT);
-    }
-
-    private Predicate buildPublicPredicate(Root<Plan> root, CriteriaBuilder builder) {
-        if (criteria.getIsPublic() != null && !criteria.getIsPublic()) {
-            return builder.equal(
-                    root.get(USER_FIELD).get(ID_FIELD),
-                    AuthorizationUtil.getUserId()
-            );
-        }
-        return builder.isTrue(root.get(IS_PUBLIC_FIELD));
-    }
-
-    private PlanField resolvePlanField(FilterCriteria criteria) {
-        try {
-            return PlanField.valueOf(criteria.getFilterKey());
-        } catch (IllegalArgumentException e) {
-            throw new InvalidFilterKeyException(criteria.getFilterKey());
-        }
     }
 
     private Predicate buildPredicateForField(CriteriaBuilder builder, Root<Plan> root, PlanField field) {
-
         return switch (field) {
-            case TYPE -> GenericSpecificationHelper.buildPredicateEntityProperty(
-                    builder, criteria, root, PlanField.TYPE.getFieldName());
+            case TYPE -> buildTypePredicate(builder, root);
             case CATEGORY -> buildCategoryPredicate(builder, root);
-            case LIKE, SAVE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
-                    builder, criteria, root,
-                    LikesAndSaves.USER_PLANS.getFieldName(),
-                    TYPE_FIELD, field.getInteractionType());
             case EQUIPMENT -> buildEquipmentPredicate(root, builder);
+            case SAVE -> buildInteractionPredicate(builder, root, TypeOfInteraction.SAVE);
+            case LIKE -> buildInteractionPredicate(builder, root, TypeOfInteraction.LIKE);
         };
     }
 
@@ -110,5 +87,19 @@ public class PlanSpecification implements Specification<Plan> {
             default -> throw new IllegalStateException(
                     "Unsupported operation: " + criteria.getOperation());
         };
+    }
+
+    private Predicate buildInteractionPredicate(
+            CriteriaBuilder builder, Root<Plan> root, TypeOfInteraction interactionType) {
+
+        return GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
+                builder, criteria, root,
+                LikesAndSaves.USER_PLANS.getFieldName(),
+                TYPE_FIELD, interactionType);
+    }
+
+    private Predicate buildTypePredicate(CriteriaBuilder builder, Root<Plan> root) {
+        return GenericSpecificationHelper
+                .buildPredicateEntityProperty(builder, criteria, root, PLAN_TYPE_FIELD);
     }
 }

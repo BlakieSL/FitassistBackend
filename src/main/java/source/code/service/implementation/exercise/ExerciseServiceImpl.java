@@ -25,6 +25,7 @@ import source.code.service.declaration.exercise.ExerciseService;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
+import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.ExerciseSpecification;
@@ -40,6 +41,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     private final RepositoryHelper repositoryHelper;
     private final ExerciseRepository exerciseRepository;
     private final ExerciseTargetMuscleRepository exerciseTargetMuscleRepository;
+    private final SpecificationDependencies dependencies;
 
     public ExerciseServiceImpl(ExerciseMapper exerciseMapper,
                                ValidationService validationService,
@@ -47,7 +49,8 @@ public class ExerciseServiceImpl implements ExerciseService {
                                ApplicationEventPublisher applicationEventPublisher,
                                RepositoryHelper repositoryHelper,
                                ExerciseRepository exerciseRepository,
-                               ExerciseTargetMuscleRepository exerciseTargetMuscleRepository) {
+                               ExerciseTargetMuscleRepository exerciseTargetMuscleRepository,
+                               SpecificationDependencies dependencies) {
         this.exerciseMapper = exerciseMapper;
         this.validationService = validationService;
         this.jsonPatchService = jsonPatchService;
@@ -55,6 +58,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         this.repositoryHelper = repositoryHelper;
         this.exerciseRepository = exerciseRepository;
         this.exerciseTargetMuscleRepository = exerciseTargetMuscleRepository;
+        this.dependencies = dependencies;
     }
 
     @Override
@@ -106,7 +110,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     public List<ExerciseResponseDto> getFilteredExercises(FilterDto filter) {
         SpecificationFactory<Exercise> exerciseFactory = ExerciseSpecification::of;
-        SpecificationBuilder<Exercise> specificationBuilder = SpecificationBuilder.of(filter, exerciseFactory);
+        SpecificationBuilder<Exercise> specificationBuilder = SpecificationBuilder.of(filter, exerciseFactory, dependencies);
         Specification<Exercise> specification = specificationBuilder.build();
 
         return exerciseRepository.findAll(specification).stream()

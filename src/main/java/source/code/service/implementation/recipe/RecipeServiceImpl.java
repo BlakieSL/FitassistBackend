@@ -24,6 +24,7 @@ import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.declaration.recipe.RecipeService;
+import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.RecipeSpecification;
@@ -37,21 +38,24 @@ public class RecipeServiceImpl implements RecipeService {
     private final ValidationService validationService;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final RepositoryHelper repositoryHelper;
-  private final RecipeRepository recipeRepository;
+    private final RecipeRepository recipeRepository;
+    private final SpecificationDependencies dependencies;
 
     public RecipeServiceImpl(RecipeMapper recipeMapper,
                              JsonPatchService jsonPatchService,
                              ValidationService validationService,
                              ApplicationEventPublisher applicationEventPublisher,
                              RepositoryHelper repositoryHelper,
-                             RecipeRepository recipeRepository) {
+                             RecipeRepository recipeRepository,
+                             SpecificationDependencies dependencies) {
         this.recipeMapper = recipeMapper;
         this.jsonPatchService = jsonPatchService;
         this.validationService = validationService;
         this.applicationEventPublisher = applicationEventPublisher;
         this.repositoryHelper = repositoryHelper;
         this.recipeRepository = recipeRepository;
-  }
+        this.dependencies = dependencies;
+    }
 
     @Override
     @Transactional
@@ -106,7 +110,7 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public List<RecipeResponseDto> getFilteredRecipes(FilterDto filter) {
         SpecificationFactory<Recipe> recipeFactory = RecipeSpecification::of;
-        SpecificationBuilder<Recipe> specificationBuilder = SpecificationBuilder.of(filter, recipeFactory);
+        SpecificationBuilder<Recipe> specificationBuilder = SpecificationBuilder.of(filter, recipeFactory, dependencies);
         Specification<Recipe> specification = specificationBuilder.build();
 
         return recipeRepository.findAll(specification).stream()
