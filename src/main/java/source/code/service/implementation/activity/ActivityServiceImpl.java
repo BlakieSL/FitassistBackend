@@ -30,6 +30,7 @@ import source.code.service.declaration.activity.ActivityService;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
+import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.ActivitySpecification;
@@ -46,6 +47,7 @@ public class ActivityServiceImpl implements ActivityService {
     private final ApplicationEventPublisher eventPublisher;
     private final ActivityRepository activityRepository;
     private final UserRepository userRepository;
+    private final SpecificationDependencies dependencies;
 
     public ActivityServiceImpl(
             RepositoryHelper repositoryHelper,
@@ -54,7 +56,8 @@ public class ActivityServiceImpl implements ActivityService {
             JsonPatchService jsonPatchService,
             ApplicationEventPublisher eventPublisher,
             ActivityRepository activityRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            SpecificationDependencies dependencies) {
         this.repositoryHelper = repositoryHelper;
         this.activityMapper = activityMapper;
         this.validationService = validationService;
@@ -62,6 +65,7 @@ public class ActivityServiceImpl implements ActivityService {
         this.eventPublisher = eventPublisher;
         this.activityRepository = activityRepository;
         this.userRepository = userRepository;
+        this.dependencies = dependencies;
     }
 
     @Override
@@ -126,10 +130,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public List<ActivityResponseDto> getFilteredActivities(FilterDto filter) {
         SpecificationFactory<Activity> activityFactory = ActivitySpecification::of;
-        SpecificationBuilder<Activity> specificationBuilder = SpecificationBuilder.of(
-                filter,
-                activityFactory
-        );
+        SpecificationBuilder<Activity> specificationBuilder = SpecificationBuilder.of(filter, activityFactory, dependencies);
         Specification<Activity> specification = specificationBuilder.build();
 
         return activityRepository.findAll(specification).stream()

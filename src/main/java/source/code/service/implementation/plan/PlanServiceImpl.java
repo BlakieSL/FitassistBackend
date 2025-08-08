@@ -25,6 +25,7 @@ import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.declaration.plan.PlanService;
+import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.PlanSpecification;
@@ -40,6 +41,7 @@ public class PlanServiceImpl implements PlanService {
     private final RepositoryHelper repositoryHelper;
     private final PlanRepository planRepository;
     private final TextRepository textRepository;
+    private final SpecificationDependencies dependencies;
 
     public PlanServiceImpl(PlanMapper planMapper,
                            JsonPatchService jsonPatchService,
@@ -47,7 +49,8 @@ public class PlanServiceImpl implements PlanService {
                            ApplicationEventPublisher applicationEventPublisher,
                            RepositoryHelper repositoryHelper,
                            PlanRepository planRepository,
-                           TextRepository textRepository) {
+                           TextRepository textRepository,
+                           SpecificationDependencies dependencies) {
         this.planMapper = planMapper;
         this.jsonPatchService = jsonPatchService;
         this.validationService = validationService;
@@ -55,6 +58,7 @@ public class PlanServiceImpl implements PlanService {
         this.repositoryHelper = repositoryHelper;
         this.planRepository = planRepository;
         this.textRepository = textRepository;
+        this.dependencies = dependencies;
     }
 
     @Override
@@ -111,7 +115,7 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public List<PlanResponseDto> getFilteredPlans(FilterDto filter) {
         SpecificationFactory<Plan> planFactory = PlanSpecification::of;
-        SpecificationBuilder<Plan> specificationBuilder = SpecificationBuilder.of(filter, planFactory);
+        SpecificationBuilder<Plan> specificationBuilder = SpecificationBuilder.of(filter, planFactory, dependencies);
         Specification<Plan> specification = specificationBuilder.build();
 
         return planRepository.findAll(specification).stream()

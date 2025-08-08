@@ -1,6 +1,8 @@
 package source.code.specification.specification;
 
 import jakarta.persistence.criteria.*;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
@@ -12,37 +14,24 @@ import source.code.model.activity.Activity;
 import source.code.model.exercise.Exercise;
 import source.code.model.plan.Plan;
 import source.code.model.plan.PlanCategoryAssociation;
+import source.code.service.declaration.specificationHelpers.SpecificationFetchInitializer;
+import source.code.service.declaration.specificationHelpers.SpecificationFieldResolver;
+import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 
+@AllArgsConstructor(staticName = "of")
 public class ActivitySpecification implements Specification<Activity> {
-    private static final String ACTIVITY_CATEGORY_FIELD = "activityCategory";
-    private static final String MET_FIELD = "met";
-
     private final FilterCriteria criteria;
+    private final SpecificationDependencies dependencies;
 
-    public ActivitySpecification(@NonNull FilterCriteria criteria) {
-        this.criteria = criteria;
-    }
-
-    public static ActivitySpecification of(@NonNull FilterCriteria criteria) {
-        return new ActivitySpecification(criteria);
-    }
+    private static final String ACTIVITY_CATEGORY_FIELD = "activityCategory";
+    private static final String MET = "met";
 
     @Override
     public Predicate toPredicate(@NonNull Root<Activity> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
-        initializeFetches(root);
-        return buildPredicateForField(builder, criteria, root, resolveActivityField(criteria), query);
-    }
+        dependencies.getFetchInitializer().initializeFetches(root, ACTIVITY_CATEGORY_FIELD);
+        ActivityField field = dependencies.getFieldResolver().resolveField(criteria, ActivityField.class);
 
-    private void initializeFetches(Root<Activity> root) {
-        root.fetch(ACTIVITY_CATEGORY_FIELD, JoinType.LEFT);
-    }
-
-    private ActivityField resolveActivityField(FilterCriteria criteria) {
-        try {
-            return ActivityField.valueOf(criteria.getFilterKey());
-        } catch (IllegalArgumentException e) {
-            throw new InvalidFilterKeyException(criteria.getFilterKey());
-        }
+        return buildPredicateForField(builder, criteria, root, field, query);
     }
 
     private Predicate buildPredicateForField(
@@ -56,12 +45,12 @@ public class ActivitySpecification implements Specification<Activity> {
                     builder,
                     criteria,
                     root,
-                    ActivityField.CATEGORY.getFieldName()
+                    ACTIVITY_CATEGORY_FIELD
             );
             case ActivityField.MET -> GenericSpecificationHelper.buildPredicateNumericProperty(
                     builder,
                     criteria,
-                    root.get(ActivityField.MET.getFieldName())
+                    root.get(MET)
             );
             case ActivityField.SAVE -> {
                 Predicate predicate = GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
