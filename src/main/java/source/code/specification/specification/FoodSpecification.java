@@ -1,6 +1,7 @@
 package source.code.specification.specification;
 
 import jakarta.persistence.criteria.*;
+import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
@@ -8,9 +9,13 @@ import source.code.exception.InvalidFilterKeyException;
 import source.code.helper.Enum.model.LikesAndSaves;
 import source.code.helper.Enum.model.field.FoodField;
 import source.code.model.food.Food;
+import source.code.service.declaration.specificationHelpers.SpecificationFetchInitializer;
+import source.code.service.declaration.specificationHelpers.SpecificationFieldResolver;
+import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 
 import java.math.BigDecimal;
 
+@AllArgsConstructor(staticName = "of")
 public class FoodSpecification implements Specification<Food> {
     private static final String FOOD_CATEGORY_FIELD = "foodCategory";
     private static final String CALORIES_FIELD = "calories";
@@ -19,31 +24,15 @@ public class FoodSpecification implements Specification<Food> {
     private static final String CARBOHYDRATES_FIELD = "carbohydrates";
 
     private final FilterCriteria criteria;
-
-    public FoodSpecification(@NonNull FilterCriteria criteria) {
-        this.criteria = criteria;
-    }
-
-    public static FoodSpecification of(@NonNull FilterCriteria criteria) {
-        return new FoodSpecification(criteria);
-    }
+    private final SpecificationDependencies dependencies;
 
     @Override
     public Predicate toPredicate(@NonNull Root<Food> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
-        initializeFetches(root);
-        return buildPredicateForField(builder, criteria, root, resolveFoodField(criteria), query);
-    }
+        dependencies.getFetchInitializer().initializeFetches(root, FOOD_CATEGORY_FIELD);
 
-    private void initializeFetches(Root<Food> root) {
-        root.fetch(FOOD_CATEGORY_FIELD, JoinType.LEFT);
-    }
+        FoodField field = dependencies.getFieldResolver().resolveField(criteria, FoodField.class);
 
-    private FoodField resolveFoodField(FilterCriteria criteria) {
-        try {
-            return FoodField.valueOf(criteria.getFilterKey());
-        } catch (IllegalArgumentException e) {
-            throw new InvalidFilterKeyException(criteria.getFilterKey());
-        }
+        return buildPredicateForField(builder, criteria, root, field, query);
     }
 
     private Predicate buildPredicateForField(

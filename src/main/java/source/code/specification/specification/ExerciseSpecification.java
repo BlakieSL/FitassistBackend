@@ -1,6 +1,7 @@
 package source.code.specification.specification;
 
 import jakarta.persistence.criteria.*;
+import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
@@ -9,9 +10,15 @@ import source.code.helper.Enum.model.LikesAndSaves;
 import source.code.helper.Enum.model.field.ExerciseField;
 import source.code.model.exercise.Exercise;
 import source.code.model.exercise.ExerciseTargetMuscle;
+import source.code.service.declaration.specificationHelpers.SpecificationFetchInitializer;
+import source.code.service.declaration.specificationHelpers.SpecificationFieldResolver;
+import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 
+@AllArgsConstructor(staticName = "of")
 public class ExerciseSpecification implements Specification<Exercise> {
     private final FilterCriteria criteria;
+    private final SpecificationDependencies dependencies;
+
     private static final String EXERCISE_TARGET_MUSCLES_FIELD = "exerciseTargetMuscles";
     private static final String TARGET_MUSCLE_FIELD = "targetMuscle";
     private static final String EQUIPMENT_FIELD = "equipment";
@@ -19,29 +26,20 @@ public class ExerciseSpecification implements Specification<Exercise> {
     private static final String FORCE_TYPE_FIELD = "forceType";
     private static final String MECHANICS_TYPE_FIELD = "mechanicsType";
 
-    public ExerciseSpecification(FilterCriteria criteria) {
-        this.criteria = criteria;
-    }
-
-    public static ExerciseSpecification of(@NonNull FilterCriteria criteria) {
-        return new ExerciseSpecification(criteria);
-    }
-
     @Override
     public Predicate toPredicate(@NonNull Root<Exercise> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
-        initializeFetches(root);
-        return buildPredicateForField(builder, criteria, root, resolveExerciseField(criteria));
+        dependencies.getFetchInitializer().initializeFetches(root, EQUIPMENT_FIELD, EXPERTISE_LEVEL_FIELD, FORCE_TYPE_FIELD, MECHANICS_TYPE_FIELD);
+        initializeComplexFetches(root);
+
+        ExerciseField field = dependencies.getFieldResolver().resolveField(criteria, ExerciseField.class);
+
+        return buildPredicateForField(builder, criteria, root, field);
     }
 
-    private void initializeFetches(Root<Exercise> root) {
+    private void initializeComplexFetches(Root<Exercise> root) {
         Fetch<Exercise, ExerciseTargetMuscle> targetMuscleFetch =
                 root.fetch(EXERCISE_TARGET_MUSCLES_FIELD, JoinType.LEFT);
         targetMuscleFetch.fetch(TARGET_MUSCLE_FIELD, JoinType.LEFT);
-
-        root.fetch(EQUIPMENT_FIELD, JoinType.LEFT);
-        root.fetch(EXPERTISE_LEVEL_FIELD, JoinType.LEFT);
-        root.fetch(FORCE_TYPE_FIELD, JoinType.LEFT);
-        root.fetch(MECHANICS_TYPE_FIELD, JoinType.LEFT);
     }
 
     private Predicate buildPredicateForField(
@@ -84,13 +82,5 @@ public class ExerciseSpecification implements Specification<Exercise> {
 
         return GenericSpecificationHelper
                 .buildPredicateJoinProperty(builder, criteria, targetMuscleJoin, TARGET_MUSCLE_FIELD);
-    }
-
-    private ExerciseField resolveExerciseField(FilterCriteria criteria) {
-        try {
-            return ExerciseField.valueOf(criteria.getFilterKey());
-        } catch (IllegalArgumentException e) {
-            throw new InvalidFilterKeyException(criteria.getFilterKey());
-        }
     }
 }

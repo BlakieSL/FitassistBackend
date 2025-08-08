@@ -25,6 +25,7 @@ import source.code.service.declaration.food.FoodService;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
+import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.FoodSpecification;
@@ -41,6 +42,7 @@ public class FoodServiceImpl implements FoodService {
     private final FoodMapper foodMapper;
     private final RepositoryHelper repositoryHelper;
     private final FoodRepository foodRepository;
+    private final SpecificationDependencies dependencies;
 
     public FoodServiceImpl(
             ApplicationEventPublisher applicationEventPublisher,
@@ -48,13 +50,15 @@ public class FoodServiceImpl implements FoodService {
             JsonPatchService jsonPatchService,
             FoodRepository foodRepository,
             FoodMapper foodMapper,
-            RepositoryHelper repositoryHelper) {
+            RepositoryHelper repositoryHelper,
+            SpecificationDependencies dependencies) {
         this.applicationEventPublisher = applicationEventPublisher;
         this.validationService = validationService;
         this.jsonPatchService = jsonPatchService;
         this.foodRepository = foodRepository;
         this.foodMapper = foodMapper;
         this.repositoryHelper = repositoryHelper;
+        this.dependencies = dependencies;
     }
 
     @Override
@@ -118,7 +122,7 @@ public class FoodServiceImpl implements FoodService {
     @Override
     public List<FoodResponseDto> getFilteredFoods(FilterDto filter) {
         SpecificationFactory<Food> foodFactory = FoodSpecification::of;
-        SpecificationBuilder<Food> specificationBuilder = SpecificationBuilder.of(filter, foodFactory);
+        SpecificationBuilder<Food> specificationBuilder = SpecificationBuilder.of(filter, foodFactory, dependencies);
         Specification<Food> specification = specificationBuilder.build();
 
         return foodRepository.findAll(specification).stream()
