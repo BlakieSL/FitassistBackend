@@ -18,7 +18,6 @@ public class AwsS3Controller {
 
     @GetMapping("/{imageName}")
     public String getImageUrl(@PathVariable String imageName) {
-        System.out.println("Fetching image URL for: " + imageName);
         return awsS3Service.getImage(imageName);
     }
 }
