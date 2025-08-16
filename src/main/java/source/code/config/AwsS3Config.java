@@ -13,22 +13,13 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 @Configuration
 @ConditionalOnProperty(name = "spring.cloud.aws.s3.enabled", havingValue = "true")
 public class AwsS3Config {
-
-    @Value("${spring.cloud.aws.credentials.access-key}")
-    private String accessKey;
-
-    @Value("${spring.cloud.aws.credentials.secret-key}")
-    private String secretKey;
-
     @Value("${spring.cloud.aws.region.static}")
     private String region;
 
     @Bean
     public S3Presigner s3Presigner() {
-        S3Presigner.Builder builder = S3Presigner.builder()
+        return S3Presigner.builder()
                 .region(Region.of(region))
-                .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)));
-
-        return builder.build();
+                .build();
     }
 }
