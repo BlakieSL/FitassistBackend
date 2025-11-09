@@ -13,6 +13,7 @@ import source.code.dto.request.activity.DailyActivitiesGetDto;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
 import source.code.dto.request.activity.DailyActivityItemUpdateDto;
 import source.code.integration.config.MockAwsS3Config;
+import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
 import source.code.integration.test.controller.activity.ActivitySql;
@@ -26,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestSetup
-@Import({MockAwsS3Config.class, MockRedisConfig.class})
+@Import({MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class})
 @TestPropertySource(properties = "schema.name=activity")
 @ContextConfiguration(initializers = {MySqlContainerInitializer.class})
 public class DailyActivityTest {

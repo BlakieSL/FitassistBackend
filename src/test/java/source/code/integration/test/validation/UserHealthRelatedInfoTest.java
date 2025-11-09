@@ -14,6 +14,7 @@ import source.code.helper.Enum.model.user.ActivityLevel;
 import source.code.helper.Enum.model.user.Gender;
 import source.code.helper.Enum.model.user.Goal;
 import source.code.integration.config.MockAwsS3Config;
+import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRateLimitingConfig;
 import source.code.integration.containers.MySqlRedisAwsContainers;
 import source.code.model.user.User;
@@ -29,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @SpringBootTest
-@Import({MockAwsS3Config.class, MockRateLimitingConfig.class})
+@Import({MockAwsS3Config.class, MockRateLimitingConfig.class, MockAwsSesConfig.class})
 public class UserHealthRelatedInfoTest extends MySqlRedisAwsContainers {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();

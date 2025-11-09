@@ -48,7 +48,6 @@ public class FoodController {
         foodService.deleteFood(id);
         return ResponseEntity.noContent().build();
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<FoodResponseDto> getFood(@PathVariable int id) {
         FoodResponseDto food = foodService.getFood(id);

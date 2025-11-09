@@ -52,7 +52,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.apache.lucene:lucene-core:10.2.2'
     implementation 'org.redisson:redisson-spring-boot-starter:3.35.0'
     implementation 'com.nimbusds:nimbus-jose-jwt:10.4'
