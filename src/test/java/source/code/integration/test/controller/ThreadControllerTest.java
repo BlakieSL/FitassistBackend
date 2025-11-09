@@ -11,13 +11,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.RestTemplate;
 import source.code.integration.config.MockAwsS3Config;
+import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-@Import({MockAwsS3Config.class, MockRedisConfig.class})
+@Import({MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class})
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(initializers = {MySqlContainerInitializer.class})

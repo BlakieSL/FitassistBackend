@@ -10,6 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import source.code.exception.ConflictDeletionException;
 import source.code.integration.config.MockAwsS3Config;
+import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
 import source.code.model.user.User;
@@ -19,7 +20,7 @@ import java.util.Locale;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @AutoConfigureMockMvc
-@Import({MockAwsS3Config.class, MockRedisConfig.class})
+@Import({MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class})
 @ActiveProfiles("test")
 @ContextConfiguration(initializers = {MySqlContainerInitializer.class})
 @SpringBootTest

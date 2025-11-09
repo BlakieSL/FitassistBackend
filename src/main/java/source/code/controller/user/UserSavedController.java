@@ -65,8 +65,6 @@ public class UserSavedController {
         return ResponseEntity.noContent().build();
     }
 
-
-
     @GetMapping("/item-type/{itemType}/user/{userId}")
     public ResponseEntity<List<BaseUserEntity>> getAllFromUserWithoutType(
             @PathVariable SavedEntityType itemType,
