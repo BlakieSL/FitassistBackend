@@ -10,6 +10,8 @@ spring:
     aws:
       s3:
         enabled: false
+      ses:
+        enabled: false
       credentials:
         access-key: ${AWS_ACCESS_KEY_ID}
         secret-key: ${AWS_SECRET_ACCESS_KEY}
@@ -21,4 +23,10 @@ s3:
 redis-flag:
   enabled: false
 lucene:
-    enabled: false
+  enabled: false
+
+app:
+  frontend:
+    url: ${FRONTEND_URL:http://localhost:5173}
+  email:
+    from: ${EMAIL_FROM:test@example.com}

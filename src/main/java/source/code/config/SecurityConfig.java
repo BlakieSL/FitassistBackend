@@ -58,7 +58,7 @@ public class SecurityConfig {
                         .requestMatchers(requestMatcher).permitAll()
                         .anyRequest().authenticated())
                 .cors((cors) -> cors
-                .configurationSource(corsConfigurationSource()))
+                        .configurationSource(corsConfigurationSource()))
                 .sessionManagement(sessionConfig -> sessionConfig
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -93,13 +93,19 @@ public class SecurityConfig {
         return new OrRequestMatcher(
                 (request) ->
                         "/api/users/register".equals(request.getRequestURI()) &&
-                                "POST".equals(request.getMethod()),
+                                ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
                 (request) ->
                         "/api/users/login".equals(request.getRequestURI()) &&
-                                "POST".equals(request.getMethod()),
+                                ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
                 (request) ->
                         "/api/users/refresh-token".equals(request.getRequestURI()) &&
-                                "POST".equals(request.getMethod()),
+                                ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
+                (request) ->
+                        "/api/password-reset/request".equals(request.getRequestURI()) &&
+                                ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
+                (request) ->
+                        "/api/password-reset/reset".equals(request.getRequestURI()) &&
+                                ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
                 (request) ->
                         "/api/virtual-threads/thread-info".equals(request.getRequestURI()) &&
                                 "GET".equals(request.getMethod()));

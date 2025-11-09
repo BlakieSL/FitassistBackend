@@ -10,6 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import source.code.helper.Enum.model.MediaConnectedEntity;
+import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.AwsS3ContainerInitializer;
 import source.code.integration.containers.MySqlContainerInitializer;
@@ -21,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestSetup
-@Import({MockRedisConfig.class})
+@Import({MockRedisConfig.class, MockAwsSesConfig.class})
 @TestPropertySource(properties = "schema.name=media")
 @ContextConfiguration(initializers = {MySqlContainerInitializer.class, AwsS3ContainerInitializer.class})
 public class MediaTest {

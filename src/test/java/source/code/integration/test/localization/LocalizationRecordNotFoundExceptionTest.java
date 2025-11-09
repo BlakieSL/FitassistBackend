@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import source.code.exception.RecordNotFoundException;
 import source.code.integration.config.MockAwsS3Config;
+import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
 import source.code.model.user.User;
@@ -23,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @AutoConfigureMockMvc
-@Import({MockAwsS3Config.class, MockRedisConfig.class})
+@Import({MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class})
 @ActiveProfiles("test")
 @ContextConfiguration(initializers = {MySqlContainerInitializer.class})
 @SpringBootTest

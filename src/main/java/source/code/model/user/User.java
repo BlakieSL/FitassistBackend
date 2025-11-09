@@ -53,9 +53,8 @@ public class User {
     @Column(nullable = false, length = EMAIL_MAX_LENGTH)
     private String email;
 
-    @NotBlank
     @Size(min = BCRYPT_HASHED_PASSWORD_MIN_LENGTH, max = BCRYPT_HASHED_PASSWORD_MAX_LENGTH)
-    @Column(nullable = false, length = BCRYPT_HASHED_PASSWORD_MAX_LENGTH)
+    @Column(length = BCRYPT_HASHED_PASSWORD_MAX_LENGTH)
     private String password;
 
     @NotNull
