@@ -14,6 +14,7 @@ import source.code.annotation.AccountOwnerOrAdmin;
 import source.code.auth.JwtService;
 import source.code.dto.request.auth.RefreshTokenRequestDto;
 import source.code.dto.request.user.UserCreateDto;
+import source.code.dto.request.user.UserUpdateDto;
 import source.code.dto.response.AccessTokenResponseDto;
 import source.code.dto.response.user.UserResponseDto;
 import source.code.service.declaration.user.UserService;
@@ -61,6 +62,16 @@ public class UserController {
             throws JsonPatchException, JsonProcessingException
     {
         userService.updateUser(id, patch);
+        return ResponseEntity.noContent().build();
+    }
+
+    @AccountOwnerOrAdmin
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateUserSimple(
+            @PathVariable int id,
+            @Valid @RequestBody UserUpdateDto updateDto)
+    {
+        userService.updateUserSimple(id, updateDto);
         return ResponseEntity.noContent().build();
     }
 

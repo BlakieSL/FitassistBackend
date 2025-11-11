@@ -82,6 +82,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
+    public void updateUserSimple(int userId, UserUpdateDto updateDto) {
+        User user = find(userId);
+
+        validatePasswordIfNeeded(user, updateDto);
+        validationService.validate(updateDto);
+        userMapper.updateUserFromDto(user, updateDto);
+        userRepository.save(user);
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return findUserCredentialsByEmail(username)
                 .map(UserDetailsHelper::buildUserDetails)

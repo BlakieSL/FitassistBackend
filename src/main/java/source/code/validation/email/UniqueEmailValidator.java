@@ -5,9 +5,13 @@ import jakarta.persistence.FlushModeType;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import source.code.config.ContextProvider;
+import source.code.dto.request.user.UserUpdateDto;
+import source.code.model.user.User;
 import source.code.repository.UserRepository;
 
-public class UniqueEmailValidator implements ConstraintValidator<UniqueEmailDomain, String> {
+import java.util.Optional;
+
+public class UniqueEmailValidator implements ConstraintValidator<UniqueEmailDomain, Object> {
     UserRepository userRepository;
     private EntityManager entityManager;
 
@@ -19,10 +23,32 @@ public class UniqueEmailValidator implements ConstraintValidator<UniqueEmailDoma
     }
 
     @Override
-    public boolean isValid(String email, ConstraintValidatorContext context) {
+    public boolean isValid(Object value, ConstraintValidatorContext context) {
         try {
             entityManager.setFlushMode(FlushModeType.COMMIT);
-            return !userRepository.existsByEmail(email);
+
+            if (value instanceof UserUpdateDto) {
+                UserUpdateDto dto = (UserUpdateDto) value;
+                if (dto.getEmail() == null) {
+                    return true;
+                }
+
+                Optional<User> existingUser = userRepository.findByEmail(dto.getEmail());
+
+                if (existingUser.isEmpty()) {
+                    return true;
+                }
+
+                Integer existingUserId = existingUser.get().getId();
+                return existingUserId.equals(dto.getId());
+            }
+
+            if (value instanceof String) {
+                String email = (String) value;
+                return !userRepository.existsByEmail(email);
+            }
+
+            return true;
         } finally {
             entityManager.setFlushMode(FlushModeType.AUTO);
         }

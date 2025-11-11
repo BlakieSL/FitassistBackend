@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.request.user.UserCreateDto;
+import source.code.dto.request.user.UserUpdateDto;
 import source.code.dto.response.user.UserResponseDto;
 
 public interface UserService {
@@ -12,6 +13,8 @@ public interface UserService {
     void deleteUser(int id);
 
     void updateUser(int userId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+
+    void updateUserSimple(int userId, UserUpdateDto updateDto);
 
     UserResponseDto getUser(int id);
 
