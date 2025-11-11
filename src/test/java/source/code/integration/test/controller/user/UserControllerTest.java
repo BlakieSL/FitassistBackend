@@ -11,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import source.code.dto.request.user.UserCreateDto;
+import source.code.dto.request.user.UserUpdateDto;
 import source.code.helper.Enum.model.user.Gender;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockAwsSesConfig;
@@ -281,5 +282,128 @@ public class    UserControllerTest {
 
         mockMvc.perform(delete("/api/users/{id}", id))
                 .andExpectAll(status().isNotFound());
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("PUT - /{id} - Should update user when owner")
+    void updateUserSimple() throws Exception {
+        Utils.setUserContext(1);
+        int id = 1;
+
+        var updateDto = new UserUpdateDto();
+        updateDto.setUsername("updatedUserPut");
+        updateDto.setEmail("user1@gmail.com");
+        updateDto.setGender(Gender.MALE);
+        updateDto.setBirthday(LocalDate.of(2000, 1, 1));
+
+        mockMvc.perform(put("/api/users/{id}", id)
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(updateDto)))
+                .andExpectAll(status().isNoContent());
+
+        mockMvc.perform(get("/api/users/{id}", id))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.username").value("updatedUserPut")
+                );
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("PUT - /{id} - Should update user when admin")
+    void updateUserSimpleAsAdmin() throws Exception {
+        Utils.setAdminContext(2);
+        int id = 1;
+
+        var updateDto = new UserUpdateDto();
+        updateDto.setUsername("updatedByAdmin");
+        updateDto.setEmail("adminupdated@gmail.com");
+        updateDto.setGender(Gender.FEMALE);
+        updateDto.setBirthday(LocalDate.of(1995, 5, 15));
+
+        mockMvc.perform(put("/api/users/{id}", id)
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(updateDto)))
+                .andExpectAll(status().isNoContent());
+
+        mockMvc.perform(get("/api/users/{id}", id))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.username").value("updatedByAdmin"),
+                        jsonPath("$.email").value("adminupdated@gmail.com")
+                );
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("PUT - /{id} - Should return 403 when not owner or admin")
+    void updateUserSimpleForbidden() throws Exception {
+        Utils.setUserContext(3);
+        int id = 1;
+
+        var updateDto = new UserUpdateDto();
+        updateDto.setUsername("shouldNotUpdate");
+
+        mockMvc.perform(put("/api/users/{id}", id)
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(updateDto)))
+                .andExpectAll(status().isForbidden());
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("PUT - /{id} - Should return 404 when user not found")
+    void updateUserSimpleNotFound() throws Exception {
+        Utils.setAdminContext(1);
+        int id = 999;
+
+        var updateDto = new UserUpdateDto();
+        updateDto.setUsername("shouldNotUpdate");
+
+        mockMvc.perform(put("/api/users/{id}", id)
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(updateDto)))
+                .andExpectAll(status().isNotFound());
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("PUT - /{id} - Should return 400 when validation fails")
+    void updateUserSimpleInvalidData() throws Exception {
+        Utils.setUserContext(1);
+        int id = 1;
+
+        var updateDto = new UserUpdateDto();
+        updateDto.setUsername("thisUsernameIsWayTooLongAndShouldFailValidation");
+        updateDto.setEmail("invalid-email");
+
+        mockMvc.perform(put("/api/users/{id}", id)
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(updateDto)))
+                .andExpectAll(status().isBadRequest());
+    }
+
+    @UserSql
+    @Test
+    @DisplayName("PUT - /{id} - Should update only provided fields")
+    void updateUserSimplePartialUpdate() throws Exception {
+        Utils.setUserContext(1);
+        int id = 1;
+
+        var updateDto = new UserUpdateDto();
+        updateDto.setUsername("partialUpdate");
+
+        mockMvc.perform(put("/api/users/{id}", id)
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(updateDto)))
+                .andExpectAll(status().isNoContent());
+
+        mockMvc.perform(get("/api/users/{id}", id))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.username").value("partialUpdate"),
+                        jsonPath("$.email").value("user1@example.com")
+                );
     }
 }

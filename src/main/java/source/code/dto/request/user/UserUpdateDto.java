@@ -9,6 +9,7 @@ import lombok.Setter;
 import source.code.helper.Enum.model.user.ActivityLevel;
 import source.code.helper.Enum.model.user.Gender;
 import source.code.helper.Enum.model.user.Goal;
+import source.code.validation.ValidationGroups;
 import source.code.validation.email.UniqueEmailDomain;
 import source.code.validation.password.PasswordDigitsDomain;
 import source.code.validation.password.PasswordLowercaseDomain;
@@ -20,13 +21,15 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
+@UniqueEmailDomain
 public class UserUpdateDto {
+    private Integer id;
+
     @Size(max = 40)
     private String username;
 
     @Size(max = 50)
     @Email
-    @UniqueEmailDomain
     private String email;
 
     @Size(min = 8, max = 255)
