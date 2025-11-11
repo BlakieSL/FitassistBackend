@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestSetup
-@Import({MockRedisConfig.class, MockAwsSesConfig.class})
+@Import({MockRedisConfig.class, MockAwsSesConfig.class, MockAwsSesConfig.class})
 @TestPropertySource(properties = "schema.name=media")
 @ContextConfiguration(initializers = {MySqlContainerInitializer.class, AwsS3ContainerInitializer.class})
 public class MediaTest {
