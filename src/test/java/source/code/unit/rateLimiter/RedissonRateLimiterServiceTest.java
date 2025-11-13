@@ -65,7 +65,7 @@ public class RedissonRateLimiterServiceTest {
 
         rateLimiterService.isAllowed(userId);
 
-        verify(rateLimiter).trySetRate(
+        verify(rateLimiter).setRate(
                 eq(RateType.OVERALL),
                 eq(8L),
                 eq(1L),
@@ -81,7 +81,7 @@ public class RedissonRateLimiterServiceTest {
 
         rateLimiterService.isAllowed(key);
 
-        verify(rateLimiter).trySetRate(
+        verify(rateLimiter).setRate(
                 eq(RateType.OVERALL),
                 eq(5L),
                 eq(1L),

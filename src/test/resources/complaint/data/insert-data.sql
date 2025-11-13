@@ -19,17 +19,16 @@ INSERT INTO thread (dateCreated, text, title, views, thread_category_id, user_id
                                                                                       (NOW(), 'How to stay motivated during weight loss', 'Weight Loss Tips', 156, 4, 4),
                                                                                       (NOW(), 'Introduce yourself here!', 'New Members', 210, 5, 5);
 
-INSERT INTO comment (text, parent_comment_id, thread_id, user_id) VALUES
-                                                                      ('I recommend starting with bodyweight exercises', NULL, 1, 2),
-                                                                      ('Push-ups and squats are great for beginners', NULL, 1, 3),
-                                                                      ('Thanks for the advice!', 1, 1, 1),
-                                                                      ('Chicken and quinoa is my go-to meal', NULL, 2, 4),
-                                                                      ('Don''t forget about eggs and Greek yogurt', NULL, 2, 5),
-                                                                      ('I prefer full body workouts 3x week', NULL, 3, 1),
-                                                                      ('Tracking progress helps me stay motivated', NULL, 4, 2),
-                                                                      ('Welcome everyone!', NULL, 5, 3),
-                                                                      ('Nice to meet you all!', 8, 5, 4);
-
+INSERT INTO comment (text, dateCreated, parent_comment_id, thread_id, user_id) VALUES
+                                                                                   ('I recommend starting with bodyweight exercises', '2025-11-13 08:35:00.123456', NULL, 1, 2),
+                                                                                   ('Push-ups and squats are great for beginners', '2025-11-13 08:36:00.654321', NULL, 1, 3),
+                                                                                   ('Thanks for the advice!', '2025-11-13 08:37:00.987654', 1, 1, 1),
+                                                                                   ('Chicken and quinoa is my go-to meal', '2025-11-13 08:38:00.456789', NULL, 2, 4),
+                                                                                   ('Don''t forget about eggs and Greek yogurt', '2025-11-13 08:39:00.321654', NULL, 2, 5),
+                                                                                   ('I prefer full body workouts 3x week', '2025-11-13 08:40:00.789123', NULL, 3, 1),
+                                                                                   ('Tracking progress helps me stay motivated', '2025-11-13 08:41:00.101101', NULL, 4, 2),
+                                                                                   ('Welcome everyone!', '2025-11-13 08:42:00.202202', NULL, 5, 3),
+                                                                                   ('Nice to meet you all!', '2025-11-13 08:43:00.303303', 8, 5, 4);
 INSERT INTO complaint (type, reason, status, user_id, comment_id, thread_id) VALUES
                                                                                  ('COMMENT_COMPLAINT', 'INAPPROPRIATE_CONTENT', 'PENDING', 1, 3, NULL),
                                                                                  ('THREAD_COMPLAINT', 'SPAM', 'RESOLVED', 2, NULL, 2),

@@ -35,6 +35,7 @@ CREATE TABLE thread (
 CREATE TABLE comment (
                          id                INT AUTO_INCREMENT PRIMARY KEY,
                          text              VARCHAR(255) NOT NULL,
+                         dateCreated        DATETIME(6) NOT NULL,
                          parent_comment_id INT NULL,
                          thread_id         INT NOT NULL,
                          user_id           INT NOT NULL,

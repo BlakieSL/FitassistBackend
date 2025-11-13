@@ -121,13 +121,12 @@ INSERT INTO thread (title, text, dateCreated, views, user_id, thread_category_id
                                                                                       ('Protein intake question', 'How much protein should I consume daily?', NOW(), 42, 2, 2),
                                                                                       ('Squat form check', 'Looking for feedback on my squat technique', NOW(), 18, 3, 3);
 
-INSERT INTO comment (text, thread_id, user_id, parent_comment_id) VALUES
-                                                                      ('Start with bodyweight exercises and focus on form!', 1, 2, NULL),
-                                                                      ('Thanks for the advice!', 1, 1, 1),
-                                                                      ('1.6-2.2g per kg of body weight is a good range', 2, 3, NULL),
-                                                                      ('I aim for 30% of my calories from protein', 2, 1, NULL),
-                                                                      ('Post a video for better feedback', 3, 2, NULL);
-
+INSERT INTO comment (text, dateCreated, thread_id, user_id, parent_comment_id) VALUES
+                                                                                   ('Start with bodyweight exercises and focus on form!', '2025-11-13 20:50:00.123456', 1, 2, NULL),
+                                                                                   ('Thanks for the advice!', '2025-11-13 20:51:00.654321', 1, 1, 1),
+                                                                                   ('1.6-2.2g per kg of body weight is a good range', '2025-11-13 20:52:00.987654', 2, 3, NULL),
+                                                                                   ('I aim for 30% of my calories from protein', '2025-11-13 20:53:00.456789', 2, 1, NULL),
+                                                                                   ('Post a video for better feedback', '2025-11-13 20:54:00.321654', 3, 2, NULL);
 INSERT INTO user_activity (user_id, activity_id) VALUES
                                                      (1, 1), (1, 4),
                                                      (2, 2), (2, 3),

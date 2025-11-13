@@ -304,6 +304,7 @@ create table comment
     id                int auto_increment
         primary key,
     text              varchar(255) not null,
+    dateCreated        datetime(6)  not null,
     parent_comment_id int          null,
     thread_id         int          not null,
     user_id           int          not null,
