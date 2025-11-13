@@ -23,7 +23,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class UserCreateDto {
     @Size(max = 40)
-    @NotBlank
     private String username;
     @Size(max = 50)
     @Email
@@ -37,9 +36,7 @@ public class UserCreateDto {
     @PasswordSpecialDomain
     @PasswordLowercaseDomain
     private String password;
-    @NotNull
     private Gender gender;
-    @NotNull
     @Past
     private LocalDate birthday;
 

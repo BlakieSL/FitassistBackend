@@ -57,14 +57,10 @@ public class User {
     @Column(length = BCRYPT_HASHED_PASSWORD_MAX_LENGTH)
     private String password;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Gender gender;
 
-    @NotNull
     @Past
-    @Column(nullable = false)
     private LocalDate birthday;
 
     @Positive
