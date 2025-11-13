@@ -37,6 +37,7 @@ public abstract class UserMapper {
     public abstract UserResponseDto toResponse(User user);
 
     @Mapping(target = "password", source = "password", qualifiedByName = "hashPassword")
+    @Mapping(target = "username", source = "dto", qualifiedByName = "generateUsername")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "dailyCarts", ignore = true)
     @Mapping(target = "roles", ignore = true)
@@ -95,6 +96,15 @@ public abstract class UserMapper {
     @Named("hashPassword")
     protected String hashPassword(String password) {
         return passwordEncoder.encode(password);
+    }
+
+    @Named("generateUsername")
+    protected String generateUsername(UserCreateDto dto) {
+        if (dto.getUsername() != null && !dto.getUsername().isBlank()) {
+            return dto.getUsername();
+        }
+
+        return dto.getEmail().substring(0, dto.getEmail().indexOf("@"));
     }
 
     BigDecimal calculatedCalories(User user) {

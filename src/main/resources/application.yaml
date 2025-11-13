@@ -62,9 +62,9 @@ server:
   port: 8000
 
 rate-limiter:
-  user-rate: 8
+  user-rate: 1000
   user-interval: 1
-  key-rate: 5
+  key-rate: 1000
   key-interval: 1
 
 app:
