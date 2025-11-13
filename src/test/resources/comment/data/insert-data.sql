@@ -26,17 +26,17 @@ INSERT INTO user_thread (thread_id, user_id) VALUES
                                                  (4, 1), (4, 3),
                                                  (5, 2), (5, 4);
 
-INSERT INTO comment (text, parent_comment_id, thread_id, user_id) VALUES
-                                                                      ('I really like MyFitnessPal for tracking', NULL, 1, 2),
-                                                                      ('Keep your back straight and lift with legs', NULL, 2, 1),
-                                                                      ('Lentils and quinoa are great options', NULL, 3, 4),
-                                                                      ('How many days per week is this program?', NULL, 4, 3),
-                                                                      ('Congrats on your achievement!', NULL, 5, 5),
-                                                                      ('I prefer Cronometer for micronutrients', 1, 1, 3),
-                                                                      ('Thanks for the tip!', 6, 2, 2),
-                                                                      ('Don''t forget about tofu and tempeh', 7, 3, 5),
-                                                                      ('It''s a 5-day split program', 4, 4, 4),
-                                                                      ('Thank you! It was hard work', 5, 5, 1);
+INSERT INTO comment (text, dateCreated, parent_comment_id, thread_id, user_id) VALUES
+                                                                                   ('I really like MyFitnessPal for tracking', '2023-11-12 10:00:00.123456', NULL, 1, 2),
+                                                                                   ('Keep your back straight and lift with legs', '2023-11-12 10:05:00.654321', NULL, 2, 1),
+                                                                                   ('Lentils and quinoa are great options', '2023-11-12 10:10:00.987654', NULL, 3, 4),
+                                                                                   ('How many days per week is this program?', '2023-11-12 10:15:00.456789', NULL, 4, 3),
+                                                                                   ('Congrats on your achievement!', '2023-11-12 10:20:00.321654', NULL, 5, 5),
+                                                                                   ('I prefer Cronometer for micronutrients', '2023-11-12 10:25:00.789123', 1, 1, 3),
+                                                                                   ('Thanks for the tip!', '2023-11-12 10:30:00.101101', 6, 2, 2),
+                                                                                   ('Don''t forget about tofu and tempeh', '2023-11-12 10:35:00.202202', 7, 3, 5),
+                                                                                   ('It''s a 5-day split program', '2023-11-12 10:40:00.303303', 4, 4, 4),
+                                                                                   ('Thank you! It was hard work', '2023-11-12 10:45:00.404404', 5, 5, 1);
 
 INSERT INTO user_comment (type, comment_id, user_id) VALUES
                                                          ('LIKE', 1, 1), ('LIKE', 1, 3),

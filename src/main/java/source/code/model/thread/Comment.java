@@ -3,6 +3,7 @@ package source.code.model.thread;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.Setter;
 import source.code.model.user.User;
 import source.code.model.user.UserComment;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,6 +33,11 @@ public class Comment {
     private String text;
 
     @NotNull
+    @PastOrPresent
+    @Column(nullable = false)
+    private LocalDateTime dateCreated;
+
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "thread_id", nullable = false)
     private ForumThread thread;
@@ -44,11 +51,16 @@ public class Comment {
     @JoinColumn(name = "parent_comment_id")
     private Comment parentComment;
 
-   @OneToMany(mappedBy = "parentComment") // cascade REMOVE is kinda bugged for this recursive relationship so i will use cascade on db level
+   @OneToMany(mappedBy = "parentComment")
    private final Set<Comment> replies = new HashSet<>();
 
     @OneToMany(mappedBy = "comment")
     private final Set<UserComment> userCommentLikes = new HashSet<>();
+
+    @PrePersist
+    public void prePersist() {
+        this.dateCreated = LocalDateTime.now();
+    }
 
     public static Comment of(Integer id, User user) {
         Comment comment = new Comment();
