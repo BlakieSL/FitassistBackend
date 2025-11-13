@@ -63,12 +63,6 @@ public class ForumThread {
     @OneToMany(mappedBy = "forumThread", cascade = CascadeType.REMOVE)
     private final Set<UserThread> userThreads = new HashSet<>();
 
-    //image
-
-    public void incrementViews() {
-        views++;
-    }
-
     @PrePersist
     public void prePersist() {
         this.dateCreated = LocalDateTime.now();

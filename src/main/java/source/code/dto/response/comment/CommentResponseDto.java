@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.helper.BaseUserEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -16,6 +17,7 @@ import java.util.List;
 public class CommentResponseDto implements BaseUserEntity {
     private Integer id;
     private String text;
+    private LocalDateTime dateCreated;
     private Integer threadId;
     private Integer userId;
     private Integer parentCommentId;
