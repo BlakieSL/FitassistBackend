@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.comment.CommentCreateDto;
 import source.code.dto.request.comment.CommentUpdateDto;
 import source.code.dto.response.comment.CommentResponseDto;
+import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.model.thread.Comment;
 import source.code.model.thread.ForumThread;
@@ -31,6 +32,11 @@ public abstract class CommentMapper {
     @Mapping(target = "parentCommentId", source = "parentComment", qualifiedByName = "parentCommentToParentCommentId")
     @Mapping(target = "replies", ignore = true)
     public abstract CommentResponseDto toResponseDto(Comment comment);
+
+    @Mapping(target = "authorUsername", source = "user.username")
+    @Mapping(target = "likeCount", expression = "java(comment.getUserCommentLikes().size())")
+    @Mapping(target = "repliesCount", expression = "java(comment.getReplies().size())")
+    public abstract CommentSummaryDto toSummaryDto(Comment comment);
 
     @Mapping(target = "text", source = "text")
     @Mapping(target = "thread", source = "threadId", qualifiedByName = "threadIdToThread")
