@@ -11,9 +11,13 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.response.comment.CommentResponseDto;
+import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
+import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.dto.response.plan.PlanResponseDto;
+import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
+import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.comment.CommentMapper;
 import source.code.mapper.forumThread.ForumThreadMapper;
@@ -71,32 +75,23 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedPlans - Should return mapped PlanResponseDto list")
-    public void getCreatedPlans_ShouldReturnMappedPlanResponseDtos() {
+    @DisplayName("getCreatedPlans - Should return PlanSummaryDto list from repository")
+    public void getCreatedPlans_ShouldReturnPlanSummaryDtos() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
-        User user = new User();
-        Plan plan1 = new Plan();
-        Plan plan2 = new Plan();
-        user.getPlans().add(plan1);
-        user.getPlans().add(plan2);
-        PlanResponseDto dto1 = new PlanResponseDto();
-        PlanResponseDto dto2 = new PlanResponseDto();
+        PlanSummaryDto dto1 = new PlanSummaryDto();
+        PlanSummaryDto dto2 = new PlanSummaryDto();
 
-        when(planRepository.findAllByUser_Id(anyBoolean(), anyInt())).thenReturn(List.of(plan1, plan2));
+        when(planRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto1, dto2));
 
-        when(planMapper.toResponseDto(plan1)).thenReturn(dto1);
-        when(planMapper.toResponseDto(plan2)).thenReturn(dto2);
-
-        List<PlanResponseDto> result = userCreatedService.getCreatedPlans(userId);
+        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId);
 
         assertNotNull(result);
         assertEquals(2, result.size());
         assertTrue(result.contains(dto1));
         assertTrue(result.contains(dto2));
-        verify(planRepository).findAllByUser_Id(anyBoolean(), anyInt());
-        verify(planMapper, times(2)).toResponseDto(any(Plan.class));
+        verify(planRepository).findSummaryByUserId(true, userId);
     }
 
     @Test
@@ -105,45 +100,33 @@ public class UserCreatedServiceTest {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
-        User user = new User();
+        when(planRepository.findSummaryByUserId(true, userId)).thenReturn(List.of());
 
-        when(planRepository.findAllByUser_Id(anyBoolean(), anyInt())).thenReturn(List.of());
-
-        List<PlanResponseDto> result = userCreatedService.getCreatedPlans(userId);
+        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(planRepository).findAllByUser_Id(anyBoolean(), anyInt());
-        verifyNoInteractions(planMapper);
+        verify(planRepository).findSummaryByUserId(true, userId);
     }
 
     @Test
-    @DisplayName("getCreatedRecipes - Should return mapped RecipeResponseDto list")
-    public void getCreatedRecipes_ShouldReturnMappedRecipeResponseDtos() {
+    @DisplayName("getCreatedRecipes - Should return RecipeSummaryDto list from repository")
+    public void getCreatedRecipes_ShouldReturnRecipeSummaryDtos() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
-        User user = new User();
-        Recipe recipe1 = new Recipe();
-        Recipe recipe2 = new Recipe();
-        user.getRecipes().add(recipe1);
-        user.getRecipes().add(recipe2);
+        RecipeSummaryDto dto1 = new RecipeSummaryDto();
+        RecipeSummaryDto dto2 = new RecipeSummaryDto();
 
-        when(recipeRepository.findAllByUser_Id(anyBoolean(), anyInt())).thenReturn(List.of(recipe1, recipe2));
+        when(recipeRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto1, dto2));
 
-        RecipeResponseDto dto1 = new RecipeResponseDto();
-        RecipeResponseDto dto2 = new RecipeResponseDto();
-        when(recipeMapper.toResponseDto(recipe1)).thenReturn(dto1);
-        when(recipeMapper.toResponseDto(recipe2)).thenReturn(dto2);
-
-        List<RecipeResponseDto> result = userCreatedService.getCreatedRecipes(userId);
+        List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId);
 
         assertNotNull(result);
         assertEquals(2, result.size());
         assertTrue(result.contains(dto1));
         assertTrue(result.contains(dto2));
-        verify(recipeRepository).findAllByUser_Id(anyBoolean(), anyInt());
-        verify(recipeMapper, times(2)).toResponseDto(any(Recipe.class));
+        verify(recipeRepository).findSummaryByUserId(true, userId);
     }
 
     @Test
@@ -152,46 +135,33 @@ public class UserCreatedServiceTest {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
-        User user = new User();
+        when(recipeRepository.findSummaryByUserId(true, userId)).thenReturn(List.of());
 
-        when(recipeRepository.findAllByUser_Id(anyBoolean(), anyInt())).thenReturn(List.of());
-
-        List<RecipeResponseDto> result = userCreatedService.getCreatedRecipes(userId);
+        List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(recipeRepository).findAllByUser_Id(anyBoolean(), anyInt());
-        verifyNoInteractions(recipeMapper);
+        verify(recipeRepository).findSummaryByUserId(true, userId);
     }
 
-
     @Test
-    @DisplayName("getCreatedComments - Should return mapped CommentResponseDto list")
-    public void getCreatedComments_ShouldReturnMappedCommentResponseDtos() {
+    @DisplayName("getCreatedComments - Should return CommentSummaryDto list from repository")
+    public void getCreatedComments_ShouldReturnCommentSummaryDtos() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
-        User user = new User();
-        CommentResponseDto dto1 = new CommentResponseDto();
-        CommentResponseDto dto2 = new CommentResponseDto();
-        Comment comment1 = new Comment();
-        Comment comment2 = new Comment();
-        user.getWrittenComments().add(comment1);
-        user.getWrittenComments().add(comment2);
+        CommentSummaryDto dto1 = new CommentSummaryDto();
+        CommentSummaryDto dto2 = new CommentSummaryDto();
 
-        when(commentRepository.findAllByUser_Id(userId)).thenReturn(List.of(comment1, comment2));
+        when(commentRepository.findSummaryByUserId(userId)).thenReturn(List.of(dto1, dto2));
 
-        when(commentMapper.toResponseDto(comment1)).thenReturn(dto1);
-        when(commentMapper.toResponseDto(comment2)).thenReturn(dto2);
-
-        List<CommentResponseDto> result = userCreatedService.getCreatedComments(userId);
+        List<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId);
 
         assertNotNull(result);
         assertEquals(2, result.size());
         assertTrue(result.contains(dto1));
         assertTrue(result.contains(dto2));
-        verify(commentRepository).findAllByUser_Id(userId);
-        verify(commentMapper, times(2)).toResponseDto(any(Comment.class));
+        verify(commentRepository).findSummaryByUserId(userId);
     }
 
     @Test
@@ -200,44 +170,33 @@ public class UserCreatedServiceTest {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
-        User user = new User();
-        when(commentRepository.findAllByUser_Id(userId)).thenReturn(List.of());
+        when(commentRepository.findSummaryByUserId(userId)).thenReturn(List.of());
 
-        List<CommentResponseDto> result = userCreatedService.getCreatedComments(userId);
+        List<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(commentRepository).findAllByUser_Id(userId);
-        verifyNoInteractions(commentMapper);
+        verify(commentRepository).findSummaryByUserId(userId);
     }
 
-
     @Test
-    @DisplayName("getCreatedThreads - Should return mapped ForumThreadResponseDto list")
-    public void getCreatedThreads_ShouldReturnMappedForumThreadResponseDtos() {
+    @DisplayName("getCreatedThreads - Should return ForumThreadSummaryDto list from repository")
+    public void getCreatedThreads_ShouldReturnForumThreadSummaryDtos() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
-        User user = new User();
-        ForumThreadResponseDto dto1 = new ForumThreadResponseDto();
-        ForumThreadResponseDto dto2 = new ForumThreadResponseDto();
-        ForumThread thread1 = new ForumThread();
-        ForumThread thread2 = new ForumThread();
-        user.getCreatedForumThreads().add(thread1);
-        user.getCreatedForumThreads().add(thread2);
+        ForumThreadSummaryDto dto1 = new ForumThreadSummaryDto();
+        ForumThreadSummaryDto dto2 = new ForumThreadSummaryDto();
 
-        when(forumThreadRepository.findAllByUser_Id(userId)).thenReturn(List.of(thread1, thread2));
-        when(forumThreadMapper.toResponseDto(thread1)).thenReturn(dto1);
-        when(forumThreadMapper.toResponseDto(thread2)).thenReturn(dto2);
+        when(forumThreadRepository.findSummaryByUserId(userId)).thenReturn(List.of(dto1, dto2));
 
-        List<ForumThreadResponseDto> result = userCreatedService.getCreatedThreads(userId);
+        List<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId);
 
         assertNotNull(result);
         assertEquals(2, result.size());
         assertTrue(result.contains(dto1));
         assertTrue(result.contains(dto2));
-        verify(forumThreadRepository).findAllByUser_Id(userId);
-        verify(forumThreadMapper, times(2)).toResponseDto(any(ForumThread.class));
+        verify(forumThreadRepository).findSummaryByUserId(userId);
     }
 
     @Test
@@ -246,14 +205,12 @@ public class UserCreatedServiceTest {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
-        User user = new User();
-        when(forumThreadRepository.findAllByUser_Id(userId)).thenReturn(List.of());
+        when(forumThreadRepository.findSummaryByUserId(userId)).thenReturn(List.of());
 
-        List<ForumThreadResponseDto> result = userCreatedService.getCreatedThreads(userId);
+        List<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(forumThreadRepository).findAllByUser_Id(userId);
-        verifyNoInteractions(forumThreadMapper);
+        verify(forumThreadRepository).findSummaryByUserId(userId);
     }
 }
