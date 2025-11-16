@@ -38,3 +38,6 @@ out/
 
 .fastRequest
 /src/main/resources/lucene-index/
+
+/.env
+/.env.properties
