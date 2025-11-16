@@ -2,7 +2,8 @@ INSERT INTO media (imageName, parent_id, parentType) VALUES
 ('image1.jpg', 1, 'FOOD'),
 ('image2.png', 2, 'EXERCISE'),
 ('image3.gif', 1, 'RECIPE'),
-('image4.jpeg', 4, 'COMMENT');
+('image4.jpeg', 4, 'COMMENT'),
+('profile2.jpg', 2, 'USER');
 
 INSERT INTO user (
     activity_level,
@@ -26,6 +27,18 @@ INSERT INTO user (
              'Dimas@123',
              'Doe',
              80.3
+         ),
+         (
+             'LIGHTLY_ACTIVE',
+             '1992-08-20',
+             1800.0,
+             'jane.smith@example.com',
+             'FEMALE',
+             'MAINTAIN_WEIGHT',
+             165.0,
+             'Password@456',
+             'JaneSmith',
+             65.5
          );
 
 

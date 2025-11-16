@@ -21,7 +21,9 @@ public interface ForumThreadRepository extends JpaRepository<ForumThread, Intege
              t.views,
              SIZE(t.userThreads),
              SIZE(t.comments),
-             t.user.username)
+             t.user.username,
+             t.user.id,
+             null)
       FROM ForumThread t
       WHERE t.user.id = :userId
       """)

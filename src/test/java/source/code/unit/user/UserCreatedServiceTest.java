@@ -18,7 +18,9 @@ import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
+import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.helper.user.AuthorizationUtil;
+import source.code.model.media.Media;
 import source.code.mapper.comment.CommentMapper;
 import source.code.mapper.forumThread.ForumThreadMapper;
 import source.code.mapper.plan.PlanMapper;
@@ -30,11 +32,14 @@ import source.code.model.thread.ForumThread;
 import source.code.model.user.User;
 import source.code.repository.CommentRepository;
 import source.code.repository.ForumThreadRepository;
+import source.code.repository.MediaRepository;
 import source.code.repository.PlanRepository;
 import source.code.repository.RecipeRepository;
+import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.implementation.user.UserCreatedServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -49,6 +54,10 @@ public class UserCreatedServiceTest {
     private CommentRepository commentRepository;
     @Mock
     private ForumThreadRepository forumThreadRepository;
+    @Mock
+    private MediaRepository mediaRepository;
+    @Mock
+    private AwsS3Service awsS3Service;
 
     @Mock
     private PlanMapper planMapper;
@@ -151,9 +160,15 @@ public class UserCreatedServiceTest {
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
         CommentSummaryDto dto1 = new CommentSummaryDto();
+        dto1.setAuthorId(1);
         CommentSummaryDto dto2 = new CommentSummaryDto();
+        dto2.setAuthorId(2);
 
         when(commentRepository.findSummaryByUserId(userId)).thenReturn(List.of(dto1, dto2));
+        when(mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(1, MediaConnectedEntity.USER))
+                .thenReturn(Optional.empty());
+        when(mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(2, MediaConnectedEntity.USER))
+                .thenReturn(Optional.empty());
 
         List<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId);
 
@@ -186,9 +201,15 @@ public class UserCreatedServiceTest {
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
         ForumThreadSummaryDto dto1 = new ForumThreadSummaryDto();
+        dto1.setAuthorId(1);
         ForumThreadSummaryDto dto2 = new ForumThreadSummaryDto();
+        dto2.setAuthorId(2);
 
         when(forumThreadRepository.findSummaryByUserId(userId)).thenReturn(List.of(dto1, dto2));
+        when(mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(1, MediaConnectedEntity.USER))
+                .thenReturn(Optional.empty());
+        when(mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(2, MediaConnectedEntity.USER))
+                .thenReturn(Optional.empty());
 
         List<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId);
 

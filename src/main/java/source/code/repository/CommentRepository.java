@@ -63,6 +63,8 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
              c.text,
              c.dateCreated,
              c.user.username,
+             c.user.id,
+             null,
              SIZE(c.userCommentLikes) ,
              SIZE(c.replies))
       FROM Comment c

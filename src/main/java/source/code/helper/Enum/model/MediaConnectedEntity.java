@@ -10,4 +10,5 @@ public enum MediaConnectedEntity {
     FORUM_THREAD,
     COMMENT_COMPLAINT,
     THREAD_COMPLAINT,
+    USER,
 }
