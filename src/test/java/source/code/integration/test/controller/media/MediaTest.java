@@ -227,4 +227,73 @@ public class MediaTest {
                         status().isNotFound()
                 );
     }
+
+    @Test
+    @DisplayName("POST - / - Should create user profile image when user has no existing image")
+    public void createUserProfileImageWhenNoExistingImage() throws Exception {
+        Utils.setUserContext(1);
+        
+        MockMultipartFile mockImage = new MockMultipartFile(
+                "image",
+                "profile.jpg",
+                "image/jpeg",
+                "fake-profile-image-content".getBytes()
+        );
+
+        mockMvc.perform(multipart("/api/media")
+                .file(mockImage)
+                .param("parentType", MediaConnectedEntity.USER.name())
+                .param("parentId", "1")
+        ).andExpectAll(
+                status().isCreated(),
+                jsonPath("$.imageUrl").isNotEmpty(),
+                jsonPath("$.parentId").value(1),
+                jsonPath("$.parentType").value("USER")
+        );
+    }
+
+    @MediaSql
+    @Test
+    @DisplayName("POST - / - Should return validation error when user tries to upload second profile image")
+    public void createSecondUserProfileImageShouldFail() throws Exception {
+        Utils.setUserContext(2);
+        
+        MockMultipartFile mockImage = new MockMultipartFile(
+                "image",
+                "profile2.jpg",
+                "image/jpeg",
+                "fake-second-profile-image".getBytes()
+        );
+
+        mockMvc.perform(multipart("/api/media")
+                .file(mockImage)
+                .param("parentType", MediaConnectedEntity.USER.name())
+                .param("parentId", "2")
+        ).andExpectAll(status().isBadRequest());
+    }
+
+    @MediaSql
+    @Test
+    @DisplayName("POST - / - Should allow multiple images for non-user entities")
+    public void createMultipleImagesForNonUserEntity() throws Exception {
+        Utils.setAdminContext(1);
+        
+        MockMultipartFile mockImage = new MockMultipartFile(
+                "image",
+                "food2.jpg",
+                "image/jpeg",
+                "fake-second-food-image".getBytes()
+        );
+
+        mockMvc.perform(multipart("/api/media")
+                .file(mockImage)
+                .param("parentType", MediaConnectedEntity.FOOD.name())
+                .param("parentId", "1")
+        ).andExpectAll(
+                status().isCreated(),
+                jsonPath("$.imageUrl").isNotEmpty(),
+                jsonPath("$.parentId").value(1),
+                jsonPath("$.parentType").value("FOOD")
+        );
+    }
 }

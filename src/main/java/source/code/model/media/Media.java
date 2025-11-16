@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.helper.Enum.model.MediaConnectedEntity;
+import source.code.validation.media.UniqueUserMedia;
 
+@UniqueUserMedia
 @Entity
 @Table(name = "media")
 @Getter

@@ -16,6 +16,7 @@ import source.code.model.text.PlanInstruction;
 import source.code.model.text.RecipeInstruction;
 import source.code.model.thread.Comment;
 import source.code.model.thread.ForumThread;
+import source.code.model.user.User;
 import source.code.model.workout.Workout;
 import source.code.model.workout.WorkoutSet;
 import source.code.model.workout.WorkoutSetGroup;
@@ -39,6 +40,7 @@ public class AuthAnnotationServiceImpl {
     private final ThreadComplaintRepository threadComplaintRepository;
     private final DailyCartActivityRepository dailyCartActivityRepository;
     private final DailyCartFoodRepository dailyCartFoodRepository;
+    private final UserRepository userRepository;
 
     public AuthAnnotationServiceImpl(CommentRepository commentRepository,
                                      RepositoryHelper repositoryHelper,
@@ -49,7 +51,7 @@ public class AuthAnnotationServiceImpl {
                                      RecipeInstructionRepository recipeInstructionRepository,
                                      PlanInstructionRepository planInstructionRepository,
                                      WorkoutRepository workoutRepository,
-                                     WorkoutSetRepository workoutSetRepository, WorkoutSetGroupRepository workoutSetGroupRepository, CommentComplaintRepository commentComplaintRepository, ThreadComplaintRepository threadComplaintRepository, DailyCartActivityRepository dailyCartActivityRepository, DailyCartFoodRepository dailyCartFoodRepository) {
+                                     WorkoutSetRepository workoutSetRepository, WorkoutSetGroupRepository workoutSetGroupRepository, CommentComplaintRepository commentComplaintRepository, ThreadComplaintRepository threadComplaintRepository, DailyCartActivityRepository dailyCartActivityRepository, DailyCartFoodRepository dailyCartFoodRepository, UserRepository userRepository) {
         this.commentRepository = commentRepository;
         this.repositoryHelper = repositoryHelper;
         this.forumThreadRepository = forumThreadRepository;
@@ -65,6 +67,7 @@ public class AuthAnnotationServiceImpl {
         this.threadComplaintRepository = threadComplaintRepository;
         this.dailyCartActivityRepository = dailyCartActivityRepository;
         this.dailyCartFoodRepository = dailyCartFoodRepository;
+        this.userRepository = userRepository;
     }
 
     public boolean isCommentOwnerOrAdmin(int commentId)  {
@@ -260,6 +263,7 @@ public class AuthAnnotationServiceImpl {
             case RECIPE -> repositoryHelper
                     .find(recipeRepository, Recipe.class, parentId)
                     .getUser().getId();
+            case USER -> parentId;
             default -> null;
         };
     }

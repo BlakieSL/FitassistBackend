@@ -91,7 +91,7 @@ create table media
         primary key,
     imageName  varchar(255)                                                                                                                not null,
     parent_id  int                                                                                                                         not null,
-    parentType enum ('ACTIVITY', 'COMMENT', 'COMMENT_COMPLAINT', 'EXERCISE', 'FOOD', 'FORUM_THREAD', 'PLAN', 'RECIPE', 'THREAD_COMPLAINT') not null
+    parentType enum ('USER', 'ACTIVITY', 'COMMENT', 'COMMENT_COMPLAINT', 'EXERCISE', 'FOOD', 'FORUM_THREAD', 'PLAN', 'RECIPE', 'THREAD_COMPLAINT') not null
 );
 
 create table plan_category

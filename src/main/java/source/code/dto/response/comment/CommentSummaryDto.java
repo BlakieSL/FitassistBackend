@@ -16,6 +16,8 @@ public class CommentSummaryDto {
     private String text;
     private LocalDateTime dateCreated;
     private String authorUsername;
+    private int authorId;
+    private String authorImageUrl;
     private int likeCount;
     private int repliesCount;
 }

@@ -20,4 +20,6 @@ public class ForumThreadSummaryDto {
     private int savesCount;
     private int commentsCount;
     private String authorUsername;
+    private int authorId;
+    private String authorImageUrl;
 }

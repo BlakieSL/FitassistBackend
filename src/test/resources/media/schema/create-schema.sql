@@ -4,7 +4,7 @@ create table media
         primary key,
     imageName  varchar(255)                                                                       not null,
     parent_id  int                                                                                not null,
-    parentType enum ('ACTIVITY', 'COMMENT', 'EXERCISE', 'FOOD', 'FORUM_THREAD', 'PLAN', 'RECIPE') not null
+    parentType enum ('USER', 'ACTIVITY', 'COMMENT', 'EXERCISE', 'FOOD', 'FORUM_THREAD', 'PLAN', 'RECIPE') not null
 );
 
 create table user
