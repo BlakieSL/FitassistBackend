@@ -36,9 +36,21 @@ public class UserSavedControllerWithTypeTest {
     @WithMockUser
     @UserSavedSql
     @Test
-    @DisplayName("GET - /item-type/{itemType}/type/{type}/user/{userId} - Should return all public saved items of a specific type SAVE")
-    void getAllFromUserSave() throws Exception {
+    @DisplayName("GET - /item-type/{itemType}/type/{type}/user/{userId} - Should return all public saved items of a specific type SAVE for PLAN")
+    void getAllFromUserSavePlan() throws Exception {
         mockMvc.perform(get("/api/user-saved/item-type/PLAN/type/SAVE/user/1"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(1))
+                );
+    }
+
+    @WithMockUser
+    @UserSavedSql
+    @Test
+    @DisplayName("GET - /item-type/{itemType}/type/{type}/user/{userId} - Should return all public saved items of a specific type SAVE for RECIPE")
+    void getAllFromUserSaveRecipe() throws Exception {
+        mockMvc.perform(get("/api/user-saved/item-type/RECIPE/type/SAVE/user/1"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$").value(hasSize(1))

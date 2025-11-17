@@ -3,8 +3,10 @@ package source.code.service.implementation.user.interaction.withType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.comment.CommentResponseDto;
+import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.exception.RecordNotFoundException;
+import source.code.helper.BaseUserEntity;
 import source.code.mapper.comment.CommentMapper;
 import source.code.model.thread.Comment;
 import source.code.model.user.TypeOfInteraction;
@@ -12,6 +14,7 @@ import source.code.model.user.User;
 import source.code.model.user.UserComment;
 import source.code.repository.UserCommentRepository;
 import source.code.repository.UserRepository;
+import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.user.SavedService;
 
 import java.util.List;
@@ -21,11 +24,31 @@ public class UserCommentServiceImpl
         extends GenericSavedService<Comment, UserComment, CommentResponseDto>
         implements SavedService {
 
+    private final AwsS3Service awsS3Service;
+
     public UserCommentServiceImpl(UserRepository userRepository,
                                   JpaRepository<Comment, Integer> entityRepository,
                                   JpaRepository<UserComment, Integer> userEntityRepository,
-                                  CommentMapper mapper) {
+                                  CommentMapper mapper,
+                                  AwsS3Service awsS3Service) {
         super(userRepository, entityRepository, userEntityRepository, mapper::toResponseDto, Comment.class);
+        this.awsS3Service = awsS3Service;
+    }
+
+    @Override
+    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type) {
+        List<CommentSummaryDto> dtos = ((UserCommentRepository) userEntityRepository)
+                .findCommentSummaryByUserIdAndType(userId, type);
+
+        dtos.forEach(dto -> {
+            if (dto.getAuthorImageUrl() != null) {
+                dto.setAuthorImageUrl(awsS3Service.getImage(dto.getAuthorImageUrl()));
+            }
+        });
+
+        return dtos.stream()
+                .map(dto -> (BaseUserEntity) dto)
+                .toList();
     }
 
     @Override

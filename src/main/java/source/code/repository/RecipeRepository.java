@@ -41,7 +41,17 @@ public interface RecipeRepository
              r.isPublic,
              r.user.username,
              r.user.id,
-             (SELECT m.imageName FROM Media m WHERE m.parentId = r.id AND m.parentType = 'RECIPE' ORDER BY m.id ASC LIMIT 1),
+             (SELECT m.imageName FROM Media m
+              WHERE m.parentId = r.user.id
+              AND m.parentType = 'USER'
+              ORDER BY m.id ASC
+              LIMIT 1),
+             (SELECT m.imageName FROM Media m
+              WHERE m.parentId = r.id
+              AND m.parentType = 'RECIPE'
+              ORDER BY m.id ASC
+              LIMIT 1),
+             null,
              CAST((SELECT COUNT(ur1) FROM UserRecipe ur1 WHERE ur1.recipe.id = r.id AND ur1.type = 'LIKE') AS int),
              CAST((SELECT COUNT(ur2) FROM UserRecipe ur2 WHERE ur2.recipe.id = r.id AND ur2.type = 'SAVE') AS int))
       FROM Recipe r

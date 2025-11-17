@@ -2,8 +2,10 @@ package source.code.service.implementation.user.interaction.withType;
 
 import org.springframework.stereotype.Service;
 import source.code.dto.response.plan.PlanResponseDto;
+import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.exception.RecordNotFoundException;
+import source.code.helper.BaseUserEntity;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.plan.PlanMapper;
 import source.code.model.plan.Plan;
@@ -13,6 +15,7 @@ import source.code.model.user.UserPlan;
 import source.code.repository.PlanRepository;
 import source.code.repository.UserPlanRepository;
 import source.code.repository.UserRepository;
+import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.user.SavedService;
 
 import java.util.List;
@@ -22,15 +25,38 @@ public class UserPlanServiceImpl
         extends GenericSavedService<Plan, UserPlan, PlanResponseDto>
         implements SavedService {
 
+    private final AwsS3Service awsS3Service;
+
     public UserPlanServiceImpl(UserPlanRepository userPlanRepository,
                                PlanRepository planRepository,
                                UserRepository userRepository,
-                               PlanMapper planMapper) {
+                               PlanMapper planMapper,
+                               AwsS3Service awsS3Service) {
         super(userRepository,
                 planRepository,
                 userPlanRepository,
                 planMapper::toResponseDto,
                 Plan.class);
+        this.awsS3Service = awsS3Service;
+    }
+
+    @Override
+    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type) {
+        List<PlanSummaryDto> dtos = ((UserPlanRepository) userEntityRepository)
+                .findPlanSummaryByUserIdAndType(userId, type);
+
+        dtos.forEach(dto -> {
+            if (dto.getAuthorImageUrl() != null) {
+                dto.setAuthorImageUrl(awsS3Service.getImage(dto.getAuthorImageUrl()));
+            }
+            if (dto.getImageName() != null) {
+                dto.setFirstImageUrl(awsS3Service.getImage(dto.getImageName()));
+            }
+        });
+
+        return dtos.stream()
+                .map(dto -> (BaseUserEntity) dto)
+                .toList();
     }
 
     @Override

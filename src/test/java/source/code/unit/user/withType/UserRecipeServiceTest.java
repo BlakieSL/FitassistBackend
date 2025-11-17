@@ -11,6 +11,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.response.recipe.RecipeResponseDto;
+import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
@@ -24,6 +25,7 @@ import source.code.model.user.UserRecipe;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
+import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.implementation.user.interaction.withType.UserRecipeServiceImpl;
 
 import java.util.List;
@@ -43,6 +45,8 @@ public class UserRecipeServiceTest {
     private UserRepository userRepository;
     @Mock
     private RecipeMapper recipeMapper;
+    @Mock
+    private AwsS3Service awsS3Service;
     @InjectMocks
     private UserRecipeServiceImpl userRecipeService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
@@ -195,21 +199,18 @@ public class UserRecipeServiceTest {
     public void getAllFromUser_ShouldReturnAllRecipesByType() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
-        UserRecipe recipe1 = UserRecipe.createWithUserRecipeType(new User(), new Recipe(), type);
-        UserRecipe recipe2 = UserRecipe.createWithUserRecipeType(new User(), new Recipe(), type);
-        RecipeResponseDto dto1 = new RecipeResponseDto();
-        RecipeResponseDto dto2 = new RecipeResponseDto();
+        RecipeSummaryDto dto1 = new RecipeSummaryDto();
+        dto1.setId(1);
+        RecipeSummaryDto dto2 = new RecipeSummaryDto();
+        dto2.setId(2);
 
-        when(userRecipeRepository.findByUserIdAndType(userId, type))
-                .thenReturn(List.of(recipe1, recipe2));
-        when(recipeMapper.toResponseDto(recipe1.getRecipe())).thenReturn(dto1);
-        when(recipeMapper.toResponseDto(recipe2.getRecipe())).thenReturn(dto2);
+        when(userRecipeRepository.findRecipeSummaryByUserIdAndType(userId, type))
+                .thenReturn(List.of(dto1, dto2));
 
         var result = userRecipeService.getAllFromUser(userId, type);
 
         assertEquals(2, result.size());
-        assertTrue(result.contains((BaseUserEntity) dto1));
-        assertTrue(result.contains((BaseUserEntity) dto2));
+        verify(userRecipeRepository).findRecipeSummaryByUserIdAndType(userId, type);
     }
 
     @Test
@@ -218,13 +219,12 @@ public class UserRecipeServiceTest {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
 
-        when(userRecipeRepository.findByUserIdAndType(userId, type))
+        when(userRecipeRepository.findRecipeSummaryByUserIdAndType(userId, type))
                 .thenReturn(List.of());
 
         var result = userRecipeService.getAllFromUser(userId, type);
 
         assertTrue(result.isEmpty());
-        verify(recipeMapper, never()).toResponseDto(any());
     }
 
     @Test

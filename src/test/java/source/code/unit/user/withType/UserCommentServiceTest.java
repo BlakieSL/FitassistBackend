@@ -10,6 +10,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.response.comment.CommentResponseDto;
+import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
@@ -22,6 +23,7 @@ import source.code.model.user.UserComment;
 import source.code.repository.CommentRepository;
 import source.code.repository.UserCommentRepository;
 import source.code.repository.UserRepository;
+import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.implementation.user.interaction.withType.UserCommentServiceImpl;
 
 import java.util.List;
@@ -45,6 +47,9 @@ public class UserCommentServiceTest {
     @Mock
     private CommentMapper commentMapper;
 
+    @Mock
+    private AwsS3Service awsS3Service;
+
     private UserCommentServiceImpl userCommentService;
 
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
@@ -57,7 +62,8 @@ public class UserCommentServiceTest {
                 userRepository,
                 commentRepository,
                 userCommentRepository,
-                commentMapper
+                commentMapper,
+                awsS3Service
         );
     }
 
@@ -191,27 +197,18 @@ public class UserCommentServiceTest {
     public void getAllFromUser_ShouldReturnAllLikedCommentsFromUser() {
         TypeOfInteraction type = TypeOfInteraction.LIKE;
         int userId = 1;
-        UserComment like1 = new UserComment();
-        Comment comment1 = new Comment();
-        like1.setComment(comment1);
+        CommentSummaryDto dto1 = new CommentSummaryDto();
+        dto1.setId(1);
+        CommentSummaryDto dto2 = new CommentSummaryDto();
+        dto2.setId(2);
 
-        UserComment like2 = new UserComment();
-        Comment comment2 = new Comment();
-        like2.setComment(comment2);
-
-        CommentResponseDto dto1 = new CommentResponseDto();
-        CommentResponseDto dto2 = new CommentResponseDto();
-
-        when(userCommentRepository.findByUserIdAndType(userId, type))
-                .thenReturn(List.of(like1, like2));
-        when(commentMapper.toResponseDto(comment1)).thenReturn(dto1);
-        when(commentMapper.toResponseDto(comment2)).thenReturn(dto2);
+        when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
+                .thenReturn(List.of(dto1, dto2));
 
         var result = userCommentService.getAllFromUser(userId, type);
 
         assertEquals(2, result.size());
-        assertTrue(result.contains(dto1));
-        assertTrue(result.contains(dto2));
+        verify(userCommentRepository).findCommentSummaryByUserIdAndType(userId, type);
     }
 
     @Test
@@ -220,13 +217,12 @@ public class UserCommentServiceTest {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.LIKE;
 
-        when(userCommentRepository.findByUserIdAndType(userId, type))
+        when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
                 .thenReturn(List.of());
 
         var result = userCommentService.getAllFromUser(userId, type);
 
         assertTrue(result.isEmpty());
-        verify(commentMapper, never()).toResponseDto(any());
     }
 
     @Test

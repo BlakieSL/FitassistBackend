@@ -45,7 +45,17 @@ public interface PlanRepository
              p.isPublic,
              p.user.username,
              p.user.id,
-             (SELECT m.imageName FROM Media m WHERE m.parentId = p.id AND m.parentType = 'PLAN' ORDER BY m.id ASC LIMIT 1),
+             (SELECT m.imageName FROM Media m
+              WHERE m.parentId = p.user.id
+              AND m.parentType = 'USER'
+              ORDER BY m.id ASC
+              LIMIT 1),
+             (SELECT m.imageName FROM Media m
+              WHERE m.parentId = p.id
+              AND m.parentType = 'PLAN'
+              ORDER BY m.id ASC
+              LIMIT 1),
+             null,
              CAST((SELECT COUNT(up1) FROM UserPlan up1 WHERE up1.plan.id = p.id AND up1.type = 'LIKE') AS int),
              CAST((SELECT COUNT(up2) FROM UserPlan up2 WHERE up2.plan.id = p.id AND up2.type = 'SAVE') AS int))
       FROM Plan p

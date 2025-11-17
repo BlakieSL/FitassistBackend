@@ -11,6 +11,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.response.plan.PlanResponseDto;
+import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
@@ -24,6 +25,7 @@ import source.code.model.user.UserPlan;
 import source.code.repository.PlanRepository;
 import source.code.repository.UserPlanRepository;
 import source.code.repository.UserRepository;
+import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.implementation.user.interaction.withType.UserPlanServiceImpl;
 
 import java.util.List;
@@ -43,6 +45,8 @@ public class UserPlanServiceTest {
     private UserRepository userRepository;
     @Mock
     private PlanMapper planMapper;
+    @Mock
+    private AwsS3Service awsS3Service;
     @InjectMocks
     private UserPlanServiceImpl userPlanService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
@@ -196,21 +200,18 @@ public class UserPlanServiceTest {
     public void getAllFromUser_ShouldReturnAllPlansByType() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
-        UserPlan plan1 = UserPlan.createWithUserPlanType(new User(), new Plan(), type);
-        UserPlan plan2 = UserPlan.createWithUserPlanType(new User(), new Plan(), type);
-        PlanResponseDto dto1 = new PlanResponseDto();
-        PlanResponseDto dto2 = new PlanResponseDto();
+        PlanSummaryDto dto1 = new PlanSummaryDto();
+        dto1.setId(1);
+        PlanSummaryDto dto2 = new PlanSummaryDto();
+        dto2.setId(2);
 
-        when(userPlanRepository.findByUserIdAndType(userId, type))
-                .thenReturn(List.of(plan1, plan2));
-        when(planMapper.toResponseDto(plan1.getPlan())).thenReturn(dto1);
-        when(planMapper.toResponseDto(plan2.getPlan())).thenReturn(dto2);
+        when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
+                .thenReturn(List.of(dto1, dto2));
 
         var result = userPlanService.getAllFromUser(userId, type);
 
         assertEquals(2, result.size());
-        assertTrue(result.contains((BaseUserEntity) dto1));
-        assertTrue(result.contains((BaseUserEntity) dto2));
+        verify(userPlanRepository).findPlanSummaryByUserIdAndType(userId, type);
     }
 
     @Test
@@ -219,13 +220,12 @@ public class UserPlanServiceTest {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
 
-        when(userPlanRepository.findByUserIdAndType(userId, type))
+        when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
                 .thenReturn(List.of());
 
         var result = userPlanService.getAllFromUser(userId, type);
 
         assertTrue(result.isEmpty());
-        verify(planMapper, never()).toResponseDto(any());
     }
 
     @Test

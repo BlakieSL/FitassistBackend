@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.helper.BaseUserEntity;
 
 import java.time.LocalDateTime;
 
@@ -11,12 +12,12 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentSummaryDto {
-    private int id;
+public class CommentSummaryDto implements BaseUserEntity {
+    private Integer id;
     private String text;
     private LocalDateTime dateCreated;
     private String authorUsername;
-    private int authorId;
+    private Integer authorId;
     private String authorImageUrl;
     private int likeCount;
     private int repliesCount;
