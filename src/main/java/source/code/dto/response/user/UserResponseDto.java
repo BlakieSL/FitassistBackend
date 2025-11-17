@@ -28,4 +28,5 @@ public class UserResponseDto implements Serializable {
     private BigDecimal calculatedCalories;
     private String goal;
     private String activityLevel;
+    private String userImageUrl;
 }

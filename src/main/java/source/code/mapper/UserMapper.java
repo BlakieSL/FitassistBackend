@@ -7,9 +7,12 @@ import source.code.dto.pojo.UserCredentialsDto;
 import source.code.dto.request.user.UserCreateDto;
 import source.code.dto.request.user.UserUpdateDto;
 import source.code.dto.response.user.UserResponseDto;
+import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.model.user.Role;
 import source.code.model.user.User;
+import source.code.repository.MediaRepository;
 import source.code.repository.RoleRepository;
+import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.CalculationsService;
 
 import java.math.BigDecimal;
@@ -29,11 +32,18 @@ public abstract class UserMapper {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private MediaRepository mediaRepository;
+    
+    @Autowired
+    private AwsS3Service s3Service;
 
     @Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToRolesNames")
     public abstract UserCredentialsDto toDetails(User user);
 
     @Mapping(target = "calculatedCalories", expression = "java(calculatedCalories(user))")
+    @Mapping(target = "userImageUrl", expression = "java(getUserImageUrl(user))")
     public abstract UserResponseDto toResponse(User user);
 
     @Mapping(target = "password", source = "password", qualifiedByName = "hashPassword")
@@ -105,6 +115,12 @@ public abstract class UserMapper {
         }
 
         return dto.getEmail().substring(0, dto.getEmail().indexOf("@"));
+    }
+
+    String getUserImageUrl(User user) {
+        return mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(user.getId(), MediaConnectedEntity.USER)
+                .map(media -> s3Service.getImage(media.getImageName()))
+                .orElse(null);
     }
 
     BigDecimal calculatedCalories(User user) {
