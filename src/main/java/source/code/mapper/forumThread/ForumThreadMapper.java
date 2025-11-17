@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.forumThread.ForumThreadCreateDto;
 import source.code.dto.request.forumThread.ForumThreadUpdateDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
+import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.model.thread.Comment;
 import source.code.model.thread.ForumThread;
@@ -31,6 +32,18 @@ public abstract class ForumThreadMapper {
     @Mapping(target = "userId", source = "user", qualifiedByName = "userToUserId")
     @Mapping(target = "threadCategoryId", source = "threadCategory", qualifiedByName = "threadCategoryToThreadCategoryId")
     public abstract ForumThreadResponseDto toResponseDto(ForumThread forumThread);
+
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "title", source = "title")
+    @Mapping(target = "dateCreated", source = "dateCreated")
+    @Mapping(target = "text", source = "text")
+    @Mapping(target = "viewsCount", source = "views")
+    @Mapping(target = "savesCount", expression = "java(forumThread.getUserThreads() != null ? forumThread.getUserThreads().size() : 0)")
+    @Mapping(target = "commentsCount", expression = "java(forumThread.getComments() != null ? forumThread.getComments().size() : 0)")
+    @Mapping(target = "authorUsername", source = "user.username")
+    @Mapping(target = "authorId", source = "user.id")
+    @Mapping(target = "authorImageUrl", ignore = true)
+    public abstract ForumThreadSummaryDto toSummaryDto(ForumThread forumThread);
 
     @Mapping(target = "title", source = "title")
     @Mapping(target = "text", source = "text")

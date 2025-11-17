@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import source.code.dto.response.forumThread.ForumThreadResponseDto;
+import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
@@ -18,8 +18,10 @@ import source.code.model.thread.ForumThread;
 import source.code.model.user.User;
 import source.code.model.user.UserThread;
 import source.code.repository.ForumThreadRepository;
+import source.code.repository.MediaRepository;
 import source.code.repository.UserRepository;
 import source.code.repository.UserThreadRepository;
+import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.implementation.user.interaction.withoutType.UserThreadServiceImpl;
 
 import java.util.List;
@@ -39,6 +41,10 @@ public class  UserThreadServiceTest {
     private UserRepository userRepository;
     @Mock
     private ForumThreadMapper forumThreadMapper;
+    @Mock
+    private MediaRepository mediaRepository;
+    @Mock
+    private AwsS3Service awsS3Service;
     private UserThreadServiceImpl userThreadService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
@@ -50,7 +56,9 @@ public class  UserThreadServiceTest {
                 userThreadRepository,
                 forumThreadRepository,
                 userRepository,
-                forumThreadMapper
+                forumThreadMapper,
+                mediaRepository,
+                awsS3Service
         );
     }
 
@@ -168,13 +176,15 @@ public class  UserThreadServiceTest {
         ForumThread thread2 = new ForumThread();
         sub2.setForumThread(thread2);
 
-        ForumThreadResponseDto dto1 = new ForumThreadResponseDto();
-        ForumThreadResponseDto dto2 = new ForumThreadResponseDto();
+        ForumThreadSummaryDto dto1 = new ForumThreadSummaryDto();
+        ForumThreadSummaryDto dto2 = new ForumThreadSummaryDto();
 
         when(userThreadRepository.findAllByUserId(userId))
                 .thenReturn(List.of(sub1, sub2));
-        when(forumThreadMapper.toResponseDto(thread1)).thenReturn(dto1);
-        when(forumThreadMapper.toResponseDto(thread2)).thenReturn(dto2);
+        when(forumThreadMapper.toSummaryDto(thread1)).thenReturn(dto1);
+        when(forumThreadMapper.toSummaryDto(thread2)).thenReturn(dto2);
+        when(mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(anyInt(), any()))
+                .thenReturn(Optional.empty());
 
         var result = userThreadService.getAllFromUser(userId);
 
@@ -194,7 +204,7 @@ public class  UserThreadServiceTest {
         var result = userThreadService.getAllFromUser(userId);
 
         assertTrue(result.isEmpty());
-        verify(forumThreadMapper, never()).toResponseDto(any());
+        verify(forumThreadMapper, never()).toSummaryDto(any());
     }
 
     @Test

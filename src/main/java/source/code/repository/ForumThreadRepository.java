@@ -23,6 +23,11 @@ public interface ForumThreadRepository extends JpaRepository<ForumThread, Intege
              SIZE(t.comments),
              t.user.username,
              t.user.id,
+             (SELECT m.imageName FROM Media m
+              WHERE m.parentId = t.user.id
+              AND m.parentType = 'USER'
+              ORDER BY m.id ASC
+              LIMIT 1),
              null)
       FROM ForumThread t
       WHERE t.user.id = :userId

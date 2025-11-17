@@ -177,36 +177,36 @@ public class UserActivityServiceTest {
     @DisplayName("getAllFromUser - Should return all activities by type")
     public void getAllFromUser_ShouldReturnAllActivitiesByType() {
         int userId = 1;
-        UserActivity activity1 = UserActivity.of(new User(), new Activity());
-        UserActivity activity2 = UserActivity.of(new User(), new Activity());
         ActivityResponseDto dto1 = new ActivityResponseDto();
+        dto1.setId(1);
+        dto1.setImageName("activity1.jpg");
         ActivityResponseDto dto2 = new ActivityResponseDto();
+        dto2.setId(2);
+        dto2.setImageName("activity2.jpg");
 
-        when(userActivityRepository.findAllByUserId(userId))
-                .thenReturn(List.of(activity1, activity2));
-        when(activityMapper.toResponseDto(activity1.getActivity())).thenReturn(dto1);
-        when(activityMapper.toResponseDto(activity2.getActivity())).thenReturn(dto2);
+        when(userActivityRepository.findActivityDtosByUserId(userId))
+                .thenReturn(List.of(dto1, dto2));
+        when(awsS3Service.getImage("activity1.jpg")).thenReturn("https://s3.../activity1.jpg");
+        when(awsS3Service.getImage("activity2.jpg")).thenReturn("https://s3.../activity2.jpg");
 
         var result = userActivityService.getAllFromUser(userId);
 
         assertEquals(2, result.size());
-        assertTrue(result.contains((BaseUserEntity) dto1));
-        assertTrue(result.contains((BaseUserEntity) dto2));
+        verify(awsS3Service, times(2)).getImage(anyString());
     }
 
     @Test
     @DisplayName("getAllFromUser - Should return empty list if no activities")
     public void getAllFromUser_ShouldReturnEmptyListIfNoActivities() {
         int userId = 1;
-        short type = 1;
 
-        when(userActivityRepository.findAllByUserId(userId))
+        when(userActivityRepository.findActivityDtosByUserId(userId))
                 .thenReturn(List.of());
 
         var result = userActivityService.getAllFromUser(userId);
 
         assertTrue(result.isEmpty());
-        verify(activityMapper, never()).toResponseDto(any());
+        verify(awsS3Service, never()).getImage(anyString());
     }
 
     @Test

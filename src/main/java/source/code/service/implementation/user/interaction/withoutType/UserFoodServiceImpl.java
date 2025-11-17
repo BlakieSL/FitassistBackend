@@ -64,6 +64,22 @@ public class UserFoodServiceImpl
     }
 
     @Override
+    public List<BaseUserEntity> getAllFromUser(int userId) {
+        List<FoodResponseDto> dtos = ((UserFoodRepository) userEntityRepository)
+                .findFoodDtosByUserId(userId);
+
+        dtos.forEach(dto -> {
+            if (dto.getImageName() != null) {
+                dto.setFirstImageUrl(awsS3Service.getImage(dto.getImageName()));
+            }
+        });
+
+        return dtos.stream()
+                .map(dto -> (BaseUserEntity) dto)
+                .toList();
+    }
+
+    @Override
     protected List<UserFood> findAllByUser(int userId) {
         return ((UserFoodRepository) userEntityRepository).findByUserId(userId);
     }
@@ -86,17 +102,6 @@ public class UserFoodServiceImpl
 
     @Override
     protected void populateImageUrls(List<BaseUserEntity> entities) {
-        entities.forEach(entity -> {
-            FoodResponseDto food = (FoodResponseDto) entity;
-            String imageName = mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(
-                    food.getId(), MediaConnectedEntity.FOOD)
-                    .map(media -> media.getImageName())
-                    .orElse(null);
-                    
-            if (imageName != null) {
-                String fullImageUrl = awsS3Service.getImage(imageName);
-                food.setFirstImageUrl(fullImageUrl);
-            }
-        });
+        // No longer needed - images are fetched in the query
     }
 }

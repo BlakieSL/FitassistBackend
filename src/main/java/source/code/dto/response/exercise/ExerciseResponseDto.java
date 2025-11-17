@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExerciseResponseDto implements BaseUserEntity {
+public class ExerciseResponseDto {
     private Integer id;
     private String name;
     private String description;
@@ -22,5 +22,6 @@ public class ExerciseResponseDto implements BaseUserEntity {
     private TargetMuscleShortDto mechanicsType;
     private TargetMuscleShortDto forceType;
     private List<TargetMuscleShortDto> targetMuscles;
+    private String imageName;
     private String firstImageUrl;
 }

@@ -16,5 +16,6 @@ public class ActivityResponseDto implements BaseUserEntity {
     private BigDecimal met;
     private String categoryName;
     private int categoryId;
+    private String imageName;
     private String firstImageUrl;
 }

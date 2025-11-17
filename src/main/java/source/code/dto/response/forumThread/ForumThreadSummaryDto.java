@@ -22,5 +22,6 @@ public class ForumThreadSummaryDto implements BaseUserEntity {
     private int commentsCount;
     private String authorUsername;
     private int authorId;
+    private String authorImageName;
     private String authorImageUrl;
 }
