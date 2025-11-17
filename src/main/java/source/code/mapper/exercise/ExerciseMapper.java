@@ -42,6 +42,7 @@ public abstract class ExerciseMapper {
     @Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsToShortDto")
     @Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceToShortDto")
     @Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToShortDto")
+    @Mapping(target = "firstImageUrl", ignore = true)
     public abstract ExerciseResponseDto toResponseDto(Exercise exercise);
 
     @Mapping(target = "exerciseTargetMuscles", source = "targetMusclesIds", qualifiedByName = "mapTargetMuscleIdsToAssociations")

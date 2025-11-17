@@ -25,6 +25,7 @@ public abstract class FoodMapper {
 
     @Mapping(target = "categoryName", source = "foodCategory.name")
     @Mapping(target = "categoryId", source = "foodCategory.id")
+    @Mapping(target = "firstImageUrl", ignore = true)
     public abstract FoodResponseDto toResponseDto(Food food);
 
     @Mapping(target = "categoryName", source = "foodCategory.name")

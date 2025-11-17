@@ -58,12 +58,16 @@ public class UserCreatedServiceImpl implements UserCreatedService {
 
     @Override
     public List<PlanSummaryDto> getCreatedPlans(int userId) {
-        return planRepository.findSummaryByUserId(isOwnProfile(userId), userId);
+        List<PlanSummaryDto> plans = planRepository.findSummaryByUserId(isOwnProfile(userId), userId);
+        populatePlanImageUrls(plans);
+        return plans;
     }
 
     @Override
     public List<RecipeSummaryDto> getCreatedRecipes(int userId) {
-        return recipeRepository.findSummaryByUserId(isOwnProfile(userId), userId);
+        List<RecipeSummaryDto> recipes = recipeRepository.findSummaryByUserId(isOwnProfile(userId), userId);
+        populateRecipeImageUrls(recipes);
+        return recipes;
     }
 
     @Override
@@ -78,6 +82,24 @@ public class UserCreatedServiceImpl implements UserCreatedService {
         List<ForumThreadSummaryDto> threads = forumThreadRepository.findSummaryByUserId(userId);
         populateAuthorImageUrls(threads);
         return threads;
+    }
+
+    private void populatePlanImageUrls(List<PlanSummaryDto> plans) {
+        plans.forEach(plan -> {
+            if (plan.getFirstImageUrl() != null) {
+                String fullImageUrl = s3Service.getImage(plan.getFirstImageUrl());
+                plan.setFirstImageUrl(fullImageUrl);
+            }
+        });
+    }
+
+    private void populateRecipeImageUrls(List<RecipeSummaryDto> recipes) {
+        recipes.forEach(recipe -> {
+            if (recipe.getFirstImageUrl() != null) {
+                String fullImageUrl = s3Service.getImage(recipe.getFirstImageUrl());
+                recipe.setFirstImageUrl(fullImageUrl);
+            }
+        });
     }
 
     private void populateAuthorImageUrls(List<? extends Object> summaryDtos) {

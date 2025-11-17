@@ -15,6 +15,8 @@ public class PlanSummaryDto {
     private String description;
     private boolean isPublic;
     private String authorUsername;
+    private int authorId;
+    private String firstImageUrl;
     private int likesCount;
     private int savesCount;
 }

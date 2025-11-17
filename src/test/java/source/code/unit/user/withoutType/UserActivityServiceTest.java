@@ -13,14 +13,18 @@ import source.code.dto.response.activity.ActivityResponseDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
+import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.activity.ActivityMapper;
 import source.code.model.activity.Activity;
+import source.code.model.media.Media;
 import source.code.model.user.User;
 import source.code.model.user.UserActivity;
 import source.code.repository.ActivityRepository;
+import source.code.repository.MediaRepository;
 import source.code.repository.UserActivityRepository;
 import source.code.repository.UserRepository;
+import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.implementation.user.interaction.withoutType.UserActivityServiceImpl;
 
 import java.util.List;
@@ -40,6 +44,10 @@ public class UserActivityServiceTest {
     private UserRepository userRepository;
     @Mock
     private ActivityMapper activityMapper;
+    @Mock
+    private MediaRepository mediaRepository;
+    @Mock
+    private AwsS3Service awsS3Service;
     private UserActivityServiceImpl userActivityService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
@@ -50,7 +58,9 @@ public class UserActivityServiceTest {
                 userRepository,
                 activityRepository,
                 userActivityRepository,
-                activityMapper
+                activityMapper,
+                mediaRepository,
+                awsS3Service
         );
     }
 

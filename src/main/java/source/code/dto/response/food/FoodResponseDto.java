@@ -20,4 +20,5 @@ public class FoodResponseDto implements BaseUserEntity {
     private BigDecimal carbohydrates;
     private int categoryId;
     private String categoryName;
+    private String firstImageUrl;
 }

@@ -48,6 +48,30 @@ public class UserSavedControllerWithoutTypeTest {
     @WithMockUser
     @UserSavedSql
     @Test
+    @DisplayName("GET - /item-type/{itemType}/user/{userId} - Should return all saved exercises with firstImageUrl")
+    void getAllFromUserExercises() throws Exception {
+        mockMvc.perform(get("/api/user-saved/item-type/EXERCISE/user/1"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(2))
+                );
+    }
+
+    @WithMockUser
+    @UserSavedSql
+    @Test
+    @DisplayName("GET - /item-type/{itemType}/user/{userId} - Should return all saved foods with firstImageUrl")
+    void getAllFromUserFoods() throws Exception {
+        mockMvc.perform(get("/api/user-saved/item-type/FOOD/user/1"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(2))
+                );
+    }
+
+    @WithMockUser
+    @UserSavedSql
+    @Test
     @DisplayName("GET - /item-type/{itemType}/{itemId}/likes-ans-saves - Should return likes and saves for an item")
     void calculateLikesAndSaves() throws Exception {
         mockMvc.perform(get("/api/user-saved/item-type/EXERCISE/1/likes-and-saves"))

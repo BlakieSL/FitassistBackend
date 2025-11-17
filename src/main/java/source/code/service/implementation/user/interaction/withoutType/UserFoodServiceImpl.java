@@ -4,12 +4,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.food.FoodResponseDto;
 import source.code.exception.RecordNotFoundException;
+import source.code.helper.BaseUserEntity;
+import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.mapper.food.FoodMapper;
 import source.code.model.food.Food;
 import source.code.model.user.User;
 import source.code.model.user.UserFood;
+import source.code.repository.MediaRepository;
 import source.code.repository.UserFoodRepository;
 import source.code.repository.UserRepository;
+import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
 import java.util.List;
@@ -19,16 +23,22 @@ public class UserFoodServiceImpl
         extends GenericSavedServiceWithoutType<Food, UserFood, FoodResponseDto>
         implements SavedServiceWithoutType {
 
+    private final MediaRepository mediaRepository;
+    private final AwsS3Service awsS3Service;
 
     public UserFoodServiceImpl(UserRepository userRepository,
                                JpaRepository<Food, Integer> entityRepository,
                                JpaRepository<UserFood, Integer> userEntityRepository,
-                               FoodMapper mapper) {
+                               FoodMapper mapper,
+                               MediaRepository mediaRepository,
+                               AwsS3Service awsS3Service) {
         super(userRepository,
                 entityRepository,
                 userEntityRepository,
                 mapper::toResponseDto,
                 Food.class);
+        this.mediaRepository = mediaRepository;
+        this.awsS3Service = awsS3Service;
     }
 
     @Override
@@ -72,5 +82,21 @@ public class UserFoodServiceImpl
     @Override
     protected long countLikes(int entityId) {
         return 0;
+    }
+
+    @Override
+    protected void populateImageUrls(List<BaseUserEntity> entities) {
+        entities.forEach(entity -> {
+            FoodResponseDto food = (FoodResponseDto) entity;
+            String imageName = mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(
+                    food.getId(), MediaConnectedEntity.FOOD)
+                    .map(media -> media.getImageName())
+                    .orElse(null);
+                    
+            if (imageName != null) {
+                String fullImageUrl = awsS3Service.getImage(imageName);
+                food.setFirstImageUrl(fullImageUrl);
+            }
+        });
     }
 }
