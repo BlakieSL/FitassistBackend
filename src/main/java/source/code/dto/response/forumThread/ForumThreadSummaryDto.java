@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.helper.BaseUserEntity;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ForumThreadSummaryDto {
+public class ForumThreadSummaryDto implements BaseUserEntity {
     private int id;
     private String title;
     private LocalDateTime dateCreated;

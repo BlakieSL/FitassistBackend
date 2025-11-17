@@ -4,12 +4,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.exception.RecordNotFoundException;
+import source.code.helper.BaseUserEntity;
+import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.mapper.exercise.ExerciseMapper;
 import source.code.model.exercise.Exercise;
 import source.code.model.user.User;
 import source.code.model.user.UserExercise;
+import source.code.repository.MediaRepository;
 import source.code.repository.UserExerciseRepository;
 import source.code.repository.UserRepository;
+import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
 import java.util.List;
@@ -19,11 +23,18 @@ public class UserExerciseServiceImpl
         extends GenericSavedServiceWithoutType<Exercise, UserExercise, ExerciseResponseDto>
         implements SavedServiceWithoutType {
 
+    private final MediaRepository mediaRepository;
+    private final AwsS3Service awsS3Service;
+
     public UserExerciseServiceImpl(UserRepository userRepository,
                                    JpaRepository<Exercise, Integer> entityRepository,
                                    JpaRepository<UserExercise, Integer> userEntityRepository,
-                                   ExerciseMapper mapper) {
+                                   ExerciseMapper mapper,
+                                   MediaRepository mediaRepository,
+                                   AwsS3Service awsS3Service) {
         super(userRepository, entityRepository, userEntityRepository, mapper::toResponseDto, Exercise.class);
+        this.mediaRepository = mediaRepository;
+        this.awsS3Service = awsS3Service;
     }
 
     @Override
@@ -67,5 +78,21 @@ public class UserExerciseServiceImpl
     @Override
     protected long countLikes(int entityId) {
         return 0;
+    }
+
+    @Override
+    protected void populateImageUrls(List<BaseUserEntity> entities) {
+        entities.forEach(entity -> {
+            ExerciseResponseDto exercise = (ExerciseResponseDto) entity;
+            String imageName = mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(
+                    exercise.getId(), MediaConnectedEntity.EXERCISE)
+                    .map(media -> media.getImageName())
+                    .orElse(null);
+                    
+            if (imageName != null) {
+                String fullImageUrl = awsS3Service.getImage(imageName);
+                exercise.setFirstImageUrl(fullImageUrl);
+            }
+        });
     }
 }

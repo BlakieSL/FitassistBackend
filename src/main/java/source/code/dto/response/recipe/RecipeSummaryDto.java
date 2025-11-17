@@ -14,6 +14,8 @@ public class RecipeSummaryDto {
     private String name;
     private boolean isPublic;
     private String authorUsername;
+    private int authorId;
+    private String firstImageUrl;
     private int likesCount;
     private int savesCount;
 }

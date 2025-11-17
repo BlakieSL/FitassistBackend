@@ -1,6 +1,8 @@
 package source.code.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import source.code.model.user.UserActivity;
 
 import java.util.List;
@@ -11,7 +13,14 @@ public interface UserActivityRepository extends JpaRepository<UserActivity, Inte
 
     Optional<UserActivity> findByUserIdAndActivityId(int userId, int activityId);
 
-    List<UserActivity> findAllByUserId(int userId);
+    @Query("""
+           SELECT ua FROM UserActivity ua
+           JOIN FETCH ua.user
+           JOIN FETCH ua.activity a
+           JOIN FETCH a.activityCategory
+           WHERE ua.user.id = :userId
+           """)
+    List<UserActivity> findAllByUserId(@Param("userId") int userId);
 
     long countByActivityId(int activityId);
 }
