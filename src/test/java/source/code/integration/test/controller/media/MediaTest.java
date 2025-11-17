@@ -254,22 +254,27 @@ public class MediaTest {
 
     @MediaSql
     @Test
-    @DisplayName("POST - / - Should return validation error when user tries to upload second profile image")
-    public void createSecondUserProfileImageShouldFail() throws Exception {
+    @DisplayName("POST - / - Should replace existing user profile image when uploading a new one")
+    public void createSecondUserProfileImageShouldReplaceOldOne() throws Exception {
         Utils.setUserContext(2);
-        
+
         MockMultipartFile mockImage = new MockMultipartFile(
                 "image",
-                "profile2.jpg",
+                "new-profile.jpg",
                 "image/jpeg",
-                "fake-second-profile-image".getBytes()
+                "fake-new-profile-image".getBytes()
         );
 
         mockMvc.perform(multipart("/api/media")
                 .file(mockImage)
                 .param("parentType", MediaConnectedEntity.USER.name())
                 .param("parentId", "2")
-        ).andExpectAll(status().isBadRequest());
+        ).andExpectAll(
+                status().isCreated(),
+                jsonPath("$.imageUrl").isNotEmpty(),
+                jsonPath("$.parentId").value(2),
+                jsonPath("$.parentType").value("USER")
+        );
     }
 
     @MediaSql

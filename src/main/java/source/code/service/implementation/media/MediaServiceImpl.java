@@ -37,6 +37,8 @@ public class MediaServiceImpl implements MediaService {
     @Override
     @Transactional
     public MediaResponseDto createMedia(MediaCreateDto request) {
+        deleteExistingUserMediaIfNeeded(request);
+
         byte[] imageBytes = multipartFileToBytes(request.getImage());
         String imageName = s3Service.uploadImage(imageBytes);
 
@@ -99,6 +101,18 @@ public class MediaServiceImpl implements MediaService {
             return file.getBytes();
         } catch (IOException e) {
             throw new FileProcessingException("Failed to process the image file", e);
+        }
+    }
+
+    private void deleteExistingUserMediaIfNeeded(MediaCreateDto request) {
+        if (request.getParentType() == MediaConnectedEntity.USER) {
+            mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(
+                    request.getParentId(),
+                    MediaConnectedEntity.USER
+            ).ifPresent(existingMedia -> {
+                s3Service.deleteImage(existingMedia.getImageName());
+                mediaRepository.delete(existingMedia);
+            });
         }
     }
 }
