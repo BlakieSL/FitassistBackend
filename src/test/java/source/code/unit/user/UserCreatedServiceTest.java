@@ -90,9 +90,13 @@ public class UserCreatedServiceTest {
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
         PlanSummaryDto dto1 = new PlanSummaryDto();
+        dto1.setFirstImageUrl("image1.jpg");
         PlanSummaryDto dto2 = new PlanSummaryDto();
+        dto2.setFirstImageUrl("image2.jpg");
 
         when(planRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto1, dto2));
+        when(awsS3Service.getImage("image1.jpg")).thenReturn("https://s3.amazonaws.com/bucket/image1.jpg");
+        when(awsS3Service.getImage("image2.jpg")).thenReturn("https://s3.amazonaws.com/bucket/image2.jpg");
 
         List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId);
 
@@ -100,7 +104,11 @@ public class UserCreatedServiceTest {
         assertEquals(2, result.size());
         assertTrue(result.contains(dto1));
         assertTrue(result.contains(dto2));
+        assertEquals("https://s3.amazonaws.com/bucket/image1.jpg", dto1.getFirstImageUrl());
+        assertEquals("https://s3.amazonaws.com/bucket/image2.jpg", dto2.getFirstImageUrl());
         verify(planRepository).findSummaryByUserId(true, userId);
+        verify(awsS3Service).getImage("image1.jpg");
+        verify(awsS3Service).getImage("image2.jpg");
     }
 
     @Test
@@ -125,9 +133,13 @@ public class UserCreatedServiceTest {
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
         RecipeSummaryDto dto1 = new RecipeSummaryDto();
+        dto1.setFirstImageUrl("recipe1.jpg");
         RecipeSummaryDto dto2 = new RecipeSummaryDto();
+        dto2.setFirstImageUrl("recipe2.jpg");
 
         when(recipeRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto1, dto2));
+        when(awsS3Service.getImage("recipe1.jpg")).thenReturn("https://s3.amazonaws.com/bucket/recipe1.jpg");
+        when(awsS3Service.getImage("recipe2.jpg")).thenReturn("https://s3.amazonaws.com/bucket/recipe2.jpg");
 
         List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId);
 
@@ -135,7 +147,11 @@ public class UserCreatedServiceTest {
         assertEquals(2, result.size());
         assertTrue(result.contains(dto1));
         assertTrue(result.contains(dto2));
+        assertEquals("https://s3.amazonaws.com/bucket/recipe1.jpg", dto1.getFirstImageUrl());
+        assertEquals("https://s3.amazonaws.com/bucket/recipe2.jpg", dto2.getFirstImageUrl());
         verify(recipeRepository).findSummaryByUserId(true, userId);
+        verify(awsS3Service).getImage("recipe1.jpg");
+        verify(awsS3Service).getImage("recipe2.jpg");
     }
 
     @Test
@@ -233,5 +249,45 @@ public class UserCreatedServiceTest {
         assertNotNull(result);
         assertTrue(result.isEmpty());
         verify(forumThreadRepository).findSummaryByUserId(userId);
+    }
+
+    @Test
+    @DisplayName("getCreatedPlans - Should handle plans with null image URLs")
+    public void getCreatedPlans_ShouldHandleNullImageUrls() {
+        int userId = 1;
+        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+
+        PlanSummaryDto dto1 = new PlanSummaryDto();
+        dto1.setFirstImageUrl(null);
+
+        when(planRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto1));
+
+        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertNull(dto1.getFirstImageUrl());
+        verify(planRepository).findSummaryByUserId(true, userId);
+        verifyNoInteractions(awsS3Service);
+    }
+
+    @Test
+    @DisplayName("getCreatedRecipes - Should handle recipes with null image URLs")
+    public void getCreatedRecipes_ShouldHandleNullImageUrls() {
+        int userId = 1;
+        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+
+        RecipeSummaryDto dto1 = new RecipeSummaryDto();
+        dto1.setFirstImageUrl(null);
+
+        when(recipeRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto1));
+
+        List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertNull(dto1.getFirstImageUrl());
+        verify(recipeRepository).findSummaryByUserId(true, userId);
+        verifyNoInteractions(awsS3Service);
     }
 }

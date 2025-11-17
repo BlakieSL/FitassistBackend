@@ -28,6 +28,7 @@ public abstract class  ActivityMapper {
 
     @Mapping(target = "categoryName", source = "activityCategory.name")
     @Mapping(target = "categoryId", source = "activityCategory.id")
+    @Mapping(target = "firstImageUrl", ignore = true)
     public abstract ActivityResponseDto toResponseDto(Activity activity);
 
     @Mapping(target = "categoryName", source = "activityCategory.name")

@@ -6,5 +6,5 @@ import source.code.service.declaration.user.SavedServiceWithoutType;
 
 public interface SavedSelectorService {
     SavedService getService(SavedEntityType savedEntityType);
-                SavedServiceWithoutType getServiceWithoutType(SavedEntityType savedEntityType);
+    SavedServiceWithoutType getServiceWithoutType(SavedEntityType savedEntityType);
 }

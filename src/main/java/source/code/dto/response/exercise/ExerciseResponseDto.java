@@ -22,4 +22,5 @@ public class ExerciseResponseDto implements BaseUserEntity {
     private TargetMuscleShortDto mechanicsType;
     private TargetMuscleShortDto forceType;
     private List<TargetMuscleShortDto> targetMuscles;
+    private String firstImageUrl;
 }
