@@ -9,12 +9,14 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RecipeSummaryDto {
-    private int id;
+public class RecipeSummaryDto implements source.code.helper.BaseUserEntity {
+    private Integer id;
     private String name;
     private boolean isPublic;
     private String authorUsername;
-    private int authorId;
+    private Integer authorId;
+    private String authorImageUrl;
+    private String imageName;
     private String firstImageUrl;
     private int likesCount;
     private int savesCount;

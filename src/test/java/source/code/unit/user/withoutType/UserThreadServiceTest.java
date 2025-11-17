@@ -168,29 +168,18 @@ public class  UserThreadServiceTest {
     @DisplayName("getAllFromUser - Should return all saved threads from user")
     public void getAllFromUser_ShouldReturnAllSavedThreadsFromUser() {
         int userId = 1;
-        UserThread sub1 = new UserThread();
-        ForumThread thread1 = new ForumThread();
-        sub1.setForumThread(thread1);
-
-        UserThread sub2 = new UserThread();
-        ForumThread thread2 = new ForumThread();
-        sub2.setForumThread(thread2);
-
         ForumThreadSummaryDto dto1 = new ForumThreadSummaryDto();
+        dto1.setId(1);
         ForumThreadSummaryDto dto2 = new ForumThreadSummaryDto();
+        dto2.setId(2);
 
-        when(userThreadRepository.findAllByUserId(userId))
-                .thenReturn(List.of(sub1, sub2));
-        when(forumThreadMapper.toSummaryDto(thread1)).thenReturn(dto1);
-        when(forumThreadMapper.toSummaryDto(thread2)).thenReturn(dto2);
-        when(mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(anyInt(), any()))
-                .thenReturn(Optional.empty());
+        when(userThreadRepository.findThreadSummaryByUserId(userId))
+                .thenReturn(List.of(dto1, dto2));
 
         var result = userThreadService.getAllFromUser(userId);
 
         assertEquals(2, result.size());
-        assertTrue(result.contains(dto1));
-        assertTrue(result.contains(dto2));
+        verify(userThreadRepository).findThreadSummaryByUserId(userId);
     }
 
     @Test
@@ -198,13 +187,12 @@ public class  UserThreadServiceTest {
     public void getAllFromUser_ShouldReturnEmptyListIfNoSavedThreads() {
         int userId = 1;
 
-        when(userThreadRepository.findAllByUserId(userId))
+        when(userThreadRepository.findThreadSummaryByUserId(userId))
                 .thenReturn(List.of());
 
         var result = userThreadService.getAllFromUser(userId);
 
         assertTrue(result.isEmpty());
-        verify(forumThreadMapper, never()).toSummaryDto(any());
     }
 
     @Test

@@ -9,13 +9,15 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlanSummaryDto {
-    private int id;
+public class PlanSummaryDto implements source.code.helper.BaseUserEntity {
+    private Integer id;
     private String name;
     private String description;
     private boolean isPublic;
     private String authorUsername;
-    private int authorId;
+    private Integer authorId;
+    private String authorImageUrl;
+    private String imageName;
     private String firstImageUrl;
     private int likesCount;
     private int savesCount;
