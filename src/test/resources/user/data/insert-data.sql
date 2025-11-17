@@ -180,3 +180,8 @@ INSERT INTO daily_cart_food (daily_cart_id, food_id, quantity) VALUES
                                                                    (1, 2, 200.00), (1, 3, 150.00),
                                                                    (2, 5, 200.00), (2, 1, 100.00),
                                                                    (3, 4, 150.00), (3, 2, 150.00);
+
+INSERT INTO media (imageName, parent_id, parentType) VALUES
+                                                            ('user1-profile.jpg', 1, 'USER'),
+                                                            ('user2-profile.jpg', 2, 'USER'),
+                                                            ('user3-profile.jpg', 3, 'USER');

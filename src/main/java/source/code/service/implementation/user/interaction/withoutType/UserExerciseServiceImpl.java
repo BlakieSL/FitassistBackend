@@ -3,6 +3,7 @@ package source.code.service.implementation.user.interaction.withoutType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.exercise.ExerciseResponseDto;
+import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
 import source.code.helper.Enum.model.MediaConnectedEntity;
@@ -60,6 +61,22 @@ public class UserExerciseServiceImpl
     }
 
     @Override
+    public List<BaseUserEntity> getAllFromUser(int userId) {
+        List<ExerciseSummaryDto> dtos = ((UserExerciseRepository) userEntityRepository)
+                .findExerciseSummaryByUserId(userId);
+
+        dtos.forEach(dto -> {
+            if (dto.getImageName() != null) {
+                dto.setFirstImageUrl(awsS3Service.getImage(dto.getImageName()));
+            }
+        });
+
+        return dtos.stream()
+                .map(dto -> (BaseUserEntity) dto)
+                .toList();
+    }
+
+    @Override
     protected List<UserExercise> findAllByUser(int userId) {
         return ((UserExerciseRepository) userEntityRepository).findByUserId(userId);
     }
@@ -82,17 +99,6 @@ public class UserExerciseServiceImpl
 
     @Override
     protected void populateImageUrls(List<BaseUserEntity> entities) {
-        entities.forEach(entity -> {
-            ExerciseResponseDto exercise = (ExerciseResponseDto) entity;
-            String imageName = mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(
-                    exercise.getId(), MediaConnectedEntity.EXERCISE)
-                    .map(media -> media.getImageName())
-                    .orElse(null);
-                    
-            if (imageName != null) {
-                String fullImageUrl = awsS3Service.getImage(imageName);
-                exercise.setFirstImageUrl(fullImageUrl);
-            }
-        });
+        // No longer needed - images are fetched in the query
     }
 }
