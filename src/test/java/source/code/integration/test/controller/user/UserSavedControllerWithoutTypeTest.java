@@ -72,6 +72,26 @@ public class UserSavedControllerWithoutTypeTest {
     @WithMockUser
     @UserSavedSql
     @Test
+    @DisplayName("GET - /item-type/{itemType}/user/{userId} - Should return all saved threads with author image")
+    void getAllFromUserThreads() throws Exception {
+        mockMvc.perform(get("/api/user-saved/item-type/FORUM_THREAD/user/1"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(1)),
+                        jsonPath("$[0].id").value(2),
+                        jsonPath("$[0].title").value("Protein intake question"),
+                        jsonPath("$[0].authorUsername").value("adminuser"),
+                        jsonPath("$[0].authorId").value(2),
+                        jsonPath("$[0].authorImageUrl").exists(),
+                        jsonPath("$[0].viewsCount").value(42),
+                        jsonPath("$[0].savesCount").value(2),
+                        jsonPath("$[0].commentsCount").value(2)
+                );
+    }
+
+    @WithMockUser
+    @UserSavedSql
+    @Test
     @DisplayName("GET - /item-type/{itemType}/{itemId}/likes-ans-saves - Should return likes and saves for an item")
     void calculateLikesAndSaves() throws Exception {
         mockMvc.perform(get("/api/user-saved/item-type/EXERCISE/1/likes-and-saves"))

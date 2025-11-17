@@ -10,6 +10,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.response.exercise.ExerciseResponseDto;
+import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
@@ -19,8 +20,10 @@ import source.code.model.exercise.Exercise;
 import source.code.model.user.User;
 import source.code.model.user.UserExercise;
 import source.code.repository.ExerciseRepository;
+import source.code.repository.MediaRepository;
 import source.code.repository.UserExerciseRepository;
 import source.code.repository.UserRepository;
+import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.implementation.user.interaction.withoutType.UserExerciseServiceImpl;
 
 import java.util.List;
@@ -40,6 +43,10 @@ public class UserExerciseServiceTest {
     private UserRepository userRepository;
     @Mock
     private ExerciseMapper exerciseMapper;
+    @Mock
+    private MediaRepository mediaRepository;
+    @Mock
+    private AwsS3Service awsS3Service;
     private UserExerciseServiceImpl userExerciseService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
@@ -51,7 +58,9 @@ public class UserExerciseServiceTest {
                 userRepository,
                 exerciseRepository,
                 userExerciseRepository,
-                exerciseMapper
+                exerciseMapper,
+                mediaRepository,
+                awsS3Service
         );
     }
 
@@ -169,36 +178,36 @@ public class UserExerciseServiceTest {
     @DisplayName("getAllFromUser - Should return all exercises by type")
     public void getAllFromUser_ShouldReturnAllExercisesByType() {
         int userId = 1;
-        UserExercise exercise1 = UserExercise.of(new User(), new Exercise());
-        UserExercise exercise2 = UserExercise.of(new User(), new Exercise());
-        ExerciseResponseDto dto1 = new ExerciseResponseDto();
-        ExerciseResponseDto dto2 = new ExerciseResponseDto();
+        ExerciseSummaryDto dto1 = new ExerciseSummaryDto();
+        dto1.setId(1);
+        dto1.setImageName("exercise1.jpg");
+        ExerciseSummaryDto dto2 = new ExerciseSummaryDto();
+        dto2.setId(2);
+        dto2.setImageName("exercise2.jpg");
 
-        when(userExerciseRepository.findByUserId(userId))
-                .thenReturn(List.of(exercise1, exercise2));
-        when(exerciseMapper.toResponseDto(exercise1.getExercise())).thenReturn(dto1);
-        when(exerciseMapper.toResponseDto(exercise2.getExercise())).thenReturn(dto2);
+        when(userExerciseRepository.findExerciseSummaryByUserId(userId))
+                .thenReturn(List.of(dto1, dto2));
+        when(awsS3Service.getImage("exercise1.jpg")).thenReturn("https://s3.../exercise1.jpg");
+        when(awsS3Service.getImage("exercise2.jpg")).thenReturn("https://s3.../exercise2.jpg");
 
         var result = userExerciseService.getAllFromUser(userId);
 
         assertEquals(2, result.size());
-        assertTrue(result.contains((BaseUserEntity) dto1));
-        assertTrue(result.contains((BaseUserEntity) dto2));
+        verify(awsS3Service, times(2)).getImage(anyString());
     }
 
     @Test
     @DisplayName("getAllFromUser - Should return empty list if no exercises")
     public void getAllFromUser_ShouldReturnEmptyListIfNoExercises() {
         int userId = 1;
-        short type = 1;
 
-        when(userExerciseRepository.findByUserId(userId))
+        when(userExerciseRepository.findExerciseSummaryByUserId(userId))
                 .thenReturn(List.of());
 
         var result = userExerciseService.getAllFromUser(userId);
 
         assertTrue(result.isEmpty());
-        verify(exerciseMapper, never()).toResponseDto(any());
+        verify(awsS3Service, never()).getImage(anyString());
     }
 
     @Test

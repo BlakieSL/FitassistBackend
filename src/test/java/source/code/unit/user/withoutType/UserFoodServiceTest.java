@@ -19,8 +19,10 @@ import source.code.model.food.Food;
 import source.code.model.user.User;
 import source.code.model.user.UserFood;
 import source.code.repository.FoodRepository;
+import source.code.repository.MediaRepository;
 import source.code.repository.UserFoodRepository;
 import source.code.repository.UserRepository;
+import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.implementation.user.interaction.withoutType.UserFoodServiceImpl;
 
 import java.util.List;
@@ -40,6 +42,10 @@ public class UserFoodServiceTest {
     private UserRepository userRepository;
     @Mock
     private FoodMapper foodMapper;
+    @Mock
+    private MediaRepository mediaRepository;
+    @Mock
+    private AwsS3Service awsS3Service;
     private UserFoodServiceImpl userFoodService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
@@ -51,7 +57,9 @@ public class UserFoodServiceTest {
                 userRepository,
                 foodRepository,
                 userFoodRepository,
-                foodMapper
+                foodMapper,
+                mediaRepository,
+                awsS3Service
         );
     }
 
@@ -169,34 +177,35 @@ public class UserFoodServiceTest {
     @DisplayName("getAllFromUser - Should return all foods by type")
     public void getAllFromUser_ShouldReturnAllFoodsByType() {
         int userId = 1;
-        UserFood food1 = UserFood.of(new User(), new Food());
-        UserFood food2 = UserFood.of(new User(), new Food());
         FoodResponseDto dto1 = new FoodResponseDto();
+        dto1.setId(1);
+        dto1.setImageName("food1.jpg");
         FoodResponseDto dto2 = new FoodResponseDto();
+        dto2.setId(2);
+        dto2.setImageName("food2.jpg");
 
-        when(userFoodRepository.findByUserId(userId))
-                .thenReturn(List.of(food1, food2));
-        when(foodMapper.toResponseDto(food1.getFood())).thenReturn(dto1);
-        when(foodMapper.toResponseDto(food2.getFood())).thenReturn(dto2);
+        when(userFoodRepository.findFoodDtosByUserId(userId))
+                .thenReturn(List.of(dto1, dto2));
+        when(awsS3Service.getImage("food1.jpg")).thenReturn("https://s3.../food1.jpg");
+        when(awsS3Service.getImage("food2.jpg")).thenReturn("https://s3.../food2.jpg");
 
         var result = userFoodService.getAllFromUser(userId);
 
         assertEquals(2, result.size());
-        assertTrue(result.contains((BaseUserEntity) dto1));
-        assertTrue(result.contains((BaseUserEntity) dto2));
+        verify(awsS3Service, times(2)).getImage(anyString());
     }
 
     @Test
     @DisplayName("getAllFromUser - Should return empty list if no foods")
     public void getAllFromUser_ShouldReturnEmptyListIfNoFoods() {
         int userId = 1;
-        when(userFoodRepository.findByUserId(userId))
+        when(userFoodRepository.findFoodDtosByUserId(userId))
                 .thenReturn(List.of());
 
         var result = userFoodService.getAllFromUser(userId);
 
         assertTrue(result.isEmpty());
-        verify(foodMapper, never()).toResponseDto(any());
+        verify(awsS3Service, never()).getImage(anyString());
     }
 
     @Test
