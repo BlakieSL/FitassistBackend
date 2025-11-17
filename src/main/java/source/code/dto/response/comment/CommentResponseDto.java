@@ -20,6 +20,9 @@ public class CommentResponseDto implements BaseUserEntity {
     private LocalDateTime dateCreated;
     private Integer threadId;
     private Integer userId;
+    private String authorUsername;
+    private Integer authorId;
+    private String authorImageUrl;
     private Integer parentCommentId;
     private List<CommentResponseDto> replies;
 }

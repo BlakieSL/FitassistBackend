@@ -14,10 +14,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecipeResponseDto implements BaseUserEntity {
-    List<RecipeCategoryShortDto> categories;
     private Integer id;
     private String name;
     private String description;
     private Boolean isPublic;
     private Integer userId;
+    private String authorUsername;
+    private Integer authorId;
+    private String authorImageUrl;
+    private String imageName;
+    private String firstImageUrl;
+    private List<RecipeCategoryShortDto> categories;
 }
