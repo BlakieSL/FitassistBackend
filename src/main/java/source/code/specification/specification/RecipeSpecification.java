@@ -11,9 +11,6 @@ import source.code.model.recipe.Recipe;
 import source.code.model.recipe.RecipeCategoryAssociation;
 import source.code.model.recipe.RecipeFood;
 import source.code.model.user.TypeOfInteraction;
-import source.code.service.declaration.specificationHelpers.SpecificationFetchInitializer;
-import source.code.service.declaration.specificationHelpers.SpecificationFieldResolver;
-import source.code.service.declaration.specificationHelpers.SpecificationVisibilityPredicateBuilder;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 
 @AllArgsConstructor(staticName = "of")

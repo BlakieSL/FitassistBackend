@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import source.code.dto.response.food.FoodResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
-import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.mapper.food.FoodMapper;
 import source.code.model.food.Food;
 import source.code.model.user.User;
@@ -98,10 +97,5 @@ public class UserFoodServiceImpl
     @Override
     protected long countLikes(int entityId) {
         return 0;
-    }
-
-    @Override
-    protected void populateImageUrls(List<BaseUserEntity> entities) {
-        // No longer needed - images are fetched in the query
     }
 }

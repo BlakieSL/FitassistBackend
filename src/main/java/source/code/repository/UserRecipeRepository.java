@@ -21,6 +21,7 @@ public interface UserRecipeRepository extends JpaRepository<UserRecipe, Integer>
            SELECT new source.code.dto.response.recipe.RecipeSummaryDto(
                r.id,
                r.name,
+               r.description,
                r.isPublic,
                u.username,
                u.id,

@@ -38,6 +38,7 @@ public interface RecipeRepository
       SELECT new source.code.dto.response.recipe.RecipeSummaryDto(
              r.id,
              r.name,
+             r.description,
              r.isPublic,
              r.user.username,
              r.user.id,

@@ -25,7 +25,11 @@ public interface UserExerciseRepository extends JpaRepository<UserExercise, Inte
                 AND m.parentType = 'EXERCISE'
                 ORDER BY m.id ASC
                 LIMIT 1),
-               null)
+               null,
+               new source.code.dto.pojo.CategoryDto(e.expertiseLevel.id, e.expertiseLevel.name),
+               new source.code.dto.pojo.CategoryDto(e.equipment.id, e.equipment.name),
+               new source.code.dto.pojo.CategoryDto(e.mechanicsType.id, e.mechanicsType.name),
+               new source.code.dto.pojo.CategoryDto(e.forceType.id, e.forceType.name))
            FROM UserExercise ue
            JOIN ue.exercise e
            WHERE ue.user.id = :userId

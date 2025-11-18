@@ -90,9 +90,9 @@ public class UserCreatedServiceTest {
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
         PlanSummaryDto dto1 = new PlanSummaryDto();
-        dto1.setFirstImageUrl("image1.jpg");
+        dto1.setImageName("image1.jpg");
         PlanSummaryDto dto2 = new PlanSummaryDto();
-        dto2.setFirstImageUrl("image2.jpg");
+        dto2.setImageName("image2.jpg");
 
         when(planRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto1, dto2));
         when(awsS3Service.getImage("image1.jpg")).thenReturn("https://s3.amazonaws.com/bucket/image1.jpg");
@@ -133,9 +133,9 @@ public class UserCreatedServiceTest {
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
         RecipeSummaryDto dto1 = new RecipeSummaryDto();
-        dto1.setFirstImageUrl("recipe1.jpg");
+        dto1.setImageName("recipe1.jpg");
         RecipeSummaryDto dto2 = new RecipeSummaryDto();
-        dto2.setFirstImageUrl("recipe2.jpg");
+        dto2.setImageName("recipe2.jpg");
 
         when(recipeRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto1, dto2));
         when(awsS3Service.getImage("recipe1.jpg")).thenReturn("https://s3.amazonaws.com/bucket/recipe1.jpg");
@@ -173,18 +173,17 @@ public class UserCreatedServiceTest {
     @DisplayName("getCreatedComments - Should return CommentSummaryDto list from repository")
     public void getCreatedComments_ShouldReturnCommentSummaryDtos() {
         int userId = 1;
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
         CommentSummaryDto dto1 = new CommentSummaryDto();
         dto1.setAuthorId(1);
+        dto1.setAuthorImageUrl("author1.jpg");
         CommentSummaryDto dto2 = new CommentSummaryDto();
         dto2.setAuthorId(2);
+        dto2.setAuthorImageUrl("author2.jpg");
 
         when(commentRepository.findSummaryByUserId(userId)).thenReturn(List.of(dto1, dto2));
-        when(mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(1, MediaConnectedEntity.USER))
-                .thenReturn(Optional.empty());
-        when(mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(2, MediaConnectedEntity.USER))
-                .thenReturn(Optional.empty());
+        when(awsS3Service.getImage("author1.jpg")).thenReturn("https://s3.amazonaws.com/bucket/author1.jpg");
+        when(awsS3Service.getImage("author2.jpg")).thenReturn("https://s3.amazonaws.com/bucket/author2.jpg");
 
         List<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId);
 
@@ -192,7 +191,11 @@ public class UserCreatedServiceTest {
         assertEquals(2, result.size());
         assertTrue(result.contains(dto1));
         assertTrue(result.contains(dto2));
+        assertEquals("https://s3.amazonaws.com/bucket/author1.jpg", dto1.getAuthorImageUrl());
+        assertEquals("https://s3.amazonaws.com/bucket/author2.jpg", dto2.getAuthorImageUrl());
         verify(commentRepository).findSummaryByUserId(userId);
+        verify(awsS3Service).getImage("author1.jpg");
+        verify(awsS3Service).getImage("author2.jpg");
     }
 
     @Test
@@ -214,18 +217,17 @@ public class UserCreatedServiceTest {
     @DisplayName("getCreatedThreads - Should return ForumThreadSummaryDto list from repository")
     public void getCreatedThreads_ShouldReturnForumThreadSummaryDtos() {
         int userId = 1;
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
         ForumThreadSummaryDto dto1 = new ForumThreadSummaryDto();
         dto1.setAuthorId(1);
+        dto1.setAuthorImageUrl("author1.jpg");
         ForumThreadSummaryDto dto2 = new ForumThreadSummaryDto();
         dto2.setAuthorId(2);
+        dto2.setAuthorImageUrl("author2.jpg");
 
         when(forumThreadRepository.findSummaryByUserId(userId)).thenReturn(List.of(dto1, dto2));
-        when(mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(1, MediaConnectedEntity.USER))
-                .thenReturn(Optional.empty());
-        when(mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(2, MediaConnectedEntity.USER))
-                .thenReturn(Optional.empty());
+        when(awsS3Service.getImage("author1.jpg")).thenReturn("https://s3.amazonaws.com/bucket/author1.jpg");
+        when(awsS3Service.getImage("author2.jpg")).thenReturn("https://s3.amazonaws.com/bucket/author2.jpg");
 
         List<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId);
 
@@ -233,7 +235,11 @@ public class UserCreatedServiceTest {
         assertEquals(2, result.size());
         assertTrue(result.contains(dto1));
         assertTrue(result.contains(dto2));
+        assertEquals("https://s3.amazonaws.com/bucket/author1.jpg", dto1.getAuthorImageUrl());
+        assertEquals("https://s3.amazonaws.com/bucket/author2.jpg", dto2.getAuthorImageUrl());
         verify(forumThreadRepository).findSummaryByUserId(userId);
+        verify(awsS3Service).getImage("author1.jpg");
+        verify(awsS3Service).getImage("author2.jpg");
     }
 
     @Test
@@ -258,7 +264,7 @@ public class UserCreatedServiceTest {
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
         PlanSummaryDto dto1 = new PlanSummaryDto();
-        dto1.setFirstImageUrl(null);
+        dto1.setImageName(null);
 
         when(planRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto1));
 
@@ -278,7 +284,7 @@ public class UserCreatedServiceTest {
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
         RecipeSummaryDto dto1 = new RecipeSummaryDto();
-        dto1.setFirstImageUrl(null);
+        dto1.setImageName(null);
 
         when(recipeRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto1));
 
