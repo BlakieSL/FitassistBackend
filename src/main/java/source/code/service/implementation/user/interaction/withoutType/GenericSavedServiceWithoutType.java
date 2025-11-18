@@ -61,14 +61,10 @@ public abstract class GenericSavedServiceWithoutType<T, U, R> implements SavedSe
 
     @Override
     public List<BaseUserEntity> getAllFromUser(int userId) {
-        List<BaseUserEntity> entities = findAllByUser(userId).stream()
+        return findAllByUser(userId).stream()
                 .map(this::extractEntity)
                 .map(entity -> (BaseUserEntity) map.apply(entity))
                 .toList();
-        
-        populateImageUrls(entities);
-        
-        return entities;
     }
 
     @Override
@@ -92,6 +88,4 @@ public abstract class GenericSavedServiceWithoutType<T, U, R> implements SavedSe
     protected abstract long countSaves(int entityId);
 
     protected abstract long countLikes(int entityId);
-
-    protected abstract void populateImageUrls(List<BaseUserEntity> entities);
 }

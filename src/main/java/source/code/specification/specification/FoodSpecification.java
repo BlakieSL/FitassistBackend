@@ -5,12 +5,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
-import source.code.exception.InvalidFilterKeyException;
 import source.code.helper.Enum.model.LikesAndSaves;
 import source.code.helper.Enum.model.field.FoodField;
 import source.code.model.food.Food;
-import source.code.service.declaration.specificationHelpers.SpecificationFetchInitializer;
-import source.code.service.declaration.specificationHelpers.SpecificationFieldResolver;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 
 import java.math.BigDecimal;

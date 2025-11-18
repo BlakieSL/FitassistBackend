@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
-import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.mapper.forumThread.ForumThreadMapper;
 import source.code.model.thread.ForumThread;
 import source.code.model.user.User;
@@ -96,9 +95,5 @@ public class UserThreadServiceImpl
     @Override
     protected long countLikes(int entityId) {
         return 0;
-    }
-
-    @Override
-    protected void populateImageUrls(List<BaseUserEntity> entities) {
     }
 }

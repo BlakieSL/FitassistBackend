@@ -1,7 +1,5 @@
 package source.code.exception;
 
-import java.util.Arrays;
-
 import static org.hibernate.internal.util.collections.ArrayHelper.toStringArray;
 
 public class RecordNotFoundException extends LocalizedException {

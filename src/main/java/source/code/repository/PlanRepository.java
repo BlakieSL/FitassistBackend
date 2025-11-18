@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
-import source.code.dto.response.category.EquipmentResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.model.plan.Plan;
 import source.code.model.user.User;

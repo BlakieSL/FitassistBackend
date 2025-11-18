@@ -2,7 +2,6 @@ package source.code.model.daily;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jdk.jfr.Name;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

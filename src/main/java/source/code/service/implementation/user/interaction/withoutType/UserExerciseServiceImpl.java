@@ -6,7 +6,6 @@ import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
-import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.mapper.exercise.ExerciseMapper;
 import source.code.model.exercise.Exercise;
 import source.code.model.user.User;
@@ -95,10 +94,5 @@ public class UserExerciseServiceImpl
     @Override
     protected long countLikes(int entityId) {
         return 0;
-    }
-
-    @Override
-    protected void populateImageUrls(List<BaseUserEntity> entities) {
-        // No longer needed - images are fetched in the query
     }
 }
