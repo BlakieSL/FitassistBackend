@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.pojo.PlanCategoryShortDto;
-import source.code.helper.BaseUserEntity;
 
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlanResponseDto implements BaseUserEntity {
+public class PlanResponseDto  {
     private Integer id;
     private String name;
     private String description;

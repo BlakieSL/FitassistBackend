@@ -16,7 +16,6 @@ import source.code.model.text.PlanInstruction;
 import source.code.model.text.RecipeInstruction;
 import source.code.model.thread.Comment;
 import source.code.model.thread.ForumThread;
-import source.code.model.user.User;
 import source.code.model.workout.Workout;
 import source.code.model.workout.WorkoutSet;
 import source.code.model.workout.WorkoutSetGroup;

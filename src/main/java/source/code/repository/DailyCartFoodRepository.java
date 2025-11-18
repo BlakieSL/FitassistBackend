@@ -3,7 +3,6 @@ package source.code.repository;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import source.code.model.daily.DailyCartActivity;
 import source.code.model.daily.DailyCartFood;
 
 import java.util.List;

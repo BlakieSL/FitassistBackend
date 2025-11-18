@@ -11,48 +11,30 @@ import source.code.mapper.comment.CommentMapper;
 import source.code.mapper.forumThread.ForumThreadMapper;
 import source.code.mapper.plan.PlanMapper;
 import source.code.mapper.recipe.RecipeMapper;
-import source.code.repository.CommentRepository;
-import source.code.repository.ForumThreadRepository;
-import source.code.repository.MediaRepository;
-import source.code.repository.PlanRepository;
-import source.code.repository.RecipeRepository;
+import source.code.repository.*;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.user.UserCreatedService;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 @Service
 public class UserCreatedServiceImpl implements UserCreatedService {
-    private final PlanMapper planMapper;
-    private final RecipeMapper recipeMapper;
-    private final CommentMapper commentMapper;
-    private final ForumThreadMapper forumThreadMapper;
     private final PlanRepository planRepository;
     private final RecipeRepository recipeRepository;
     private final CommentRepository commentRepository;
     private final ForumThreadRepository forumThreadRepository;
-    private final MediaRepository mediaRepository;
     private final AwsS3Service s3Service;
     
-    public UserCreatedServiceImpl(PlanMapper planMapper,
-                                  RecipeMapper recipeMapper,
-                                  CommentMapper commentMapper,
-                                  ForumThreadMapper forumThreadMapper,
-                                  PlanRepository planRepository,
+    public UserCreatedServiceImpl(PlanRepository planRepository,
                                   RecipeRepository recipeRepository,
                                   CommentRepository commentRepository,
                                   ForumThreadRepository forumThreadRepository,
-                                  MediaRepository mediaRepository,
                                   AwsS3Service s3Service) {
-        this.planMapper = planMapper;
-        this.recipeMapper = recipeMapper;
-        this.commentMapper = commentMapper;
-        this.forumThreadMapper = forumThreadMapper;
         this.planRepository = planRepository;
         this.recipeRepository = recipeRepository;
         this.commentRepository = commentRepository;
         this.forumThreadRepository = forumThreadRepository;
-        this.mediaRepository = mediaRepository;
         this.s3Service = s3Service;
     }
 
@@ -73,51 +55,47 @@ public class UserCreatedServiceImpl implements UserCreatedService {
     @Override
     public List<CommentSummaryDto> getCreatedComments(int userId) {
         List<CommentSummaryDto> comments = commentRepository.findSummaryByUserId(userId);
-        populateAuthorImageUrls(comments);
+        populateCommentImageUrls(comments);
         return comments;
     }
 
     @Override
     public List<ForumThreadSummaryDto> getCreatedThreads(int userId) {
         List<ForumThreadSummaryDto> threads = forumThreadRepository.findSummaryByUserId(userId);
-        populateAuthorImageUrls(threads);
+        populateThreadImageUrls(threads);
         return threads;
     }
 
     private void populatePlanImageUrls(List<PlanSummaryDto> plans) {
         plans.forEach(plan -> {
-            if (plan.getFirstImageUrl() != null) {
-                String fullImageUrl = s3Service.getImage(plan.getFirstImageUrl());
-                plan.setFirstImageUrl(fullImageUrl);
-            }
+            populateImageUrl(plan.getAuthorImageUrl(), plan::setAuthorImageUrl);
+            populateImageUrl(plan.getImageName(), plan::setFirstImageUrl);
         });
     }
 
     private void populateRecipeImageUrls(List<RecipeSummaryDto> recipes) {
         recipes.forEach(recipe -> {
-            if (recipe.getFirstImageUrl() != null) {
-                String fullImageUrl = s3Service.getImage(recipe.getFirstImageUrl());
-                recipe.setFirstImageUrl(fullImageUrl);
-            }
+            populateImageUrl(recipe.getAuthorImageUrl(), recipe::setAuthorImageUrl);
+            populateImageUrl(recipe.getImageName(), recipe::setFirstImageUrl);
         });
     }
 
-    private void populateAuthorImageUrls(List<? extends Object> summaryDtos) {
-        summaryDtos.forEach(dto -> {
-            if (dto instanceof CommentSummaryDto comment) {
-                String imageUrl = getAuthorImageUrl(comment.getAuthorId());
-                comment.setAuthorImageUrl(imageUrl);
-            } else if (dto instanceof ForumThreadSummaryDto thread) {
-                String imageUrl = getAuthorImageUrl(thread.getAuthorId());
-                thread.setAuthorImageUrl(imageUrl);
-            }
-        });
+    private void populateCommentImageUrls(List<CommentSummaryDto> comments) {
+        comments.forEach(comment ->
+            populateImageUrl(comment.getAuthorImageUrl(), comment::setAuthorImageUrl)
+        );
     }
 
-    private String getAuthorImageUrl(int userId) {
-        return mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(userId, MediaConnectedEntity.USER)
-                .map(media -> s3Service.getImage(media.getImageName()))
-                .orElse(null);
+    private void populateThreadImageUrls(List<ForumThreadSummaryDto> threads) {
+        threads.forEach(thread ->
+            populateImageUrl(thread.getAuthorImageUrl(), thread::setAuthorImageUrl)
+        );
+    }
+
+    private void populateImageUrl(String imageName, Consumer<String> setter) {
+        if (imageName != null) {
+            setter.accept(s3Service.getImage(imageName));
+        }
     }
 
     private boolean isOwnProfile(int userId) {

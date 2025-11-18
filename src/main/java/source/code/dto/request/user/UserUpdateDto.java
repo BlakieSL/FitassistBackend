@@ -9,7 +9,6 @@ import lombok.Setter;
 import source.code.helper.Enum.model.user.ActivityLevel;
 import source.code.helper.Enum.model.user.Gender;
 import source.code.helper.Enum.model.user.Goal;
-import source.code.validation.ValidationGroups;
 import source.code.validation.email.UniqueEmailDomain;
 import source.code.validation.password.PasswordDigitsDomain;
 import source.code.validation.password.PasswordLowercaseDomain;

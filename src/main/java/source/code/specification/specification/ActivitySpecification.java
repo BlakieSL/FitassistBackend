@@ -1,21 +1,16 @@
 package source.code.specification.specification;
 
-import jakarta.persistence.criteria.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
-import source.code.exception.InvalidFilterKeyException;
 import source.code.helper.Enum.model.LikesAndSaves;
 import source.code.helper.Enum.model.field.ActivityField;
-import source.code.helper.Enum.model.field.ExerciseField;
 import source.code.model.activity.Activity;
-import source.code.model.exercise.Exercise;
-import source.code.model.plan.Plan;
-import source.code.model.plan.PlanCategoryAssociation;
-import source.code.service.declaration.specificationHelpers.SpecificationFetchInitializer;
-import source.code.service.declaration.specificationHelpers.SpecificationFieldResolver;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 
 @AllArgsConstructor(staticName = "of")

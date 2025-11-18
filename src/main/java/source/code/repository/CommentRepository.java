@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.model.thread.Comment;
 
-
 import java.util.List;
 import java.util.Optional;
 

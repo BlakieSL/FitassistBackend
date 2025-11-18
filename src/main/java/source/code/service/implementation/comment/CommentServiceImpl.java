@@ -15,7 +15,6 @@ import source.code.model.thread.Comment;
 import source.code.repository.CommentRepository;
 import source.code.service.declaration.comment.CommentService;
 import source.code.service.declaration.helpers.JsonPatchService;
-import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 
 import java.util.*;

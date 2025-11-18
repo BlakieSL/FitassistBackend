@@ -2,8 +2,6 @@ package source.code.specification;
 
 import org.springframework.data.jpa.domain.Specification;
 import source.code.dto.pojo.FilterCriteria;
-import source.code.service.declaration.specificationHelpers.SpecificationFetchInitializer;
-import source.code.service.declaration.specificationHelpers.SpecificationFieldResolver;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 
 @FunctionalInterface

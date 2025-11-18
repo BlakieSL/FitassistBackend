@@ -28,8 +28,6 @@ import source.code.service.declaration.helpers.ValidationService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DailyFoodServiceImpl implements DailyFoodService {
