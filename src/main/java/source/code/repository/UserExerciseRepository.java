@@ -20,6 +20,7 @@ public interface UserExerciseRepository extends JpaRepository<UserExercise, Inte
            SELECT new source.code.dto.response.exercise.ExerciseSummaryDto(
                e.id,
                e.name,
+               e.description,
                (SELECT m.imageName FROM Media m
                 WHERE m.parentId = e.id
                 AND m.parentType = 'EXERCISE'
@@ -29,7 +30,8 @@ public interface UserExerciseRepository extends JpaRepository<UserExercise, Inte
                new source.code.dto.pojo.CategoryDto(e.expertiseLevel.id, e.expertiseLevel.name),
                new source.code.dto.pojo.CategoryDto(e.equipment.id, e.equipment.name),
                new source.code.dto.pojo.CategoryDto(e.mechanicsType.id, e.mechanicsType.name),
-               new source.code.dto.pojo.CategoryDto(e.forceType.id, e.forceType.name))
+               new source.code.dto.pojo.CategoryDto(e.forceType.id, e.forceType.name),
+               ue.createdAt)
            FROM UserExercise ue
            JOIN ue.exercise e
            WHERE ue.user.id = :userId

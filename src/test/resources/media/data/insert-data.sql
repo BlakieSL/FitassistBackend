@@ -39,8 +39,9 @@ INSERT INTO user (
          );
 
 
-INSERT INTO recipe (is_public, description, name, user_id) VALUES (
+INSERT INTO recipe (is_public, description, name, user_id, created_at) VALUES (
              true, 'A healthy chicken salad with avocado and quinoa.',
              'Chicken Quinoa Salad',
-             1
+             1,
+             NOW()
 );

@@ -35,7 +35,8 @@ public interface UserActivityRepository extends JpaRepository<UserActivity, Inte
                 AND m.parentType = 'ACTIVITY'
                 ORDER BY m.id ASC
                 LIMIT 1),
-               null)
+               null,
+               ua.createdAt)
            FROM UserActivity ua
            JOIN ua.activity a
            JOIN a.activityCategory ac

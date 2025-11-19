@@ -26,13 +26,13 @@ INSERT INTO food_category (id, name) VALUES (1, 'Vegetables');
 INSERT INTO food (id, calories, carbohydrates, fat, name, protein, food_category_id)
 VALUES (1, 35.0, 7.0, 0.2, 'Carrot', 0.8, 1);
 
-INSERT INTO recipe (is_public, id, description, name, user_id)
-VALUES (true, 1, 'Healthy carrot soup', 'Carrot Soup', 1),
-       (false, 2, 'Private recipe', 'Private Recipe', 1);
+INSERT INTO recipe (is_public, id, description, name, user_id, created_at)
+VALUES (true, 1, 'Healthy carrot soup', 'Carrot Soup', 1, NOW()),
+       (false, 2, 'Private recipe', 'Private Recipe', 1, NOW());
 INSERT INTO plan_type (id, name) VALUES (1, 'Fitness');
 
-INSERT INTO plan (is_public, id, description, name, plan_type_id, user_id)
-VALUES (true, 3, 'Beginner workout plan', 'Beginner Plan', 1, 1);
+INSERT INTO plan (is_public, id, description, name, plan_type_id, user_id, created_at)
+VALUES (true, 3, 'Beginner workout plan', 'Beginner Plan', 1, 1, NOW());
 INSERT INTO text (type, orderIndex, text, exercise_id) VALUES
                                                            ('EXERCISE_INSTRUCTION', 0, 'Starting position: Lie prone...', 1),
                                                            ('EXERCISE_INSTRUCTION', 1, 'Lower your body...', 1),
