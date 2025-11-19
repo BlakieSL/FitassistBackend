@@ -6,6 +6,7 @@ import lombok.Setter;
 import source.code.dto.pojo.RecipeCategoryShortDto;
 import source.code.helper.BaseUserEntity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,11 +28,14 @@ public class RecipeSummaryDto implements BaseUserEntity {
     private int views;
     private int ingredientsCount;
     private List<RecipeCategoryShortDto> categories = new ArrayList<>();
+    private LocalDateTime createdAt;
+    private LocalDateTime userRecipeInteractionCreatedAt;
 
     public RecipeSummaryDto(Integer id, String name, String description, boolean isPublic,
                             String authorUsername, Integer authorId, String authorImageUrl,
                             String imageName, String firstImageUrl, int likesCount, int savesCount,
-                            int views, int ingredientsCount) {
+                            int views, int ingredientsCount, LocalDateTime createdAt,
+                            LocalDateTime userRecipeInteractionCreatedAt) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -45,5 +49,7 @@ public class RecipeSummaryDto implements BaseUserEntity {
         this.savesCount = savesCount;
         this.views = views;
         this.ingredientsCount = ingredientsCount;
+        this.createdAt = createdAt;
+        this.userRecipeInteractionCreatedAt = userRecipeInteractionCreatedAt;
     }
 }

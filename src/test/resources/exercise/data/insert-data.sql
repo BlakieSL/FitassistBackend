@@ -48,10 +48,10 @@ INSERT INTO plan_type (name) VALUES
                                  ('MAINTENANCE'),
                                  ('WEIGHT_LOSS');
 
-INSERT INTO plan (is_public, name, description, plan_type_id, user_id) VALUES
-                                                                (true,'3-Day Beginner Plan', 'A 3-day plan for beginners', 1, 1),
-                                                                (true, '5-Day Strength Plan', 'Full body strength training', 2, 1),
-                                                                (true, '4-Day Fat Loss Plan', 'Cardio and HIIT focused', 5, 1);
+INSERT INTO plan (is_public, name, description, plan_type_id, user_id, created_at) VALUES
+                                                                (true,'3-Day Beginner Plan', 'A 3-day plan for beginners', 1, 1, NOW()),
+                                                                (true, '5-Day Strength Plan', 'Full body strength training', 2, 1, NOW()),
+                                                                (true, '4-Day Fat Loss Plan', 'Cardio and HIIT focused', 5, 1, NOW());
 
 INSERT INTO workout (name, duration, plan_id) VALUES
                                                   ('Full Body Strength', 60, 1),

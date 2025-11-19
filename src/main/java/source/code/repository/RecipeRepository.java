@@ -57,7 +57,9 @@ public interface RecipeRepository
              CAST((SELECT COUNT(ur1) FROM UserRecipe ur1 WHERE ur1.recipe.id = r.id AND ur1.type = 'LIKE') AS int),
              CAST((SELECT COUNT(ur2) FROM UserRecipe ur2 WHERE ur2.recipe.id = r.id AND ur2.type = 'SAVE') AS int),
              r.views,
-             CAST((SELECT COUNT(rf) FROM RecipeFood rf WHERE rf.recipe.id = r.id) AS int))
+             CAST((SELECT COUNT(rf) FROM RecipeFood rf WHERE rf.recipe.id = r.id) AS int),
+             r.createdAt,
+             null)
       FROM Recipe r
       WHERE ((:isOwnProfile IS NULL OR :isOwnProfile = false) AND (r.isPublic = true AND r.user.id = :userId)) OR
             (:isOwnProfile = true AND r.user.id = :userId)

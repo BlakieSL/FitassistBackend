@@ -14,6 +14,7 @@ import source.code.model.user.User;
 import source.code.model.user.UserPlan;
 import source.code.model.workout.Workout;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,6 +50,9 @@ public class Plan implements IndexedEntity {
     @Column(nullable = false)
     private Integer views = 0;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -70,6 +74,11 @@ public class Plan implements IndexedEntity {
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE)
     private final Set<UserPlan> userPlans = new HashSet<>();
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
     @Override
     public String getClassName() {
