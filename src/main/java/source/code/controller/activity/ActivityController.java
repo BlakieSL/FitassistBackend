@@ -15,6 +15,7 @@ import source.code.dto.request.activity.CalculateActivityCaloriesRequestDto;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.dto.response.activity.ActivityResponseDto;
+import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.service.declaration.activity.ActivityService;
 
 import java.util.List;
@@ -32,10 +33,10 @@ public class ActivityController {
 
     @AdminOnly
     @PostMapping
-    public ResponseEntity<ActivityResponseDto> createActivity(
+    public ResponseEntity<ActivitySummaryDto> createActivity(
             @Valid @RequestBody ActivityCreateDto dto)
     {
-        ActivityResponseDto response = activityService.createActivity(dto);
+        ActivitySummaryDto response = activityService.createActivity(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -64,14 +65,14 @@ public class ActivityController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ActivityResponseDto>> getAllActivities() {
+    public ResponseEntity<List<ActivitySummaryDto>> getAllActivities() {
         return ResponseEntity.ok(activityService.getAllActivities());
     }
 
     @PostMapping("/filter")
-    public ResponseEntity<List<ActivityResponseDto>> getFilteredActivities(
+    public ResponseEntity<List<ActivitySummaryDto>> getFilteredActivities(
             @Valid @RequestBody FilterDto filterDto) {
-        List<ActivityResponseDto> filteredActivities = activityService.getFilteredActivities(filterDto);
+        List<ActivitySummaryDto> filteredActivities = activityService.getFilteredActivities(filterDto);
         return ResponseEntity.ok(filteredActivities);
     }
 

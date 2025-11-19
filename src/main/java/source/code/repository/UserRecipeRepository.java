@@ -40,6 +40,7 @@ public interface UserRecipeRepository extends JpaRepository<UserRecipe, Integer>
                CAST((SELECT COUNT(ur3) FROM UserRecipe ur3 WHERE ur3.recipe.id = r.id AND ur3.type = 'SAVE') AS int),
                r.views,
                CAST((SELECT COUNT(rf) FROM RecipeFood rf WHERE rf.recipe.id = r.id) AS int),
+                          null,
                r.createdAt,
                ur.createdAt)
            FROM UserRecipe ur

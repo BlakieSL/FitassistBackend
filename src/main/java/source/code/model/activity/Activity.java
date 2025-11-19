@@ -9,12 +9,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 import source.code.helper.search.IndexedEntity;
 import source.code.model.daily.DailyCartActivity;
+import source.code.model.media.Media;
 import source.code.model.user.UserActivity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -55,6 +59,11 @@ public class Activity implements IndexedEntity {
 
     @OneToMany(mappedBy = "activity", cascade = CascadeType.REMOVE)
     private final Set<UserActivity> userActivities = new HashSet<>();
+
+    @OneToMany
+    @JoinColumn(name = "parent_id", insertable = false, updatable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @SQLRestriction("parentType = 'ACTIVITY'")
+    private List<Media> mediaList = new ArrayList<>();
 
     @Override
     public String getClassName() {

@@ -12,7 +12,7 @@ import source.code.dto.pojo.FilterCriteria;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.recipe.FilterRecipesByFoodsDto;
 import source.code.dto.request.recipe.RecipeFoodCreateDto;
-import source.code.dto.response.food.FoodResponseDto;
+import source.code.dto.response.food.FoodSummaryDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
@@ -111,10 +111,10 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 
     @Override
     @Cacheable(value = CacheNames.FOODS_BY_RECIPE, key = "#recipeId")
-    public List<FoodResponseDto> getFoodsByRecipe(int recipeId) {
+    public List<FoodSummaryDto> getFoodsByRecipe(int recipeId) {
         return recipeFoodRepository.findByRecipeId(recipeId).stream()
                 .map(RecipeFood::getFood)
-                .map(foodMapper::toResponseDto)
+                .map(foodMapper::toSummaryDto)
                 .toList();
     }
 

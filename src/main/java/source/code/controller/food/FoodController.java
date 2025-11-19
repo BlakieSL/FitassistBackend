@@ -13,6 +13,7 @@ import source.code.dto.request.food.CalculateFoodMacrosRequestDto;
 import source.code.dto.request.food.FoodCreateDto;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.food.FoodResponseDto;
+import source.code.dto.response.food.FoodSummaryDto;
 import source.code.service.declaration.food.FoodService;
 
 import java.util.List;
@@ -28,8 +29,8 @@ public class FoodController {
 
     @AdminOnly
     @PostMapping
-    public ResponseEntity<FoodResponseDto> createFood(@Valid @RequestBody FoodCreateDto dto) {
-        FoodResponseDto response = foodService.createFood(dto);
+    public ResponseEntity<FoodSummaryDto> createFood(@Valid @RequestBody FoodCreateDto dto) {
+        FoodSummaryDto response = foodService.createFood(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -55,14 +56,14 @@ public class FoodController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FoodResponseDto>> getAllFoods() {
+    public ResponseEntity<List<FoodSummaryDto>> getAllFoods() {
         return ResponseEntity.ok(foodService.getAllFoods());
     }
 
     @PostMapping("/filter")
-    public ResponseEntity<List<FoodResponseDto>> getFilteredFoods(
+    public ResponseEntity<List<FoodSummaryDto>> getFilteredFoods(
             @Valid @RequestBody FilterDto filterDto) {
-        List<FoodResponseDto> filtered = foodService.getFilteredFoods(filterDto);
+        List<FoodSummaryDto> filtered = foodService.getFilteredFoods(filterDto);
         return ResponseEntity.ok(filtered);
     }
 

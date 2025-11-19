@@ -154,14 +154,15 @@ public class FoodControllerTest {
     @WithMockUser
     @FoodSql
     @Test
-    @DisplayName("GET - /{id} - Should return food when it exists")
-    void getFood_ShouldReturnFood_WhenItExists() throws Exception {
+    @DisplayName("GET - /{id} - Should return food with image URLs when it exists")
+    void getFood_ShouldReturnFoodWithImageUrls_WhenItExists() throws Exception {
         mockMvc.perform(get("/api/foods/1"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.id").value(1),
                         jsonPath("$.name").value("Apple"),
-                        jsonPath("$.calories").value(95)
+                        jsonPath("$.calories").value(95),
+                        jsonPath("$.imageUrls").isArray()
                 );
     }
 

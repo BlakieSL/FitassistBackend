@@ -9,15 +9,13 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import source.code.dto.response.activity.ActivityResponseDto;
+import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
-import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.activity.ActivityMapper;
 import source.code.model.activity.Activity;
-import source.code.model.media.Media;
 import source.code.model.user.User;
 import source.code.model.user.UserActivity;
 import source.code.repository.ActivityRepository;
@@ -179,10 +177,10 @@ public class UserActivityServiceTest {
     @DisplayName("getAllFromUser - Should return all activities by type")
     public void getAllFromUser_ShouldReturnAllActivitiesByType() {
         int userId = 1;
-        ActivityResponseDto dto1 = new ActivityResponseDto();
+        ActivitySummaryDto dto1 = new ActivitySummaryDto();
         dto1.setId(1);
         dto1.setImageName("activity1.jpg");
-        ActivityResponseDto dto2 = new ActivityResponseDto();
+        ActivitySummaryDto dto2 = new ActivitySummaryDto();
         dto2.setId(2);
         dto2.setImageName("activity2.jpg");
 
@@ -254,8 +252,8 @@ public class UserActivityServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
-        ActivityResponseDto dto1 = createActivityResponseDto(1, older);
-        ActivityResponseDto dto2 = createActivityResponseDto(2, newer);
+        ActivitySummaryDto dto1 = createActivityResponseDto(1, older);
+        ActivitySummaryDto dto2 = createActivityResponseDto(2, newer);
 
         when(userActivityRepository.findActivityDtosByUserId(userId))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
@@ -273,8 +271,8 @@ public class UserActivityServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
-        ActivityResponseDto dto1 = createActivityResponseDto(1, older);
-        ActivityResponseDto dto2 = createActivityResponseDto(2, newer);
+        ActivitySummaryDto dto1 = createActivityResponseDto(1, older);
+        ActivitySummaryDto dto2 = createActivityResponseDto(2, newer);
 
         when(userActivityRepository.findActivityDtosByUserId(userId))
                 .thenReturn(new ArrayList<>(List.of(dto2, dto1)));
@@ -292,8 +290,8 @@ public class UserActivityServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
-        ActivityResponseDto dto1 = createActivityResponseDto(1, older);
-        ActivityResponseDto dto2 = createActivityResponseDto(2, newer);
+        ActivitySummaryDto dto1 = createActivityResponseDto(1, older);
+        ActivitySummaryDto dto2 = createActivityResponseDto(2, newer);
 
         when(userActivityRepository.findActivityDtosByUserId(userId))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
@@ -309,9 +307,9 @@ public class UserActivityServiceTest {
     public void getAllFromUser_ShouldHandleNullDates() {
         int userId = 1;
 
-        ActivityResponseDto dto1 = createActivityResponseDto(1, LocalDateTime.of(2024, 1, 1, 10, 0));
-        ActivityResponseDto dto2 = createActivityResponseDto(2, null);
-        ActivityResponseDto dto3 = createActivityResponseDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
+        ActivitySummaryDto dto1 = createActivityResponseDto(1, LocalDateTime.of(2024, 1, 1, 10, 0));
+        ActivitySummaryDto dto2 = createActivityResponseDto(2, null);
+        ActivitySummaryDto dto3 = createActivityResponseDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
 
         when(userActivityRepository.findActivityDtosByUserId(userId))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2, dto3)));
@@ -329,9 +327,9 @@ public class UserActivityServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
-        ActivityResponseDto dto1 = createActivityResponseDto(1, older);
+        ActivitySummaryDto dto1 = createActivityResponseDto(1, older);
         dto1.setImageName("image1.jpg");
-        ActivityResponseDto dto2 = createActivityResponseDto(2, newer);
+        ActivitySummaryDto dto2 = createActivityResponseDto(2, newer);
         dto2.setImageName("image2.jpg");
 
         when(userActivityRepository.findActivityDtosByUserId(userId))
@@ -343,16 +341,16 @@ public class UserActivityServiceTest {
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        ActivityResponseDto first = (ActivityResponseDto) result.get(0);
-        ActivityResponseDto second = (ActivityResponseDto) result.get(1);
+        ActivitySummaryDto first = (ActivitySummaryDto) result.get(0);
+        ActivitySummaryDto second = (ActivitySummaryDto) result.get(1);
         assertEquals("https://s3.com/image2.jpg", first.getFirstImageUrl());
         assertEquals("https://s3.com/image1.jpg", second.getFirstImageUrl());
         verify(awsS3Service).getImage("image1.jpg");
         verify(awsS3Service).getImage("image2.jpg");
     }
 
-    private ActivityResponseDto createActivityResponseDto(int id, LocalDateTime interactionDate) {
-        ActivityResponseDto dto = new ActivityResponseDto();
+    private ActivitySummaryDto createActivityResponseDto(int id, LocalDateTime interactionDate) {
+        ActivitySummaryDto dto = new ActivitySummaryDto();
         dto.setId(id);
         dto.setUserActivityInteractionCreatedAt(interactionDate);
         return dto;
@@ -362,7 +360,7 @@ public class UserActivityServiceTest {
         assertNotNull(result);
         assertEquals(expectedSize, result.size());
         for (int i = 0; i < expectedIds.length; i++) {
-            assertEquals(expectedIds[i], ((ActivityResponseDto) result.get(i)).getId());
+            assertEquals(expectedIds[i], ((ActivitySummaryDto) result.get(i)).getId());
         }
     }
 }
