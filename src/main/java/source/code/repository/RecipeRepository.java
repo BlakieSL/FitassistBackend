@@ -4,6 +4,7 @@ import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.model.recipe.Recipe;
@@ -54,11 +55,17 @@ public interface RecipeRepository
               LIMIT 1),
              null,
              CAST((SELECT COUNT(ur1) FROM UserRecipe ur1 WHERE ur1.recipe.id = r.id AND ur1.type = 'LIKE') AS int),
-             CAST((SELECT COUNT(ur2) FROM UserRecipe ur2 WHERE ur2.recipe.id = r.id AND ur2.type = 'SAVE') AS int))
+             CAST((SELECT COUNT(ur2) FROM UserRecipe ur2 WHERE ur2.recipe.id = r.id AND ur2.type = 'SAVE') AS int),
+             r.views,
+             CAST((SELECT COUNT(rf) FROM RecipeFood rf WHERE rf.recipe.id = r.id) AS int))
       FROM Recipe r
       WHERE ((:isOwnProfile IS NULL OR :isOwnProfile = false) AND (r.isPublic = true AND r.user.id = :userId)) OR
             (:isOwnProfile = true AND r.user.id = :userId)
     """)
     List<RecipeSummaryDto> findSummaryByUserId(@Param("isOwnProfile") Boolean isOwnProfile,
                                                @Param("userId") Integer userId);
+
+    @Modifying
+    @Query("UPDATE Recipe r SET r.views = r.views + 1 WHERE r.id = :recipeId")
+    void incrementViews(@Param("recipeId") Integer recipeId);
 }

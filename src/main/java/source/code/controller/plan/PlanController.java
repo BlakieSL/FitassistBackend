@@ -67,4 +67,10 @@ public class PlanController {
         List<PlanResponseDto> filtered = planService.getFilteredPlans(filterDto);
         return ResponseEntity.ok(filtered);
     }
+
+    @PatchMapping("/{planId}/view")
+    public ResponseEntity<Void> incrementViews(@PathVariable int planId) {
+        planService.incrementViews(planId);
+        return ResponseEntity.noContent().build();
+    }
 }

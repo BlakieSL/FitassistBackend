@@ -42,12 +42,12 @@ VALUES
     (3, 100, 3, 2),
     (4, 150, 3, 3);
 
-INSERT INTO user_recipe (id, type, recipie_id, user_id)
+INSERT INTO user_recipe (id, type, recipie_id, user_id, created_at)
 VALUES
-    (1, 'SAVE', 1, 1),
-    (2, 'LIKE', 2, 1),
-    (3, 'SAVE', 3, 1),
-    (4, 'LIKE', 3, 1);
+    (1, 'SAVE', 1, 1, NOW()),
+    (2, 'LIKE', 2, 1, NOW()),
+    (3, 'SAVE', 3, 1, NOW()),
+    (4, 'LIKE', 3, 1, NOW());
 
 INSERT INTO text (type, id, orderIndex, text, title, recipe_id)
 VALUES

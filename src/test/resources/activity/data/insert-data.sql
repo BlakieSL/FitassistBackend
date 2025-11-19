@@ -36,8 +36,8 @@ INSERT INTO daily_cart_activity (time, activity_id, daily_cart_id) VALUES
     (60, 3, 2),
     (30, 4, 3);
 
-INSERT INTO user_activity (activity_id, user_id) VALUES
-    (1, 1),
-    (2, 1),
-    (3, 2),
-    (4, 2);
+INSERT INTO user_activity (activity_id, user_id, created_at) VALUES
+    (1, 1, NOW()),
+    (2, 1, NOW()),
+    (3, 2, NOW()),
+    (4, 2, NOW());

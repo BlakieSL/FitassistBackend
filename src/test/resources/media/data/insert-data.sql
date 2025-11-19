@@ -8,7 +8,6 @@ INSERT INTO media (imageName, parent_id, parentType) VALUES
 INSERT INTO user (
     activity_level,
     birthday,
-    calculated_calories,
     email,
     gender,
     goal,
@@ -19,7 +18,6 @@ INSERT INTO user (
 ) VALUES (
              'MODERATELY_ACTIVE',
              '1990-05-15',
-             2500.0,
              'john.doe@example.com',
              'MALE',
              'LOSE_WEIGHT',
@@ -31,7 +29,6 @@ INSERT INTO user (
          (
              'LIGHTLY_ACTIVE',
              '1992-08-20',
-             1800.0,
              'jane.smith@example.com',
              'FEMALE',
              'MAINTAIN_WEIGHT',
@@ -42,9 +39,8 @@ INSERT INTO user (
          );
 
 
-INSERT INTO recipe (is_public, description,name,text,user_id) VALUES (
+INSERT INTO recipe (is_public, description, name, user_id) VALUES (
              true, 'A healthy chicken salad with avocado and quinoa.',
              'Chicken Quinoa Salad',
-             'Mix cooked quinoa, grilled chicken breast, avocado, cherry tomatoes, and olive oil.',
              1
 );

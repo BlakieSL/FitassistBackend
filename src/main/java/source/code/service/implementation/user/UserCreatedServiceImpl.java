@@ -1,22 +1,25 @@
 package source.code.service.implementation.user;
 
 import org.springframework.stereotype.Service;
+import source.code.dto.pojo.RecipeCategoryShortDto;
 import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
-import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.helper.user.AuthorizationUtil;
-import source.code.mapper.comment.CommentMapper;
-import source.code.mapper.forumThread.ForumThreadMapper;
-import source.code.mapper.plan.PlanMapper;
-import source.code.mapper.recipe.RecipeMapper;
-import source.code.repository.*;
+import source.code.repository.CommentRepository;
+import source.code.repository.ForumThreadRepository;
+import source.code.repository.PlanRepository;
+import source.code.repository.RecipeCategoryAssociationRepository;
+import source.code.repository.RecipeRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.user.UserCreatedService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @Service
 public class UserCreatedServiceImpl implements UserCreatedService {
@@ -25,17 +28,20 @@ public class UserCreatedServiceImpl implements UserCreatedService {
     private final CommentRepository commentRepository;
     private final ForumThreadRepository forumThreadRepository;
     private final AwsS3Service s3Service;
-    
+    private final RecipeCategoryAssociationRepository recipeCategoryAssociationRepository;
+
     public UserCreatedServiceImpl(PlanRepository planRepository,
                                   RecipeRepository recipeRepository,
                                   CommentRepository commentRepository,
                                   ForumThreadRepository forumThreadRepository,
-                                  AwsS3Service s3Service) {
+                                  AwsS3Service s3Service,
+                                  RecipeCategoryAssociationRepository recipeCategoryAssociationRepository) {
         this.planRepository = planRepository;
         this.recipeRepository = recipeRepository;
         this.commentRepository = commentRepository;
         this.forumThreadRepository = forumThreadRepository;
         this.s3Service = s3Service;
+        this.recipeCategoryAssociationRepository = recipeCategoryAssociationRepository;
     }
 
     @Override
@@ -48,6 +54,11 @@ public class UserCreatedServiceImpl implements UserCreatedService {
     @Override
     public List<RecipeSummaryDto> getCreatedRecipes(int userId) {
         List<RecipeSummaryDto> recipes = recipeRepository.findSummaryByUserId(isOwnProfile(userId), userId);
+        if (!recipes.isEmpty()) {
+            List<Integer> recipeIds = recipes.stream().map(RecipeSummaryDto::getId).toList();
+            Map<Integer, List<RecipeCategoryShortDto>> categoriesMap = fetchCategoriesForRecipes(recipeIds);
+            recipes.forEach(recipe -> recipe.setCategories(categoriesMap.getOrDefault(recipe.getId(), new ArrayList<>())));
+        }
         populateRecipeImageUrls(recipes);
         return recipes;
     }
@@ -104,5 +115,16 @@ public class UserCreatedServiceImpl implements UserCreatedService {
 
     private int getUserId() {
         return AuthorizationUtil.getUserId();
+    }
+
+    private Map<Integer, List<RecipeCategoryShortDto>> fetchCategoriesForRecipes(List<Integer> recipeIds) {
+        return recipeCategoryAssociationRepository.findCategoryDataByRecipeIds(recipeIds).stream()
+                .collect(Collectors.groupingBy(
+                        arr -> (Integer) arr[0],
+                        Collectors.mapping(
+                                arr -> new RecipeCategoryShortDto((Integer) arr[1], (String) arr[2]),
+                                Collectors.toList()
+                        )
+                ));
     }
 }

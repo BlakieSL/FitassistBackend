@@ -70,4 +70,10 @@ public class RecipeController {
         List<RecipeResponseDto> filtered = recipeService.getFilteredRecipes(filterDto);
         return ResponseEntity.ok(filtered);
     }
+
+    @PatchMapping("/{recipeId}/view")
+    public ResponseEntity<Void> incrementViews(@PathVariable int recipeId) {
+        recipeService.incrementViews(recipeId);
+        return ResponseEntity.noContent().build();
+    }
 }

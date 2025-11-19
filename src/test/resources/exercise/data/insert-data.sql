@@ -35,10 +35,10 @@ INSERT INTO user (email, password, username, gender, birthday, activity_level, g
 VALUES
     ('test@example.com', '$2a$10$exampleHash', 'test_user', 'MALE', '1990-01-01', 'MODERATELY_ACTIVE', 'BUILD_MUSCLE', 180.00, 75.00);
 
-INSERT INTO user_exercise (user_id, exercise_id)
+INSERT INTO user_exercise (user_id, exercise_id, created_at)
 VALUES
-    (1, 1),
-    (1, 2);
+    (1, 1, NOW()),
+    (1, 2, NOW());
 
 
 INSERT INTO plan_type (name) VALUES

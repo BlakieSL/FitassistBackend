@@ -1,6 +1,7 @@
 package source.code.service.implementation.user.interaction.withType;
 
 import org.springframework.stereotype.Service;
+import source.code.dto.pojo.RecipeCategoryShortDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
@@ -11,13 +12,17 @@ import source.code.model.recipe.Recipe;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.User;
 import source.code.model.user.UserRecipe;
+import source.code.repository.RecipeCategoryAssociationRepository;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.user.SavedService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service("userRecipeService")
 public class UserRecipeServiceImpl
@@ -25,38 +30,57 @@ public class UserRecipeServiceImpl
         implements SavedService {
 
     private final AwsS3Service awsS3Service;
+    private final RecipeCategoryAssociationRepository categoryAssociationRepository;
 
     public UserRecipeServiceImpl(UserRecipeRepository userRecipeRepository,
                                  RecipeRepository recipeRepository,
                                  UserRepository userRepository,
                                  RecipeMapper recipeMapper,
-                                 AwsS3Service awsS3Service) {
+                                 AwsS3Service awsS3Service,
+                                 RecipeCategoryAssociationRepository categoryAssociationRepository) {
         super(userRepository,
                 recipeRepository,
                 userRecipeRepository,
                 recipeMapper::toResponseDto,
                 Recipe.class);
         this.awsS3Service = awsS3Service;
+        this.categoryAssociationRepository = categoryAssociationRepository;
     }
-
 
     @Override
     public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type) {
         List<RecipeSummaryDto> dtos = ((UserRecipeRepository) userEntityRepository)
                 .findRecipeSummaryByUserIdAndType(userId, type);
 
-        dtos.forEach(dto -> {
-            if (dto.getAuthorImageUrl() != null) {
-                dto.setAuthorImageUrl(awsS3Service.getImage(dto.getAuthorImageUrl()));
-            }
-            if (dto.getImageName() != null) {
-                dto.setFirstImageUrl(awsS3Service.getImage(dto.getImageName()));
-            }
-        });
+        if (!dtos.isEmpty()) {
+            List<Integer> recipeIds = dtos.stream().map(RecipeSummaryDto::getId).toList();
+            Map<Integer, List<RecipeCategoryShortDto>> categoriesMap = fetchCategoriesForRecipes(recipeIds);
+
+            dtos.forEach(dto -> {
+                if (dto.getAuthorImageUrl() != null) {
+                    dto.setAuthorImageUrl(awsS3Service.getImage(dto.getAuthorImageUrl()));
+                }
+                if (dto.getImageName() != null) {
+                    dto.setFirstImageUrl(awsS3Service.getImage(dto.getImageName()));
+                }
+                dto.setCategories(categoriesMap.getOrDefault(dto.getId(), new ArrayList<>()));
+            });
+        }
 
         return dtos.stream()
                 .map(dto -> (BaseUserEntity) dto)
                 .toList();
+    }
+
+    private Map<Integer, List<RecipeCategoryShortDto>> fetchCategoriesForRecipes(List<Integer> recipeIds) {
+        return categoryAssociationRepository.findCategoryDataByRecipeIds(recipeIds).stream()
+                .collect(Collectors.groupingBy(
+                        arr -> (Integer) arr[0],
+                        Collectors.mapping(
+                                arr -> new RecipeCategoryShortDto((Integer) arr[1], (String) arr[2]),
+                                Collectors.toList()
+                        )
+                ));
     }
 
     @Override

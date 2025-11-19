@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.exercise.Exercise;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "user_exercise")
 @Getter
@@ -28,6 +30,14 @@ public class UserExercise {
     @ManyToOne
     @JoinColumn(name = "exercise_id", nullable = false)
     private Exercise exercise;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
     public static UserExercise of(User user, Exercise exercise) {
         UserExercise userExercise = new UserExercise();

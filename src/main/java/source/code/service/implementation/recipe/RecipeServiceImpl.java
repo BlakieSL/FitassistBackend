@@ -123,6 +123,12 @@ public class RecipeServiceImpl implements RecipeService {
         return recipeRepository.findAllWithoutAssociations();
     }
 
+    @Override
+    @Transactional
+    public void incrementViews(int recipeId) {
+        recipeRepository.incrementViews(recipeId);
+    }
+
     private Recipe find(int recipeId) {
         return repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
     }

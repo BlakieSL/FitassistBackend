@@ -128,6 +128,12 @@ public class PlanServiceImpl implements PlanService {
         return planRepository.findAllWithoutAssociations();
     }
 
+    @Override
+    @Transactional
+    public void incrementViews(int planId) {
+        planRepository.incrementViews(planId);
+    }
+
     private Plan find(int planId) {
         return repositoryHelper.find(planRepository, Plan.class, planId);
     }

@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.thread.Comment;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "user_comment")
 @Getter
@@ -33,6 +35,14 @@ public class UserComment {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TypeOfInteraction type;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
     public static UserComment of(User user, Comment comment, TypeOfInteraction typeOfInteraction) {
         UserComment userComment = new UserComment();

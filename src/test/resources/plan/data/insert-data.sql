@@ -172,25 +172,25 @@ INSERT INTO plan_category_association (plan_id, plan_category_id) VALUES
 (11, 1), (11, 5), (11, 8),
 (12, 7), (12, 8), (12, 3);
 
-INSERT INTO user_plan (type, plan_id, user_id) VALUES
-('LIKE', 1, 2),
-('LIKE', 3, 1),
-('LIKE', 5, 4),
-('LIKE', 7, 3),
-('LIKE', 9, 6),
-('LIKE', 11, 5),
-('SAVE', 2, 3),
-('SAVE', 4, 5),
-('SAVE', 6, 1),
-('SAVE', 8, 2),
-('SAVE', 10, 4),
-('SAVE', 12, 6),
-('DISLIKE', 1, 6),
-('DISLIKE', 3, 4),
-('DISLIKE', 5, 2),
-('DISLIKE', 7, 5),
-('DISLIKE', 9, 1),
-('DISLIKE', 11, 3);
+INSERT INTO user_plan (type, plan_id, user_id, created_at) VALUES
+('LIKE', 1, 2, NOW()),
+('LIKE', 3, 1, NOW()),
+('LIKE', 5, 4, NOW()),
+('LIKE', 7, 3, NOW()),
+('LIKE', 9, 6, NOW()),
+('LIKE', 11, 5, NOW()),
+('SAVE', 2, 3, NOW()),
+('SAVE', 4, 5, NOW()),
+('SAVE', 6, 1, NOW()),
+('SAVE', 8, 2, NOW()),
+('SAVE', 10, 4, NOW()),
+('SAVE', 12, 6, NOW()),
+('DISLIKE', 1, 6, NOW()),
+('DISLIKE', 3, 4, NOW()),
+('DISLIKE', 5, 2, NOW()),
+('DISLIKE', 7, 5, NOW()),
+('DISLIKE', 9, 1, NOW()),
+('DISLIKE', 11, 3, NOW());
 
 INSERT INTO workout (duration, name, plan_id) VALUES
 (60.0, 'Upper Body', 1),
