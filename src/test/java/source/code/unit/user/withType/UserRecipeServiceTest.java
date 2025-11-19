@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
@@ -215,7 +216,7 @@ public class UserRecipeServiceTest {
         when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2)))
                 .thenReturn(Collections.emptyList());
 
-        var result = userRecipeService.getAllFromUser(userId, type, "DESC");
+        var result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertEquals(2, result.size());
         verify(userRecipeRepository).findRecipeSummaryByUserIdAndType(userId, type);
@@ -231,7 +232,7 @@ public class UserRecipeServiceTest {
         when(userRecipeRepository.findRecipeSummaryByUserIdAndType(userId, type))
                 .thenReturn(List.of());
 
-        var result = userRecipeService.getAllFromUser(userId, type, "DESC");
+        var result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertTrue(result.isEmpty());
     }
@@ -290,7 +291,7 @@ public class UserRecipeServiceTest {
         when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2)))
                 .thenReturn(Collections.emptyList());
 
-        List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, "DESC");
+        List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertSortedResult(result, 2, 2, 1);
         verify(userRecipeRepository).findRecipeSummaryByUserIdAndType(userId, type);
@@ -312,7 +313,7 @@ public class UserRecipeServiceTest {
         when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(2, 1)))
                 .thenReturn(Collections.emptyList());
 
-        List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, "ASC");
+        List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.ASC);
 
         assertSortedResult(result, 2, 1, 2);
         verify(userRecipeRepository).findRecipeSummaryByUserIdAndType(userId, type);
@@ -334,7 +335,7 @@ public class UserRecipeServiceTest {
         when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2)))
                 .thenReturn(Collections.emptyList());
 
-        List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, "DESC");
+        List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertSortedResult(result, 2, 2, 1);
         verify(userRecipeRepository).findRecipeSummaryByUserIdAndType(userId, type);
@@ -355,7 +356,7 @@ public class UserRecipeServiceTest {
         when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2, 3)))
                 .thenReturn(Collections.emptyList());
 
-        List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, "DESC");
+        List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertSortedResult(result, 3, 3, 1, 2);
         verify(userRecipeRepository).findRecipeSummaryByUserIdAndType(userId, type);
@@ -385,7 +386,7 @@ public class UserRecipeServiceTest {
         when(awsS3Service.getImage("author1.jpg")).thenReturn("https://s3.com/author1.jpg");
         when(awsS3Service.getImage("author2.jpg")).thenReturn("https://s3.com/author2.jpg");
 
-        List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, "DESC");
+        List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(2, result.size());

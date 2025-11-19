@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
@@ -210,7 +211,7 @@ public class UserPlanServiceTest {
         when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
                 .thenReturn(List.of(dto1, dto2));
 
-        var result = userPlanService.getAllFromUser(userId, type, "DESC");
+        var result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertEquals(2, result.size());
         verify(userPlanRepository).findPlanSummaryByUserIdAndType(userId, type);
@@ -225,7 +226,7 @@ public class UserPlanServiceTest {
         when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
                 .thenReturn(List.of());
 
-        var result = userPlanService.getAllFromUser(userId, type, "DESC");
+        var result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertTrue(result.isEmpty());
     }
@@ -282,7 +283,7 @@ public class UserPlanServiceTest {
         when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
 
-        List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, "DESC");
+        List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertSortedResult(result, 2, 2, 1);
         verify(userPlanRepository).findPlanSummaryByUserIdAndType(userId, type);
@@ -302,7 +303,7 @@ public class UserPlanServiceTest {
         when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
                 .thenReturn(new ArrayList<>(List.of(dto2, dto1)));
 
-        List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, "ASC");
+        List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, Sort.Direction.ASC);
 
         assertSortedResult(result, 2, 1, 2);
         verify(userPlanRepository).findPlanSummaryByUserIdAndType(userId, type);
@@ -322,7 +323,7 @@ public class UserPlanServiceTest {
         when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
 
-        List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, "DESC");
+        List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertSortedResult(result, 2, 2, 1);
         verify(userPlanRepository).findPlanSummaryByUserIdAndType(userId, type);
@@ -341,7 +342,7 @@ public class UserPlanServiceTest {
         when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2, dto3)));
 
-        List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, "DESC");
+        List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertSortedResult(result, 3, 3, 1, 2);
         verify(userPlanRepository).findPlanSummaryByUserIdAndType(userId, type);
@@ -369,7 +370,7 @@ public class UserPlanServiceTest {
         when(awsS3Service.getImage("author1.jpg")).thenReturn("https://s3.com/author1.jpg");
         when(awsS3Service.getImage("author2.jpg")).thenReturn("https://s3.com/author2.jpg");
 
-        List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, "DESC");
+        List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(2, result.size());

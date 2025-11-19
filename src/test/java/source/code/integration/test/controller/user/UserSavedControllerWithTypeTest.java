@@ -41,7 +41,7 @@ public class UserSavedControllerWithTypeTest {
         mockMvc.perform(get("/api/user-saved/item-type/PLAN/type/SAVE/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(1))
+                        jsonPath("$").value(hasSize(3))
                 );
     }
 
@@ -92,7 +92,7 @@ public class UserSavedControllerWithTypeTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.likes").value(0),
-                        jsonPath("$.saves").value(0)
+                        jsonPath("$.saves").value(1)
                 );
     }
 
@@ -211,8 +211,10 @@ public class UserSavedControllerWithTypeTest {
                 .param("sort", "DESC"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(1)),
-                        jsonPath("$[0].id").exists()
+                        jsonPath("$").value(hasSize(3)),
+                        jsonPath("$[0].id").value(3),
+                        jsonPath("$[1].id").value(2),
+                        jsonPath("$[2].id").value(1)
                 );
     }
 
@@ -221,12 +223,14 @@ public class UserSavedControllerWithTypeTest {
     @Test
     @DisplayName("GET - /item-type/{itemType}/type/{type}/user/{userId}?sort=ASC - Should return items sorted ASC")
     void getAllFromUserSortAsc() throws Exception {
-        mockMvc.perform(get("/api/user-saved/item-type/RECIPE/type/SAVE/user/1")
+        mockMvc.perform(get("/api/user-saved/item-type/PLAN/type/SAVE/user/1")
                 .param("sort", "ASC"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(1)),
-                        jsonPath("$[0].id").exists()
+                        jsonPath("$").value(hasSize(3)),
+                        jsonPath("$[0].id").value(1),
+                        jsonPath("$[1].id").value(2),
+                        jsonPath("$[2].id").value(3)
                 );
     }
 

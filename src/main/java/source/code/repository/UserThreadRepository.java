@@ -41,7 +41,8 @@ public interface UserThreadRepository
                 AND m.parentType = 'USER'
                 ORDER BY m.id ASC
                 LIMIT 1),
-               null)
+               null,
+               ut.createdAt)
            FROM UserThread ut
            JOIN ut.forumThread ft
            JOIN ft.user u

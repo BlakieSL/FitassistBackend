@@ -24,4 +24,5 @@ public class ForumThreadSummaryDto implements BaseUserEntity {
     private int authorId;
     private String authorImageName;
     private String authorImageUrl;
+    private LocalDateTime userThreadInteractionCreatedAt;
 }
