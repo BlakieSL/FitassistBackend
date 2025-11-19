@@ -152,9 +152,11 @@ INSERT INTO user_recipe (user_id, recipie_id, type, created_at) VALUES
                                                         (3, 1, 'SAVE', NOW());
 
 INSERT INTO user_plan (user_id, plan_id, type, created_at) VALUES
-                                                   (1, 1, 'SAVE', NOW()),
-                                                   (2, 2, 'SAVE', NOW()),
-                                                   (2, 2, 'LIKE', NOW());
+                                                   (1, 1, 'SAVE', '2025-11-01 10:00:00'),
+                                                   (1, 2, 'SAVE', '2025-11-02 11:00:00'),
+                                                   (1, 3, 'SAVE', '2025-11-03 12:00:00'),
+                                                   (2, 2, 'SAVE', '2025-11-01 10:00:00'),
+                                                   (2, 2, 'LIKE', '2025-11-02 11:00:00');
 
 INSERT INTO user_comment (user_id, comment_id, type, created_at) VALUES
                                                          (1, 3, 'LIKE', NOW()),

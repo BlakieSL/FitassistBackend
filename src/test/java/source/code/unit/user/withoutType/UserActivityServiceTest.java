@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
@@ -19,7 +20,6 @@ import source.code.model.activity.Activity;
 import source.code.model.user.User;
 import source.code.model.user.UserActivity;
 import source.code.repository.ActivityRepository;
-import source.code.repository.MediaRepository;
 import source.code.repository.UserActivityRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.aws.AwsS3Service;
@@ -32,6 +32,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,8 +47,6 @@ public class UserActivityServiceTest {
     @Mock
     private ActivityMapper activityMapper;
     @Mock
-    private MediaRepository mediaRepository;
-    @Mock
     private AwsS3Service awsS3Service;
     private UserActivityServiceImpl userActivityService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
@@ -59,7 +59,6 @@ public class UserActivityServiceTest {
                 activityRepository,
                 userActivityRepository,
                 activityMapper,
-                mediaRepository,
                 awsS3Service
         );
     }
@@ -177,22 +176,32 @@ public class UserActivityServiceTest {
     @DisplayName("getAllFromUser - Should return all activities by type")
     public void getAllFromUser_ShouldReturnAllActivitiesByType() {
         int userId = 1;
+
+        Activity activity1 = new Activity();
+        activity1.setId(1);
+        activity1.setMediaList(new ArrayList<>());
+
+        Activity activity2 = new Activity();
+        activity2.setId(2);
+        activity2.setMediaList(new ArrayList<>());
+
+        UserActivity ua1 = UserActivity.of(new User(), activity1);
+        UserActivity ua2 = UserActivity.of(new User(), activity2);
+
         ActivitySummaryDto dto1 = new ActivitySummaryDto();
         dto1.setId(1);
-        dto1.setImageName("activity1.jpg");
         ActivitySummaryDto dto2 = new ActivitySummaryDto();
         dto2.setId(2);
-        dto2.setImageName("activity2.jpg");
 
-        when(userActivityRepository.findActivityDtosByUserId(userId))
-                .thenReturn(List.of(dto1, dto2));
-        when(awsS3Service.getImage("activity1.jpg")).thenReturn("https://s3.../activity1.jpg");
-        when(awsS3Service.getImage("activity2.jpg")).thenReturn("https://s3.../activity2.jpg");
+        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
+                .thenReturn(List.of(ua1, ua2));
+        when(activityMapper.toSummaryDto(activity1)).thenReturn(dto1);
+        when(activityMapper.toSummaryDto(activity2)).thenReturn(dto2);
 
-        var result = userActivityService.getAllFromUser(userId, "DESC");
+        var result = userActivityService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertEquals(2, result.size());
-        verify(awsS3Service, times(2)).getImage(anyString());
+        verify(activityMapper, times(2)).toSummaryDto(any(Activity.class));
     }
 
     @Test
@@ -200,10 +209,10 @@ public class UserActivityServiceTest {
     public void getAllFromUser_ShouldReturnEmptyListIfNoActivities() {
         int userId = 1;
 
-        when(userActivityRepository.findActivityDtosByUserId(userId))
+        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
                 .thenReturn(List.of());
 
-        var result = userActivityService.getAllFromUser(userId, "DESC");
+        var result = userActivityService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertTrue(result.isEmpty());
         verify(awsS3Service, never()).getImage(anyString());
@@ -252,16 +261,30 @@ public class UserActivityServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
+        Activity activity1 = new Activity();
+        activity1.setId(1);
+        activity1.setMediaList(new ArrayList<>());
+
+        Activity activity2 = new Activity();
+        activity2.setId(2);
+        activity2.setMediaList(new ArrayList<>());
+
+        UserActivity ua1 = UserActivity.of(new User(), activity1);
+        ua1.setCreatedAt(older);
+        UserActivity ua2 = UserActivity.of(new User(), activity2);
+        ua2.setCreatedAt(newer);
+
         ActivitySummaryDto dto1 = createActivityResponseDto(1, older);
         ActivitySummaryDto dto2 = createActivityResponseDto(2, newer);
 
-        when(userActivityRepository.findActivityDtosByUserId(userId))
-                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
+                .thenReturn(new ArrayList<>(List.of(ua2, ua1)));
+        when(activityMapper.toSummaryDto(activity1)).thenReturn(dto1);
+        when(activityMapper.toSummaryDto(activity2)).thenReturn(dto2);
 
-        List<BaseUserEntity> result = userActivityService.getAllFromUser(userId, "DESC");
+        List<BaseUserEntity> result = userActivityService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertSortedResult(result, 2, 2, 1);
-        verify(userActivityRepository).findActivityDtosByUserId(userId);
     }
 
     @Test
@@ -271,16 +294,30 @@ public class UserActivityServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
+        Activity activity1 = new Activity();
+        activity1.setId(1);
+        activity1.setMediaList(new ArrayList<>());
+
+        Activity activity2 = new Activity();
+        activity2.setId(2);
+        activity2.setMediaList(new ArrayList<>());
+
+        UserActivity ua1 = UserActivity.of(new User(), activity1);
+        ua1.setCreatedAt(older);
+        UserActivity ua2 = UserActivity.of(new User(), activity2);
+        ua2.setCreatedAt(newer);
+
         ActivitySummaryDto dto1 = createActivityResponseDto(1, older);
         ActivitySummaryDto dto2 = createActivityResponseDto(2, newer);
 
-        when(userActivityRepository.findActivityDtosByUserId(userId))
-                .thenReturn(new ArrayList<>(List.of(dto2, dto1)));
+        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
+                .thenReturn(new ArrayList<>(List.of(ua1, ua2)));
+        when(activityMapper.toSummaryDto(activity1)).thenReturn(dto1);
+        when(activityMapper.toSummaryDto(activity2)).thenReturn(dto2);
 
-        List<BaseUserEntity> result = userActivityService.getAllFromUser(userId, "ASC");
+        List<BaseUserEntity> result = userActivityService.getAllFromUser(userId, Sort.Direction.ASC);
 
         assertSortedResult(result, 2, 1, 2);
-        verify(userActivityRepository).findActivityDtosByUserId(userId);
     }
 
     @Test
@@ -290,16 +327,30 @@ public class UserActivityServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
+        Activity activity1 = new Activity();
+        activity1.setId(1);
+        activity1.setMediaList(new ArrayList<>());
+
+        Activity activity2 = new Activity();
+        activity2.setId(2);
+        activity2.setMediaList(new ArrayList<>());
+
+        UserActivity ua1 = UserActivity.of(new User(), activity1);
+        ua1.setCreatedAt(older);
+        UserActivity ua2 = UserActivity.of(new User(), activity2);
+        ua2.setCreatedAt(newer);
+
         ActivitySummaryDto dto1 = createActivityResponseDto(1, older);
         ActivitySummaryDto dto2 = createActivityResponseDto(2, newer);
 
-        when(userActivityRepository.findActivityDtosByUserId(userId))
-                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
+                .thenReturn(new ArrayList<>(List.of(ua2, ua1)));
+        when(activityMapper.toSummaryDto(activity1)).thenReturn(dto1);
+        when(activityMapper.toSummaryDto(activity2)).thenReturn(dto2);
 
-        List<BaseUserEntity> result = userActivityService.getAllFromUser(userId, "DESC");
+        List<BaseUserEntity> result = userActivityService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertSortedResult(result, 2, 2, 1);
-        verify(userActivityRepository).findActivityDtosByUserId(userId);
     }
 
     @Test
@@ -307,17 +358,38 @@ public class UserActivityServiceTest {
     public void getAllFromUser_ShouldHandleNullDates() {
         int userId = 1;
 
+        Activity activity1 = new Activity();
+        activity1.setId(1);
+        activity1.setMediaList(new ArrayList<>());
+
+        Activity activity2 = new Activity();
+        activity2.setId(2);
+        activity2.setMediaList(new ArrayList<>());
+
+        Activity activity3 = new Activity();
+        activity3.setId(3);
+        activity3.setMediaList(new ArrayList<>());
+
+        UserActivity ua1 = UserActivity.of(new User(), activity1);
+        ua1.setCreatedAt(LocalDateTime.of(2024, 1, 1, 10, 0));
+        UserActivity ua2 = UserActivity.of(new User(), activity2);
+        ua2.setCreatedAt(null);
+        UserActivity ua3 = UserActivity.of(new User(), activity3);
+        ua3.setCreatedAt(LocalDateTime.of(2024, 1, 2, 10, 0));
+
         ActivitySummaryDto dto1 = createActivityResponseDto(1, LocalDateTime.of(2024, 1, 1, 10, 0));
         ActivitySummaryDto dto2 = createActivityResponseDto(2, null);
         ActivitySummaryDto dto3 = createActivityResponseDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
 
-        when(userActivityRepository.findActivityDtosByUserId(userId))
-                .thenReturn(new ArrayList<>(List.of(dto1, dto2, dto3)));
+        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
+                .thenReturn(new ArrayList<>(List.of(ua3, ua1, ua2)));
+        when(activityMapper.toSummaryDto(activity1)).thenReturn(dto1);
+        when(activityMapper.toSummaryDto(activity2)).thenReturn(dto2);
+        when(activityMapper.toSummaryDto(activity3)).thenReturn(dto3);
 
-        List<BaseUserEntity> result = userActivityService.getAllFromUser(userId, "DESC");
+        List<BaseUserEntity> result = userActivityService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertSortedResult(result, 3, 3, 1, 2);
-        verify(userActivityRepository).findActivityDtosByUserId(userId);
     }
 
     @Test
@@ -327,17 +399,35 @@ public class UserActivityServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
-        ActivitySummaryDto dto1 = createActivityResponseDto(1, older);
-        dto1.setImageName("image1.jpg");
-        ActivitySummaryDto dto2 = createActivityResponseDto(2, newer);
-        dto2.setImageName("image2.jpg");
+        source.code.model.media.Media media1 = new source.code.model.media.Media();
+        media1.setImageName("image1.jpg");
+        source.code.model.media.Media media2 = new source.code.model.media.Media();
+        media2.setImageName("image2.jpg");
 
-        when(userActivityRepository.findActivityDtosByUserId(userId))
-                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+        Activity activity1 = new Activity();
+        activity1.setId(1);
+        activity1.setMediaList(List.of(media1));
+
+        Activity activity2 = new Activity();
+        activity2.setId(2);
+        activity2.setMediaList(List.of(media2));
+
+        UserActivity ua1 = UserActivity.of(new User(), activity1);
+        ua1.setCreatedAt(older);
+        UserActivity ua2 = UserActivity.of(new User(), activity2);
+        ua2.setCreatedAt(newer);
+
+        ActivitySummaryDto dto1 = createActivityResponseDto(1, older);
+        ActivitySummaryDto dto2 = createActivityResponseDto(2, newer);
+
+        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
+                .thenReturn(new ArrayList<>(List.of(ua2, ua1)));
+        when(activityMapper.toSummaryDto(activity1)).thenReturn(dto1);
+        when(activityMapper.toSummaryDto(activity2)).thenReturn(dto2);
         when(awsS3Service.getImage("image1.jpg")).thenReturn("https://s3.com/image1.jpg");
         when(awsS3Service.getImage("image2.jpg")).thenReturn("https://s3.com/image2.jpg");
 
-        List<BaseUserEntity> result = userActivityService.getAllFromUser(userId, "DESC");
+        List<BaseUserEntity> result = userActivityService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(2, result.size());

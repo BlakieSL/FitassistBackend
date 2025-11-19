@@ -1,5 +1,6 @@
 package source.code.service.implementation.user.interaction.withoutType;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.activity.ActivitySummaryDto;
@@ -9,14 +10,11 @@ import source.code.mapper.activity.ActivityMapper;
 import source.code.model.activity.Activity;
 import source.code.model.user.User;
 import source.code.model.user.UserActivity;
-import source.code.repository.MediaRepository;
 import source.code.repository.UserActivityRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Service("userActivityService")
@@ -24,22 +22,21 @@ public class UserActivityServiceImpl
         extends GenericSavedServiceWithoutType<Activity, UserActivity, ActivitySummaryDto>
         implements SavedServiceWithoutType {
 
-    private final MediaRepository mediaRepository;
     private final AwsS3Service awsS3Service;
+    private final ActivityMapper activityMapper;
 
     public UserActivityServiceImpl(UserRepository userRepository,
                                    JpaRepository<Activity, Integer> entityRepository,
                                    JpaRepository<UserActivity, Integer> userEntityRepository,
                                    ActivityMapper mapper,
-                                   MediaRepository mediaRepository,
                                    AwsS3Service awsS3Service) {
         super(userRepository,
                 entityRepository,
                 userEntityRepository,
                 mapper::toSummaryDto,
                 Activity.class);
-        this.mediaRepository = mediaRepository;
         this.awsS3Service = awsS3Service;
+        this.activityMapper = mapper;
     }
 
     @Override
@@ -65,42 +62,33 @@ public class UserActivityServiceImpl
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId, String sortDirection) {
-        List<ActivitySummaryDto> dtos = new ArrayList<>(((UserActivityRepository) userEntityRepository)
-                .findActivityDtosByUserId(userId));
+    public List<BaseUserEntity> getAllFromUser(int userId, Sort.Direction sortDirection) {
+        Sort sort = Sort.by(sortDirection, "createdAt");
 
-        dtos.forEach(dto -> {
-            if (dto.getImageName() != null) {
-                dto.setFirstImageUrl(awsS3Service.getImage(dto.getImageName()));
-            }
-        });
+        List<UserActivity> userActivities = ((UserActivityRepository) userEntityRepository)
+                .findAllByUserIdWithMedia(userId, sort);
 
-        sortByInteractionDate(dtos, sortDirection);
+        return userActivities.stream()
+                .map(ua -> {
+                    ActivitySummaryDto dto = activityMapper.toSummaryDto(ua.getActivity());
+                    dto.setUserActivityInteractionCreatedAt(ua.getCreatedAt());
 
-        return dtos.stream()
-                .map(dto -> (BaseUserEntity) dto)
+                    if (!ua.getActivity().getMediaList().isEmpty()) {
+                        String imageName = ua.getActivity().getMediaList().get(0).getImageName();
+                        dto.setImageName(imageName);
+                        dto.setFirstImageUrl(awsS3Service.getImage(imageName));
+                    }
+
+                    return (BaseUserEntity) dto;
+                })
                 .toList();
-    }
-
-    private void sortByInteractionDate(List<ActivitySummaryDto> list, String sortDirection) {
-        Comparator<ActivitySummaryDto> comparator;
-        if ("ASC".equalsIgnoreCase(sortDirection)) {
-            comparator = Comparator.comparing(
-                    ActivitySummaryDto::getUserActivityInteractionCreatedAt,
-                    Comparator.nullsLast(Comparator.naturalOrder())
-            );
-        } else {
-            comparator = Comparator.comparing(
-                    ActivitySummaryDto::getUserActivityInteractionCreatedAt,
-                    Comparator.nullsLast(Comparator.reverseOrder())
-            );
-        }
-        list.sort(comparator);
     }
 
     @Override
     protected List<UserActivity> findAllByUser(int userId) {
-        return ((UserActivityRepository) userEntityRepository).findAllByUserId(userId);
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        return ((UserActivityRepository) userEntityRepository)
+                .findAllByUserIdWithMedia(userId, sort);
     }
 
     @Override

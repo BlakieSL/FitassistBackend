@@ -1,5 +1,6 @@
 package source.code.service.implementation.user.interaction.withType;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.comment.CommentResponseDto;
@@ -38,7 +39,7 @@ public class UserCommentServiceImpl
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, String sortDirection) {
+    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Sort.Direction sortDirection) {
         List<CommentSummaryDto> dtos = new ArrayList<>(((UserCommentRepository) userEntityRepository)
                 .findCommentSummaryByUserIdAndType(userId, type));
 
@@ -55,19 +56,15 @@ public class UserCommentServiceImpl
                 .toList();
     }
 
-    private void sortByInteractionDate(List<CommentSummaryDto> list, String sortDirection) {
-        Comparator<CommentSummaryDto> comparator;
-        if ("ASC".equalsIgnoreCase(sortDirection)) {
-            comparator = Comparator.comparing(
-                    CommentSummaryDto::getUserCommentInteractionCreatedAt,
-                    Comparator.nullsLast(Comparator.naturalOrder())
-            );
-        } else {
-            comparator = Comparator.comparing(
-                    CommentSummaryDto::getUserCommentInteractionCreatedAt,
-                    Comparator.nullsLast(Comparator.reverseOrder())
-            );
-        }
+    private void sortByInteractionDate(List<CommentSummaryDto> list, Sort.Direction sortDirection) {
+        Comparator<CommentSummaryDto> comparator = sortDirection == Sort.Direction.ASC
+                ? Comparator.comparing(
+                        CommentSummaryDto::getUserCommentInteractionCreatedAt,
+                        Comparator.nullsLast(Comparator.naturalOrder()))
+                : Comparator.comparing(
+                        CommentSummaryDto::getUserCommentInteractionCreatedAt,
+                        Comparator.nullsLast(Comparator.reverseOrder()));
+
         list.sort(comparator);
     }
 

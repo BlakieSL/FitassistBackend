@@ -1,9 +1,9 @@
 package source.code.repository;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import source.code.dto.response.food.FoodSummaryDto;
 import source.code.model.user.UserFood;
 
 import java.util.List;
@@ -17,29 +17,13 @@ public interface UserFoodRepository extends JpaRepository<UserFood, Integer> {
     List<UserFood> findByUserId(int userId);
 
     @Query("""
-           SELECT new source.code.dto.response.food.FoodSummaryDto(
-               f.id,
-               f.name,
-               f.calories,
-               f.protein,
-               f.fat,
-               f.carbohydrates,
-               fc.id,
-               fc.name,
-               (SELECT m.imageName FROM Media m
-                WHERE m.parentId = f.id
-                AND m.parentType = 'FOOD'
-                ORDER BY m.id ASC
-                LIMIT 1),
-               null,
-               uf.createdAt)
-           FROM UserFood uf
-           JOIN uf.food f
-           JOIN f.foodCategory fc
+           SELECT uf FROM UserFood uf
+           JOIN FETCH uf.food f
+           JOIN FETCH f.foodCategory
+           LEFT JOIN FETCH f.mediaList
            WHERE uf.user.id = :userId
-           ORDER BY uf.createdAt DESC
            """)
-    List<FoodSummaryDto> findFoodDtosByUserId(@Param("userId") int userId);
+    List<UserFood> findAllByUserIdWithMedia(@Param("userId") int userId, Sort sort);
 
     long countByFoodId(int foodId);
 }

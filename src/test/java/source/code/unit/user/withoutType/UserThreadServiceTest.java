@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
@@ -176,7 +177,7 @@ public class  UserThreadServiceTest {
         when(userThreadRepository.findThreadSummaryByUserId(userId))
                 .thenReturn(List.of(dto1, dto2));
 
-        var result = userThreadService.getAllFromUser(userId, "DESC");
+        var result = userThreadService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertEquals(2, result.size());
         verify(userThreadRepository).findThreadSummaryByUserId(userId);
@@ -190,7 +191,7 @@ public class  UserThreadServiceTest {
         when(userThreadRepository.findThreadSummaryByUserId(userId))
                 .thenReturn(List.of());
 
-        var result = userThreadService.getAllFromUser(userId, "DESC");
+        var result = userThreadService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertTrue(result.isEmpty());
     }

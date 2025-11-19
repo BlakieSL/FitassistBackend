@@ -1,5 +1,6 @@
 package source.code.service.implementation.user.interaction.withType;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
@@ -43,7 +44,7 @@ public class UserPlanServiceImpl
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, String sortDirection) {
+    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Sort.Direction sortDirection) {
         List<PlanSummaryDto> dtos = new ArrayList<>(((UserPlanRepository) userEntityRepository)
                 .findPlanSummaryByUserIdAndType(userId, type));
 
@@ -63,19 +64,15 @@ public class UserPlanServiceImpl
                 .toList();
     }
 
-    private void sortByInteractionDate(List<PlanSummaryDto> list, String sortDirection) {
-        Comparator<PlanSummaryDto> comparator;
-        if ("ASC".equalsIgnoreCase(sortDirection)) {
-            comparator = Comparator.comparing(
-                    PlanSummaryDto::getInteractedWithAt,
-                    Comparator.nullsLast(Comparator.naturalOrder())
-            );
-        } else {
-            comparator = Comparator.comparing(
-                    PlanSummaryDto::getInteractedWithAt,
-                    Comparator.nullsLast(Comparator.reverseOrder())
-            );
-        }
+    private void sortByInteractionDate(List<PlanSummaryDto> list, Sort.Direction sortDirection) {
+        Comparator<PlanSummaryDto> comparator = sortDirection == Sort.Direction.ASC
+                ? Comparator.comparing(
+                        PlanSummaryDto::getInteractedWithAt,
+                        Comparator.nullsLast(Comparator.naturalOrder()))
+                : Comparator.comparing(
+                        PlanSummaryDto::getInteractedWithAt,
+                        Comparator.nullsLast(Comparator.reverseOrder()));
+
         list.sort(comparator);
     }
 

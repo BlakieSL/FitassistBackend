@@ -1,9 +1,9 @@
 package source.code.repository;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.model.user.UserExercise;
 
 import java.util.List;
@@ -17,27 +17,16 @@ public interface UserExerciseRepository extends JpaRepository<UserExercise, Inte
     boolean existsByUserIdAndExerciseId(int userId, int exerciseId);
 
     @Query("""
-           SELECT new source.code.dto.response.exercise.ExerciseSummaryDto(
-               e.id,
-               e.name,
-               e.description,
-               (SELECT m.imageName FROM Media m
-                WHERE m.parentId = e.id
-                AND m.parentType = 'EXERCISE'
-                ORDER BY m.id ASC
-                LIMIT 1),
-               null,
-               new source.code.dto.pojo.CategoryDto(e.expertiseLevel.id, e.expertiseLevel.name),
-               new source.code.dto.pojo.CategoryDto(e.equipment.id, e.equipment.name),
-               new source.code.dto.pojo.CategoryDto(e.mechanicsType.id, e.mechanicsType.name),
-               new source.code.dto.pojo.CategoryDto(e.forceType.id, e.forceType.name),
-               ue.createdAt)
-           FROM UserExercise ue
-           JOIN ue.exercise e
+           SELECT ue FROM UserExercise ue
+           JOIN FETCH ue.exercise e
+           JOIN FETCH e.expertiseLevel
+           JOIN FETCH e.equipment
+           JOIN FETCH e.mechanicsType
+           JOIN FETCH e.forceType
+           LEFT JOIN FETCH e.mediaList
            WHERE ue.user.id = :userId
-           ORDER BY ue.createdAt DESC
            """)
-    List<ExerciseSummaryDto> findExerciseSummaryByUserId(@Param("userId") int userId);
+    List<UserExercise> findAllByUserIdWithMedia(@Param("userId") int userId, Sort sort);
 
     long countByExerciseId(int exerciseId);
 }

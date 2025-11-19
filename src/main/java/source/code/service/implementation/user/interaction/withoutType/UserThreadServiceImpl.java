@@ -1,5 +1,6 @@
 package source.code.service.implementation.user.interaction.withoutType;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.exception.RecordNotFoundException;
@@ -15,6 +16,8 @@ import source.code.repository.UserThreadRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 @Service("userThreadService")
 public class UserThreadServiceImpl
@@ -62,9 +65,10 @@ public class UserThreadServiceImpl
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId, String sortDirection) {
-        List<ForumThreadSummaryDto> dtos = ((UserThreadRepository) userEntityRepository)
-                .findThreadSummaryByUserId(userId);
+    public List<BaseUserEntity> getAllFromUser(int userId, Sort.Direction sortDirection) {
+        List<ForumThreadSummaryDto> dtos = new ArrayList<>(
+                ((UserThreadRepository) userEntityRepository).findThreadSummaryByUserId(userId)
+        );
 
         dtos.forEach(dto -> {
             if (dto.getAuthorImageName() != null) {
@@ -72,9 +76,23 @@ public class UserThreadServiceImpl
             }
         });
 
+        sortByInteractionDate(dtos, sortDirection);
+
         return dtos.stream()
                 .map(dto -> (BaseUserEntity) dto)
                 .toList();
+    }
+
+    private void sortByInteractionDate(List<ForumThreadSummaryDto> list, Sort.Direction sortDirection) {
+        Comparator<ForumThreadSummaryDto> comparator = sortDirection == Sort.Direction.ASC
+                ? Comparator.comparing(
+                        ForumThreadSummaryDto::getUserThreadInteractionCreatedAt,
+                        Comparator.nullsLast(Comparator.naturalOrder()))
+                : Comparator.comparing(
+                        ForumThreadSummaryDto::getUserThreadInteractionCreatedAt,
+                        Comparator.nullsLast(Comparator.reverseOrder()));
+
+        list.sort(comparator);
     }
 
     @Override

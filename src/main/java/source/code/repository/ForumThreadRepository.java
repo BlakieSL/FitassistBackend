@@ -28,6 +28,7 @@ public interface ForumThreadRepository extends JpaRepository<ForumThread, Intege
               AND m.parentType = 'USER'
               ORDER BY m.id ASC
               LIMIT 1),
+             null,
              null)
       FROM ForumThread t
       WHERE t.user.id = :userId
