@@ -1,5 +1,6 @@
 package source.code.controller.user;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class UserSavedController {
             @PathVariable SavedEntityType itemType,
             @PathVariable TypeOfInteraction type,
             @PathVariable int userId,
-            @RequestParam(defaultValue = "DESC") String sort
+            @RequestParam(defaultValue = "DESC") Sort.Direction sort
     ) {
         SavedService savedService = savedSelectorService.getService(itemType);
         List<BaseUserEntity> dto = savedService.getAllFromUser(userId, type, sort);
@@ -70,7 +71,7 @@ public class UserSavedController {
     public ResponseEntity<List<BaseUserEntity>> getAllFromUserWithoutType(
             @PathVariable SavedEntityType itemType,
             @PathVariable("userId") int userId,
-            @RequestParam(defaultValue = "DESC") String sort
+            @RequestParam(defaultValue = "DESC") Sort.Direction sort
     ) {
         SavedServiceWithoutType savedServiceWithoutType = savedSelectorService
                 .getServiceWithoutType(itemType);

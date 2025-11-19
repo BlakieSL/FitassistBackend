@@ -1,5 +1,6 @@
 package source.code.service.implementation.user.interaction.withoutType;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.food.FoodSummaryDto;
@@ -9,14 +10,11 @@ import source.code.mapper.food.FoodMapper;
 import source.code.model.food.Food;
 import source.code.model.user.User;
 import source.code.model.user.UserFood;
-import source.code.repository.MediaRepository;
 import source.code.repository.UserFoodRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Service("userFoodService")
@@ -24,22 +22,21 @@ public class UserFoodServiceImpl
         extends GenericSavedServiceWithoutType<Food, UserFood, FoodSummaryDto>
         implements SavedServiceWithoutType {
 
-    private final MediaRepository mediaRepository;
     private final AwsS3Service awsS3Service;
+    private final FoodMapper foodMapper;
 
     public UserFoodServiceImpl(UserRepository userRepository,
                                JpaRepository<Food, Integer> entityRepository,
                                JpaRepository<UserFood, Integer> userEntityRepository,
                                FoodMapper mapper,
-                               MediaRepository mediaRepository,
                                AwsS3Service awsS3Service) {
         super(userRepository,
                 entityRepository,
                 userEntityRepository,
                 mapper::toSummaryDto,
                 Food.class);
-        this.mediaRepository = mediaRepository;
         this.awsS3Service = awsS3Service;
+        this.foodMapper = mapper;
     }
 
     @Override
@@ -65,42 +62,33 @@ public class UserFoodServiceImpl
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId, String sortDirection) {
-        List<FoodSummaryDto> dtos = new ArrayList<>(((UserFoodRepository) userEntityRepository)
-                .findFoodDtosByUserId(userId));
+    public List<BaseUserEntity> getAllFromUser(int userId, Sort.Direction sortDirection) {
+        Sort sort = Sort.by(sortDirection, "createdAt");
 
-        dtos.forEach(dto -> {
-            if (dto.getImageName() != null) {
-                dto.setFirstImageUrl(awsS3Service.getImage(dto.getImageName()));
-            }
-        });
+        List<UserFood> userFoods = ((UserFoodRepository) userEntityRepository)
+                .findAllByUserIdWithMedia(userId, sort);
 
-        sortByInteractionDate(dtos, sortDirection);
+        return userFoods.stream()
+                .map(uf -> {
+                    FoodSummaryDto dto = foodMapper.toSummaryDto(uf.getFood());
+                    dto.setUserFoodInteractionCreatedAt(uf.getCreatedAt());
 
-        return dtos.stream()
-                .map(dto -> (BaseUserEntity) dto)
+                    if (!uf.getFood().getMediaList().isEmpty()) {
+                        String imageName = uf.getFood().getMediaList().get(0).getImageName();
+                        dto.setImageName(imageName);
+                        dto.setFirstImageUrl(awsS3Service.getImage(imageName));
+                    }
+
+                    return (BaseUserEntity) dto;
+                })
                 .toList();
-    }
-
-    private void sortByInteractionDate(List<FoodSummaryDto> list, String sortDirection) {
-        Comparator<FoodSummaryDto> comparator;
-        if ("ASC".equalsIgnoreCase(sortDirection)) {
-            comparator = Comparator.comparing(
-                    FoodSummaryDto::getUserFoodInteractionCreatedAt,
-                    Comparator.nullsLast(Comparator.naturalOrder())
-            );
-        } else {
-            comparator = Comparator.comparing(
-                    FoodSummaryDto::getUserFoodInteractionCreatedAt,
-                    Comparator.nullsLast(Comparator.reverseOrder())
-            );
-        }
-        list.sort(comparator);
     }
 
     @Override
     protected List<UserFood> findAllByUser(int userId) {
-        return ((UserFoodRepository) userEntityRepository).findByUserId(userId);
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        return ((UserFoodRepository) userEntityRepository)
+                .findAllByUserIdWithMedia(userId, sort);
     }
 
     @Override

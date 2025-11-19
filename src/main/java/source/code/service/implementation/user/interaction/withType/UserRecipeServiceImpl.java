@@ -1,5 +1,6 @@
 package source.code.service.implementation.user.interaction.withType;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import source.code.dto.pojo.RecipeCategoryShortDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
@@ -50,7 +51,7 @@ public class UserRecipeServiceImpl
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, String sortDirection) {
+    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Sort.Direction sortDirection) {
         List<RecipeSummaryDto> dtos = new ArrayList<>(((UserRecipeRepository) userEntityRepository)
                 .findRecipeSummaryByUserIdAndType(userId, type));
 
@@ -76,19 +77,15 @@ public class UserRecipeServiceImpl
                 .toList();
     }
 
-    private void sortByInteractionDate(List<RecipeSummaryDto> list, String sortDirection) {
-        Comparator<RecipeSummaryDto> comparator;
-        if ("ASC".equalsIgnoreCase(sortDirection)) {
-            comparator = Comparator.comparing(
-                    RecipeSummaryDto::getUserRecipeInteractionCreatedAt,
-                    Comparator.nullsLast(Comparator.naturalOrder())
-            );
-        } else {
-            comparator = Comparator.comparing(
-                    RecipeSummaryDto::getUserRecipeInteractionCreatedAt,
-                    Comparator.nullsLast(Comparator.reverseOrder())
-            );
-        }
+    private void sortByInteractionDate(List<RecipeSummaryDto> list, Sort.Direction sortDirection) {
+        Comparator<RecipeSummaryDto> comparator = sortDirection == Sort.Direction.ASC
+                ? Comparator.comparing(
+                        RecipeSummaryDto::getUserRecipeInteractionCreatedAt,
+                        Comparator.nullsLast(Comparator.naturalOrder()))
+                : Comparator.comparing(
+                        RecipeSummaryDto::getUserRecipeInteractionCreatedAt,
+                        Comparator.nullsLast(Comparator.reverseOrder()));
+
         list.sort(comparator);
     }
 

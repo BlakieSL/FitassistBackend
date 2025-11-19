@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 import source.code.dto.response.comment.CommentResponseDto;
 import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
@@ -208,7 +209,7 @@ public class UserCommentServiceTest {
         when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
                 .thenReturn(List.of(dto1, dto2));
 
-        var result = userCommentService.getAllFromUser(userId, type, "DESC");
+        var result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertEquals(2, result.size());
         verify(userCommentRepository).findCommentSummaryByUserIdAndType(userId, type);
@@ -223,7 +224,7 @@ public class UserCommentServiceTest {
         when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
                 .thenReturn(List.of());
 
-        var result = userCommentService.getAllFromUser(userId, type, "DESC");
+        var result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertTrue(result.isEmpty());
     }
@@ -274,7 +275,7 @@ public class UserCommentServiceTest {
         when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
 
-        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, "DESC");
+        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertSortedResult(result, 2, 2, 1);
         verify(userCommentRepository).findCommentSummaryByUserIdAndType(userId, type);
@@ -294,7 +295,7 @@ public class UserCommentServiceTest {
         when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
                 .thenReturn(new ArrayList<>(List.of(dto2, dto1)));
 
-        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, "ASC");
+        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, Sort.Direction.ASC);
 
         assertSortedResult(result, 2, 1, 2);
         verify(userCommentRepository).findCommentSummaryByUserIdAndType(userId, type);
@@ -314,7 +315,7 @@ public class UserCommentServiceTest {
         when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
 
-        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, "DESC");
+        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertSortedResult(result, 2, 2, 1);
         verify(userCommentRepository).findCommentSummaryByUserIdAndType(userId, type);
@@ -333,7 +334,7 @@ public class UserCommentServiceTest {
         when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2, dto3)));
 
-        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, "DESC");
+        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertSortedResult(result, 3, 3, 1, 2);
         verify(userCommentRepository).findCommentSummaryByUserIdAndType(userId, type);
@@ -357,7 +358,7 @@ public class UserCommentServiceTest {
         when(awsS3Service.getImage("author1.jpg")).thenReturn("https://s3.com/author1.jpg");
         when(awsS3Service.getImage("author2.jpg")).thenReturn("https://s3.com/author2.jpg");
 
-        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, "DESC");
+        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(2, result.size());

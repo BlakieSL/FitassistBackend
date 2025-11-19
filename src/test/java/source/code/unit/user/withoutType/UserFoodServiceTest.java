@@ -16,9 +16,11 @@ import source.code.helper.BaseUserEntity;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.food.FoodMapper;
 import source.code.model.food.Food;
+import source.code.model.media.Media;
 import source.code.model.user.User;
 import source.code.model.user.UserFood;
 import source.code.repository.FoodRepository;
+import org.springframework.data.domain.Sort;
 import source.code.repository.MediaRepository;
 import source.code.repository.UserFoodRepository;
 import source.code.repository.UserRepository;
@@ -32,6 +34,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,7 +64,7 @@ public class UserFoodServiceTest {
                 foodRepository,
                 userFoodRepository,
                 foodMapper,
-                mediaRepository,
+                
                 awsS3Service
         );
     }
@@ -179,6 +183,24 @@ public class UserFoodServiceTest {
     @DisplayName("getAllFromUser - Should return all foods by type")
     public void getAllFromUser_ShouldReturnAllFoodsByType() {
         int userId = 1;
+
+        Food food1 = new Food();
+        food1.setId(1);
+        food1.setMediaList(new ArrayList<>());
+        Media media1 = new Media();
+        media1.setImageName("food1.jpg");
+        food1.getMediaList().add(media1);
+
+        Food food2 = new Food();
+        food2.setId(2);
+        food2.setMediaList(new ArrayList<>());
+        Media media2 = new Media();
+        media2.setImageName("food2.jpg");
+        food2.getMediaList().add(media2);
+
+        UserFood uf1 = UserFood.of(new User(), food1);
+        UserFood uf2 = UserFood.of(new User(), food2);
+
         FoodSummaryDto dto1 = new FoodSummaryDto();
         dto1.setId(1);
         dto1.setImageName("food1.jpg");
@@ -186,12 +208,14 @@ public class UserFoodServiceTest {
         dto2.setId(2);
         dto2.setImageName("food2.jpg");
 
-        when(userFoodRepository.findFoodDtosByUserId(userId))
-                .thenReturn(List.of(dto1, dto2));
+        when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
+                .thenReturn(List.of(uf1, uf2));
+        when(foodMapper.toSummaryDto(food1)).thenReturn(dto1);
+        when(foodMapper.toSummaryDto(food2)).thenReturn(dto2);
         when(awsS3Service.getImage("food1.jpg")).thenReturn("https://s3.../food1.jpg");
         when(awsS3Service.getImage("food2.jpg")).thenReturn("https://s3.../food2.jpg");
 
-        var result = userFoodService.getAllFromUser(userId, "DESC");
+        var result = userFoodService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertEquals(2, result.size());
         verify(awsS3Service, times(2)).getImage(anyString());
@@ -201,10 +225,10 @@ public class UserFoodServiceTest {
     @DisplayName("getAllFromUser - Should return empty list if no foods")
     public void getAllFromUser_ShouldReturnEmptyListIfNoFoods() {
         int userId = 1;
-        when(userFoodRepository.findFoodDtosByUserId(userId))
+        when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
                 .thenReturn(List.of());
 
-        var result = userFoodService.getAllFromUser(userId, "DESC");
+        var result = userFoodService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertTrue(result.isEmpty());
         verify(awsS3Service, never()).getImage(anyString());
@@ -253,16 +277,31 @@ public class UserFoodServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
+        Food food1 = new Food();
+        food1.setId(1);
+        food1.setMediaList(new ArrayList<>());
+
+        Food food2 = new Food();
+        food2.setId(2);
+        food2.setMediaList(new ArrayList<>());
+
+        UserFood uf1 = UserFood.of(new User(), food1);
+        uf1.setCreatedAt(older);
+        UserFood uf2 = UserFood.of(new User(), food2);
+        uf2.setCreatedAt(newer);
+
         FoodSummaryDto dto1 = createFoodResponseDto(1, older);
         FoodSummaryDto dto2 = createFoodResponseDto(2, newer);
 
-        when(userFoodRepository.findFoodDtosByUserId(userId))
-                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+        when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
+                .thenReturn(new ArrayList<>(List.of(uf2, uf1)));
+        when(foodMapper.toSummaryDto(food1)).thenReturn(dto1);
+        when(foodMapper.toSummaryDto(food2)).thenReturn(dto2);
 
-        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, "DESC");
+        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertSortedResult(result, 2, 2, 1);
-        verify(userFoodRepository).findFoodDtosByUserId(userId);
+        verify(userFoodRepository).findAllByUserIdWithMedia(eq(userId), any(Sort.class));
     }
 
     @Test
@@ -272,16 +311,31 @@ public class UserFoodServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
+        Food food1 = new Food();
+        food1.setId(1);
+        food1.setMediaList(new ArrayList<>());
+
+        Food food2 = new Food();
+        food2.setId(2);
+        food2.setMediaList(new ArrayList<>());
+
+        UserFood uf1 = UserFood.of(new User(), food1);
+        uf1.setCreatedAt(older);
+        UserFood uf2 = UserFood.of(new User(), food2);
+        uf2.setCreatedAt(newer);
+
         FoodSummaryDto dto1 = createFoodResponseDto(1, older);
         FoodSummaryDto dto2 = createFoodResponseDto(2, newer);
 
-        when(userFoodRepository.findFoodDtosByUserId(userId))
-                .thenReturn(new ArrayList<>(List.of(dto2, dto1)));
+        when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
+                .thenReturn(new ArrayList<>(List.of(uf1, uf2)));
+        when(foodMapper.toSummaryDto(food1)).thenReturn(dto1);
+        when(foodMapper.toSummaryDto(food2)).thenReturn(dto2);
 
-        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, "ASC");
+        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, Sort.Direction.ASC);
 
         assertSortedResult(result, 2, 1, 2);
-        verify(userFoodRepository).findFoodDtosByUserId(userId);
+        verify(userFoodRepository).findAllByUserIdWithMedia(eq(userId), any(Sort.class));
     }
 
     @Test
@@ -291,16 +345,31 @@ public class UserFoodServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
+        Food food1 = new Food();
+        food1.setId(1);
+        food1.setMediaList(new ArrayList<>());
+
+        Food food2 = new Food();
+        food2.setId(2);
+        food2.setMediaList(new ArrayList<>());
+
+        UserFood uf1 = UserFood.of(new User(), food1);
+        uf1.setCreatedAt(older);
+        UserFood uf2 = UserFood.of(new User(), food2);
+        uf2.setCreatedAt(newer);
+
         FoodSummaryDto dto1 = createFoodResponseDto(1, older);
         FoodSummaryDto dto2 = createFoodResponseDto(2, newer);
 
-        when(userFoodRepository.findFoodDtosByUserId(userId))
-                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+        when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
+                .thenReturn(new ArrayList<>(List.of(uf2, uf1)));
+        when(foodMapper.toSummaryDto(food1)).thenReturn(dto1);
+        when(foodMapper.toSummaryDto(food2)).thenReturn(dto2);
 
-        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, "DESC");
+        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertSortedResult(result, 2, 2, 1);
-        verify(userFoodRepository).findFoodDtosByUserId(userId);
+        verify(userFoodRepository).findAllByUserIdWithMedia(eq(userId), any(Sort.class));
     }
 
     @Test
@@ -308,17 +377,39 @@ public class UserFoodServiceTest {
     public void getAllFromUser_ShouldHandleNullDates() {
         int userId = 1;
 
+        Food food1 = new Food();
+        food1.setId(1);
+        food1.setMediaList(new ArrayList<>());
+
+        Food food2 = new Food();
+        food2.setId(2);
+        food2.setMediaList(new ArrayList<>());
+
+        Food food3 = new Food();
+        food3.setId(3);
+        food3.setMediaList(new ArrayList<>());
+
+        UserFood uf1 = UserFood.of(new User(), food1);
+        uf1.setCreatedAt(LocalDateTime.of(2024, 1, 1, 10, 0));
+        UserFood uf2 = UserFood.of(new User(), food2);
+        uf2.setCreatedAt(null);
+        UserFood uf3 = UserFood.of(new User(), food3);
+        uf3.setCreatedAt(LocalDateTime.of(2024, 1, 2, 10, 0));
+
         FoodSummaryDto dto1 = createFoodResponseDto(1, LocalDateTime.of(2024, 1, 1, 10, 0));
         FoodSummaryDto dto2 = createFoodResponseDto(2, null);
         FoodSummaryDto dto3 = createFoodResponseDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
 
-        when(userFoodRepository.findFoodDtosByUserId(userId))
-                .thenReturn(new ArrayList<>(List.of(dto1, dto2, dto3)));
+        when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
+                .thenReturn(new ArrayList<>(List.of(uf3, uf1, uf2)));
+        when(foodMapper.toSummaryDto(food1)).thenReturn(dto1);
+        when(foodMapper.toSummaryDto(food2)).thenReturn(dto2);
+        when(foodMapper.toSummaryDto(food3)).thenReturn(dto3);
 
-        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, "DESC");
+        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertSortedResult(result, 3, 3, 1, 2);
-        verify(userFoodRepository).findFoodDtosByUserId(userId);
+        verify(userFoodRepository).findAllByUserIdWithMedia(eq(userId), any(Sort.class));
     }
 
     @Test
@@ -328,17 +419,38 @@ public class UserFoodServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
+        Food food1 = new Food();
+        food1.setId(1);
+        food1.setMediaList(new ArrayList<>());
+        Media media1 = new Media();
+        media1.setImageName("image1.jpg");
+        food1.getMediaList().add(media1);
+
+        Food food2 = new Food();
+        food2.setId(2);
+        food2.setMediaList(new ArrayList<>());
+        Media media2 = new Media();
+        media2.setImageName("image2.jpg");
+        food2.getMediaList().add(media2);
+
+        UserFood uf1 = UserFood.of(new User(), food1);
+        uf1.setCreatedAt(older);
+        UserFood uf2 = UserFood.of(new User(), food2);
+        uf2.setCreatedAt(newer);
+
         FoodSummaryDto dto1 = createFoodResponseDto(1, older);
         dto1.setImageName("image1.jpg");
         FoodSummaryDto dto2 = createFoodResponseDto(2, newer);
         dto2.setImageName("image2.jpg");
 
-        when(userFoodRepository.findFoodDtosByUserId(userId))
-                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+        when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
+                .thenReturn(new ArrayList<>(List.of(uf2, uf1)));
+        when(foodMapper.toSummaryDto(food1)).thenReturn(dto1);
+        when(foodMapper.toSummaryDto(food2)).thenReturn(dto2);
         when(awsS3Service.getImage("image1.jpg")).thenReturn("https://s3.com/image1.jpg");
         when(awsS3Service.getImage("image2.jpg")).thenReturn("https://s3.com/image2.jpg");
 
-        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, "DESC");
+        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(2, result.size());
