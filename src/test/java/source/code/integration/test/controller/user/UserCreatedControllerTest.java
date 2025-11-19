@@ -16,6 +16,7 @@ import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -102,6 +103,136 @@ public class UserCreatedControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$").value(hasSize(1))
+                );
+    }
+
+    @UserCreatedSql
+    @Test
+    @DisplayName("GET - /api/user-created/plans/user/{userId}?sort=DESC - Should return plans sorted by createdAt DESC")
+    void getUserPlansSortedDesc() throws Exception {
+        Utils.setUserContext(1);
+        mockMvc.perform(get("/api/user-created/plans/user/1")
+                .param("sort", "DESC"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(2)),
+                        jsonPath("$[0].id").exists(),
+                        jsonPath("$[1].id").exists()
+                );
+    }
+
+    @UserCreatedSql
+    @Test
+    @DisplayName("GET - /api/user-created/plans/user/{userId}?sort=ASC - Should return plans sorted by createdAt ASC")
+    void getUserPlansSortedAsc() throws Exception {
+        Utils.setUserContext(1);
+        mockMvc.perform(get("/api/user-created/plans/user/1")
+                .param("sort", "ASC"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(2)),
+                        jsonPath("$[0].id").exists(),
+                        jsonPath("$[1].id").exists()
+                );
+    }
+
+    @UserCreatedSql
+    @Test
+    @DisplayName("GET - /api/user-created/recipes/user/{userId}?sort=DESC - Should return recipes sorted by createdAt DESC")
+    void getUserRecipesSortedDesc() throws Exception {
+        Utils.setUserContext(1);
+        mockMvc.perform(get("/api/user-created/recipes/user/1")
+                .param("sort", "DESC"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(2)),
+                        jsonPath("$[0].id").exists(),
+                        jsonPath("$[1].id").exists()
+                );
+    }
+
+    @UserCreatedSql
+    @Test
+    @DisplayName("GET - /api/user-created/recipes/user/{userId}?sort=ASC - Should return recipes sorted by createdAt ASC")
+    void getUserRecipesSortedAsc() throws Exception {
+        Utils.setUserContext(1);
+        mockMvc.perform(get("/api/user-created/recipes/user/1")
+                .param("sort", "ASC"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(2)),
+                        jsonPath("$[0].id").exists(),
+                        jsonPath("$[1].id").exists()
+                );
+    }
+
+    @UserCreatedSql
+    @Test
+    @DisplayName("GET - /api/user-created/comments/user/{userId}?sort=DESC - Should return comments sorted by dateCreated DESC")
+    void getUserCommentsSortedDesc() throws Exception {
+        Utils.setUserContext(1);
+        mockMvc.perform(get("/api/user-created/comments/user/1")
+                .param("sort", "DESC"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(2)),
+                        jsonPath("$[0].id").exists(),
+                        jsonPath("$[1].id").exists()
+                );
+    }
+
+    @UserCreatedSql
+    @Test
+    @DisplayName("GET - /api/user-created/comments/user/{userId}?sort=ASC - Should return comments sorted by dateCreated ASC")
+    void getUserCommentsSortedAsc() throws Exception {
+        Utils.setUserContext(1);
+        mockMvc.perform(get("/api/user-created/comments/user/1")
+                .param("sort", "ASC"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(2)),
+                        jsonPath("$[0].id").exists(),
+                        jsonPath("$[1].id").exists()
+                );
+    }
+
+    @UserCreatedSql
+    @Test
+    @DisplayName("GET - /api/user-created/threads/user/{userId}?sort=DESC - Should return threads sorted by dateCreated DESC")
+    void getUserThreadsSortedDesc() throws Exception {
+        Utils.setUserContext(1);
+        mockMvc.perform(get("/api/user-created/threads/user/1")
+                .param("sort", "DESC"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(1)),
+                        jsonPath("$[0].id").exists()
+                );
+    }
+
+    @UserCreatedSql
+    @Test
+    @DisplayName("GET - /api/user-created/threads/user/{userId}?sort=ASC - Should return threads sorted by dateCreated ASC")
+    void getUserThreadsSortedAsc() throws Exception {
+        Utils.setUserContext(1);
+        mockMvc.perform(get("/api/user-created/threads/user/1")
+                .param("sort", "ASC"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(1)),
+                        jsonPath("$[0].id").exists()
+                );
+    }
+
+    @UserCreatedSql
+    @Test
+    @DisplayName("GET - /api/user-created/plans/user/{userId} - Should default to DESC when no sort param")
+    void getUserPlansDefaultSort() throws Exception {
+        Utils.setUserContext(1);
+        mockMvc.perform(get("/api/user-created/plans/user/1"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(2))
                 );
     }
 }

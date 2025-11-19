@@ -15,10 +15,13 @@ import source.code.repository.RecipeRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.user.UserCreatedService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,35 +48,49 @@ public class UserCreatedServiceImpl implements UserCreatedService {
     }
 
     @Override
-    public List<PlanSummaryDto> getCreatedPlans(int userId) {
-        List<PlanSummaryDto> plans = planRepository.findSummaryByUserId(isOwnProfile(userId), userId);
+    public List<PlanSummaryDto> getCreatedPlans(int userId, String sortDirection) {
+        List<PlanSummaryDto> plans = new ArrayList<>(planRepository.findSummaryByUserId(isOwnProfile(userId), userId));
         populatePlanImageUrls(plans);
+        sortByCreatedAt(plans, PlanSummaryDto::getCreatedAt, sortDirection);
         return plans;
     }
 
     @Override
-    public List<RecipeSummaryDto> getCreatedRecipes(int userId) {
-        List<RecipeSummaryDto> recipes = recipeRepository.findSummaryByUserId(isOwnProfile(userId), userId);
+    public List<RecipeSummaryDto> getCreatedRecipes(int userId, String sortDirection) {
+        List<RecipeSummaryDto> recipes = new ArrayList<>(recipeRepository.findSummaryByUserId(isOwnProfile(userId), userId));
         if (!recipes.isEmpty()) {
             List<Integer> recipeIds = recipes.stream().map(RecipeSummaryDto::getId).toList();
             Map<Integer, List<RecipeCategoryShortDto>> categoriesMap = fetchCategoriesForRecipes(recipeIds);
             recipes.forEach(recipe -> recipe.setCategories(categoriesMap.getOrDefault(recipe.getId(), new ArrayList<>())));
         }
         populateRecipeImageUrls(recipes);
+        sortByCreatedAt(recipes, RecipeSummaryDto::getCreatedAt, sortDirection);
         return recipes;
     }
 
+    private <T> void sortByCreatedAt(List<T> list, Function<T, LocalDateTime> dateExtractor, String sortDirection) {
+        Comparator<T> comparator;
+        if ("ASC".equalsIgnoreCase(sortDirection)) {
+            comparator = Comparator.comparing(dateExtractor, Comparator.nullsLast(Comparator.naturalOrder()));
+        } else {
+            comparator = Comparator.comparing(dateExtractor, Comparator.nullsLast(Comparator.reverseOrder()));
+        }
+        list.sort(comparator);
+    }
+
     @Override
-    public List<CommentSummaryDto> getCreatedComments(int userId) {
-        List<CommentSummaryDto> comments = commentRepository.findSummaryByUserId(userId);
+    public List<CommentSummaryDto> getCreatedComments(int userId, String sortDirection) {
+        List<CommentSummaryDto> comments = new ArrayList<>(commentRepository.findSummaryByUserId(userId));
         populateCommentImageUrls(comments);
+        sortByCreatedAt(comments, CommentSummaryDto::getDateCreated, sortDirection);
         return comments;
     }
 
     @Override
-    public List<ForumThreadSummaryDto> getCreatedThreads(int userId) {
-        List<ForumThreadSummaryDto> threads = forumThreadRepository.findSummaryByUserId(userId);
+    public List<ForumThreadSummaryDto> getCreatedThreads(int userId, String sortDirection) {
+        List<ForumThreadSummaryDto> threads = new ArrayList<>(forumThreadRepository.findSummaryByUserId(userId));
         populateThreadImageUrls(threads);
+        sortByCreatedAt(threads, ForumThreadSummaryDto::getDateCreated, sortDirection);
         return threads;
     }
 

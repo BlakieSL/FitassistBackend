@@ -66,6 +66,7 @@ public interface PlanRepository
       FROM Plan p
       WHERE ((:isOwnProfile IS NULL OR :isOwnProfile = false) AND (p.isPublic = true AND p.user.id = :userId)) OR
             (:isOwnProfile = true AND p.user.id = :userId)
+      ORDER BY p.createdAt DESC
     """)
     List<PlanSummaryDto> findSummaryByUserId(@Param("isOwnProfile") Boolean isOwnProfile, @Param("userId") Integer userId);
 

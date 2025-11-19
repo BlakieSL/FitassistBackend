@@ -30,12 +30,14 @@ public interface UserCommentRepository extends JpaRepository<UserComment, Intege
                 LIMIT 1),
                CAST((SELECT COUNT(uc2) FROM UserComment uc2 WHERE uc2.comment.id = c.id AND uc2.type = 'LIKE') -
                     (SELECT COUNT(uc3) FROM UserComment uc3 WHERE uc3.comment.id = c.id AND uc3.type = 'DISLIKE') AS int),
-               CAST((SELECT COUNT(cr) FROM Comment cr WHERE cr.parentComment.id = c.id) AS int))
+               CAST((SELECT COUNT(cr) FROM Comment cr WHERE cr.parentComment.id = c.id) AS int),
+               uc.createdAt)
            FROM UserComment uc
            JOIN uc.comment c
            JOIN c.user u
            WHERE uc.user.id = :userId
            AND uc.type = :type
+           ORDER BY uc.createdAt DESC
            """)
     List<CommentSummaryDto> findCommentSummaryByUserIdAndType(@Param("userId") int userId, @Param("type") TypeOfInteraction type);
 

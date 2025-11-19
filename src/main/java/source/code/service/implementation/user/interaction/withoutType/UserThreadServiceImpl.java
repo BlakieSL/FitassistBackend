@@ -62,7 +62,7 @@ public class UserThreadServiceImpl
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId) {
+    public List<BaseUserEntity> getAllFromUser(int userId, String sortDirection) {
         List<ForumThreadSummaryDto> dtos = ((UserThreadRepository) userEntityRepository)
                 .findThreadSummaryByUserId(userId);
 

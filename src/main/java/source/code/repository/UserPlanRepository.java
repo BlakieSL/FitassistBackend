@@ -50,6 +50,7 @@ public interface UserPlanRepository extends JpaRepository<UserPlan, Integer> {
            WHERE up.user.id = :userId
            AND up.type = :type
            AND p.isPublic = true
+           ORDER BY up.createdAt DESC
            """)
     List<PlanSummaryDto> findPlanSummaryByUserIdAndType(@Param("userId") int userId, @Param("type") TypeOfInteraction type);
 

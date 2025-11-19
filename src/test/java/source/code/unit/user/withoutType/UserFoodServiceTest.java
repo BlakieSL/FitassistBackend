@@ -25,6 +25,8 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.implementation.user.interaction.withoutType.UserFoodServiceImpl;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -189,7 +191,7 @@ public class UserFoodServiceTest {
         when(awsS3Service.getImage("food1.jpg")).thenReturn("https://s3.../food1.jpg");
         when(awsS3Service.getImage("food2.jpg")).thenReturn("https://s3.../food2.jpg");
 
-        var result = userFoodService.getAllFromUser(userId);
+        var result = userFoodService.getAllFromUser(userId, "DESC");
 
         assertEquals(2, result.size());
         verify(awsS3Service, times(2)).getImage(anyString());
@@ -202,7 +204,7 @@ public class UserFoodServiceTest {
         when(userFoodRepository.findFoodDtosByUserId(userId))
                 .thenReturn(List.of());
 
-        var result = userFoodService.getAllFromUser(userId);
+        var result = userFoodService.getAllFromUser(userId, "DESC");
 
         assertTrue(result.isEmpty());
         verify(awsS3Service, never()).getImage(anyString());
@@ -242,5 +244,124 @@ public class UserFoodServiceTest {
                 () -> userFoodService.calculateLikesAndSaves(foodId));
 
         verify(userFoodRepository, never()).countByFoodId(anyInt());
+    }
+
+    @Test
+    @DisplayName("getAllFromUser with sortDirection DESC - Should sort by interaction date DESC")
+    public void getAllFromUser_ShouldSortByInteractionDateDesc() {
+        int userId = 1;
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        FoodResponseDto dto1 = createFoodResponseDto(1, older);
+        FoodResponseDto dto2 = createFoodResponseDto(2, newer);
+
+        when(userFoodRepository.findFoodDtosByUserId(userId))
+                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+
+        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, "DESC");
+
+        assertSortedResult(result, 2, 2, 1);
+        verify(userFoodRepository).findFoodDtosByUserId(userId);
+    }
+
+    @Test
+    @DisplayName("getAllFromUser with sortDirection ASC - Should sort by interaction date ASC")
+    public void getAllFromUser_ShouldSortByInteractionDateAsc() {
+        int userId = 1;
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        FoodResponseDto dto1 = createFoodResponseDto(1, older);
+        FoodResponseDto dto2 = createFoodResponseDto(2, newer);
+
+        when(userFoodRepository.findFoodDtosByUserId(userId))
+                .thenReturn(new ArrayList<>(List.of(dto2, dto1)));
+
+        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, "ASC");
+
+        assertSortedResult(result, 2, 1, 2);
+        verify(userFoodRepository).findFoodDtosByUserId(userId);
+    }
+
+    @Test
+    @DisplayName("getAllFromUser default - Should sort DESC when no direction specified")
+    public void getAllFromUser_DefaultShouldSortDesc() {
+        int userId = 1;
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        FoodResponseDto dto1 = createFoodResponseDto(1, older);
+        FoodResponseDto dto2 = createFoodResponseDto(2, newer);
+
+        when(userFoodRepository.findFoodDtosByUserId(userId))
+                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+
+        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, "DESC");
+
+        assertSortedResult(result, 2, 2, 1);
+        verify(userFoodRepository).findFoodDtosByUserId(userId);
+    }
+
+    @Test
+    @DisplayName("getAllFromUser - Should handle null dates properly")
+    public void getAllFromUser_ShouldHandleNullDates() {
+        int userId = 1;
+
+        FoodResponseDto dto1 = createFoodResponseDto(1, LocalDateTime.of(2024, 1, 1, 10, 0));
+        FoodResponseDto dto2 = createFoodResponseDto(2, null);
+        FoodResponseDto dto3 = createFoodResponseDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
+
+        when(userFoodRepository.findFoodDtosByUserId(userId))
+                .thenReturn(new ArrayList<>(List.of(dto1, dto2, dto3)));
+
+        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, "DESC");
+
+        assertSortedResult(result, 3, 3, 1, 2);
+        verify(userFoodRepository).findFoodDtosByUserId(userId);
+    }
+
+    @Test
+    @DisplayName("getAllFromUser - Should populate image URLs after sorting")
+    public void getAllFromUser_ShouldPopulateImageUrlsAfterSorting() {
+        int userId = 1;
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        FoodResponseDto dto1 = createFoodResponseDto(1, older);
+        dto1.setImageName("image1.jpg");
+        FoodResponseDto dto2 = createFoodResponseDto(2, newer);
+        dto2.setImageName("image2.jpg");
+
+        when(userFoodRepository.findFoodDtosByUserId(userId))
+                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+        when(awsS3Service.getImage("image1.jpg")).thenReturn("https://s3.com/image1.jpg");
+        when(awsS3Service.getImage("image2.jpg")).thenReturn("https://s3.com/image2.jpg");
+
+        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, "DESC");
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        FoodResponseDto first = (FoodResponseDto) result.get(0);
+        FoodResponseDto second = (FoodResponseDto) result.get(1);
+        assertEquals("https://s3.com/image2.jpg", first.getFirstImageUrl());
+        assertEquals("https://s3.com/image1.jpg", second.getFirstImageUrl());
+        verify(awsS3Service).getImage("image1.jpg");
+        verify(awsS3Service).getImage("image2.jpg");
+    }
+
+    private FoodResponseDto createFoodResponseDto(int id, LocalDateTime interactionDate) {
+        FoodResponseDto dto = new FoodResponseDto();
+        dto.setId(id);
+        dto.setUserFoodInteractionCreatedAt(interactionDate);
+        return dto;
+    }
+
+    private void assertSortedResult(List<BaseUserEntity> result, int expectedSize, Integer... expectedIds) {
+        assertNotNull(result);
+        assertEquals(expectedSize, result.size());
+        for (int i = 0; i < expectedIds.length; i++) {
+            assertEquals(expectedIds[i], ((FoodResponseDto) result.get(i)).getId());
+        }
     }
 }

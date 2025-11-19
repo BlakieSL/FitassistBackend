@@ -11,7 +11,7 @@ public interface SavedService {
 
     void deleteFromUser(int entityId, TypeOfInteraction type);
 
-    List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type);
+    List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, String sortDirection);
 
     LikesAndSavesResponseDto calculateLikesAndSaves(int entityId);
 }

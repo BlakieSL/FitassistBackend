@@ -26,10 +26,11 @@ public class UserSavedController {
     public ResponseEntity<List<BaseUserEntity>> getAllFromUser(
             @PathVariable SavedEntityType itemType,
             @PathVariable TypeOfInteraction type,
-            @PathVariable int userId
+            @PathVariable int userId,
+            @RequestParam(defaultValue = "DESC") String sort
     ) {
         SavedService savedService = savedSelectorService.getService(itemType);
-        List<BaseUserEntity> dto = savedService.getAllFromUser(userId, type);
+        List<BaseUserEntity> dto = savedService.getAllFromUser(userId, type, sort);
         return ResponseEntity.ok(dto);
     }
 
@@ -68,11 +69,12 @@ public class UserSavedController {
     @GetMapping("/item-type/{itemType}/user/{userId}")
     public ResponseEntity<List<BaseUserEntity>> getAllFromUserWithoutType(
             @PathVariable SavedEntityType itemType,
-            @PathVariable("userId") int userId
+            @PathVariable("userId") int userId,
+            @RequestParam(defaultValue = "DESC") String sort
     ) {
         SavedServiceWithoutType savedServiceWithoutType = savedSelectorService
                 .getServiceWithoutType(itemType);
-        List<BaseUserEntity> dto = savedServiceWithoutType.getAllFromUser(userId);
+        List<BaseUserEntity> dto = savedServiceWithoutType.getAllFromUser(userId, sort);
         return ResponseEntity.ok(dto);
     }
 

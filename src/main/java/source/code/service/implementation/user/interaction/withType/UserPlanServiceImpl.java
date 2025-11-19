@@ -18,6 +18,8 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.user.SavedService;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service("userPlanService")
@@ -41,9 +43,9 @@ public class UserPlanServiceImpl
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type) {
-        List<PlanSummaryDto> dtos = ((UserPlanRepository) userEntityRepository)
-                .findPlanSummaryByUserIdAndType(userId, type);
+    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, String sortDirection) {
+        List<PlanSummaryDto> dtos = new ArrayList<>(((UserPlanRepository) userEntityRepository)
+                .findPlanSummaryByUserIdAndType(userId, type));
 
         dtos.forEach(dto -> {
             if (dto.getAuthorImageUrl() != null) {
@@ -54,9 +56,27 @@ public class UserPlanServiceImpl
             }
         });
 
+        sortByInteractionDate(dtos, sortDirection);
+
         return dtos.stream()
                 .map(dto -> (BaseUserEntity) dto)
                 .toList();
+    }
+
+    private void sortByInteractionDate(List<PlanSummaryDto> list, String sortDirection) {
+        Comparator<PlanSummaryDto> comparator;
+        if ("ASC".equalsIgnoreCase(sortDirection)) {
+            comparator = Comparator.comparing(
+                    PlanSummaryDto::getInteractedWithAt,
+                    Comparator.nullsLast(Comparator.naturalOrder())
+            );
+        } else {
+            comparator = Comparator.comparing(
+                    PlanSummaryDto::getInteractedWithAt,
+                    Comparator.nullsLast(Comparator.reverseOrder())
+            );
+        }
+        list.sort(comparator);
     }
 
     @Override

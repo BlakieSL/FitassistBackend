@@ -41,6 +41,7 @@ public interface UserActivityRepository extends JpaRepository<UserActivity, Inte
            JOIN ua.activity a
            JOIN a.activityCategory ac
            WHERE ua.user.id = :userId
+           ORDER BY ua.createdAt DESC
            """)
     List<ActivityResponseDto> findActivityDtosByUserId(@Param("userId") int userId);
 

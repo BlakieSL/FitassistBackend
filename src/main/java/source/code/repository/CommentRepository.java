@@ -65,7 +65,8 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
              c.user.id,
              null,
              SIZE(c.userCommentLikes) ,
-             SIZE(c.replies))
+             SIZE(c.replies),
+             null)
       FROM Comment c
       WHERE c.user.id = :userId
     """)

@@ -17,6 +17,8 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.user.SavedService;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service("userCommentService")
@@ -36,9 +38,9 @@ public class UserCommentServiceImpl
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type) {
-        List<CommentSummaryDto> dtos = ((UserCommentRepository) userEntityRepository)
-                .findCommentSummaryByUserIdAndType(userId, type);
+    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, String sortDirection) {
+        List<CommentSummaryDto> dtos = new ArrayList<>(((UserCommentRepository) userEntityRepository)
+                .findCommentSummaryByUserIdAndType(userId, type));
 
         dtos.forEach(dto -> {
             if (dto.getAuthorImageUrl() != null) {
@@ -46,9 +48,27 @@ public class UserCommentServiceImpl
             }
         });
 
+        sortByInteractionDate(dtos, sortDirection);
+
         return dtos.stream()
                 .map(dto -> (BaseUserEntity) dto)
                 .toList();
+    }
+
+    private void sortByInteractionDate(List<CommentSummaryDto> list, String sortDirection) {
+        Comparator<CommentSummaryDto> comparator;
+        if ("ASC".equalsIgnoreCase(sortDirection)) {
+            comparator = Comparator.comparing(
+                    CommentSummaryDto::getUserCommentInteractionCreatedAt,
+                    Comparator.nullsLast(Comparator.naturalOrder())
+            );
+        } else {
+            comparator = Comparator.comparing(
+                    CommentSummaryDto::getUserCommentInteractionCreatedAt,
+                    Comparator.nullsLast(Comparator.reverseOrder())
+            );
+        }
+        list.sort(comparator);
     }
 
     @Override

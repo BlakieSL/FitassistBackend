@@ -37,6 +37,7 @@ public interface UserFoodRepository extends JpaRepository<UserFood, Integer> {
            JOIN uf.food f
            JOIN f.foodCategory fc
            WHERE uf.user.id = :userId
+           ORDER BY uf.createdAt DESC
            """)
     List<FoodResponseDto> findFoodDtosByUserId(@Param("userId") int userId);
 
