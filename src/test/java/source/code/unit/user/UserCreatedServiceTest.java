@@ -34,10 +34,12 @@ import source.code.repository.CommentRepository;
 import source.code.repository.ForumThreadRepository;
 import source.code.repository.MediaRepository;
 import source.code.repository.PlanRepository;
+import source.code.repository.RecipeCategoryAssociationRepository;
 import source.code.repository.RecipeRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.implementation.user.UserCreatedServiceImpl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,6 +60,8 @@ public class UserCreatedServiceTest {
     private MediaRepository mediaRepository;
     @Mock
     private AwsS3Service awsS3Service;
+    @Mock
+    private RecipeCategoryAssociationRepository recipeCategoryAssociationRepository;
 
     @Mock
     private PlanMapper planMapper;
@@ -133,11 +137,15 @@ public class UserCreatedServiceTest {
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
         RecipeSummaryDto dto1 = new RecipeSummaryDto();
+        dto1.setId(1);
         dto1.setImageName("recipe1.jpg");
         RecipeSummaryDto dto2 = new RecipeSummaryDto();
+        dto2.setId(2);
         dto2.setImageName("recipe2.jpg");
 
         when(recipeRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto1, dto2));
+        when(recipeCategoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2)))
+                .thenReturn(Collections.emptyList());
         when(awsS3Service.getImage("recipe1.jpg")).thenReturn("https://s3.amazonaws.com/bucket/recipe1.jpg");
         when(awsS3Service.getImage("recipe2.jpg")).thenReturn("https://s3.amazonaws.com/bucket/recipe2.jpg");
 
@@ -150,6 +158,7 @@ public class UserCreatedServiceTest {
         assertEquals("https://s3.amazonaws.com/bucket/recipe1.jpg", dto1.getFirstImageUrl());
         assertEquals("https://s3.amazonaws.com/bucket/recipe2.jpg", dto2.getFirstImageUrl());
         verify(recipeRepository).findSummaryByUserId(true, userId);
+        verify(recipeCategoryAssociationRepository).findCategoryDataByRecipeIds(List.of(1, 2));
         verify(awsS3Service).getImage("recipe1.jpg");
         verify(awsS3Service).getImage("recipe2.jpg");
     }
@@ -284,9 +293,12 @@ public class UserCreatedServiceTest {
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
         RecipeSummaryDto dto1 = new RecipeSummaryDto();
+        dto1.setId(1);
         dto1.setImageName(null);
 
         when(recipeRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto1));
+        when(recipeCategoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1)))
+                .thenReturn(Collections.emptyList());
 
         List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId);
 
@@ -294,6 +306,7 @@ public class UserCreatedServiceTest {
         assertEquals(1, result.size());
         assertNull(dto1.getFirstImageUrl());
         verify(recipeRepository).findSummaryByUserId(true, userId);
+        verify(recipeCategoryAssociationRepository).findCategoryDataByRecipeIds(List.of(1));
         verifyNoInteractions(awsS3Service);
     }
 }

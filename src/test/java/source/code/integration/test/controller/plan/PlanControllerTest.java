@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @TestSetup
 @Import({MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class})
-@TestPropertySource(properties = "schema.name=plan")
+@TestPropertySource(properties = "schema.name=general")
 @ContextConfiguration(initializers = {MySqlContainerInitializer.class})
 public class PlanControllerTest {
     @Autowired
@@ -244,5 +244,35 @@ public class PlanControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @WithMockUser
+    @PlanSql
+    @Test
+    @DisplayName("PATCH - /{id}/view - Should increment views for a plan")
+    void incrementViews() throws Exception {
+        mockMvc.perform(patch("/api/plans/1/view"))
+                .andExpect(status().isNoContent());
+    }
+
+    @WithMockUser
+    @PlanSql
+    @Test
+    @DisplayName("PATCH - /{id}/view - Should increment views multiple times")
+    void incrementViewsMultipleTimes() throws Exception {
+        mockMvc.perform(patch("/api/plans/1/view"))
+                .andExpect(status().isNoContent());
+        mockMvc.perform(patch("/api/plans/1/view"))
+                .andExpect(status().isNoContent());
+        mockMvc.perform(patch("/api/plans/1/view"))
+                .andExpect(status().isNoContent());
+    }
+
+    @WithMockUser
+    @Test
+    @DisplayName("PATCH - /{id}/view - Should return 204 even for non-existent plan")
+    void incrementViewsNonExistentPlan() throws Exception {
+        mockMvc.perform(patch("/api/plans/999/view"))
+                .andExpect(status().isNoContent());
     }
 }

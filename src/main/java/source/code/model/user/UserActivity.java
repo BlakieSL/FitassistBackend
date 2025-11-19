@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.activity.Activity;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "user_activity")
 @Getter
@@ -28,6 +30,14 @@ public class UserActivity{
     @ManyToOne
     @JoinColumn(name = "activity_id", nullable = false)
     private Activity activity;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
     public static UserActivity of(User user, Activity activity) {
         UserActivity userActivity = new UserActivity();

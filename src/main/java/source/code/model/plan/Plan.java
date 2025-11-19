@@ -46,6 +46,9 @@ public class Plan implements IndexedEntity {
     @Column(nullable = false, name = "is_public")
     private Boolean isPublic = false;
 
+    @Column(nullable = false)
+    private Integer views = 0;
+
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.thread.ForumThread;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "user_thread")
 @Getter
@@ -28,6 +30,14 @@ public class UserThread {
     @ManyToOne
     @JoinColumn(name = "thread_id", nullable = false)
     private ForumThread forumThread;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
     public static UserThread of(User user, ForumThread forumThread) {
         UserThread userThread = new UserThread();

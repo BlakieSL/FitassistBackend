@@ -29,12 +29,12 @@ INSERT INTO mechanics_type (name) VALUES
 INSERT INTO target_muscle (name) VALUES
                                      ('Chest'), ('Back'), ('Legs'), ('Arms'), ('Core');
 
-INSERT INTO user (username, password, email) VALUES
-                                                 ('user1', 'pass1', 'user1@example.com'),
-                                                 ('user2', 'pass2', 'user2@example.com'),
-                                                 ('user3', 'pass3', 'user3@example.com'),
-                                                 ('user4', 'pass4', 'user4@example.com'),
-                                                 ('user5', 'pass5', 'user5@example.com');
+INSERT INTO user (username, password, email, birthday, gender) VALUES
+                                                 ('user1', 'pass1', 'user1@example.com', '1990-01-01', 'MALE'),
+                                                 ('user2', 'pass2', 'user2@example.com', '1990-01-02', 'FEMALE'),
+                                                 ('user3', 'pass3', 'user3@example.com', '1990-01-03', 'MALE'),
+                                                 ('user4', 'pass4', 'user4@example.com', '1990-01-04', 'FEMALE'),
+                                                 ('user5', 'pass5', 'user5@example.com', '1990-01-05', 'MALE');
 
 INSERT INTO food (name, calories, protein, fat, carbohydrates, food_category_id) VALUES
                                                                                      ('Apple', 52, 0.3, 0.2, 14, 1),

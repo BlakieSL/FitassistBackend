@@ -206,6 +206,7 @@ create table plan
         primary key,
     description  varchar(255) not null,
     name         varchar(100) not null,
+    views        int          not null default 0,
     is_public BOOLEAN NOT NULL,
     plan_type_id int          not null,
     user_id      int          not null,
@@ -233,6 +234,7 @@ create table recipe
         primary key,
     description varchar(255) not null,
     name        varchar(100) not null,
+    views       int          not null default 0,
     is_public   BOOLEAN NOT NULL,
     user_id     int          not null,
     constraint FKc8o8io8s0f7nqcd3429u6cxjs
@@ -340,6 +342,7 @@ create table user_activity
         primary key,
     activity_id int not null,
     user_id     int not null,
+    created_at  datetime(6) not null,
     constraint FKlw9o1xb2ki2hnwq1o3kk5dlja
         foreign key (activity_id) references activity (id),
     constraint FKp78clcyf5okycdv9teohsr2kq
@@ -353,6 +356,7 @@ create table user_comment
     type       enum ('DISLIKE', 'LIKE', 'SAVE') not null,
     comment_id int                              not null,
     user_id    int                              not null,
+    created_at datetime(6)                      not null,
     constraint FK8run8dgvadrrwcwe5xpdscynm
         foreign key (comment_id) references comment (id) ON DELETE CASCADE,
     constraint FKornrskknlmumgdhlohpbcvrw5
@@ -365,6 +369,7 @@ create table user_exercise
         primary key,
     exercise_id int not null,
     user_id     int not null,
+    created_at  datetime(6) not null,
     constraint FK4dsfvd3ee924pwq4078equ1tu
         foreign key (exercise_id) references exercise (id),
     constraint FKkq87ibl7n9bls7n474jh3wrfm
@@ -373,10 +378,11 @@ create table user_exercise
 
 create table user_food
 (
-    id      int auto_increment
+    id         int auto_increment
         primary key,
-    food_id int not null,
-    user_id int not null,
+    food_id    int not null,
+    user_id    int not null,
+    created_at datetime(6) not null,
     constraint FK1g8eq16xsqum2d2ojkk3hx4x9
         foreign key (food_id) references food (id),
     constraint FKcljbolfn2gnq75ujw985r4aa7
@@ -385,11 +391,12 @@ create table user_food
 
 create table user_plan
 (
-    id      int auto_increment
+    id         int auto_increment
         primary key,
-    type    enum ('DISLIKE', 'LIKE', 'SAVE') not null,
-    plan_id int                              not null,
-    user_id int                              not null,
+    type       enum ('DISLIKE', 'LIKE', 'SAVE') not null,
+    plan_id    int                              not null,
+    user_id    int                              not null,
+    created_at datetime(6)                      not null,
     constraint FKfgwof219hqbrb6am5awwan8r2
         foreign key (plan_id) references plan (id),
     constraint FKr1gojepx9qoalgmd17gurr1dl
@@ -403,6 +410,7 @@ create table user_recipe
     type       enum ('DISLIKE', 'LIKE', 'SAVE') not null,
     recipie_id int                              not null,
     user_id    int                              not null,
+    created_at datetime(6)                      not null,
     constraint FKn6pgj5qxw9w3cyxfcq1ahiwg2
         foreign key (recipie_id) references recipe (id),
     constraint FKsv2khyshlbtm7vvpk5sq6wjtl
@@ -422,10 +430,11 @@ create table user_roles
 
 create table user_thread
 (
-    id        int auto_increment
+    id         int auto_increment
         primary key,
-    thread_id int not null,
-    user_id   int not null,
+    thread_id  int not null,
+    user_id    int not null,
+    created_at datetime(6) not null,
     constraint FK6to3x5x2bh7baqxdvohs3lg0p
         foreign key (user_id) references user (id),
     constraint FKfdaf07carxbssu63xpu8qa7ya

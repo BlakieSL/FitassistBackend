@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.recipe.Recipe;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "user_recipe")
 @Getter
@@ -33,6 +35,14 @@ public class UserRecipe {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TypeOfInteraction type;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
     public static UserRecipe createWithUserRecipeType(
             User user, Recipe recipe, TypeOfInteraction type) {

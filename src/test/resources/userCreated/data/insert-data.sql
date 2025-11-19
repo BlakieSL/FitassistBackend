@@ -127,44 +127,44 @@ INSERT INTO comment (text, dateCreated, thread_id, user_id, parent_comment_id) V
                                                                                    ('1.6-2.2g per kg of body weight is a good range', '2025-11-13 20:56:00.987654', 2, 3, NULL),
                                                                                    ('I aim for 30% of my calories from protein', '2025-11-13 20:56:30.456789', 2, 1, NULL),
                                                                                    ('Post a video for better feedback', '2025-11-13 20:57:00.321654', 3, 2, NULL);
-INSERT INTO user_activity (user_id, activity_id) VALUES
-                                                     (1, 1), (1, 4),
-                                                     (2, 2), (2, 3),
-                                                     (3, 1), (3, 2), (3, 4);
+INSERT INTO user_activity (user_id, activity_id, created_at) VALUES
+                                                     (1, 1, NOW()), (1, 4, NOW()),
+                                                     (2, 2, NOW()), (2, 3, NOW()),
+                                                     (3, 1, NOW()), (3, 2, NOW()), (3, 4, NOW());
 
-INSERT INTO user_food (user_id, food_id) VALUES
-                                             (1, 2), (1, 3),
-                                             (2, 1), (2, 5),
-                                             (3, 4), (3, 5);
+INSERT INTO user_food (user_id, food_id, created_at) VALUES
+                                             (1, 2, NOW()), (1, 3, NOW()),
+                                             (2, 1, NOW()), (2, 5, NOW()),
+                                             (3, 4, NOW()), (3, 5, NOW());
 
-INSERT INTO user_exercise (user_id, exercise_id) VALUES
-                                                     (1, 1),
-                                                     (1, 3),
-                                                     (2, 2),
-                                                     (2, 4),
-                                                     (3, 1),
-                                                     (3, 2),
-                                                     (3, 3);
+INSERT INTO user_exercise (user_id, exercise_id, created_at) VALUES
+                                                     (1, 1, NOW()),
+                                                     (1, 3, NOW()),
+                                                     (2, 2, NOW()),
+                                                     (2, 4, NOW()),
+                                                     (3, 1, NOW()),
+                                                     (3, 2, NOW()),
+                                                     (3, 3, NOW());
 
-INSERT INTO user_recipe (user_id, recipie_id, type) VALUES
-                                                        (1, 2, 'LIKE'), (1, 2, 'SAVE'),
-                                                        (2, 3, 'LIKE'),
-                                                        (3, 1, 'SAVE');
+INSERT INTO user_recipe (user_id, recipie_id, type, created_at) VALUES
+                                                        (1, 2, 'LIKE', NOW()), (1, 2, 'SAVE', NOW()),
+                                                        (2, 3, 'LIKE', NOW()),
+                                                        (3, 1, 'SAVE', NOW());
 
-INSERT INTO user_plan (user_id, plan_id, type) VALUES
-                                                   (1, 1, 'SAVE'),
-                                                   (2, 2, 'SAVE'),
-                                                   (2, 2, 'LIKE');
+INSERT INTO user_plan (user_id, plan_id, type, created_at) VALUES
+                                                   (1, 1, 'SAVE', NOW()),
+                                                   (2, 2, 'SAVE', NOW()),
+                                                   (2, 2, 'LIKE', NOW());
 
-INSERT INTO user_comment (user_id, comment_id, type) VALUES
-                                                         (1, 3, 'LIKE'),
-                                                         (2, 1, 'LIKE'),
-                                                         (3, 5, 'LIKE');
+INSERT INTO user_comment (user_id, comment_id, type, created_at) VALUES
+                                                         (1, 3, 'LIKE', NOW()),
+                                                         (2, 1, 'LIKE', NOW()),
+                                                         (3, 5, 'LIKE', NOW());
 
-INSERT INTO user_thread (user_id, thread_id) VALUES
-                                                 (1, 2),
-                                                 (2, 3),
-                                                 (3, 2);
+INSERT INTO user_thread (user_id, thread_id, created_at) VALUES
+                                                 (1, 2, NOW()),
+                                                 (2, 3, NOW()),
+                                                 (3, 2, NOW());
 
 INSERT INTO daily_cart (user_id, date) VALUES
                                            (1, CURDATE()),

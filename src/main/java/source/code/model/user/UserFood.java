@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.food.Food;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "user_food")
 @Getter
@@ -25,6 +27,14 @@ public class UserFood {
     @ManyToOne
     @JoinColumn(name = "food_id", nullable = false)
     private Food food;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
     public static UserFood of(User user, Food food) {
         UserFood userFood = new UserFood();

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.model.plan.Plan;
@@ -56,7 +57,10 @@ public interface PlanRepository
               LIMIT 1),
              null,
              CAST((SELECT COUNT(up1) FROM UserPlan up1 WHERE up1.plan.id = p.id AND up1.type = 'LIKE') AS int),
-             CAST((SELECT COUNT(up2) FROM UserPlan up2 WHERE up2.plan.id = p.id AND up2.type = 'SAVE') AS int))
+             CAST((SELECT COUNT(up2) FROM UserPlan up2 WHERE up2.plan.id = p.id AND up2.type = 'SAVE') AS int),
+             p.views,
+             p.planType.id,
+             p.planType.name)
       FROM Plan p
       WHERE ((:isOwnProfile IS NULL OR :isOwnProfile = false) AND (p.isPublic = true AND p.user.id = :userId)) OR
             (:isOwnProfile = true AND p.user.id = :userId)
@@ -65,4 +69,8 @@ public interface PlanRepository
                                              @Param("userId") Integer userId);
 
     List<Plan> user(@NotNull User user);
+
+    @Modifying
+    @Query("UPDATE Plan p SET p.views = p.views + 1 WHERE p.id = :planId")
+    void incrementViews(@Param("planId") Integer planId);
 }

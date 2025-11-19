@@ -1,9 +1,0 @@
-DROP TABLE IF EXISTS user_activity;
-DROP TABLE IF EXISTS daily_cart_activity;
-DROP TABLE IF EXISTS daily_cart;
-DROP TABLE IF EXISTS user_roles;
-
-DROP TABLE IF EXISTS role;
-DROP TABLE IF EXISTS activity;
-DROP TABLE IF EXISTS activity_category;
-DROP TABLE IF EXISTS user;

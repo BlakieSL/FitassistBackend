@@ -19,12 +19,12 @@ INSERT INTO thread (dateCreated, text, title, views, thread_category_id, user_id
                                                                                       (NOW(), 'My 12-week strength training program', 'Strength Program', 180, 4, 4),
                                                                                       (NOW(), 'How I lost 20kg in 6 months', 'Weight Loss Journey', 450, 5, 5);
 
-INSERT INTO user_thread (thread_id, user_id) VALUES
-                                                 (1, 2), (1, 3),
-                                                 (2, 1), (2, 4),
-                                                 (3, 2), (3, 5),
-                                                 (4, 1), (4, 3),
-                                                 (5, 2), (5, 4);
+INSERT INTO user_thread (thread_id, user_id, created_at) VALUES
+                                                 (1, 2, NOW()), (1, 3, NOW()),
+                                                 (2, 1, NOW()), (2, 4, NOW()),
+                                                 (3, 2, NOW()), (3, 5, NOW()),
+                                                 (4, 1, NOW()), (4, 3, NOW()),
+                                                 (5, 2, NOW()), (5, 4, NOW());
 
 INSERT INTO comment (text, dateCreated, parent_comment_id, thread_id, user_id) VALUES
                                                                                    ('I really like MyFitnessPal for tracking', '2025-11-13 20:00:00.123456', NULL, 1, 2),
@@ -39,14 +39,14 @@ INSERT INTO comment (text, dateCreated, parent_comment_id, thread_id, user_id) V
                                                                                    ('It''s a 5-day split program', '2025-11-13 20:40:00.303303', 4, 4, 4),
                                                                                    ('Thank you! It was hard work', '2025-11-13 20:45:00.404404', 5, 5, 1);
 
-INSERT INTO user_comment (type, comment_id, user_id) VALUES
-                                                         ('LIKE', 1, 1), ('LIKE', 1, 3),
-                                                         ('DISLIKE', 2, 4),
-                                                         ('SAVE', 3, 2), ('SAVE', 3, 5),
-                                                         ('LIKE', 4, 1), ('LIKE', 4, 2),
-                                                         ('DISLIKE', 5, 3),
-                                                         ('SAVE', 6, 4),
-                                                         ('LIKE', 7, 5),
-                                                         ('DISLIKE', 8, 1),
-                                                         ('SAVE', 9, 2), ('SAVE', 9, 3),
-                                                         ('LIKE', 10, 4);
+INSERT INTO user_comment (type, comment_id, user_id, created_at) VALUES
+                                                         ('LIKE', 1, 1, NOW()), ('LIKE', 1, 3, NOW()),
+                                                         ('DISLIKE', 2, 4, NOW()),
+                                                         ('SAVE', 3, 2, NOW()), ('SAVE', 3, 5, NOW()),
+                                                         ('LIKE', 4, 1, NOW()), ('LIKE', 4, 2, NOW()),
+                                                         ('DISLIKE', 5, 3, NOW()),
+                                                         ('SAVE', 6, 4, NOW()),
+                                                         ('LIKE', 7, 5, NOW()),
+                                                         ('DISLIKE', 8, 1, NOW()),
+                                                         ('SAVE', 9, 2, NOW()), ('SAVE', 9, 3, NOW()),
+                                                         ('LIKE', 10, 4, NOW());

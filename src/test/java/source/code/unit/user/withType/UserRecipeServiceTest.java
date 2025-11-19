@@ -22,12 +22,14 @@ import source.code.model.recipe.Recipe;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.User;
 import source.code.model.user.UserRecipe;
+import source.code.repository.RecipeCategoryAssociationRepository;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.implementation.user.interaction.withType.UserRecipeServiceImpl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +49,8 @@ public class UserRecipeServiceTest {
     private RecipeMapper recipeMapper;
     @Mock
     private AwsS3Service awsS3Service;
+    @Mock
+    private RecipeCategoryAssociationRepository categoryAssociationRepository;
     @InjectMocks
     private UserRecipeServiceImpl userRecipeService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
@@ -206,11 +210,14 @@ public class UserRecipeServiceTest {
 
         when(userRecipeRepository.findRecipeSummaryByUserIdAndType(userId, type))
                 .thenReturn(List.of(dto1, dto2));
+        when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2)))
+                .thenReturn(Collections.emptyList());
 
         var result = userRecipeService.getAllFromUser(userId, type);
 
         assertEquals(2, result.size());
         verify(userRecipeRepository).findRecipeSummaryByUserIdAndType(userId, type);
+        verify(categoryAssociationRepository).findCategoryDataByRecipeIds(List.of(1, 2));
     }
 
     @Test

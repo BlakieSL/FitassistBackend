@@ -24,4 +24,6 @@ public interface RecipeService {
     List<RecipeResponseDto> getFilteredRecipes(FilterDto filter);
 
     List<Recipe> getAllRecipeEntities();
+
+    void incrementViews(int recipeId);
 }

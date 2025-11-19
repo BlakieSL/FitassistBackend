@@ -45,4 +45,4 @@ INSERT INTO text (type, orderIndex, text, recipe_id) VALUES
 INSERT INTO text (type, orderIndex, text, plan_id) VALUES
     ('PLAN_INSTRUCTION', 0, 'Start with warm-up...', 3);
 
-INSERT INTO user_exercise (id, exercise_id, user_id) VALUES (1, 1, 1);
+INSERT INTO user_exercise (id, exercise_id, user_id, created_at) VALUES (1, 1, 1, NOW());
