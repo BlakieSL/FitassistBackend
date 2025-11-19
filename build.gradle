@@ -76,4 +76,9 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+
+    maxParallelForks = 15
+    forkEvery = 0
+
+    jvmArgs = ['-XX:+UseG1GC', '-Xmx4g', '-XX:+UseStringDeduplication']
 }
