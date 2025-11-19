@@ -19,7 +19,9 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.user.SavedService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -48,9 +50,9 @@ public class UserRecipeServiceImpl
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type) {
-        List<RecipeSummaryDto> dtos = ((UserRecipeRepository) userEntityRepository)
-                .findRecipeSummaryByUserIdAndType(userId, type);
+    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, String sortDirection) {
+        List<RecipeSummaryDto> dtos = new ArrayList<>(((UserRecipeRepository) userEntityRepository)
+                .findRecipeSummaryByUserIdAndType(userId, type));
 
         if (!dtos.isEmpty()) {
             List<Integer> recipeIds = dtos.stream().map(RecipeSummaryDto::getId).toList();
@@ -67,9 +69,27 @@ public class UserRecipeServiceImpl
             });
         }
 
+        sortByInteractionDate(dtos, sortDirection);
+
         return dtos.stream()
                 .map(dto -> (BaseUserEntity) dto)
                 .toList();
+    }
+
+    private void sortByInteractionDate(List<RecipeSummaryDto> list, String sortDirection) {
+        Comparator<RecipeSummaryDto> comparator;
+        if ("ASC".equalsIgnoreCase(sortDirection)) {
+            comparator = Comparator.comparing(
+                    RecipeSummaryDto::getUserRecipeInteractionCreatedAt,
+                    Comparator.nullsLast(Comparator.naturalOrder())
+            );
+        } else {
+            comparator = Comparator.comparing(
+                    RecipeSummaryDto::getUserRecipeInteractionCreatedAt,
+                    Comparator.nullsLast(Comparator.reverseOrder())
+            );
+        }
+        list.sort(comparator);
     }
 
     private Map<Integer, List<RecipeCategoryShortDto>> fetchCategoriesForRecipes(List<Integer> recipeIds) {

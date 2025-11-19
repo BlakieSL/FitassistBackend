@@ -202,4 +202,44 @@ public class UserSavedControllerWithTypeTest {
                 .andExpectAll(status().isNotFound());
     }
 
+    @WithMockUser
+    @UserSavedSql
+    @Test
+    @DisplayName("GET - /item-type/{itemType}/type/{type}/user/{userId}?sort=DESC - Should return items sorted DESC")
+    void getAllFromUserSortDesc() throws Exception {
+        mockMvc.perform(get("/api/user-saved/item-type/PLAN/type/SAVE/user/1")
+                .param("sort", "DESC"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(1)),
+                        jsonPath("$[0].id").exists()
+                );
+    }
+
+    @WithMockUser
+    @UserSavedSql
+    @Test
+    @DisplayName("GET - /item-type/{itemType}/type/{type}/user/{userId}?sort=ASC - Should return items sorted ASC")
+    void getAllFromUserSortAsc() throws Exception {
+        mockMvc.perform(get("/api/user-saved/item-type/RECIPE/type/SAVE/user/1")
+                .param("sort", "ASC"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(1)),
+                        jsonPath("$[0].id").exists()
+                );
+    }
+
+    @WithMockUser
+    @UserSavedSql
+    @Test
+    @DisplayName("GET - /item-type/{itemType}/type/{type}/user/{userId} - Should default to DESC when no sort param")
+    void getAllFromUserDefaultSort() throws Exception {
+        mockMvc.perform(get("/api/user-saved/item-type/COMMENT/type/LIKE/user/1"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").exists()
+                );
+    }
+
 }

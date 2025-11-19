@@ -14,6 +14,7 @@ import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
+import source.code.helper.BaseUserEntity;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.comment.CommentMapper;
 import source.code.model.thread.Comment;
@@ -26,6 +27,8 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.implementation.user.interaction.withType.UserCommentServiceImpl;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -205,7 +208,7 @@ public class UserCommentServiceTest {
         when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
                 .thenReturn(List.of(dto1, dto2));
 
-        var result = userCommentService.getAllFromUser(userId, type);
+        var result = userCommentService.getAllFromUser(userId, type, "DESC");
 
         assertEquals(2, result.size());
         verify(userCommentRepository).findCommentSummaryByUserIdAndType(userId, type);
@@ -220,7 +223,7 @@ public class UserCommentServiceTest {
         when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
                 .thenReturn(List.of());
 
-        var result = userCommentService.getAllFromUser(userId, type);
+        var result = userCommentService.getAllFromUser(userId, type, "DESC");
 
         assertTrue(result.isEmpty());
     }
@@ -255,5 +258,129 @@ public class UserCommentServiceTest {
         assertThrows(RecordNotFoundException.class, () -> userCommentService.calculateLikesAndSaves(commentId));
 
         verify(userCommentRepository, never()).countByCommentIdAndType(anyInt(), any(TypeOfInteraction.class));
+    }
+
+    @Test
+    @DisplayName("getAllFromUser with type and sortDirection DESC - Should sort by interaction date DESC")
+    public void getAllFromUser_WithType_ShouldSortByInteractionDateDesc() {
+        int userId = 1;
+        TypeOfInteraction type = TypeOfInteraction.LIKE;
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        CommentSummaryDto dto1 = createCommentSummaryDto(1, older);
+        CommentSummaryDto dto2 = createCommentSummaryDto(2, newer);
+
+        when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
+                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+
+        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, "DESC");
+
+        assertSortedResult(result, 2, 2, 1);
+        verify(userCommentRepository).findCommentSummaryByUserIdAndType(userId, type);
+    }
+
+    @Test
+    @DisplayName("getAllFromUser with type and sortDirection ASC - Should sort by interaction date ASC")
+    public void getAllFromUser_WithType_ShouldSortByInteractionDateAsc() {
+        int userId = 1;
+        TypeOfInteraction type = TypeOfInteraction.DISLIKE;
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        CommentSummaryDto dto1 = createCommentSummaryDto(1, older);
+        CommentSummaryDto dto2 = createCommentSummaryDto(2, newer);
+
+        when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
+                .thenReturn(new ArrayList<>(List.of(dto2, dto1)));
+
+        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, "ASC");
+
+        assertSortedResult(result, 2, 1, 2);
+        verify(userCommentRepository).findCommentSummaryByUserIdAndType(userId, type);
+    }
+
+    @Test
+    @DisplayName("getAllFromUser with type default - Should sort DESC when no direction specified")
+    public void getAllFromUser_WithType_DefaultShouldSortDesc() {
+        int userId = 1;
+        TypeOfInteraction type = TypeOfInteraction.LIKE;
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        CommentSummaryDto dto1 = createCommentSummaryDto(1, older);
+        CommentSummaryDto dto2 = createCommentSummaryDto(2, newer);
+
+        when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
+                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+
+        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, "DESC");
+
+        assertSortedResult(result, 2, 2, 1);
+        verify(userCommentRepository).findCommentSummaryByUserIdAndType(userId, type);
+    }
+
+    @Test
+    @DisplayName("getAllFromUser with type - Should handle null dates properly")
+    public void getAllFromUser_WithType_ShouldHandleNullDates() {
+        int userId = 1;
+        TypeOfInteraction type = TypeOfInteraction.LIKE;
+
+        CommentSummaryDto dto1 = createCommentSummaryDto(1, LocalDateTime.of(2024, 1, 1, 10, 0));
+        CommentSummaryDto dto2 = createCommentSummaryDto(2, null);
+        CommentSummaryDto dto3 = createCommentSummaryDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
+
+        when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
+                .thenReturn(new ArrayList<>(List.of(dto1, dto2, dto3)));
+
+        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, "DESC");
+
+        assertSortedResult(result, 3, 3, 1, 2);
+        verify(userCommentRepository).findCommentSummaryByUserIdAndType(userId, type);
+    }
+
+    @Test
+    @DisplayName("getAllFromUser with type - Should populate author image URLs after sorting")
+    public void getAllFromUser_WithType_ShouldPopulateAuthorImageUrlsAfterSorting() {
+        int userId = 1;
+        TypeOfInteraction type = TypeOfInteraction.LIKE;
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        CommentSummaryDto dto1 = createCommentSummaryDto(1, older);
+        dto1.setAuthorImageUrl("author1.jpg");
+        CommentSummaryDto dto2 = createCommentSummaryDto(2, newer);
+        dto2.setAuthorImageUrl("author2.jpg");
+
+        when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
+                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+        when(awsS3Service.getImage("author1.jpg")).thenReturn("https://s3.com/author1.jpg");
+        when(awsS3Service.getImage("author2.jpg")).thenReturn("https://s3.com/author2.jpg");
+
+        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, "DESC");
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        CommentSummaryDto first = (CommentSummaryDto) result.get(0);
+        CommentSummaryDto second = (CommentSummaryDto) result.get(1);
+        assertEquals("https://s3.com/author2.jpg", first.getAuthorImageUrl());
+        assertEquals("https://s3.com/author1.jpg", second.getAuthorImageUrl());
+        verify(awsS3Service).getImage("author1.jpg");
+        verify(awsS3Service).getImage("author2.jpg");
+    }
+
+    private CommentSummaryDto createCommentSummaryDto(int id, LocalDateTime interactionDate) {
+        CommentSummaryDto dto = new CommentSummaryDto();
+        dto.setId(id);
+        dto.setUserCommentInteractionCreatedAt(interactionDate);
+        return dto;
+    }
+
+    private void assertSortedResult(List<BaseUserEntity> result, int expectedSize, Integer... expectedIds) {
+        assertNotNull(result);
+        assertEquals(expectedSize, result.size());
+        for (int i = 0; i < expectedIds.length; i++) {
+            assertEquals(expectedIds[i], ((CommentSummaryDto) result.get(i)).getId());
+        }
     }
 }

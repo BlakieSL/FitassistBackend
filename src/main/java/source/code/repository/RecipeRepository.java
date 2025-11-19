@@ -63,6 +63,7 @@ public interface RecipeRepository
       FROM Recipe r
       WHERE ((:isOwnProfile IS NULL OR :isOwnProfile = false) AND (r.isPublic = true AND r.user.id = :userId)) OR
             (:isOwnProfile = true AND r.user.id = :userId)
+      ORDER BY r.createdAt DESC
     """)
     List<RecipeSummaryDto> findSummaryByUserId(@Param("isOwnProfile") Boolean isOwnProfile,
                                                @Param("userId") Integer userId);

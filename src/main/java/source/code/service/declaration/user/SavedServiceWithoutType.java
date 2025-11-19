@@ -8,6 +8,6 @@ import java.util.List;
 public interface SavedServiceWithoutType {
     void saveToUser(int entityId);
     void deleteFromUser(int entityId);
-    List<BaseUserEntity> getAllFromUser(int userId);
+    List<BaseUserEntity> getAllFromUser(int userId, String sortDirection);
     LikesAndSavesResponseDto calculateLikesAndSaves(int entityId);
 }

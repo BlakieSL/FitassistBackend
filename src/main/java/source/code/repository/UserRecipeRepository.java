@@ -48,6 +48,7 @@ public interface UserRecipeRepository extends JpaRepository<UserRecipe, Integer>
            WHERE ur.user.id = :userId
            AND ur.type = :type
            AND r.isPublic = true
+           ORDER BY ur.createdAt DESC
            """)
     List<RecipeSummaryDto> findRecipeSummaryByUserIdAndType(@Param("userId") int userId, @Param("type") TypeOfInteraction type);
 

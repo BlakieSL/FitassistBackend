@@ -26,6 +26,8 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.implementation.user.interaction.withoutType.UserExerciseServiceImpl;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -190,7 +192,7 @@ public class UserExerciseServiceTest {
         when(awsS3Service.getImage("exercise1.jpg")).thenReturn("https://s3.../exercise1.jpg");
         when(awsS3Service.getImage("exercise2.jpg")).thenReturn("https://s3.../exercise2.jpg");
 
-        var result = userExerciseService.getAllFromUser(userId);
+        var result = userExerciseService.getAllFromUser(userId, "DESC");
 
         assertEquals(2, result.size());
         verify(awsS3Service, times(2)).getImage(anyString());
@@ -204,7 +206,7 @@ public class UserExerciseServiceTest {
         when(userExerciseRepository.findExerciseSummaryByUserId(userId))
                 .thenReturn(List.of());
 
-        var result = userExerciseService.getAllFromUser(userId);
+        var result = userExerciseService.getAllFromUser(userId, "DESC");
 
         assertTrue(result.isEmpty());
         verify(awsS3Service, never()).getImage(anyString());
@@ -244,5 +246,124 @@ public class UserExerciseServiceTest {
                 () -> userExerciseService.calculateLikesAndSaves(exerciseId));
 
         verify(userExerciseRepository, never()).countByExerciseId(anyInt());
+    }
+
+    @Test
+    @DisplayName("getAllFromUser with sortDirection DESC - Should sort by interaction date DESC")
+    public void getAllFromUser_ShouldSortByInteractionDateDesc() {
+        int userId = 1;
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        ExerciseSummaryDto dto1 = createExerciseSummaryDto(1, older);
+        ExerciseSummaryDto dto2 = createExerciseSummaryDto(2, newer);
+
+        when(userExerciseRepository.findExerciseSummaryByUserId(userId))
+                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+
+        List<BaseUserEntity> result = userExerciseService.getAllFromUser(userId, "DESC");
+
+        assertSortedResult(result, 2, 2, 1);
+        verify(userExerciseRepository).findExerciseSummaryByUserId(userId);
+    }
+
+    @Test
+    @DisplayName("getAllFromUser with sortDirection ASC - Should sort by interaction date ASC")
+    public void getAllFromUser_ShouldSortByInteractionDateAsc() {
+        int userId = 1;
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        ExerciseSummaryDto dto1 = createExerciseSummaryDto(1, older);
+        ExerciseSummaryDto dto2 = createExerciseSummaryDto(2, newer);
+
+        when(userExerciseRepository.findExerciseSummaryByUserId(userId))
+                .thenReturn(new ArrayList<>(List.of(dto2, dto1)));
+
+        List<BaseUserEntity> result = userExerciseService.getAllFromUser(userId, "ASC");
+
+        assertSortedResult(result, 2, 1, 2);
+        verify(userExerciseRepository).findExerciseSummaryByUserId(userId);
+    }
+
+    @Test
+    @DisplayName("getAllFromUser default - Should sort DESC when no direction specified")
+    public void getAllFromUser_DefaultShouldSortDesc() {
+        int userId = 1;
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        ExerciseSummaryDto dto1 = createExerciseSummaryDto(1, older);
+        ExerciseSummaryDto dto2 = createExerciseSummaryDto(2, newer);
+
+        when(userExerciseRepository.findExerciseSummaryByUserId(userId))
+                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+
+        List<BaseUserEntity> result = userExerciseService.getAllFromUser(userId, "DESC");
+
+        assertSortedResult(result, 2, 2, 1);
+        verify(userExerciseRepository).findExerciseSummaryByUserId(userId);
+    }
+
+    @Test
+    @DisplayName("getAllFromUser - Should handle null dates properly")
+    public void getAllFromUser_ShouldHandleNullDates() {
+        int userId = 1;
+
+        ExerciseSummaryDto dto1 = createExerciseSummaryDto(1, LocalDateTime.of(2024, 1, 1, 10, 0));
+        ExerciseSummaryDto dto2 = createExerciseSummaryDto(2, null);
+        ExerciseSummaryDto dto3 = createExerciseSummaryDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
+
+        when(userExerciseRepository.findExerciseSummaryByUserId(userId))
+                .thenReturn(new ArrayList<>(List.of(dto1, dto2, dto3)));
+
+        List<BaseUserEntity> result = userExerciseService.getAllFromUser(userId, "DESC");
+
+        assertSortedResult(result, 3, 3, 1, 2);
+        verify(userExerciseRepository).findExerciseSummaryByUserId(userId);
+    }
+
+    @Test
+    @DisplayName("getAllFromUser - Should populate image URLs after sorting")
+    public void getAllFromUser_ShouldPopulateImageUrlsAfterSorting() {
+        int userId = 1;
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        ExerciseSummaryDto dto1 = createExerciseSummaryDto(1, older);
+        dto1.setImageName("image1.jpg");
+        ExerciseSummaryDto dto2 = createExerciseSummaryDto(2, newer);
+        dto2.setImageName("image2.jpg");
+
+        when(userExerciseRepository.findExerciseSummaryByUserId(userId))
+                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+        when(awsS3Service.getImage("image1.jpg")).thenReturn("https://s3.com/image1.jpg");
+        when(awsS3Service.getImage("image2.jpg")).thenReturn("https://s3.com/image2.jpg");
+
+        List<BaseUserEntity> result = userExerciseService.getAllFromUser(userId, "DESC");
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        ExerciseSummaryDto first = (ExerciseSummaryDto) result.get(0);
+        ExerciseSummaryDto second = (ExerciseSummaryDto) result.get(1);
+        assertEquals("https://s3.com/image2.jpg", first.getFirstImageUrl());
+        assertEquals("https://s3.com/image1.jpg", second.getFirstImageUrl());
+        verify(awsS3Service).getImage("image1.jpg");
+        verify(awsS3Service).getImage("image2.jpg");
+    }
+
+    private ExerciseSummaryDto createExerciseSummaryDto(int id, LocalDateTime interactionDate) {
+        ExerciseSummaryDto dto = new ExerciseSummaryDto();
+        dto.setId(id);
+        dto.setUserExerciseInteractionCreatedAt(interactionDate);
+        return dto;
+    }
+
+    private void assertSortedResult(List<BaseUserEntity> result, int expectedSize, Integer... expectedIds) {
+        assertNotNull(result);
+        assertEquals(expectedSize, result.size());
+        for (int i = 0; i < expectedIds.length; i++) {
+            assertEquals(expectedIds[i], ((ExerciseSummaryDto) result.get(i)).getId());
+        }
     }
 }
