@@ -176,7 +176,7 @@ public class  UserThreadServiceTest {
         when(userThreadRepository.findThreadSummaryByUserId(userId))
                 .thenReturn(List.of(dto1, dto2));
 
-        var result = userThreadService.getAllFromUser(userId);
+        var result = userThreadService.getAllFromUser(userId, "DESC");
 
         assertEquals(2, result.size());
         verify(userThreadRepository).findThreadSummaryByUserId(userId);
@@ -190,7 +190,7 @@ public class  UserThreadServiceTest {
         when(userThreadRepository.findThreadSummaryByUserId(userId))
                 .thenReturn(List.of());
 
-        var result = userThreadService.getAllFromUser(userId);
+        var result = userThreadService.getAllFromUser(userId, "DESC");
 
         assertTrue(result.isEmpty());
     }

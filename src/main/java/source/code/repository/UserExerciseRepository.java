@@ -35,6 +35,7 @@ public interface UserExerciseRepository extends JpaRepository<UserExercise, Inte
            FROM UserExercise ue
            JOIN ue.exercise e
            WHERE ue.user.id = :userId
+           ORDER BY ue.createdAt DESC
            """)
     List<ExerciseSummaryDto> findExerciseSummaryByUserId(@Param("userId") int userId);
 

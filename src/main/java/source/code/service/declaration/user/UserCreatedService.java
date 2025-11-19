@@ -8,8 +8,8 @@ import source.code.dto.response.recipe.RecipeSummaryDto;
 import java.util.List;
 
 public interface UserCreatedService {
-    List<PlanSummaryDto> getCreatedPlans(int userId);
-    List<RecipeSummaryDto> getCreatedRecipes(int userId);
-    List<CommentSummaryDto> getCreatedComments(int userId);
-    List<ForumThreadSummaryDto> getCreatedThreads(int userId);
+    List<PlanSummaryDto> getCreatedPlans(int userId, String sortDirection);
+    List<RecipeSummaryDto> getCreatedRecipes(int userId, String sortDirection);
+    List<CommentSummaryDto> getCreatedComments(int userId, String sortDirection);
+    List<ForumThreadSummaryDto> getCreatedThreads(int userId, String sortDirection);
 }

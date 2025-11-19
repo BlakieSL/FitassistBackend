@@ -39,6 +39,7 @@ import source.code.repository.RecipeRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.implementation.user.UserCreatedServiceImpl;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -102,7 +103,7 @@ public class UserCreatedServiceTest {
         when(awsS3Service.getImage("image1.jpg")).thenReturn("https://s3.amazonaws.com/bucket/image1.jpg");
         when(awsS3Service.getImage("image2.jpg")).thenReturn("https://s3.amazonaws.com/bucket/image2.jpg");
 
-        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId);
+        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId, "DESC");
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -123,7 +124,7 @@ public class UserCreatedServiceTest {
 
         when(planRepository.findSummaryByUserId(true, userId)).thenReturn(List.of());
 
-        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId);
+        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId, "DESC");
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -149,7 +150,7 @@ public class UserCreatedServiceTest {
         when(awsS3Service.getImage("recipe1.jpg")).thenReturn("https://s3.amazonaws.com/bucket/recipe1.jpg");
         when(awsS3Service.getImage("recipe2.jpg")).thenReturn("https://s3.amazonaws.com/bucket/recipe2.jpg");
 
-        List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId);
+        List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, "DESC");
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -171,7 +172,7 @@ public class UserCreatedServiceTest {
 
         when(recipeRepository.findSummaryByUserId(true, userId)).thenReturn(List.of());
 
-        List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId);
+        List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, "DESC");
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -194,7 +195,7 @@ public class UserCreatedServiceTest {
         when(awsS3Service.getImage("author1.jpg")).thenReturn("https://s3.amazonaws.com/bucket/author1.jpg");
         when(awsS3Service.getImage("author2.jpg")).thenReturn("https://s3.amazonaws.com/bucket/author2.jpg");
 
-        List<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId);
+        List<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId, "DESC");
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -215,7 +216,7 @@ public class UserCreatedServiceTest {
 
         when(commentRepository.findSummaryByUserId(userId)).thenReturn(List.of());
 
-        List<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId);
+        List<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId, "DESC");
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -238,7 +239,7 @@ public class UserCreatedServiceTest {
         when(awsS3Service.getImage("author1.jpg")).thenReturn("https://s3.amazonaws.com/bucket/author1.jpg");
         when(awsS3Service.getImage("author2.jpg")).thenReturn("https://s3.amazonaws.com/bucket/author2.jpg");
 
-        List<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId);
+        List<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId, "DESC");
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -259,7 +260,7 @@ public class UserCreatedServiceTest {
 
         when(forumThreadRepository.findSummaryByUserId(userId)).thenReturn(List.of());
 
-        List<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId);
+        List<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId, "DESC");
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -277,7 +278,7 @@ public class UserCreatedServiceTest {
 
         when(planRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto1));
 
-        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId);
+        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId, "DESC");
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -300,7 +301,7 @@ public class UserCreatedServiceTest {
         when(recipeCategoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1)))
                 .thenReturn(Collections.emptyList());
 
-        List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId);
+        List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, "DESC");
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -308,5 +309,218 @@ public class UserCreatedServiceTest {
         verify(recipeRepository).findSummaryByUserId(true, userId);
         verify(recipeCategoryAssociationRepository).findCategoryDataByRecipeIds(List.of(1));
         verifyNoInteractions(awsS3Service);
+    }
+
+    @Test
+    @DisplayName("getCreatedPlans with sortDirection - Should sort by createdAt DESC by default")
+    public void getCreatedPlans_ShouldSortByCreatedAtDesc() {
+        int userId = 1;
+        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        PlanSummaryDto dto1 = createPlanSummaryDto(1, older);
+        PlanSummaryDto dto2 = createPlanSummaryDto(2, newer);
+
+        when(planRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto1, dto2));
+
+        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId, "DESC");
+
+        assertSortedResult(result, 2, 2, 1);
+    }
+
+    @Test
+    @DisplayName("getCreatedPlans with sortDirection - Should sort by createdAt ASC")
+    public void getCreatedPlans_ShouldSortByCreatedAtAsc() {
+        int userId = 1;
+        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        PlanSummaryDto dto1 = createPlanSummaryDto(1, older);
+        PlanSummaryDto dto2 = createPlanSummaryDto(2, newer);
+
+        when(planRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto2, dto1));
+
+        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId, "ASC");
+
+        assertSortedResult(result, 2, 1, 2);
+    }
+
+    @Test
+    @DisplayName("getCreatedRecipes with sortDirection - Should sort by createdAt DESC by default")
+    public void getCreatedRecipes_ShouldSortByCreatedAtDesc() {
+        int userId = 1;
+        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        RecipeSummaryDto dto1 = createRecipeSummaryDto(1, older);
+        RecipeSummaryDto dto2 = createRecipeSummaryDto(2, newer);
+
+        when(recipeRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto1, dto2));
+        when(recipeCategoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2)))
+                .thenReturn(Collections.emptyList());
+
+        List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, "DESC");
+
+        assertSortedResult(result, 2, 2, 1);
+    }
+
+    @Test
+    @DisplayName("getCreatedRecipes with sortDirection - Should sort by createdAt ASC")
+    public void getCreatedRecipes_ShouldSortByCreatedAtAsc() {
+        int userId = 1;
+        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        RecipeSummaryDto dto1 = createRecipeSummaryDto(1, older);
+        RecipeSummaryDto dto2 = createRecipeSummaryDto(2, newer);
+
+        when(recipeRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto2, dto1));
+        when(recipeCategoryAssociationRepository.findCategoryDataByRecipeIds(List.of(2, 1)))
+                .thenReturn(Collections.emptyList());
+
+        List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, "ASC");
+
+        assertSortedResult(result, 2, 1, 2);
+    }
+
+    @Test
+    @DisplayName("getCreatedComments with sortDirection - Should sort by dateCreated DESC by default")
+    public void getCreatedComments_ShouldSortByDateCreatedDesc() {
+        int userId = 1;
+
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        CommentSummaryDto dto1 = createCommentSummaryDto(1, older);
+        CommentSummaryDto dto2 = createCommentSummaryDto(2, newer);
+
+        when(commentRepository.findSummaryByUserId(userId)).thenReturn(List.of(dto1, dto2));
+
+        List<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId, "DESC");
+
+        assertSortedResult(result, 2, 2, 1);
+    }
+
+    @Test
+    @DisplayName("getCreatedComments with sortDirection - Should sort by dateCreated ASC")
+    public void getCreatedComments_ShouldSortByDateCreatedAsc() {
+        int userId = 1;
+
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        CommentSummaryDto dto1 = createCommentSummaryDto(1, older);
+        CommentSummaryDto dto2 = createCommentSummaryDto(2, newer);
+
+        when(commentRepository.findSummaryByUserId(userId)).thenReturn(List.of(dto2, dto1));
+
+        List<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId, "ASC");
+
+        assertSortedResult(result, 2, 1, 2);
+    }
+
+    @Test
+    @DisplayName("getCreatedThreads with sortDirection - Should sort by dateCreated DESC by default")
+    public void getCreatedThreads_ShouldSortByDateCreatedDesc() {
+        int userId = 1;
+
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        ForumThreadSummaryDto dto1 = createForumThreadSummaryDto(1, older);
+        ForumThreadSummaryDto dto2 = createForumThreadSummaryDto(2, newer);
+
+        when(forumThreadRepository.findSummaryByUserId(userId)).thenReturn(List.of(dto1, dto2));
+
+        List<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId, "DESC");
+
+        assertSortedResult(result, 2, 2, 1);
+    }
+
+    @Test
+    @DisplayName("getCreatedThreads with sortDirection - Should sort by dateCreated ASC")
+    public void getCreatedThreads_ShouldSortByDateCreatedAsc() {
+        int userId = 1;
+
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        ForumThreadSummaryDto dto1 = createForumThreadSummaryDto(1, older);
+        ForumThreadSummaryDto dto2 = createForumThreadSummaryDto(2, newer);
+
+        when(forumThreadRepository.findSummaryByUserId(userId)).thenReturn(List.of(dto2, dto1));
+
+        List<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId, "ASC");
+
+        assertSortedResult(result, 2, 1, 2);
+    }
+
+    @Test
+    @DisplayName("sortByCreatedAt - Should handle null dates properly")
+    public void sortByCreatedAt_ShouldHandleNullDates() {
+        int userId = 1;
+        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+
+        PlanSummaryDto dto1 = createPlanSummaryDto(1, LocalDateTime.of(2024, 1, 1, 10, 0));
+        PlanSummaryDto dto2 = createPlanSummaryDto(2, null);
+        PlanSummaryDto dto3 = createPlanSummaryDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
+
+        when(planRepository.findSummaryByUserId(true, userId)).thenReturn(List.of(dto1, dto2, dto3));
+
+        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId, "DESC");
+
+        assertSortedResult(result, 3, 3, 1, 2);
+    }
+
+    private PlanSummaryDto createPlanSummaryDto(int id, LocalDateTime createdAt) {
+        PlanSummaryDto dto = new PlanSummaryDto();
+        dto.setId(id);
+        dto.setCreatedAt(createdAt);
+        return dto;
+    }
+
+    private RecipeSummaryDto createRecipeSummaryDto(int id, LocalDateTime createdAt) {
+        RecipeSummaryDto dto = new RecipeSummaryDto();
+        dto.setId(id);
+        dto.setCreatedAt(createdAt);
+        return dto;
+    }
+
+    private CommentSummaryDto createCommentSummaryDto(int id, LocalDateTime dateCreated) {
+        CommentSummaryDto dto = new CommentSummaryDto();
+        dto.setId(id);
+        dto.setDateCreated(dateCreated);
+        return dto;
+    }
+
+    private ForumThreadSummaryDto createForumThreadSummaryDto(int id, LocalDateTime dateCreated) {
+        ForumThreadSummaryDto dto = new ForumThreadSummaryDto();
+        dto.setId(id);
+        dto.setDateCreated(dateCreated);
+        return dto;
+    }
+
+    private void assertSortedResult(List<?> result, int expectedSize, Integer... expectedIds) {
+        assertNotNull(result);
+        assertEquals(expectedSize, result.size());
+        for (int i = 0; i < expectedIds.length; i++) {
+            if (result.get(i) instanceof PlanSummaryDto) {
+                assertEquals(expectedIds[i], ((PlanSummaryDto) result.get(i)).getId());
+            } else if (result.get(i) instanceof RecipeSummaryDto) {
+                assertEquals(expectedIds[i], ((RecipeSummaryDto) result.get(i)).getId());
+            } else if (result.get(i) instanceof CommentSummaryDto) {
+                assertEquals(expectedIds[i], ((CommentSummaryDto) result.get(i)).getId());
+            } else if (result.get(i) instanceof ForumThreadSummaryDto) {
+                assertEquals(expectedIds[i], ((ForumThreadSummaryDto) result.get(i)).getId());
+            }
+        }
     }
 }

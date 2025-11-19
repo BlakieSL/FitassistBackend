@@ -28,6 +28,8 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.implementation.user.interaction.withType.UserPlanServiceImpl;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -208,7 +210,7 @@ public class UserPlanServiceTest {
         when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
                 .thenReturn(List.of(dto1, dto2));
 
-        var result = userPlanService.getAllFromUser(userId, type);
+        var result = userPlanService.getAllFromUser(userId, type, "DESC");
 
         assertEquals(2, result.size());
         verify(userPlanRepository).findPlanSummaryByUserIdAndType(userId, type);
@@ -223,7 +225,7 @@ public class UserPlanServiceTest {
         when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
                 .thenReturn(List.of());
 
-        var result = userPlanService.getAllFromUser(userId, type);
+        var result = userPlanService.getAllFromUser(userId, type, "DESC");
 
         assertTrue(result.isEmpty());
     }
@@ -264,5 +266,137 @@ public class UserPlanServiceTest {
                 () -> userPlanService.calculateLikesAndSaves(planId));
 
         verify(userPlanRepository, never()).countByPlanIdAndType(anyInt(), any());
+    }
+
+    @Test
+    @DisplayName("getAllFromUser with type and sortDirection DESC - Should sort by interaction date DESC")
+    public void getAllFromUser_WithType_ShouldSortByInteractionDateDesc() {
+        int userId = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        PlanSummaryDto dto1 = createPlanSummaryDto(1, older);
+        PlanSummaryDto dto2 = createPlanSummaryDto(2, newer);
+
+        when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
+                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+
+        List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, "DESC");
+
+        assertSortedResult(result, 2, 2, 1);
+        verify(userPlanRepository).findPlanSummaryByUserIdAndType(userId, type);
+    }
+
+    @Test
+    @DisplayName("getAllFromUser with type and sortDirection ASC - Should sort by interaction date ASC")
+    public void getAllFromUser_WithType_ShouldSortByInteractionDateAsc() {
+        int userId = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        PlanSummaryDto dto1 = createPlanSummaryDto(1, older);
+        PlanSummaryDto dto2 = createPlanSummaryDto(2, newer);
+
+        when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
+                .thenReturn(new ArrayList<>(List.of(dto2, dto1)));
+
+        List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, "ASC");
+
+        assertSortedResult(result, 2, 1, 2);
+        verify(userPlanRepository).findPlanSummaryByUserIdAndType(userId, type);
+    }
+
+    @Test
+    @DisplayName("getAllFromUser with type default - Should sort DESC when no direction specified")
+    public void getAllFromUser_WithType_DefaultShouldSortDesc() {
+        int userId = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        PlanSummaryDto dto1 = createPlanSummaryDto(1, older);
+        PlanSummaryDto dto2 = createPlanSummaryDto(2, newer);
+
+        when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
+                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+
+        List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, "DESC");
+
+        assertSortedResult(result, 2, 2, 1);
+        verify(userPlanRepository).findPlanSummaryByUserIdAndType(userId, type);
+    }
+
+    @Test
+    @DisplayName("getAllFromUser with type - Should handle null dates properly")
+    public void getAllFromUser_WithType_ShouldHandleNullDates() {
+        int userId = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
+
+        PlanSummaryDto dto1 = createPlanSummaryDto(1, LocalDateTime.of(2024, 1, 1, 10, 0));
+        PlanSummaryDto dto2 = createPlanSummaryDto(2, null);
+        PlanSummaryDto dto3 = createPlanSummaryDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
+
+        when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
+                .thenReturn(new ArrayList<>(List.of(dto1, dto2, dto3)));
+
+        List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, "DESC");
+
+        assertSortedResult(result, 3, 3, 1, 2);
+        verify(userPlanRepository).findPlanSummaryByUserIdAndType(userId, type);
+    }
+
+    @Test
+    @DisplayName("getAllFromUser with type - Should populate image URLs after sorting")
+    public void getAllFromUser_WithType_ShouldPopulateImageUrlsAfterSorting() {
+        int userId = 1;
+        TypeOfInteraction type = TypeOfInteraction.SAVE;
+        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
+        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+
+        PlanSummaryDto dto1 = createPlanSummaryDto(1, older);
+        dto1.setImageName("image1.jpg");
+        dto1.setAuthorImageUrl("author1.jpg");
+        PlanSummaryDto dto2 = createPlanSummaryDto(2, newer);
+        dto2.setImageName("image2.jpg");
+        dto2.setAuthorImageUrl("author2.jpg");
+
+        when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
+                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+        when(awsS3Service.getImage("image1.jpg")).thenReturn("https://s3.com/image1.jpg");
+        when(awsS3Service.getImage("image2.jpg")).thenReturn("https://s3.com/image2.jpg");
+        when(awsS3Service.getImage("author1.jpg")).thenReturn("https://s3.com/author1.jpg");
+        when(awsS3Service.getImage("author2.jpg")).thenReturn("https://s3.com/author2.jpg");
+
+        List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, "DESC");
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        PlanSummaryDto first = (PlanSummaryDto) result.get(0);
+        PlanSummaryDto second = (PlanSummaryDto) result.get(1);
+        assertEquals("https://s3.com/image2.jpg", first.getFirstImageUrl());
+        assertEquals("https://s3.com/image1.jpg", second.getFirstImageUrl());
+        assertEquals("https://s3.com/author2.jpg", first.getAuthorImageUrl());
+        assertEquals("https://s3.com/author1.jpg", second.getAuthorImageUrl());
+        verify(awsS3Service).getImage("image1.jpg");
+        verify(awsS3Service).getImage("image2.jpg");
+        verify(awsS3Service).getImage("author1.jpg");
+        verify(awsS3Service).getImage("author2.jpg");
+    }
+
+    private PlanSummaryDto createPlanSummaryDto(int id, LocalDateTime interactionDate) {
+        PlanSummaryDto dto = new PlanSummaryDto();
+        dto.setId(id);
+        dto.setInteractedWithAt(interactionDate);
+        return dto;
+    }
+
+    private void assertSortedResult(List<BaseUserEntity> result, int expectedSize, Integer... expectedIds) {
+        assertNotNull(result);
+        assertEquals(expectedSize, result.size());
+        for (int i = 0; i < expectedIds.length; i++) {
+            assertEquals(expectedIds[i], ((PlanSummaryDto) result.get(i)).getId());
+        }
     }
 }

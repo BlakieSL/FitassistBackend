@@ -15,6 +15,8 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service("userFoodService")
@@ -63,9 +65,9 @@ public class UserFoodServiceImpl
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId) {
-        List<FoodResponseDto> dtos = ((UserFoodRepository) userEntityRepository)
-                .findFoodDtosByUserId(userId);
+    public List<BaseUserEntity> getAllFromUser(int userId, String sortDirection) {
+        List<FoodResponseDto> dtos = new ArrayList<>(((UserFoodRepository) userEntityRepository)
+                .findFoodDtosByUserId(userId));
 
         dtos.forEach(dto -> {
             if (dto.getImageName() != null) {
@@ -73,9 +75,27 @@ public class UserFoodServiceImpl
             }
         });
 
+        sortByInteractionDate(dtos, sortDirection);
+
         return dtos.stream()
                 .map(dto -> (BaseUserEntity) dto)
                 .toList();
+    }
+
+    private void sortByInteractionDate(List<FoodResponseDto> list, String sortDirection) {
+        Comparator<FoodResponseDto> comparator;
+        if ("ASC".equalsIgnoreCase(sortDirection)) {
+            comparator = Comparator.comparing(
+                    FoodResponseDto::getUserFoodInteractionCreatedAt,
+                    Comparator.nullsLast(Comparator.naturalOrder())
+            );
+        } else {
+            comparator = Comparator.comparing(
+                    FoodResponseDto::getUserFoodInteractionCreatedAt,
+                    Comparator.nullsLast(Comparator.reverseOrder())
+            );
+        }
+        list.sort(comparator);
     }
 
     @Override

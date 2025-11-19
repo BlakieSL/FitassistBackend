@@ -172,4 +172,73 @@ public class UserSavedControllerWithoutTypeTest {
         mockMvc.perform(delete("/api/user-saved/item-type/EXERCISE/999"))
                 .andExpectAll(status().isNotFound());
     }
+
+    @WithMockUser
+    @UserSavedSql
+    @Test
+    @DisplayName("GET - /item-type/{itemType}/user/{userId}?sort=DESC - Should return items sorted DESC")
+    void getAllFromUserWithoutTypeSortDesc() throws Exception {
+        mockMvc.perform(get("/api/user-saved/item-type/ACTIVITY/user/1")
+                .param("sort", "DESC"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(2)),
+                        jsonPath("$[0].id").exists()
+                );
+    }
+
+    @WithMockUser
+    @UserSavedSql
+    @Test
+    @DisplayName("GET - /item-type/{itemType}/user/{userId}?sort=ASC - Should return items sorted ASC")
+    void getAllFromUserWithoutTypeSortAsc() throws Exception {
+        mockMvc.perform(get("/api/user-saved/item-type/EXERCISE/user/1")
+                .param("sort", "ASC"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(2)),
+                        jsonPath("$[0].id").exists()
+                );
+    }
+
+    @WithMockUser
+    @UserSavedSql
+    @Test
+    @DisplayName("GET - /item-type/{itemType}/user/{userId} - Should default to DESC when no sort param")
+    void getAllFromUserWithoutTypeDefaultSort() throws Exception {
+        mockMvc.perform(get("/api/user-saved/item-type/FOOD/user/1"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(2)),
+                        jsonPath("$[0].id").exists()
+                );
+    }
+
+    @WithMockUser
+    @UserSavedSql
+    @Test
+    @DisplayName("GET - /item-type/{itemType}/user/{userId}?sort=DESC - Should return threads sorted DESC")
+    void getAllFromUserThreadsSortDesc() throws Exception {
+        mockMvc.perform(get("/api/user-saved/item-type/FORUM_THREAD/user/1")
+                .param("sort", "DESC"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(1)),
+                        jsonPath("$[0].id").value(2)
+                );
+    }
+
+    @WithMockUser
+    @UserSavedSql
+    @Test
+    @DisplayName("GET - /item-type/{itemType}/user/{userId}?sort=ASC - Should return threads sorted ASC")
+    void getAllFromUserThreadsSortAsc() throws Exception {
+        mockMvc.perform(get("/api/user-saved/item-type/FORUM_THREAD/user/1")
+                .param("sort", "ASC"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$").value(hasSize(1)),
+                        jsonPath("$[0].id").value(2)
+                );
+    }
 }

@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class CommentSummaryDto implements BaseUserEntity {
     private Integer id;
     private String text;
@@ -21,4 +21,5 @@ public class CommentSummaryDto implements BaseUserEntity {
     private String authorImageUrl;
     private int likeCount;
     private int repliesCount;
+    private LocalDateTime userCommentInteractionCreatedAt;
 }

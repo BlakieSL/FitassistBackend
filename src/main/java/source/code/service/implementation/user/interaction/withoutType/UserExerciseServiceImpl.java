@@ -16,6 +16,8 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service("userExerciseService")
@@ -60,9 +62,9 @@ public class UserExerciseServiceImpl
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId) {
-        List<ExerciseSummaryDto> dtos = ((UserExerciseRepository) userEntityRepository)
-                .findExerciseSummaryByUserId(userId);
+    public List<BaseUserEntity> getAllFromUser(int userId, String sortDirection) {
+        List<ExerciseSummaryDto> dtos = new ArrayList<>(((UserExerciseRepository) userEntityRepository)
+                .findExerciseSummaryByUserId(userId));
 
         dtos.forEach(dto -> {
             if (dto.getImageName() != null) {
@@ -70,9 +72,27 @@ public class UserExerciseServiceImpl
             }
         });
 
+        sortByInteractionDate(dtos, sortDirection);
+
         return dtos.stream()
                 .map(dto -> (BaseUserEntity) dto)
                 .toList();
+    }
+
+    private void sortByInteractionDate(List<ExerciseSummaryDto> list, String sortDirection) {
+        Comparator<ExerciseSummaryDto> comparator;
+        if ("ASC".equalsIgnoreCase(sortDirection)) {
+            comparator = Comparator.comparing(
+                    ExerciseSummaryDto::getUserExerciseInteractionCreatedAt,
+                    Comparator.nullsLast(Comparator.naturalOrder())
+            );
+        } else {
+            comparator = Comparator.comparing(
+                    ExerciseSummaryDto::getUserExerciseInteractionCreatedAt,
+                    Comparator.nullsLast(Comparator.reverseOrder())
+            );
+        }
+        list.sort(comparator);
     }
 
     @Override
