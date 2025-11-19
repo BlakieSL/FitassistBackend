@@ -303,4 +303,21 @@ public class PlanServiceTest {
         verifyNoInteractions(planMapper);
 
     }
+
+    @Test
+    void incrementViews_shouldCallRepositoryIncrementViews() {
+        planService.incrementViews(planId);
+
+        verify(planRepository).incrementViews(planId);
+    }
+
+    @Test
+    void incrementViews_shouldCallRepositoryWithCorrectId() {
+        int specificPlanId = 42;
+
+        planService.incrementViews(specificPlanId);
+
+        verify(planRepository).incrementViews(specificPlanId);
+        verify(planRepository, never()).incrementViews(planId);
+    }
 }

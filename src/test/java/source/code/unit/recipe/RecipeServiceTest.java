@@ -299,4 +299,21 @@ public class RecipeServiceTest {
         verify(recipeRepository).findAll(any(Specification.class));
         verifyNoInteractions(recipeMapper);
     }
+
+    @Test
+    void incrementViews_shouldCallRepositoryIncrementViews() {
+        recipeService.incrementViews(recipeId);
+
+        verify(recipeRepository).incrementViews(recipeId);
+    }
+
+    @Test
+    void incrementViews_shouldCallRepositoryWithCorrectId() {
+        int specificRecipeId = 42;
+
+        recipeService.incrementViews(specificRecipeId);
+
+        verify(recipeRepository).incrementViews(specificRecipeId);
+        verify(recipeRepository, never()).incrementViews(recipeId);
+    }
 }

@@ -24,4 +24,6 @@ public interface PlanService {
     List<PlanResponseDto> getFilteredPlans(FilterDto filter);
 
     List<Plan> getAllPlanEntities();
+
+    void incrementViews(int planId);
 }

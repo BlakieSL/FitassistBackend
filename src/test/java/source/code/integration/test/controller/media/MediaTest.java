@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @TestSetup
 @Import({MockRedisConfig.class, MockAwsSesConfig.class, MockAwsSesConfig.class})
-@TestPropertySource(properties = "schema.name=media")
+@TestPropertySource(properties = "schema.name=general")
 @ContextConfiguration(initializers = {MySqlContainerInitializer.class, AwsS3ContainerInitializer.class})
 public class MediaTest {
     @Autowired

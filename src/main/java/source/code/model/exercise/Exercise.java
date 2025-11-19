@@ -71,7 +71,7 @@ public class Exercise implements IndexedEntity {
     @OneToMany(mappedBy = "exercise", cascade = {CascadeType.REMOVE}, fetch = FetchType.EAGER , orphanRemoval = true)
     private final Set<ExerciseTargetMuscle> exerciseTargetMuscles = new HashSet<>();
 
-    @OneToMany(mappedBy = "exercise", orphanRemoval = true)
+    @OneToMany(mappedBy = "exercise")
     private final Set<WorkoutSet> workoutSets = new HashSet<>();
 
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE)
