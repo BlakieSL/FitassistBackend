@@ -12,6 +12,8 @@ import source.code.dto.request.exercise.ExerciseCreateDto;
 import source.code.dto.request.exercise.ExerciseUpdateDto;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.response.exercise.ExerciseResponseDto;
+import source.code.dto.response.exercise.ExerciseSummaryDto;
+import source.code.exception.RecordNotFoundException;
 import source.code.event.events.Exercise.ExerciseCreateEvent;
 import source.code.event.events.Exercise.ExerciseDeleteEvent;
 import source.code.event.events.Exercise.ExerciseUpdateEvent;
@@ -63,11 +65,11 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Override
     @Transactional
-    public ExerciseResponseDto createExercise(ExerciseCreateDto dto) {
+    public ExerciseSummaryDto createExercise(ExerciseCreateDto dto) {
         Exercise exercise = exerciseRepository.save(exerciseMapper.toEntity(dto));
         applicationEventPublisher.publishEvent(ExerciseCreateEvent.of(this, exercise));
 
-        return exerciseMapper.toResponseDto(exercise);
+        return exerciseMapper.toSummaryDto(exercise);
     }
 
     @Override
@@ -97,24 +99,25 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     @Cacheable(value = CacheNames.EXERCISES, key = "#exerciseId")
     public ExerciseResponseDto getExercise(int exerciseId) {
-        Exercise exercise = find(exerciseId);
-        return exerciseMapper.toResponseDto(exercise);
+        Exercise exercise = exerciseRepository.findByIdWithMedia(exerciseId)
+                .orElseThrow(() -> RecordNotFoundException.of(Exercise.class, exerciseId));
+        return exerciseMapper.toDetailedResponseDto(exercise);
     }
 
     @Override
     @Cacheable(value = CacheNames.ALL_EXERCISES)
-    public List<ExerciseResponseDto> getAllExercises() {
-        return repositoryHelper.findAll(exerciseRepository, exerciseMapper::toResponseDto);
+    public List<ExerciseSummaryDto> getAllExercises() {
+        return repositoryHelper.findAll(exerciseRepository, exerciseMapper::toSummaryDto);
     }
 
     @Override
-    public List<ExerciseResponseDto> getFilteredExercises(FilterDto filter) {
+    public List<ExerciseSummaryDto> getFilteredExercises(FilterDto filter) {
         SpecificationFactory<Exercise> exerciseFactory = ExerciseSpecification::of;
         SpecificationBuilder<Exercise> specificationBuilder = SpecificationBuilder.of(filter, exerciseFactory, dependencies);
         Specification<Exercise> specification = specificationBuilder.build();
 
         return exerciseRepository.findAll(specification).stream()
-                .map(exerciseMapper::toResponseDto)
+                .map(exerciseMapper::toSummaryDto)
                 .toList();
     }
 
@@ -125,10 +128,10 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Override
     @Cacheable(value = CacheNames.EXERCISES_BY_CATEGORY, key = "#categoryId")
-    public List<ExerciseResponseDto> getExercisesByCategory(int categoryId) {
+    public List<ExerciseSummaryDto> getExercisesByCategory(int categoryId) {
         return exerciseTargetMuscleRepository.findByTargetMuscleId(categoryId).stream()
                 .map(ExerciseTargetMuscle::getExercise)
-                .map(exerciseMapper::toResponseDto)
+                .map(exerciseMapper::toSummaryDto)
                 .toList();
     }
 

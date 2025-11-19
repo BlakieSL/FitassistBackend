@@ -21,6 +21,5 @@ public class ExerciseResponseDto {
     private TargetMuscleShortDto mechanicsType;
     private TargetMuscleShortDto forceType;
     private List<TargetMuscleShortDto> targetMuscles;
-    private String imageName;
-    private String firstImageUrl;
+    private List<String> imageUrls;
 }

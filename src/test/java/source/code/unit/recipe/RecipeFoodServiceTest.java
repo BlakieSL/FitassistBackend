@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.request.recipe.FilterRecipesByFoodsDto;
 import source.code.dto.request.recipe.RecipeFoodCreateDto;
-import source.code.dto.response.food.FoodResponseDto;
+import source.code.dto.response.food.FoodSummaryDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
@@ -69,7 +69,7 @@ public class RecipeFoodServiceTest {
     private RecipeFood recipeFood;
     private RecipeFoodCreateDto createDto;
     private JsonMergePatch patch;
-    private FoodResponseDto foodResponseDto;
+    private FoodSummaryDto foodSummaryDto;
     private int recipeId;
     private int foodId;
 
@@ -80,7 +80,7 @@ public class RecipeFoodServiceTest {
         recipeFood = RecipeFood.of(BigDecimal.valueOf(100), recipe, food);
         createDto = new RecipeFoodCreateDto(BigDecimal.valueOf(100));
         patch = mock(JsonMergePatch.class);
-        foodResponseDto = new FoodResponseDto();
+        foodSummaryDto = new FoodSummaryDto();
         recipeId = 1;
         foodId = 1;
     }
@@ -181,19 +181,19 @@ public class RecipeFoodServiceTest {
     @Test
     void getFoodsByRecipe_shouldReturnFoodsByRecipe() {
         when(recipeFoodRepository.findByRecipeId(recipeId)).thenReturn(List.of(recipeFood));
-        when(foodMapper.toResponseDto(food)).thenReturn(foodResponseDto);
+        when(foodMapper.toSummaryDto(food)).thenReturn(foodSummaryDto);
 
-        List<FoodResponseDto> result = recipeFoodService.getFoodsByRecipe(recipeId);
+        List<FoodSummaryDto> result = recipeFoodService.getFoodsByRecipe(recipeId);
 
         assertEquals(1, result.size());
-        assertSame(foodResponseDto, result.get(0));
+        assertSame(foodSummaryDto, result.get(0));
     }
 
     @Test
     void getFoodsByRecipe_shouldReturnEmptyListWhenNoFoods() {
         when(recipeFoodRepository.findByRecipeId(recipeId)).thenReturn(List.of());
 
-        List<FoodResponseDto> result = recipeFoodService.getFoodsByRecipe(recipeId);
+        List<FoodSummaryDto> result = recipeFoodService.getFoodsByRecipe(recipeId);
 
         assertTrue(result.isEmpty());
     }

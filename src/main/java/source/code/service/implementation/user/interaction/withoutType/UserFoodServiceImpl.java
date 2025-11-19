@@ -2,7 +2,7 @@ package source.code.service.implementation.user.interaction.withoutType;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import source.code.dto.response.food.FoodResponseDto;
+import source.code.dto.response.food.FoodSummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
 import source.code.mapper.food.FoodMapper;
@@ -21,7 +21,7 @@ import java.util.List;
 
 @Service("userFoodService")
 public class UserFoodServiceImpl
-        extends GenericSavedServiceWithoutType<Food, UserFood, FoodResponseDto>
+        extends GenericSavedServiceWithoutType<Food, UserFood, FoodSummaryDto>
         implements SavedServiceWithoutType {
 
     private final MediaRepository mediaRepository;
@@ -36,7 +36,7 @@ public class UserFoodServiceImpl
         super(userRepository,
                 entityRepository,
                 userEntityRepository,
-                mapper::toResponseDto,
+                mapper::toSummaryDto,
                 Food.class);
         this.mediaRepository = mediaRepository;
         this.awsS3Service = awsS3Service;
@@ -66,7 +66,7 @@ public class UserFoodServiceImpl
 
     @Override
     public List<BaseUserEntity> getAllFromUser(int userId, String sortDirection) {
-        List<FoodResponseDto> dtos = new ArrayList<>(((UserFoodRepository) userEntityRepository)
+        List<FoodSummaryDto> dtos = new ArrayList<>(((UserFoodRepository) userEntityRepository)
                 .findFoodDtosByUserId(userId));
 
         dtos.forEach(dto -> {
@@ -82,16 +82,16 @@ public class UserFoodServiceImpl
                 .toList();
     }
 
-    private void sortByInteractionDate(List<FoodResponseDto> list, String sortDirection) {
-        Comparator<FoodResponseDto> comparator;
+    private void sortByInteractionDate(List<FoodSummaryDto> list, String sortDirection) {
+        Comparator<FoodSummaryDto> comparator;
         if ("ASC".equalsIgnoreCase(sortDirection)) {
             comparator = Comparator.comparing(
-                    FoodResponseDto::getUserFoodInteractionCreatedAt,
+                    FoodSummaryDto::getUserFoodInteractionCreatedAt,
                     Comparator.nullsLast(Comparator.naturalOrder())
             );
         } else {
             comparator = Comparator.comparing(
-                    FoodResponseDto::getUserFoodInteractionCreatedAt,
+                    FoodSummaryDto::getUserFoodInteractionCreatedAt,
                     Comparator.nullsLast(Comparator.reverseOrder())
             );
         }

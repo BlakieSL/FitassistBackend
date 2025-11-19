@@ -6,12 +6,13 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.request.exercise.ExerciseCreateDto;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.response.exercise.ExerciseResponseDto;
+import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.model.exercise.Exercise;
 
 import java.util.List;
 
 public interface ExerciseService {
-    ExerciseResponseDto createExercise(ExerciseCreateDto dto);
+    ExerciseSummaryDto createExercise(ExerciseCreateDto dto);
 
     void updateExercise(int exerciseId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
@@ -19,12 +20,12 @@ public interface ExerciseService {
 
     ExerciseResponseDto getExercise(int id);
 
-    List<ExerciseResponseDto> getAllExercises();
+    List<ExerciseSummaryDto> getAllExercises();
 
-    List<ExerciseResponseDto> getFilteredExercises(FilterDto filter);
+    List<ExerciseSummaryDto> getFilteredExercises(FilterDto filter);
 
     List<Exercise> getAllExerciseEntities();
 
-    List<ExerciseResponseDto> getExercisesByCategory(int categoryId);
+    List<ExerciseSummaryDto> getExercisesByCategory(int categoryId);
 }
 

@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import source.code.dto.response.food.FoodResponseDto;
+import source.code.dto.response.food.FoodSummaryDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
@@ -179,10 +179,10 @@ public class UserFoodServiceTest {
     @DisplayName("getAllFromUser - Should return all foods by type")
     public void getAllFromUser_ShouldReturnAllFoodsByType() {
         int userId = 1;
-        FoodResponseDto dto1 = new FoodResponseDto();
+        FoodSummaryDto dto1 = new FoodSummaryDto();
         dto1.setId(1);
         dto1.setImageName("food1.jpg");
-        FoodResponseDto dto2 = new FoodResponseDto();
+        FoodSummaryDto dto2 = new FoodSummaryDto();
         dto2.setId(2);
         dto2.setImageName("food2.jpg");
 
@@ -253,8 +253,8 @@ public class UserFoodServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
-        FoodResponseDto dto1 = createFoodResponseDto(1, older);
-        FoodResponseDto dto2 = createFoodResponseDto(2, newer);
+        FoodSummaryDto dto1 = createFoodResponseDto(1, older);
+        FoodSummaryDto dto2 = createFoodResponseDto(2, newer);
 
         when(userFoodRepository.findFoodDtosByUserId(userId))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
@@ -272,8 +272,8 @@ public class UserFoodServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
-        FoodResponseDto dto1 = createFoodResponseDto(1, older);
-        FoodResponseDto dto2 = createFoodResponseDto(2, newer);
+        FoodSummaryDto dto1 = createFoodResponseDto(1, older);
+        FoodSummaryDto dto2 = createFoodResponseDto(2, newer);
 
         when(userFoodRepository.findFoodDtosByUserId(userId))
                 .thenReturn(new ArrayList<>(List.of(dto2, dto1)));
@@ -291,8 +291,8 @@ public class UserFoodServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
-        FoodResponseDto dto1 = createFoodResponseDto(1, older);
-        FoodResponseDto dto2 = createFoodResponseDto(2, newer);
+        FoodSummaryDto dto1 = createFoodResponseDto(1, older);
+        FoodSummaryDto dto2 = createFoodResponseDto(2, newer);
 
         when(userFoodRepository.findFoodDtosByUserId(userId))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
@@ -308,9 +308,9 @@ public class UserFoodServiceTest {
     public void getAllFromUser_ShouldHandleNullDates() {
         int userId = 1;
 
-        FoodResponseDto dto1 = createFoodResponseDto(1, LocalDateTime.of(2024, 1, 1, 10, 0));
-        FoodResponseDto dto2 = createFoodResponseDto(2, null);
-        FoodResponseDto dto3 = createFoodResponseDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
+        FoodSummaryDto dto1 = createFoodResponseDto(1, LocalDateTime.of(2024, 1, 1, 10, 0));
+        FoodSummaryDto dto2 = createFoodResponseDto(2, null);
+        FoodSummaryDto dto3 = createFoodResponseDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
 
         when(userFoodRepository.findFoodDtosByUserId(userId))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2, dto3)));
@@ -328,9 +328,9 @@ public class UserFoodServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
-        FoodResponseDto dto1 = createFoodResponseDto(1, older);
+        FoodSummaryDto dto1 = createFoodResponseDto(1, older);
         dto1.setImageName("image1.jpg");
-        FoodResponseDto dto2 = createFoodResponseDto(2, newer);
+        FoodSummaryDto dto2 = createFoodResponseDto(2, newer);
         dto2.setImageName("image2.jpg");
 
         when(userFoodRepository.findFoodDtosByUserId(userId))
@@ -342,16 +342,16 @@ public class UserFoodServiceTest {
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        FoodResponseDto first = (FoodResponseDto) result.get(0);
-        FoodResponseDto second = (FoodResponseDto) result.get(1);
+        FoodSummaryDto first = (FoodSummaryDto) result.get(0);
+        FoodSummaryDto second = (FoodSummaryDto) result.get(1);
         assertEquals("https://s3.com/image2.jpg", first.getFirstImageUrl());
         assertEquals("https://s3.com/image1.jpg", second.getFirstImageUrl());
         verify(awsS3Service).getImage("image1.jpg");
         verify(awsS3Service).getImage("image2.jpg");
     }
 
-    private FoodResponseDto createFoodResponseDto(int id, LocalDateTime interactionDate) {
-        FoodResponseDto dto = new FoodResponseDto();
+    private FoodSummaryDto createFoodResponseDto(int id, LocalDateTime interactionDate) {
+        FoodSummaryDto dto = new FoodSummaryDto();
         dto.setId(id);
         dto.setUserFoodInteractionCreatedAt(interactionDate);
         return dto;
@@ -361,7 +361,7 @@ public class UserFoodServiceTest {
         assertNotNull(result);
         assertEquals(expectedSize, result.size());
         for (int i = 0; i < expectedIds.length; i++) {
-            assertEquals(expectedIds[i], ((FoodResponseDto) result.get(i)).getId());
+            assertEquals(expectedIds[i], ((FoodSummaryDto) result.get(i)).getId());
         }
     }
 }

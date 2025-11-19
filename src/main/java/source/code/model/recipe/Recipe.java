@@ -8,13 +8,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 import source.code.helper.search.IndexedEntity;
+import source.code.model.media.Media;
 import source.code.model.text.RecipeInstruction;
 import source.code.model.user.User;
 import source.code.model.user.UserRecipe;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -73,6 +77,11 @@ public class Recipe implements IndexedEntity {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE)
     private final Set<UserRecipe> userRecipes = new HashSet<>();
+
+    @OneToMany
+    @JoinColumn(name = "parent_id", insertable = false, updatable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @SQLRestriction("parentType = 'RECIPE'")
+    private List<Media> mediaList = new ArrayList<>();
 
     @Override
     public String getClassName() {

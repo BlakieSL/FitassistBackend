@@ -1,15 +1,17 @@
 package source.code.model.complaint;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
+import source.code.model.media.Media;
 import source.code.model.thread.Comment;
 import source.code.model.user.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @DiscriminatorValue("COMMENT_COMPLAINT")
@@ -21,6 +23,11 @@ public class CommentComplaint extends ComplaintBase {
     @ManyToOne
     @JoinColumn(name = "comment_id")
     private Comment comment;
+
+    @OneToMany
+    @JoinColumn(name = "parent_id", insertable = false, updatable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @SQLRestriction("parentType = 'COMMENT_COMPLAINT'")
+    private List<Media> mediaList = new ArrayList<>();
 
     public static CommentComplaint of(Integer id, User user) {
         CommentComplaint complaint = new CommentComplaint();

@@ -179,7 +179,7 @@ public class ActivityTest  {
     @WithMockUser
     @ActivitySql
     @Test
-    @DisplayName("GET - /{id} - Should return an existing activity")
+    @DisplayName("GET - /{id} - Should return an existing activity with image URLs")
     void getActivity() throws Exception {
         mockMvc.perform(get("/api/activities/1"))
                 .andExpectAll(
@@ -188,7 +188,8 @@ public class ActivityTest  {
                         jsonPath("$.name").value("Brisk Walking"),
                         jsonPath("$.met").value(3.5),
                         jsonPath("$.categoryId").value(1),
-                        jsonPath("$.categoryName").value("Walking")
+                        jsonPath("$.categoryName").value("Walking"),
+                        jsonPath("$.imageUrls").isArray()
                 );
     }
 

@@ -6,14 +6,17 @@ import source.code.dto.request.activity.ActivityCreateDto;
 import source.code.dto.request.activity.ActivityUpdateDto;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.dto.response.activity.ActivityResponseDto;
+import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.model.activity.Activity;
 import source.code.model.activity.ActivityCategory;
 import source.code.repository.ActivityCategoryRepository;
+import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.CalculationsService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 
 @Mapper(componentModel = "spring")
@@ -26,10 +29,13 @@ public abstract class  ActivityMapper {
     @Autowired
     private CalculationsService calculationsService;
 
+    @Autowired
+    private AwsS3Service awsS3Service;
+
     @Mapping(target = "categoryName", source = "activityCategory.name")
     @Mapping(target = "categoryId", source = "activityCategory.id")
     @Mapping(target = "firstImageUrl", ignore = true)
-    public abstract ActivityResponseDto toResponseDto(Activity activity);
+    public abstract ActivitySummaryDto toSummaryDto(Activity activity);
 
     @Mapping(target = "categoryName", source = "activityCategory.name")
     @Mapping(target = "categoryId", source = "activityCategory.id")
@@ -63,6 +69,19 @@ public abstract class  ActivityMapper {
 
         dto.setCaloriesBurned(calories);
         dto.setTime(time);
+    }
+
+    @Mapping(target = "categoryName", source = "activityCategory.name")
+    @Mapping(target = "categoryId", source = "activityCategory.id")
+    @Mapping(target = "imageUrls", ignore = true)
+    public abstract ActivityResponseDto toDetailedResponseDto(Activity activity);
+
+    @AfterMapping
+    protected void mapImageUrls(@MappingTarget ActivityResponseDto dto, Activity activity) {
+        List<String> imageUrls = activity.getMediaList().stream()
+                .map(media -> awsS3Service.getImage(media.getImageName()))
+                .toList();
+        dto.setImageUrls(imageUrls);
     }
 
     @Named("categoryIdToActivityCategory")

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ExerciseSummaryDto implements BaseUserEntity {
     private Integer id;
     private String name;
@@ -23,20 +24,4 @@ public class ExerciseSummaryDto implements BaseUserEntity {
     private CategoryDto mechanicsType;
     private CategoryDto forceType;
     private LocalDateTime userExerciseInteractionCreatedAt;
-
-    public ExerciseSummaryDto(Integer id, String name, String description, String imageName, String firstImageUrl,
-                              CategoryDto expertiseLevel, CategoryDto equipment,
-                              CategoryDto mechanicsType, CategoryDto forceType,
-                              LocalDateTime userExerciseInteractionCreatedAt) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.imageName = imageName;
-        this.firstImageUrl = firstImageUrl;
-        this.expertiseLevel = expertiseLevel;
-        this.equipment = equipment;
-        this.mechanicsType = mechanicsType;
-        this.forceType = forceType;
-        this.userExerciseInteractionCreatedAt = userExerciseInteractionCreatedAt;
-    }
 }

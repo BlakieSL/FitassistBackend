@@ -9,11 +9,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
+import source.code.model.media.Media;
 import source.code.model.user.User;
 import source.code.model.user.UserThread;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -62,6 +66,11 @@ public class ForumThread {
 
     @OneToMany(mappedBy = "forumThread", cascade = CascadeType.REMOVE)
     private final Set<UserThread> userThreads = new HashSet<>();
+
+    @OneToMany
+    @JoinColumn(name = "parent_id", insertable = false, updatable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @SQLRestriction("parentType = 'FORUM_THREAD'")
+    private List<Media> mediaList = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {

@@ -8,11 +8,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
+import source.code.model.media.Media;
 import source.code.model.user.User;
 import source.code.model.user.UserComment;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -56,6 +60,11 @@ public class Comment {
 
     @OneToMany(mappedBy = "comment")
     private final Set<UserComment> userCommentLikes = new HashSet<>();
+
+    @OneToMany
+    @JoinColumn(name = "parent_id", insertable = false, updatable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @SQLRestriction("parentType = 'COMMENT'")
+    private List<Media> mediaList = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {

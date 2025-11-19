@@ -14,6 +14,7 @@ import source.code.dto.request.activity.CalculateActivityCaloriesRequestDto;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.dto.response.activity.ActivityResponseDto;
+import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.event.events.Activity.ActivityCreateEvent;
 import source.code.event.events.Activity.ActivityDeleteEvent;
 import source.code.event.events.Activity.ActivityUpdateEvent;
@@ -70,11 +71,11 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     @Transactional
-    public ActivityResponseDto createActivity(ActivityCreateDto dto) {
+    public ActivitySummaryDto createActivity(ActivityCreateDto dto) {
         Activity activity = activityRepository.save(activityMapper.toEntity(dto));
         eventPublisher.publishEvent(ActivityCreateEvent.of(this, activity));
 
-        return activityMapper.toResponseDto(activity);
+        return activityMapper.toSummaryDto(activity);
     }
 
     @Override
@@ -115,26 +116,27 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     @Cacheable(value = CacheNames.ACTIVITIES, key = "#activityId")
     public ActivityResponseDto getActivity(int activityId) {
-        Activity activity = findActivity(activityId);
-        return activityMapper.toResponseDto(activity);
+        Activity activity = activityRepository.findByIdWithMedia(activityId)
+                .orElseThrow(() -> RecordNotFoundException.of(Activity.class, activityId));
+        return activityMapper.toDetailedResponseDto(activity);
     }
 
     @Override
     @Cacheable(value = CacheNames.ALL_ACTIVITIES)
-    public List<ActivityResponseDto> getAllActivities() {
+    public List<ActivitySummaryDto> getAllActivities() {
         return activityRepository.findAllWithActivityCategory().stream()
-                .map(activityMapper::toResponseDto)
+                .map(activityMapper::toSummaryDto)
                 .toList();
     }
 
     @Override
-    public List<ActivityResponseDto> getFilteredActivities(FilterDto filter) {
+    public List<ActivitySummaryDto> getFilteredActivities(FilterDto filter) {
         SpecificationFactory<Activity> activityFactory = ActivitySpecification::of;
         SpecificationBuilder<Activity> specificationBuilder = SpecificationBuilder.of(filter, activityFactory, dependencies);
         Specification<Activity> specification = specificationBuilder.build();
 
         return activityRepository.findAll(specification).stream()
-                .map(activityMapper::toResponseDto)
+                .map(activityMapper::toSummaryDto)
                 .toList();
     }
 

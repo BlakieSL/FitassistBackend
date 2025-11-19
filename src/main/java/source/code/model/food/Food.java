@@ -6,13 +6,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 import source.code.helper.search.IndexedEntity;
 import source.code.model.daily.DailyCartFood;
+import source.code.model.media.Media;
 import source.code.model.recipe.RecipeFood;
 import source.code.model.user.UserFood;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -67,6 +71,11 @@ public class Food implements IndexedEntity {
 
     @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
     private final Set<UserFood> userFoods = new HashSet<>();
+
+    @OneToMany
+    @JoinColumn(name = "parent_id", insertable = false, updatable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @SQLRestriction("parentType = 'FOOD'")
+    private List<Media> mediaList = new ArrayList<>();
 
     @Override
     public String getClassName() {

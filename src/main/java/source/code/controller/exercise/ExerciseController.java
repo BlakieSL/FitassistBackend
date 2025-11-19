@@ -11,6 +11,7 @@ import source.code.annotation.AdminOnly;
 import source.code.dto.request.exercise.ExerciseCreateDto;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.response.exercise.ExerciseResponseDto;
+import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.service.declaration.exercise.ExerciseService;
 
 import java.util.List;
@@ -26,10 +27,10 @@ public class ExerciseController {
 
     @AdminOnly
     @PostMapping
-    public ResponseEntity<ExerciseResponseDto> createExercise(
+    public ResponseEntity<ExerciseSummaryDto> createExercise(
             @Valid @RequestBody ExerciseCreateDto dto
     ) {
-        ExerciseResponseDto savedExercise = exerciseService.createExercise(dto);
+        ExerciseSummaryDto savedExercise = exerciseService.createExercise(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedExercise);
     }
 
@@ -58,21 +59,21 @@ public class ExerciseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ExerciseResponseDto>> getAllExercises() {
-        List<ExerciseResponseDto> exercises = exerciseService.getAllExercises();
+    public ResponseEntity<List<ExerciseSummaryDto>> getAllExercises() {
+        List<ExerciseSummaryDto> exercises = exerciseService.getAllExercises();
         return ResponseEntity.ok(exercises);
     }
 
     @PostMapping("/filter")
-    public ResponseEntity<List<ExerciseResponseDto>> getFilteredExercises(
+    public ResponseEntity<List<ExerciseSummaryDto>> getFilteredExercises(
             @Valid @RequestBody FilterDto filter
     ) {
-        List<ExerciseResponseDto> filtered = exerciseService.getFilteredExercises(filter);
+        List<ExerciseSummaryDto> filtered = exerciseService.getFilteredExercises(filter);
         return ResponseEntity.ok(filtered);
     }
 
     @GetMapping("/{categoryId}/categories")
-    public ResponseEntity<List<ExerciseResponseDto>> getExercisesByCategory(
+    public ResponseEntity<List<ExerciseSummaryDto>> getExercisesByCategory(
             @PathVariable int categoryId
     ) {
         return ResponseEntity.ok(exerciseService.getExercisesByCategory(categoryId));

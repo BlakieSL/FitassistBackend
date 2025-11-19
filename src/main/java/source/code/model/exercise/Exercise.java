@@ -8,13 +8,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 import source.code.helper.search.IndexedEntity;
+import source.code.model.media.Media;
 import source.code.model.text.ExerciseInstruction;
 import source.code.model.text.ExerciseTip;
 import source.code.model.user.UserExercise;
 import source.code.model.workout.WorkoutSet;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -76,6 +80,11 @@ public class Exercise implements IndexedEntity {
 
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE)
     private final Set<UserExercise> userExercises = new HashSet<>();
+
+    @OneToMany
+    @JoinColumn(name = "parent_id", insertable = false, updatable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @SQLRestriction("parentType = 'EXERCISE'")
+    private List<Media> mediaList = new ArrayList<>();
 
     @Override
     public String getClassName() {

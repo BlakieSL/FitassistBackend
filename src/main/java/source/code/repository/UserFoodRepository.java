@@ -3,7 +3,7 @@ package source.code.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import source.code.dto.response.food.FoodResponseDto;
+import source.code.dto.response.food.FoodSummaryDto;
 import source.code.model.user.UserFood;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public interface UserFoodRepository extends JpaRepository<UserFood, Integer> {
     List<UserFood> findByUserId(int userId);
 
     @Query("""
-           SELECT new source.code.dto.response.food.FoodResponseDto(
+           SELECT new source.code.dto.response.food.FoodSummaryDto(
                f.id,
                f.name,
                f.calories,
@@ -39,7 +39,7 @@ public interface UserFoodRepository extends JpaRepository<UserFood, Integer> {
            WHERE uf.user.id = :userId
            ORDER BY uf.createdAt DESC
            """)
-    List<FoodResponseDto> findFoodDtosByUserId(@Param("userId") int userId);
+    List<FoodSummaryDto> findFoodDtosByUserId(@Param("userId") int userId);
 
     long countByFoodId(int foodId);
 }

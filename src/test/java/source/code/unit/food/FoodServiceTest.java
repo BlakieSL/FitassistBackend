@@ -21,6 +21,7 @@ import source.code.dto.request.food.FoodCreateDto;
 import source.code.dto.request.food.FoodUpdateDto;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.food.FoodResponseDto;
+import source.code.dto.response.food.FoodSummaryDto;
 import source.code.event.events.Food.FoodCreateEvent;
 import source.code.event.events.Food.FoodDeleteEvent;
 import source.code.event.events.Food.FoodUpdateEvent;
@@ -37,6 +38,7 @@ import source.code.service.implementation.food.FoodServiceImpl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,7 +63,8 @@ public class FoodServiceTest {
 
     private Food food;
     private FoodCreateDto createDto;
-    private FoodResponseDto responseDto;
+    private FoodSummaryDto responseDto;
+    private FoodResponseDto detailedResponseDto;
     private JsonMergePatch patch;
     private FoodUpdateDto patchedDto;
     private int foodId;
@@ -74,7 +77,8 @@ public class FoodServiceTest {
     void setUp() {
         food = new Food();
         createDto = new FoodCreateDto();
-        responseDto = new FoodResponseDto();
+        responseDto = new FoodSummaryDto();
+        detailedResponseDto = new FoodResponseDto();
         patchedDto = new FoodUpdateDto();
         foodId = 1;
         filter = new FilterDto();
@@ -95,9 +99,9 @@ public class FoodServiceTest {
     void createFood_shouldCreateFood() {
         when(foodMapper.toEntity(createDto)).thenReturn(food);
         when(foodRepository.save(food)).thenReturn(food);
-        when(foodMapper.toResponseDto(food)).thenReturn(responseDto);
+        when(foodMapper.toSummaryDto(food)).thenReturn(responseDto);
 
-        FoodResponseDto result = foodService.createFood(createDto);
+        FoodSummaryDto result = foodService.createFood(createDto);
 
         assertEquals(responseDto, result);
     }
@@ -108,7 +112,7 @@ public class FoodServiceTest {
 
         when(foodMapper.toEntity(createDto)).thenReturn(food);
         when(foodRepository.save(food)).thenReturn(food);
-        when(foodMapper.toResponseDto(food)).thenReturn(responseDto);
+        when(foodMapper.toSummaryDto(food)).thenReturn(responseDto);
 
         foodService.createFood(createDto);
 
@@ -255,32 +259,34 @@ public class FoodServiceTest {
 
     @Test
     void getFood_shouldReturnFoodWhenFound() {
-        when(repositoryHelper.find(foodRepository, Food.class, foodId)).thenReturn(food);
-        when(foodMapper.toResponseDto(food)).thenReturn(responseDto);
+        when(foodRepository.findByIdWithMedia(foodId)).thenReturn(Optional.of(food));
+        when(foodMapper.toDetailedResponseDto(food)).thenReturn(detailedResponseDto);
 
         FoodResponseDto result = foodService.getFood(foodId);
 
-        assertEquals(responseDto, result);
+        assertEquals(detailedResponseDto, result);
+        verify(foodRepository).findByIdWithMedia(foodId);
+        verify(foodMapper).toDetailedResponseDto(food);
     }
 
     @Test
     void getFood_shouldThrowExceptionWhenFoodNotFound() {
-        when(repositoryHelper.find(foodRepository, Food.class, foodId))
-                .thenThrow(RecordNotFoundException.of(Food.class, foodId));
+        when(foodRepository.findByIdWithMedia(foodId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> foodService.getFood(foodId));
 
+        verify(foodRepository).findByIdWithMedia(foodId);
         verifyNoInteractions(foodMapper);
     }
 
     @Test
     void getAllFoods_shouldReturnAllFoods() {
-        List<FoodResponseDto> responseDtos = List.of(responseDto);
+        List<FoodSummaryDto> responseDtos = List.of(responseDto);
 
         when(repositoryHelper.findAll(eq(foodRepository), any(Function.class)))
                 .thenReturn(responseDtos);
 
-        List<FoodResponseDto> result = foodService.getAllFoods();
+        List<FoodSummaryDto> result = foodService.getAllFoods();
 
         assertEquals(responseDtos, result);
         verify(repositoryHelper).findAll(eq(foodRepository), any(Function.class));
@@ -288,11 +294,11 @@ public class FoodServiceTest {
 
     @Test
     void getAllFoods_shouldReturnEmptyListWhenNoFoods() {
-        List<FoodResponseDto> responseDtos = List.of();
+        List<FoodSummaryDto> responseDtos = List.of();
         when(repositoryHelper.findAll(eq(foodRepository), any(Function.class)))
                 .thenReturn(responseDtos);
 
-        List<FoodResponseDto> result = foodService.getAllFoods();
+        List<FoodSummaryDto> result = foodService.getAllFoods();
 
         assertTrue(result.isEmpty());
         verify(repositoryHelper).findAll(eq(foodRepository), any(Function.class));
@@ -301,14 +307,14 @@ public class FoodServiceTest {
     @Test
     void getFilteredFoods_shouldReturnFilteredFoods() {
         when(foodRepository.findAll(any(Specification.class))).thenReturn(List.of(food));
-        when(foodMapper.toResponseDto(food)).thenReturn(responseDto);
+        when(foodMapper.toSummaryDto(food)).thenReturn(responseDto);
 
-        List<FoodResponseDto> result = foodService.getFilteredFoods(filter);
+        List<FoodSummaryDto> result = foodService.getFilteredFoods(filter);
 
         assertEquals(1, result.size());
         assertSame(responseDto, result.get(0));
         verify(foodRepository).findAll(any(Specification.class));
-        verify(foodMapper).toResponseDto(food);
+        verify(foodMapper).toSummaryDto(food);
     }
 
     @Test
@@ -317,7 +323,7 @@ public class FoodServiceTest {
 
         when(foodRepository.findAll(any(Specification.class))).thenReturn(new ArrayList<>());
 
-        List<FoodResponseDto> result = foodService.getFilteredFoods(filter);
+        List<FoodSummaryDto> result = foodService.getFilteredFoods(filter);
 
         assertTrue(result.isEmpty());
         verify(foodRepository).findAll(any(Specification.class));
@@ -332,7 +338,7 @@ public class FoodServiceTest {
 
         when(foodRepository.findAll(any(Specification.class))).thenReturn(new ArrayList<>());
 
-        List<FoodResponseDto> result = foodService.getFilteredFoods(filter);
+        List<FoodSummaryDto> result = foodService.getFilteredFoods(filter);
 
         assertTrue(result.isEmpty());
         verify(foodRepository).findAll(any(Specification.class));

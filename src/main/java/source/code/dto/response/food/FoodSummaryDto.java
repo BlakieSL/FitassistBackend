@@ -1,19 +1,19 @@
 package source.code.dto.response.food;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import source.code.helper.BaseUserEntity;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FoodResponseDto {
+@ToString(onlyExplicitlyIncluded = true)
+public class FoodSummaryDto implements BaseUserEntity {
     private Integer id;
+    @ToString.Include
     private String name;
     private BigDecimal calories;
     private BigDecimal protein;
@@ -21,5 +21,7 @@ public class FoodResponseDto {
     private BigDecimal carbohydrates;
     private int categoryId;
     private String categoryName;
-    private List<String> imageUrls;
+    private String imageName;
+    private String firstImageUrl;
+    private LocalDateTime userFoodInteractionCreatedAt;
 }

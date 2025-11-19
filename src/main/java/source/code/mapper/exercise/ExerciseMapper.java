@@ -6,10 +6,12 @@ import source.code.dto.pojo.TargetMuscleShortDto;
 import source.code.dto.request.exercise.ExerciseCreateDto;
 import source.code.dto.request.exercise.ExerciseUpdateDto;
 import source.code.dto.response.exercise.ExerciseResponseDto;
+import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.model.exercise.*;
 import source.code.model.text.ExerciseInstruction;
 import source.code.model.text.ExerciseTip;
 import source.code.repository.*;
+import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
 import java.util.List;
@@ -37,13 +39,31 @@ public abstract class ExerciseMapper {
     @Autowired
     private EquipmentRepository equipmentRepository;
 
+    @Autowired
+    private AwsS3Service awsS3Service;
+
+    @Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseToCategoryDto")
+    @Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsToCategoryDto")
+    @Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceToCategoryDto")
+    @Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToCategoryDto")
+    @Mapping(target = "firstImageUrl", ignore = true)
+    public abstract ExerciseSummaryDto toSummaryDto(Exercise exercise);
+
     @Mapping(target = "targetMuscles", source = "exerciseTargetMuscles", qualifiedByName = "mapAssociationsToCategoryShortDto")
     @Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseToShortDto")
     @Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsToShortDto")
     @Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceToShortDto")
     @Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToShortDto")
-    @Mapping(target = "firstImageUrl", ignore = true)
-    public abstract ExerciseResponseDto toResponseDto(Exercise exercise);
+    @Mapping(target = "imageUrls", ignore = true)
+    public abstract ExerciseResponseDto toDetailedResponseDto(Exercise exercise);
+
+    @AfterMapping
+    protected void mapImageUrls(@MappingTarget ExerciseResponseDto dto, Exercise exercise) {
+        List<String> imageUrls = exercise.getMediaList().stream()
+                .map(media -> awsS3Service.getImage(media.getImageName()))
+                .toList();
+        dto.setImageUrls(imageUrls);
+    }
 
     @Mapping(target = "exerciseTargetMuscles", source = "targetMusclesIds", qualifiedByName = "mapTargetMuscleIdsToAssociations")
     @Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevel")
@@ -157,5 +177,25 @@ public abstract class ExerciseMapper {
     @Named("mapExerciseEquipment")
     protected Equipment mapExerciseEquipment(Integer equipmentId) {
         return repositoryHelper.find(equipmentRepository, Equipment.class, equipmentId);
+    }
+
+    @Named("mapExpertiseToCategoryDto")
+    protected source.code.dto.pojo.CategoryDto mapExpertiseToCategoryDto(ExpertiseLevel expertiseLevel) {
+        return new source.code.dto.pojo.CategoryDto(expertiseLevel.getId(), expertiseLevel.getName());
+    }
+
+    @Named("mapMechanicsToCategoryDto")
+    protected source.code.dto.pojo.CategoryDto mapMechanicsToCategoryDto(MechanicsType mechanicsType) {
+        return new source.code.dto.pojo.CategoryDto(mechanicsType.getId(), mechanicsType.getName());
+    }
+
+    @Named("mapForceToCategoryDto")
+    protected source.code.dto.pojo.CategoryDto mapForceToCategoryDto(ForceType forceType) {
+        return new source.code.dto.pojo.CategoryDto(forceType.getId(), forceType.getName());
+    }
+
+    @Named("mapEquipmentToCategoryDto")
+    protected source.code.dto.pojo.CategoryDto mapEquipmentToCategoryDto(Equipment equipment) {
+        return new source.code.dto.pojo.CategoryDto(equipment.getId(), equipment.getName());
     }
 }

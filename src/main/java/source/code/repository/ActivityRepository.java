@@ -22,4 +22,10 @@ public interface ActivityRepository
     @EntityGraph(attributePaths = {"activityCategory"})
     @Query("SELECT a FROM Activity a")
     List<Activity> findAllWithActivityCategory();
+
+    @Query("SELECT a FROM Activity a " +
+           "LEFT JOIN FETCH a.activityCategory " +
+           "LEFT JOIN FETCH a.mediaList " +
+           "WHERE a.id = :id")
+    Optional<Activity> findByIdWithMedia(int id);
 }

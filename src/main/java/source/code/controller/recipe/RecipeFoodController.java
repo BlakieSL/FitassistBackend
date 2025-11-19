@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import source.code.annotation.recipe.RecipeOwnerOrAdmin;
 import source.code.dto.request.recipe.FilterRecipesByFoodsDto;
 import source.code.dto.request.recipe.RecipeFoodCreateDto;
-import source.code.dto.response.food.FoodResponseDto;
+import source.code.dto.response.food.FoodSummaryDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.service.declaration.recipe.RecipeFoodService;
 
@@ -64,8 +64,8 @@ public class RecipeFoodController {
 
     @RecipeOwnerOrAdmin
     @GetMapping("/{recipeId}/foods")
-    public ResponseEntity<List<FoodResponseDto>> getFoodsByRecipe(@PathVariable int recipeId) {
-        List<FoodResponseDto> foods = recipeFoodService.getFoodsByRecipe(recipeId);
+    public ResponseEntity<List<FoodSummaryDto>> getFoodsByRecipe(@PathVariable int recipeId) {
+        List<FoodSummaryDto> foods = recipeFoodService.getFoodsByRecipe(recipeId);
         return ResponseEntity.ok(foods);
     }
 

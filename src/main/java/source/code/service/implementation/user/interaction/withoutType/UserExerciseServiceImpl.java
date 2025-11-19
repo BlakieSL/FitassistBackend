@@ -2,7 +2,6 @@ package source.code.service.implementation.user.interaction.withoutType;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
@@ -22,7 +21,7 @@ import java.util.List;
 
 @Service("userExerciseService")
 public class UserExerciseServiceImpl
-        extends GenericSavedServiceWithoutType<Exercise, UserExercise, ExerciseResponseDto>
+        extends GenericSavedServiceWithoutType<Exercise, UserExercise, ExerciseSummaryDto>
         implements SavedServiceWithoutType {
 
     private final MediaRepository mediaRepository;
@@ -34,7 +33,7 @@ public class UserExerciseServiceImpl
                                    ExerciseMapper mapper,
                                    MediaRepository mediaRepository,
                                    AwsS3Service awsS3Service) {
-        super(userRepository, entityRepository, userEntityRepository, mapper::toResponseDto, Exercise.class);
+        super(userRepository, entityRepository, userEntityRepository, mapper::toSummaryDto, Exercise.class);
         this.mediaRepository = mediaRepository;
         this.awsS3Service = awsS3Service;
     }
