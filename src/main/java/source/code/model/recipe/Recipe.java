@@ -13,6 +13,7 @@ import source.code.model.text.RecipeInstruction;
 import source.code.model.user.User;
 import source.code.model.user.UserRecipe;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,10 +49,18 @@ public class Recipe implements IndexedEntity {
     @Column(nullable = false)
     private Integer views = 0;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
     @OneToMany(mappedBy = "recipe", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
     private final Set<RecipeInstruction> recipeInstructions = new HashSet<>();

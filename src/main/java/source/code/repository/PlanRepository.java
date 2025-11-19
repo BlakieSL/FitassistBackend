@@ -60,13 +60,14 @@ public interface PlanRepository
              CAST((SELECT COUNT(up2) FROM UserPlan up2 WHERE up2.plan.id = p.id AND up2.type = 'SAVE') AS int),
              p.views,
              p.planType.id,
-             p.planType.name)
+             p.planType.name,
+             p.createdAt,
+             null)
       FROM Plan p
       WHERE ((:isOwnProfile IS NULL OR :isOwnProfile = false) AND (p.isPublic = true AND p.user.id = :userId)) OR
             (:isOwnProfile = true AND p.user.id = :userId)
     """)
-    List<PlanSummaryDto> findSummaryByUserId(@Param("isOwnProfile") Boolean isOwnProfile,
-                                             @Param("userId") Integer userId);
+    List<PlanSummaryDto> findSummaryByUserId(@Param("isOwnProfile") Boolean isOwnProfile, @Param("userId") Integer userId);
 
     List<Plan> user(@NotNull User user);
 

@@ -31,7 +31,8 @@ public interface UserFoodRepository extends JpaRepository<UserFood, Integer> {
                 AND m.parentType = 'FOOD'
                 ORDER BY m.id ASC
                 LIMIT 1),
-               null)
+               null,
+               uf.createdAt)
            FROM UserFood uf
            JOIN uf.food f
            JOIN f.foodCategory fc

@@ -41,7 +41,9 @@ public interface UserPlanRepository extends JpaRepository<UserPlan, Integer> {
                CAST((SELECT COUNT(up3) FROM UserPlan up3 WHERE up3.plan.id = p.id AND up3.type = 'SAVE') AS int),
                p.views,
                p.planType.id,
-               p.planType.name)
+               p.planType.name,
+               p.createdAt,
+               up.createdAt)
            FROM UserPlan up
            JOIN up.plan p
            JOIN p.user u
