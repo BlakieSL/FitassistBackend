@@ -2,7 +2,7 @@ package source.code.service.implementation.user.interaction.withoutType;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import source.code.dto.response.activity.ActivityResponseDto;
+import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
 import source.code.mapper.activity.ActivityMapper;
@@ -21,7 +21,7 @@ import java.util.List;
 
 @Service("userActivityService")
 public class UserActivityServiceImpl
-        extends GenericSavedServiceWithoutType<Activity, UserActivity, ActivityResponseDto>
+        extends GenericSavedServiceWithoutType<Activity, UserActivity, ActivitySummaryDto>
         implements SavedServiceWithoutType {
 
     private final MediaRepository mediaRepository;
@@ -36,7 +36,7 @@ public class UserActivityServiceImpl
         super(userRepository,
                 entityRepository,
                 userEntityRepository,
-                mapper::toResponseDto,
+                mapper::toSummaryDto,
                 Activity.class);
         this.mediaRepository = mediaRepository;
         this.awsS3Service = awsS3Service;
@@ -66,7 +66,7 @@ public class UserActivityServiceImpl
 
     @Override
     public List<BaseUserEntity> getAllFromUser(int userId, String sortDirection) {
-        List<ActivityResponseDto> dtos = new ArrayList<>(((UserActivityRepository) userEntityRepository)
+        List<ActivitySummaryDto> dtos = new ArrayList<>(((UserActivityRepository) userEntityRepository)
                 .findActivityDtosByUserId(userId));
 
         dtos.forEach(dto -> {
@@ -82,16 +82,16 @@ public class UserActivityServiceImpl
                 .toList();
     }
 
-    private void sortByInteractionDate(List<ActivityResponseDto> list, String sortDirection) {
-        Comparator<ActivityResponseDto> comparator;
+    private void sortByInteractionDate(List<ActivitySummaryDto> list, String sortDirection) {
+        Comparator<ActivitySummaryDto> comparator;
         if ("ASC".equalsIgnoreCase(sortDirection)) {
             comparator = Comparator.comparing(
-                    ActivityResponseDto::getUserActivityInteractionCreatedAt,
+                    ActivitySummaryDto::getUserActivityInteractionCreatedAt,
                     Comparator.nullsLast(Comparator.naturalOrder())
             );
         } else {
             comparator = Comparator.comparing(
-                    ActivityResponseDto::getUserActivityInteractionCreatedAt,
+                    ActivitySummaryDto::getUserActivityInteractionCreatedAt,
                     Comparator.nullsLast(Comparator.reverseOrder())
             );
         }

@@ -19,6 +19,7 @@ import source.code.dto.request.exercise.ExerciseCreateDto;
 import source.code.dto.request.exercise.ExerciseUpdateDto;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.response.exercise.ExerciseResponseDto;
+import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.event.events.Exercise.ExerciseCreateEvent;
 import source.code.event.events.Exercise.ExerciseDeleteEvent;
 import source.code.event.events.Exercise.ExerciseUpdateEvent;
@@ -63,6 +64,7 @@ public class ExerciseServiceTest {
     private Exercise exercise;
     private ExerciseCreateDto createDto;
     private ExerciseResponseDto responseDto;
+    private ExerciseSummaryDto summaryDto;
     private JsonMergePatch patch;
     private ExerciseUpdateDto patchedDto;
     private int exerciseId;
@@ -74,6 +76,7 @@ public class ExerciseServiceTest {
         exercise = new Exercise();
         createDto = new ExerciseCreateDto();
         responseDto = new ExerciseResponseDto();
+        summaryDto = new ExerciseSummaryDto();
         patchedDto = new ExerciseUpdateDto();
         exerciseId = 1;
         filter = new FilterDto();
@@ -92,11 +95,11 @@ public class ExerciseServiceTest {
     void createExercise_shouldCreateExerciseAndPublish() {
         when(exerciseMapper.toEntity(createDto)).thenReturn(exercise);
         when(exerciseRepository.save(exercise)).thenReturn(exercise);
-        when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
+        when(exerciseMapper.toSummaryDto(exercise)).thenReturn(summaryDto);
 
-        ExerciseResponseDto result = exerciseService.createExercise(createDto);
+        ExerciseSummaryDto result = exerciseService.createExercise(createDto);
 
-        assertEquals(responseDto, result);
+        assertEquals(summaryDto, result);
     }
 
     @Test
@@ -106,7 +109,7 @@ public class ExerciseServiceTest {
 
         when(exerciseMapper.toEntity(createDto)).thenReturn(exercise);
         when(exerciseRepository.save(exercise)).thenReturn(exercise);
-        when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
+        when(exerciseMapper.toSummaryDto(exercise)).thenReturn(summaryDto);
 
         exerciseService.createExercise(createDto);
 
@@ -236,33 +239,36 @@ public class ExerciseServiceTest {
 
     @Test
     void getExercise_shouldReturnExerciseWhenFound() {
-        when(repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId))
-                .thenReturn(exercise);
-        when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
+        when(exerciseRepository.findByIdWithMedia(exerciseId))
+                .thenReturn(java.util.Optional.of(exercise));
+        when(exerciseMapper.toDetailedResponseDto(exercise)).thenReturn(responseDto);
 
         ExerciseResponseDto result = exerciseService.getExercise(exerciseId);
 
         assertEquals(responseDto, result);
+        verify(exerciseRepository).findByIdWithMedia(exerciseId);
+        verify(exerciseMapper).toDetailedResponseDto(exercise);
     }
 
     @Test
     void getExercise_shouldThrowExceptionWhenExerciseNotFound() {
-        when(repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId))
-                .thenThrow(RecordNotFoundException.of(Exercise.class, exerciseId));
+        when(exerciseRepository.findByIdWithMedia(exerciseId))
+                .thenReturn(java.util.Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> exerciseService.getExercise(exerciseId));
 
+        verify(exerciseRepository).findByIdWithMedia(exerciseId);
         verifyNoInteractions(exerciseMapper);
     }
 
     @Test
     void getAllExercises_shouldReturnAllExercises() {
-        List<ExerciseResponseDto> responseDtos = List.of(responseDto);
+        List<ExerciseSummaryDto> responseDtos = List.of(summaryDto);
 
         when(repositoryHelper.findAll(eq(exerciseRepository), any(Function.class)))
                 .thenReturn(responseDtos);
 
-        List<ExerciseResponseDto> result = exerciseService.getAllExercises();
+        List<ExerciseSummaryDto> result = exerciseService.getAllExercises();
 
         assertEquals(responseDtos, result);
         verify(repositoryHelper).findAll(eq(exerciseRepository), any(Function.class));
@@ -270,11 +276,11 @@ public class ExerciseServiceTest {
 
     @Test
     void getAllExercises_shouldReturnEmptyListWhenNoExercises() {
-        List<ExerciseResponseDto> responseDtos = List.of();
+        List<ExerciseSummaryDto> responseDtos = List.of();
         when(repositoryHelper.findAll(eq(exerciseRepository), any(Function.class)))
                 .thenReturn(responseDtos);
 
-        List<ExerciseResponseDto> result = exerciseService.getAllExercises();
+        List<ExerciseSummaryDto> result = exerciseService.getAllExercises();
 
         assertTrue(result.isEmpty());
         verify(repositoryHelper).findAll(eq(exerciseRepository), any(Function.class));
@@ -283,14 +289,14 @@ public class ExerciseServiceTest {
     @Test
     void getFilteredExercises_shouldReturnFilteredExercises() {
         when(exerciseRepository.findAll(any(Specification.class))).thenReturn(List.of(exercise));
-        when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
+        when(exerciseMapper.toSummaryDto(exercise)).thenReturn(summaryDto);
 
-        List<ExerciseResponseDto> result = exerciseService.getFilteredExercises(filter);
+        List<ExerciseSummaryDto> result = exerciseService.getFilteredExercises(filter);
 
         assertEquals(1, result.size());
-        assertSame(responseDto, result.get(0));
+        assertSame(summaryDto, result.get(0));
         verify(exerciseRepository).findAll(any(Specification.class));
-        verify(exerciseMapper).toResponseDto(exercise);
+        verify(exerciseMapper).toSummaryDto(exercise);
     }
 
     @Test
@@ -299,7 +305,7 @@ public class ExerciseServiceTest {
 
         when(exerciseRepository.findAll(any(Specification.class))).thenReturn(new ArrayList<>());
 
-        List<ExerciseResponseDto> result = exerciseService.getFilteredExercises(filter);
+        List<ExerciseSummaryDto> result = exerciseService.getFilteredExercises(filter);
 
         assertTrue(result.isEmpty());
         verify(exerciseRepository).findAll(any(Specification.class));
@@ -314,7 +320,7 @@ public class ExerciseServiceTest {
 
         when(exerciseRepository.findAll(any(Specification.class))).thenReturn(new ArrayList<>());
 
-        List<ExerciseResponseDto> result = exerciseService.getFilteredExercises(filter);
+        List<ExerciseSummaryDto> result = exerciseService.getFilteredExercises(filter);
 
         assertTrue(result.isEmpty());
         verify(exerciseRepository).findAll(any(Specification.class));
@@ -351,14 +357,14 @@ public class ExerciseServiceTest {
 
         when(exerciseTargetMuscleRepository.findByTargetMuscleId(categoryId))
                 .thenReturn(List.of(exerciseTargetMuscle));
-        when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
+        when(exerciseMapper.toSummaryDto(exercise)).thenReturn(summaryDto);
 
-        List<ExerciseResponseDto> result = exerciseService.getExercisesByCategory(categoryId);
+        List<ExerciseSummaryDto> result = exerciseService.getExercisesByCategory(categoryId);
 
         assertEquals(1, result.size());
-        assertSame(responseDto, result.get(0));
+        assertSame(summaryDto, result.get(0));
         verify(exerciseTargetMuscleRepository).findByTargetMuscleId(categoryId);
-        verify(exerciseMapper).toResponseDto(exercise);
+        verify(exerciseMapper).toSummaryDto(exercise);
     }
 
     @Test
@@ -367,7 +373,7 @@ public class ExerciseServiceTest {
         when(exerciseTargetMuscleRepository.findByTargetMuscleId(categoryId))
                 .thenReturn(new ArrayList<>());
 
-        List<ExerciseResponseDto> result = exerciseService.getExercisesByCategory(categoryId);
+        List<ExerciseSummaryDto> result = exerciseService.getExercisesByCategory(categoryId);
 
         assertTrue(result.isEmpty());
         verify(exerciseTargetMuscleRepository).findByTargetMuscleId(categoryId);

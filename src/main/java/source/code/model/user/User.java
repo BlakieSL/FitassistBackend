@@ -6,11 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 import source.code.helper.Enum.model.user.ActivityLevel;
 import source.code.helper.Enum.model.user.Gender;
 import source.code.helper.Enum.model.user.Goal;
 import source.code.model.complaint.ComplaintBase;
 import source.code.model.daily.DailyCart;
+import source.code.model.media.Media;
 import source.code.model.plan.Plan;
 import source.code.model.recipe.Recipe;
 import source.code.model.thread.Comment;
@@ -21,7 +23,9 @@ import source.code.validation.healthRelatedInfo.HealthInfoShouldBeFullDomain;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @HealthInfoShouldBeFullDomain
@@ -117,6 +121,11 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<Plan> plans = new HashSet<>();
+
+    @OneToMany
+    @JoinColumn(name = "parent_id", insertable = false, updatable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @SQLRestriction("parentType = 'USER'")
+    private List<Media> mediaList = new ArrayList<>();
 
     public static User of(int id) {
         User user = new User();

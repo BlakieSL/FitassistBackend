@@ -8,12 +8,13 @@ import source.code.dto.request.food.CalculateFoodMacrosRequestDto;
 import source.code.dto.request.food.FoodCreateDto;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.food.FoodResponseDto;
+import source.code.dto.response.food.FoodSummaryDto;
 import source.code.model.food.Food;
 
 import java.util.List;
 
 public interface FoodService {
-    FoodResponseDto createFood(FoodCreateDto request);
+    FoodSummaryDto createFood(FoodCreateDto request);
 
     void updateFood(int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
@@ -21,9 +22,9 @@ public interface FoodService {
 
     FoodResponseDto getFood(int foodId);
 
-    List<FoodResponseDto> getAllFoods();
+    List<FoodSummaryDto> getAllFoods();
 
-    List<FoodResponseDto> getFilteredFoods(FilterDto filter);
+    List<FoodSummaryDto> getFilteredFoods(FilterDto filter);
 
     List<Food> getAllFoodEntities();
 

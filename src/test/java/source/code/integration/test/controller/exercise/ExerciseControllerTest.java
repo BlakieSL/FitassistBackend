@@ -193,14 +193,15 @@ public class ExerciseControllerTest {
 
     @ExerciseSql
     @Test
-    @DisplayName("GET - /{id} - Should retrieve an existing exercise")
+    @DisplayName("GET - /{id} - Should retrieve an existing exercise with image URLs")
     void getExercise() throws Exception {
         Utils.setUserContext(1);
 
         mockMvc.perform(get("/api/exercises/1")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpectAll(
-                        status().isOk()
+                        status().isOk(),
+                        jsonPath("$.imageUrls").isArray()
                 );
     }
 

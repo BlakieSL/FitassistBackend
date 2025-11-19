@@ -14,9 +14,11 @@ import source.code.dto.request.food.FoodCreateDto;
 import source.code.dto.request.food.FoodUpdateDto;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.food.FoodResponseDto;
+import source.code.dto.response.food.FoodSummaryDto;
 import source.code.event.events.Food.FoodCreateEvent;
 import source.code.event.events.Food.FoodDeleteEvent;
 import source.code.event.events.Food.FoodUpdateEvent;
+import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.cache.CacheNames;
 import source.code.mapper.food.FoodMapper;
 import source.code.model.food.Food;
@@ -63,11 +65,11 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     @Transactional
-    public FoodResponseDto createFood(FoodCreateDto request) {
+    public FoodSummaryDto createFood(FoodCreateDto request) {
         Food food = foodRepository.save(foodMapper.toEntity(request));
         applicationEventPublisher.publishEvent(FoodCreateEvent.of(this, food));
 
-        return foodMapper.toResponseDto(food);
+        return foodMapper.toSummaryDto(food);
     }
 
     @Override
@@ -109,24 +111,25 @@ public class FoodServiceImpl implements FoodService {
     @Override
     @Cacheable(value = CacheNames.FOODS, key = "#id")
     public FoodResponseDto getFood(int id) {
-        Food food = find(id);
-        return foodMapper.toResponseDto(food);
+        Food food = foodRepository.findByIdWithMedia(id)
+                .orElseThrow(() -> RecordNotFoundException.of(Food.class, id));
+        return foodMapper.toDetailedResponseDto(food);
     }
 
     @Override
     @Cacheable(value = CacheNames.ALL_FOODS)
-    public List<FoodResponseDto> getAllFoods() {
-        return repositoryHelper.findAll(foodRepository, foodMapper::toResponseDto);
+    public List<FoodSummaryDto> getAllFoods() {
+        return repositoryHelper.findAll(foodRepository, foodMapper::toSummaryDto);
     }
 
     @Override
-    public List<FoodResponseDto> getFilteredFoods(FilterDto filter) {
+    public List<FoodSummaryDto> getFilteredFoods(FilterDto filter) {
         SpecificationFactory<Food> foodFactory = FoodSpecification::of;
         SpecificationBuilder<Food> specificationBuilder = SpecificationBuilder.of(filter, foodFactory, dependencies);
         Specification<Food> specification = specificationBuilder.build();
 
         return foodRepository.findAll(specification).stream()
-                .map(foodMapper::toResponseDto)
+                .map(foodMapper::toSummaryDto)
                 .toList();
     }
 

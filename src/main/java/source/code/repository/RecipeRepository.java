@@ -58,6 +58,7 @@ public interface RecipeRepository
              CAST((SELECT COUNT(ur2) FROM UserRecipe ur2 WHERE ur2.recipe.id = r.id AND ur2.type = 'SAVE') AS int),
              r.views,
              CAST((SELECT COUNT(rf) FROM RecipeFood rf WHERE rf.recipe.id = r.id) AS int),
+             null,
              r.createdAt,
              null)
       FROM Recipe r

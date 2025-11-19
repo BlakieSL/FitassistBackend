@@ -13,8 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.MessageSource;
-import org.springframework.data.jpa.domain.Specification;
+    import org.springframework.data.jpa.domain.Specification;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.dto.request.activity.ActivityCreateDto;
 import source.code.dto.request.activity.ActivityUpdateDto;
@@ -22,6 +21,7 @@ import source.code.dto.request.activity.CalculateActivityCaloriesRequestDto;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.dto.response.activity.ActivityResponseDto;
+import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.event.events.Activity.ActivityCreateEvent;
 import source.code.event.events.Activity.ActivityDeleteEvent;
 import source.code.event.events.Activity.ActivityUpdateEvent;
@@ -41,7 +41,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -67,7 +66,8 @@ public class ActivityServiceTest {
 
     private Activity activity;
     private ActivityCreateDto createDto;
-    private ActivityResponseDto responseDto;
+    private ActivitySummaryDto responseDto;
+    private ActivityResponseDto detailedResponseDto;
     private JsonMergePatch patch;
     private ActivityUpdateDto patchedDto;
     private int activityId;
@@ -81,7 +81,8 @@ public class ActivityServiceTest {
     void setUp() {
         activity = new Activity();
         createDto = new ActivityCreateDto();
-        responseDto = new ActivityResponseDto();
+        responseDto = new ActivitySummaryDto();
+        detailedResponseDto = new ActivityResponseDto();
         patchedDto = new ActivityUpdateDto();
         activityId = 1;
         userId = 1;
@@ -104,9 +105,9 @@ public class ActivityServiceTest {
     void createActivity_shouldCreateActivityAndPublish() {
         when(activityMapper.toEntity(createDto)).thenReturn(activity);
         when(activityRepository.save(activity)).thenReturn(activity);
-        when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
+        when(activityMapper.toSummaryDto(activity)).thenReturn(responseDto);
 
-        ActivityResponseDto result = activityService.createActivity(createDto);
+        ActivitySummaryDto result = activityService.createActivity(createDto);
 
         assertEquals(responseDto, result);
     }
@@ -118,7 +119,7 @@ public class ActivityServiceTest {
 
         when(activityMapper.toEntity(createDto)).thenReturn(activity);
         when(activityRepository.save(activity)).thenReturn(activity);
-        when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
+        when(activityMapper.toSummaryDto(activity)).thenReturn(responseDto);
 
         activityService.createActivity(createDto);
 
@@ -306,35 +307,38 @@ public class ActivityServiceTest {
 
     @Test
     void getActivity_shouldReturnActivityWhenFound() {
-        when(repositoryHelper.find(activityRepository, Activity.class, activityId))
-                .thenReturn(activity);
-        when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
+        when(activityRepository.findByIdWithMedia(activityId))
+                .thenReturn(Optional.of(activity));
+        when(activityMapper.toDetailedResponseDto(activity)).thenReturn(detailedResponseDto);
 
         ActivityResponseDto result = activityService.getActivity(activityId);
 
-        assertEquals(responseDto, result);
+        assertEquals(detailedResponseDto, result);
+        verify(activityRepository).findByIdWithMedia(activityId);
+        verify(activityMapper).toDetailedResponseDto(activity);
     }
 
     @Test
     void getActivity_shouldNotProceedWhenActivityNotFound() {
-        when(repositoryHelper.find(activityRepository, Activity.class, activityId))
-                .thenThrow(RecordNotFoundException.of(Activity.class, activityId));
+        when(activityRepository.findByIdWithMedia(activityId))
+                .thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> activityService
                 .getActivity(activityId));
+        verify(activityRepository).findByIdWithMedia(activityId);
         verifyNoInteractions(activityMapper);
     }
 
     @Test
     void getAllActivities_shouldReturnAllActivities() {
         List<Activity> activities = List.of(activity);
-        List<ActivityResponseDto> responseDtos = List.of(responseDto);
+        List<ActivitySummaryDto> responseDtos = List.of(responseDto);
 
         when(activityRepository.findAllWithActivityCategory())
                 .thenReturn(activities);
-        when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
+        when(activityMapper.toSummaryDto(activity)).thenReturn(responseDto);
 
-        List<ActivityResponseDto> result = activityService.getAllActivities();
+        List<ActivitySummaryDto> result = activityService.getAllActivities();
 
         assertEquals(responseDtos, result);
         verify(activityRepository).findAllWithActivityCategory();
@@ -346,7 +350,7 @@ public class ActivityServiceTest {
         when(activityRepository.findAllWithActivityCategory())
                 .thenReturn(activities);
 
-        List<ActivityResponseDto> result = activityService.getAllActivities();
+        List<ActivitySummaryDto> result = activityService.getAllActivities();
 
         assertTrue(result.isEmpty());
         verify(activityRepository).findAllWithActivityCategory();
@@ -356,14 +360,14 @@ public class ActivityServiceTest {
     void getFilteredActivities_shouldReturnFilteredActivities() {
         when(activityRepository.findAll(any(Specification.class)))
                 .thenReturn(List.of(activity));
-        when(activityMapper.toResponseDto(activity)).thenReturn(responseDto);
+        when(activityMapper.toSummaryDto(activity)).thenReturn(responseDto);
 
-        List<ActivityResponseDto> result = activityService.getFilteredActivities(filter);
+        List<ActivitySummaryDto> result = activityService.getFilteredActivities(filter);
 
         assertEquals(1, result.size());
         assertSame(responseDto, result.get(0));
         verify(activityRepository).findAll(any(Specification.class));
-        verify(activityMapper).toResponseDto(activity);
+        verify(activityMapper).toSummaryDto(activity);
     }
 
     @Test
@@ -373,7 +377,7 @@ public class ActivityServiceTest {
         when(activityRepository.findAll(any(Specification.class)))
                 .thenReturn(new ArrayList<>());
 
-        List<ActivityResponseDto> result = activityService.getFilteredActivities(filter);
+        List<ActivitySummaryDto> result = activityService.getFilteredActivities(filter);
 
         assertTrue(result.isEmpty());
         verify(activityRepository).findAll(any(Specification.class));
@@ -389,7 +393,7 @@ public class ActivityServiceTest {
         when(activityRepository.findAll(any(Specification.class)))
                 .thenReturn(new ArrayList<>());
 
-        List<ActivityResponseDto> result = activityService.getFilteredActivities(filter);
+        List<ActivitySummaryDto> result = activityService.getFilteredActivities(filter);
 
         assertTrue(result.isEmpty());
         verify(activityRepository).findAll(any(Specification.class));

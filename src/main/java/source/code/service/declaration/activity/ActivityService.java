@@ -8,13 +8,14 @@ import source.code.dto.request.activity.CalculateActivityCaloriesRequestDto;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.dto.response.activity.ActivityResponseDto;
+import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.model.activity.Activity;
 
 import java.util.List;
 
 
 public interface ActivityService {
-    ActivityResponseDto createActivity(ActivityCreateDto dto);
+    ActivitySummaryDto createActivity(ActivityCreateDto dto);
 
     void updateActivity(int activityId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException;
@@ -23,9 +24,9 @@ public interface ActivityService {
 
     ActivityResponseDto getActivity(int id);
 
-    List<ActivityResponseDto> getAllActivities();
+    List<ActivitySummaryDto> getAllActivities();
 
-    List<ActivityResponseDto> getFilteredActivities(FilterDto filter);
+    List<ActivitySummaryDto> getFilteredActivities(FilterDto filter);
 
     List<Activity> getAllActivityEntities();
 

@@ -3,7 +3,7 @@ package source.code.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import source.code.dto.response.activity.ActivityResponseDto;
+import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.model.user.UserActivity;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public interface UserActivityRepository extends JpaRepository<UserActivity, Inte
     List<UserActivity> findAllByUserId(@Param("userId") int userId);
 
     @Query("""
-           SELECT new source.code.dto.response.activity.ActivityResponseDto(
+           SELECT new source.code.dto.response.activity.ActivitySummaryDto(
                a.id,
                a.name,
                a.met,
@@ -43,7 +43,7 @@ public interface UserActivityRepository extends JpaRepository<UserActivity, Inte
            WHERE ua.user.id = :userId
            ORDER BY ua.createdAt DESC
            """)
-    List<ActivityResponseDto> findActivityDtosByUserId(@Param("userId") int userId);
+    List<ActivitySummaryDto> findActivityDtosByUserId(@Param("userId") int userId);
 
     long countByActivityId(int activityId);
 }
