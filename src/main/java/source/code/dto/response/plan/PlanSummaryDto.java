@@ -1,5 +1,6 @@
 package source.code.dto.response.plan;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class PlanSummaryDto implements BaseUserEntity {
     private Integer id;
     private String name;
@@ -18,8 +20,9 @@ public class PlanSummaryDto implements BaseUserEntity {
     private boolean isPublic;
     private String authorUsername;
     private Integer authorId;
+    private String authorImageName;
+    private String firstImageName;
     private String authorImageUrl;
-    private String imageName;
     private String firstImageUrl;
     private int likesCount;
     private int savesCount;
@@ -27,26 +30,4 @@ public class PlanSummaryDto implements BaseUserEntity {
     private PlanTypeShortDto planType;
     private LocalDateTime createdAt;
     private LocalDateTime interactedWithAt;
-
-    public PlanSummaryDto(Integer id, String name, String description, boolean isPublic,
-                          String authorUsername, Integer authorId, String authorImageUrl,
-                          String imageName, String firstImageUrl, int likesCount, int savesCount,
-                          int views, Integer planTypeId, String planTypeName,  LocalDateTime createdAt,
-                          LocalDateTime interactedWithAt) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.isPublic = isPublic;
-        this.authorUsername = authorUsername;
-        this.authorId = authorId;
-        this.authorImageUrl = authorImageUrl;
-        this.imageName = imageName;
-        this.firstImageUrl = firstImageUrl;
-        this.likesCount = likesCount;
-        this.savesCount = savesCount;
-        this.views = views;
-        this.planType = new PlanTypeShortDto(planTypeId, planTypeName);
-        this.createdAt = createdAt;
-        this.interactedWithAt = interactedWithAt;
-    }
 }

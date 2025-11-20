@@ -1,39 +1,30 @@
 package source.code.repository;
 
 import io.lettuce.core.dynamic.annotation.Param;
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.model.recipe.Recipe;
+import source.code.model.user.TypeOfInteraction;
 
 import java.util.List;
 
-public interface RecipeRepository
-        extends JpaRepository<Recipe, Integer>, JpaSpecificationExecutor<Recipe> {
+public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpecificationExecutor<Recipe> {
+    @Modifying
+    @Query("UPDATE Recipe r SET r.views = r.views + 1 WHERE r.id = :recipeId")
+    void incrementViews(@Param("recipeId") Integer recipeId);
+
     @EntityGraph(value = "Recipe.withoutAssociations")
     @Query("SELECT r FROM Recipe r WHERE r.isPublic = true")
     List<Recipe> findAllWithoutAssociations();
 
     @EntityGraph(attributePaths = {"user", "recipeCategoryAssociations.recipeCategory"})
-    @Query("SELECT r FROM Recipe r WHERE " +
-            "(:isPrivate IS NULL AND r.isPublic = true) OR " +
-            "(:isPrivate = false AND r.isPublic = true) OR " +
-            "(:isPrivate = true AND r.user.id = :userId)")
-    List<Recipe> findAllWithAssociations(
-            @Param("isPrivate") Boolean isPrivate,
-            @Param("userId") int userId
-    );
-
     @Query("""
-        SELECT r FROM Recipe r
-        WHERE ((:isPrivate IS NULL OR :isPrivate = false) AND (r.isPublic = true AND r.user.id = :userId)) OR
-              (:isPrivate = true AND r.user.id = :userId)
-""")
-    List<Recipe> findAllByUser_Id(@Param("isPrivate") Boolean isPrivate,
-                                  @Param("userId") int userId);
+        SELECT r FROM Recipe r WHERE
+        (:isPrivate IS NULL AND r.isPublic = true) OR
+        (:isPrivate = false AND r.isPublic = true) OR
+        (:isPrivate = true AND r.user.id = :userId)
+    """)
+    List<Recipe> findAllWithAssociations(@Param("isPrivate") Boolean isPrivate, @Param("userId") int userId);
 
     @Query("""
       SELECT new source.code.dto.response.recipe.RecipeSummaryDto(
@@ -54,6 +45,7 @@ public interface RecipeRepository
               ORDER BY m.id ASC
               LIMIT 1),
              null,
+             null,
              CAST((SELECT COUNT(ur1) FROM UserRecipe ur1 WHERE ur1.recipe.id = r.id AND ur1.type = 'LIKE') AS int),
              CAST((SELECT COUNT(ur2) FROM UserRecipe ur2 WHERE ur2.recipe.id = r.id AND ur2.type = 'SAVE') AS int),
              r.views,
@@ -69,7 +61,44 @@ public interface RecipeRepository
     List<RecipeSummaryDto> findSummaryByUserId(@Param("isOwnProfile") Boolean isOwnProfile,
                                                @Param("userId") Integer userId);
 
-    @Modifying
-    @Query("UPDATE Recipe r SET r.views = r.views + 1 WHERE r.id = :recipeId")
-    void incrementViews(@Param("recipeId") Integer recipeId);
+    @Query("""
+      SELECT new source.code.dto.response.recipe.RecipeSummaryDto(
+             r.id,
+             r.name,
+             r.description,
+             r.isPublic,
+             u.username,
+             u.id,
+             (SELECT m.imageName FROM Media m
+              WHERE m.parentId = u.id
+              AND m.parentType = 'USER'
+              ORDER BY m.id ASC
+              LIMIT 1),
+             (SELECT m.imageName FROM Media m
+              WHERE m.parentId = r.id
+              AND m.parentType = 'RECIPE'
+              ORDER BY m.id ASC
+              LIMIT 1),
+             null,
+             null,
+             CAST((SELECT COUNT(ur1) FROM UserRecipe ur1 WHERE ur1.recipe.id = r.id AND ur1.type = 'LIKE') AS int),
+             CAST((SELECT COUNT(ur2) FROM UserRecipe ur2 WHERE ur2.recipe.id = r.id AND ur2.type = 'SAVE') AS int),
+             r.views,
+             CAST((SELECT COUNT(rf) FROM RecipeFood rf WHERE rf.recipe.id = r.id) AS int),
+             null,
+             r.createdAt,
+             CASE WHEN :fetchByInteraction = true THEN ur.createdAt ELSE null END)
+      FROM Recipe r
+      JOIN r.user u
+      LEFT JOIN UserRecipe ur ON ur.recipe.id = r.id AND ur.user.id = :userId AND (:type IS NULL OR ur.type = :type)
+      WHERE (:fetchByInteraction = false AND
+             (((:isOwnProfile IS NULL OR :isOwnProfile = false) AND (r.isPublic = true AND r.user.id = :userId)) OR
+              (:isOwnProfile = true AND r.user.id = :userId))) OR
+            (:fetchByInteraction = true AND ur.id IS NOT NULL AND r.isPublic = true)
+      ORDER BY CASE WHEN :fetchByInteraction = true THEN ur.createdAt ELSE r.createdAt END DESC
+    """)
+    List<RecipeSummaryDto> findRecipeSummaryUnified(@Param("userId") int userId,
+                                                     @Param("type") TypeOfInteraction type,
+                                                     @Param("fetchByInteraction") boolean fetchByInteraction,
+                                                     @Param("isOwnProfile") Boolean isOwnProfile);
 }

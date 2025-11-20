@@ -232,7 +232,7 @@ public class MediaTest {
     @DisplayName("POST - / - Should create user profile image when user has no existing image")
     public void createUserProfileImageWhenNoExistingImage() throws Exception {
         Utils.setUserContext(1);
-        
+
         MockMultipartFile mockImage = new MockMultipartFile(
                 "image",
                 "profile.jpg",
@@ -282,7 +282,7 @@ public class MediaTest {
     @DisplayName("POST - / - Should allow multiple images for non-user entities")
     public void createMultipleImagesForNonUserEntity() throws Exception {
         Utils.setAdminContext(1);
-        
+
         MockMultipartFile mockImage = new MockMultipartFile(
                 "image",
                 "food2.jpg",

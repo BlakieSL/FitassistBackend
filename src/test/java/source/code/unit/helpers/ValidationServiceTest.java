@@ -25,12 +25,9 @@ public class ValidationServiceTest {
     private ValidationServiceImpl validationService;
 
     private Object dto;
-    private Set<ConstraintViolation<Object>> violations;
-
     @BeforeEach
     void setUp() {
         dto = new Object();
-        violations = mock(Set.class);
     }
 
     @Test

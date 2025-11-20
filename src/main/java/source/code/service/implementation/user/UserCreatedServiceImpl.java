@@ -1,5 +1,6 @@
 package source.code.service.implementation.user;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import source.code.dto.pojo.RecipeCategoryShortDto;
 import source.code.dto.response.comment.CommentSummaryDto;
@@ -7,21 +8,14 @@ import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.helper.user.AuthorizationUtil;
-import source.code.repository.CommentRepository;
-import source.code.repository.ForumThreadRepository;
-import source.code.repository.PlanRepository;
-import source.code.repository.RecipeCategoryAssociationRepository;
-import source.code.repository.RecipeRepository;
-import source.code.service.declaration.aws.AwsS3Service;
+import source.code.repository.*;
+import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.helpers.SortingService;
 import source.code.service.declaration.user.UserCreatedService;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,100 +24,67 @@ public class UserCreatedServiceImpl implements UserCreatedService {
     private final RecipeRepository recipeRepository;
     private final CommentRepository commentRepository;
     private final ForumThreadRepository forumThreadRepository;
-    private final AwsS3Service s3Service;
     private final RecipeCategoryAssociationRepository recipeCategoryAssociationRepository;
+    private final ImageUrlPopulationService imagePopulationService;
+    private final SortingService sortingService;
 
     public UserCreatedServiceImpl(PlanRepository planRepository,
                                   RecipeRepository recipeRepository,
                                   CommentRepository commentRepository,
                                   ForumThreadRepository forumThreadRepository,
-                                  AwsS3Service s3Service,
-                                  RecipeCategoryAssociationRepository recipeCategoryAssociationRepository) {
+                                  RecipeCategoryAssociationRepository recipeCategoryAssociationRepository,
+                                  ImageUrlPopulationService imagePopulationService,
+                                  SortingService sortingService) {
         this.planRepository = planRepository;
         this.recipeRepository = recipeRepository;
         this.commentRepository = commentRepository;
         this.forumThreadRepository = forumThreadRepository;
-        this.s3Service = s3Service;
         this.recipeCategoryAssociationRepository = recipeCategoryAssociationRepository;
+        this.imagePopulationService = imagePopulationService;
+        this.sortingService = sortingService;
     }
 
     @Override
-    public List<PlanSummaryDto> getCreatedPlans(int userId, String sortDirection) {
-        List<PlanSummaryDto> plans = new ArrayList<>(planRepository.findSummaryByUserId(isOwnProfile(userId), userId));
-        populatePlanImageUrls(plans);
-        sortByCreatedAt(plans, PlanSummaryDto::getCreatedAt, sortDirection);
+    public List<PlanSummaryDto> getCreatedPlans(int userId, Sort.Direction sortDirection) {
+        List<PlanSummaryDto> plans = new ArrayList<>(planRepository.findPlanSummaryUnified(userId, null, false, isOwnProfile(userId)));
+        imagePopulationService.populateAuthorAndEntityImagesForList(plans,
+                PlanSummaryDto::getAuthorImageName, PlanSummaryDto::setAuthorImageUrl,
+                PlanSummaryDto::getFirstImageName, PlanSummaryDto::setFirstImageUrl);
+        sortingService.sortByTimestamp(plans, PlanSummaryDto::getCreatedAt, sortDirection);
         return plans;
     }
 
     @Override
-    public List<RecipeSummaryDto> getCreatedRecipes(int userId, String sortDirection) {
-        List<RecipeSummaryDto> recipes = new ArrayList<>(recipeRepository.findSummaryByUserId(isOwnProfile(userId), userId));
+    public List<RecipeSummaryDto> getCreatedRecipes(int userId, Sort.Direction sortDirection) {
+        List<RecipeSummaryDto> recipes = new ArrayList<>(recipeRepository.findRecipeSummaryUnified(userId, null, false, isOwnProfile(userId)));
         if (!recipes.isEmpty()) {
-            List<Integer> recipeIds = recipes.stream().map(RecipeSummaryDto::getId).toList();
-            Map<Integer, List<RecipeCategoryShortDto>> categoriesMap = fetchCategoriesForRecipes(recipeIds);
+            var recipeIds = recipes.stream().map(RecipeSummaryDto::getId).toList();
+            var categoriesMap = fetchCategoriesForRecipes(recipeIds);
             recipes.forEach(recipe -> recipe.setCategories(categoriesMap.getOrDefault(recipe.getId(), new ArrayList<>())));
         }
-        populateRecipeImageUrls(recipes);
-        sortByCreatedAt(recipes, RecipeSummaryDto::getCreatedAt, sortDirection);
+        imagePopulationService.populateAuthorAndEntityImagesForList(recipes,
+                RecipeSummaryDto::getAuthorImageName, RecipeSummaryDto::setAuthorImageUrl,
+                RecipeSummaryDto::getFirstImageName, RecipeSummaryDto::setFirstImageUrl);
+        sortingService.sortByTimestamp(recipes, RecipeSummaryDto::getCreatedAt, sortDirection);
         return recipes;
     }
 
-    private <T> void sortByCreatedAt(List<T> list, Function<T, LocalDateTime> dateExtractor, String sortDirection) {
-        Comparator<T> comparator;
-        if ("ASC".equalsIgnoreCase(sortDirection)) {
-            comparator = Comparator.comparing(dateExtractor, Comparator.nullsLast(Comparator.naturalOrder()));
-        } else {
-            comparator = Comparator.comparing(dateExtractor, Comparator.nullsLast(Comparator.reverseOrder()));
-        }
-        list.sort(comparator);
-    }
-
     @Override
-    public List<CommentSummaryDto> getCreatedComments(int userId, String sortDirection) {
-        List<CommentSummaryDto> comments = new ArrayList<>(commentRepository.findSummaryByUserId(userId));
-        populateCommentImageUrls(comments);
-        sortByCreatedAt(comments, CommentSummaryDto::getDateCreated, sortDirection);
+    public List<CommentSummaryDto> getCreatedComments(int userId, Sort.Direction sortDirection) {
+        List<CommentSummaryDto> comments = new ArrayList<>(commentRepository.findCommentSummaryUnified(userId, null, false));
+        imagePopulationService.populateAuthorImageForList(comments,
+                CommentSummaryDto::getAuthorImageName, CommentSummaryDto::setAuthorImageUrl);
+        sortingService.sortByTimestamp(comments, CommentSummaryDto::getDateCreated, sortDirection);
         return comments;
     }
 
     @Override
-    public List<ForumThreadSummaryDto> getCreatedThreads(int userId, String sortDirection) {
-        List<ForumThreadSummaryDto> threads = new ArrayList<>(forumThreadRepository.findSummaryByUserId(userId));
-        populateThreadImageUrls(threads);
-        sortByCreatedAt(threads, ForumThreadSummaryDto::getDateCreated, sortDirection);
+    public List<ForumThreadSummaryDto> getCreatedThreads(int userId, Sort.Direction sortDirection) {
+        List<ForumThreadSummaryDto> threads = new ArrayList<>(forumThreadRepository.findThreadSummaryUnified(userId, false));
+        imagePopulationService.populateAuthorImageForList(threads,
+                ForumThreadSummaryDto::getAuthorImageName, ForumThreadSummaryDto::setAuthorImageUrl);
+        sortingService.sortByTimestamp(threads, ForumThreadSummaryDto::getDateCreated, sortDirection);
         return threads;
-    }
-
-    private void populatePlanImageUrls(List<PlanSummaryDto> plans) {
-        plans.forEach(plan -> {
-            populateImageUrl(plan.getAuthorImageUrl(), plan::setAuthorImageUrl);
-            populateImageUrl(plan.getImageName(), plan::setFirstImageUrl);
-        });
-    }
-
-    private void populateRecipeImageUrls(List<RecipeSummaryDto> recipes) {
-        recipes.forEach(recipe -> {
-            populateImageUrl(recipe.getAuthorImageUrl(), recipe::setAuthorImageUrl);
-            populateImageUrl(recipe.getImageName(), recipe::setFirstImageUrl);
-        });
-    }
-
-    private void populateCommentImageUrls(List<CommentSummaryDto> comments) {
-        comments.forEach(comment ->
-            populateImageUrl(comment.getAuthorImageUrl(), comment::setAuthorImageUrl)
-        );
-    }
-
-    private void populateThreadImageUrls(List<ForumThreadSummaryDto> threads) {
-        threads.forEach(thread ->
-            populateImageUrl(thread.getAuthorImageUrl(), thread::setAuthorImageUrl)
-        );
-    }
-
-    private void populateImageUrl(String imageName, Consumer<String> setter) {
-        if (imageName != null) {
-            setter.accept(s3Service.getImage(imageName));
-        }
     }
 
     private boolean isOwnProfile(int userId) {

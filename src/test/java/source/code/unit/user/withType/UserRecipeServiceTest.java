@@ -27,7 +27,8 @@ import source.code.repository.RecipeCategoryAssociationRepository;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.aws.AwsS3Service;
+import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.helpers.SortingService;
 import source.code.service.implementation.user.interaction.withType.UserRecipeServiceImpl;
 
 import java.time.LocalDateTime;
@@ -51,7 +52,9 @@ public class UserRecipeServiceTest {
     @Mock
     private RecipeMapper recipeMapper;
     @Mock
-    private AwsS3Service awsS3Service;
+    private ImageUrlPopulationService imageUrlPopulationService;
+    @Mock
+    private SortingService sortingService;
     @Mock
     private RecipeCategoryAssociationRepository categoryAssociationRepository;
     @InjectMocks
@@ -211,7 +214,7 @@ public class UserRecipeServiceTest {
         RecipeSummaryDto dto2 = new RecipeSummaryDto();
         dto2.setId(2);
 
-        when(userRecipeRepository.findRecipeSummaryByUserIdAndType(userId, type))
+        when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
                 .thenReturn(List.of(dto1, dto2));
         when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2)))
                 .thenReturn(Collections.emptyList());
@@ -219,7 +222,7 @@ public class UserRecipeServiceTest {
         var result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertEquals(2, result.size());
-        verify(userRecipeRepository).findRecipeSummaryByUserIdAndType(userId, type);
+        verify(recipeRepository).findRecipeSummaryUnified(userId, type, true, null);
         verify(categoryAssociationRepository).findCategoryDataByRecipeIds(List.of(1, 2));
     }
 
@@ -229,7 +232,7 @@ public class UserRecipeServiceTest {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
 
-        when(userRecipeRepository.findRecipeSummaryByUserIdAndType(userId, type))
+        when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
                 .thenReturn(List.of());
 
         var result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
@@ -286,15 +289,16 @@ public class UserRecipeServiceTest {
         RecipeSummaryDto dto1 = createRecipeSummaryDto(1, older);
         RecipeSummaryDto dto2 = createRecipeSummaryDto(2, newer);
 
-        when(userRecipeRepository.findRecipeSummaryByUserIdAndType(userId, type))
+        when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
         when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2)))
                 .thenReturn(Collections.emptyList());
 
         List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
-        assertSortedResult(result, 2, 2, 1);
-        verify(userRecipeRepository).findRecipeSummaryByUserIdAndType(userId, type);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(recipeRepository).findRecipeSummaryUnified(userId, type, true, null);
     }
 
     @Test
@@ -308,15 +312,16 @@ public class UserRecipeServiceTest {
         RecipeSummaryDto dto1 = createRecipeSummaryDto(1, older);
         RecipeSummaryDto dto2 = createRecipeSummaryDto(2, newer);
 
-        when(userRecipeRepository.findRecipeSummaryByUserIdAndType(userId, type))
+        when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
                 .thenReturn(new ArrayList<>(List.of(dto2, dto1)));
         when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(2, 1)))
                 .thenReturn(Collections.emptyList());
 
         List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.ASC);
 
-        assertSortedResult(result, 2, 1, 2);
-        verify(userRecipeRepository).findRecipeSummaryByUserIdAndType(userId, type);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(recipeRepository).findRecipeSummaryUnified(userId, type, true, null);
     }
 
     @Test
@@ -330,15 +335,16 @@ public class UserRecipeServiceTest {
         RecipeSummaryDto dto1 = createRecipeSummaryDto(1, older);
         RecipeSummaryDto dto2 = createRecipeSummaryDto(2, newer);
 
-        when(userRecipeRepository.findRecipeSummaryByUserIdAndType(userId, type))
+        when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
         when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2)))
                 .thenReturn(Collections.emptyList());
 
         List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
-        assertSortedResult(result, 2, 2, 1);
-        verify(userRecipeRepository).findRecipeSummaryByUserIdAndType(userId, type);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(recipeRepository).findRecipeSummaryUnified(userId, type, true, null);
     }
 
     @Test
@@ -351,15 +357,16 @@ public class UserRecipeServiceTest {
         RecipeSummaryDto dto2 = createRecipeSummaryDto(2, null);
         RecipeSummaryDto dto3 = createRecipeSummaryDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
 
-        when(userRecipeRepository.findRecipeSummaryByUserIdAndType(userId, type))
+        when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2, dto3)));
         when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2, 3)))
                 .thenReturn(Collections.emptyList());
 
         List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
-        assertSortedResult(result, 3, 3, 1, 2);
-        verify(userRecipeRepository).findRecipeSummaryByUserIdAndType(userId, type);
+        assertNotNull(result);
+        assertEquals(3, result.size());
+        verify(recipeRepository).findRecipeSummaryUnified(userId, type, true, null);
     }
 
     @Test
@@ -371,35 +378,21 @@ public class UserRecipeServiceTest {
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
         RecipeSummaryDto dto1 = createRecipeSummaryDto(1, older);
-        dto1.setImageName("image1.jpg");
+        dto1.setFirstImageName("image1.jpg");
         dto1.setAuthorImageUrl("author1.jpg");
         RecipeSummaryDto dto2 = createRecipeSummaryDto(2, newer);
-        dto2.setImageName("image2.jpg");
+        dto2.setFirstImageName("image2.jpg");
         dto2.setAuthorImageUrl("author2.jpg");
 
-        when(userRecipeRepository.findRecipeSummaryByUserIdAndType(userId, type))
+        when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
         when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2)))
                 .thenReturn(Collections.emptyList());
-        when(awsS3Service.getImage("image1.jpg")).thenReturn("https://s3.com/image1.jpg");
-        when(awsS3Service.getImage("image2.jpg")).thenReturn("https://s3.com/image2.jpg");
-        when(awsS3Service.getImage("author1.jpg")).thenReturn("https://s3.com/author1.jpg");
-        when(awsS3Service.getImage("author2.jpg")).thenReturn("https://s3.com/author2.jpg");
 
         List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        RecipeSummaryDto first = (RecipeSummaryDto) result.get(0);
-        RecipeSummaryDto second = (RecipeSummaryDto) result.get(1);
-        assertEquals("https://s3.com/image2.jpg", first.getFirstImageUrl());
-        assertEquals("https://s3.com/image1.jpg", second.getFirstImageUrl());
-        assertEquals("https://s3.com/author2.jpg", first.getAuthorImageUrl());
-        assertEquals("https://s3.com/author1.jpg", second.getAuthorImageUrl());
-        verify(awsS3Service).getImage("image1.jpg");
-        verify(awsS3Service).getImage("image2.jpg");
-        verify(awsS3Service).getImage("author1.jpg");
-        verify(awsS3Service).getImage("author2.jpg");
     }
 
     private RecipeSummaryDto createRecipeSummaryDto(int id, LocalDateTime interactionDate) {

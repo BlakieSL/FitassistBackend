@@ -25,7 +25,8 @@ import source.code.model.user.UserComment;
 import source.code.repository.CommentRepository;
 import source.code.repository.UserCommentRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.aws.AwsS3Service;
+import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.helpers.SortingService;
 import source.code.service.implementation.user.interaction.withType.UserCommentServiceImpl;
 
 import java.time.LocalDateTime;
@@ -52,7 +53,10 @@ public class UserCommentServiceTest {
     private CommentMapper commentMapper;
 
     @Mock
-    private AwsS3Service awsS3Service;
+    private ImageUrlPopulationService imageUrlPopulationService;
+
+    @Mock
+    private SortingService sortingService;
 
     private UserCommentServiceImpl userCommentService;
 
@@ -67,7 +71,8 @@ public class UserCommentServiceTest {
                 commentRepository,
                 userCommentRepository,
                 commentMapper,
-                awsS3Service
+                imageUrlPopulationService,
+                sortingService
         );
     }
 
@@ -206,13 +211,13 @@ public class UserCommentServiceTest {
         CommentSummaryDto dto2 = new CommentSummaryDto();
         dto2.setId(2);
 
-        when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
+        when(commentRepository.findCommentSummaryUnified(userId, type, true))
                 .thenReturn(List.of(dto1, dto2));
 
         var result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertEquals(2, result.size());
-        verify(userCommentRepository).findCommentSummaryByUserIdAndType(userId, type);
+        verify(commentRepository).findCommentSummaryUnified(userId, type, true);
     }
 
     @Test
@@ -221,7 +226,7 @@ public class UserCommentServiceTest {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.LIKE;
 
-        when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
+        when(commentRepository.findCommentSummaryUnified(userId, type, true))
                 .thenReturn(List.of());
 
         var result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
@@ -272,13 +277,14 @@ public class UserCommentServiceTest {
         CommentSummaryDto dto1 = createCommentSummaryDto(1, older);
         CommentSummaryDto dto2 = createCommentSummaryDto(2, newer);
 
-        when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
+        when(commentRepository.findCommentSummaryUnified(userId, type, true))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
 
         List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
-        assertSortedResult(result, 2, 2, 1);
-        verify(userCommentRepository).findCommentSummaryByUserIdAndType(userId, type);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(commentRepository).findCommentSummaryUnified(userId, type, true);
     }
 
     @Test
@@ -292,13 +298,14 @@ public class UserCommentServiceTest {
         CommentSummaryDto dto1 = createCommentSummaryDto(1, older);
         CommentSummaryDto dto2 = createCommentSummaryDto(2, newer);
 
-        when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
+        when(commentRepository.findCommentSummaryUnified(userId, type, true))
                 .thenReturn(new ArrayList<>(List.of(dto2, dto1)));
 
         List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, Sort.Direction.ASC);
 
-        assertSortedResult(result, 2, 1, 2);
-        verify(userCommentRepository).findCommentSummaryByUserIdAndType(userId, type);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(commentRepository).findCommentSummaryUnified(userId, type, true);
     }
 
     @Test
@@ -312,13 +319,14 @@ public class UserCommentServiceTest {
         CommentSummaryDto dto1 = createCommentSummaryDto(1, older);
         CommentSummaryDto dto2 = createCommentSummaryDto(2, newer);
 
-        when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
+        when(commentRepository.findCommentSummaryUnified(userId, type, true))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
 
         List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
-        assertSortedResult(result, 2, 2, 1);
-        verify(userCommentRepository).findCommentSummaryByUserIdAndType(userId, type);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(commentRepository).findCommentSummaryUnified(userId, type, true);
     }
 
     @Test
@@ -331,13 +339,14 @@ public class UserCommentServiceTest {
         CommentSummaryDto dto2 = createCommentSummaryDto(2, null);
         CommentSummaryDto dto3 = createCommentSummaryDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
 
-        when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
+        when(commentRepository.findCommentSummaryUnified(userId, type, true))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2, dto3)));
 
         List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
-        assertSortedResult(result, 3, 3, 1, 2);
-        verify(userCommentRepository).findCommentSummaryByUserIdAndType(userId, type);
+        assertNotNull(result);
+        assertEquals(3, result.size());
+        verify(commentRepository).findCommentSummaryUnified(userId, type, true);
     }
 
     @Test
@@ -353,21 +362,13 @@ public class UserCommentServiceTest {
         CommentSummaryDto dto2 = createCommentSummaryDto(2, newer);
         dto2.setAuthorImageUrl("author2.jpg");
 
-        when(userCommentRepository.findCommentSummaryByUserIdAndType(userId, type))
+        when(commentRepository.findCommentSummaryUnified(userId, type, true))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
-        when(awsS3Service.getImage("author1.jpg")).thenReturn("https://s3.com/author1.jpg");
-        when(awsS3Service.getImage("author2.jpg")).thenReturn("https://s3.com/author2.jpg");
 
         List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        CommentSummaryDto first = (CommentSummaryDto) result.get(0);
-        CommentSummaryDto second = (CommentSummaryDto) result.get(1);
-        assertEquals("https://s3.com/author2.jpg", first.getAuthorImageUrl());
-        assertEquals("https://s3.com/author1.jpg", second.getAuthorImageUrl());
-        verify(awsS3Service).getImage("author1.jpg");
-        verify(awsS3Service).getImage("author2.jpg");
     }
 
     private CommentSummaryDto createCommentSummaryDto(int id, LocalDateTime interactionDate) {

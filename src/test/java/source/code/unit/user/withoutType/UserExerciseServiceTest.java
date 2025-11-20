@@ -63,7 +63,7 @@ public class UserExerciseServiceTest {
                 exerciseRepository,
                 userExerciseRepository,
                 exerciseMapper,
-                
+
                 awsS3Service
         );
     }

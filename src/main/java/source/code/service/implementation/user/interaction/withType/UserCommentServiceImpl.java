@@ -13,13 +13,14 @@ import source.code.model.thread.Comment;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.User;
 import source.code.model.user.UserComment;
+import source.code.repository.CommentRepository;
 import source.code.repository.UserCommentRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.aws.AwsS3Service;
+import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.helpers.SortingService;
 import source.code.service.declaration.user.SavedService;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Service("userCommentService")
@@ -27,45 +28,33 @@ public class UserCommentServiceImpl
         extends GenericSavedService<Comment, UserComment, CommentResponseDto>
         implements SavedService {
 
-    private final AwsS3Service awsS3Service;
+    private final ImageUrlPopulationService imagePopulationService;
+    private final SortingService sortingService;
 
     public UserCommentServiceImpl(UserRepository userRepository,
                                   JpaRepository<Comment, Integer> entityRepository,
                                   JpaRepository<UserComment, Integer> userEntityRepository,
                                   CommentMapper mapper,
-                                  AwsS3Service awsS3Service) {
+                                  ImageUrlPopulationService imagePopulationService,
+                                  SortingService sortingService) {
         super(userRepository, entityRepository, userEntityRepository, mapper::toResponseDto, Comment.class);
-        this.awsS3Service = awsS3Service;
+        this.imagePopulationService = imagePopulationService;
+        this.sortingService = sortingService;
     }
 
     @Override
     public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Sort.Direction sortDirection) {
-        List<CommentSummaryDto> dtos = new ArrayList<>(((UserCommentRepository) userEntityRepository)
-                .findCommentSummaryByUserIdAndType(userId, type));
+        List<CommentSummaryDto> dtos = new ArrayList<>(
+                ((CommentRepository) entityRepository).findCommentSummaryUnified(userId, type, true));
 
-        dtos.forEach(dto -> {
-            if (dto.getAuthorImageUrl() != null) {
-                dto.setAuthorImageUrl(awsS3Service.getImage(dto.getAuthorImageUrl()));
-            }
-        });
+        imagePopulationService.populateAuthorImageForList(dtos,
+                CommentSummaryDto::getAuthorImageName, CommentSummaryDto::setAuthorImageUrl);
 
-        sortByInteractionDate(dtos, sortDirection);
+        sortingService.sortByTimestamp(dtos, CommentSummaryDto::getUserCommentInteractionCreatedAt, sortDirection);
 
         return dtos.stream()
                 .map(dto -> (BaseUserEntity) dto)
                 .toList();
-    }
-
-    private void sortByInteractionDate(List<CommentSummaryDto> list, Sort.Direction sortDirection) {
-        Comparator<CommentSummaryDto> comparator = sortDirection == Sort.Direction.ASC
-                ? Comparator.comparing(
-                        CommentSummaryDto::getUserCommentInteractionCreatedAt,
-                        Comparator.nullsLast(Comparator.naturalOrder()))
-                : Comparator.comparing(
-                        CommentSummaryDto::getUserCommentInteractionCreatedAt,
-                        Comparator.nullsLast(Comparator.reverseOrder()));
-
-        list.sort(comparator);
     }
 
     @Override

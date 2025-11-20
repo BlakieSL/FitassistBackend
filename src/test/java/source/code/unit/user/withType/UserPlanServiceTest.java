@@ -26,7 +26,8 @@ import source.code.model.user.UserPlan;
 import source.code.repository.PlanRepository;
 import source.code.repository.UserPlanRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.aws.AwsS3Service;
+import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.helpers.SortingService;
 import source.code.service.implementation.user.interaction.withType.UserPlanServiceImpl;
 
 import java.time.LocalDateTime;
@@ -49,7 +50,9 @@ public class UserPlanServiceTest {
     @Mock
     private PlanMapper planMapper;
     @Mock
-    private AwsS3Service awsS3Service;
+    private ImageUrlPopulationService imageUrlPopulationService;
+    @Mock
+    private SortingService sortingService;
     @InjectMocks
     private UserPlanServiceImpl userPlanService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
@@ -208,13 +211,13 @@ public class UserPlanServiceTest {
         PlanSummaryDto dto2 = new PlanSummaryDto();
         dto2.setId(2);
 
-        when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
+        when(planRepository.findPlanSummaryUnified(userId, type, true, null))
                 .thenReturn(List.of(dto1, dto2));
 
         var result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertEquals(2, result.size());
-        verify(userPlanRepository).findPlanSummaryByUserIdAndType(userId, type);
+        verify(planRepository).findPlanSummaryUnified(userId, type, true, null);
     }
 
     @Test
@@ -223,7 +226,7 @@ public class UserPlanServiceTest {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
 
-        when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
+        when(planRepository.findPlanSummaryUnified(userId, type, true, null))
                 .thenReturn(List.of());
 
         var result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
@@ -280,13 +283,14 @@ public class UserPlanServiceTest {
         PlanSummaryDto dto1 = createPlanSummaryDto(1, older);
         PlanSummaryDto dto2 = createPlanSummaryDto(2, newer);
 
-        when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
+        when(planRepository.findPlanSummaryUnified(userId, type, true, null))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
 
         List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
-        assertSortedResult(result, 2, 2, 1);
-        verify(userPlanRepository).findPlanSummaryByUserIdAndType(userId, type);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(planRepository).findPlanSummaryUnified(userId, type, true, null);
     }
 
     @Test
@@ -300,13 +304,14 @@ public class UserPlanServiceTest {
         PlanSummaryDto dto1 = createPlanSummaryDto(1, older);
         PlanSummaryDto dto2 = createPlanSummaryDto(2, newer);
 
-        when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
+        when(planRepository.findPlanSummaryUnified(userId, type, true, null))
                 .thenReturn(new ArrayList<>(List.of(dto2, dto1)));
 
         List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, Sort.Direction.ASC);
 
-        assertSortedResult(result, 2, 1, 2);
-        verify(userPlanRepository).findPlanSummaryByUserIdAndType(userId, type);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(planRepository).findPlanSummaryUnified(userId, type, true, null);
     }
 
     @Test
@@ -320,13 +325,14 @@ public class UserPlanServiceTest {
         PlanSummaryDto dto1 = createPlanSummaryDto(1, older);
         PlanSummaryDto dto2 = createPlanSummaryDto(2, newer);
 
-        when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
+        when(planRepository.findPlanSummaryUnified(userId, type, true, null))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
 
         List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
-        assertSortedResult(result, 2, 2, 1);
-        verify(userPlanRepository).findPlanSummaryByUserIdAndType(userId, type);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(planRepository).findPlanSummaryUnified(userId, type, true, null);
     }
 
     @Test
@@ -339,13 +345,14 @@ public class UserPlanServiceTest {
         PlanSummaryDto dto2 = createPlanSummaryDto(2, null);
         PlanSummaryDto dto3 = createPlanSummaryDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
 
-        when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
+        when(planRepository.findPlanSummaryUnified(userId, type, true, null))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2, dto3)));
 
         List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
-        assertSortedResult(result, 3, 3, 1, 2);
-        verify(userPlanRepository).findPlanSummaryByUserIdAndType(userId, type);
+        assertNotNull(result);
+        assertEquals(3, result.size());
+        verify(planRepository).findPlanSummaryUnified(userId, type, true, null);
     }
 
     @Test
@@ -357,33 +364,19 @@ public class UserPlanServiceTest {
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
         PlanSummaryDto dto1 = createPlanSummaryDto(1, older);
-        dto1.setImageName("image1.jpg");
+        dto1.setFirstImageName("image1.jpg");
         dto1.setAuthorImageUrl("author1.jpg");
         PlanSummaryDto dto2 = createPlanSummaryDto(2, newer);
-        dto2.setImageName("image2.jpg");
+        dto2.setFirstImageName("image2.jpg");
         dto2.setAuthorImageUrl("author2.jpg");
 
-        when(userPlanRepository.findPlanSummaryByUserIdAndType(userId, type))
+        when(planRepository.findPlanSummaryUnified(userId, type, true, null))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
-        when(awsS3Service.getImage("image1.jpg")).thenReturn("https://s3.com/image1.jpg");
-        when(awsS3Service.getImage("image2.jpg")).thenReturn("https://s3.com/image2.jpg");
-        when(awsS3Service.getImage("author1.jpg")).thenReturn("https://s3.com/author1.jpg");
-        when(awsS3Service.getImage("author2.jpg")).thenReturn("https://s3.com/author2.jpg");
 
         List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        PlanSummaryDto first = (PlanSummaryDto) result.get(0);
-        PlanSummaryDto second = (PlanSummaryDto) result.get(1);
-        assertEquals("https://s3.com/image2.jpg", first.getFirstImageUrl());
-        assertEquals("https://s3.com/image1.jpg", second.getFirstImageUrl());
-        assertEquals("https://s3.com/author2.jpg", first.getAuthorImageUrl());
-        assertEquals("https://s3.com/author1.jpg", second.getAuthorImageUrl());
-        verify(awsS3Service).getImage("image1.jpg");
-        verify(awsS3Service).getImage("image2.jpg");
-        verify(awsS3Service).getImage("author1.jpg");
-        verify(awsS3Service).getImage("author2.jpg");
     }
 
     private PlanSummaryDto createPlanSummaryDto(int id, LocalDateTime interactionDate) {

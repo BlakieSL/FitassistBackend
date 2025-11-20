@@ -22,8 +22,9 @@ public class RecipeSummaryDto implements BaseUserEntity {
     private boolean isPublic;
     private String authorUsername;
     private Integer authorId;
+    private String authorImageName;
+    private String firstImageName;
     private String authorImageUrl;
-    private String imageName;
     private String firstImageUrl;
     private int likesCount;
     private int savesCount;
