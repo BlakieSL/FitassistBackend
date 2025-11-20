@@ -2,14 +2,16 @@ package source.code.unit.selector;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.helper.Enum.model.TextType;
 import source.code.service.declaration.text.TextService;
 import source.code.service.implementation.selector.TextSelectorServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+@ExtendWith(MockitoExtension.class)
 public class TextSelectorServiceTest {
 
     @Mock
@@ -25,7 +27,6 @@ public class TextSelectorServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         textSelectorService = new TextSelectorServiceImpl(
                 exerciseInstructionService,
                 exerciseTipService,

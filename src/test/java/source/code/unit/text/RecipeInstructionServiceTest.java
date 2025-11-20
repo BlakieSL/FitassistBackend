@@ -3,7 +3,6 @@ package source.code.unit.text;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -62,7 +61,6 @@ public class RecipeInstructionServiceTest {
     private RecipeInstructionServiceImpl service;
 
     @Test
-    @DisplayName("deleteText - Should delete a recipe instruction")
     public void deleteText() {
         int id = 1;
 
@@ -78,7 +76,6 @@ public class RecipeInstructionServiceTest {
     }
 
     @Test
-    @DisplayName("deleteText - Should throw exception, when recipe instruction does not exist")
     public void deleteTextNotFound() {
         when(repository.findById(1)).thenReturn(Optional.empty());
 
@@ -90,7 +87,6 @@ public class RecipeInstructionServiceTest {
     }
 
     @Test
-    @DisplayName("updateText - Should update a recipe instruction")
     public void updateText() throws JsonPatchException, JsonProcessingException {
         int id = 1;
         var updateDto = new RecipeInstructionUpdateDto();
@@ -116,7 +112,6 @@ public class RecipeInstructionServiceTest {
     }
 
     @Test
-    @DisplayName("updateText - Should throw exception, when recipe instruction does not exist")
     public void updateTextNotFound() throws JsonPatchException, JsonProcessingException {
         int id = 1;
 
@@ -133,7 +128,6 @@ public class RecipeInstructionServiceTest {
     }
 
     @Test
-    @DisplayName("updateText - Should throw exception, when patch application fails")
     public void updateTextPatchFailed() throws JsonPatchException, JsonProcessingException {
         int id = 1;
         var entity = new RecipeInstruction();
@@ -151,7 +145,6 @@ public class RecipeInstructionServiceTest {
     }
 
     @Test
-    @DisplayName("updateText - Should throw exception, when validation fails")
     public void updateTextValidationFailed() throws JsonPatchException, JsonProcessingException {
         int id = 1;
         var updateDto = new RecipeInstructionUpdateDto();
@@ -174,7 +167,6 @@ public class RecipeInstructionServiceTest {
     }
 
     @Test
-    @DisplayName("getAllByParent - Should return all recipe instructions for a given recipe (cache hit)")
     public void getAllByParentCacheHit() {
         int recipeId = 1;
         String cacheKey = "someCacheKey";
@@ -195,7 +187,6 @@ public class RecipeInstructionServiceTest {
     }
 
     @Test
-    @DisplayName("getAllByParent - Should return all recipe instructions for a given recipe (cache miss)")
     public void getAllByParentCacheMiss() {
         int recipeId = 1;
         String cacheKey = "someCacheKey";
@@ -227,7 +218,6 @@ public class RecipeInstructionServiceTest {
     }
 
     @Test
-    @DisplayName("getAllByParent - Should return empty list when no recipe instructions exist")
     public void getAllByParentEmpty() {
         int recipeId = 1;
         String cacheKey = "someCacheKey";

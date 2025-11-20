@@ -1,8 +1,8 @@
 package source.code.unit.helpers;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.helper.Enum.model.user.ActivityLevel;
 import source.code.helper.Enum.model.user.Gender;
@@ -15,12 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class CalculationsServiceTest {
+    @InjectMocks
     private CalculationsServiceImpl calculationsService;
-
-    @BeforeEach
-    void setUp() {
-        calculationsService = new CalculationsServiceImpl();
-    }
 
     @Test
     void calculateBMR_shouldCalculateBMRForMale() {

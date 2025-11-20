@@ -6,6 +6,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -37,12 +38,12 @@ public class UniqueEmailValidatorTest {
     @Mock
     private UniqueEmailDomain annotation;
 
+    @InjectMocks
     private UniqueEmailValidator validator;
     private UserUpdateDto updateDto;
 
     @BeforeEach
     void setUp() {
-        validator = new UniqueEmailValidator();
         updateDto = new UserUpdateDto();
 
         try (MockedStatic<ContextProvider> contextProvider = Mockito.mockStatic(ContextProvider.class)) {

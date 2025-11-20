@@ -3,7 +3,6 @@ package source.code.unit.text;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -63,7 +62,6 @@ public class ExerciseInstructionServiceTest {
     private ExerciseInstructionServiceImpl service;
 
     @Test
-    @DisplayName("deleteText - Should delete an exercise instruction")
     public void deleteText() {
         int id = 1;
 
@@ -79,7 +77,6 @@ public class ExerciseInstructionServiceTest {
     }
 
     @Test
-    @DisplayName("deleteText - Should throw exception, when exercise instruction does not exist")
     public void deleteTextNotFound() {
         when(repository.findById(1)).thenReturn(Optional.empty());
 
@@ -91,7 +88,6 @@ public class ExerciseInstructionServiceTest {
     }
 
     @Test
-    @DisplayName("updateText - Should update an exercise instruction")
     public void updateText() throws JsonPatchException, JsonProcessingException {
         int id = 1;
         var updateDto = new ExerciseInstructionUpdateDto();
@@ -117,7 +113,6 @@ public class ExerciseInstructionServiceTest {
     }
 
     @Test
-    @DisplayName("updateText - Should throw exception, when exercise instruction does not exist")
     public void updateTextNotFound() throws JsonPatchException, JsonProcessingException {
         int id = 1;
 
@@ -134,7 +129,6 @@ public class ExerciseInstructionServiceTest {
     }
 
     @Test
-    @DisplayName("updateText - Should throw exception, when patch application fails")
     public void updateTextPatchFailed() throws JsonPatchException, JsonProcessingException {
         int id = 1;
         var entity = new ExerciseInstruction();
@@ -152,7 +146,6 @@ public class ExerciseInstructionServiceTest {
     }
 
     @Test
-    @DisplayName("updateText - Should throw exception, when validation fails")
     public void updateTextValidationFailed() throws JsonPatchException, JsonProcessingException {
         int id = 1;
         var updateDto = new ExerciseInstructionUpdateDto();
@@ -175,7 +168,6 @@ public class ExerciseInstructionServiceTest {
     }
 
     @Test
-    @DisplayName("getAllByParent - Should return all exercise instructions for a given exercise(cache hit)")
     public void getAllByParent() {
         int exerciseId = 1;
         String cacheKey = "someCacheKey";
@@ -196,7 +188,6 @@ public class ExerciseInstructionServiceTest {
     }
 
     @Test
-    @DisplayName("getAllByParent - Should return all exercise instructions for a given exercise(cache miss)")
     public void getAllByParentCacheMiss() {
         int exerciseId = 1;
         String cacheKey = "someCacheKey";
@@ -228,7 +219,6 @@ public class ExerciseInstructionServiceTest {
     }
 
     @Test
-    @DisplayName("getAllByParent - Should return empty list when no exercise instructions exist")
     public void getAllByParentEmpty() {
         int exerciseId = 1;
         String cacheKey = "someCacheKey";
