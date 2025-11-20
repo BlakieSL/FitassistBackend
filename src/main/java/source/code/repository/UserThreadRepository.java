@@ -24,29 +24,4 @@ public interface UserThreadRepository
            WHERE ut.user.id = :userId
            """)
     List<UserThread> findAllByUserId(@Param("userId") int userId);
-
-    @Query("""
-           SELECT new source.code.dto.response.forumThread.ForumThreadSummaryDto(
-               ft.id,
-               ft.title,
-               ft.dateCreated,
-               ft.text,
-               ft.views,
-               CAST((SELECT COUNT(ut2) FROM UserThread ut2 WHERE ut2.forumThread.id = ft.id) AS int),
-               CAST((SELECT COUNT(c) FROM Comment c WHERE c.thread.id = ft.id) AS int),
-               u.username,
-               u.id,
-               (SELECT m.imageName FROM Media m
-                WHERE m.parentId = u.id
-                AND m.parentType = 'USER'
-                ORDER BY m.id ASC
-                LIMIT 1),
-               null,
-               ut.createdAt)
-           FROM UserThread ut
-           JOIN ut.forumThread ft
-           JOIN ft.user u
-           WHERE ut.user.id = :userId
-           """)
-    List<ForumThreadSummaryDto> findThreadSummaryByUserId(@Param("userId") int userId);
 }
