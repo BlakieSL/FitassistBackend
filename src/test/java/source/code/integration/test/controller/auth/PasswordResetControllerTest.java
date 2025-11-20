@@ -95,7 +95,7 @@ public class PasswordResetControllerTest {
     @Test
     @DisplayName("POST - /reset - Should reset password with valid token")
     void resetPassword_Success() throws Exception {
-        // Generate a valid token for user1
+
         String token = jwtService.createSignedJWT(
                 "user1@example.com",
                 1,
@@ -113,7 +113,7 @@ public class PasswordResetControllerTest {
                         .content(objectMapper.writeValueAsString(resetDto)))
                 .andExpect(status().isOk());
 
-        // Verify password was changed
+
         User user = userRepository.findByEmail("user1@example.com").orElseThrow();
         assertThat(passwordEncoder.matches("NewPassword123!", user.getPassword())).isTrue();
     }

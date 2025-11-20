@@ -18,6 +18,7 @@ public class CommentSummaryDto implements BaseUserEntity {
     private LocalDateTime dateCreated;
     private String authorUsername;
     private Integer authorId;
+    private String authorImageName;
     private String authorImageUrl;
     private int likeCount;
     private int repliesCount;

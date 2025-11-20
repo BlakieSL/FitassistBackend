@@ -64,7 +64,7 @@ public class UserFoodServiceTest {
                 foodRepository,
                 userFoodRepository,
                 foodMapper,
-                
+
                 awsS3Service
         );
     }
