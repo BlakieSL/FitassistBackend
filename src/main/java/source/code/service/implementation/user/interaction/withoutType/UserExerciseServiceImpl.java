@@ -8,11 +8,12 @@ import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
 import source.code.mapper.exercise.ExerciseMapper;
 import source.code.model.exercise.Exercise;
+import source.code.model.media.Media;
 import source.code.model.user.User;
 import source.code.model.user.UserExercise;
 import source.code.repository.UserExerciseRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.aws.AwsS3Service;
+import source.code.service.declaration.helpers.ImageUrlPopulationService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
 import java.util.List;
@@ -22,17 +23,17 @@ public class UserExerciseServiceImpl
         extends GenericSavedServiceWithoutType<Exercise, UserExercise, ExerciseSummaryDto>
         implements SavedServiceWithoutType {
 
-    private final AwsS3Service awsS3Service;
     private final ExerciseMapper exerciseMapper;
+    private final ImageUrlPopulationService imagePopulationService;
 
     public UserExerciseServiceImpl(UserRepository userRepository,
                                    JpaRepository<Exercise, Integer> entityRepository,
                                    JpaRepository<UserExercise, Integer> userEntityRepository,
                                    ExerciseMapper mapper,
-                                   AwsS3Service awsS3Service) {
+                                   ImageUrlPopulationService imagePopulationService) {
         super(userRepository, entityRepository, userEntityRepository, mapper::toSummaryDto, Exercise.class);
-        this.awsS3Service = awsS3Service;
         this.exerciseMapper = mapper;
+        this.imagePopulationService = imagePopulationService;
     }
 
     @Override
@@ -69,11 +70,13 @@ public class UserExerciseServiceImpl
                     ExerciseSummaryDto dto = exerciseMapper.toSummaryDto(ue.getExercise());
                     dto.setUserExerciseInteractionCreatedAt(ue.getCreatedAt());
 
-                    if (!ue.getExercise().getMediaList().isEmpty()) {
-                        String imageName = ue.getExercise().getMediaList().get(0).getImageName();
-                        dto.setImageName(imageName);
-                        dto.setFirstImageUrl(awsS3Service.getImage(imageName));
-                    }
+                    imagePopulationService.populateFirstImageFromMediaList(
+                            List.of(dto),
+                            d -> ue.getExercise().getMediaList(),
+                            Media::getImageName,
+                            ExerciseSummaryDto::setImageName,
+                            ExerciseSummaryDto::setFirstImageUrl
+                    );
 
                     return (BaseUserEntity) dto;
                 })

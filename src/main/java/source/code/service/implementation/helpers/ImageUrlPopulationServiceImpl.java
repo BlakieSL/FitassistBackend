@@ -38,6 +38,24 @@ public class ImageUrlPopulationServiceImpl implements ImageUrlPopulationService 
         );
     }
 
+    @Override
+    public <T, M> void populateFirstImageFromMediaList(List<T> dtos,
+                                                        Function<T, List<M>> mediaListGetter,
+                                                        Function<M, String> imageNameExtractor,
+                                                        BiConsumer<T, String> imageNameSetter,
+                                                        BiConsumer<T, String> imageUrlSetter) {
+        dtos.forEach(dto -> {
+            List<M> mediaList = mediaListGetter.apply(dto);
+            if (mediaList != null && !mediaList.isEmpty()) {
+                String imageName = imageNameExtractor.apply(mediaList.get(0));
+                if (imageName != null) {
+                    imageNameSetter.accept(dto, imageName);
+                    imageUrlSetter.accept(dto, s3Service.getImage(imageName));
+                }
+            }
+        });
+    }
+
     private void populateImageUrl(String imageName, Consumer<String> urlSetter) {
         if (imageName != null) {
             urlSetter.accept(s3Service.getImage(imageName));

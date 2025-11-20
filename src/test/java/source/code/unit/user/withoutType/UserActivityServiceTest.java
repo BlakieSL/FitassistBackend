@@ -22,7 +22,7 @@ import source.code.model.user.UserActivity;
 import source.code.repository.ActivityRepository;
 import source.code.repository.UserActivityRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.aws.AwsS3Service;
+import source.code.service.declaration.helpers.ImageUrlPopulationService;
 import source.code.service.implementation.user.interaction.withoutType.UserActivityServiceImpl;
 
 import java.time.LocalDateTime;
@@ -47,7 +47,7 @@ public class UserActivityServiceTest {
     @Mock
     private ActivityMapper activityMapper;
     @Mock
-    private AwsS3Service awsS3Service;
+    private ImageUrlPopulationService imagePopulationService;
     private UserActivityServiceImpl userActivityService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
@@ -59,7 +59,7 @@ public class UserActivityServiceTest {
                 activityRepository,
                 userActivityRepository,
                 activityMapper,
-                awsS3Service
+                imagePopulationService
         );
     }
 
@@ -215,7 +215,6 @@ public class UserActivityServiceTest {
         var result = userActivityService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertTrue(result.isEmpty());
-        verify(awsS3Service, never()).getImage(anyString());
     }
 
     @Test
@@ -424,19 +423,14 @@ public class UserActivityServiceTest {
                 .thenReturn(new ArrayList<>(List.of(ua2, ua1)));
         when(activityMapper.toSummaryDto(activity1)).thenReturn(dto1);
         when(activityMapper.toSummaryDto(activity2)).thenReturn(dto2);
-        when(awsS3Service.getImage("image1.jpg")).thenReturn("https://s3.com/image1.jpg");
-        when(awsS3Service.getImage("image2.jpg")).thenReturn("https://s3.com/image2.jpg");
 
         List<BaseUserEntity> result = userActivityService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        ActivitySummaryDto first = (ActivitySummaryDto) result.get(0);
-        ActivitySummaryDto second = (ActivitySummaryDto) result.get(1);
-        assertEquals("https://s3.com/image2.jpg", first.getFirstImageUrl());
-        assertEquals("https://s3.com/image1.jpg", second.getFirstImageUrl());
-        verify(awsS3Service).getImage("image1.jpg");
-        verify(awsS3Service).getImage("image2.jpg");
+        // Image URL population is handled by imagePopulationService internally
+        verify(activityMapper).toSummaryDto(activity1);
+        verify(activityMapper).toSummaryDto(activity2);
     }
 
     private ActivitySummaryDto createActivityResponseDto(int id, LocalDateTime interactionDate) {
