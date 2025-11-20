@@ -1,4 +1,5 @@
 package source.code.integration.test.controller.recipe;
+import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +44,7 @@ public class RecipeFoodControllerPatchTest {
                 """;
 
         mockMvc.perform(patch("/api/recipe-food/1/modify/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andExpectAll(status().isNoContent());
     }
@@ -60,7 +61,7 @@ public class RecipeFoodControllerPatchTest {
                 """;
 
         mockMvc.perform(patch("/api/recipe-food/1/modify/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andExpectAll(status().isNoContent());
     }
@@ -78,7 +79,7 @@ public class RecipeFoodControllerPatchTest {
                 """;
 
         mockMvc.perform(patch("/api/recipe-food/1/modify/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andExpectAll(status().isForbidden());
     }
@@ -95,7 +96,7 @@ public class RecipeFoodControllerPatchTest {
                 """;
 
         mockMvc.perform(patch("/api/recipe-food/5/modify/9")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andExpectAll(status().isNotFound());
 

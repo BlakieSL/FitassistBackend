@@ -1,4 +1,5 @@
 package source.code.integration.test.controller.complaint;
+import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -45,7 +46,7 @@ public class ComplaintControllerTest {
 
 
         mockMvc.perform(post("/api/complaint")
-                .contentType("application/json")
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpectAll(
                         status().isCreated()
@@ -64,7 +65,7 @@ public class ComplaintControllerTest {
 
 
         mockMvc.perform(post("/api/complaint")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpectAll(
                         status().isCreated()

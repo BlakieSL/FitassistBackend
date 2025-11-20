@@ -1,4 +1,5 @@
 package source.code.integration.test.controller.recipe;
+import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -95,7 +96,7 @@ public class RecipeFoodControllerGetTest {
         var filter = FilterRecipesByFoodsDto.of(List.of(1));
         mockMvc.perform(post("/api/recipe-food/filter/foods")
                 .content(objectMapper.writeValueAsString(filter))
-                .contentType("application/json"))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$", hasSize(1))

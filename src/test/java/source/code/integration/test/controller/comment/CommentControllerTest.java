@@ -1,4 +1,5 @@
 package source.code.integration.test.controller.comment;
+import org.springframework.http.MediaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import source.code.dto.request.comment.CommentCreateDto;
+import source.code.dto.request.comment.CommentUpdateDto;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
@@ -43,7 +45,7 @@ public class CommentControllerTest {
         requestBody.setThreadId(1);
 
         mockMvc.perform(post("/api/comments")
-                .contentType("application/json")
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpectAll(status().isCreated());
     }
@@ -53,14 +55,11 @@ public class CommentControllerTest {
     @DisplayName("PATCH - /{commentId} - Should update a comment when admin")
     public void updateComment() throws Exception {
         Utils.setAdminContext(1);
-        var request = """
-                {
-                    "text": "Updated comment text"
-                }
-                """;
+        CommentUpdateDto updateDto = new CommentUpdateDto();
+        updateDto.setText("Updated comment text");
 
         mockMvc.perform(patch("/api/comments/1")
-                .content(request)
+                .content(objectMapper.writeValueAsString(updateDto))
                 .contentType("application/merge-patch+json")
         ).andExpectAll(
                 status().isNoContent()
@@ -73,15 +72,11 @@ public class CommentControllerTest {
     @DisplayName("PATCH - /{commentId} - Should update a comment when owner")
     public void updateCommentAsOwner() throws Exception {
         Utils.setUserContext(2);
-
-        var request = """
-                {
-                    "text": "Updated comment text"
-                }
-                """;
+        CommentUpdateDto updateDto = new CommentUpdateDto();
+        updateDto.setText("Updated comment text");
 
         mockMvc.perform(patch("/api/comments/1")
-                .content(request)
+                .content(objectMapper.writeValueAsString(updateDto))
                 .contentType("application/merge-patch+json")
         ).andExpectAll(
                 status().isNoContent()
@@ -92,15 +87,11 @@ public class CommentControllerTest {
     @DisplayName("PATCH - /{commentId} - Should return 404 when comment does not exist")
     public void updateCommentNotFound() throws Exception {
         Utils.setUserContext(1);
-
-        var request = """
-                {
-                    "text": "Updated comment text"
-                }
-                """;
+        CommentUpdateDto updateDto = new CommentUpdateDto();
+        updateDto.setText("Updated comment text");
 
         mockMvc.perform(patch("/api/comments/999")
-                .content(request)
+                .content(objectMapper.writeValueAsString(updateDto))
                 .contentType("application/merge-patch+json")
         ).andExpectAll(status().isNotFound());
     }
@@ -110,14 +101,11 @@ public class CommentControllerTest {
     @DisplayName("PATCH - /{commentId} - Should return 403 when not owner or admin")
     public void updateCommentNotOwnerOrAdmin() throws Exception {
         Utils.setUserContext(3);
-        var request = """
-                {
-                    "text": "Updated comment text"
-                }
-                """;
+        CommentUpdateDto updateDto = new CommentUpdateDto();
+        updateDto.setText("Updated comment text");
 
         mockMvc.perform(patch("/api/comments/1")
-                .content(request)
+                .content(objectMapper.writeValueAsString(updateDto))
                 .contentType("application/merge-patch+json")
         ).andExpectAll(
                 status().isForbidden()

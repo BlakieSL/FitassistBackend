@@ -1,4 +1,5 @@
 package source.code.integration.test.controller.workoutSet;
+import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -49,7 +50,7 @@ public class WorkoutSetControllerTest {
         );
 
         mockMvc.perform(post("/api/workout-sets")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(
                         status().isCreated(),
@@ -76,7 +77,7 @@ public class WorkoutSetControllerTest {
                 """;
 
         mockMvc.perform(patch("/api/workout-sets/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(patch))
                 .andExpectAll(status().isNoContent());
     }
@@ -95,7 +96,7 @@ public class WorkoutSetControllerTest {
                 """;
 
         mockMvc.perform(patch("/api/workout-sets/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(patch))
                 .andExpectAll(status().isNoContent());
     }
@@ -114,7 +115,7 @@ public class WorkoutSetControllerTest {
                 """;
 
         mockMvc.perform(patch("/api/workout-sets/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(patch))
                 .andExpectAll(status().isForbidden());
     }
@@ -133,7 +134,7 @@ public class WorkoutSetControllerTest {
                 """;
 
         mockMvc.perform(patch("/api/workout-sets/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(patch))
                 .andExpectAll(status().isNotFound());
     }
@@ -152,7 +153,7 @@ public class WorkoutSetControllerTest {
                 """;
 
         mockMvc.perform(patch("/api/workout-sets/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(patch))
                 .andExpectAll(status().isBadRequest());
     }
@@ -171,7 +172,7 @@ public class WorkoutSetControllerTest {
                 """;
 
         mockMvc.perform(patch("/api/workout-sets/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(patch))
                 .andExpectAll(status().isNoContent());
     }

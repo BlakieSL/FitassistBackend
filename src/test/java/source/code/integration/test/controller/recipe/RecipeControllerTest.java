@@ -11,12 +11,16 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import source.code.dto.request.recipe.RecipeCreateDto;
+import source.code.dto.request.recipe.RecipeUpdateDto;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
+
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -39,21 +43,14 @@ public class RecipeControllerTest {
     @DisplayName("POST - / - Should create a new recipe")
     void createRecipe() throws Exception {
         Utils.setUserContext(1);
-        String request = """
-            {
-                "name": "Test Recipe",
-                "description": "A new test recipe",
-                "foods": [
-                    {"foodId": 1, "quantity": 200},
-                    {"foodId": 2, "quantity": 150}
-                ],
-                "categories": [1, 3]
-            }
-            """;
+        RecipeCreateDto createDto = new RecipeCreateDto();
+        createDto.setName("Test Recipe");
+        createDto.setDescription("A new test recipe");
+        createDto.setCategoryIds(List.of(1, 3));
 
         mockMvc.perform(post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(request))
+                        .content(objectMapper.writeValueAsString(createDto)))
                 .andExpectAll(
                         status().isCreated(),
                         jsonPath("$.id").exists()
@@ -65,21 +62,20 @@ public class RecipeControllerTest {
     @DisplayName("PATCH - /{id} - Should update an existing recipe when owner")
     void updateRecipe() throws Exception {
         Utils.setUserContext(1);
-        String request = """
-            {
-                "name": "Updated Stir Fry",
-                "description": "Updated description"
-            }
-            """;
+        RecipeUpdateDto updateDto = new RecipeUpdateDto();
+        updateDto.setName("Updated Stir Fry");
+        updateDto.setDescription("Updated description");
 
         mockMvc.perform(patch("/api/recipes/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(request))
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpect(status().isNoContent());
 
         mockMvc.perform(get("/api/recipes/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Updated Stir Fry"));
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.name").value("Updated Stir Fry")
+                );
     }
 
     @RecipeSql
@@ -87,15 +83,12 @@ public class RecipeControllerTest {
     @DisplayName("PATCH - /{id} - Should update an existing recipe when admin")
     void updateRecipeAsAdmin() throws Exception {
         Utils.setAdminContext(2);
-        String request = """
-            {
-                "name": "Admin Updated Recipe"
-            }
-            """;
+        RecipeUpdateDto updateDto = new RecipeUpdateDto();
+        updateDto.setName("Admin Updated Recipe");
 
         mockMvc.perform(patch("/api/recipes/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(request))
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpect(status().isNoContent());
 
         mockMvc.perform(get("/api/recipes/1"))
@@ -107,11 +100,12 @@ public class RecipeControllerTest {
     @DisplayName("PATCH - /{id} - Should not update an existing recipe when not owner or admin")
     void updateRecipeNotOwnerOrAdmin() throws Exception {
         Utils.setUserContext(3);
-        String request = "{\"name\":\"Unauthorized Update\"}";
+        RecipeUpdateDto updateDto = new RecipeUpdateDto();
+        updateDto.setName("Unauthorized Update");
 
         mockMvc.perform(patch("/api/recipes/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(request))
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpect(status().isForbidden());
     }
 
@@ -119,11 +113,12 @@ public class RecipeControllerTest {
     @DisplayName("PATCH  - /{id} - Should return 404 when recipe not found")
     void updateRecipeNotFound() throws Exception {
         Utils.setUserContext(1);
-        String request = "{\"name\":\"Missing Recipe\"}";
+        RecipeUpdateDto updateDto = new RecipeUpdateDto();
+        updateDto.setName("Missing Recipe");
 
         mockMvc.perform(patch("/api/recipes/999")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(request))
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpect(status().isNotFound());
     }
 

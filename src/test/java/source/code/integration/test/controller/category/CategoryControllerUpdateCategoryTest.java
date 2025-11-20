@@ -1,4 +1,5 @@
 package source.code.integration.test.controller.category;
+import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +38,7 @@ public class CategoryControllerUpdateCategoryTest {
         Utils.setAdminContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("Updated Food Category"));
         mockMvc.perform(patch("/api/categories/FOOD/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isNoContent());
     }
@@ -48,7 +49,7 @@ public class CategoryControllerUpdateCategoryTest {
         Utils.setUserContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("User Food Update"));
         mockMvc.perform(patch("/api/categories/FOOD/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isForbidden());
     }
@@ -59,7 +60,7 @@ public class CategoryControllerUpdateCategoryTest {
         Utils.setAdminContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("Non-existent Food Category"));
         mockMvc.perform(patch("/api/categories/FOOD/999")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isNotFound());
     }
@@ -71,7 +72,7 @@ public class CategoryControllerUpdateCategoryTest {
         Utils.setAdminContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("Updated Activity Category"));
         mockMvc.perform(patch("/api/categories/ACTIVITY/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isNoContent());
     }
@@ -82,7 +83,7 @@ public class CategoryControllerUpdateCategoryTest {
         Utils.setUserContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("User Activity Update"));
         mockMvc.perform(patch("/api/categories/ACTIVITY/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isForbidden());
     }
@@ -93,7 +94,7 @@ public class CategoryControllerUpdateCategoryTest {
         Utils.setAdminContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("Non-existent Activity Category"));
         mockMvc.perform(patch("/api/categories/ACTIVITY/999")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isNotFound());
     }
@@ -105,7 +106,7 @@ public class CategoryControllerUpdateCategoryTest {
         Utils.setAdminContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("Updated Exercise Category"));
         mockMvc.perform(patch("/api/categories/EXERCISE/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isNoContent());
     }
@@ -116,7 +117,7 @@ public class CategoryControllerUpdateCategoryTest {
         Utils.setUserContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("User Exercise Update"));
         mockMvc.perform(patch("/api/categories/EXERCISE/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isForbidden());
     }
@@ -127,7 +128,7 @@ public class CategoryControllerUpdateCategoryTest {
         Utils.setAdminContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("Non-existent Exercise Category"));
         mockMvc.perform(patch("/api/categories/EXERCISE/999")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isNotFound());
     }
@@ -139,7 +140,7 @@ public class CategoryControllerUpdateCategoryTest {
         Utils.setAdminContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("Updated Recipe Category"));
         mockMvc.perform(patch("/api/categories/RECIPE/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isNoContent());
     }
@@ -150,7 +151,7 @@ public class CategoryControllerUpdateCategoryTest {
         Utils.setUserContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("User Recipe Update"));
         mockMvc.perform(patch("/api/categories/RECIPE/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isForbidden());
     }
@@ -161,7 +162,7 @@ public class CategoryControllerUpdateCategoryTest {
         Utils.setAdminContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("Non-existent Recipe Category"));
         mockMvc.perform(patch("/api/categories/RECIPE/999")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isNotFound());
     }
@@ -173,7 +174,7 @@ public class CategoryControllerUpdateCategoryTest {
         Utils.setAdminContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("Updated Plan Category"));
         mockMvc.perform(patch("/api/categories/PLAN/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isNoContent());
     }
@@ -184,7 +185,7 @@ public class CategoryControllerUpdateCategoryTest {
         Utils.setUserContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("User Plan Update"));
         mockMvc.perform(patch("/api/categories/PLAN/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isForbidden());
     }
@@ -195,7 +196,7 @@ public class CategoryControllerUpdateCategoryTest {
         Utils.setAdminContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("Non-existent Plan Category"));
         mockMvc.perform(patch("/api/categories/PLAN/999")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isNotFound());
     }

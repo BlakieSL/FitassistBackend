@@ -1,4 +1,5 @@
 package source.code.integration.test.controller.user;
+import org.springframework.http.MediaType;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -99,7 +100,7 @@ public class    UserControllerTest {
         );
 
         mockMvc.perform(post("/api/users/register")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(
                         status().isCreated(),
@@ -114,15 +115,12 @@ public class    UserControllerTest {
     void updateUser() throws Exception {
         Utils.setUserContext(1);
         int id = 1;
-        var patch = """
-            {
-                "username": "updatedUser1"
-            }
-            """;
+        UserUpdateDto updateDto = new UserUpdateDto();
+        updateDto.setUsername("updatedUser1");
 
         mockMvc.perform(patch("/api/users/{id}", id)
-                        .contentType("application/json")
-                        .content(patch))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isNoContent());
 
         mockMvc.perform(get("/api/users/{id}", id))
@@ -139,15 +137,12 @@ public class    UserControllerTest {
         Utils.setAdminContext(2);
 
         int id = 1;
-        var patch = """
-            {
-                "email": "updated1@gmail.com"
-            }
-            """;
+        UserUpdateDto updateDto = new UserUpdateDto();
+        updateDto.setEmail("updated1@gmail.com");
 
         mockMvc.perform(patch("/api/users/{id}", id)
-                        .contentType("application/json")
-                        .content(patch))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isNoContent());
 
         mockMvc.perform(get("/api/users/{id}", id))
@@ -164,15 +159,12 @@ public class    UserControllerTest {
         Utils.setUserContext(3);
 
         int id = 1;
-        var patch = """
-            {
-                "username": "updatedUser1"
-            }
-            """;
+        UserUpdateDto updateDto = new UserUpdateDto();
+        updateDto.setUsername("updatedUser1");
 
         mockMvc.perform(patch("/api/users/{id}", id)
-                        .contentType("application/json")
-                        .content(patch))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isForbidden());
     }
 
@@ -183,15 +175,12 @@ public class    UserControllerTest {
         Utils.setAdminContext(1);
 
         int id = 999;
-        var patch = """
-            {
-                "username": "updatedUser1"
-            }
-            """;
+        UserUpdateDto updateDto = new UserUpdateDto();
+        updateDto.setUsername("updatedUser1");
 
         mockMvc.perform(patch("/api/users/{id}", id)
-                        .contentType("application/json")
-                        .content(patch))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isNotFound());
     }
 
@@ -202,15 +191,12 @@ public class    UserControllerTest {
         Utils.setUserContext(1);
 
         int id = 1;
-        var patch = """
-            {
-                "username": "updatedUser1updatedUser1updatedUser1updatedUser1"
-            }
-            """;
+        UserUpdateDto updateDto = new UserUpdateDto();
+        updateDto.setUsername("updatedUser1updatedUser1updatedUser1updatedUser1");
 
         mockMvc.perform(patch("/api/users/{id}", id)
-                        .contentType("application/json")
-                        .content(patch))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isBadRequest());
     }
 
@@ -220,16 +206,15 @@ public class    UserControllerTest {
     void updateUserIgnoreInvalidFields() throws Exception {
         Utils.setUserContext(1);
 
-
         int id = 1;
-        var patch = """
+        String patch = """
             {
                 "invalidFieldName": "updatedUser1"
             }
             """;
 
         mockMvc.perform(patch("/api/users/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(patch))
                 .andExpectAll(status().isNoContent());
     }
@@ -298,7 +283,7 @@ public class    UserControllerTest {
         updateDto.setBirthday(LocalDate.of(2000, 1, 1));
 
         mockMvc.perform(put("/api/users/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isNoContent());
 
@@ -323,7 +308,7 @@ public class    UserControllerTest {
         updateDto.setBirthday(LocalDate.of(1995, 5, 15));
 
         mockMvc.perform(put("/api/users/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isNoContent());
 
@@ -346,7 +331,7 @@ public class    UserControllerTest {
         updateDto.setUsername("shouldNotUpdate");
 
         mockMvc.perform(put("/api/users/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isForbidden());
     }
@@ -362,7 +347,7 @@ public class    UserControllerTest {
         updateDto.setUsername("shouldNotUpdate");
 
         mockMvc.perform(put("/api/users/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isNotFound());
     }
@@ -379,7 +364,7 @@ public class    UserControllerTest {
         updateDto.setEmail("invalid-email");
 
         mockMvc.perform(put("/api/users/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isBadRequest());
     }
@@ -395,7 +380,7 @@ public class    UserControllerTest {
         updateDto.setUsername("partialUpdate");
 
         mockMvc.perform(put("/api/users/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isNoContent());
 

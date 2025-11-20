@@ -1,4 +1,5 @@
 package source.code.integration.test.controller.recipe;
+import org.springframework.http.MediaType;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,7 +42,7 @@ public class RecipeFoodControllerAddTest {
         var request = new RecipeFoodCreateDto();
 
         mockMvc.perform(post("/api/recipe-food/4/add/1")
-                .contentType("application/json")
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(status().isCreated());
     }
@@ -55,7 +56,7 @@ public class RecipeFoodControllerAddTest {
         var request = new RecipeFoodCreateDto();
 
         mockMvc.perform(post("/api/recipe-food/4/add/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(status().isCreated());
     }
@@ -69,7 +70,7 @@ public class RecipeFoodControllerAddTest {
         var request = new RecipeFoodCreateDto();
 
         mockMvc.perform(post("/api/recipe-food/4/add/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isForbidden());
     }
@@ -83,7 +84,7 @@ public class RecipeFoodControllerAddTest {
         var request = new RecipeFoodCreateDto();
 
         mockMvc.perform(post("/api/recipe-food/999/add/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotFound());
     }
@@ -97,7 +98,7 @@ public class RecipeFoodControllerAddTest {
         var request = new RecipeFoodCreateDto();
 
         mockMvc.perform(post("/api/recipe-food/1/add/999")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotFound());
     }
@@ -111,7 +112,7 @@ public class RecipeFoodControllerAddTest {
         var request = new RecipeFoodCreateDto();
 
         mockMvc.perform(post("/api/recipe-food/1/add/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isConflict());
     }

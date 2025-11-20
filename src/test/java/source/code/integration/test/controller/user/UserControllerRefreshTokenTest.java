@@ -1,4 +1,5 @@
 package source.code.integration.test.controller.user;
+import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -58,7 +59,7 @@ public class UserControllerRefreshTokenTest {
         var request = new RefreshTokenRequestDto(validRefreshToken);
 
         mockMvc.perform(post("/api/users/refresh-token")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(
                         status().isOk(),
@@ -75,7 +76,7 @@ public class UserControllerRefreshTokenTest {
         var request = new RefreshTokenRequestDto(invalidToken);
 
         mockMvc.perform(post("/api/users/refresh-token")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(status().isBadRequest());
     }
@@ -97,7 +98,7 @@ public class UserControllerRefreshTokenTest {
         var request = new RefreshTokenRequestDto(expiredToken.serialize());
 
         mockMvc.perform(post("/api/users/refresh-token")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(status().isUnauthorized());
 
@@ -121,7 +122,7 @@ public class UserControllerRefreshTokenTest {
         var request = new RefreshTokenRequestDto(tamperedToken.serialize());
 
         mockMvc.perform(post("/api/users/refresh-token")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(status().isUnauthorized());
         }
@@ -142,7 +143,7 @@ public class UserControllerRefreshTokenTest {
             var request = new RefreshTokenRequestDto(tokenWithMissingClaims.serialize());
 
             mockMvc.perform(post("/api/users/refresh-token")
-                            .contentType("application/json")
+                            .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andExpectAll(status().isBadRequest());
 

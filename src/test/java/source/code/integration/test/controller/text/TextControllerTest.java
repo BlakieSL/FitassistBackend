@@ -1,4 +1,5 @@
 package source.code.integration.test.controller.text;
+import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -8,6 +9,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import source.code.dto.request.text.ExerciseInstructionUpdateDto;
+import source.code.dto.request.text.RecipeInstructionUpdateDto;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
@@ -138,15 +141,12 @@ public class TextControllerTest {
         int id = 1;
         String type = "EXERCISE_INSTRUCTION";
 
-        String request = """
-                {
-                    "text": "Updated text"
-                }
-                """;
+        ExerciseInstructionUpdateDto updateDto = new ExerciseInstructionUpdateDto();
+        updateDto.setText("Updated text");
 
         mockMvc.perform(patch("/api/text/{id}/type/{type}", id, type)
-                        .contentType("application/json")
-                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto))
                 ).andExpectAll(status().isNoContent());
 
         mockMvc.perform(get("/api/text/{id}/type/{type}", id, type))
@@ -165,15 +165,12 @@ public class TextControllerTest {
         int id = 4;
         String type = "RECIPE_INSTRUCTION";
 
-        String request = """
-                {
-                    "text": "Updated text"
-                }
-                """;
+        RecipeInstructionUpdateDto updateDto = new RecipeInstructionUpdateDto();
+        updateDto.setText("Updated text");
 
         mockMvc.perform(patch("/api/text/{id}/type/{type}", id, type)
-                .contentType("application/json")
-                .content(request)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateDto))
         ).andExpectAll(status().isNoContent());
     }
 
@@ -186,15 +183,12 @@ public class TextControllerTest {
         int id = 1;
         String type = "EXERCISE_INSTRUCTION";
 
-        String request = """
-                {
-                    "text": "Updated text"
-                }
-                """;
+        ExerciseInstructionUpdateDto updateDto = new ExerciseInstructionUpdateDto();
+        updateDto.setText("Updated text");
 
         mockMvc.perform(patch("/api/text/{id}/type/{type}", id, type)
-                        .contentType("application/json")
-                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto))
                 ).andExpectAll(status().isForbidden());
     }
 
@@ -207,15 +201,12 @@ public class TextControllerTest {
         int id = 999;
         String type = "EXERCISE_INSTRUCTION";
 
-        String request = """
-                {
-                    "text": "Updated text"
-                }
-                """;
+        ExerciseInstructionUpdateDto updateDto = new ExerciseInstructionUpdateDto();
+        updateDto.setText("Updated text");
 
         mockMvc.perform(patch("/api/text/{id}/type/{type}", id, type)
-                        .contentType("application/json")
-                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto))
                 ).andExpectAll(status().isNotFound());
     }
 

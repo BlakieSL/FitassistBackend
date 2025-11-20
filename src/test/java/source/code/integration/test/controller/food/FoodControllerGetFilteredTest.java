@@ -1,4 +1,5 @@
 package source.code.integration.test.controller.food;
+import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -49,7 +50,7 @@ public class FoodControllerGetFilteredTest {
         FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
         mockMvc.perform(post("/api/foods/filter")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
@@ -70,7 +71,7 @@ public class FoodControllerGetFilteredTest {
         FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
         mockMvc.perform(post("/api/foods/filter")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
@@ -89,7 +90,7 @@ public class FoodControllerGetFilteredTest {
         FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
         mockMvc.perform(post("/api/foods/filter")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
@@ -108,7 +109,7 @@ public class FoodControllerGetFilteredTest {
         FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
         mockMvc.perform(post("/api/foods/filter")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
@@ -129,7 +130,7 @@ public class FoodControllerGetFilteredTest {
         FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
         mockMvc.perform(post("/api/foods/filter")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
@@ -153,7 +154,7 @@ public class FoodControllerGetFilteredTest {
         FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
         mockMvc.perform(post("/api/foods/filter")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
@@ -172,7 +173,7 @@ public class FoodControllerGetFilteredTest {
         FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
         mockMvc.perform(post("/api/foods/filter")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(status().isBadRequest());
     }
@@ -188,7 +189,7 @@ public class FoodControllerGetFilteredTest {
         FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
         mockMvc.perform(post("/api/foods/filter")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(status().isBadRequest());
     }
@@ -210,7 +211,7 @@ public class FoodControllerGetFilteredTest {
                 """;
 
         mockMvc.perform(post("/api/foods/filter")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpectAll(status().isBadRequest());
     }

@@ -1,4 +1,5 @@
 package source.code.integration.test.controller.food;
+import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import source.code.dto.request.food.CalculateFoodMacrosRequestDto;
 import source.code.dto.request.food.FoodCreateDto;
+import source.code.dto.request.food.FoodUpdateDto;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
@@ -82,15 +84,12 @@ public class FoodControllerTest {
     @DisplayName("PATCH - /{id} - Should update food when user is admin")
     void updateFood_ShouldUpdateFood_WhenUserIsAdmin() throws Exception {
         Utils.setAdminContext(1);
-        String patch = """
-                {
-                    "name": "Updated Food"
-                }
-                """;
+        FoodUpdateDto updateDto = new FoodUpdateDto();
+        updateDto.setName("Updated Food");
 
         mockMvc.perform(patch("/api/foods/1")
                         .contentType("application/json-patch+json")
-                        .content(patch))
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isNoContent());
     }
 
@@ -98,15 +97,12 @@ public class FoodControllerTest {
     @DisplayName("PATCH - /{id} - Should return 403 when user is not admin")
     void updateFood_ShouldReturn403_WhenUserIsNotAdmin() throws Exception {
         Utils.setUserContext(1);
-        String patch = """
-                {
-                    "name": "Updated Food"
-                }
-                """;
+        FoodUpdateDto updateDto = new FoodUpdateDto();
+        updateDto.setName("Updated Food");
 
         mockMvc.perform(patch("/api/foods/1")
                         .contentType("application/json-patch+json")
-                        .content(patch))
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isForbidden());
     }
 
@@ -114,15 +110,12 @@ public class FoodControllerTest {
     @DisplayName("PATCH - /{id} - Should return 404 when food does not exist")
     void updateFood_ShouldReturn404_WhenFoodDoesNotExist() throws Exception {
         Utils.setAdminContext(1);
-        String patch = """
-                {
-                    "name": "Updated Food"
-                }
-                """;
+        FoodUpdateDto updateDto = new FoodUpdateDto();
+        updateDto.setName("Updated Food");
 
         mockMvc.perform(patch("/api/foods/999")
                         .contentType("application/json-patch+json")
-                        .content(patch))
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isNotFound());
     }
 
