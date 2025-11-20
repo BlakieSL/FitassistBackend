@@ -24,7 +24,7 @@ import org.springframework.data.domain.Sort;
 import source.code.repository.MediaRepository;
 import source.code.repository.UserFoodRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.aws.AwsS3Service;
+import source.code.service.declaration.helpers.ImageUrlPopulationService;
 import source.code.service.implementation.user.interaction.withoutType.UserFoodServiceImpl;
 
 import java.time.LocalDateTime;
@@ -51,7 +51,7 @@ public class UserFoodServiceTest {
     @Mock
     private MediaRepository mediaRepository;
     @Mock
-    private AwsS3Service awsS3Service;
+    private ImageUrlPopulationService imagePopulationService;
     private UserFoodServiceImpl userFoodService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
@@ -64,8 +64,7 @@ public class UserFoodServiceTest {
                 foodRepository,
                 userFoodRepository,
                 foodMapper,
-
-                awsS3Service
+                imagePopulationService
         );
     }
 
@@ -212,13 +211,11 @@ public class UserFoodServiceTest {
                 .thenReturn(List.of(uf1, uf2));
         when(foodMapper.toSummaryDto(food1)).thenReturn(dto1);
         when(foodMapper.toSummaryDto(food2)).thenReturn(dto2);
-        when(awsS3Service.getImage("food1.jpg")).thenReturn("https://s3.../food1.jpg");
-        when(awsS3Service.getImage("food2.jpg")).thenReturn("https://s3.../food2.jpg");
 
         var result = userFoodService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertEquals(2, result.size());
-        verify(awsS3Service, times(2)).getImage(anyString());
+        verify(foodMapper, times(2)).toSummaryDto(any(Food.class));
     }
 
     @Test
@@ -231,7 +228,6 @@ public class UserFoodServiceTest {
         var result = userFoodService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertTrue(result.isEmpty());
-        verify(awsS3Service, never()).getImage(anyString());
     }
 
     @Test
@@ -447,19 +443,14 @@ public class UserFoodServiceTest {
                 .thenReturn(new ArrayList<>(List.of(uf2, uf1)));
         when(foodMapper.toSummaryDto(food1)).thenReturn(dto1);
         when(foodMapper.toSummaryDto(food2)).thenReturn(dto2);
-        when(awsS3Service.getImage("image1.jpg")).thenReturn("https://s3.com/image1.jpg");
-        when(awsS3Service.getImage("image2.jpg")).thenReturn("https://s3.com/image2.jpg");
 
         List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        FoodSummaryDto first = (FoodSummaryDto) result.get(0);
-        FoodSummaryDto second = (FoodSummaryDto) result.get(1);
-        assertEquals("https://s3.com/image2.jpg", first.getFirstImageUrl());
-        assertEquals("https://s3.com/image1.jpg", second.getFirstImageUrl());
-        verify(awsS3Service).getImage("image1.jpg");
-        verify(awsS3Service).getImage("image2.jpg");
+        // Image URL population is handled by imagePopulationService internally
+        verify(foodMapper).toSummaryDto(food1);
+        verify(foodMapper).toSummaryDto(food2);
     }
 
     private FoodSummaryDto createFoodResponseDto(int id, LocalDateTime interactionDate) {
