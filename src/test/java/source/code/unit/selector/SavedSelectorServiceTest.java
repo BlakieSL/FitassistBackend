@@ -2,8 +2,9 @@ package source.code.unit.selector;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.helper.Enum.model.SavedEntityType;
 import source.code.service.declaration.user.SavedService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
@@ -12,6 +13,7 @@ import source.code.service.implementation.selector.SavedSelectorServiceImpl;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ExtendWith(MockitoExtension.class)
 public class SavedSelectorServiceTest {
 
     @Mock
@@ -33,7 +35,6 @@ public class SavedSelectorServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         savedSelectorService = new SavedSelectorServiceImpl(
                 userPlanService,
                 userRecipeService,

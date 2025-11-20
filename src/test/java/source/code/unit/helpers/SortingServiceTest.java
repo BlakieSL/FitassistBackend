@@ -1,9 +1,8 @@
 package source.code.unit.helpers;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
 import source.code.dto.response.plan.PlanSummaryDto;
@@ -19,15 +18,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class SortingServiceTest {
 
+    @InjectMocks
     private SortingServiceImpl sortingService;
 
-    @BeforeEach
-    void setUp() {
-        sortingService = new SortingServiceImpl();
-    }
-
     @Test
-    @DisplayName("sortByTimestamp - Should sort PlanSummaryDto list in DESC order")
     void sortByTimestamp_ShouldSortPlanDtosInDescOrder() {
         List<PlanSummaryDto> dtos = new ArrayList<>();
 
@@ -55,7 +49,6 @@ public class SortingServiceTest {
     }
 
     @Test
-    @DisplayName("sortByTimestamp - Should sort RecipeSummaryDto list in ASC order")
     void sortByTimestamp_ShouldSortRecipeDtosInAscOrder() {
         List<RecipeSummaryDto> dtos = new ArrayList<>();
 
@@ -83,7 +76,6 @@ public class SortingServiceTest {
     }
 
     @Test
-    @DisplayName("sortByTimestamp - Should handle null timestamps with DESC order")
     void sortByTimestamp_ShouldHandleNullTimestampsDescOrder() {
         List<PlanSummaryDto> dtos = new ArrayList<>();
 
@@ -116,7 +108,6 @@ public class SortingServiceTest {
     }
 
     @Test
-    @DisplayName("sortByTimestamp - Should handle null timestamps with ASC order")
     void sortByTimestamp_ShouldHandleNullTimestampsAscOrder() {
         List<RecipeSummaryDto> dtos = new ArrayList<>();
 
@@ -149,7 +140,6 @@ public class SortingServiceTest {
     }
 
     @Test
-    @DisplayName("sortByTimestamp - Should handle empty list")
     void sortByTimestamp_ShouldHandleEmptyList() {
         List<PlanSummaryDto> dtos = new ArrayList<>();
 
@@ -160,7 +150,6 @@ public class SortingServiceTest {
     }
 
     @Test
-    @DisplayName("sortByTimestamp - Should handle list with single element")
     void sortByTimestamp_ShouldHandleSingleElement() {
         List<PlanSummaryDto> dtos = new ArrayList<>();
 
@@ -177,7 +166,6 @@ public class SortingServiceTest {
     }
 
     @Test
-    @DisplayName("sortByTimestamp - Should handle list with all null timestamps")
     void sortByTimestamp_ShouldHandleAllNullTimestamps() {
         List<RecipeSummaryDto> dtos = new ArrayList<>();
 
@@ -204,7 +192,6 @@ public class SortingServiceTest {
     }
 
     @Test
-    @DisplayName("sortByTimestamp - Should handle identical timestamps")
     void sortByTimestamp_ShouldHandleIdenticalTimestamps() {
         LocalDateTime sameTime = LocalDateTime.of(2024, 1, 1, 10, 0);
         List<PlanSummaryDto> dtos = new ArrayList<>();

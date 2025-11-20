@@ -2,7 +2,6 @@ package source.code.unit.user.withType;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,7 +10,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
-import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.exception.NotUniqueRecordException;
@@ -70,7 +68,6 @@ public class UserPlanServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should save to user with type")
     public void saveToUser_ShouldSaveToUserWithType() {
         int userId = 1;
         int planId = 100;
@@ -91,7 +88,6 @@ public class UserPlanServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if plan is private")
     public void saveToUser_ShouldThrowNotSupportedInteractionTypeExceptionIfPlanIsPrivate() {
         int userId = 1;
         int planId = 100;
@@ -113,7 +109,6 @@ public class UserPlanServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if already saved")
     public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
         int userId = 1;
         int planId = 100;
@@ -130,7 +125,6 @@ public class UserPlanServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if user not found")
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
         int userId = 1;
         int planId = 100;
@@ -148,7 +142,6 @@ public class UserPlanServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if plan not found")
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfPlanNotFound() {
         int userId = 1;
         int planId = 100;
@@ -168,7 +161,6 @@ public class UserPlanServiceTest {
     }
 
     @Test
-    @DisplayName("deleteFromUser - Should delete from user")
     public void deleteFromUser_ShouldDeleteFromUser() {
         int userId = 1;
         int planId = 100;
@@ -185,7 +177,6 @@ public class UserPlanServiceTest {
     }
 
     @Test
-    @DisplayName("deleteFromUser - Should throw exception if user plan not found")
     public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserPlanNotFound() {
         int userId = 1;
         int planId = 100;
@@ -202,7 +193,6 @@ public class UserPlanServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should return all plans by type")
     public void getAllFromUser_ShouldReturnAllPlansByType() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
@@ -221,7 +211,6 @@ public class UserPlanServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should return empty list if no plans")
     public void getAllFromUser_ShouldReturnEmptyListIfNoPlans() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
@@ -235,7 +224,6 @@ public class UserPlanServiceTest {
     }
 
     @Test
-    @DisplayName("calculateLikesAndSaves - Should return correct counts")
     public void calculateLikesAndSaves_ShouldReturnCorrectCounts() {
         int planId = 100;
         long saveCount = 5;
@@ -260,7 +248,6 @@ public class UserPlanServiceTest {
     }
 
     @Test
-    @DisplayName("calculateLikesAndSaves - Should throw exception if plan not found")
     public void calculateLikesAndSaves_ShouldThrowRecordNotFoundExceptionIfPlanNotFound() {
         int planId = 100;
 
@@ -273,7 +260,6 @@ public class UserPlanServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser with type and sortDirection DESC - Should sort by interaction date DESC")
     public void getAllFromUser_WithType_ShouldSortByInteractionDateDesc() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
@@ -294,7 +280,6 @@ public class UserPlanServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser with type and sortDirection ASC - Should sort by interaction date ASC")
     public void getAllFromUser_WithType_ShouldSortByInteractionDateAsc() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
@@ -315,7 +300,6 @@ public class UserPlanServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser with type default - Should sort DESC when no direction specified")
     public void getAllFromUser_WithType_DefaultShouldSortDesc() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
@@ -336,7 +320,6 @@ public class UserPlanServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser with type - Should handle null dates properly")
     public void getAllFromUser_WithType_ShouldHandleNullDates() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
@@ -356,7 +339,6 @@ public class UserPlanServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser with type - Should populate image URLs after sorting")
     public void getAllFromUser_WithType_ShouldPopulateImageUrlsAfterSorting() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
