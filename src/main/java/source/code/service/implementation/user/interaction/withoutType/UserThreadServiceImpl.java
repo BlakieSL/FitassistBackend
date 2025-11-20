@@ -13,11 +13,11 @@ import source.code.repository.ForumThreadRepository;
 import source.code.repository.MediaRepository;
 import source.code.repository.UserRepository;
 import source.code.repository.UserThreadRepository;
-import source.code.service.declaration.aws.AwsS3Service;
+import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.helpers.SortingService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 @Service("userThreadService")
 public class UserThreadServiceImpl
@@ -25,21 +25,24 @@ public class UserThreadServiceImpl
         implements SavedServiceWithoutType {
 
     private final MediaRepository mediaRepository;
-    private final AwsS3Service s3Service;
+    private final ImageUrlPopulationService imagePopulationService;
+    private final SortingService sortingService;
 
     public UserThreadServiceImpl(UserThreadRepository userThreadRepository,
                                  ForumThreadRepository forumThreadRepository,
                                  UserRepository userRepository,
                                  ForumThreadMapper forumThreadMapper,
                                  MediaRepository mediaRepository,
-                                 AwsS3Service s3Service) {
+                                 ImageUrlPopulationService imagePopulationService,
+                                 SortingService sortingService) {
         super(userRepository,
                 forumThreadRepository,
                 userThreadRepository,
                 forumThreadMapper::toSummaryDto,
                 ForumThread.class);
         this.mediaRepository = mediaRepository;
-        this.s3Service = s3Service;
+        this.imagePopulationService = imagePopulationService;
+        this.sortingService = sortingService;
     }
 
     @Override
@@ -67,32 +70,17 @@ public class UserThreadServiceImpl
     @Override
     public List<BaseUserEntity> getAllFromUser(int userId, Sort.Direction sortDirection) {
         List<ForumThreadSummaryDto> dtos = new ArrayList<>(
-                ((UserThreadRepository) userEntityRepository).findThreadSummaryByUserId(userId)
+                ((ForumThreadRepository) entityRepository).findThreadSummaryUnified(userId, true)
         );
 
-        dtos.forEach(dto -> {
-            if (dto.getAuthorImageName() != null) {
-                dto.setAuthorImageUrl(s3Service.getImage(dto.getAuthorImageName()));
-            }
-        });
+        imagePopulationService.populateAuthorImageForList(dtos,
+                ForumThreadSummaryDto::getAuthorImageName, ForumThreadSummaryDto::setAuthorImageUrl);
 
-        sortByInteractionDate(dtos, sortDirection);
+        sortingService.sortByTimestamp(dtos, ForumThreadSummaryDto::getUserThreadInteractionCreatedAt, sortDirection);
 
         return dtos.stream()
                 .map(dto -> (BaseUserEntity) dto)
                 .toList();
-    }
-
-    private void sortByInteractionDate(List<ForumThreadSummaryDto> list, Sort.Direction sortDirection) {
-        Comparator<ForumThreadSummaryDto> comparator = sortDirection == Sort.Direction.ASC
-                ? Comparator.comparing(
-                        ForumThreadSummaryDto::getUserThreadInteractionCreatedAt,
-                        Comparator.nullsLast(Comparator.naturalOrder()))
-                : Comparator.comparing(
-                        ForumThreadSummaryDto::getUserThreadInteractionCreatedAt,
-                        Comparator.nullsLast(Comparator.reverseOrder()));
-
-        list.sort(comparator);
     }
 
     @Override

@@ -16,11 +16,11 @@ import source.code.model.user.UserPlan;
 import source.code.repository.PlanRepository;
 import source.code.repository.UserPlanRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.aws.AwsS3Service;
+import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.helpers.SortingService;
 import source.code.service.declaration.user.SavedService;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Service("userPlanService")
@@ -28,52 +28,38 @@ public class UserPlanServiceImpl
         extends GenericSavedService<Plan, UserPlan, PlanResponseDto>
         implements SavedService {
 
-    private final AwsS3Service awsS3Service;
+    private final ImageUrlPopulationService imagePopulationService;
+    private final SortingService sortingService;
 
     public UserPlanServiceImpl(UserPlanRepository userPlanRepository,
                                PlanRepository planRepository,
                                UserRepository userRepository,
                                PlanMapper planMapper,
-                               AwsS3Service awsS3Service) {
+                               ImageUrlPopulationService imagePopulationService,
+                               SortingService sortingService) {
         super(userRepository,
                 planRepository,
                 userPlanRepository,
                 planMapper::toResponseDto,
                 Plan.class);
-        this.awsS3Service = awsS3Service;
+        this.imagePopulationService = imagePopulationService;
+        this.sortingService = sortingService;
     }
 
     @Override
     public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Sort.Direction sortDirection) {
-        List<PlanSummaryDto> dtos = new ArrayList<>(((UserPlanRepository) userEntityRepository)
-                .findPlanSummaryByUserIdAndType(userId, type));
+        List<PlanSummaryDto> dtos = new ArrayList<>(
+                ((PlanRepository) entityRepository).findPlanSummaryUnified(userId, type, true, null));
 
-        dtos.forEach(dto -> {
-            if (dto.getAuthorImageUrl() != null) {
-                dto.setAuthorImageUrl(awsS3Service.getImage(dto.getAuthorImageUrl()));
-            }
-            if (dto.getImageName() != null) {
-                dto.setFirstImageUrl(awsS3Service.getImage(dto.getImageName()));
-            }
-        });
+        imagePopulationService.populateAuthorAndEntityImagesForList(dtos,
+                PlanSummaryDto::getAuthorImageName, PlanSummaryDto::setAuthorImageUrl,
+                PlanSummaryDto::getFirstImageName, PlanSummaryDto::setFirstImageUrl);
 
-        sortByInteractionDate(dtos, sortDirection);
+        sortingService.sortByTimestamp(dtos, PlanSummaryDto::getInteractedWithAt, sortDirection);
 
         return dtos.stream()
                 .map(dto -> (BaseUserEntity) dto)
                 .toList();
-    }
-
-    private void sortByInteractionDate(List<PlanSummaryDto> list, Sort.Direction sortDirection) {
-        Comparator<PlanSummaryDto> comparator = sortDirection == Sort.Direction.ASC
-                ? Comparator.comparing(
-                        PlanSummaryDto::getInteractedWithAt,
-                        Comparator.nullsLast(Comparator.naturalOrder()))
-                : Comparator.comparing(
-                        PlanSummaryDto::getInteractedWithAt,
-                        Comparator.nullsLast(Comparator.reverseOrder()));
-
-        list.sort(comparator);
     }
 
     @Override

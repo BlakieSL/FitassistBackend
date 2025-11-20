@@ -44,7 +44,7 @@ public class UniqueEmailValidatorTest {
     void setUp() {
         validator = new UniqueEmailValidator();
         updateDto = new UserUpdateDto();
-        
+
         try (MockedStatic<ContextProvider> contextProvider = Mockito.mockStatic(ContextProvider.class)) {
             contextProvider.when(() -> ContextProvider.getBean(EntityManager.class)).thenReturn(entityManager);
             contextProvider.when(() -> ContextProvider.getBean(UserRepository.class)).thenReturn(userRepository);
@@ -109,7 +109,7 @@ public class UniqueEmailValidatorTest {
     void isValid_shouldReturnTrueForUserUpdateDtoWithSameUserEmail() {
         updateDto.setEmail("user@example.com");
         updateDto.setId(1);
-        
+
         User existingUser = new User();
         existingUser.setId(1);
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(existingUser));
@@ -126,7 +126,7 @@ public class UniqueEmailValidatorTest {
     void isValid_shouldReturnFalseForUserUpdateDtoWithDifferentUserEmail() {
         updateDto.setEmail("other@example.com");
         updateDto.setId(1);
-        
+
         User existingUser = new User();
         existingUser.setId(2);
         when(userRepository.findByEmail("other@example.com")).thenReturn(Optional.of(existingUser));

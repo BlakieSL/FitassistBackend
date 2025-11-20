@@ -22,7 +22,8 @@ import source.code.repository.ForumThreadRepository;
 import source.code.repository.MediaRepository;
 import source.code.repository.UserRepository;
 import source.code.repository.UserThreadRepository;
-import source.code.service.declaration.aws.AwsS3Service;
+import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.helpers.SortingService;
 import source.code.service.implementation.user.interaction.withoutType.UserThreadServiceImpl;
 
 import java.util.List;
@@ -45,7 +46,9 @@ public class  UserThreadServiceTest {
     @Mock
     private MediaRepository mediaRepository;
     @Mock
-    private AwsS3Service awsS3Service;
+    private ImageUrlPopulationService imageUrlPopulationService;
+    @Mock
+    private SortingService sortingService;
     private UserThreadServiceImpl userThreadService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
@@ -59,7 +62,8 @@ public class  UserThreadServiceTest {
                 userRepository,
                 forumThreadMapper,
                 mediaRepository,
-                awsS3Service
+                imageUrlPopulationService,
+                sortingService
         );
     }
 
@@ -174,13 +178,13 @@ public class  UserThreadServiceTest {
         ForumThreadSummaryDto dto2 = new ForumThreadSummaryDto();
         dto2.setId(2);
 
-        when(userThreadRepository.findThreadSummaryByUserId(userId))
+        when(forumThreadRepository.findThreadSummaryUnified(userId, true))
                 .thenReturn(List.of(dto1, dto2));
 
         var result = userThreadService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertEquals(2, result.size());
-        verify(userThreadRepository).findThreadSummaryByUserId(userId);
+        verify(forumThreadRepository).findThreadSummaryUnified(userId, true);
     }
 
     @Test
@@ -188,7 +192,7 @@ public class  UserThreadServiceTest {
     public void getAllFromUser_ShouldReturnEmptyListIfNoSavedThreads() {
         int userId = 1;
 
-        when(userThreadRepository.findThreadSummaryByUserId(userId))
+        when(forumThreadRepository.findThreadSummaryUnified(userId, true))
                 .thenReturn(List.of());
 
         var result = userThreadService.getAllFromUser(userId, Sort.Direction.DESC);

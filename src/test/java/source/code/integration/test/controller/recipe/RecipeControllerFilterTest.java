@@ -87,7 +87,7 @@ public class RecipeControllerFilterTest {
     @DisplayName("POST - /filter - Should filter recipes by food")
     void filterRecipesByFood() throws Exception {
         Utils.setUserContext(1);
-        FilterDto filterDto = buildFilterDto("FOODS", 2, FilterOperation.EQUAL); // Chicken Breast
+        FilterDto filterDto = buildFilterDto("FOODS", 2, FilterOperation.EQUAL);
         String json = objectMapper.writeValueAsString(filterDto);
 
         mockMvc.perform(post("/api/recipes/filter")

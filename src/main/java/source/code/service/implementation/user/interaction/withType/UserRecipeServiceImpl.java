@@ -17,12 +17,11 @@ import source.code.repository.RecipeCategoryAssociationRepository;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.aws.AwsS3Service;
+import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.helpers.SortingService;
 import source.code.service.declaration.user.SavedService;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,61 +31,48 @@ public class UserRecipeServiceImpl
         extends GenericSavedService<Recipe, UserRecipe, RecipeResponseDto>
         implements SavedService {
 
-    private final AwsS3Service awsS3Service;
+    private final ImageUrlPopulationService imagePopulationService;
+    private final SortingService sortingService;
     private final RecipeCategoryAssociationRepository categoryAssociationRepository;
 
     public UserRecipeServiceImpl(UserRecipeRepository userRecipeRepository,
                                  RecipeRepository recipeRepository,
                                  UserRepository userRepository,
                                  RecipeMapper recipeMapper,
-                                 AwsS3Service awsS3Service,
+                                 ImageUrlPopulationService imagePopulationService,
+                                 SortingService sortingService,
                                  RecipeCategoryAssociationRepository categoryAssociationRepository) {
         super(userRepository,
                 recipeRepository,
                 userRecipeRepository,
                 recipeMapper::toResponseDto,
                 Recipe.class);
-        this.awsS3Service = awsS3Service;
+        this.imagePopulationService = imagePopulationService;
+        this.sortingService = sortingService;
         this.categoryAssociationRepository = categoryAssociationRepository;
     }
 
     @Override
     public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Sort.Direction sortDirection) {
-        List<RecipeSummaryDto> dtos = new ArrayList<>(((UserRecipeRepository) userEntityRepository)
-                .findRecipeSummaryByUserIdAndType(userId, type));
+        List<RecipeSummaryDto> dtos = new ArrayList<>(
+                ((RecipeRepository) entityRepository).findRecipeSummaryUnified(userId, type, true, null));
 
         if (!dtos.isEmpty()) {
             List<Integer> recipeIds = dtos.stream().map(RecipeSummaryDto::getId).toList();
             Map<Integer, List<RecipeCategoryShortDto>> categoriesMap = fetchCategoriesForRecipes(recipeIds);
 
-            dtos.forEach(dto -> {
-                if (dto.getAuthorImageUrl() != null) {
-                    dto.setAuthorImageUrl(awsS3Service.getImage(dto.getAuthorImageUrl()));
-                }
-                if (dto.getImageName() != null) {
-                    dto.setFirstImageUrl(awsS3Service.getImage(dto.getImageName()));
-                }
-                dto.setCategories(categoriesMap.getOrDefault(dto.getId(), new ArrayList<>()));
-            });
+            imagePopulationService.populateAuthorAndEntityImagesForList(dtos,
+                    RecipeSummaryDto::getAuthorImageName, RecipeSummaryDto::setAuthorImageUrl,
+                    RecipeSummaryDto::getFirstImageName, RecipeSummaryDto::setFirstImageUrl);
+
+            dtos.forEach(dto -> dto.setCategories(categoriesMap.getOrDefault(dto.getId(), new ArrayList<>())));
         }
 
-        sortByInteractionDate(dtos, sortDirection);
+        sortingService.sortByTimestamp(dtos, RecipeSummaryDto::getUserRecipeInteractionCreatedAt, sortDirection);
 
         return dtos.stream()
                 .map(dto -> (BaseUserEntity) dto)
                 .toList();
-    }
-
-    private void sortByInteractionDate(List<RecipeSummaryDto> list, Sort.Direction sortDirection) {
-        Comparator<RecipeSummaryDto> comparator = sortDirection == Sort.Direction.ASC
-                ? Comparator.comparing(
-                        RecipeSummaryDto::getUserRecipeInteractionCreatedAt,
-                        Comparator.nullsLast(Comparator.naturalOrder()))
-                : Comparator.comparing(
-                        RecipeSummaryDto::getUserRecipeInteractionCreatedAt,
-                        Comparator.nullsLast(Comparator.reverseOrder()));
-
-        list.sort(comparator);
     }
 
     private Map<Integer, List<RecipeCategoryShortDto>> fetchCategoriesForRecipes(List<Integer> recipeIds) {
