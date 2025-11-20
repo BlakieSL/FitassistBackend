@@ -21,7 +21,6 @@ import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.daily.DailyFoodMapper;
 import source.code.model.daily.DailyCart;
-import source.code.model.daily.DailyCartActivity;
 import source.code.model.daily.DailyCartFood;
 import source.code.model.food.Food;
 import source.code.model.user.User;
@@ -36,7 +35,6 @@ import source.code.service.implementation.daily.DailyFoodServiceImpl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;

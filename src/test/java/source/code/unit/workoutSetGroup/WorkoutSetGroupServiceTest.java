@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -66,7 +65,6 @@ public class WorkoutSetGroupServiceTest {
     }
 
     @Test
-    @DisplayName("createWorkoutSetGroup - Should create a new WorkoutSetGroup")
     public void createWorkoutSetGroup_ShouldCreateNewWorkoutSetGroup() {
         when(workoutSetGroupMapper.toEntity(createDto)).thenReturn(workoutSetGroup);
         when(workoutSetGroupRepository.save(workoutSetGroup)).thenReturn(workoutSetGroup);
@@ -81,7 +79,6 @@ public class WorkoutSetGroupServiceTest {
     }
 
     @Test
-    @DisplayName("updateWorkoutSetGroup - Should update an existing WorkoutSetGroup")
     public void updateWorkoutSetGroup_ShouldUpdateExistingWorkoutSetGroup() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId)).thenReturn(workoutSetGroup);
         when(jsonPatchService.createFromPatch(eq(patch), eq(WorkoutSetGroupUpdateDto.class)))
@@ -100,7 +97,6 @@ public class WorkoutSetGroupServiceTest {
     }
 
     @Test
-    @DisplayName("updateWorkoutSetGroup - Should throw exception when workoutSetGroup not found")
     public void updateWorkoutSetGroup_ShouldThrowExceptionWhenNotFound() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId))
                 .thenThrow(RecordNotFoundException.class);
@@ -115,7 +111,6 @@ public class WorkoutSetGroupServiceTest {
     }
 
     @Test
-    @DisplayName("updateWorkoutSetGroup - Should throw exception when validation fails")
     public void updateWorkoutSetGroup_ShouldThrowExceptionWhenValidationFails() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId)).thenReturn(workoutSetGroup);
         when(jsonPatchService.createFromPatch(eq(patch), eq(WorkoutSetGroupUpdateDto.class)))
@@ -132,7 +127,6 @@ public class WorkoutSetGroupServiceTest {
     }
 
     @Test
-    @DisplayName("updateWorkoutSetGroup - Should throw exception when patch fails ")
     public void updateWorkoutSetGroup_ShouldThrowExceptionWhenPatchFails() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId)).thenReturn(workoutSetGroup);
         when(jsonPatchService.createFromPatch(eq(patch), eq(WorkoutSetGroupUpdateDto.class)))
@@ -148,7 +142,6 @@ public class WorkoutSetGroupServiceTest {
     }
 
     @Test
-    @DisplayName("deleteWorkoutSetGroup - Should delete an existing WorkoutSetGroup")
     public void deleteWorkoutSetGroup_ShouldDeleteExistingWorkoutSetGroup() {
         when(repositoryHelper.find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId)).thenReturn(workoutSetGroup);
         doNothing().when(workoutSetGroupRepository).delete(workoutSetGroup);
@@ -160,7 +153,6 @@ public class WorkoutSetGroupServiceTest {
     }
 
     @Test
-    @DisplayName("deleteWorkoutSetGroup - Should throw exception when workoutSetGroup not found")
     public void deleteWorkoutSetGroup_ShouldThrowExceptionWhenNotFound() {
         when(repositoryHelper.find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId))
                 .thenThrow(RecordNotFoundException.class);
@@ -172,7 +164,6 @@ public class WorkoutSetGroupServiceTest {
     }
 
     @Test
-    @DisplayName("getWorkoutSetGroup - Should return a WorkoutSetGroup by ID")
     public void getWorkoutSetGroup_ShouldReturnWorkoutSetGroupById() {
         when(repositoryHelper.find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId)).thenReturn(workoutSetGroup);
         when(workoutSetGroupMapper.toResponseDto(workoutSetGroup)).thenReturn(responseDto);
@@ -185,7 +176,6 @@ public class WorkoutSetGroupServiceTest {
     }
 
     @Test
-    @DisplayName("getWorkoutSetGroup - Should throw exception when workoutSetGroup not found")
     public void getWorkoutSetGroup_ShouldThrowExceptionWhenNotFound() {
         when(repositoryHelper.find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId))
                 .thenThrow(RecordNotFoundException.class);
@@ -197,7 +187,6 @@ public class WorkoutSetGroupServiceTest {
     }
 
     @Test
-    @DisplayName("getAllWorkoutSetGroupsForWorkout - Should return all WorkoutSetGroups for a given Workout")
     public void getAllWorkoutSetGroupsForWorkout_ShouldReturnAllWorkoutSetGroupsForWorkout() {
         int workoutId = 1;
         when(workoutSetGroupRepository.findAllByWorkoutId(workoutId)).thenReturn(List.of(workoutSetGroup));
@@ -212,7 +201,6 @@ public class WorkoutSetGroupServiceTest {
     }
 
     @Test
-    @DisplayName("getAllWorkoutSetGroupsForWorkout - Should return empty list when no WorkoutSetGroups found")
     public void getAllWorkoutSetGroupsForWorkout_ShouldReturnEmptyListWhenNoWorkoutSetGroupsFound() {
         int workoutId = 1;
         when(workoutSetGroupRepository.findAllByWorkoutId(workoutId)).thenReturn(List.of());

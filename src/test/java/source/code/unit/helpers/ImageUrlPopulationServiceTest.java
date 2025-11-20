@@ -1,9 +1,8 @@
 package source.code.unit.helpers;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.response.activity.ActivitySummaryDto;
@@ -17,7 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,15 +26,10 @@ public class ImageUrlPopulationServiceTest {
     @Mock
     private AwsS3Service s3Service;
 
+    @InjectMocks
     private ImageUrlPopulationServiceImpl imagePopulationService;
 
-    @BeforeEach
-    void setUp() {
-        imagePopulationService = new ImageUrlPopulationServiceImpl(s3Service);
-    }
-
     @Test
-    @DisplayName("populateAuthorAndEntityImagesForList - Should populate URLs for all PlanSummaryDto in list")
     void populateAuthorAndEntityImagesForList_ShouldPopulateUrlsForAllPlanDtos() {
         PlanSummaryDto dto1 = new PlanSummaryDto();
         dto1.setAuthorImageName("author1.jpg");
@@ -74,7 +69,6 @@ public class ImageUrlPopulationServiceTest {
     }
 
     @Test
-    @DisplayName("populateAuthorAndEntityImagesForList - Should populate URLs for all RecipeSummaryDto in list")
     void populateAuthorAndEntityImagesForList_ShouldPopulateUrlsForAllRecipeDtos() {
         RecipeSummaryDto dto1 = new RecipeSummaryDto();
         dto1.setAuthorImageName("author1.jpg");
@@ -106,7 +100,6 @@ public class ImageUrlPopulationServiceTest {
     }
 
     @Test
-    @DisplayName("populateAuthorAndEntityImagesForList - Should handle empty list")
     void populateAuthorAndEntityImagesForList_ShouldHandleEmptyList() {
         List<PlanSummaryDto> dtos = Arrays.asList();
 
@@ -122,7 +115,6 @@ public class ImageUrlPopulationServiceTest {
     }
 
     @Test
-    @DisplayName("populateAuthorImageForList - Should populate author URLs for all DTOs in list")
     void populateAuthorImageForList_ShouldPopulateAuthorUrlsForAllDtos() {
         PlanSummaryDto dto1 = new PlanSummaryDto();
         dto1.setAuthorImageName("author1.jpg");
@@ -151,7 +143,6 @@ public class ImageUrlPopulationServiceTest {
     }
 
     @Test
-    @DisplayName("populateAuthorImageForList - Should not call S3 service when all image names are null")
     void populateAuthorImageForList_ShouldNotCallS3WhenAllNamesAreNull() {
         PlanSummaryDto dto1 = new PlanSummaryDto();
         dto1.setAuthorImageName(null);
@@ -173,7 +164,6 @@ public class ImageUrlPopulationServiceTest {
     }
 
     @Test
-    @DisplayName("populateFirstImageFromMediaList - Should populate image from mediaList")
     void populateFirstImageFromMediaList_ShouldPopulateImageFromMediaList() {
         ActivitySummaryDto dto = new ActivitySummaryDto();
 
@@ -198,7 +188,6 @@ public class ImageUrlPopulationServiceTest {
     }
 
     @Test
-    @DisplayName("populateFirstImageFromMediaList - Should handle empty mediaList")
     void populateFirstImageFromMediaList_ShouldHandleEmptyMediaList() {
         ActivitySummaryDto dto = new ActivitySummaryDto();
         List<Media> mediaList = new ArrayList<>();
@@ -217,7 +206,6 @@ public class ImageUrlPopulationServiceTest {
     }
 
     @Test
-    @DisplayName("populateFirstImageFromMediaList - Should handle null mediaList")
     void populateFirstImageFromMediaList_ShouldHandleNullMediaList() {
         ActivitySummaryDto dto = new ActivitySummaryDto();
 
@@ -235,7 +223,6 @@ public class ImageUrlPopulationServiceTest {
     }
 
     @Test
-    @DisplayName("populateFirstImageFromMediaList - Should handle null imageName in media")
     void populateFirstImageFromMediaList_ShouldHandleNullImageNameInMedia() {
         ActivitySummaryDto dto = new ActivitySummaryDto();
 
@@ -258,7 +245,6 @@ public class ImageUrlPopulationServiceTest {
     }
 
     @Test
-    @DisplayName("populateFirstImageFromMediaList - Should populate for multiple DTOs")
     void populateFirstImageFromMediaList_ShouldPopulateForMultipleDtos() {
         ActivitySummaryDto dto1 = new ActivitySummaryDto();
         ActivitySummaryDto dto2 = new ActivitySummaryDto();

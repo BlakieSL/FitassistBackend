@@ -2,13 +2,13 @@ package source.code.unit.user.withoutType;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 import source.code.dto.response.food.FoodSummaryDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
@@ -20,8 +20,6 @@ import source.code.model.media.Media;
 import source.code.model.user.User;
 import source.code.model.user.UserFood;
 import source.code.repository.FoodRepository;
-import org.springframework.data.domain.Sort;
-import source.code.repository.MediaRepository;
 import source.code.repository.UserFoodRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.ImageUrlPopulationService;
@@ -33,9 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,16 +45,14 @@ public class UserFoodServiceTest {
     @Mock
     private FoodMapper foodMapper;
     @Mock
-    private MediaRepository mediaRepository;
-    @Mock
     private ImageUrlPopulationService imagePopulationService;
     private UserFoodServiceImpl userFoodService;
+
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
     @BeforeEach
     void setUp() {
         mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
-
         userFoodService = new UserFoodServiceImpl(
                 userRepository,
                 foodRepository,
@@ -76,7 +70,6 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should save to user with type")
     public void saveToUser_ShouldSaveToUserWithType() {
         int userId = 1;
         int foodId = 100;
@@ -95,7 +88,6 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if already saved")
     public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
         int userId = 1;
         int foodId = 100;
@@ -111,7 +103,6 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if user not found")
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
         int userId = 1;
         int foodId = 100;
@@ -128,7 +119,6 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if food not found")
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfFoodNotFound() {
         int userId = 1;
         int foodId = 100;
@@ -147,7 +137,6 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    @DisplayName("deleteFromUser - Should delete from user")
     public void deleteFromUser_ShouldDeleteFromUser() {
         int userId = 1;
         int foodId = 100;
@@ -163,7 +152,6 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    @DisplayName("deleteFromUser - Should throw exception if user food not found")
     public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserFoodNotFound() {
         int userId = 1;
         int foodId = 100;
@@ -179,7 +167,6 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should return all foods by type")
     public void getAllFromUser_ShouldReturnAllFoodsByType() {
         int userId = 1;
 
@@ -219,7 +206,6 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should return empty list if no foods")
     public void getAllFromUser_ShouldReturnEmptyListIfNoFoods() {
         int userId = 1;
         when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
@@ -231,7 +217,6 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    @DisplayName("calculateLikesAndSaves - Should return correct counts")
     public void calculateLikesAndSaves_ShouldReturnCorrectCounts() {
         int foodId = 100;
         long saveCount = 5;
@@ -254,7 +239,6 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    @DisplayName("calculateLikesAndSaves - Should throw exception if food not found")
     public void calculateLikesAndSaves_ShouldThrowRecordNotFoundExceptionIfFoodNotFound() {
         int foodId = 100;
 
@@ -267,7 +251,6 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser with sortDirection DESC - Should sort by interaction date DESC")
     public void getAllFromUser_ShouldSortByInteractionDateDesc() {
         int userId = 1;
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
@@ -301,7 +284,6 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser with sortDirection ASC - Should sort by interaction date ASC")
     public void getAllFromUser_ShouldSortByInteractionDateAsc() {
         int userId = 1;
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
@@ -335,7 +317,6 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser default - Should sort DESC when no direction specified")
     public void getAllFromUser_DefaultShouldSortDesc() {
         int userId = 1;
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
@@ -369,7 +350,6 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should handle null dates properly")
     public void getAllFromUser_ShouldHandleNullDates() {
         int userId = 1;
 
@@ -409,7 +389,6 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should populate image URLs after sorting")
     public void getAllFromUser_ShouldPopulateImageUrlsAfterSorting() {
         int userId = 1;
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);

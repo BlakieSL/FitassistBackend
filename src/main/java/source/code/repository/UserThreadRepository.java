@@ -3,7 +3,6 @@ package source.code.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.model.user.UserThread;
 
 import java.util.List;

@@ -4,12 +4,14 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.validation.password.PasswordDigitsDomain;
 import source.code.validation.password.PasswordDigitsValidator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 public class PasswordDigitsValidatorTest {
@@ -20,11 +22,11 @@ public class PasswordDigitsValidatorTest {
     @Mock
     private PasswordDigitsDomain annotation;
 
+    @InjectMocks
     private PasswordDigitsValidator validator;
 
     @BeforeEach
     void setUp() {
-        validator = new PasswordDigitsValidator();
         validator.initialize(annotation);
     }
 

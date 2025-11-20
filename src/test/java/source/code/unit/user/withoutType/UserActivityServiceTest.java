@@ -2,7 +2,6 @@ package source.code.unit.user.withoutType;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -31,9 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,6 +46,7 @@ public class UserActivityServiceTest {
     @Mock
     private ImageUrlPopulationService imagePopulationService;
     private UserActivityServiceImpl userActivityService;
+
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
     @BeforeEach
@@ -71,7 +69,6 @@ public class UserActivityServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should save to user")
     public void saveToUser_ShouldSaveToUserWithType() {
         int userId = 1;
         int activityId = 100;
@@ -90,7 +87,6 @@ public class UserActivityServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if already saved")
     public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
         int userId = 1;
         int activityId = 100;
@@ -106,7 +102,6 @@ public class UserActivityServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if user not found")
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
         int userId = 1;
         int activityId = 100;
@@ -123,7 +118,6 @@ public class UserActivityServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if activity not found")
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfActivityNotFound() {
         int userId = 1;
         int activityId = 100;
@@ -142,7 +136,6 @@ public class UserActivityServiceTest {
     }
 
     @Test
-    @DisplayName("deleteFromUser - Should delete from user")
     public void deleteFromUser_ShouldDeleteFromUser() {
         int userId = 1;
         int activityId = 100;
@@ -158,7 +151,6 @@ public class UserActivityServiceTest {
     }
 
     @Test
-    @DisplayName("deleteFromUser - Should throw exception if user activity not found")
     public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserActivityNotFound() {
         int userId = 1;
         int activityId = 100;
@@ -173,7 +165,6 @@ public class UserActivityServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should return all activities by type")
     public void getAllFromUser_ShouldReturnAllActivitiesByType() {
         int userId = 1;
 
@@ -205,7 +196,6 @@ public class UserActivityServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should return empty list if no activities")
     public void getAllFromUser_ShouldReturnEmptyListIfNoActivities() {
         int userId = 1;
 
@@ -218,7 +208,6 @@ public class UserActivityServiceTest {
     }
 
     @Test
-    @DisplayName("calculateLikesAndSaves - Should return correct counts")
     public void calculateLikesAndSaves_ShouldReturnCorrectCounts() {
         int activityId = 100;
         long likeCount = 0L;
@@ -241,7 +230,6 @@ public class UserActivityServiceTest {
     }
 
     @Test
-    @DisplayName("calculateLikesAndSaves - Should throw exception if activity not found")
     public void calculateLikesAndSaves_ShouldThrowRecordNotFoundExceptionIfActivityNotFound() {
         int activityId = 100;
 
@@ -254,7 +242,6 @@ public class UserActivityServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser with sortDirection DESC - Should sort by interaction date DESC")
     public void getAllFromUser_ShouldSortByInteractionDateDesc() {
         int userId = 1;
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
@@ -287,7 +274,6 @@ public class UserActivityServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser with sortDirection ASC - Should sort by interaction date ASC")
     public void getAllFromUser_ShouldSortByInteractionDateAsc() {
         int userId = 1;
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
@@ -320,7 +306,6 @@ public class UserActivityServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser default - Should sort DESC when no direction specified")
     public void getAllFromUser_DefaultShouldSortDesc() {
         int userId = 1;
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
@@ -353,7 +338,6 @@ public class UserActivityServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should handle null dates properly")
     public void getAllFromUser_ShouldHandleNullDates() {
         int userId = 1;
 
@@ -392,7 +376,6 @@ public class UserActivityServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should populate image URLs after sorting")
     public void getAllFromUser_ShouldPopulateImageUrlsAfterSorting() {
         int userId = 1;
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);

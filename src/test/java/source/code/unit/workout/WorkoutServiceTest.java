@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -67,7 +66,6 @@ public class WorkoutServiceTest {
     }
 
     @Test
-    @DisplayName("createWorkout - Should create workout")
     public void createWorkout() {
         when(workoutMapper.toEntity(workoutCreateDto)).thenReturn(workout);
         when(workoutRepository.save(workout)).thenReturn(workout);
@@ -81,7 +79,6 @@ public class WorkoutServiceTest {
     }
 
     @Test
-    @DisplayName("updateWorkout - Should update workout")
     public void updateWorkout() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(workoutRepository, Workout.class, workoutId)).thenReturn(workout);
         when(jsonPatchService.createFromPatch(eq(patch), eq(WorkoutUpdateDto.class)))
@@ -100,7 +97,6 @@ public class WorkoutServiceTest {
     }
 
     @Test
-    @DisplayName("updateWorkout - Should throw exception when workout not found")
     public void updateWorkoutNotFound() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(workoutRepository, Workout.class, workoutId))
                 .thenThrow(RecordNotFoundException.class);
@@ -115,7 +111,6 @@ public class WorkoutServiceTest {
     }
 
     @Test
-    @DisplayName("updateWorkout - Should throw exception when validation fails")
     public void updateWorkoutValidationFails() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(workoutRepository, Workout.class, workoutId)).thenReturn(workout);
         when(jsonPatchService.createFromPatch(eq(patch), eq(WorkoutUpdateDto.class)))
@@ -132,7 +127,6 @@ public class WorkoutServiceTest {
     }
 
     @Test
-    @DisplayName("updateWorkout - Should throw exception when patch fails")
     public void updateWorkoutPatchApplicationFails() throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(workoutRepository, Workout.class, workoutId)).thenReturn(workout);
         when(jsonPatchService.createFromPatch(eq(patch), eq(WorkoutUpdateDto.class)))
@@ -148,7 +142,6 @@ public class WorkoutServiceTest {
     }
 
     @Test
-    @DisplayName("deleteWorkout - Should delete workout")
     public void deleteWorkout() {
         when(repositoryHelper.find(workoutRepository, Workout.class, workoutId)).thenReturn(workout);
         doNothing().when(workoutRepository).delete(workout);
@@ -160,7 +153,6 @@ public class WorkoutServiceTest {
     }
 
     @Test
-    @DisplayName("deleteWorkout - Should throw exception when workout not found")
     public void deleteWorkoutNotFound() {
         when(repositoryHelper.find(workoutRepository, Workout.class, workoutId))
                 .thenThrow(RecordNotFoundException.class);
@@ -172,7 +164,6 @@ public class WorkoutServiceTest {
     }
 
     @Test
-    @DisplayName("getWorkout - Should return workout")
     public void getWorkout() {
         when(repositoryHelper.find(workoutRepository, Workout.class, workoutId)).thenReturn(workout);
         when(workoutMapper.toResponseDto(workout)).thenReturn(workoutResponseDto);
@@ -184,7 +175,6 @@ public class WorkoutServiceTest {
     }
 
     @Test
-    @DisplayName("getWorkout - Should throw exception when workout not found")
     public void getWorkoutNotFound() {
         when(repositoryHelper.find(workoutRepository, Workout.class, workoutId))
                 .thenThrow(RecordNotFoundException.class);
@@ -196,7 +186,6 @@ public class WorkoutServiceTest {
     }
 
     @Test
-    @DisplayName("getAllWorkoutsForPlan - Should return all workouts for plan")
     public void getAllWorkoutsForPlan() {
         int planId = 1;
         when(workoutRepository.findAllByPlanId(planId)).thenReturn(List.of(workout));
@@ -210,7 +199,6 @@ public class WorkoutServiceTest {
     }
 
     @Test
-    @DisplayName("getAllWorkoutsForPlan - Should return empty list when no workouts found")
     public void getAllWorkoutsForPlanNoWorkouts() {
         int planId = 1;
         when(workoutRepository.findAllByPlanId(planId)).thenReturn(List.of());

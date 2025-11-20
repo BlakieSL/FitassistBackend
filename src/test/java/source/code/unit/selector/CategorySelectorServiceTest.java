@@ -2,14 +2,16 @@ package source.code.unit.selector;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.helper.Enum.model.CategoryType;
 import source.code.service.implementation.category.*;
 import source.code.service.implementation.selector.CategorySelectorServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+@ExtendWith(MockitoExtension.class)
 public class CategorySelectorServiceTest {
 
     @Mock
@@ -27,7 +29,6 @@ public class CategorySelectorServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         categorySelectorService = new CategorySelectorServiceImpl(
                 foodCategoryService,
                 activityCategoryService,

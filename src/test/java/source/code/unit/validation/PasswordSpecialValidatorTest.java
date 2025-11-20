@@ -4,12 +4,14 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.validation.password.PasswordSpecialDomain;
 import source.code.validation.password.PasswordSpecialValidator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 public class PasswordSpecialValidatorTest {
@@ -20,11 +22,11 @@ public class PasswordSpecialValidatorTest {
     @Mock
     private PasswordSpecialDomain annotation;
 
+    @InjectMocks
     private PasswordSpecialValidator validator;
 
     @BeforeEach
     void setUp() {
-        validator = new PasswordSpecialValidator();
         validator.initialize(annotation);
     }
 

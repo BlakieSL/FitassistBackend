@@ -2,7 +2,6 @@ package source.code.unit.user.withType;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -10,7 +9,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
-import source.code.dto.response.comment.CommentResponseDto;
 import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.exception.NotUniqueRecordException;
@@ -65,7 +63,6 @@ public class UserCommentServiceTest {
     @BeforeEach
     void setUp() {
         mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
-
         userCommentService = new UserCommentServiceImpl(
                 userRepository,
                 commentRepository,
@@ -84,7 +81,6 @@ public class UserCommentServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should save to user")
     public void saveToUser_ShouldSaveToUser() {
         int userId = 1;
         int commentId = 100;
@@ -103,7 +99,6 @@ public class UserCommentServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if type is SAVE")
     public void saveToUser_ShouldThrowNotSupportedInteractionTypeExceptionIfTypeIsSave() {
         int userId = 1;
         int commentId = 100;
@@ -120,7 +115,6 @@ public class UserCommentServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if already saved")
     public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
         int userId = 1;
         int commentId = 100;
@@ -135,7 +129,6 @@ public class UserCommentServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if user not found")
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
         int userId = 1;
         int commentId = 100;
@@ -151,7 +144,6 @@ public class UserCommentServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if comment not found")
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfCommentNotFound() {
         int userId = 1;
         int commentId = 100;
@@ -169,7 +161,6 @@ public class UserCommentServiceTest {
     }
 
     @Test
-    @DisplayName("deleteFromUser - Should delete from user")
     public void deleteFromUser_ShouldDeleteFromUser() {
         int userId = 1;
         int commentId = 100;
@@ -186,7 +177,6 @@ public class UserCommentServiceTest {
     }
 
     @Test
-    @DisplayName("deleteFromUser - Should throw exception if user comment like not found")
     public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserCommentLikeNotFound() {
         int userId = 1;
         int commentId = 100;
@@ -202,7 +192,6 @@ public class UserCommentServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should return all liked comments from user")
     public void getAllFromUser_ShouldReturnAllLikedCommentsFromUser() {
         TypeOfInteraction type = TypeOfInteraction.LIKE;
         int userId = 1;
@@ -221,7 +210,6 @@ public class UserCommentServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should return empty list if no liked comments")
     public void getAllFromUser_ShouldReturnEmptyListIfNoLikedComments() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.LIKE;
@@ -235,7 +223,6 @@ public class UserCommentServiceTest {
     }
 
     @Test
-    @DisplayName("calculateLikesAndSaves - Should calculate likes and return 0 for saves")
     public void calculateLikesAndSaves_ShouldCalculateLikesAndReturnZeroForSaves() {
         int commentId = 100;
         int likeCount = 100;
@@ -255,7 +242,6 @@ public class UserCommentServiceTest {
     }
 
     @Test
-    @DisplayName("calculateLikesAndSaves - Should throw exception if comment not found")
     public void calculateLikesAndSaves_ShouldThrowRecordNotFoundExceptionIfCommentNotFound() {
         int commentId = 100;
 
@@ -267,7 +253,6 @@ public class UserCommentServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser with type and sortDirection DESC - Should sort by interaction date DESC")
     public void getAllFromUser_WithType_ShouldSortByInteractionDateDesc() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.LIKE;
@@ -288,7 +273,6 @@ public class UserCommentServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser with type and sortDirection ASC - Should sort by interaction date ASC")
     public void getAllFromUser_WithType_ShouldSortByInteractionDateAsc() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.DISLIKE;
@@ -309,7 +293,6 @@ public class UserCommentServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser with type default - Should sort DESC when no direction specified")
     public void getAllFromUser_WithType_DefaultShouldSortDesc() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.LIKE;
@@ -330,7 +313,6 @@ public class UserCommentServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser with type - Should handle null dates properly")
     public void getAllFromUser_WithType_ShouldHandleNullDates() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.LIKE;
@@ -350,7 +332,6 @@ public class UserCommentServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser with type - Should populate author image URLs after sorting")
     public void getAllFromUser_WithType_ShouldPopulateAuthorImageUrlsAfterSorting() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.LIKE;

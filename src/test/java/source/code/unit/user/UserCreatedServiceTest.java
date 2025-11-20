@@ -2,7 +2,6 @@ package source.code.unit.user;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,32 +10,12 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
-import source.code.dto.response.comment.CommentResponseDto;
 import source.code.dto.response.comment.CommentSummaryDto;
-import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
-import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
-import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
-import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.helper.user.AuthorizationUtil;
-import source.code.model.media.Media;
-import source.code.mapper.comment.CommentMapper;
-import source.code.mapper.forumThread.ForumThreadMapper;
-import source.code.mapper.plan.PlanMapper;
-import source.code.mapper.recipe.RecipeMapper;
-import source.code.model.plan.Plan;
-import source.code.model.recipe.Recipe;
-import source.code.model.thread.Comment;
-import source.code.model.thread.ForumThread;
-import source.code.model.user.User;
-import source.code.repository.CommentRepository;
-import source.code.repository.ForumThreadRepository;
-import source.code.repository.MediaRepository;
-import source.code.repository.PlanRepository;
-import source.code.repository.RecipeCategoryAssociationRepository;
-import source.code.repository.RecipeRepository;
+import source.code.repository.*;
 import source.code.service.declaration.helpers.ImageUrlPopulationService;
 import source.code.service.declaration.helpers.SortingService;
 import source.code.service.implementation.user.UserCreatedServiceImpl;
@@ -44,10 +23,10 @@ import source.code.service.implementation.user.UserCreatedServiceImpl;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class UserCreatedServiceTest {
@@ -60,24 +39,14 @@ public class UserCreatedServiceTest {
     @Mock
     private ForumThreadRepository forumThreadRepository;
     @Mock
-    private MediaRepository mediaRepository;
+    private RecipeCategoryAssociationRepository recipeCategoryAssociationRepository;
     @Mock
-    private ImageUrlPopulationService imageUrlPopulationService;
+    private ImageUrlPopulationService imagePopulationService;
     @Mock
     private SortingService sortingService;
-    @Mock
-    private RecipeCategoryAssociationRepository recipeCategoryAssociationRepository;
-
-    @Mock
-    private PlanMapper planMapper;
-    @Mock
-    private RecipeMapper recipeMapper;
-    @Mock
-    private CommentMapper commentMapper;
-    @Mock
-    private ForumThreadMapper forumThreadMapper;
     @InjectMocks
     private UserCreatedServiceImpl userCreatedService;
+
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
     @BeforeEach
@@ -93,7 +62,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedPlans - Should return PlanSummaryDto list from repository")
     public void getCreatedPlans_ShouldReturnPlanSummaryDtos() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
@@ -115,7 +83,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedPlans - Should return empty list when user has no plans")
     public void getCreatedPlans_ShouldReturnEmptyListWhenNoPlans() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
@@ -130,7 +97,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedRecipes - Should return RecipeSummaryDto list from repository")
     public void getCreatedRecipes_ShouldReturnRecipeSummaryDtos() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
@@ -157,7 +123,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedRecipes - Should return empty list when user has no recipes")
     public void getCreatedRecipes_ShouldReturnEmptyListWhenNoRecipes() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
@@ -172,7 +137,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedComments - Should return CommentSummaryDto list from repository")
     public void getCreatedComments_ShouldReturnCommentSummaryDtos() {
         int userId = 1;
 
@@ -195,7 +159,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedComments - Should return empty list when user has no comments")
     public void getCreatedComments_ShouldReturnEmptyListWhenNoComments() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
@@ -210,7 +173,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedThreads - Should return ForumThreadSummaryDto list from repository")
     public void getCreatedThreads_ShouldReturnForumThreadSummaryDtos() {
         int userId = 1;
 
@@ -233,7 +195,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedThreads - Should return empty list when user has no threads")
     public void getCreatedThreads_ShouldReturnEmptyListWhenNoThreads() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
@@ -248,7 +209,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedPlans - Should handle plans with null image URLs")
     public void getCreatedPlans_ShouldHandleNullImageUrls() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
@@ -267,7 +227,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedRecipes - Should handle recipes with null image URLs")
     public void getCreatedRecipes_ShouldHandleNullImageUrls() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
@@ -290,7 +249,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedPlans with sortDirection - Should return plans and call sorting service")
     public void getCreatedPlans_ShouldReturnPlansAndCallSortingService() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
@@ -310,7 +268,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedPlans with sortDirection - Should return plans with ASC direction")
     public void getCreatedPlans_ShouldReturnPlansWithAscDirection() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
@@ -330,7 +287,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedRecipes with sortDirection - Should sort by createdAt DESC by default")
     public void getCreatedRecipes_ShouldSortByCreatedAtDesc() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
@@ -352,7 +308,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedRecipes with sortDirection - Should sort by createdAt ASC")
     public void getCreatedRecipes_ShouldSortByCreatedAtAsc() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
@@ -374,7 +329,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedComments with sortDirection - Should sort by dateCreated DESC by default")
     public void getCreatedComments_ShouldSortByDateCreatedDesc() {
         int userId = 1;
 
@@ -393,7 +347,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedComments with sortDirection - Should sort by dateCreated ASC")
     public void getCreatedComments_ShouldSortByDateCreatedAsc() {
         int userId = 1;
 
@@ -412,7 +365,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedThreads with sortDirection - Should sort by dateCreated DESC by default")
     public void getCreatedThreads_ShouldSortByDateCreatedDesc() {
         int userId = 1;
 
@@ -431,7 +383,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("getCreatedThreads with sortDirection - Should sort by dateCreated ASC")
     public void getCreatedThreads_ShouldSortByDateCreatedAsc() {
         int userId = 1;
 
@@ -450,7 +401,6 @@ public class UserCreatedServiceTest {
     }
 
     @Test
-    @DisplayName("sortByCreatedAt - Should handle null dates properly")
     public void sortByCreatedAt_ShouldHandleNullDates() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);

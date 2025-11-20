@@ -1,6 +1,5 @@
 package source.code.unit.text;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +17,6 @@ public class RecipeInstructionTextCacheKeyGeneratorTest {
     private RecipeInstructionTextCacheKeyGeneratorImpl keyGenerator;
 
     @Test
-    @DisplayName("generateCacheKey - Should generate correct key for recipe instruction entity")
     public void generateCacheKey() {
         int recipeId = 123;
         RecipeInstruction recipeInstruction = new RecipeInstruction();
@@ -33,7 +31,6 @@ public class RecipeInstructionTextCacheKeyGeneratorTest {
     }
 
     @Test
-    @DisplayName("generateCacheKeyForParent - Should generate correct key for recipe ID")
     public void generateCacheKeyForParent() {
         int recipeId = 123;
 

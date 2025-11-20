@@ -1,9 +1,9 @@
 package source.code.unit.validation;
 
 import jakarta.validation.ConstraintValidatorContext;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.helper.Enum.model.user.ActivityLevel;
@@ -14,7 +14,8 @@ import source.code.validation.healthRelatedInfo.HealthRelatedInfoShouldBeFullVal
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 public class HealthRelatedInfoShouldBeFullValidatorTest {
@@ -25,12 +26,8 @@ public class HealthRelatedInfoShouldBeFullValidatorTest {
     @Mock
     private HealthInfoShouldBeFullDomain annotation;
 
+    @InjectMocks
     private HealthRelatedInfoShouldBeFullValidator validator;
-
-    @BeforeEach
-    void setUp() {
-        validator = new HealthRelatedInfoShouldBeFullValidator();
-    }
 
     @Test
     void isValid_shouldReturnTrueWhenAllFieldsAreNull() {

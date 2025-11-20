@@ -2,8 +2,6 @@ package source.code.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.UserRecipe;
 

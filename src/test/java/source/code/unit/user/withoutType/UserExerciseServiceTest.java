@@ -2,14 +2,13 @@ package source.code.unit.user.withoutType;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import source.code.dto.response.exercise.ExerciseResponseDto;
+import org.springframework.data.domain.Sort;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
@@ -21,8 +20,6 @@ import source.code.model.media.Media;
 import source.code.model.user.User;
 import source.code.model.user.UserExercise;
 import source.code.repository.ExerciseRepository;
-import org.springframework.data.domain.Sort;
-import source.code.repository.MediaRepository;
 import source.code.repository.UserExerciseRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.ImageUrlPopulationService;
@@ -48,16 +45,14 @@ public class UserExerciseServiceTest {
     @Mock
     private ExerciseMapper exerciseMapper;
     @Mock
-    private MediaRepository mediaRepository;
-    @Mock
     private ImageUrlPopulationService imagePopulationService;
     private UserExerciseServiceImpl userExerciseService;
+
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
     @BeforeEach
     void setUp() {
         mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
-
         userExerciseService = new UserExerciseServiceImpl(
                 userRepository,
                 exerciseRepository,
@@ -75,7 +70,6 @@ public class UserExerciseServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should save to user with type")
     public void saveToUser_ShouldSaveToUserWithType() {
         int userId = 1;
         int exerciseId = 100;
@@ -94,7 +88,6 @@ public class UserExerciseServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if already saved")
     public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
         int userId = 1;
         int exerciseId = 100;
@@ -110,7 +103,6 @@ public class UserExerciseServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if user not found")
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
         int userId = 1;
         int exerciseId = 100;
@@ -127,7 +119,6 @@ public class UserExerciseServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if exercise not found")
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfExerciseNotFound() {
         int userId = 1;
         int exerciseId = 100;
@@ -146,7 +137,6 @@ public class UserExerciseServiceTest {
     }
 
     @Test
-    @DisplayName("deleteFromUser - Should delete from user")
     public void deleteFromUser_ShouldDeleteFromUser() {
         int userId = 1;
         int exerciseId = 100;
@@ -162,7 +152,6 @@ public class UserExerciseServiceTest {
     }
 
     @Test
-    @DisplayName("deleteFromUser - Should throw exception if user exercise not found")
     public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserExerciseNotFound() {
         int userId = 1;
         int exerciseId = 100;
@@ -178,7 +167,6 @@ public class UserExerciseServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should return all exercises by type")
     public void getAllFromUser_ShouldReturnAllExercisesByType() {
         int userId = 1;
 
@@ -218,7 +206,6 @@ public class UserExerciseServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should return empty list if no exercises")
     public void getAllFromUser_ShouldReturnEmptyListIfNoExercises() {
         int userId = 1;
 
@@ -231,7 +218,6 @@ public class UserExerciseServiceTest {
     }
 
     @Test
-    @DisplayName("calculateLikesAndSaves - Should return correct counts")
     public void calculateLikesAndSaves_ShouldReturnCorrectCounts() {
         int exerciseId = 100;
         long saveCount = 5;
@@ -254,7 +240,6 @@ public class UserExerciseServiceTest {
     }
 
     @Test
-    @DisplayName("calculateLikesAndSaves - Should throw exception if exercise not found")
     public void calculateLikesAndSaves_ShouldThrowRecordNotFoundExceptionIfExerciseNotFound() {
         int exerciseId = 100;
 
@@ -267,7 +252,6 @@ public class UserExerciseServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser with sortDirection DESC - Should sort by interaction date DESC")
     public void getAllFromUser_ShouldSortByInteractionDateDesc() {
         int userId = 1;
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
@@ -301,7 +285,6 @@ public class UserExerciseServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser with sortDirection ASC - Should sort by interaction date ASC")
     public void getAllFromUser_ShouldSortByInteractionDateAsc() {
         int userId = 1;
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
@@ -335,7 +318,6 @@ public class UserExerciseServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser default - Should sort DESC when no direction specified")
     public void getAllFromUser_DefaultShouldSortDesc() {
         int userId = 1;
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
@@ -369,7 +351,6 @@ public class UserExerciseServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should handle null dates properly")
     public void getAllFromUser_ShouldHandleNullDates() {
         int userId = 1;
 
@@ -409,7 +390,6 @@ public class UserExerciseServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should populate image URLs after sorting")
     public void getAllFromUser_ShouldPopulateImageUrlsAfterSorting() {
         int userId = 1;
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);

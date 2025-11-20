@@ -2,9 +2,9 @@ package source.code.unit.user.withoutType;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -49,22 +49,13 @@ public class  UserThreadServiceTest {
     private ImageUrlPopulationService imageUrlPopulationService;
     @Mock
     private SortingService sortingService;
+    @InjectMocks
     private UserThreadServiceImpl userThreadService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
     @BeforeEach
     void setUp() {
         mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
-
-        userThreadService = new UserThreadServiceImpl(
-                userThreadRepository,
-                forumThreadRepository,
-                userRepository,
-                forumThreadMapper,
-                mediaRepository,
-                imageUrlPopulationService,
-                sortingService
-        );
     }
 
     @AfterEach
@@ -75,7 +66,6 @@ public class  UserThreadServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should save to user")
     public void saveToUser_ShouldSaveToUser() {
         int userId = 1;
         int threadId = 100;
@@ -93,7 +83,6 @@ public class  UserThreadServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if already saved")
     public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
         int userId = 1;
         int threadId = 100;
@@ -107,7 +96,6 @@ public class  UserThreadServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if user not found")
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
         int userId = 1;
         int threadId = 100;
@@ -122,7 +110,6 @@ public class  UserThreadServiceTest {
     }
 
     @Test
-    @DisplayName("saveToUser - Should throw exception if thread not found")
     public void saveToUser_ShouldThrowRecordNotFoundExceptionIfThreadNotFound() {
         int userId = 1;
         int threadId = 100;
@@ -139,7 +126,6 @@ public class  UserThreadServiceTest {
     }
 
     @Test
-    @DisplayName("deleteFromUser - Should delete from user")
     public void deleteFromUser_ShouldDeleteFromUser() {
         int userId = 1;
         int threadId = 100;
@@ -155,7 +141,6 @@ public class  UserThreadServiceTest {
     }
 
     @Test
-    @DisplayName("deleteFromUser - Should throw exception if subscription not found")
     public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfSubscriptionNotFound() {
         int userId = 1;
         int threadId = 100;
@@ -170,7 +155,6 @@ public class  UserThreadServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should return all saved threads from user")
     public void getAllFromUser_ShouldReturnAllSavedThreadsFromUser() {
         int userId = 1;
         ForumThreadSummaryDto dto1 = new ForumThreadSummaryDto();
@@ -188,7 +172,6 @@ public class  UserThreadServiceTest {
     }
 
     @Test
-    @DisplayName("getAllFromUser - Should return empty list if no saved threads")
     public void getAllFromUser_ShouldReturnEmptyListIfNoSavedThreads() {
         int userId = 1;
 
@@ -201,7 +184,6 @@ public class  UserThreadServiceTest {
     }
 
     @Test
-    @DisplayName("calculateLikesAndSaves - Should return 0 for both likes and saves")
     public void calculateLikesAndSaves_ShouldReturnZeroForBoth() {
         int threadId = 100;
         ForumThread thread = new ForumThread();
@@ -216,7 +198,6 @@ public class  UserThreadServiceTest {
     }
 
     @Test
-    @DisplayName("calculateLikesAndSaves - Should throw exception if thread not found")
     public void calculateLikesAndSaves_ShouldThrowRecordNotFoundExceptionIfThreadNotFound() {
         int threadId = 100;
 
