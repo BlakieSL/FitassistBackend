@@ -30,6 +30,7 @@ public class UserSavedController {
             @PathVariable int userId,
             @RequestParam(defaultValue = "DESC") Sort.Direction sort
     ) {
+
         SavedService savedService = savedSelectorService.getService(itemType);
         List<BaseUserEntity> dto = savedService.getAllFromUser(userId, type, sort);
         return ResponseEntity.ok(dto);
