@@ -10,6 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import source.code.dto.request.exercise.ExerciseCreateDto;
+import source.code.dto.request.exercise.ExerciseUpdateDto;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
@@ -88,18 +89,14 @@ public class ExerciseControllerTest {
     @DisplayName("PATCH - /{id} - Should update an existing exercise")
     void updateExercise() throws Exception {
         Utils.setAdminContext(1);
-
-        String jsonPatch = """
-                {
-                    "name": "Updated Exercise",
-                    "description": "This is an updated test exercise.",
-                    "equipmentId": 2
-                }
-                """;
+        ExerciseUpdateDto updateDto = new ExerciseUpdateDto();
+        updateDto.setName("Updated Exercise");
+        updateDto.setDescription("This is an updated test exercise.");
+        updateDto.setEquipmentId(2);
 
         mockMvc.perform(patch("/api/exercises/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonPatch))
+                .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpect(status().isNoContent());
 
         mockMvc.perform(get("/api/exercises/1")
@@ -116,18 +113,14 @@ public class ExerciseControllerTest {
     @DisplayName("PATCH - /{id} - Non-admin user should get 403 Forbidden")
     void updateExerciseAsUserShouldForbid() throws Exception {
         Utils.setUserContext(1);
-
-        String jsonPatch = """
-                {
-                    "name": "Updated Exercise",
-                    "description": "This is an updated test exercise.",
-                    "equipmentId": 2
-                }
-                """;
+        ExerciseUpdateDto updateDto = new ExerciseUpdateDto();
+        updateDto.setName("Updated Exercise");
+        updateDto.setDescription("This is an updated test exercise.");
+        updateDto.setEquipmentId(2);
 
         mockMvc.perform(patch("/api/exercises/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonPatch))
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpect(status().isForbidden());
     }
 
@@ -135,17 +128,14 @@ public class ExerciseControllerTest {
     @DisplayName("PATCH - /{id} - Should return 404 Not Found for non-existing exercise")
     void updateNonExistingExerciseShouldReturnNotFound() throws Exception {
         Utils.setAdminContext(1);
-        String jsonPatch = """
-                {
-                    "name": "Updated Exercise",
-                    "description": "This is an updated test exercise.",
-                    "equipmentId": 2
-                }
-                """;
+        ExerciseUpdateDto updateDto = new ExerciseUpdateDto();
+        updateDto.setName("Updated Exercise");
+        updateDto.setDescription("This is an updated test exercise.");
+        updateDto.setEquipmentId(2);
 
         mockMvc.perform(patch("/api/exercises/999")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonPatch))
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpect(status().isNotFound());
     }
 

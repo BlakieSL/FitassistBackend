@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -53,7 +54,7 @@ public class ActivityTest  {
         dto.setCategoryId(1);
 
         mockMvc.perform(post("/api/activities")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpectAll(
                         status().isCreated(),
@@ -75,7 +76,7 @@ public class ActivityTest  {
         dto.setCategoryId(1);
 
         mockMvc.perform(post("/api/activities")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpectAll(status().isForbidden());
     }
@@ -92,7 +93,7 @@ public class ActivityTest  {
         dto.setCategoryId(2);
 
         mockMvc.perform(patch("/api/activities/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpectAll(status().isNoContent());
     }
@@ -108,7 +109,7 @@ public class ActivityTest  {
         dto.setCategoryId(2);
 
         mockMvc.perform(patch("/api/activities/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpectAll(status().isForbidden());
     }
@@ -124,7 +125,7 @@ public class ActivityTest  {
         dto.setCategoryId(2);
 
         mockMvc.perform(patch("/api/activities/999")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpectAll(status().isNotFound());
     }
@@ -141,7 +142,7 @@ public class ActivityTest  {
         dto.setCategoryId(2);
 
         mockMvc.perform(patch("/api/activities/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpectAll(status().isBadRequest());
     }
@@ -242,7 +243,7 @@ public class ActivityTest  {
         FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
         mockMvc.perform(post("/api/activities/filter")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
@@ -264,7 +265,7 @@ public class ActivityTest  {
         FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
         mockMvc.perform(post("/api/activities/filter")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
@@ -286,7 +287,7 @@ public class ActivityTest  {
         FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
         mockMvc.perform(post("/api/activities/filter")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isBadRequest()
@@ -304,7 +305,7 @@ public class ActivityTest  {
         FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
         mockMvc.perform(post("/api/activities/filter")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isBadRequest()
@@ -328,7 +329,7 @@ public class ActivityTest  {
                 """;
 
         mockMvc.perform(post("/api/activities/filter")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpectAll(
                         status().isBadRequest()
@@ -344,7 +345,7 @@ public class ActivityTest  {
         request.setTime(60);
 
         mockMvc.perform(post("/api/activities/1/calculate-calories")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(
                         status().isOk(),
@@ -362,7 +363,7 @@ public class ActivityTest  {
         request.setWeight(new BigDecimal("80.0"));
 
         mockMvc.perform(post("/api/activities/1/calculate-calories")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(
                         status().isOk(),
@@ -379,7 +380,7 @@ public class ActivityTest  {
         request.setTime(60);
 
         mockMvc.perform(post("/api/activities/1/calculate-calories")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(
                         status().isBadRequest()
@@ -396,7 +397,7 @@ public class ActivityTest  {
         request.setWeight(new BigDecimal("80.0"));
 
         mockMvc.perform(post("/api/activities/999/calculate-calories")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(
                         status().isNotFound()

@@ -10,6 +10,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import source.code.dto.request.plan.PlanCreateDto;
+import source.code.dto.request.plan.PlanUpdateDto;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
@@ -38,16 +40,14 @@ public class PlanControllerTest {
     @DisplayName("POST - / - Should create a new plan")
     void createPlan() throws Exception {
         Utils.setUserContext(1);
-        String request = """
-                {
-                    "name": "Test Plan",
-                    "description": "A test plan description",
-                    "planTypeId": 1
-                }
-                """;
+        PlanCreateDto createDto = new PlanCreateDto();
+        createDto.setName("Test Plan");
+        createDto.setDescription("A test plan description");
+        createDto.setPlanTypeId(1);
+
         mockMvc.perform(post("/api/plans")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(request))
+                .content(objectMapper.writeValueAsString(createDto)))
                 .andExpectAll(
                         status().isCreated(),
                         jsonPath("$.id").exists(),
@@ -61,22 +61,20 @@ public class PlanControllerTest {
     @DisplayName("PATCH - /{id} - Should update an existing plan when owner")
     void updatePlan() throws Exception {
         Utils.setUserContext(1);
-
-        String request = """
-                {
-                    "name": "Updated Plan"
-                }
-                """;
+        PlanUpdateDto updateDto = new PlanUpdateDto();
+        updateDto.setName("Updated Plan");
 
         mockMvc.perform(patch("/api/plans/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(request))
+                .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isNoContent());
 
         mockMvc.perform(get("/api/plans/1")
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Updated Plan"));
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.name").value("Updated Plan")
+                );
     }
 
     @PlanSql
@@ -84,22 +82,20 @@ public class PlanControllerTest {
     @DisplayName("PATCH - /{id} - Should update an existing plan when admin")
     void updatePlanAsAdmin() throws Exception {
         Utils.setAdminContext(5);
-
-        String request = """
-                {
-                    "name": "Updated Plan"
-                }
-                """;
+        PlanUpdateDto updateDto = new PlanUpdateDto();
+        updateDto.setName("Updated Plan");
 
         mockMvc.perform(patch("/api/plans/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(request))
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isNoContent());
 
         mockMvc.perform(get("/api/plans/1")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Updated Plan"));
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.name").value("Updated Plan")
+                );
     }
 
     @PlanSql
@@ -107,16 +103,12 @@ public class PlanControllerTest {
     @DisplayName("PATCH - /{id} - Should return 403 when not owner or admin")
     void updatePlanForbidden() throws Exception {
         Utils.setUserContext(2);
-
-        String request = """
-                {
-                    "name": "Updated Plan"
-                }
-                """;
+        PlanUpdateDto updateDto = new PlanUpdateDto();
+        updateDto.setName("Updated Plan");
 
         mockMvc.perform(patch("/api/plans/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(request))
+                .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpect(status().isForbidden());
     }
 
@@ -124,16 +116,12 @@ public class PlanControllerTest {
     @DisplayName("PATCH - /{id} - Should return 404 when plan not found")
     void updatePlanNotFound() throws Exception {
         Utils.setUserContext(1);
-
-        String request = """
-                {
-                    "name": "Updated Plan"
-                }
-                """;
+        PlanUpdateDto updateDto = new PlanUpdateDto();
+        updateDto.setName("Updated Plan");
 
         mockMvc.perform(patch("/api/plans/999")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(request))
+                .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpect(status().isNotFound());
     }
 
@@ -178,8 +166,10 @@ public class PlanControllerTest {
     @DisplayName("GET - /{id} - Should retrieve an existing plan")
     void getPlan() throws Exception {
         mockMvc.perform(get("/api/plans/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1));
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.id").value(1)
+                );
     }
 
     @WithMockUser
@@ -232,8 +222,10 @@ public class PlanControllerTest {
         Utils.setUserContext(1);
         mockMvc.perform(get("/api/plans/private/true")
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)));
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", hasSize(3))
+                );
     }
 
     @Test
@@ -242,8 +234,10 @@ public class PlanControllerTest {
         Utils.setUserContext(1);
         mockMvc.perform(get("/api/plans/private")
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(0)));
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", hasSize(0))
+                );
     }
 
     @WithMockUser

@@ -1,4 +1,5 @@
 package source.code.integration.test.controller.category;
+import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +39,7 @@ public class CategoryControllerCreateCategoryTest {
         Utils.setAdminContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("New Food Category"));
         mockMvc.perform(post("/api/categories/FOOD")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpectAll(
                         status().isCreated(),
@@ -53,7 +54,7 @@ public class CategoryControllerCreateCategoryTest {
         Utils.setUserContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("User Food Category"));
         mockMvc.perform(post("/api/categories/FOOD")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isForbidden());
     }
@@ -65,7 +66,7 @@ public class CategoryControllerCreateCategoryTest {
         Utils.setAdminContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("New Activity Category"));
         mockMvc.perform(post("/api/categories/ACTIVITY")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpectAll(
                         status().isCreated(),
@@ -80,7 +81,7 @@ public class CategoryControllerCreateCategoryTest {
         Utils.setUserContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("User Activity Category"));
         mockMvc.perform(post("/api/categories/ACTIVITY")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isForbidden());
     }
@@ -92,7 +93,7 @@ public class CategoryControllerCreateCategoryTest {
         Utils.setAdminContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("New Exercise Category"));
         mockMvc.perform(post("/api/categories/EXERCISE")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpectAll(
                         status().isCreated(),
@@ -107,7 +108,7 @@ public class CategoryControllerCreateCategoryTest {
         Utils.setUserContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("User Exercise Category"));
         mockMvc.perform(post("/api/categories/EXERCISE")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isForbidden());
     }
@@ -119,7 +120,7 @@ public class CategoryControllerCreateCategoryTest {
         Utils.setAdminContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("New Recipe Category"));
         mockMvc.perform(post("/api/categories/RECIPE")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpectAll(
                         status().isCreated(),
@@ -134,7 +135,7 @@ public class CategoryControllerCreateCategoryTest {
         Utils.setUserContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("User Recipe Category"));
         mockMvc.perform(post("/api/categories/RECIPE")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isForbidden());
     }
@@ -146,7 +147,7 @@ public class CategoryControllerCreateCategoryTest {
         Utils.setAdminContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("New Plan Category"));
         mockMvc.perform(post("/api/categories/PLAN")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpectAll(
                         status().isCreated(),
@@ -161,7 +162,7 @@ public class CategoryControllerCreateCategoryTest {
         Utils.setUserContext(1);
         String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("User Plan Category"));
         mockMvc.perform(post("/api/categories/PLAN")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isForbidden());
     }
