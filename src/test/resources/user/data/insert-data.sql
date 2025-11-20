@@ -149,19 +149,25 @@ INSERT INTO user_exercise (user_id, exercise_id, created_at) VALUES
 INSERT INTO user_recipe (user_id, recipie_id, type, created_at) VALUES
                                                         (1, 2, 'LIKE', NOW()), (1, 2, 'SAVE', NOW()),
                                                         (2, 3, 'LIKE', NOW()),
-                                                        (3, 1, 'SAVE', NOW());
+                                                        (3, 1, 'SAVE', NOW()),
+                                                        (1, 1, 'DISLIKE', '2025-11-06 10:00:00'),
+                                                        (1, 3, 'DISLIKE', '2025-11-07 11:00:00');
 
 INSERT INTO user_plan (user_id, plan_id, type, created_at) VALUES
                                                    (1, 1, 'SAVE', '2025-11-01 10:00:00'),
                                                    (1, 2, 'SAVE', '2025-11-02 11:00:00'),
                                                    (1, 3, 'SAVE', '2025-11-03 12:00:00'),
                                                    (2, 2, 'SAVE', '2025-11-01 10:00:00'),
-                                                   (2, 2, 'LIKE', '2025-11-02 11:00:00');
+                                                   (2, 2, 'LIKE', '2025-11-02 11:00:00'),
+                                                   (2, 1, 'DISLIKE', '2025-11-08 10:00:00'),
+                                                   (2, 3, 'DISLIKE', '2025-11-09 11:00:00');
 
 INSERT INTO user_comment (user_id, comment_id, type, created_at) VALUES
                                                          (1, 3, 'LIKE', NOW()),
                                                          (2, 1, 'LIKE', NOW()),
-                                                         (3, 5, 'LIKE', NOW());
+                                                         (3, 5, 'LIKE', NOW()),
+                                                         (1, 1, 'DISLIKE', '2025-11-04 10:00:00'),
+                                                         (1, 2, 'DISLIKE', '2025-11-05 11:00:00');
 
 INSERT INTO user_thread (user_id, thread_id, created_at) VALUES
                                                  (1, 2, NOW()),

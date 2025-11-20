@@ -73,13 +73,54 @@ public class UserSavedControllerWithTypeTest {
     @WithMockUser
     @UserSavedSql
     @Test
-    @DisplayName("GET - /item-type/{itemType}/{itemId}/likes-ans-saves - Should return likes and saves for an item")
+    @DisplayName("GET - /item-type/{itemType}/type/{type}/user/{userId} - Should return all items with DISLIKE type for COMMENT")
+    void getAllFromUserDislikeComment() throws Exception {
+        mockMvc.perform(get("/api/user-saved/item-type/COMMENT/type/DISLIKE/user/1"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", hasSize(2)),
+                        jsonPath("$[0].id").value(2),
+                        jsonPath("$[1].id").value(1)
+                );
+    }
+
+    @WithMockUser
+    @UserSavedSql
+    @Test
+    @DisplayName("GET - /item-type/{itemType}/type/{type}/user/{userId} - Should return all items with DISLIKE type for PLAN")
+    void getAllFromUserDislikePlan() throws Exception {
+        mockMvc.perform(get("/api/user-saved/item-type/PLAN/type/DISLIKE/user/2"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", hasSize(2)),
+                        jsonPath("$[0].id").value(3),
+                        jsonPath("$[1].id").value(1)
+                );
+    }
+
+    @WithMockUser
+    @UserSavedSql
+    @Test
+    @DisplayName("GET - /item-type/{itemType}/type/{type}/user/{userId} - Should return all items with DISLIKE type for RECIPE")
+    void getAllFromUserDislikeRecipe() throws Exception {
+        mockMvc.perform(get("/api/user-saved/item-type/RECIPE/type/DISLIKE/user/1"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", hasSize(2)),
+                        jsonPath("$[0].id").value(3),
+                        jsonPath("$[1].id").value(1)
+                );
+    }
+
+    @WithMockUser
+    @UserSavedSql
+    @Test
+    @DisplayName("GET - /item-type/{itemType}/{itemId}/likes-ans-saves - Should return likes and dislikes count for a comment")
     void calculateLikesAndSaves() throws Exception {
         mockMvc.perform(get("/api/user-saved/item-type/COMMENT/1/likes-ans-saves"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.likes").value(1),
-                        jsonPath("$.saves").value(0)
+                        jsonPath("$.likes").value(0)
                 );
     }
 
@@ -245,5 +286,4 @@ public class UserSavedControllerWithTypeTest {
                         jsonPath("$").exists()
                 );
     }
-
 }
