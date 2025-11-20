@@ -1,4 +1,5 @@
 package source.code.integration.test.controller.forumThread;
+import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -45,7 +46,7 @@ public class ForumThreadControllerTest {
         createDto.setThreadCategoryId(1);
 
         mockMvc.perform(post("/api/threads")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createDto)))
                 .andExpectAll(
                         status().isOk(),
@@ -71,7 +72,7 @@ public class ForumThreadControllerTest {
             """;
 
         mockMvc.perform(patch("/api/threads/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(patchJson))
                 .andExpect(status().isOk());
     }
@@ -90,7 +91,7 @@ public class ForumThreadControllerTest {
             """;
 
         mockMvc.perform(patch("/api/threads/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(patchJson))
                 .andExpect(status().isOk());
     }
@@ -109,7 +110,7 @@ public class ForumThreadControllerTest {
             """;
 
         mockMvc.perform(patch("/api/threads/1")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(patchJson))
                 .andExpect(status().isForbidden());
     }

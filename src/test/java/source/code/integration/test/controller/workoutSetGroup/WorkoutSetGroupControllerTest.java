@@ -1,4 +1,5 @@
 package source.code.integration.test.controller.workoutSetGroup;
+import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +42,7 @@ public class WorkoutSetGroupControllerTest {
         var request = new WorkoutSetGroupCreateDto(1, 60, 1);
 
         mockMvc.perform(post("/api/workout-set-groups")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(
                         status().isCreated(),
@@ -66,7 +67,7 @@ public class WorkoutSetGroupControllerTest {
                 """;
 
         mockMvc.perform(patch("/api/workout-set-groups/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(patch))
                 .andExpectAll(status().isNoContent());
     }
@@ -85,7 +86,7 @@ public class WorkoutSetGroupControllerTest {
                 """;
 
         mockMvc.perform(patch("/api/workout-set-groups/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(patch))
                 .andExpectAll(status().isNoContent());
     }
@@ -104,7 +105,7 @@ public class WorkoutSetGroupControllerTest {
                 """;
 
         mockMvc.perform(patch("/api/workout-set-groups/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(patch))
                 .andExpectAll(status().isNotFound());
     }
@@ -123,7 +124,7 @@ public class WorkoutSetGroupControllerTest {
                 """;
 
         mockMvc.perform(patch("/api/workout-set-groups/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(patch))
                 .andExpectAll(status().isForbidden());
     }
@@ -142,7 +143,7 @@ public class WorkoutSetGroupControllerTest {
                 """;
 
         mockMvc.perform(patch("/api/workout-set-groups/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(patch))
                 .andExpectAll(status().isBadRequest());
     }
@@ -161,7 +162,7 @@ public class WorkoutSetGroupControllerTest {
                 """;
 
         mockMvc.perform(patch("/api/workout-set-groups/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(patch))
                 .andExpectAll(status().isNoContent());
     }

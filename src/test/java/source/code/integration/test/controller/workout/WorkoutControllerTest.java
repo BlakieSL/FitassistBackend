@@ -1,4 +1,5 @@
 package source.code.integration.test.controller.workout;
+import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import source.code.dto.request.workout.WorkoutCreateDto;
+import source.code.dto.request.workout.WorkoutUpdateDto;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
@@ -48,7 +50,7 @@ public class WorkoutControllerTest {
         );
 
         mockMvc.perform(post("/api/workouts")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(
                         status().isCreated(),
@@ -66,16 +68,13 @@ public class WorkoutControllerTest {
         Utils.setUserContext(1);
 
         int id = 1;
-        var patch = """
-                {
-                    "name": "Updated Morning Workout",
-                    "duration": 40.0
-                }
-                """;
+        WorkoutUpdateDto updateDto = new WorkoutUpdateDto();
+        updateDto.setName("Updated Morning Workout");
+        updateDto.setDuration(BigDecimal.valueOf(40.0));
 
         mockMvc.perform(patch("/api/workouts/{id}", id)
-                        .contentType("application/json")
-                        .content(patch))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isNoContent());
     }
 
@@ -86,15 +85,12 @@ public class WorkoutControllerTest {
         Utils.setAdminContext(2);
 
         int id = 1;
-        var patch = """
-                {
-                    "duration": 35.0
-                }
-                """;
+        WorkoutUpdateDto updateDto = new WorkoutUpdateDto();
+        updateDto.setDuration(BigDecimal.valueOf(35.0));
 
         mockMvc.perform(patch("/api/workouts/{id}", id)
-                        .contentType("application/json")
-                        .content(patch))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isNoContent());
     }
 
@@ -105,15 +101,12 @@ public class WorkoutControllerTest {
         Utils.setUserContext(3);
 
         int id = 1;
-        var patch = """
-                {
-                    "name": "Unauthorized Update"
-                }
-                """;
+        WorkoutUpdateDto updateDto = new WorkoutUpdateDto();
+        updateDto.setName("Unauthorized Update");
 
         mockMvc.perform(patch("/api/workouts/{id}", id)
-                        .contentType("application/json")
-                        .content(patch))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isForbidden());
     }
 
@@ -124,15 +117,12 @@ public class WorkoutControllerTest {
         Utils.setUserContext(1);
 
         int id = 999;
-        var patch = """
-                {
-                    "name": "Non-existent Workout"
-                }
-                """;
+        WorkoutUpdateDto updateDto = new WorkoutUpdateDto();
+        updateDto.setName("Non-existent Workout");
 
         mockMvc.perform(patch("/api/workouts/{id}", id)
-                        .contentType("application/json")
-                        .content(patch))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isNotFound());
     }
 
@@ -143,15 +133,12 @@ public class WorkoutControllerTest {
         Utils.setUserContext(1);
 
         int id = 1;
-        var invalidPatch = """
-                {
-                    "duration": -10.0
-                }
-                """;
+        WorkoutUpdateDto updateDto = new WorkoutUpdateDto();
+        updateDto.setDuration(BigDecimal.valueOf(-10.0));
 
         mockMvc.perform(patch("/api/workouts/{id}", id)
-                        .contentType("application/json")
-                        .content(invalidPatch))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isBadRequest());
     }
 
@@ -162,7 +149,7 @@ public class WorkoutControllerTest {
         Utils.setUserContext(1);
 
         int id = 1;
-        var patch = """
+        String patch = """
                 {
                     "name": "Valid Update",
                     "invalidField": "should be ignored",
@@ -171,7 +158,7 @@ public class WorkoutControllerTest {
                 """;
 
         mockMvc.perform(patch("/api/workouts/{id}", id)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(patch))
                 .andExpectAll(status().isNoContent());
     }

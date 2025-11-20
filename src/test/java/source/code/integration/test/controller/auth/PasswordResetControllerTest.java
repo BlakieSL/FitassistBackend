@@ -1,4 +1,5 @@
 package source.code.integration.test.controller.auth;
+import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -57,7 +58,7 @@ public class PasswordResetControllerTest {
         request.setEmail("user1@example.com");
 
         mockMvc.perform(post("/api/password-reset/request")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());
     }
@@ -71,7 +72,7 @@ public class PasswordResetControllerTest {
         request.setEmail("nonexistent@example.com");
 
         mockMvc.perform(post("/api/password-reset/request")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotFound());
     }
@@ -85,7 +86,7 @@ public class PasswordResetControllerTest {
         request.setEmail("invalid-email");
 
         mockMvc.perform(post("/api/password-reset/request")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
     }
@@ -109,7 +110,7 @@ public class PasswordResetControllerTest {
         resetDto.setNewPassword("NewPassword123!");
 
         mockMvc.perform(post("/api/password-reset/reset")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(resetDto)))
                 .andExpect(status().isOk());
 
@@ -128,7 +129,7 @@ public class PasswordResetControllerTest {
         resetDto.setNewPassword("NewPassword123!");
 
         mockMvc.perform(post("/api/password-reset/reset")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(resetDto)))
                 .andExpect(status().isUnauthorized());
     }
@@ -151,7 +152,7 @@ public class PasswordResetControllerTest {
         resetDto.setNewPassword("NewPassword123!");
 
         mockMvc.perform(post("/api/password-reset/reset")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(resetDto)))
                 .andExpect(status().isUnauthorized());
     }
@@ -168,7 +169,7 @@ public class PasswordResetControllerTest {
         resetDto.setNewPassword("NewPassword123!");
 
         mockMvc.perform(post("/api/password-reset/reset")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(resetDto)))
                 .andExpect(status().isUnauthorized());
     }
@@ -191,7 +192,7 @@ public class PasswordResetControllerTest {
         resetDto.setNewPassword("weak");
 
         mockMvc.perform(post("/api/password-reset/reset")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(resetDto)))
                 .andExpect(status().isBadRequest());
     }
@@ -214,7 +215,7 @@ public class PasswordResetControllerTest {
         resetDto.setNewPassword("NewPassword123!");
 
         mockMvc.perform(post("/api/password-reset/reset")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(resetDto)))
                 .andExpect(status().isNotFound());
     }
