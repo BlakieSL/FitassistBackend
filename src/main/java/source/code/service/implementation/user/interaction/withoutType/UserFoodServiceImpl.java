@@ -8,11 +8,12 @@ import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
 import source.code.mapper.food.FoodMapper;
 import source.code.model.food.Food;
+import source.code.model.media.Media;
 import source.code.model.user.User;
 import source.code.model.user.UserFood;
 import source.code.repository.UserFoodRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.aws.AwsS3Service;
+import source.code.service.declaration.helpers.ImageUrlPopulationService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
 import java.util.List;
@@ -22,21 +23,21 @@ public class UserFoodServiceImpl
         extends GenericSavedServiceWithoutType<Food, UserFood, FoodSummaryDto>
         implements SavedServiceWithoutType {
 
-    private final AwsS3Service awsS3Service;
     private final FoodMapper foodMapper;
+    private final ImageUrlPopulationService imagePopulationService;
 
     public UserFoodServiceImpl(UserRepository userRepository,
                                JpaRepository<Food, Integer> entityRepository,
                                JpaRepository<UserFood, Integer> userEntityRepository,
                                FoodMapper mapper,
-                               AwsS3Service awsS3Service) {
+                               ImageUrlPopulationService imagePopulationService) {
         super(userRepository,
                 entityRepository,
                 userEntityRepository,
                 mapper::toSummaryDto,
                 Food.class);
-        this.awsS3Service = awsS3Service;
         this.foodMapper = mapper;
+        this.imagePopulationService = imagePopulationService;
     }
 
     @Override
@@ -73,11 +74,13 @@ public class UserFoodServiceImpl
                     FoodSummaryDto dto = foodMapper.toSummaryDto(uf.getFood());
                     dto.setUserFoodInteractionCreatedAt(uf.getCreatedAt());
 
-                    if (!uf.getFood().getMediaList().isEmpty()) {
-                        String imageName = uf.getFood().getMediaList().get(0).getImageName();
-                        dto.setImageName(imageName);
-                        dto.setFirstImageUrl(awsS3Service.getImage(imageName));
-                    }
+                    imagePopulationService.populateFirstImageFromMediaList(
+                            List.of(dto),
+                            d -> uf.getFood().getMediaList(),
+                            Media::getImageName,
+                            FoodSummaryDto::setImageName,
+                            FoodSummaryDto::setFirstImageUrl
+                    );
 
                     return (BaseUserEntity) dto;
                 })

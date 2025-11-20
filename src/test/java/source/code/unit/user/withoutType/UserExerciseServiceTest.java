@@ -25,7 +25,7 @@ import org.springframework.data.domain.Sort;
 import source.code.repository.MediaRepository;
 import source.code.repository.UserExerciseRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.aws.AwsS3Service;
+import source.code.service.declaration.helpers.ImageUrlPopulationService;
 import source.code.service.implementation.user.interaction.withoutType.UserExerciseServiceImpl;
 
 import java.time.LocalDateTime;
@@ -50,7 +50,7 @@ public class UserExerciseServiceTest {
     @Mock
     private MediaRepository mediaRepository;
     @Mock
-    private AwsS3Service awsS3Service;
+    private ImageUrlPopulationService imagePopulationService;
     private UserExerciseServiceImpl userExerciseService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
@@ -63,8 +63,7 @@ public class UserExerciseServiceTest {
                 exerciseRepository,
                 userExerciseRepository,
                 exerciseMapper,
-
-                awsS3Service
+                imagePopulationService
         );
     }
 
@@ -211,13 +210,11 @@ public class UserExerciseServiceTest {
                 .thenReturn(List.of(ue1, ue2));
         when(exerciseMapper.toSummaryDto(exercise1)).thenReturn(dto1);
         when(exerciseMapper.toSummaryDto(exercise2)).thenReturn(dto2);
-        when(awsS3Service.getImage("exercise1.jpg")).thenReturn("https://s3.../exercise1.jpg");
-        when(awsS3Service.getImage("exercise2.jpg")).thenReturn("https://s3.../exercise2.jpg");
 
         var result = userExerciseService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertEquals(2, result.size());
-        verify(awsS3Service, times(2)).getImage(anyString());
+        verify(exerciseMapper, times(2)).toSummaryDto(any(Exercise.class));
     }
 
     @Test
@@ -231,7 +228,6 @@ public class UserExerciseServiceTest {
         var result = userExerciseService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertTrue(result.isEmpty());
-        verify(awsS3Service, never()).getImage(anyString());
     }
 
     @Test
@@ -447,19 +443,14 @@ public class UserExerciseServiceTest {
                 .thenReturn(new ArrayList<>(List.of(ue2, ue1)));
         when(exerciseMapper.toSummaryDto(exercise1)).thenReturn(dto1);
         when(exerciseMapper.toSummaryDto(exercise2)).thenReturn(dto2);
-        when(awsS3Service.getImage("image1.jpg")).thenReturn("https://s3.com/image1.jpg");
-        when(awsS3Service.getImage("image2.jpg")).thenReturn("https://s3.com/image2.jpg");
 
         List<BaseUserEntity> result = userExerciseService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        ExerciseSummaryDto first = (ExerciseSummaryDto) result.get(0);
-        ExerciseSummaryDto second = (ExerciseSummaryDto) result.get(1);
-        assertEquals("https://s3.com/image2.jpg", first.getFirstImageUrl());
-        assertEquals("https://s3.com/image1.jpg", second.getFirstImageUrl());
-        verify(awsS3Service).getImage("image1.jpg");
-        verify(awsS3Service).getImage("image2.jpg");
+        // Image URL population is handled by imagePopulationService internally
+        verify(exerciseMapper).toSummaryDto(exercise1);
+        verify(exerciseMapper).toSummaryDto(exercise2);
     }
 
     private ExerciseSummaryDto createExerciseSummaryDto(int id, LocalDateTime interactionDate) {

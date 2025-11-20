@@ -15,4 +15,10 @@ public interface ImageUrlPopulationService {
     <T> void populateAuthorImageForList(List<T> dtos,
                                          Function<T, String> authorImageNameGetter,
                                          BiConsumer<T, String> authorUrlSetter);
+
+    <T, M> void populateFirstImageFromMediaList(List<T> dtos,
+                                                 Function<T, List<M>> mediaListGetter,
+                                                 Function<M, String> imageNameExtractor,
+                                                 BiConsumer<T, String> imageNameSetter,
+                                                 BiConsumer<T, String> imageUrlSetter);
 }

@@ -8,11 +8,12 @@ import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
 import source.code.mapper.activity.ActivityMapper;
 import source.code.model.activity.Activity;
+import source.code.model.media.Media;
 import source.code.model.user.User;
 import source.code.model.user.UserActivity;
 import source.code.repository.UserActivityRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.aws.AwsS3Service;
+import source.code.service.declaration.helpers.ImageUrlPopulationService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
 import java.util.List;
@@ -22,21 +23,21 @@ public class UserActivityServiceImpl
         extends GenericSavedServiceWithoutType<Activity, UserActivity, ActivitySummaryDto>
         implements SavedServiceWithoutType {
 
-    private final AwsS3Service awsS3Service;
     private final ActivityMapper activityMapper;
+    private final ImageUrlPopulationService imagePopulationService;
 
     public UserActivityServiceImpl(UserRepository userRepository,
                                    JpaRepository<Activity, Integer> entityRepository,
                                    JpaRepository<UserActivity, Integer> userEntityRepository,
                                    ActivityMapper mapper,
-                                   AwsS3Service awsS3Service) {
+                                   ImageUrlPopulationService imagePopulationService) {
         super(userRepository,
                 entityRepository,
                 userEntityRepository,
                 mapper::toSummaryDto,
                 Activity.class);
-        this.awsS3Service = awsS3Service;
         this.activityMapper = mapper;
+        this.imagePopulationService = imagePopulationService;
     }
 
     @Override
@@ -73,11 +74,13 @@ public class UserActivityServiceImpl
                     ActivitySummaryDto dto = activityMapper.toSummaryDto(ua.getActivity());
                     dto.setUserActivityInteractionCreatedAt(ua.getCreatedAt());
 
-                    if (!ua.getActivity().getMediaList().isEmpty()) {
-                        String imageName = ua.getActivity().getMediaList().get(0).getImageName();
-                        dto.setImageName(imageName);
-                        dto.setFirstImageUrl(awsS3Service.getImage(imageName));
-                    }
+                    imagePopulationService.populateFirstImageFromMediaList(
+                            List.of(dto),
+                            d -> ua.getActivity().getMediaList(),
+                            Media::getImageName,
+                            ActivitySummaryDto::setImageName,
+                            ActivitySummaryDto::setFirstImageUrl
+                    );
 
                     return (BaseUserEntity) dto;
                 })
