@@ -66,5 +66,25 @@ INSERT INTO daily_cart_activity (daily_cart_id, activity_id, time) VALUES
                                                                        (6, 3, 50),
                                                                        (6, 5, 30);
 
-INSERT INTO user_food (food_id, user_id, created_at)
-VALUES (1, 1, NOW());
+INSERT INTO recipe_category (name) VALUES
+    ('Breakfast'),
+    ('Lunch'),
+    ('Dinner');
+
+INSERT INTO recipe (is_public, name, description, user_id, created_at) VALUES
+    (true, 'Apple Pie', 'Delicious apple pie recipe', 1, NOW()),
+    (true, 'Banana Smoothie', 'Healthy banana smoothie', 1, NOW()),
+    (true, 'Chicken Salad', 'Protein-rich chicken salad', 2, NOW());
+
+INSERT INTO recipe_food (recipe_id, food_id, quantity) VALUES
+    (1, 1, 500),
+    (2, 2, 200),
+    (2, 5, 150),
+    (3, 3, 300),
+    (3, 1, 100);
+
+INSERT INTO user_food (food_id, user_id, created_at) VALUES
+    (1, 1, NOW()),
+    (1, 2, NOW()),
+    (2, 1, NOW()),
+    (3, 2, NOW());

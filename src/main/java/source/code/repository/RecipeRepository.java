@@ -49,17 +49,16 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
              CAST((SELECT COUNT(ur1) FROM UserRecipe ur1 WHERE ur1.recipe.id = r.id AND ur1.type = 'LIKE') AS int),
              CAST((SELECT COUNT(ur2) FROM UserRecipe ur2 WHERE ur2.recipe.id = r.id AND ur2.type = 'SAVE') AS int),
              r.views,
-             CAST((SELECT COUNT(rf) FROM RecipeFood rf WHERE rf.recipe.id = r.id) AS int),
+             CAST((SELECT COUNT(rf2) FROM RecipeFood rf2 WHERE rf2.recipe.id = r.id) AS int),
              null,
              r.createdAt,
              null)
       FROM Recipe r
-      WHERE ((:isOwnProfile IS NULL OR :isOwnProfile = false) AND (r.isPublic = true AND r.user.id = :userId)) OR
-            (:isOwnProfile = true AND r.user.id = :userId)
+      JOIN r.recipeFoods rf
+      WHERE rf.food.id = :foodId
       ORDER BY r.createdAt DESC
     """)
-    List<RecipeSummaryDto> findSummaryByUserId(@Param("isOwnProfile") Boolean isOwnProfile,
-                                               @Param("userId") Integer userId);
+    List<RecipeSummaryDto> findRecipeSummariesByFoodId(@Param("foodId") int foodId);
 
     @Query("""
       SELECT new source.code.dto.response.recipe.RecipeSummaryDto(

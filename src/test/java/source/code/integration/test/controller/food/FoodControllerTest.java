@@ -147,15 +147,24 @@ public class FoodControllerTest {
     @WithMockUser
     @FoodSql
     @Test
-    @DisplayName("GET - /{id} - Should return food with image URLs when it exists")
-    void getFood_ShouldReturnFoodWithImageUrls_WhenItExists() throws Exception {
+    @DisplayName("GET - /{id} - Should return food with image URLs, recipes, and saves count when it exists")
+    void getFood_ShouldReturnFoodWithImageUrlsRecipesAndSavesCount_WhenItExists() throws Exception {
         mockMvc.perform(get("/api/foods/1"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.id").value(1),
                         jsonPath("$.name").value("Apple"),
                         jsonPath("$.calories").value(95),
-                        jsonPath("$.imageUrls").isArray()
+                        jsonPath("$.imageUrls").isArray(),
+                        jsonPath("$.savesCount").value(2),
+                        jsonPath("$.recipes").isArray(),
+                        jsonPath("$.recipes.length()").value(2),
+                        jsonPath("$.recipes[0].id").exists(),
+                        jsonPath("$.recipes[0].name").exists(),
+                        jsonPath("$.recipes[0].description").exists(),
+                        jsonPath("$.recipes[0].public").exists(),
+                        jsonPath("$.recipes[0].authorUsername").exists(),
+                        jsonPath("$.recipes[0].authorId").exists()
                 );
     }
 

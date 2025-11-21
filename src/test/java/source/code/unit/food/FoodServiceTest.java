@@ -30,10 +30,12 @@ import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.food.FoodMapper;
 import source.code.model.food.Food;
 import source.code.repository.FoodRepository;
+import source.code.repository.RecipeRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.food.FoodServiceImpl;
+import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -58,6 +60,10 @@ public class FoodServiceTest {
     private ApplicationEventPublisher eventPublisher;
     @Mock
     private FoodRepository foodRepository;
+    @Mock
+    private RecipeRepository recipeRepository;
+    @Mock
+    private SpecificationDependencies dependencies;
     @InjectMocks
     private FoodServiceImpl foodService;
 
@@ -261,12 +267,15 @@ public class FoodServiceTest {
     void getFood_shouldReturnFoodWhenFound() {
         when(foodRepository.findByIdWithMedia(foodId)).thenReturn(Optional.of(food));
         when(foodMapper.toDetailedResponseDto(food)).thenReturn(detailedResponseDto);
+        when(food.getUserFoods()).thenReturn(List.of());
+        when(recipeRepository.findRecipeSummariesByFoodId(foodId)).thenReturn(List.of());
 
         FoodResponseDto result = foodService.getFood(foodId);
 
         assertEquals(detailedResponseDto, result);
         verify(foodRepository).findByIdWithMedia(foodId);
         verify(foodMapper).toDetailedResponseDto(food);
+        verify(recipeRepository).findRecipeSummariesByFoodId(foodId);
     }
 
     @Test
