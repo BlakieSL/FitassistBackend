@@ -31,6 +31,7 @@ import source.code.mapper.activity.ActivityMapper;
 import source.code.model.activity.Activity;
 import source.code.model.user.User;
 import source.code.repository.ActivityRepository;
+import source.code.repository.UserActivityRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
@@ -59,6 +60,8 @@ public class ActivityServiceTest {
     private ApplicationEventPublisher eventPublisher;
     @Mock
     private ActivityRepository activityRepository;
+    @Mock
+    private UserActivityRepository userActivityRepository;
     @Mock
     private UserRepository userRepository;
     @InjectMocks
@@ -307,15 +310,22 @@ public class ActivityServiceTest {
 
     @Test
     void getActivity_shouldReturnActivityWhenFound() {
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(activityRepository.findByIdWithMedia(activityId))
                 .thenReturn(Optional.of(activity));
         when(activityMapper.toDetailedResponseDto(activity)).thenReturn(detailedResponseDto);
+        when(userActivityRepository.countByActivityId(activityId)).thenReturn(5L);
+        when(userActivityRepository.existsByUserIdAndActivityId(userId, activityId)).thenReturn(true);
 
         ActivityResponseDto result = activityService.getActivity(activityId);
 
         assertEquals(detailedResponseDto, result);
+        assertEquals(5, result.getSavesCount());
+        assertTrue(result.isSaved());
         verify(activityRepository).findByIdWithMedia(activityId);
         verify(activityMapper).toDetailedResponseDto(activity);
+        verify(userActivityRepository).countByActivityId(activityId);
+        verify(userActivityRepository).existsByUserIdAndActivityId(userId, activityId);
     }
 
     @Test

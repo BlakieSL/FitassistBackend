@@ -124,7 +124,7 @@ public class FoodControllerTest {
     @DisplayName("DELETE - /{id} - Should delete food when user is admin")
     void deleteFood_ShouldDeleteFood_WhenUserIsAdmin() throws Exception {
         Utils.setAdminContext(1);
-        mockMvc.perform(delete("/api/foods/1"))
+        mockMvc.perform(delete("/api/foods/4"))
                 .andExpectAll(status().isNoContent());
     }
 
@@ -144,11 +144,11 @@ public class FoodControllerTest {
                 .andExpectAll(status().isNotFound());
     }
 
-    @WithMockUser
     @FoodSql
     @Test
-    @DisplayName("GET - /{id} - Should return food with image URLs, recipes, and saves count when it exists")
-    void getFood_ShouldReturnFoodWithImageUrlsRecipesAndSavesCount_WhenItExists() throws Exception {
+    @DisplayName("GET - /{id} - Should return food with image URLs, recipes, saves count, and saved=true when user has saved it")
+    void getFood_ShouldReturnFoodWithSavedTrue_WhenUserHasSavedIt() throws Exception {
+        Utils.setUserContext(1);
         mockMvc.perform(get("/api/foods/1"))
                 .andExpectAll(
                         status().isOk(),
@@ -157,6 +157,7 @@ public class FoodControllerTest {
                         jsonPath("$.calories").value(95),
                         jsonPath("$.imageUrls").isArray(),
                         jsonPath("$.savesCount").value(2),
+                        jsonPath("$.saved").value(true),
                         jsonPath("$.recipes").isArray(),
                         jsonPath("$.recipes.length()").value(2),
                         jsonPath("$.recipes[0].id").exists(),
@@ -165,6 +166,21 @@ public class FoodControllerTest {
                         jsonPath("$.recipes[0].public").exists(),
                         jsonPath("$.recipes[0].authorUsername").exists(),
                         jsonPath("$.recipes[0].authorId").exists()
+                );
+    }
+
+    @FoodSql
+    @Test
+    @DisplayName("GET - /{id} - Should return food with saved=false when user has not saved it")
+    void getFood_ShouldReturnFoodWithSavedFalse_WhenUserHasNotSavedIt() throws Exception {
+        Utils.setUserContext(2);
+        mockMvc.perform(get("/api/foods/2"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.id").value(2),
+                        jsonPath("$.name").value("Banana"),
+                        jsonPath("$.savesCount").value(1),
+                        jsonPath("$.saved").value(false)
                 );
     }
 

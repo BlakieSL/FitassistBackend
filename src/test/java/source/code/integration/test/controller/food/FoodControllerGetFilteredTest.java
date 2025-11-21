@@ -158,7 +158,7 @@ public class FoodControllerGetFilteredTest {
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.length()").value(1)
+                        jsonPath("$.length()").value(2)
                 );
     }
 

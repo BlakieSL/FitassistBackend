@@ -19,5 +19,6 @@ public class ActivityResponseDto {
     private String categoryName;
     private int categoryId;
     private List<String> imageUrls;
-    private int savesCount;
+    private long savesCount;
+    private boolean saved;
 }

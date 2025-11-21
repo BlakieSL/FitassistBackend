@@ -20,10 +20,12 @@ import source.code.event.events.Food.FoodDeleteEvent;
 import source.code.event.events.Food.FoodUpdateEvent;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.cache.CacheNames;
+import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.food.FoodMapper;
 import source.code.model.food.Food;
 import source.code.repository.FoodRepository;
 import source.code.repository.RecipeRepository;
+import source.code.repository.UserFoodRepository;
 import source.code.service.declaration.food.FoodService;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
@@ -46,6 +48,7 @@ public class FoodServiceImpl implements FoodService {
     private final RepositoryHelper repositoryHelper;
     private final FoodRepository foodRepository;
     private final RecipeRepository recipeRepository;
+    private final UserFoodRepository userFoodRepository;
     private final SpecificationDependencies dependencies;
 
     public FoodServiceImpl(
@@ -54,6 +57,7 @@ public class FoodServiceImpl implements FoodService {
             JsonPatchService jsonPatchService,
             FoodRepository foodRepository,
             RecipeRepository recipeRepository,
+            UserFoodRepository userFoodRepository,
             FoodMapper foodMapper,
             RepositoryHelper repositoryHelper,
             SpecificationDependencies dependencies) {
@@ -62,6 +66,7 @@ public class FoodServiceImpl implements FoodService {
         this.jsonPatchService = jsonPatchService;
         this.foodRepository = foodRepository;
         this.recipeRepository = recipeRepository;
+        this.userFoodRepository = userFoodRepository;
         this.foodMapper = foodMapper;
         this.repositoryHelper = repositoryHelper;
         this.dependencies = dependencies;
@@ -120,9 +125,11 @@ public class FoodServiceImpl implements FoodService {
         
         FoodResponseDto dto = foodMapper.toDetailedResponseDto(food);
         
-        dto.setSavesCount(food.getUserFoods() != null ? food.getUserFoods().size() : 0);
+        int userId = AuthorizationUtil.getUserId();
+        dto.setSavesCount(userFoodRepository.countByFoodId(id));
+        dto.setSaved(userFoodRepository.existsByUserIdAndFoodId(userId, id));
         dto.setRecipes(recipeRepository.findRecipeSummariesByFoodId(id));
-        
+
         return dto;
     }
 
