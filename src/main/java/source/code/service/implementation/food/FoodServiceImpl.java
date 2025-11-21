@@ -23,6 +23,7 @@ import source.code.helper.Enum.cache.CacheNames;
 import source.code.mapper.food.FoodMapper;
 import source.code.model.food.Food;
 import source.code.repository.FoodRepository;
+import source.code.repository.RecipeRepository;
 import source.code.service.declaration.food.FoodService;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
@@ -44,6 +45,7 @@ public class FoodServiceImpl implements FoodService {
     private final FoodMapper foodMapper;
     private final RepositoryHelper repositoryHelper;
     private final FoodRepository foodRepository;
+    private final RecipeRepository recipeRepository;
     private final SpecificationDependencies dependencies;
 
     public FoodServiceImpl(
@@ -51,6 +53,7 @@ public class FoodServiceImpl implements FoodService {
             ValidationService validationService,
             JsonPatchService jsonPatchService,
             FoodRepository foodRepository,
+            RecipeRepository recipeRepository,
             FoodMapper foodMapper,
             RepositoryHelper repositoryHelper,
             SpecificationDependencies dependencies) {
@@ -58,6 +61,7 @@ public class FoodServiceImpl implements FoodService {
         this.validationService = validationService;
         this.jsonPatchService = jsonPatchService;
         this.foodRepository = foodRepository;
+        this.recipeRepository = recipeRepository;
         this.foodMapper = foodMapper;
         this.repositoryHelper = repositoryHelper;
         this.dependencies = dependencies;
@@ -113,7 +117,13 @@ public class FoodServiceImpl implements FoodService {
     public FoodResponseDto getFood(int id) {
         Food food = foodRepository.findByIdWithMedia(id)
                 .orElseThrow(() -> RecordNotFoundException.of(Food.class, id));
-        return foodMapper.toDetailedResponseDto(food);
+        
+        FoodResponseDto dto = foodMapper.toDetailedResponseDto(food);
+        
+        dto.setSavesCount(food.getUserFoods() != null ? food.getUserFoods().size() : 0);
+        dto.setRecipes(recipeRepository.findRecipeSummariesByFoodId(id));
+        
+        return dto;
     }
 
     @Override
