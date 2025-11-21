@@ -74,6 +74,8 @@ public abstract class  ActivityMapper {
     @Mapping(target = "categoryName", source = "activityCategory.name")
     @Mapping(target = "categoryId", source = "activityCategory.id")
     @Mapping(target = "imageUrls", ignore = true)
+    @Mapping(target = "savesCount", ignore = true)
+    @Mapping(target = "saved", ignore = true)
     public abstract ActivityResponseDto toDetailedResponseDto(Activity activity);
 
     @AfterMapping

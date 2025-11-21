@@ -31,6 +31,7 @@ import source.code.mapper.food.FoodMapper;
 import source.code.model.food.Food;
 import source.code.repository.FoodRepository;
 import source.code.repository.RecipeRepository;
+import source.code.repository.UserFoodRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
@@ -41,6 +42,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,6 +64,8 @@ public class FoodServiceTest {
     private FoodRepository foodRepository;
     @Mock
     private RecipeRepository recipeRepository;
+    @Mock
+    private UserFoodRepository userFoodRepository;
     @Mock
     private SpecificationDependencies dependencies;
     @InjectMocks
@@ -265,16 +269,23 @@ public class FoodServiceTest {
 
     @Test
     void getFood_shouldReturnFoodWhenFound() {
+        int userId = 1;
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(foodRepository.findByIdWithMedia(foodId)).thenReturn(Optional.of(food));
         when(foodMapper.toDetailedResponseDto(food)).thenReturn(detailedResponseDto);
-        when(food.getUserFoods()).thenReturn(List.of());
+        when(userFoodRepository.countByFoodId(foodId)).thenReturn(5L);
+        when(userFoodRepository.existsByUserIdAndFoodId(userId, foodId)).thenReturn(true);
         when(recipeRepository.findRecipeSummariesByFoodId(foodId)).thenReturn(List.of());
 
         FoodResponseDto result = foodService.getFood(foodId);
 
         assertEquals(detailedResponseDto, result);
+        assertEquals(5L, result.getSavesCount());
+        assertTrue(result.isSaved());
         verify(foodRepository).findByIdWithMedia(foodId);
         verify(foodMapper).toDetailedResponseDto(food);
+        verify(userFoodRepository).countByFoodId(foodId);
+        verify(userFoodRepository).existsByUserIdAndFoodId(userId, foodId);
         verify(recipeRepository).findRecipeSummariesByFoodId(foodId);
     }
 

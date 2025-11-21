@@ -62,6 +62,7 @@ public abstract class FoodMapper {
     @Mapping(target = "imageUrls", ignore = true)
     @Mapping(target = "recipes", ignore = true)
     @Mapping(target = "savesCount", ignore = true)
+    @Mapping(target = "saved", ignore = true)
     public abstract FoodResponseDto toDetailedResponseDto(Food food);
 
     @AfterMapping
