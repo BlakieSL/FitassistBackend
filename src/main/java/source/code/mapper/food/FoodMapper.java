@@ -7,8 +7,11 @@ import source.code.dto.request.food.FoodUpdateDto;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.food.FoodResponseDto;
 import source.code.dto.response.food.FoodSummaryDto;
+import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.model.food.Food;
 import source.code.model.food.FoodCategory;
+import source.code.model.recipe.Recipe;
+import source.code.model.recipe.RecipeFood;
 import source.code.repository.FoodCategoryRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.RepositoryHelper;
@@ -54,30 +57,27 @@ public abstract class FoodMapper {
     @Mapping(target = "userFoods", ignore = true)
     public abstract void updateFood(@MappingTarget Food food, FoodUpdateDto request);
 
-    @AfterMapping
-    protected void calculateMacros(
-            @MappingTarget FoodCalculatedMacrosResponseDto dto,
-            @Context BigDecimal factor) {
+    @Mapping(target = "categoryName", source = "foodCategory.name")
+    @Mapping(target = "categoryId", source = "foodCategory.id")
+    @Mapping(target = "imageUrls", ignore = true)
+    @Mapping(target = "recipes", ignore = true)
+    @Mapping(target = "savesCount", ignore = true)
+    public abstract FoodResponseDto toDetailedResponseDto(Food food);
 
+    @AfterMapping
+    protected void calculateMacros(@MappingTarget FoodCalculatedMacrosResponseDto dto,
+                                   @Context BigDecimal factor) {
         MathContext mathContext = new MathContext(10, RoundingMode.HALF_UP);
 
         dto.setCalories(dto.getCalories().multiply(factor, mathContext)
                 .setScale(1, RoundingMode.HALF_UP));
-
         dto.setProtein(dto.getProtein().multiply(factor, mathContext)
                 .setScale(1, RoundingMode.HALF_UP));
-
         dto.setFat(dto.getFat().multiply(factor, mathContext)
                 .setScale(1, RoundingMode.HALF_UP));
-
         dto.setCarbohydrates(dto.getCarbohydrates().multiply(factor, mathContext)
                 .setScale(1, RoundingMode.HALF_UP));
     }
-
-    @Mapping(target = "categoryName", source = "foodCategory.name")
-    @Mapping(target = "categoryId", source = "foodCategory.id")
-    @Mapping(target = "imageUrls", ignore = true)
-    public abstract FoodResponseDto toDetailedResponseDto(Food food);
 
     @AfterMapping
     protected void mapImageUrls(@MappingTarget FoodResponseDto dto, Food food) {

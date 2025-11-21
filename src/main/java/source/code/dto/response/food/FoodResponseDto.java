@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.response.recipe.RecipeSummaryDto;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -22,4 +23,6 @@ public class FoodResponseDto {
     private int categoryId;
     private String categoryName;
     private List<String> imageUrls;
+    private List<RecipeSummaryDto> recipes;
+    private int savesCount;
 }
