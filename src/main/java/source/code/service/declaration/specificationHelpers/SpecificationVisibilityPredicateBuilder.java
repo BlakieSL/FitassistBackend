@@ -6,7 +6,7 @@ import jakarta.persistence.criteria.Root;
 import source.code.dto.pojo.FilterCriteria;
 
 public interface SpecificationVisibilityPredicateBuilder {
-    public <T> Predicate buildVisibilityPredicate(
+    <T> Predicate buildVisibilityPredicate(
             CriteriaBuilder builder,
             Root<T> root,
             FilterCriteria criteria,

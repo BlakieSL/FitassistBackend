@@ -24,5 +24,6 @@ public class FoodResponseDto {
     private String categoryName;
     private List<String> imageUrls;
     private List<RecipeSummaryDto> recipes;
-    private int savesCount;
+    private long savesCount;
+    private boolean saved;
 }

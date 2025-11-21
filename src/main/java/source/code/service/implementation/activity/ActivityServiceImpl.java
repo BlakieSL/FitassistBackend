@@ -26,6 +26,7 @@ import source.code.mapper.activity.ActivityMapper;
 import source.code.model.activity.Activity;
 import source.code.model.user.User;
 import source.code.repository.ActivityRepository;
+import source.code.repository.UserActivityRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.activity.ActivityService;
 import source.code.service.declaration.helpers.JsonPatchService;
@@ -47,6 +48,7 @@ public class ActivityServiceImpl implements ActivityService {
     private final JsonPatchService jsonPatchService;
     private final ApplicationEventPublisher eventPublisher;
     private final ActivityRepository activityRepository;
+    private final UserActivityRepository userActivityRepository;
     private final UserRepository userRepository;
     private final SpecificationDependencies dependencies;
 
@@ -57,6 +59,7 @@ public class ActivityServiceImpl implements ActivityService {
             JsonPatchService jsonPatchService,
             ApplicationEventPublisher eventPublisher,
             ActivityRepository activityRepository,
+            UserActivityRepository userActivityRepository,
             UserRepository userRepository,
             SpecificationDependencies dependencies) {
         this.repositoryHelper = repositoryHelper;
@@ -65,6 +68,7 @@ public class ActivityServiceImpl implements ActivityService {
         this.jsonPatchService = jsonPatchService;
         this.eventPublisher = eventPublisher;
         this.activityRepository = activityRepository;
+        this.userActivityRepository = userActivityRepository;
         this.userRepository = userRepository;
         this.dependencies = dependencies;
     }
@@ -118,7 +122,13 @@ public class ActivityServiceImpl implements ActivityService {
     public ActivityResponseDto getActivity(int activityId) {
         Activity activity = activityRepository.findByIdWithMedia(activityId)
                 .orElseThrow(() -> RecordNotFoundException.of(Activity.class, activityId));
-        return activityMapper.toDetailedResponseDto(activity);
+
+        ActivityResponseDto dto = activityMapper.toDetailedResponseDto(activity);
+        int userId = AuthorizationUtil.getUserId();
+        dto.setSavesCount(userActivityRepository.countByActivityId(activityId));
+        dto.setSaved(userActivityRepository.existsByUserIdAndActivityId(userId, activityId));
+
+        return dto;
     }
 
     @Override

@@ -177,11 +177,11 @@ public class ActivityTest  {
                 .andExpectAll(status().isNotFound());
     }
 
-    @WithMockUser
     @ActivitySql
     @Test
-    @DisplayName("GET - /{id} - Should return an existing activity with image URLs")
-    void getActivity() throws Exception {
+    @DisplayName("GET - /{id} - Should return activity with saved=true when user has saved it")
+    void getActivity_ShouldReturnActivityWithSavedTrue_WhenUserHasSavedIt() throws Exception {
+        Utils.setUserContext(1);
         mockMvc.perform(get("/api/activities/1"))
                 .andExpectAll(
                         status().isOk(),
@@ -190,7 +190,24 @@ public class ActivityTest  {
                         jsonPath("$.met").value(3.5),
                         jsonPath("$.categoryId").value(1),
                         jsonPath("$.categoryName").value("Walking"),
-                        jsonPath("$.imageUrls").isArray()
+                        jsonPath("$.imageUrls").isArray(),
+                        jsonPath("$.savesCount").value(1),
+                        jsonPath("$.saved").value(true)
+                );
+    }
+
+    @ActivitySql
+    @Test
+    @DisplayName("GET - /{id} - Should return activity with saved=false when user has not saved it")
+    void getActivity_ShouldReturnActivityWithSavedFalse_WhenUserHasNotSavedIt() throws Exception {
+        Utils.setUserContext(2);
+        mockMvc.perform(get("/api/activities/1"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.id").value(1),
+                        jsonPath("$.name").value("Brisk Walking"),
+                        jsonPath("$.savesCount").value(1),
+                        jsonPath("$.saved").value(false)
                 );
     }
 
