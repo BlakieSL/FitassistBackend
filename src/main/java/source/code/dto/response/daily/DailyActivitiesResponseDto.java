@@ -6,13 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
-public class DailyActivitiesResponseDto {
+public class DailyActivitiesResponseDto implements Serializable {
     List<ActivityCalculatedResponseDto> activities;
     private int totalCaloriesBurned;
 }

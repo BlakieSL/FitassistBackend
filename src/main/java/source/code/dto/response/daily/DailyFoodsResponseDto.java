@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
-public class DailyFoodsResponseDto {
+public class DailyFoodsResponseDto implements Serializable {
     private List<FoodCalculatedMacrosResponseDto> foods;
     private BigDecimal totalCalories;
     private BigDecimal totalCarbohydrates;

@@ -6,13 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Set;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorkoutSetGroupResponseDto {
+public class WorkoutSetGroupResponseDto implements Serializable {
     private Integer id;
     private Integer orderIndex;
     private Integer restSeconds;

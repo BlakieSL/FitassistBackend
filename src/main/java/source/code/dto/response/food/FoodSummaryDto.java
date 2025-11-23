@@ -3,6 +3,7 @@ package source.code.dto.response.food;
 import lombok.*;
 import source.code.helper.BaseUserEntity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(onlyExplicitlyIncluded = true)
-public class FoodSummaryDto implements BaseUserEntity {
+public class FoodSummaryDto implements BaseUserEntity, Serializable {
     private Integer id;
     @ToString.Include
     private String name;

@@ -5,13 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
-public class ForumThreadResponseDto {
+public class ForumThreadResponseDto implements Serializable {
     private Integer id;
     private String title;
     private LocalDateTime dateCreated;

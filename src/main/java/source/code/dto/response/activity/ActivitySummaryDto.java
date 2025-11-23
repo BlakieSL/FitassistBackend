@@ -3,6 +3,7 @@ package source.code.dto.response.activity;
 import lombok.*;
 import source.code.helper.BaseUserEntity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -10,8 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-public class ActivitySummaryDto implements BaseUserEntity {
+public class ActivitySummaryDto implements BaseUserEntity, Serializable {
     private Integer id;
     private String name;
     private BigDecimal met;

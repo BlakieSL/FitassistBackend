@@ -7,13 +7,14 @@ import lombok.Setter;
 import source.code.dto.pojo.TargetMuscleShortDto;
 import source.code.dto.response.plan.PlanSummaryDto;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExerciseResponseDto {
+public class ExerciseResponseDto implements Serializable {
     private Integer id;
     private String name;
     private String description;

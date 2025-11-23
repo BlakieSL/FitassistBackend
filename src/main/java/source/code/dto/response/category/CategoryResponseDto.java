@@ -6,11 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryResponseDto {
+public class CategoryResponseDto implements Serializable {
     private static final int NAME_MAX_LENGTH = 50;
 
     @Size(max = NAME_MAX_LENGTH)

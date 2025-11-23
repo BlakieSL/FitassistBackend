@@ -5,13 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorkoutResponseDto {
+public class WorkoutResponseDto implements Serializable {
     private int id;
     private String name;
     private BigDecimal duration;

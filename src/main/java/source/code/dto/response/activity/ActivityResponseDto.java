@@ -1,10 +1,8 @@
 package source.code.dto.response.activity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -12,7 +10,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ActivityResponseDto {
+public class ActivityResponseDto implements Serializable {
     private Integer id;
     private String name;
     private BigDecimal met;
