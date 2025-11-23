@@ -6,13 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.helper.BaseUserEntity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentSummaryDto implements BaseUserEntity {
+public class CommentSummaryDto implements BaseUserEntity, Serializable {
     private Integer id;
     private String text;
     private LocalDateTime dateCreated;

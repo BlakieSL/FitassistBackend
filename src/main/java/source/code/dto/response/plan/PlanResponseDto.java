@@ -6,13 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.pojo.PlanCategoryShortDto;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlanResponseDto  {
+public class PlanResponseDto implements Serializable {
     private Integer id;
     private String name;
     private String description;

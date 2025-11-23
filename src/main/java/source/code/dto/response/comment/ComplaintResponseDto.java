@@ -6,11 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.complaint.ComplaintReason;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ComplaintResponseDto {
+public class ComplaintResponseDto implements Serializable {
     private Integer id;
     private ComplaintReason reason;
     private String status;

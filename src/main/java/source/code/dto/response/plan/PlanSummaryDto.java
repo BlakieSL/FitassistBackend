@@ -7,13 +7,14 @@ import lombok.Setter;
 import source.code.dto.pojo.PlanTypeShortDto;
 import source.code.helper.BaseUserEntity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlanSummaryDto implements BaseUserEntity {
+public class PlanSummaryDto implements BaseUserEntity, Serializable {
     private Integer id;
     private String name;
     private String description;
