@@ -183,7 +183,7 @@ public class ExerciseControllerTest {
 
     @ExerciseSql
     @Test
-    @DisplayName("GET - /{id} - Should retrieve an existing exercise with image URLs")
+    @DisplayName("GET - /{id} - Should retrieve an existing exercise with image URLs and plans")
     void getExercise() throws Exception {
         Utils.setUserContext(1);
 
@@ -191,7 +191,23 @@ public class ExerciseControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.imageUrls").isArray()
+                        jsonPath("$.imageUrls").isArray(),
+                        jsonPath("$.plans").isArray(),
+                        jsonPath("$.plans.length()").value(2),
+                        jsonPath("$.plans[0].id").isNumber(),
+                        jsonPath("$.plans[0].name").isString(),
+                        jsonPath("$.plans[0].description").isString(),
+                        jsonPath("$.plans[0].public").isBoolean(),
+                        jsonPath("$.plans[0].authorUsername").value("test_user"),
+                        jsonPath("$.plans[0].authorId").value(1),
+                        jsonPath("$.plans[0].likesCount").isNumber(),
+                        jsonPath("$.plans[0].savesCount").isNumber(),
+                        jsonPath("$.plans[0].views").isNumber(),
+                        jsonPath("$.plans[0].planType").exists(),
+                        jsonPath("$.plans[0].planType.id").isNumber(),
+                        jsonPath("$.plans[0].planType.name").isString(),
+                        jsonPath("$.plans[0].createdAt").exists(),
+                        jsonPath("$.plans[0].interactedWithAt").doesNotExist()
                 );
     }
 

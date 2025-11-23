@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.pojo.TargetMuscleShortDto;
+import source.code.dto.response.plan.PlanSummaryDto;
 
 import java.util.List;
 
@@ -22,4 +23,5 @@ public class ExerciseResponseDto {
     private TargetMuscleShortDto forceType;
     private List<TargetMuscleShortDto> targetMuscles;
     private List<String> imageUrls;
+    private List<PlanSummaryDto> plans;
 }
