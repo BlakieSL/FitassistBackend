@@ -65,4 +65,39 @@ public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecifi
                                                  @Param("type") TypeOfInteraction type,
                                                  @Param("fetchByInteraction") boolean fetchByInteraction,
                                                  @Param("isOwnProfile") Boolean isOwnProfile);
+
+    @Query("""
+      SELECT new source.code.dto.response.plan.PlanSummaryDto(
+             p.id,
+             p.name,
+             p.description,
+             p.isPublic,
+             p.user.username,
+             p.user.id,
+             (SELECT m.imageName FROM Media m
+              WHERE m.parentId = p.user.id
+              AND m.parentType = 'USER'
+              ORDER BY m.id ASC
+              LIMIT 1),
+             (SELECT m.imageName FROM Media m
+              WHERE m.parentId = p.id
+              AND m.parentType = 'PLAN'
+              ORDER BY m.id ASC
+              LIMIT 1),
+             null,
+             null,
+             CAST((SELECT COUNT(up1) FROM UserPlan up1 WHERE up1.plan.id = p.id AND up1.type = 'LIKE') AS int),
+             CAST((SELECT COUNT(up2) FROM UserPlan up2 WHERE up2.plan.id = p.id AND up2.type = 'SAVE') AS int),
+             p.views,
+             new source.code.dto.pojo.PlanTypeShortDto(p.planType.id, p.planType.name),
+             p.createdAt,
+             null)
+      FROM Plan p
+      JOIN p.workouts w
+      JOIN w.workoutSetGroups wsg
+      JOIN wsg.workoutSets ws
+      WHERE ws.exercise.id = :exerciseId
+      ORDER BY p.createdAt DESC
+    """)
+    List<PlanSummaryDto> findPlanSummariesByExerciseId(@Param("exerciseId") int exerciseId);
 }

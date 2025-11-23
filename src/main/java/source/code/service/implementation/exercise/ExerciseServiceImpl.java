@@ -23,6 +23,7 @@ import source.code.model.exercise.Exercise;
 import source.code.model.exercise.ExerciseTargetMuscle;
 import source.code.repository.ExerciseRepository;
 import source.code.repository.ExerciseTargetMuscleRepository;
+import source.code.repository.PlanRepository;
 import source.code.service.declaration.exercise.ExerciseService;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
@@ -43,6 +44,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     private final RepositoryHelper repositoryHelper;
     private final ExerciseRepository exerciseRepository;
     private final ExerciseTargetMuscleRepository exerciseTargetMuscleRepository;
+    private final PlanRepository planRepository;
     private final SpecificationDependencies dependencies;
 
     public ExerciseServiceImpl(ExerciseMapper exerciseMapper,
@@ -52,6 +54,7 @@ public class ExerciseServiceImpl implements ExerciseService {
                                RepositoryHelper repositoryHelper,
                                ExerciseRepository exerciseRepository,
                                ExerciseTargetMuscleRepository exerciseTargetMuscleRepository,
+                               PlanRepository planRepository,
                                SpecificationDependencies dependencies) {
         this.exerciseMapper = exerciseMapper;
         this.validationService = validationService;
@@ -60,6 +63,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         this.repositoryHelper = repositoryHelper;
         this.exerciseRepository = exerciseRepository;
         this.exerciseTargetMuscleRepository = exerciseTargetMuscleRepository;
+        this.planRepository = planRepository;
         this.dependencies = dependencies;
     }
 
@@ -101,7 +105,9 @@ public class ExerciseServiceImpl implements ExerciseService {
     public ExerciseResponseDto getExercise(int exerciseId) {
         Exercise exercise = exerciseRepository.findByIdWithMedia(exerciseId)
                 .orElseThrow(() -> RecordNotFoundException.of(Exercise.class, exerciseId));
-        return exerciseMapper.toDetailedResponseDto(exercise);
+        ExerciseResponseDto dto = exerciseMapper.toDetailedResponseDto(exercise);
+        dto.setPlans(planRepository.findPlanSummariesByExerciseId(exerciseId));
+        return dto;
     }
 
     @Override

@@ -70,4 +70,7 @@ INSERT INTO workout_set (exercise_id, workout_set_group_id, repetitions, weight)
                                                                                      (1, 1, 10, 50.00),
                                                                                      (2, 1, 12, 30.00),
                                                                                      (3, 2, 8, 80.00),
-                                                                                     (4, 3, 15, 20.00);
+                                                                                     (4, 3, 15, 20.00),
+                                                                                     (1, 4, 12, 55.00),
+                                                                                     (3, 4, 10, 90.00),
+                                                                                     (2, 5, 3, 0.00);
