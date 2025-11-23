@@ -6,11 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.helper.Enum.model.MediaConnectedEntity;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MediaResponseDto {
+public class MediaResponseDto implements Serializable {
     private Integer id;
     private String imageUrl;
     private MediaConnectedEntity parentType;

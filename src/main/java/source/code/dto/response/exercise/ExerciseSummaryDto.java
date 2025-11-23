@@ -7,13 +7,14 @@ import lombok.Setter;
 import source.code.dto.pojo.CategoryDto;
 import source.code.helper.BaseUserEntity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExerciseSummaryDto implements BaseUserEntity {
+public class ExerciseSummaryDto implements BaseUserEntity, Serializable {
     private Integer id;
     private String name;
     private String description;
