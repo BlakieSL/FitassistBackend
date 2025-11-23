@@ -30,6 +30,7 @@ import source.code.model.exercise.Exercise;
 import source.code.model.exercise.ExerciseTargetMuscle;
 import source.code.repository.ExerciseRepository;
 import source.code.repository.ExerciseTargetMuscleRepository;
+import source.code.repository.PlanRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
@@ -58,6 +59,8 @@ public class ExerciseServiceTest {
     private ExerciseRepository exerciseRepository;
     @Mock
     private ExerciseTargetMuscleRepository exerciseTargetMuscleRepository;
+    @Mock
+    private PlanRepository planRepository;
     @InjectMocks
     private ExerciseServiceImpl exerciseService;
 
@@ -242,12 +245,14 @@ public class ExerciseServiceTest {
         when(exerciseRepository.findByIdWithMedia(exerciseId))
                 .thenReturn(java.util.Optional.of(exercise));
         when(exerciseMapper.toDetailedResponseDto(exercise)).thenReturn(responseDto);
+        when(planRepository.findPlanSummariesByExerciseId(exerciseId)).thenReturn(List.of());
 
         ExerciseResponseDto result = exerciseService.getExercise(exerciseId);
 
         assertEquals(responseDto, result);
         verify(exerciseRepository).findByIdWithMedia(exerciseId);
         verify(exerciseMapper).toDetailedResponseDto(exercise);
+        verify(planRepository).findPlanSummariesByExerciseId(exerciseId);
     }
 
     @Test
