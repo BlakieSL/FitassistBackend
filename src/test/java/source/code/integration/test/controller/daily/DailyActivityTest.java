@@ -20,6 +20,7 @@ import source.code.integration.test.controller.activity.ActivitySql;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -105,17 +106,13 @@ public class DailyActivityTest {
 
         DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
         request.setTime(30);
+        request.setWeight(new BigDecimal("75.50"));
         request.setDate(LocalDate.of(2023, 10, 6));
 
         mockMvc.perform(post("/api/daily-activities/add/3")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
-
-        DailyActivitiesGetDto verifyRequest = new DailyActivitiesGetDto();
-        verifyRequest.setDate(LocalDate.of(2023, 10, 6));
-
-
     }
 
     @ActivitySql
@@ -126,6 +123,7 @@ public class DailyActivityTest {
 
         DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
         request.setTime(20);
+        request.setWeight(new BigDecimal("72.00"));
         request.setDate(LocalDate.of(2023, 10, 5));
 
         mockMvc.perform(post("/api/daily-activities/add/1")
@@ -141,7 +139,8 @@ public class DailyActivityTest {
                         .content(objectMapper.writeValueAsString(verifyRequest)))
                 .andExpectAll(
                         jsonPath("$.activities[?(@.id == 1)].time").value(50),
-                        jsonPath("$.activities[?(@.id == 2)].time").value(45)
+                        jsonPath("$.activities[?(@.id == 2)].time").value(45),
+                        jsonPath("$.activities[?(@.id == 1)].weight").value(72.00)
                 );
     }
 
@@ -153,6 +152,7 @@ public class DailyActivityTest {
 
         DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
         request.setTime(30);
+        request.setWeight(new BigDecimal("75.00"));
         request.setDate(LocalDate.of(2023, 10, 6));
 
         mockMvc.perform(post("/api/daily-activities/add/999")
@@ -169,6 +169,7 @@ public class DailyActivityTest {
 
         DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
         updateDto.setTime(40);
+        updateDto.setWeight(new BigDecimal("80.00"));
 
         mockMvc.perform(patch("/api/daily-activities/modify-activity/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -183,6 +184,7 @@ public class DailyActivityTest {
                         .content(objectMapper.writeValueAsString(verifyRequest)))
                 .andExpectAll(
                         jsonPath("$.activities[?(@.id == 1)].time").value(40),
+                        jsonPath("$.activities[?(@.id == 1)].weight").value(80.00),
                         jsonPath("$.activities[?(@.id == 2)].time").value(45)
                 );
     }
@@ -270,5 +272,23 @@ public class DailyActivityTest {
 
         mockMvc.perform(delete("/api/daily-activities/remove/1"))
                 .andExpect(status().isForbidden());
+    }
+
+    @ActivitySql
+    @Test
+    @DisplayName("POST - /add/{activityId} - Should return 400 when weight is not provided and user has no weight")
+    void addDailyActivityNoWeightAvailable() throws Exception {
+        Utils.setUserContext(2);
+
+        DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
+        request.setTime(30);
+        request.setDate(LocalDate.of(2023, 10, 6));
+
+        mockMvc.perform(post("/api/daily-activities/add/3")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpectAll(
+                        status().isBadRequest()
+                );
     }
 }

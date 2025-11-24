@@ -30,11 +30,11 @@ INSERT INTO daily_cart (date, user_id) VALUES
     ('2023-10-05', 2),
     ('2023-10-06', 1);
 
-INSERT INTO daily_cart_activity (time, activity_id, daily_cart_id) VALUES
-    (30, 1, 1),
-    (45, 2, 1),
-    (60, 3, 2),
-    (30, 4, 3);
+INSERT INTO daily_cart_activity (time, weight, activity_id, daily_cart_id) VALUES
+    (30, 70.50, 1, 1),
+    (45, 70.50, 2, 1),
+    (60, 65.00, 3, 2),
+    (30, 70.50, 4, 3);
 
 INSERT INTO user_activity (activity_id, user_id, created_at) VALUES
     (1, 1, NOW()),

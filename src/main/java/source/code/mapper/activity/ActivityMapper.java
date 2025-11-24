@@ -69,6 +69,7 @@ public abstract class  ActivityMapper {
 
         dto.setCaloriesBurned(calories);
         dto.setTime(time);
+        dto.setWeight(weight);
     }
 
     @Mapping(target = "categoryName", source = "activityCategory.name")

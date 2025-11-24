@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor(staticName = "of")
@@ -15,4 +17,7 @@ public class DailyActivityItemUpdateDto {
     @NotNull
     @Positive
     private int time;
+
+    @Positive
+    private BigDecimal weight;
 }
