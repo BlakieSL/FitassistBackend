@@ -14,24 +14,26 @@ public abstract class DailyActivityMapper {
     @Autowired
     private CalculationsService calculationsService;
 
-    @Mapping(target = "id", source = "dailyCartActivity.activity.id")
-    @Mapping(target = "name", source = "dailyCartActivity.activity.name")
-    @Mapping(target = "met", source = "dailyCartActivity.activity.met")
-    @Mapping(target = "categoryName", source = "dailyCartActivity.activity.activityCategory.name")
-    @Mapping(target = "categoryId", source = "dailyCartActivity.activity.activityCategory.id")
+    @Mapping(target = "id", source = "activity.id")
+    @Mapping(target = "name", source = "activity.name")
+    @Mapping(target = "met", source = "activity.met")
+    @Mapping(target = "categoryName", source = "activity.activityCategory.name")
+    @Mapping(target = "categoryId", source = "activity.activityCategory.id")
     @Mapping(target = "caloriesBurned", ignore = true)
-    @Mapping(target = "time", source = "dailyCartActivity.time")
+    @Mapping(target = "time", source = "time")
+    @Mapping(target = "weight", source = "weight")
     public abstract ActivityCalculatedResponseDto toActivityCalculatedResponseDto(
-            DailyCartActivity dailyCartActivity, BigDecimal userWeight);
+            DailyCartActivity dailyCartActivity);
 
     @AfterMapping
     protected void setCaloriesBurned(
             @MappingTarget ActivityCalculatedResponseDto responseDto,
-            DailyCartActivity dailyCartActivity,
-            @Context BigDecimal userWeight) {
+            DailyCartActivity dailyCartActivity) {
 
         BigDecimal caloriesBurned = calculationsService.calculateCaloriesBurned(
-                dailyCartActivity.getTime(), userWeight, dailyCartActivity.getActivity().getMet());
+                dailyCartActivity.getTime(),
+                dailyCartActivity.getWeight(),
+                dailyCartActivity.getActivity().getMet());
 
         responseDto.setCaloriesBurned(caloriesBurned.setScale(0, RoundingMode.HALF_UP).intValue());
     }

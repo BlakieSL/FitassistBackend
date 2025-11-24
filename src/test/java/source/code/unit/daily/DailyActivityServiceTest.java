@@ -85,6 +85,13 @@ public class DailyActivityServiceTest {
         dailyCart.setId(1);
         dailyCartActivity.setId(1);
         createDto.setTime(60);
+        createDto.setWeight(new BigDecimal("75.00"));
+        createDto.setDate(LocalDate.now());
+
+        User user = new User();
+        user.setId(USER_ID);
+        user.setWeight(new BigDecimal("70.00"));
+        dailyCart.setUser(user);
     }
 
     @AfterEach
@@ -112,6 +119,7 @@ public class DailyActivityServiceTest {
 
         verify(dailyCartRepository).save(dailyCart);
         assertEquals(dailyCart.getDailyCartActivities().get(0).getTime(), createDto.getTime());
+        assertEquals(dailyCart.getDailyCartActivities().get(0).getWeight(), createDto.getWeight());
     }
 
     @Test
@@ -191,7 +199,9 @@ public class DailyActivityServiceTest {
     void updateDailyActivityItem_shouldUpdate() throws JsonPatchException, JsonProcessingException {
         DailyActivityItemUpdateDto patchedDto = new DailyActivityItemUpdateDto();
         patchedDto.setTime(120);
+        patchedDto.setWeight(new BigDecimal("80.00"));
 
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
         when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID))
                 .thenReturn(Optional.of(dailyCartActivity));
 
@@ -204,6 +214,7 @@ public class DailyActivityServiceTest {
 
         verify(validationService).validate(patchedDto);
         assertEquals(patchedDto.getTime(), dailyCartActivity.getTime());
+        assertEquals(patchedDto.getWeight(), dailyCartActivity.getWeight());
         verify(dailyCartActivityRepository).save(dailyCartActivity);
     }
 
@@ -269,6 +280,7 @@ public class DailyActivityServiceTest {
         user.setId(USER_ID);
         user.setWeight(BigDecimal.valueOf(70));
         dailyCart.setUser(user);
+        dailyCartActivity.setWeight(new BigDecimal("75.00"));
         dailyCart.getDailyCartActivities().add(dailyCartActivity);
 
         ActivityCalculatedResponseDto calculatedResponseDto = new ActivityCalculatedResponseDto();
@@ -276,10 +288,8 @@ public class DailyActivityServiceTest {
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
         when(dailyCartRepository.findByUserIdAndDateWithActivityAssociations(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyCart));
-        when(dailyActivityMapper.toActivityCalculatedResponseDto(
-                dailyCartActivity,
-                user.getWeight())
-        ).thenReturn(calculatedResponseDto);
+        when(dailyActivityMapper.toActivityCalculatedResponseDto(dailyCartActivity))
+                .thenReturn(calculatedResponseDto);
 
         DailyActivitiesResponseDto result = dailyActivityService
                 .getActivitiesFromDailyCart(new DailyActivitiesGetDto(LocalDate.now()));
@@ -304,6 +314,6 @@ public class DailyActivityServiceTest {
 
         assertTrue(result.getActivities().isEmpty());
         assertEquals(0, result.getTotalCaloriesBurned());
-        verify(dailyActivityMapper, never()).toActivityCalculatedResponseDto(any(), any());
+        verify(dailyActivityMapper, never()).toActivityCalculatedResponseDto(any());
     }
 }
