@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.request.recipe.FilterRecipesByFoodsDto;
 import source.code.dto.request.recipe.RecipeFoodCreateDto;
 import source.code.dto.response.food.FoodSummaryDto;
-import source.code.dto.response.recipe.RecipeResponseDto;
+import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.food.FoodMapper;
@@ -39,7 +39,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class RecipeFoodServiceTest {
-
     @Mock
     private RecipeService recipeService;
     @Mock
@@ -202,14 +201,14 @@ public class RecipeFoodServiceTest {
     void getRecipesByFoods_shouldReturnRecipesByFoods() {
         List<Integer> foodIds = List.of(foodId);
         FilterRecipesByFoodsDto filter = FilterRecipesByFoodsDto.of(foodIds);
-        List<RecipeResponseDto> recipeResponseDtos = List.of(new RecipeResponseDto());
+        List<RecipeSummaryDto> recipeSummaryDtos = List.of(new RecipeSummaryDto());
 
-        when(recipeService.getFilteredRecipes(any())).thenReturn(recipeResponseDtos);
+        when(recipeService.getFilteredRecipes(any())).thenReturn(recipeSummaryDtos);
 
-        List<RecipeResponseDto> result = recipeFoodService.getRecipesByFoods(filter);
+        List<RecipeSummaryDto> result = recipeFoodService.getRecipesByFoods(filter);
 
         assertEquals(1, result.size());
-        assertSame(recipeResponseDtos.get(0), result.get(0));
+        assertSame(recipeSummaryDtos.get(0), result.get(0));
     }
 
     @Test
@@ -219,7 +218,7 @@ public class RecipeFoodServiceTest {
 
         when(recipeService.getFilteredRecipes(any())).thenReturn(List.of());
 
-        List<RecipeResponseDto> result = recipeFoodService.getRecipesByFoods(filter);
+        List<RecipeSummaryDto> result = recipeFoodService.getRecipesByFoods(filter);
 
         assertTrue(result.isEmpty());
     }

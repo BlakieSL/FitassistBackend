@@ -12,6 +12,7 @@ import source.code.annotation.recipe.RecipeOwnerOrAdmin;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.recipe.RecipeCreateDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
+import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.service.declaration.recipe.RecipeService;
 
 import java.util.List;
@@ -26,10 +27,10 @@ public class RecipeController {
     }
 
     @PostMapping
-    public ResponseEntity<RecipeResponseDto> createRecipe(
+    public ResponseEntity<RecipeSummaryDto> createRecipe(
             @Valid @RequestBody RecipeCreateDto recipeDto
     ) {
-        RecipeResponseDto response = recipeService.createRecipe(recipeDto);
+        RecipeSummaryDto response = recipeService.createRecipe(recipeDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -59,15 +60,15 @@ public class RecipeController {
     }
 
     @GetMapping({"/private", "/private/{isPrivate}"})
-    public ResponseEntity<List<RecipeResponseDto>> getAllRecipes(@PathVariable(required = false) Boolean isPrivate) {
+    public ResponseEntity<List<RecipeSummaryDto>> getAllRecipes(@PathVariable(required = false) Boolean isPrivate) {
         return ResponseEntity.ok(recipeService.getAllRecipes(isPrivate));
     }
 
     @PostMapping("/filter")
-    public ResponseEntity<List<RecipeResponseDto>> getFilteredRecipes(
+    public ResponseEntity<List<RecipeSummaryDto>> getFilteredRecipes(
             @Valid @RequestBody FilterDto filterDto
     ) {
-        List<RecipeResponseDto> filtered = recipeService.getFilteredRecipes(filterDto);
+        List<RecipeSummaryDto> filtered = recipeService.getFilteredRecipes(filterDto);
         return ResponseEntity.ok(filtered);
     }
 

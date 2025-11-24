@@ -12,6 +12,7 @@ import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.recipe.RecipeCreateDto;
 import source.code.dto.request.recipe.RecipeUpdateDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
+import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.event.events.Recipe.RecipeCreateEvent;
 import source.code.event.events.Recipe.RecipeDeleteEvent;
 import source.code.event.events.Recipe.RecipeUpdateEvent;
@@ -21,6 +22,7 @@ import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.recipe.Recipe;
 import source.code.repository.RecipeRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
+import source.code.service.declaration.helpers.RecipeSummaryPopulationService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.declaration.recipe.RecipeService;
@@ -29,6 +31,7 @@ import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.RecipeSpecification;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -39,6 +42,7 @@ public class RecipeServiceImpl implements RecipeService {
     private final ApplicationEventPublisher applicationEventPublisher;
     private final RepositoryHelper repositoryHelper;
     private final RecipeRepository recipeRepository;
+    private final RecipeSummaryPopulationService recipeSummaryPopulationService;
     private final SpecificationDependencies dependencies;
 
     public RecipeServiceImpl(RecipeMapper recipeMapper,
@@ -47,6 +51,7 @@ public class RecipeServiceImpl implements RecipeService {
                              ApplicationEventPublisher applicationEventPublisher,
                              RepositoryHelper repositoryHelper,
                              RecipeRepository recipeRepository,
+                             RecipeSummaryPopulationService recipeSummaryPopulationService,
                              SpecificationDependencies dependencies) {
         this.recipeMapper = recipeMapper;
         this.jsonPatchService = jsonPatchService;
@@ -54,18 +59,23 @@ public class RecipeServiceImpl implements RecipeService {
         this.applicationEventPublisher = applicationEventPublisher;
         this.repositoryHelper = repositoryHelper;
         this.recipeRepository = recipeRepository;
+        this.recipeSummaryPopulationService = recipeSummaryPopulationService;
         this.dependencies = dependencies;
     }
 
     @Override
     @Transactional
-    public RecipeResponseDto createRecipe(RecipeCreateDto request) {
+    public RecipeSummaryDto createRecipe(RecipeCreateDto request) {
         int userId = AuthorizationUtil.getUserId();
         Recipe mapped = recipeMapper.toEntity(request, userId);
         Recipe saved = recipeRepository.save(mapped);
         applicationEventPublisher.publishEvent(RecipeCreateEvent.of(this, saved));
 
-        return recipeMapper.toResponseDto(saved);
+        recipeRepository.flush();
+
+        List<RecipeSummaryDto> summaries = recipeRepository.findRecipeSummariesByIds(List.of(saved.getId()));
+        recipeSummaryPopulationService.populateRecipeSummaries(summaries);
+        return summaries.getFirst();
     }
 
     @Override
@@ -101,21 +111,29 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     @Cacheable(value = CacheNames.ALL_RECIPES)
-    public List<RecipeResponseDto> getAllRecipes(Boolean isPrivate) {
-        return recipeRepository.findAllWithAssociations(isPrivate, AuthorizationUtil.getUserId()).stream()
-                .map(recipeMapper::toResponseDto)
-                .toList();
+    public List<RecipeSummaryDto> getAllRecipes(Boolean isPrivate) {
+        int userId = AuthorizationUtil.getUserId();
+        List<RecipeSummaryDto> recipes = recipeRepository.findAllRecipeSummaries(isPrivate, userId);
+        recipeSummaryPopulationService.populateRecipeSummaries(recipes);
+        return recipes;
     }
 
     @Override
-    public List<RecipeResponseDto> getFilteredRecipes(FilterDto filter) {
+    public List<RecipeSummaryDto> getFilteredRecipes(FilterDto filter) {
         SpecificationFactory<Recipe> recipeFactory = RecipeSpecification::of;
         SpecificationBuilder<Recipe> specificationBuilder = SpecificationBuilder.of(filter, recipeFactory, dependencies);
         Specification<Recipe> specification = specificationBuilder.build();
 
-        return recipeRepository.findAll(specification).stream()
-                .map(recipeMapper::toResponseDto)
+        List<Integer> recipeIds = recipeRepository.findAll(specification).stream()
+                .map(Recipe::getId)
                 .toList();
+
+        if (recipeIds.isEmpty()) return List.of();
+
+        List<RecipeSummaryDto> recipes = recipeRepository.findRecipeSummariesByIds(recipeIds);
+        recipeSummaryPopulationService.populateRecipeSummaries(recipes);
+
+        return recipes;
     }
 
     @Override
