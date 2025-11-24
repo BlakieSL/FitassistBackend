@@ -12,7 +12,7 @@ import source.code.annotation.recipe.RecipeOwnerOrAdmin;
 import source.code.dto.request.recipe.FilterRecipesByFoodsDto;
 import source.code.dto.request.recipe.RecipeFoodCreateDto;
 import source.code.dto.response.food.FoodSummaryDto;
-import source.code.dto.response.recipe.RecipeResponseDto;
+import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.service.declaration.recipe.RecipeFoodService;
 
 import java.util.List;
@@ -70,10 +70,10 @@ public class RecipeFoodController {
     }
 
     @PostMapping("/filter/foods")
-    public ResponseEntity<List<RecipeResponseDto>> getRecipesByFoods(
+    public ResponseEntity<List<RecipeSummaryDto>> getRecipesByFoods(
             @Valid @RequestBody FilterRecipesByFoodsDto filter
     ) {
-       List<RecipeResponseDto> recipes = recipeFoodService.getRecipesByFoods(filter);
+       List<RecipeSummaryDto> recipes = recipeFoodService.getRecipesByFoods(filter);
        return ResponseEntity.ok(recipes);
     }
 }

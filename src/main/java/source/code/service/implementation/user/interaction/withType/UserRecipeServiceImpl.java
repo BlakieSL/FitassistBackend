@@ -2,7 +2,6 @@ package source.code.service.implementation.user.interaction.withType;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import source.code.dto.pojo.RecipeCategoryShortDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
@@ -13,43 +12,37 @@ import source.code.model.recipe.Recipe;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.User;
 import source.code.model.user.UserRecipe;
-import source.code.repository.RecipeCategoryAssociationRepository;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.helpers.RecipeSummaryPopulationService;
 import source.code.service.declaration.helpers.SortingService;
 import source.code.service.declaration.user.SavedService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service("userRecipeService")
 public class UserRecipeServiceImpl
         extends GenericSavedService<Recipe, UserRecipe, RecipeResponseDto>
         implements SavedService {
 
-    private final ImageUrlPopulationService imagePopulationService;
+    private final RecipeSummaryPopulationService recipeSummaryPopulationService;
     private final SortingService sortingService;
-    private final RecipeCategoryAssociationRepository categoryAssociationRepository;
 
     public UserRecipeServiceImpl(UserRecipeRepository userRecipeRepository,
                                  RecipeRepository recipeRepository,
                                  UserRepository userRepository,
                                  RecipeMapper recipeMapper,
-                                 ImageUrlPopulationService imagePopulationService,
-                                 SortingService sortingService,
-                                 RecipeCategoryAssociationRepository categoryAssociationRepository) {
+                                 RecipeSummaryPopulationService recipeSummaryPopulationService,
+                                 SortingService sortingService) {
         super(userRepository,
                 recipeRepository,
                 userRecipeRepository,
                 recipeMapper::toResponseDto,
                 Recipe.class);
-        this.imagePopulationService = imagePopulationService;
+        this.recipeSummaryPopulationService = recipeSummaryPopulationService;
         this.sortingService = sortingService;
-        this.categoryAssociationRepository = categoryAssociationRepository;
     }
 
     @Override
@@ -57,33 +50,12 @@ public class UserRecipeServiceImpl
         List<RecipeSummaryDto> dtos = new ArrayList<>(
                 ((RecipeRepository) entityRepository).findRecipeSummaryUnified(userId, type, true, null));
 
-        if (!dtos.isEmpty()) {
-            List<Integer> recipeIds = dtos.stream().map(RecipeSummaryDto::getId).toList();
-            Map<Integer, List<RecipeCategoryShortDto>> categoriesMap = fetchCategoriesForRecipes(recipeIds);
-
-            imagePopulationService.populateAuthorAndEntityImagesForList(dtos,
-                    RecipeSummaryDto::getAuthorImageName, RecipeSummaryDto::setAuthorImageUrl,
-                    RecipeSummaryDto::getFirstImageName, RecipeSummaryDto::setFirstImageUrl);
-
-            dtos.forEach(dto -> dto.setCategories(categoriesMap.getOrDefault(dto.getId(), new ArrayList<>())));
-        }
-
+        recipeSummaryPopulationService.populateRecipeSummaries(dtos);
         sortingService.sortByTimestamp(dtos, RecipeSummaryDto::getUserRecipeInteractionCreatedAt, sortDirection);
 
         return dtos.stream()
                 .map(dto -> (BaseUserEntity) dto)
                 .toList();
-    }
-
-    private Map<Integer, List<RecipeCategoryShortDto>> fetchCategoriesForRecipes(List<Integer> recipeIds) {
-        return categoryAssociationRepository.findCategoryDataByRecipeIds(recipeIds).stream()
-                .collect(Collectors.groupingBy(
-                        arr -> (Integer) arr[0],
-                        Collectors.mapping(
-                                arr -> new RecipeCategoryShortDto((Integer) arr[1], (String) arr[2]),
-                                Collectors.toList()
-                        )
-                ));
     }
 
     @Override

@@ -13,7 +13,7 @@ import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.recipe.FilterRecipesByFoodsDto;
 import source.code.dto.request.recipe.RecipeFoodCreateDto;
 import source.code.dto.response.food.FoodSummaryDto;
-import source.code.dto.response.recipe.RecipeResponseDto;
+import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.cache.CacheNames;
@@ -119,7 +119,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
     }
 
     @Override
-    public List<RecipeResponseDto> getRecipesByFoods(FilterRecipesByFoodsDto filter) {
+    public List<RecipeSummaryDto> getRecipesByFoods(FilterRecipesByFoodsDto filter) {
         List<FilterCriteria> foodCriteriaList = filter.getFoodIds().stream()
                 .map(foodId -> FilterCriteria.of("FOODS", foodId, FilterOperation.EQUAL))
                 .toList();

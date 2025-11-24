@@ -17,6 +17,7 @@ import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.repository.*;
 import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.helpers.RecipeSummaryPopulationService;
 import source.code.service.declaration.helpers.SortingService;
 import source.code.service.implementation.user.UserCreatedServiceImpl;
 
@@ -25,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +41,7 @@ public class UserCreatedServiceTest {
     @Mock
     private ForumThreadRepository forumThreadRepository;
     @Mock
-    private RecipeCategoryAssociationRepository recipeCategoryAssociationRepository;
+    private RecipeSummaryPopulationService recipeSummaryPopulationService;
     @Mock
     private ImageUrlPopulationService imagePopulationService;
     @Mock
@@ -109,8 +111,6 @@ public class UserCreatedServiceTest {
         dto2.setFirstImageName("recipe2.jpg");
 
         when(recipeRepository.findRecipeSummaryUnified(userId, null, false, true)).thenReturn(List.of(dto1, dto2));
-        when(recipeCategoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2)))
-                .thenReturn(Collections.emptyList());
 
         List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, Sort.Direction.DESC);
 
@@ -119,7 +119,7 @@ public class UserCreatedServiceTest {
         assertTrue(result.contains(dto1));
         assertTrue(result.contains(dto2));
         verify(recipeRepository).findRecipeSummaryUnified(userId, null, false, true);
-        verify(recipeCategoryAssociationRepository).findCategoryDataByRecipeIds(List.of(1, 2));
+        verify(recipeSummaryPopulationService).populateRecipeSummaries(any(List.class));
     }
 
     @Test
@@ -236,8 +236,6 @@ public class UserCreatedServiceTest {
         dto1.setFirstImageName(null);
 
         when(recipeRepository.findRecipeSummaryUnified(userId, null, false, true)).thenReturn(List.of(dto1));
-        when(recipeCategoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1)))
-                .thenReturn(Collections.emptyList());
 
         List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, Sort.Direction.DESC);
 
@@ -245,7 +243,7 @@ public class UserCreatedServiceTest {
         assertEquals(1, result.size());
         assertNull(dto1.getFirstImageUrl());
         verify(recipeRepository).findRecipeSummaryUnified(userId, null, false, true);
-        verify(recipeCategoryAssociationRepository).findCategoryDataByRecipeIds(List.of(1));
+        verify(recipeSummaryPopulationService).populateRecipeSummaries(any(List.class));
     }
 
     @Test
@@ -298,8 +296,6 @@ public class UserCreatedServiceTest {
         RecipeSummaryDto dto2 = createRecipeSummaryDto(2, newer);
 
         when(recipeRepository.findRecipeSummaryUnified(userId, null, false, true)).thenReturn(List.of(dto1, dto2));
-        when(recipeCategoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2)))
-                .thenReturn(Collections.emptyList());
 
         List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, Sort.Direction.DESC);
 
@@ -319,8 +315,6 @@ public class UserCreatedServiceTest {
         RecipeSummaryDto dto2 = createRecipeSummaryDto(2, newer);
 
         when(recipeRepository.findRecipeSummaryUnified(userId, null, false, true)).thenReturn(List.of(dto2, dto1));
-        when(recipeCategoryAssociationRepository.findCategoryDataByRecipeIds(List.of(2, 1)))
-                .thenReturn(Collections.emptyList());
 
         List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, Sort.Direction.ASC);
 
