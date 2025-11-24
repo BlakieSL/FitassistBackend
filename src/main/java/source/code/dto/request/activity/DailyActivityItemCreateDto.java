@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -18,6 +19,9 @@ public class DailyActivityItemCreateDto {
     @NotNull
     @Positive
     private int time;
+
+    @Positive
+    private BigDecimal weight;
 
     @NotNull
     @PastOrPresent

@@ -20,6 +20,7 @@ public class ActivityCalculatedResponseDto implements Serializable {
     private int categoryId;
     private int caloriesBurned;
     private int time;
+    private BigDecimal weight;
 
     public static ActivityCalculatedResponseDto createWithId(int id, int time) {
         ActivityCalculatedResponseDto activityCalculatedResponseDto = new ActivityCalculatedResponseDto();

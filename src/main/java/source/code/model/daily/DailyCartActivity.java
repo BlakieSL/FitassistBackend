@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.activity.Activity;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "daily_cart_activity")
 @NamedEntityGraph(name = "DailyCartActivity.withoutAssociations", attributeNodes = {})
@@ -26,6 +28,10 @@ public class DailyCartActivity {
     @Column(nullable = false)
     private int time;
 
+    @Positive
+    @Column(precision = 38, scale = 2)
+    private BigDecimal weight;
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "daily_cart_id", nullable = false)
@@ -39,12 +45,14 @@ public class DailyCartActivity {
     public static DailyCartActivity of(
             Activity activity,
             DailyCart dailyCart,
-            int time
+            int time,
+            BigDecimal weight
     ) {
         DailyCartActivity dailyCartActivity = new DailyCartActivity();
         dailyCartActivity.setActivity(activity);
         dailyCartActivity.setDailyCart(dailyCart);
         dailyCartActivity.setTime(time);
+        dailyCartActivity.setWeight(weight);
         return dailyCartActivity;
     }
 }

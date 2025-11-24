@@ -178,9 +178,10 @@ create table daily_cart_activity
 (
     id            int auto_increment
         primary key,
-    time          int not null,
-    activity_id   int not null,
-    daily_cart_id int not null,
+    time          int            not null,
+    weight        decimal(38, 2) null,
+    activity_id   int            not null,
+    daily_cart_id int            not null,
     constraint FKdgesrmrhq8h50f65y57nan844
         foreign key (activity_id) references activity (id),
     constraint FKsk898dh43l6p4csbx0b656qe8
