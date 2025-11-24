@@ -21,11 +21,10 @@ import source.code.model.recipe.Recipe;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.User;
 import source.code.model.user.UserRecipe;
-import source.code.repository.RecipeCategoryAssociationRepository;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.helpers.RecipeSummaryPopulationService;
 import source.code.service.declaration.helpers.SortingService;
 import source.code.service.implementation.user.interaction.withType.UserRecipeServiceImpl;
 
@@ -50,11 +49,9 @@ public class UserRecipeServiceTest {
     @Mock
     private RecipeMapper recipeMapper;
     @Mock
-    private ImageUrlPopulationService imageUrlPopulationService;
+    private RecipeSummaryPopulationService recipeSummaryPopulationService;
     @Mock
     private SortingService sortingService;
-    @Mock
-    private RecipeCategoryAssociationRepository categoryAssociationRepository;
     @InjectMocks
     private UserRecipeServiceImpl userRecipeService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
@@ -206,14 +203,12 @@ public class UserRecipeServiceTest {
 
         when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
                 .thenReturn(List.of(dto1, dto2));
-        when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2)))
-                .thenReturn(Collections.emptyList());
 
         var result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertEquals(2, result.size());
         verify(recipeRepository).findRecipeSummaryUnified(userId, type, true, null);
-        verify(categoryAssociationRepository).findCategoryDataByRecipeIds(List.of(1, 2));
+        verify(recipeSummaryPopulationService).populateRecipeSummaries(any(List.class));
     }
 
     @Test
@@ -277,8 +272,6 @@ public class UserRecipeServiceTest {
 
         when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
-        when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2)))
-                .thenReturn(Collections.emptyList());
 
         List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
@@ -299,8 +292,6 @@ public class UserRecipeServiceTest {
 
         when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
                 .thenReturn(new ArrayList<>(List.of(dto2, dto1)));
-        when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(2, 1)))
-                .thenReturn(Collections.emptyList());
 
         List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.ASC);
 
@@ -321,8 +312,6 @@ public class UserRecipeServiceTest {
 
         when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
-        when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2)))
-                .thenReturn(Collections.emptyList());
 
         List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
@@ -342,8 +331,6 @@ public class UserRecipeServiceTest {
 
         when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2, dto3)));
-        when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2, 3)))
-                .thenReturn(Collections.emptyList());
 
         List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
@@ -368,8 +355,6 @@ public class UserRecipeServiceTest {
 
         when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
                 .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
-        when(categoryAssociationRepository.findCategoryDataByRecipeIds(List.of(1, 2)))
-                .thenReturn(Collections.emptyList());
 
         List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 

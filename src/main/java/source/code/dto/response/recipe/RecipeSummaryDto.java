@@ -16,21 +16,25 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecipeSummaryDto implements BaseUserEntity, Serializable {
+public class  RecipeSummaryDto implements BaseUserEntity, Serializable {
     private Integer id;
     private String name;
     private String description;
     private boolean isPublic;
+
     private String authorUsername;
     private Integer authorId;
     private String authorImageName;
-    private String firstImageName;
     private String authorImageUrl;
+
+    private String firstImageName;
     private String firstImageUrl;
+
     private int likesCount;
     private int savesCount;
     private int views;
     private int ingredientsCount;
+
     private List<RecipeCategoryShortDto> categories = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime userRecipeInteractionCreatedAt;

@@ -91,12 +91,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
         validationService.validate(patchedDto);
 
         updateTime(dailyCartActivity, patchedDto.getTime());
-
-        if (patchedDto.getWeight() != null) {
-            int userId = AuthorizationUtil.getUserId();
-            BigDecimal weight = resolveWeightForLogging(patchedDto.getWeight(), userId);
-            dailyCartActivity.setWeight(weight);
-        }
+        updateWeight(dailyCartActivity, patchedDto.getWeight());
 
         dailyCartActivityRepository.save(dailyCartActivity);
     }
@@ -133,6 +128,14 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 
     private void updateTime(DailyCartActivity dailyCartActivity, int time) {
         dailyCartActivity.setTime(time);
+    }
+
+    private void updateWeight(DailyCartActivity dailyCartActivity, BigDecimal weight) {
+        if (weight != null) {
+            int userId = AuthorizationUtil.getUserId();
+            BigDecimal resolvedWeight = resolveWeightForLogging(weight, userId);
+            dailyCartActivity.setWeight(resolvedWeight);
+        }
     }
 
     private DailyCart createDailyCart(int userId, LocalDate date) {

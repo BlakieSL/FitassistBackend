@@ -6,7 +6,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.request.recipe.FilterRecipesByFoodsDto;
 import source.code.dto.request.recipe.RecipeFoodCreateDto;
 import source.code.dto.response.food.FoodSummaryDto;
-import source.code.dto.response.recipe.RecipeResponseDto;
+import source.code.dto.response.recipe.RecipeSummaryDto;
 
 import java.util.List;
 
@@ -19,5 +19,5 @@ public interface RecipeFoodService {
 
     List<FoodSummaryDto> getFoodsByRecipe(int recipeId);
 
-    List<RecipeResponseDto> getRecipesByFoods(FilterRecipesByFoodsDto filter);
+    List<RecipeSummaryDto> getRecipesByFoods(FilterRecipesByFoodsDto filter);
 }
