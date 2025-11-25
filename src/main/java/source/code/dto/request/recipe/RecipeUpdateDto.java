@@ -19,6 +19,7 @@ public class RecipeUpdateDto {
     private String name;
     @Size(max = DESCRIPTION_MAX_LENGTH)
     private String description;
+    private Short minutesToPrepare;
     private Boolean isPublic;
     private List<Integer> categoryIds;
 }

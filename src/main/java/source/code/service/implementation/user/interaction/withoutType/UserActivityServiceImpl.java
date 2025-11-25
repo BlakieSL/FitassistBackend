@@ -64,24 +64,17 @@ public class UserActivityServiceImpl
 
     @Override
     public List<BaseUserEntity> getAllFromUser(int userId, Sort.Direction sortDirection) {
-        Sort sort = Sort.by(sortDirection, "createdAt");
-
-        List<UserActivity> userActivities = ((UserActivityRepository) userEntityRepository)
-                .findAllByUserIdWithMedia(userId, sort);
-
-        return userActivities.stream()
+        return ((UserActivityRepository) userEntityRepository)
+                .findAllByUserIdWithMedia(userId, Sort.by(sortDirection, "createdAt"))
+                .stream()
                 .map(ua -> {
                     ActivitySummaryDto dto = activityMapper.toSummaryDto(ua.getActivity());
                     dto.setUserActivityInteractionCreatedAt(ua.getCreatedAt());
-
-                    imagePopulationService.populateFirstImageFromMediaList(
-                            List.of(dto),
-                            d -> ua.getActivity().getMediaList(),
+                    imagePopulationService.populateFirstImageFromMediaList(dto,
+                            ua.getActivity().getMediaList(),
                             Media::getImageName,
                             ActivitySummaryDto::setImageName,
-                            ActivitySummaryDto::setFirstImageUrl
-                    );
-
+                            ActivitySummaryDto::setFirstImageUrl);
                     return (BaseUserEntity) dto;
                 })
                 .toList();

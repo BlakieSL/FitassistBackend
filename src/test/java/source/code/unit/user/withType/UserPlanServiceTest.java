@@ -29,12 +29,13 @@ import source.code.service.declaration.helpers.SortingService;
 import source.code.service.implementation.user.interaction.withType.UserPlanServiceImpl;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -203,11 +204,14 @@ public class UserPlanServiceTest {
 
         when(planRepository.findPlanSummaryUnified(userId, type, true, null))
                 .thenReturn(List.of(dto1, dto2));
+        doReturn(Comparator.comparing(PlanSummaryDto::getId))
+                .when(sortingService).comparator(any(), eq(Sort.Direction.DESC));
 
         var result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertEquals(2, result.size());
         verify(planRepository).findPlanSummaryUnified(userId, type, true, null);
+        verify(sortingService).comparator(any(), eq(Sort.Direction.DESC));
     }
 
     @Test
@@ -217,6 +221,8 @@ public class UserPlanServiceTest {
 
         when(planRepository.findPlanSummaryUnified(userId, type, true, null))
                 .thenReturn(List.of());
+        doReturn(Comparator.comparing(PlanSummaryDto::getId))
+                .when(sortingService).comparator(any(), eq(Sort.Direction.DESC));
 
         var result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
@@ -270,13 +276,20 @@ public class UserPlanServiceTest {
         PlanSummaryDto dto2 = createPlanSummaryDto(2, newer);
 
         when(planRepository.findPlanSummaryUnified(userId, type, true, null))
-                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+                .thenReturn(List.of(dto1, dto2));
+        doReturn(Comparator.comparing(
+                PlanSummaryDto::getInteractedWithAt,
+                Comparator.nullsLast(Comparator.reverseOrder())))
+                .when(sortingService).comparator(any(), eq(Sort.Direction.DESC));
 
         List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(2, result.size());
+        assertEquals(2, ((PlanSummaryDto) result.get(0)).getId());
+        assertEquals(1, ((PlanSummaryDto) result.get(1)).getId());
         verify(planRepository).findPlanSummaryUnified(userId, type, true, null);
+        verify(sortingService).comparator(any(), eq(Sort.Direction.DESC));
     }
 
     @Test
@@ -290,13 +303,20 @@ public class UserPlanServiceTest {
         PlanSummaryDto dto2 = createPlanSummaryDto(2, newer);
 
         when(planRepository.findPlanSummaryUnified(userId, type, true, null))
-                .thenReturn(new ArrayList<>(List.of(dto2, dto1)));
+                .thenReturn(List.of(dto2, dto1));
+        doReturn(Comparator.comparing(
+                PlanSummaryDto::getInteractedWithAt,
+                Comparator.nullsLast(Comparator.naturalOrder())))
+                .when(sortingService).comparator(any(), eq(Sort.Direction.ASC));
 
         List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, Sort.Direction.ASC);
 
         assertNotNull(result);
         assertEquals(2, result.size());
+        assertEquals(1, ((PlanSummaryDto) result.get(0)).getId());
+        assertEquals(2, ((PlanSummaryDto) result.get(1)).getId());
         verify(planRepository).findPlanSummaryUnified(userId, type, true, null);
+        verify(sortingService).comparator(any(), eq(Sort.Direction.ASC));
     }
 
     @Test
@@ -310,13 +330,20 @@ public class UserPlanServiceTest {
         PlanSummaryDto dto2 = createPlanSummaryDto(2, newer);
 
         when(planRepository.findPlanSummaryUnified(userId, type, true, null))
-                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+                .thenReturn(List.of(dto1, dto2));
+        doReturn(Comparator.comparing(
+                PlanSummaryDto::getInteractedWithAt,
+                Comparator.nullsLast(Comparator.reverseOrder())))
+                .when(sortingService).comparator(any(), eq(Sort.Direction.DESC));
 
         List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(2, result.size());
+        assertEquals(2, ((PlanSummaryDto) result.get(0)).getId());
+        assertEquals(1, ((PlanSummaryDto) result.get(1)).getId());
         verify(planRepository).findPlanSummaryUnified(userId, type, true, null);
+        verify(sortingService).comparator(any(), eq(Sort.Direction.DESC));
     }
 
     @Test
@@ -329,17 +356,25 @@ public class UserPlanServiceTest {
         PlanSummaryDto dto3 = createPlanSummaryDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
 
         when(planRepository.findPlanSummaryUnified(userId, type, true, null))
-                .thenReturn(new ArrayList<>(List.of(dto1, dto2, dto3)));
+                .thenReturn(List.of(dto1, dto2, dto3));
+        doReturn(Comparator.comparing(
+                PlanSummaryDto::getInteractedWithAt,
+                Comparator.nullsLast(Comparator.reverseOrder())))
+                .when(sortingService).comparator(any(), eq(Sort.Direction.DESC));
 
         List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(3, result.size());
+        assertEquals(3, ((PlanSummaryDto) result.get(0)).getId());
+        assertEquals(1, ((PlanSummaryDto) result.get(1)).getId());
+        assertEquals(2, ((PlanSummaryDto) result.get(2)).getId());
         verify(planRepository).findPlanSummaryUnified(userId, type, true, null);
+        verify(sortingService).comparator(any(), eq(Sort.Direction.DESC));
     }
 
     @Test
-    public void getAllFromUser_WithType_ShouldPopulateImageUrlsAfterSorting() {
+    public void getAllFromUser_WithType_ShouldPopulateImageUrls() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
@@ -347,18 +382,22 @@ public class UserPlanServiceTest {
 
         PlanSummaryDto dto1 = createPlanSummaryDto(1, older);
         dto1.setFirstImageName("image1.jpg");
-        dto1.setAuthorImageUrl("author1.jpg");
+        dto1.setAuthorImageName("author1.jpg");
         PlanSummaryDto dto2 = createPlanSummaryDto(2, newer);
         dto2.setFirstImageName("image2.jpg");
-        dto2.setAuthorImageUrl("author2.jpg");
+        dto2.setAuthorImageName("author2.jpg");
 
         when(planRepository.findPlanSummaryUnified(userId, type, true, null))
-                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+                .thenReturn(List.of(dto1, dto2));
+        doReturn(Comparator.comparing(PlanSummaryDto::getId))
+                .when(sortingService).comparator(any(), eq(Sort.Direction.DESC));
 
         List<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(2, result.size());
+        verify(imageUrlPopulationService, times(2)).populateAuthorAndEntityImages(
+                any(PlanSummaryDto.class), any(), any(), any(), any());
     }
 
     private PlanSummaryDto createPlanSummaryDto(int id, LocalDateTime interactionDate) {

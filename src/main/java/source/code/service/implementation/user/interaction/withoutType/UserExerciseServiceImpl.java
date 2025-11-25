@@ -60,24 +60,17 @@ public class UserExerciseServiceImpl
 
     @Override
     public List<BaseUserEntity> getAllFromUser(int userId, Sort.Direction sortDirection) {
-        Sort sort = Sort.by(sortDirection, "createdAt");
-
-        List<UserExercise> userExercises = ((UserExerciseRepository) userEntityRepository)
-                .findAllByUserIdWithMedia(userId, sort);
-
-        return userExercises.stream()
+        return ((UserExerciseRepository) userEntityRepository)
+                .findAllByUserIdWithMedia(userId, Sort.by(sortDirection, "createdAt"))
+                .stream()
                 .map(ue -> {
                     ExerciseSummaryDto dto = exerciseMapper.toSummaryDto(ue.getExercise());
                     dto.setUserExerciseInteractionCreatedAt(ue.getCreatedAt());
-
-                    imagePopulationService.populateFirstImageFromMediaList(
-                            List.of(dto),
-                            d -> ue.getExercise().getMediaList(),
+                    imagePopulationService.populateFirstImageFromMediaList(dto,
+                            ue.getExercise().getMediaList(),
                             Media::getImageName,
                             ExerciseSummaryDto::setImageName,
-                            ExerciseSummaryDto::setFirstImageUrl
-                    );
-
+                            ExerciseSummaryDto::setFirstImageUrl);
                     return (BaseUserEntity) dto;
                 })
                 .toList();
