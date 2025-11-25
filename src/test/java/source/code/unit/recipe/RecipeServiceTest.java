@@ -29,7 +29,7 @@ import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.recipe.Recipe;
 import source.code.repository.RecipeRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
-import source.code.service.declaration.helpers.RecipeSummaryPopulationService;
+import source.code.service.declaration.helpers.RecipePopulationService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.recipe.RecipeServiceImpl;
@@ -37,6 +37,7 @@ import source.code.service.implementation.recipe.RecipeServiceImpl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -51,7 +52,7 @@ public class RecipeServiceTest {
     @Mock
     private RecipeRepository recipeRepository;
     @Mock
-    private RecipeSummaryPopulationService recipeSummaryPopulationService;
+    private RecipePopulationService recipePopulationService;
     @Mock
     private JsonPatchService jsonPatchService;
     @Mock
@@ -99,12 +100,13 @@ public class RecipeServiceTest {
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(recipeMapper.toEntity(createDto, userId)).thenReturn(recipe);
         when(recipeRepository.save(recipe)).thenReturn(recipe);
-        when(recipeRepository.findRecipeSummariesByIds(List.of(recipeId))).thenReturn(List.of(summaryDto));
+        when(recipeRepository.findByIdWithDetails(recipeId)).thenReturn(Optional.of(recipe));
+        when(recipeMapper.toResponseDto(recipe)).thenReturn(responseDto);
 
-        RecipeSummaryDto result = recipeService.createRecipe(createDto);
+        RecipeResponseDto result = recipeService.createRecipe(createDto);
 
-        assertEquals(summaryDto, result);
-        verify(recipeSummaryPopulationService).populateRecipeSummaries(any(List.class));
+        assertEquals(responseDto, result);
+        verify(recipePopulationService).populate(responseDto);
     }
 
     @Test
@@ -115,7 +117,8 @@ public class RecipeServiceTest {
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(recipeMapper.toEntity(createDto, userId)).thenReturn(recipe);
         when(recipeRepository.save(recipe)).thenReturn(recipe);
-        when(recipeRepository.findRecipeSummariesByIds(List.of(recipeId))).thenReturn(List.of(summaryDto));
+        when(recipeRepository.findByIdWithDetails(recipeId)).thenReturn(Optional.of(recipe));
+        when(recipeMapper.toResponseDto(recipe)).thenReturn(responseDto);
 
         recipeService.createRecipe(createDto);
 
@@ -215,39 +218,42 @@ public class RecipeServiceTest {
 
     @Test
     void getRecipe_shouldReturnRecipeWhenFound() {
-        when(repositoryHelper.find(recipeRepository, Recipe.class, recipeId)).thenReturn(recipe);
+        when(recipeRepository.findByIdWithDetails(recipeId)).thenReturn(Optional.of(recipe));
         when(recipeMapper.toResponseDto(recipe)).thenReturn(responseDto);
 
         RecipeResponseDto result = recipeService.getRecipe(recipeId);
 
         assertEquals(responseDto, result);
+        verify(recipePopulationService).populate(responseDto);
     }
 
     @Test
     void getRecipe_shouldThrowExceptionWhenRecipeNotFound() {
-        when(repositoryHelper.find(recipeRepository, Recipe.class, recipeId))
-                .thenThrow(RecordNotFoundException.of(Recipe.class, recipeId));
+        when(recipeRepository.findByIdWithDetails(recipeId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> recipeService.getRecipe(recipeId));
 
         verifyNoInteractions(recipeMapper);
+        verifyNoInteractions(recipePopulationService);
     }
 
     @Test
     void getAllRecipes_shouldReturnAllRecipes() {
-        List<RecipeSummaryDto> summaryDtos = List.of(summaryDto);
+        List<Recipe> recipes = List.of(recipe);
         Boolean isPrivate = true;
         int userId = 1;
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(recipeRepository.findAllRecipeSummaries(eq(isPrivate), eq(userId)))
-                .thenReturn(summaryDtos);
+        when(recipeRepository.findAllWithDetails(eq(isPrivate), eq(userId))).thenReturn(recipes);
+        when(recipeMapper.toSummaryDto(recipe)).thenReturn(summaryDto);
 
         List<RecipeSummaryDto> result = recipeService.getAllRecipes(isPrivate);
 
-        assertEquals(summaryDtos, result);
-        verify(recipeRepository).findAllRecipeSummaries(eq(isPrivate), eq(userId));
-        verify(recipeSummaryPopulationService).populateRecipeSummaries(summaryDtos);
+        assertEquals(1, result.size());
+        assertEquals(summaryDto, result.get(0));
+        verify(recipeRepository).findAllWithDetails(eq(isPrivate), eq(userId));
+        verify(recipeMapper).toSummaryDto(recipe);
+        verify(recipePopulationService).populate(anyList());
     }
 
     @Test
@@ -256,44 +262,41 @@ public class RecipeServiceTest {
         int userId = 1;
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(recipeRepository.findAllRecipeSummaries(eq(isPrivate), eq(userId)))
-                .thenReturn(Collections.emptyList());
+        when(recipeRepository.findAllWithDetails(eq(isPrivate), eq(userId))).thenReturn(Collections.emptyList());
 
         List<RecipeSummaryDto> result = recipeService.getAllRecipes(isPrivate);
 
         assertTrue(result.isEmpty());
-        verify(recipeRepository).findAllRecipeSummaries(eq(isPrivate), eq(userId));
-        verify(recipeSummaryPopulationService).populateRecipeSummaries(any(List.class));
+        verify(recipeRepository).findAllWithDetails(eq(isPrivate), eq(userId));
+        verifyNoInteractions(recipeMapper);
+        verify(recipePopulationService).populate(anyList());
     }
 
     @Test
     void getFilteredRecipes_shouldReturnFilteredRecipes() {
-        recipe.setId(recipeId);
-        List<RecipeSummaryDto> summaries = List.of(summaryDto);
-        when(recipeRepository.findAll(any(Specification.class))).thenReturn(List.of(recipe));
-        when(recipeRepository.findRecipeSummariesByIds(List.of(recipeId))).thenReturn(summaries);
+        List<Recipe> recipes = List.of(recipe);
+        when(recipeRepository.findAll(any(Specification.class))).thenReturn(recipes);
+        when(recipeMapper.toSummaryDto(recipe)).thenReturn(summaryDto);
 
         List<RecipeSummaryDto> result = recipeService.getFilteredRecipes(filter);
 
         assertEquals(1, result.size());
         assertSame(summaryDto, result.get(0));
         verify(recipeRepository).findAll(any(Specification.class));
-        verify(recipeRepository).findRecipeSummariesByIds(List.of(recipeId));
-        verify(recipeSummaryPopulationService).populateRecipeSummaries(summaries);
+        verify(recipeMapper).toSummaryDto(recipe);
+        verify(recipePopulationService).populate(anyList());
     }
 
     @Test
     void getFilteredRecipes_shouldReturnEmptyListWhenFilterHasNoCriteria() {
         filter.setFilterCriteria(new ArrayList<>());
-
         when(recipeRepository.findAll(any(Specification.class))).thenReturn(new ArrayList<>());
 
         List<RecipeSummaryDto> result = recipeService.getFilteredRecipes(filter);
 
         assertTrue(result.isEmpty());
         verify(recipeRepository).findAll(any(Specification.class));
-        verifyNoInteractions(recipeSummaryPopulationService);
-        verify(recipeRepository, never()).findRecipeSummariesByIds(any());
+        verify(recipePopulationService).populate(anyList());
     }
 
     @Test
@@ -301,15 +304,13 @@ public class RecipeServiceTest {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setFilterKey("nonexistentKey");
         filter.setFilterCriteria(List.of(criteria));
-
         when(recipeRepository.findAll(any(Specification.class))).thenReturn(new ArrayList<>());
 
         List<RecipeSummaryDto> result = recipeService.getFilteredRecipes(filter);
 
         assertTrue(result.isEmpty());
         verify(recipeRepository).findAll(any(Specification.class));
-        verifyNoInteractions(recipeSummaryPopulationService);
-        verify(recipeRepository, never()).findRecipeSummariesByIds(any());
+        verify(recipePopulationService).populate(anyList());
     }
 
     @Test

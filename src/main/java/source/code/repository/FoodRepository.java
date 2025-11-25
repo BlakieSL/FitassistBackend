@@ -19,7 +19,6 @@ public interface FoodRepository
     @Query("SELECT f FROM Food f " +
            "LEFT JOIN FETCH f.foodCategory " +
            "LEFT JOIN FETCH f.mediaList " +
-           "LEFT JOIN FETCH f.userFoods " +
            "WHERE f.id = :id")
     Optional<Food> findByIdWithMedia(@Param("id") int id);
     

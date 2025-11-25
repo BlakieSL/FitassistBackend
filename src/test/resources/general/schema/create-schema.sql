@@ -232,14 +232,15 @@ create table plan_category_association
 
 create table recipe
 (
-    id          int auto_increment
+    id                 int auto_increment
         primary key,
-    description varchar(255) not null,
-    name        varchar(100) not null,
-    views       int          not null default 0,
-    is_public   BOOLEAN NOT NULL,
-    created_at  datetime(6)  not null,
-    user_id     int          not null,
+    description        varchar(255) not null,
+    name               varchar(100) not null,
+    views              bigint       not null default 0,
+    minutes_to_prepare smallint     not null default 0,
+    is_public          BOOLEAN      not null,
+    created_at         datetime(6)  not null,
+    user_id            int          not null,
     constraint FKc8o8io8s0f7nqcd3429u6cxjs
         foreign key (user_id) references user (id)
 );
