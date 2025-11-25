@@ -4,6 +4,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import source.code.dto.pojo.projection.FoodSavesProjection;
 import source.code.model.user.UserFood;
 
 import java.util.List;
@@ -13,8 +14,6 @@ public interface UserFoodRepository extends JpaRepository<UserFood, Integer> {
     boolean existsByUserIdAndFoodId(int userId, int foodId);
 
     Optional<UserFood> findByUserIdAndFoodId(int userId, int foodId);
-
-    List<UserFood> findByUserId(int userId);
 
     @Query("""
            SELECT uf FROM UserFood uf
@@ -26,4 +25,12 @@ public interface UserFoodRepository extends JpaRepository<UserFood, Integer> {
     List<UserFood> findAllByUserIdWithMedia(@Param("userId") int userId, Sort sort);
 
     long countByFoodId(int foodId);
+
+    @Query("""
+        SELECT COUNT(uf) as savesCount,
+               SUM(CASE WHEN uf.user.id = :userId THEN 1 ELSE 0 END) as userSaved
+        FROM UserFood uf
+        WHERE uf.food.id = :foodId
+    """)
+    FoodSavesProjection findSavesCountAndUserSaved(@Param("foodId") int foodId, @Param("userId") int userId);
 }
