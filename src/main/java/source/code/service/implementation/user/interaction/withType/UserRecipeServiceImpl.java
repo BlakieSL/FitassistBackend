@@ -1,5 +1,6 @@
 package source.code.service.implementation.user.interaction.withType;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.recipe.RecipeResponseDto;
@@ -7,6 +8,7 @@ import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
+import source.code.helper.Enum.cache.CacheNames;
 import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.recipe.Recipe;
 import source.code.model.user.TypeOfInteraction;
@@ -44,6 +46,18 @@ public class UserRecipeServiceImpl
         this.recipeMapper = recipeMapper;
         this.recipePopulationService = recipePopulationService;
         this.sortingService = sortingService;
+    }
+
+    @Override
+    @CacheEvict(value = CacheNames.RECIPES, key = "#entityId")
+    public void saveToUser(int entityId, TypeOfInteraction type) {
+        super.saveToUser(entityId, type);
+    }
+
+    @Override
+    @CacheEvict(value = CacheNames.RECIPES, key = "#entityId")
+    public void deleteFromUser(int entityId, TypeOfInteraction type) {
+        super.deleteFromUser(entityId, type);
     }
 
     @Override

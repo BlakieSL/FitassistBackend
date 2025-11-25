@@ -23,6 +23,8 @@ public class RecipeResponseDto implements Serializable {
     private String description;
     private Boolean isPublic;
     private LocalDateTime createdAt;
+    private short minutesToPrepare;
+    private long views;
 
     private String authorUsername;
     private Integer authorId;
@@ -32,10 +34,12 @@ public class RecipeResponseDto implements Serializable {
     private long likesCount;
     private long dislikesCount;
     private long savesCount;
-    private long views;
+
+    private boolean liked;
+    private boolean disliked;
+    private boolean saved;
 
     private BigDecimal totalCalories;
-    private short minutesToPrepare;
 
     private List<RecipeInstructionResponseDto> instructions;
     private List<RecipeCategoryShortDto> categories;
@@ -43,7 +47,4 @@ public class RecipeResponseDto implements Serializable {
     private List<String> imageUrls;
     private List<RecipeFoodDto> foods;
 
-    private boolean liked;
-    private boolean disliked;
-    private boolean saved;
 }
