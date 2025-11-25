@@ -46,6 +46,7 @@ public class RecipeControllerTest {
         RecipeCreateDto createDto = new RecipeCreateDto();
         createDto.setName("Test Recipe");
         createDto.setDescription("A new test recipe");
+        createDto.setMinutesToPrepare((short) 30);
         createDto.setCategoryIds(List.of(1, 3));
 
         mockMvc.perform(post("/api/recipes")

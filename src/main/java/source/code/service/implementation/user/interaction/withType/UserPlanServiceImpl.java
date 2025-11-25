@@ -20,7 +20,6 @@ import source.code.service.declaration.helpers.ImageUrlPopulationService;
 import source.code.service.declaration.helpers.SortingService;
 import source.code.service.declaration.user.SavedService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service("userPlanService")
@@ -48,16 +47,12 @@ public class UserPlanServiceImpl
 
     @Override
     public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Sort.Direction sortDirection) {
-        List<PlanSummaryDto> dtos = new ArrayList<>(
-                ((PlanRepository) entityRepository).findPlanSummaryUnified(userId, type, true, null));
-
-        imagePopulationService.populateAuthorAndEntityImagesForList(dtos,
-                PlanSummaryDto::getAuthorImageName, PlanSummaryDto::setAuthorImageUrl,
-                PlanSummaryDto::getFirstImageName, PlanSummaryDto::setFirstImageUrl);
-
-        sortingService.sortByTimestamp(dtos, PlanSummaryDto::getInteractedWithAt, sortDirection);
-
-        return dtos.stream()
+        return ((PlanRepository) entityRepository).findPlanSummaryUnified(userId, type, true, null)
+                .stream()
+                .peek(dto -> imagePopulationService.populateAuthorAndEntityImages(dto,
+                        PlanSummaryDto::getAuthorImageName, PlanSummaryDto::setAuthorImageUrl,
+                        PlanSummaryDto::getFirstImageName, PlanSummaryDto::setFirstImageUrl))
+                .sorted(sortingService.comparator(PlanSummaryDto::getInteractedWithAt, sortDirection))
                 .map(dto -> (BaseUserEntity) dto)
                 .toList();
     }

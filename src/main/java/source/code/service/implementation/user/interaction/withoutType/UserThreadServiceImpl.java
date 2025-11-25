@@ -17,7 +17,6 @@ import source.code.service.declaration.helpers.ImageUrlPopulationService;
 import source.code.service.declaration.helpers.SortingService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
-import java.util.ArrayList;
 import java.util.List;
 @Service("userThreadService")
 public class UserThreadServiceImpl
@@ -69,16 +68,11 @@ public class UserThreadServiceImpl
 
     @Override
     public List<BaseUserEntity> getAllFromUser(int userId, Sort.Direction sortDirection) {
-        List<ForumThreadSummaryDto> dtos = new ArrayList<>(
-                ((ForumThreadRepository) entityRepository).findThreadSummaryUnified(userId, true)
-        );
-
-        imagePopulationService.populateAuthorImageForList(dtos,
-                ForumThreadSummaryDto::getAuthorImageName, ForumThreadSummaryDto::setAuthorImageUrl);
-
-        sortingService.sortByTimestamp(dtos, ForumThreadSummaryDto::getUserThreadInteractionCreatedAt, sortDirection);
-
-        return dtos.stream()
+        return ((ForumThreadRepository) entityRepository).findThreadSummaryUnified(userId, true)
+                .stream()
+                .peek(dto -> imagePopulationService.populateAuthorImage(dto,
+                        ForumThreadSummaryDto::getAuthorImageName, ForumThreadSummaryDto::setAuthorImageUrl))
+                .sorted(sortingService.comparator(ForumThreadSummaryDto::getUserThreadInteractionCreatedAt, sortDirection))
                 .map(dto -> (BaseUserEntity) dto)
                 .toList();
     }

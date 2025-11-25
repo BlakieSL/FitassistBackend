@@ -64,24 +64,17 @@ public class UserFoodServiceImpl
 
     @Override
     public List<BaseUserEntity> getAllFromUser(int userId, Sort.Direction sortDirection) {
-        Sort sort = Sort.by(sortDirection, "createdAt");
-
-        List<UserFood> userFoods = ((UserFoodRepository) userEntityRepository)
-                .findAllByUserIdWithMedia(userId, sort);
-
-        return userFoods.stream()
+        return ((UserFoodRepository) userEntityRepository)
+                .findAllByUserIdWithMedia(userId, Sort.by(sortDirection, "createdAt"))
+                .stream()
                 .map(uf -> {
                     FoodSummaryDto dto = foodMapper.toSummaryDto(uf.getFood());
                     dto.setUserFoodInteractionCreatedAt(uf.getCreatedAt());
-
-                    imagePopulationService.populateFirstImageFromMediaList(
-                            List.of(dto),
-                            d -> uf.getFood().getMediaList(),
+                    imagePopulationService.populateFirstImageFromMediaList(dto,
+                            uf.getFood().getMediaList(),
                             Media::getImageName,
                             FoodSummaryDto::setImageName,
-                            FoodSummaryDto::setFirstImageUrl
-                    );
-
+                            FoodSummaryDto::setFirstImageUrl);
                     return (BaseUserEntity) dto;
                 })
                 .toList();

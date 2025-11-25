@@ -30,136 +30,98 @@ public class ImageUrlPopulationServiceTest {
     private ImageUrlPopulationServiceImpl imagePopulationService;
 
     @Test
-    void populateAuthorAndEntityImagesForList_ShouldPopulateUrlsForAllPlanDtos() {
-        PlanSummaryDto dto1 = new PlanSummaryDto();
-        dto1.setAuthorImageName("author1.jpg");
-        dto1.setFirstImageName("plan1.jpg");
+    void populateAuthorAndEntityImages_ShouldPopulateUrlsForSingleDto() {
+        PlanSummaryDto dto = new PlanSummaryDto();
+        dto.setAuthorImageName("author.jpg");
+        dto.setFirstImageName("plan.jpg");
 
-        PlanSummaryDto dto2 = new PlanSummaryDto();
-        dto2.setAuthorImageName("author2.jpg");
-        dto2.setFirstImageName("plan2.jpg");
+        when(s3Service.getImage("author.jpg")).thenReturn("https://s3.amazonaws.com/author.jpg");
+        when(s3Service.getImage("plan.jpg")).thenReturn("https://s3.amazonaws.com/plan.jpg");
 
-        PlanSummaryDto dto3 = new PlanSummaryDto();
-        dto3.setAuthorImageName(null);
-        dto3.setFirstImageName("plan3.jpg");
-
-        List<PlanSummaryDto> dtos = Arrays.asList(dto1, dto2, dto3);
-
-        when(s3Service.getImage("author1.jpg")).thenReturn("https://s3.amazonaws.com/author1.jpg");
-        when(s3Service.getImage("plan1.jpg")).thenReturn("https://s3.amazonaws.com/plan1.jpg");
-        when(s3Service.getImage("author2.jpg")).thenReturn("https://s3.amazonaws.com/author2.jpg");
-        when(s3Service.getImage("plan2.jpg")).thenReturn("https://s3.amazonaws.com/plan2.jpg");
-        when(s3Service.getImage("plan3.jpg")).thenReturn("https://s3.amazonaws.com/plan3.jpg");
-
-        imagePopulationService.populateAuthorAndEntityImagesForList(
-            dtos,
+        imagePopulationService.populateAuthorAndEntityImages(
+            dto,
             PlanSummaryDto::getAuthorImageName,
             PlanSummaryDto::setAuthorImageUrl,
             PlanSummaryDto::getFirstImageName,
             PlanSummaryDto::setFirstImageUrl
         );
 
-        assertEquals("https://s3.amazonaws.com/author1.jpg", dto1.getAuthorImageUrl());
-        assertEquals("https://s3.amazonaws.com/plan1.jpg", dto1.getFirstImageUrl());
-        assertEquals("https://s3.amazonaws.com/author2.jpg", dto2.getAuthorImageUrl());
-        assertEquals("https://s3.amazonaws.com/plan2.jpg", dto2.getFirstImageUrl());
-        assertNull(dto3.getAuthorImageUrl());
-        assertEquals("https://s3.amazonaws.com/plan3.jpg", dto3.getFirstImageUrl());
-        verify(s3Service, times(5)).getImage(anyString());
-    }
-
-    @Test
-    void populateAuthorAndEntityImagesForList_ShouldPopulateUrlsForAllRecipeDtos() {
-        RecipeSummaryDto dto1 = new RecipeSummaryDto();
-        dto1.setAuthorImageName("author1.jpg");
-        dto1.setFirstImageName("recipe1.jpg");
-
-        RecipeSummaryDto dto2 = new RecipeSummaryDto();
-        dto2.setAuthorImageName("author2.jpg");
-        dto2.setFirstImageName(null);
-
-        List<RecipeSummaryDto> dtos = Arrays.asList(dto1, dto2);
-
-        when(s3Service.getImage("author1.jpg")).thenReturn("https://s3.amazonaws.com/author1.jpg");
-        when(s3Service.getImage("recipe1.jpg")).thenReturn("https://s3.amazonaws.com/recipe1.jpg");
-        when(s3Service.getImage("author2.jpg")).thenReturn("https://s3.amazonaws.com/author2.jpg");
-
-        imagePopulationService.populateAuthorAndEntityImagesForList(
-            dtos,
-            RecipeSummaryDto::getAuthorImageName,
-            RecipeSummaryDto::setAuthorImageUrl,
-            RecipeSummaryDto::getFirstImageName,
-            RecipeSummaryDto::setFirstImageUrl
-        );
-
-        assertEquals("https://s3.amazonaws.com/author1.jpg", dto1.getAuthorImageUrl());
-        assertEquals("https://s3.amazonaws.com/recipe1.jpg", dto1.getFirstImageUrl());
-        assertEquals("https://s3.amazonaws.com/author2.jpg", dto2.getAuthorImageUrl());
-        assertNull(dto2.getFirstImageUrl());
-        verify(s3Service, times(3)).getImage(anyString());
-    }
-
-    @Test
-    void populateAuthorAndEntityImagesForList_ShouldHandleEmptyList() {
-        List<PlanSummaryDto> dtos = Arrays.asList();
-
-        imagePopulationService.populateAuthorAndEntityImagesForList(
-            dtos,
-            PlanSummaryDto::getAuthorImageName,
-            PlanSummaryDto::setAuthorImageUrl,
-            PlanSummaryDto::getFirstImageName,
-            PlanSummaryDto::setFirstImageUrl
-        );
-
-        verify(s3Service, never()).getImage(anyString());
-    }
-
-    @Test
-    void populateAuthorImageForList_ShouldPopulateAuthorUrlsForAllDtos() {
-        PlanSummaryDto dto1 = new PlanSummaryDto();
-        dto1.setAuthorImageName("author1.jpg");
-
-        PlanSummaryDto dto2 = new PlanSummaryDto();
-        dto2.setAuthorImageName("author2.jpg");
-
-        PlanSummaryDto dto3 = new PlanSummaryDto();
-        dto3.setAuthorImageName(null);
-
-        List<PlanSummaryDto> dtos = Arrays.asList(dto1, dto2, dto3);
-
-        when(s3Service.getImage("author1.jpg")).thenReturn("https://s3.amazonaws.com/author1.jpg");
-        when(s3Service.getImage("author2.jpg")).thenReturn("https://s3.amazonaws.com/author2.jpg");
-
-        imagePopulationService.populateAuthorImageForList(
-            dtos,
-            PlanSummaryDto::getAuthorImageName,
-            PlanSummaryDto::setAuthorImageUrl
-        );
-
-        assertEquals("https://s3.amazonaws.com/author1.jpg", dto1.getAuthorImageUrl());
-        assertEquals("https://s3.amazonaws.com/author2.jpg", dto2.getAuthorImageUrl());
-        assertNull(dto3.getAuthorImageUrl());
+        assertEquals("https://s3.amazonaws.com/author.jpg", dto.getAuthorImageUrl());
+        assertEquals("https://s3.amazonaws.com/plan.jpg", dto.getFirstImageUrl());
         verify(s3Service, times(2)).getImage(anyString());
     }
 
     @Test
-    void populateAuthorImageForList_ShouldNotCallS3WhenAllNamesAreNull() {
-        PlanSummaryDto dto1 = new PlanSummaryDto();
-        dto1.setAuthorImageName(null);
+    void populateAuthorAndEntityImages_ShouldHandleNullAuthorImageName() {
+        PlanSummaryDto dto = new PlanSummaryDto();
+        dto.setAuthorImageName(null);
+        dto.setFirstImageName("plan.jpg");
 
-        PlanSummaryDto dto2 = new PlanSummaryDto();
-        dto2.setAuthorImageName(null);
+        when(s3Service.getImage("plan.jpg")).thenReturn("https://s3.amazonaws.com/plan.jpg");
 
-        List<PlanSummaryDto> dtos = Arrays.asList(dto1, dto2);
+        imagePopulationService.populateAuthorAndEntityImages(
+            dto,
+            PlanSummaryDto::getAuthorImageName,
+            PlanSummaryDto::setAuthorImageUrl,
+            PlanSummaryDto::getFirstImageName,
+            PlanSummaryDto::setFirstImageUrl
+        );
 
-        imagePopulationService.populateAuthorImageForList(
-            dtos,
+        assertNull(dto.getAuthorImageUrl());
+        assertEquals("https://s3.amazonaws.com/plan.jpg", dto.getFirstImageUrl());
+        verify(s3Service, times(1)).getImage(anyString());
+    }
+
+    @Test
+    void populateAuthorAndEntityImages_ShouldHandleNullEntityImageName() {
+        PlanSummaryDto dto = new PlanSummaryDto();
+        dto.setAuthorImageName("author.jpg");
+        dto.setFirstImageName(null);
+
+        when(s3Service.getImage("author.jpg")).thenReturn("https://s3.amazonaws.com/author.jpg");
+
+        imagePopulationService.populateAuthorAndEntityImages(
+            dto,
+            PlanSummaryDto::getAuthorImageName,
+            PlanSummaryDto::setAuthorImageUrl,
+            PlanSummaryDto::getFirstImageName,
+            PlanSummaryDto::setFirstImageUrl
+        );
+
+        assertEquals("https://s3.amazonaws.com/author.jpg", dto.getAuthorImageUrl());
+        assertNull(dto.getFirstImageUrl());
+        verify(s3Service, times(1)).getImage(anyString());
+    }
+
+    @Test
+    void populateAuthorImage_ShouldPopulateAuthorUrl() {
+        PlanSummaryDto dto = new PlanSummaryDto();
+        dto.setAuthorImageName("author.jpg");
+
+        when(s3Service.getImage("author.jpg")).thenReturn("https://s3.amazonaws.com/author.jpg");
+
+        imagePopulationService.populateAuthorImage(
+            dto,
             PlanSummaryDto::getAuthorImageName,
             PlanSummaryDto::setAuthorImageUrl
         );
 
-        assertNull(dto1.getAuthorImageUrl());
-        assertNull(dto2.getAuthorImageUrl());
+        assertEquals("https://s3.amazonaws.com/author.jpg", dto.getAuthorImageUrl());
+        verify(s3Service, times(1)).getImage("author.jpg");
+    }
+
+    @Test
+    void populateAuthorImage_ShouldNotCallS3WhenNameIsNull() {
+        PlanSummaryDto dto = new PlanSummaryDto();
+        dto.setAuthorImageName(null);
+
+        imagePopulationService.populateAuthorImage(
+            dto,
+            PlanSummaryDto::getAuthorImageName,
+            PlanSummaryDto::setAuthorImageUrl
+        );
+
+        assertNull(dto.getAuthorImageUrl());
         verify(s3Service, never()).getImage(anyString());
     }
 
@@ -175,8 +137,8 @@ public class ImageUrlPopulationServiceTest {
         when(s3Service.getImage("activity1.jpg")).thenReturn("https://s3.amazonaws.com/activity1.jpg");
 
         imagePopulationService.populateFirstImageFromMediaList(
-            List.of(dto),
-            d -> mediaList,
+            dto,
+            mediaList,
             Media::getImageName,
             ActivitySummaryDto::setImageName,
             ActivitySummaryDto::setFirstImageUrl
@@ -193,8 +155,8 @@ public class ImageUrlPopulationServiceTest {
         List<Media> mediaList = new ArrayList<>();
 
         imagePopulationService.populateFirstImageFromMediaList(
-            List.of(dto),
-            d -> mediaList,
+            dto,
+            mediaList,
             Media::getImageName,
             ActivitySummaryDto::setImageName,
             ActivitySummaryDto::setFirstImageUrl
@@ -210,8 +172,8 @@ public class ImageUrlPopulationServiceTest {
         ActivitySummaryDto dto = new ActivitySummaryDto();
 
         imagePopulationService.populateFirstImageFromMediaList(
-            List.of(dto),
-            d -> null,
+            dto,
+            null,
             Media::getImageName,
             ActivitySummaryDto::setImageName,
             ActivitySummaryDto::setFirstImageUrl
@@ -232,8 +194,8 @@ public class ImageUrlPopulationServiceTest {
         mediaList.add(media);
 
         imagePopulationService.populateFirstImageFromMediaList(
-            List.of(dto),
-            d -> mediaList,
+            dto,
+            mediaList,
             Media::getImageName,
             ActivitySummaryDto::setImageName,
             ActivitySummaryDto::setFirstImageUrl
@@ -263,16 +225,16 @@ public class ImageUrlPopulationServiceTest {
         when(s3Service.getImage("activity2.jpg")).thenReturn("https://s3.amazonaws.com/activity2.jpg");
 
         imagePopulationService.populateFirstImageFromMediaList(
-                List.of(dto1),
-            d -> mediaList1,
+            dto1,
+            mediaList1,
             Media::getImageName,
             ActivitySummaryDto::setImageName,
             ActivitySummaryDto::setFirstImageUrl
         );
 
         imagePopulationService.populateFirstImageFromMediaList(
-                List.of(dto2),
-            d -> mediaList2,
+            dto2,
+            mediaList2,
             Media::getImageName,
             ActivitySummaryDto::setImageName,
             ActivitySummaryDto::setFirstImageUrl
