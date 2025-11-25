@@ -28,15 +28,19 @@ import source.code.event.events.Food.FoodUpdateEvent;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.food.FoodMapper;
+import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.food.Food;
+import source.code.model.recipe.Recipe;
 import source.code.repository.FoodRepository;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserFoodRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
+import source.code.service.declaration.helpers.RecipePopulationService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.food.FoodServiceImpl;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
+import source.code.dto.pojo.projection.FoodSavesProjection;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -66,6 +70,10 @@ public class FoodServiceTest {
     private RecipeRepository recipeRepository;
     @Mock
     private UserFoodRepository userFoodRepository;
+    @Mock
+    private RecipeMapper recipeMapper;
+    @Mock
+    private RecipePopulationService recipePopulationService;
     @Mock
     private SpecificationDependencies dependencies;
     @InjectMocks
@@ -270,12 +278,16 @@ public class FoodServiceTest {
     @Test
     void getFood_shouldReturnFoodWhenFound() {
         int userId = 1;
+        Recipe recipe = new Recipe();
+        FoodSavesProjection savesProjection = new FoodSavesProjection() {
+            @Override public Long getSavesCount() { return 5L; }
+            @Override public Long getUserSaved() { return 1L; }
+        };
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(foodRepository.findByIdWithMedia(foodId)).thenReturn(Optional.of(food));
         when(foodMapper.toDetailedResponseDto(food)).thenReturn(detailedResponseDto);
-        when(userFoodRepository.countByFoodId(foodId)).thenReturn(5L);
-        when(userFoodRepository.existsByUserIdAndFoodId(userId, foodId)).thenReturn(true);
-        when(recipeRepository.findRecipeSummariesByFoodId(foodId)).thenReturn(List.of());
+        when(userFoodRepository.findSavesCountAndUserSaved(foodId, userId)).thenReturn(savesProjection);
+        when(recipeRepository.findAllWithDetailsByFoodId(foodId)).thenReturn(List.of(recipe));
 
         FoodResponseDto result = foodService.getFood(foodId);
 
@@ -284,9 +296,10 @@ public class FoodServiceTest {
         assertTrue(result.isSaved());
         verify(foodRepository).findByIdWithMedia(foodId);
         verify(foodMapper).toDetailedResponseDto(food);
-        verify(userFoodRepository).countByFoodId(foodId);
-        verify(userFoodRepository).existsByUserIdAndFoodId(userId, foodId);
-        verify(recipeRepository).findRecipeSummariesByFoodId(foodId);
+        verify(userFoodRepository).findSavesCountAndUserSaved(foodId, userId);
+        verify(recipeRepository).findAllWithDetailsByFoodId(foodId);
+        verify(recipeMapper).toSummaryDto(recipe);
+        verify(recipePopulationService).populate(anyList());
     }
 
     @Test

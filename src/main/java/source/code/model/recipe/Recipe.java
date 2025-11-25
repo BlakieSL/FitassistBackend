@@ -47,11 +47,15 @@ public class Recipe implements IndexedEntity {
     private String description;
 
     @NotNull
+    @Column(name = "minutes_to_prepare", nullable = false)
+    private Short minutesToPrepare;
+
+    @NotNull
     @Column(nullable = false, name = "is_public")
     private Boolean isPublic = false;
 
     @Column(nullable = false)
-    private Integer views = 0;
+    private Long views = 0L;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -69,7 +73,7 @@ public class Recipe implements IndexedEntity {
     @OneToMany(mappedBy = "recipe", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
     private final Set<RecipeInstruction> recipeInstructions = new HashSet<>();
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)

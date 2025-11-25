@@ -30,10 +30,11 @@ public class  RecipeSummaryDto implements BaseUserEntity, Serializable {
     private String firstImageName;
     private String firstImageUrl;
 
-    private int likesCount;
-    private int savesCount;
-    private int views;
-    private int ingredientsCount;
+    private long likesCount;
+    private long dislikesCount;
+    private long savesCount;
+    private long views;
+    private long ingredientsCount;
 
     private List<RecipeCategoryShortDto> categories = new ArrayList<>();
     private LocalDateTime createdAt;

@@ -5,8 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.pojo.RecipeCategoryShortDto;
+import source.code.dto.pojo.RecipeFoodDto;
+import source.code.dto.response.text.RecipeInstructionResponseDto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -18,11 +22,28 @@ public class RecipeResponseDto implements Serializable {
     private String name;
     private String description;
     private Boolean isPublic;
-    private Integer userId;
+    private LocalDateTime createdAt;
+
     private String authorUsername;
     private Integer authorId;
+    private String authorImageName;
     private String authorImageUrl;
-    private String imageName;
-    private String firstImageUrl;
+
+    private long likesCount;
+    private long dislikesCount;
+    private long savesCount;
+    private long views;
+
+    private BigDecimal totalCalories;
+    private short minutesToPrepare;
+
+    private List<RecipeInstructionResponseDto> instructions;
     private List<RecipeCategoryShortDto> categories;
+    private List<String> imageNames;
+    private List<String> imageUrls;
+    private List<RecipeFoodDto> foods;
+
+    private boolean liked;
+    private boolean disliked;
+    private boolean saved;
 }

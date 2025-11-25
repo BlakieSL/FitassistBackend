@@ -12,7 +12,7 @@ import source.code.model.recipe.Recipe;
 import java.util.List;
 
 public interface RecipeService {
-    RecipeSummaryDto createRecipe(RecipeCreateDto dto);
+    RecipeResponseDto createRecipe(RecipeCreateDto dto);
 
     void updateRecipe(int recipeId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 

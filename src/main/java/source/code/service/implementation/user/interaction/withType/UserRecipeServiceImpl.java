@@ -15,11 +15,10 @@ import source.code.model.user.UserRecipe;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.helpers.RecipeSummaryPopulationService;
+import source.code.service.declaration.helpers.RecipePopulationService;
 import source.code.service.declaration.helpers.SortingService;
 import source.code.service.declaration.user.SavedService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service("userRecipeService")
@@ -27,33 +26,39 @@ public class UserRecipeServiceImpl
         extends GenericSavedService<Recipe, UserRecipe, RecipeResponseDto>
         implements SavedService {
 
-    private final RecipeSummaryPopulationService recipeSummaryPopulationService;
+    private final RecipeMapper recipeMapper;
+    private final RecipePopulationService recipePopulationService;
     private final SortingService sortingService;
 
     public UserRecipeServiceImpl(UserRecipeRepository userRecipeRepository,
                                  RecipeRepository recipeRepository,
                                  UserRepository userRepository,
                                  RecipeMapper recipeMapper,
-                                 RecipeSummaryPopulationService recipeSummaryPopulationService,
+                                 RecipePopulationService recipePopulationService,
                                  SortingService sortingService) {
         super(userRepository,
                 recipeRepository,
                 userRecipeRepository,
                 recipeMapper::toResponseDto,
                 Recipe.class);
-        this.recipeSummaryPopulationService = recipeSummaryPopulationService;
+        this.recipeMapper = recipeMapper;
+        this.recipePopulationService = recipePopulationService;
         this.sortingService = sortingService;
     }
 
     @Override
     public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Sort.Direction sortDirection) {
-        List<RecipeSummaryDto> dtos = new ArrayList<>(
-                ((RecipeRepository) entityRepository).findRecipeSummaryUnified(userId, type, true, null));
+        var summaries = ((RecipeRepository) entityRepository)
+                .findInteractedByUserWithDetails(userId, type)
+                .stream()
+                .map(recipeMapper::toSummaryDto)
+                .toList();
 
-        recipeSummaryPopulationService.populateRecipeSummaries(dtos);
-        sortingService.sortByTimestamp(dtos, RecipeSummaryDto::getUserRecipeInteractionCreatedAt, sortDirection);
+        recipePopulationService.populate(summaries);
+        recipePopulationService.populateInteractionDates(summaries, userId, type);
 
-        return dtos.stream()
+        return summaries.stream()
+                .sorted(sortingService.comparator(RecipeSummaryDto::getUserRecipeInteractionCreatedAt, sortDirection))
                 .map(dto -> (BaseUserEntity) dto)
                 .toList();
     }

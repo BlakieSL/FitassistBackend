@@ -27,10 +27,10 @@ public class RecipeController {
     }
 
     @PostMapping
-    public ResponseEntity<RecipeSummaryDto> createRecipe(
+    public ResponseEntity<RecipeResponseDto> createRecipe(
             @Valid @RequestBody RecipeCreateDto recipeDto
     ) {
-        RecipeSummaryDto response = recipeService.createRecipe(recipeDto);
+        RecipeResponseDto response = recipeService.createRecipe(recipeDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

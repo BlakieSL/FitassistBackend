@@ -160,23 +160,50 @@ public class RecipeControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @WithMockUser
     @RecipeSql
     @Test
     @DisplayName("GET - /{id} - Should return a recipe by ID")
     void getRecipeById() throws Exception {
+        Utils.setUserContext(1);
         mockMvc.perform(get("/api/recipes/1"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.id").value(1),
-                        jsonPath("$.name").value("Vegetable Stir Fry")
+                        jsonPath("$.name").value("Vegetable Stir Fry"),
+                        jsonPath("$.description").value("Healthy vegetable dish"),
+                        jsonPath("$.isPublic").value(true),
+                        jsonPath("$.authorUsername").value("testuser"),
+                        jsonPath("$.authorId").value(1),
+                        jsonPath("$.authorImageName").isEmpty(),
+                        jsonPath("$.authorImageUrl").isEmpty(),
+                        jsonPath("$.likesCount").value(0),
+                        jsonPath("$.dislikesCount").value(0),
+                        jsonPath("$.savesCount").value(1),
+                        jsonPath("$.views").value(0),
+                        jsonPath("$.liked").value(false),
+                        jsonPath("$.disliked").value(false),
+                        jsonPath("$.saved").value(true),
+                        jsonPath("$.totalCalories").value(8200.0),
+                        jsonPath("$.minutesToPrepare").value(15),
+                        jsonPath("$.categories").isArray(),
+                        jsonPath("$.categories.length()").value(2),
+                        jsonPath("$.instructions").isArray(),
+                        jsonPath("$.instructions.length()").value(2),
+                        jsonPath("$.foods").isArray(),
+                        jsonPath("$.foods.length()").value(1),
+                        jsonPath("$.foods[0].foodId").value(1),
+                        jsonPath("$.foods[0].foodName").value("Carrot"),
+                        jsonPath("$.foods[0].quantity").value(200),
+                        jsonPath("$.imageNames").isArray(),
+                        jsonPath("$.imageNames.length()").value(0),
+                        jsonPath("$.imageUrls").isEmpty()
                 );
     }
 
-    @WithMockUser
     @Test
     @DisplayName("GET - /{id} - Should return 404 when recipe not found")
     void getRecipeByIdNotFound() throws Exception {
+        Utils.setUserContext(1);
         mockMvc.perform(get("/api/recipes/999"))
                 .andExpect(status().isNotFound());
     }

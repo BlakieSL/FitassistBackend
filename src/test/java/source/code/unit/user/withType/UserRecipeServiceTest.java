@@ -24,13 +24,12 @@ import source.code.model.user.UserRecipe;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.helpers.RecipeSummaryPopulationService;
+import source.code.service.declaration.helpers.RecipePopulationService;
 import source.code.service.declaration.helpers.SortingService;
 import source.code.service.implementation.user.interaction.withType.UserRecipeServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +48,7 @@ public class UserRecipeServiceTest {
     @Mock
     private RecipeMapper recipeMapper;
     @Mock
-    private RecipeSummaryPopulationService recipeSummaryPopulationService;
+    private RecipePopulationService recipePopulationService;
     @Mock
     private SortingService sortingService;
     @InjectMocks
@@ -196,19 +195,27 @@ public class UserRecipeServiceTest {
     public void getAllFromUser_ShouldReturnAllRecipesByType() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
+        Recipe recipe1 = new Recipe();
+        recipe1.setId(1);
+        Recipe recipe2 = new Recipe();
+        recipe2.setId(2);
         RecipeSummaryDto dto1 = new RecipeSummaryDto();
         dto1.setId(1);
         RecipeSummaryDto dto2 = new RecipeSummaryDto();
         dto2.setId(2);
 
-        when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
-                .thenReturn(List.of(dto1, dto2));
+        when(recipeRepository.findInteractedByUserWithDetails(userId, type))
+                .thenReturn(List.of(recipe1, recipe2));
+        when(recipeMapper.toSummaryDto(recipe1)).thenReturn(dto1);
+        when(recipeMapper.toSummaryDto(recipe2)).thenReturn(dto2);
+        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
 
         var result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertEquals(2, result.size());
-        verify(recipeRepository).findRecipeSummaryUnified(userId, type, true, null);
-        verify(recipeSummaryPopulationService).populateRecipeSummaries(any(List.class));
+        verify(recipeRepository).findInteractedByUserWithDetails(userId, type);
+        verify(recipePopulationService).populate(any(List.class));
+        verify(recipePopulationService).populateInteractionDates(any(List.class), eq(userId), eq(type));
     }
 
     @Test
@@ -216,8 +223,9 @@ public class UserRecipeServiceTest {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
 
-        when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
+        when(recipeRepository.findInteractedByUserWithDetails(userId, type))
                 .thenReturn(List.of());
+        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
 
         var result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
@@ -267,17 +275,25 @@ public class UserRecipeServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
+        Recipe recipe1 = new Recipe();
+        recipe1.setId(1);
+        Recipe recipe2 = new Recipe();
+        recipe2.setId(2);
+
         RecipeSummaryDto dto1 = createRecipeSummaryDto(1, older);
         RecipeSummaryDto dto2 = createRecipeSummaryDto(2, newer);
 
-        when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
-                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+        when(recipeRepository.findInteractedByUserWithDetails(userId, type))
+                .thenReturn(List.of(recipe1, recipe2));
+        when(recipeMapper.toSummaryDto(recipe1)).thenReturn(dto1);
+        when(recipeMapper.toSummaryDto(recipe2)).thenReturn(dto2);
+        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
 
         List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(recipeRepository).findRecipeSummaryUnified(userId, type, true, null);
+        verify(recipeRepository).findInteractedByUserWithDetails(userId, type);
     }
 
     @Test
@@ -287,17 +303,25 @@ public class UserRecipeServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
+        Recipe recipe1 = new Recipe();
+        recipe1.setId(1);
+        Recipe recipe2 = new Recipe();
+        recipe2.setId(2);
+
         RecipeSummaryDto dto1 = createRecipeSummaryDto(1, older);
         RecipeSummaryDto dto2 = createRecipeSummaryDto(2, newer);
 
-        when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
-                .thenReturn(new ArrayList<>(List.of(dto2, dto1)));
+        when(recipeRepository.findInteractedByUserWithDetails(userId, type))
+                .thenReturn(List.of(recipe2, recipe1));
+        when(recipeMapper.toSummaryDto(recipe2)).thenReturn(dto2);
+        when(recipeMapper.toSummaryDto(recipe1)).thenReturn(dto1);
+        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
 
         List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.ASC);
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(recipeRepository).findRecipeSummaryUnified(userId, type, true, null);
+        verify(recipeRepository).findInteractedByUserWithDetails(userId, type);
     }
 
     @Test
@@ -307,17 +331,25 @@ public class UserRecipeServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
+        Recipe recipe1 = new Recipe();
+        recipe1.setId(1);
+        Recipe recipe2 = new Recipe();
+        recipe2.setId(2);
+
         RecipeSummaryDto dto1 = createRecipeSummaryDto(1, older);
         RecipeSummaryDto dto2 = createRecipeSummaryDto(2, newer);
 
-        when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
-                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+        when(recipeRepository.findInteractedByUserWithDetails(userId, type))
+                .thenReturn(List.of(recipe1, recipe2));
+        when(recipeMapper.toSummaryDto(recipe1)).thenReturn(dto1);
+        when(recipeMapper.toSummaryDto(recipe2)).thenReturn(dto2);
+        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
 
         List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(recipeRepository).findRecipeSummaryUnified(userId, type, true, null);
+        verify(recipeRepository).findInteractedByUserWithDetails(userId, type);
     }
 
     @Test
@@ -325,18 +357,29 @@ public class UserRecipeServiceTest {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.SAVE;
 
+        Recipe recipe1 = new Recipe();
+        recipe1.setId(1);
+        Recipe recipe2 = new Recipe();
+        recipe2.setId(2);
+        Recipe recipe3 = new Recipe();
+        recipe3.setId(3);
+
         RecipeSummaryDto dto1 = createRecipeSummaryDto(1, LocalDateTime.of(2024, 1, 1, 10, 0));
         RecipeSummaryDto dto2 = createRecipeSummaryDto(2, null);
         RecipeSummaryDto dto3 = createRecipeSummaryDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
 
-        when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
-                .thenReturn(new ArrayList<>(List.of(dto1, dto2, dto3)));
+        when(recipeRepository.findInteractedByUserWithDetails(userId, type))
+                .thenReturn(List.of(recipe1, recipe2, recipe3));
+        when(recipeMapper.toSummaryDto(recipe1)).thenReturn(dto1);
+        when(recipeMapper.toSummaryDto(recipe2)).thenReturn(dto2);
+        when(recipeMapper.toSummaryDto(recipe3)).thenReturn(dto3);
+        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
 
         List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
         assertNotNull(result);
         assertEquals(3, result.size());
-        verify(recipeRepository).findRecipeSummaryUnified(userId, type, true, null);
+        verify(recipeRepository).findInteractedByUserWithDetails(userId, type);
     }
 
     @Test
@@ -346,6 +389,11 @@ public class UserRecipeServiceTest {
         LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
         LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
 
+        Recipe recipe1 = new Recipe();
+        recipe1.setId(1);
+        Recipe recipe2 = new Recipe();
+        recipe2.setId(2);
+
         RecipeSummaryDto dto1 = createRecipeSummaryDto(1, older);
         dto1.setFirstImageName("image1.jpg");
         dto1.setAuthorImageUrl("author1.jpg");
@@ -353,8 +401,11 @@ public class UserRecipeServiceTest {
         dto2.setFirstImageName("image2.jpg");
         dto2.setAuthorImageUrl("author2.jpg");
 
-        when(recipeRepository.findRecipeSummaryUnified(userId, type, true, null))
-                .thenReturn(new ArrayList<>(List.of(dto1, dto2)));
+        when(recipeRepository.findInteractedByUserWithDetails(userId, type))
+                .thenReturn(List.of(recipe1, recipe2));
+        when(recipeMapper.toSummaryDto(recipe1)).thenReturn(dto1);
+        when(recipeMapper.toSummaryDto(recipe2)).thenReturn(dto2);
+        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
 
         List<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, Sort.Direction.DESC);
 
@@ -367,13 +418,5 @@ public class UserRecipeServiceTest {
         dto.setId(id);
         dto.setUserRecipeInteractionCreatedAt(interactionDate);
         return dto;
-    }
-
-    private void assertSortedResult(List<BaseUserEntity> result, int expectedSize, Integer... expectedIds) {
-        assertNotNull(result);
-        assertEquals(expectedSize, result.size());
-        for (int i = 0; i < expectedIds.length; i++) {
-            assertEquals(expectedIds[i], ((RecipeSummaryDto) result.get(i)).getId());
-        }
     }
 }

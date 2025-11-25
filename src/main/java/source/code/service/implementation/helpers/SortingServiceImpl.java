@@ -16,9 +16,13 @@ public class SortingServiceImpl implements SortingService {
     public <T> void sortByTimestamp(List<T> list,
                                      Function<T, LocalDateTime> timestampExtractor,
                                      Sort.Direction sortDirection) {
-        Comparator<T> comparator = sortDirection == Sort.Direction.ASC
+        list.sort(comparator(timestampExtractor, sortDirection));
+    }
+
+    @Override
+    public <T> Comparator<T> comparator(Function<T, LocalDateTime> timestampExtractor, Sort.Direction sortDirection) {
+        return sortDirection == Sort.Direction.ASC
                 ? Comparator.comparing(timestampExtractor, Comparator.nullsLast(Comparator.naturalOrder()))
                 : Comparator.comparing(timestampExtractor, Comparator.nullsLast(Comparator.reverseOrder()));
-        list.sort(comparator);
     }
 }

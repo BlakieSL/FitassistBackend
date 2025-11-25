@@ -1,14 +1,22 @@
 package source.code.repository;
 
 import io.lettuce.core.dynamic.annotation.Param;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.model.recipe.Recipe;
 import source.code.model.user.TypeOfInteraction;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpecificationExecutor<Recipe> {
+    @Override
+    @EntityGraph(attributePaths = {"user", "mediaList", "recipeCategoryAssociations.recipeCategory"})
+    @NotNull
+    List<Recipe> findAll(Specification<Recipe> spec);
+
     @Modifying
     @Query("UPDATE Recipe r SET r.views = r.views + 1 WHERE r.id = :recipeId")
     void incrementViews(@Param("recipeId") Integer recipeId);
@@ -17,6 +25,76 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
     @Query("SELECT r FROM Recipe r WHERE r.isPublic = true")
     List<Recipe> findAllWithoutAssociations();
 
+    @Query("""
+      SELECT r
+      FROM Recipe r
+      LEFT JOIN FETCH r.recipeCategoryAssociations rca
+      LEFT JOIN FETCH rca.recipeCategory rc
+      LEFT JOIN FETCH r.recipeFoods rf
+      LEFT JOIN FETCH rf.food f
+      LEFT JOIN FETCH f.foodCategory
+      LEFT JOIN FETCH r.recipeInstructions ri
+      LEFT JOIN FETCH r.mediaList m
+      LEFT JOIN FETCH r.user u
+      WHERE r.id = :recipeId
+    """)
+    Optional<Recipe> findByIdWithDetails(@Param("recipeId") int recipeId);
+
+    @Query("""
+      SELECT DISTINCT r
+      FROM Recipe r
+      LEFT JOIN FETCH r.recipeCategoryAssociations rca
+      LEFT JOIN FETCH rca.recipeCategory
+      LEFT JOIN FETCH r.mediaList
+      LEFT JOIN FETCH r.user u
+      WHERE (:isPrivate IS NULL AND r.isPublic = true) OR
+            (:isPrivate = false AND r.isPublic = true) OR
+            (:isPrivate = true AND r.user.id = :userId)
+      ORDER BY r.createdAt DESC
+    """)
+    List<Recipe> findAllWithDetails(@Param("isPrivate") Boolean isPrivate, @Param("userId") int userId);
+
+    @Query("""
+      SELECT DISTINCT r
+      FROM Recipe r
+      LEFT JOIN FETCH r.recipeCategoryAssociations rca
+      LEFT JOIN FETCH rca.recipeCategory
+      LEFT JOIN FETCH r.mediaList
+      LEFT JOIN FETCH r.user u
+      JOIN r.recipeFoods rf
+      WHERE rf.food.id = :foodId
+      ORDER BY r.createdAt DESC
+    """)
+    List<Recipe> findAllWithDetailsByFoodId(@Param("foodId") int foodId);
+
+    @Query("""
+      SELECT DISTINCT r
+      FROM Recipe r
+      LEFT JOIN FETCH r.recipeCategoryAssociations rca
+      LEFT JOIN FETCH rca.recipeCategory
+      LEFT JOIN FETCH r.mediaList
+      LEFT JOIN FETCH r.user u
+      WHERE ((:isOwnProfile = false OR :isOwnProfile IS NULL) AND r.isPublic = true AND r.user.id = :userId) OR
+            (:isOwnProfile = true AND r.user.id = :userId)
+      ORDER BY r.createdAt DESC
+    """)
+    List<Recipe> findCreatedByUserWithDetails(@Param("userId") int userId, @Param("isOwnProfile") boolean isOwnProfile);
+
+    @Query("""
+      SELECT DISTINCT r
+      FROM Recipe r
+      LEFT JOIN FETCH r.recipeCategoryAssociations rca
+      LEFT JOIN FETCH rca.recipeCategory
+      LEFT JOIN FETCH r.mediaList
+      LEFT JOIN FETCH r.user u
+      JOIN UserRecipe ur ON ur.recipe.id = r.id
+      WHERE ur.user.id = :userId
+      AND ur.type = :type
+      AND r.isPublic = true
+    """)
+    List<Recipe> findInteractedByUserWithDetails(@Param("userId") int userId, @Param("type") TypeOfInteraction type);
+
+/*
     @Query("""
       SELECT new source.code.dto.response.recipe.RecipeSummaryDto(
              r.id,
@@ -38,6 +116,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
              null,
              null,
              CAST((SELECT COUNT(ur1) FROM UserRecipe ur1 WHERE ur1.recipe.id = r.id AND ur1.type = 'LIKE') AS int),
+             CAST((SELECT COUNT(ur3) FROM UserRecipe ur3 WHERE ur3.recipe.id = r.id AND ur3.type = 'DISLIKE') AS int),
              CAST((SELECT COUNT(ur2) FROM UserRecipe ur2 WHERE ur2.recipe.id = r.id AND ur2.type = 'SAVE') AS int),
              r.views,
              CAST((SELECT COUNT(rf2) FROM RecipeFood rf2 WHERE rf2.recipe.id = r.id) AS int),
@@ -72,6 +151,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
              null,
              null,
              CAST((SELECT COUNT(ur1) FROM UserRecipe ur1 WHERE ur1.recipe.id = r.id AND ur1.type = 'LIKE') AS int),
+             CAST((SELECT COUNT(ur3) FROM UserRecipe ur3 WHERE ur3.recipe.id = r.id AND ur3.type = 'DISLIKE') AS int),
              CAST((SELECT COUNT(ur2) FROM UserRecipe ur2 WHERE ur2.recipe.id = r.id AND ur2.type = 'SAVE') AS int),
              r.views,
              CAST((SELECT COUNT(rf) FROM RecipeFood rf WHERE rf.recipe.id = r.id) AS int),
@@ -91,7 +171,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
                                                      @Param("type") TypeOfInteraction type,
                                                      @Param("fetchByInteraction") boolean fetchByInteraction,
                                                      @Param("isOwnProfile") Boolean isOwnProfile);
-
     @Query("""
       SELECT new source.code.dto.response.recipe.RecipeSummaryDto(
              r.id,
@@ -113,6 +192,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
              null,
              null,
              CAST((SELECT COUNT(ur1) FROM UserRecipe ur1 WHERE ur1.recipe.id = r.id AND ur1.type = 'LIKE') AS int),
+             CAST((SELECT COUNT(ur3) FROM UserRecipe ur3 WHERE ur3.recipe.id = r.id AND ur3.type = 'DISLIKE') AS int),
              CAST((SELECT COUNT(ur2) FROM UserRecipe ur2 WHERE ur2.recipe.id = r.id AND ur2.type = 'SAVE') AS int),
              r.views,
              CAST((SELECT COUNT(rf) FROM RecipeFood rf WHERE rf.recipe.id = r.id) AS int),
@@ -146,6 +226,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
              null,
              null,
              CAST((SELECT COUNT(ur1) FROM UserRecipe ur1 WHERE ur1.recipe.id = r.id AND ur1.type = 'LIKE') AS int),
+             CAST((SELECT COUNT(ur3) FROM UserRecipe ur3 WHERE ur3.recipe.id = r.id AND ur3.type = 'DISLIKE') AS int),
              CAST((SELECT COUNT(ur2) FROM UserRecipe ur2 WHERE ur2.recipe.id = r.id AND ur2.type = 'SAVE') AS int),
              r.views,
              CAST((SELECT COUNT(rf) FROM RecipeFood rf WHERE rf.recipe.id = r.id) AS int),
@@ -159,4 +240,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
       ORDER BY r.createdAt DESC
     """)
     List<RecipeSummaryDto> findAllRecipeSummaries(@Param("isPrivate") Boolean isPrivate, @Param("userId") int userId);
+
+
+ */
 }
