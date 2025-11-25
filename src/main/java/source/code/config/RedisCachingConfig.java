@@ -40,7 +40,7 @@ public class RedisCachingConfig {
         JdkSerializationRedisSerializer jdkSerializer = new JdkSerializationRedisSerializer();
 
         RedisCacheConfiguration redisCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(60))
+                .entryTtl(Duration.ofMinutes(15))
                 .serializeKeysWith(RedisSerializationContext
                         .SerializationPair
                         .fromSerializer(new StringRedisSerializer()))

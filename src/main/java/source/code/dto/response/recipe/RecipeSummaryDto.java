@@ -21,6 +21,9 @@ public class  RecipeSummaryDto implements BaseUserEntity, Serializable {
     private String name;
     private String description;
     private boolean isPublic;
+    private LocalDateTime createdAt;
+    private short minutesToPrepare;
+    private long views;
 
     private String authorUsername;
     private Integer authorId;
@@ -33,11 +36,8 @@ public class  RecipeSummaryDto implements BaseUserEntity, Serializable {
     private long likesCount;
     private long dislikesCount;
     private long savesCount;
-    private long views;
     private long ingredientsCount;
-    private short minutesToPrepare;
 
     private List<RecipeCategoryShortDto> categories = new ArrayList<>();
-    private LocalDateTime createdAt;
     private LocalDateTime userRecipeInteractionCreatedAt;
 }
