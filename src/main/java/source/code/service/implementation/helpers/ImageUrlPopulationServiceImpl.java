@@ -18,42 +18,35 @@ public class ImageUrlPopulationServiceImpl implements ImageUrlPopulationService 
     }
 
     @Override
-    public <T> void populateAuthorAndEntityImagesForList(List<T> dtos,
-                                                          Function<T, String> authorImageNameGetter,
-                                                          BiConsumer<T, String> authorUrlSetter,
-                                                          Function<T, String> entityImageNameGetter,
-                                                          BiConsumer<T, String> entityUrlSetter) {
-        dtos.forEach(dto -> {
-            populateImageUrl(authorImageNameGetter.apply(dto), url -> authorUrlSetter.accept(dto, url));
-            populateImageUrl(entityImageNameGetter.apply(dto), url -> entityUrlSetter.accept(dto, url));
-        });
+    public <T> void populateAuthorAndEntityImages(T dto,
+                                                   Function<T, String> authorImageNameGetter,
+                                                   BiConsumer<T, String> authorUrlSetter,
+                                                   Function<T, String> entityImageNameGetter,
+                                                   BiConsumer<T, String> entityUrlSetter) {
+        populateImageUrl(authorImageNameGetter.apply(dto), url -> authorUrlSetter.accept(dto, url));
+        populateImageUrl(entityImageNameGetter.apply(dto), url -> entityUrlSetter.accept(dto, url));
     }
 
     @Override
-    public <T> void populateAuthorImageForList(List<T> dtos,
-                                                Function<T, String> authorImageNameGetter,
-                                                BiConsumer<T, String> authorUrlSetter) {
-        dtos.forEach(dto ->
-            populateImageUrl(authorImageNameGetter.apply(dto), url -> authorUrlSetter.accept(dto, url))
-        );
+    public <T> void populateAuthorImage(T dto,
+                                         Function<T, String> authorImageNameGetter,
+                                         BiConsumer<T, String> authorUrlSetter) {
+        populateImageUrl(authorImageNameGetter.apply(dto), url -> authorUrlSetter.accept(dto, url));
     }
 
     @Override
-    public <T, M> void populateFirstImageFromMediaList(List<T> dtos,
-                                                        Function<T, List<M>> mediaListGetter,
+    public <T, M> void populateFirstImageFromMediaList(T dto,
+                                                        List<M> mediaList,
                                                         Function<M, String> imageNameExtractor,
                                                         BiConsumer<T, String> imageNameSetter,
                                                         BiConsumer<T, String> imageUrlSetter) {
-        dtos.forEach(dto -> {
-            List<M> mediaList = mediaListGetter.apply(dto);
-            if (mediaList != null && !mediaList.isEmpty()) {
-                String imageName = imageNameExtractor.apply(mediaList.get(0));
-                if (imageName != null) {
-                    imageNameSetter.accept(dto, imageName);
-                    imageUrlSetter.accept(dto, s3Service.getImage(imageName));
-                }
+        if (mediaList != null && !mediaList.isEmpty()) {
+            String imageName = imageNameExtractor.apply(mediaList.getFirst());
+            if (imageName != null) {
+                imageNameSetter.accept(dto, imageName);
+                imageUrlSetter.accept(dto, s3Service.getImage(imageName));
             }
-        });
+        }
     }
 
     private void populateImageUrl(String imageName, Consumer<String> urlSetter) {

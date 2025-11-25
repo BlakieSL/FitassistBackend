@@ -20,7 +20,6 @@ import source.code.service.declaration.helpers.ImageUrlPopulationService;
 import source.code.service.declaration.helpers.SortingService;
 import source.code.service.declaration.user.SavedService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service("userCommentService")
@@ -44,15 +43,11 @@ public class UserCommentServiceImpl
 
     @Override
     public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Sort.Direction sortDirection) {
-        List<CommentSummaryDto> dtos = new ArrayList<>(
-                ((CommentRepository) entityRepository).findCommentSummaryUnified(userId, type, true));
-
-        imagePopulationService.populateAuthorImageForList(dtos,
-                CommentSummaryDto::getAuthorImageName, CommentSummaryDto::setAuthorImageUrl);
-
-        sortingService.sortByTimestamp(dtos, CommentSummaryDto::getUserCommentInteractionCreatedAt, sortDirection);
-
-        return dtos.stream()
+        return ((CommentRepository) entityRepository).findCommentSummaryUnified(userId, type, true)
+                .stream()
+                .peek(dto -> imagePopulationService.populateAuthorImage(dto,
+                                CommentSummaryDto::getAuthorImageName, CommentSummaryDto::setAuthorImageUrl))
+                .sorted(sortingService.comparator(CommentSummaryDto::getUserCommentInteractionCreatedAt, sortDirection))
                 .map(dto -> (BaseUserEntity) dto)
                 .toList();
     }

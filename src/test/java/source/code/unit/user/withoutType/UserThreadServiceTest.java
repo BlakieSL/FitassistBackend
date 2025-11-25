@@ -26,11 +26,13 @@ import source.code.service.declaration.helpers.ImageUrlPopulationService;
 import source.code.service.declaration.helpers.SortingService;
 import source.code.service.implementation.user.interaction.withoutType.UserThreadServiceImpl;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -164,11 +166,16 @@ public class  UserThreadServiceTest {
 
         when(forumThreadRepository.findThreadSummaryUnified(userId, true))
                 .thenReturn(List.of(dto1, dto2));
+        doReturn(Comparator.comparing(ForumThreadSummaryDto::getId))
+                .when(sortingService).comparator(any(), eq(Sort.Direction.DESC));
 
         var result = userThreadService.getAllFromUser(userId, Sort.Direction.DESC);
 
         assertEquals(2, result.size());
         verify(forumThreadRepository).findThreadSummaryUnified(userId, true);
+        verify(sortingService).comparator(any(), eq(Sort.Direction.DESC));
+        verify(imageUrlPopulationService, times(2)).populateAuthorImage(
+                any(ForumThreadSummaryDto.class), any(), any());
     }
 
     @Test
@@ -177,6 +184,8 @@ public class  UserThreadServiceTest {
 
         when(forumThreadRepository.findThreadSummaryUnified(userId, true))
                 .thenReturn(List.of());
+        doReturn(Comparator.comparing(ForumThreadSummaryDto::getId))
+                .when(sortingService).comparator(any(), eq(Sort.Direction.DESC));
 
         var result = userThreadService.getAllFromUser(userId, Sort.Direction.DESC);
 

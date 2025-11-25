@@ -48,16 +48,13 @@ public class UserCreatedServiceImpl implements UserCreatedService {
 
     @Override
     public List<PlanSummaryDto> getCreatedPlans(int userId, Sort.Direction sortDirection) {
-        var plans = planRepository.findPlanSummaryUnified(userId, null, false, isOwnProfile(userId))
+        return planRepository.findPlanSummaryUnified(userId, null, false, isOwnProfile(userId))
                 .stream()
+                .peek(dto -> imagePopulationService.populateAuthorAndEntityImages(dto,
+                        PlanSummaryDto::getAuthorImageName, PlanSummaryDto::setAuthorImageUrl,
+                        PlanSummaryDto::getFirstImageName, PlanSummaryDto::setFirstImageUrl))
                 .sorted(sortingService.comparator(PlanSummaryDto::getCreatedAt, sortDirection))
                 .toList();
-
-        imagePopulationService.populateAuthorAndEntityImagesForList(plans,
-                PlanSummaryDto::getAuthorImageName, PlanSummaryDto::setAuthorImageUrl,
-                PlanSummaryDto::getFirstImageName, PlanSummaryDto::setFirstImageUrl);
-
-        return plans;
     }
 
     @Override
@@ -73,28 +70,22 @@ public class UserCreatedServiceImpl implements UserCreatedService {
 
     @Override
     public List<CommentSummaryDto> getCreatedComments(int userId, Sort.Direction sortDirection) {
-        var comments = commentRepository.findCommentSummaryUnified(userId, null, false)
+        return commentRepository.findCommentSummaryUnified(userId, null, false)
                 .stream()
+                .peek(dto -> imagePopulationService.populateAuthorImage(dto,
+                        CommentSummaryDto::getAuthorImageName, CommentSummaryDto::setAuthorImageUrl))
                 .sorted(sortingService.comparator(CommentSummaryDto::getDateCreated, sortDirection))
                 .toList();
-
-        imagePopulationService.populateAuthorImageForList(comments,
-                CommentSummaryDto::getAuthorImageName, CommentSummaryDto::setAuthorImageUrl);
-
-        return comments;
     }
 
     @Override
     public List<ForumThreadSummaryDto> getCreatedThreads(int userId, Sort.Direction sortDirection) {
-        var threads = forumThreadRepository.findThreadSummaryUnified(userId, false)
+        return forumThreadRepository.findThreadSummaryUnified(userId, false)
                 .stream()
+                .peek(dto -> imagePopulationService.populateAuthorImage(dto,
+                        ForumThreadSummaryDto::getAuthorImageName, ForumThreadSummaryDto::setAuthorImageUrl))
                 .sorted(sortingService.comparator(ForumThreadSummaryDto::getDateCreated, sortDirection))
                 .toList();
-
-        imagePopulationService.populateAuthorImageForList(threads,
-                ForumThreadSummaryDto::getAuthorImageName, ForumThreadSummaryDto::setAuthorImageUrl);
-
-        return threads;
     }
 
     private boolean isOwnProfile(int userId) {
