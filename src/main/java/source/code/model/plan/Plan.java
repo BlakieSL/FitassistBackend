@@ -68,7 +68,8 @@ public class Plan implements IndexedEntity {
     private PlanType planType;
 
     @OneToMany(mappedBy = "plan", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
-    private final Set<PlanInstruction> planInstructions = new HashSet<>();
+    @OrderBy("orderIndex ASC")
+    private final List<PlanInstruction> planInstructions = new ArrayList<>();
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
     private final Set<PlanCategoryAssociation> planCategoryAssociations = new HashSet<>();

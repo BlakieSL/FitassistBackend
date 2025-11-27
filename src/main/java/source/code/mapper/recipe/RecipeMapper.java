@@ -91,13 +91,13 @@ public abstract class RecipeMapper {
         if (dto.getInstructions() == null) {
             return;
         }
-        Set<RecipeInstruction> instructions = dto.getInstructions().stream()
+        List<RecipeInstruction> instructions = dto.getInstructions().stream()
                 .map(instructionDto -> RecipeInstruction.of(
                         instructionDto.getOrderIndex(),
                         instructionDto.getText(),
                         instructionDto.getText(),
                         recipe
-                )).collect(Collectors.toSet());
+                )).toList();
 
         recipe.getRecipeInstructions().addAll(instructions);
     }
@@ -133,7 +133,7 @@ public abstract class RecipeMapper {
     }
 
     @Named("mapInstructionsToDto")
-    protected List<RecipeInstructionResponseDto> mapInstructionsToDto(Set<RecipeInstruction> instructions) {
+    protected List<RecipeInstructionResponseDto> mapInstructionsToDto(List<RecipeInstruction> instructions) {
         return instructions.stream()
                 .map(instruction -> new RecipeInstructionResponseDto(
                         instruction.getId(),

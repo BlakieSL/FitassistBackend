@@ -67,13 +67,13 @@ public abstract class PlanMapper {
             return;
         }
 
-        Set<PlanInstruction> instructions = dto.getInstructions().stream()
+        List<PlanInstruction> instructions = dto.getInstructions().stream()
                 .map(instructionDto -> PlanInstruction.of(
                         instructionDto.getOrderIndex(),
                         instructionDto.getText(),
                         instructionDto.getText(),
                         plan
-                )).collect(Collectors.toSet());
+                )).toList();
 
         plan.getPlanInstructions().addAll(instructions);
     }
