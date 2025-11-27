@@ -4,6 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +19,6 @@ import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.food.FoodResponseDto;
 import source.code.dto.response.food.FoodSummaryDto;
 import source.code.service.declaration.food.FoodService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/foods")
@@ -56,15 +58,20 @@ public class FoodController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FoodSummaryDto>> getAllFoods() {
-        return ResponseEntity.ok(foodService.getAllFoods());
+    public ResponseEntity<Page<FoodSummaryDto>> getAllFoods(
+            @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        Page<FoodSummaryDto> response = foodService.getAllFoods(pageable);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/filter")
-    public ResponseEntity<List<FoodSummaryDto>> getFilteredFoods(
-            @Valid @RequestBody FilterDto filterDto) {
-        List<FoodSummaryDto> filtered = foodService.getFilteredFoods(filterDto);
-        return ResponseEntity.ok(filtered);
+    public ResponseEntity<Page<FoodSummaryDto>> getFilteredFoods(
+            @Valid @RequestBody FilterDto filterDto,
+            @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        Page<FoodSummaryDto> response = foodService.getFilteredFoods(filterDto, pageable);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{id}/calculate-macros")

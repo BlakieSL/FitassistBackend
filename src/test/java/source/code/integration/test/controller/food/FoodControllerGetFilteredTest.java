@@ -54,9 +54,10 @@ public class FoodControllerGetFilteredTest {
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$[0].name").value("Apple"),
-                        jsonPath("$[1].name").value("Banana"),
-                        jsonPath("$.length()").value(2)
+                        jsonPath("$.content[0].name").value("Apple"),
+                        jsonPath("$.content[1].name").value("Banana"),
+                        jsonPath("$.content.length()").value(2),
+                        jsonPath("$.totalElements").value(2)
                 );
     }
 
@@ -75,7 +76,8 @@ public class FoodControllerGetFilteredTest {
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.length()").value(2)
+                        jsonPath("$.content.length()").value(2),
+                        jsonPath("$.totalElements").value(2)
                 );
     }
 
@@ -94,7 +96,8 @@ public class FoodControllerGetFilteredTest {
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.length()").value(3)
+                        jsonPath("$.content.length()").value(3),
+                        jsonPath("$.totalElements").value(3)
                 );
     }
 
@@ -113,9 +116,10 @@ public class FoodControllerGetFilteredTest {
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$[0].name").value("Chicken Breast"),
-                        jsonPath("$[1].name").value("Eggs"),
-                        jsonPath("$.length()").value(2)
+                        jsonPath("$.content[0].name").value("Chicken Breast"),
+                        jsonPath("$.content[1].name").value("Eggs"),
+                        jsonPath("$.content.length()").value(2),
+                        jsonPath("$.totalElements").value(2)
                 );
     }
 
@@ -134,10 +138,11 @@ public class FoodControllerGetFilteredTest {
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$[0].name").value("Chicken Breast"),
-                        jsonPath("$[1].name").value("Eggs"),
-                        jsonPath("$[2].name").value("Greek Yogurt"),
-                        jsonPath("$.length()").value(3)
+                        jsonPath("$.content[0].name").value("Chicken Breast"),
+                        jsonPath("$.content[1].name").value("Eggs"),
+                        jsonPath("$.content[2].name").value("Greek Yogurt"),
+                        jsonPath("$.content.length()").value(3),
+                        jsonPath("$.totalElements").value(3)
                 );
     }
 
@@ -158,7 +163,53 @@ public class FoodControllerGetFilteredTest {
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.length()").value(2)
+                        jsonPath("$.content.length()").value(2),
+                        jsonPath("$.totalElements").value(2)
+                );
+    }
+
+    @WithMockUser
+    @FoodSql
+    @Test
+    @DisplayName("POST - /filter - Should return paginated filtered foods with custom pagination")
+    void getFilteredFoods_WithPagination() throws Exception {
+        FilterCriteria criteria = FilterCriteria.of(
+                "PROTEIN", new BigDecimal("0.0"), FilterOperation.GREATER_THAN
+        );
+        FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
+
+        mockMvc.perform(post("/api/foods/filter")
+                        .param("page", "0")
+                        .param("size", "2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(filterDto)))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.content.length()").value(2),
+                        jsonPath("$.size").value(2),
+                        jsonPath("$.number").value(0),
+                        jsonPath("$.totalPages").exists()
+                );
+    }
+
+    @WithMockUser
+    @FoodSql
+    @Test
+    @DisplayName("POST - /filter - Should return sorted filtered foods")
+    void getFilteredFoods_WithSorting() throws Exception {
+        FilterCriteria criteria = FilterCriteria.of(
+                "CATEGORY", 1, FilterOperation.EQUAL
+        );
+        FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
+
+        mockMvc.perform(post("/api/foods/filter")
+                        .param("sort", "name,desc")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(filterDto)))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.content[0].name").value("Banana"),
+                        jsonPath("$.content[1].name").value("Apple")
                 );
     }
 
