@@ -133,7 +133,7 @@ public abstract class RecipeMapper {
     }
 
     @Named("mapInstructionsToDto")
-    protected List<RecipeInstructionResponseDto> mapInstructionsToDto(List<RecipeInstruction> instructions) {
+    protected List<RecipeInstructionResponseDto> mapInstructionsToDto(Set<RecipeInstruction> instructions) {
         return instructions.stream()
                 .map(instruction -> new RecipeInstructionResponseDto(
                         instruction.getId(),
