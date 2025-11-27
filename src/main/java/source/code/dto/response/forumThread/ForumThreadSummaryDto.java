@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class ForumThreadSummaryDto implements BaseUserEntity, Serializable {
     private int id;
     private String title;
-    private LocalDateTime dateCreated;
+    private LocalDateTime createdAt;
     private String text;
     private int viewsCount;
     private int savesCount;

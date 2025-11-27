@@ -1,5 +1,7 @@
 package source.code.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,7 +17,7 @@ public interface ForumThreadRepository extends JpaRepository<ForumThread, Intege
       SELECT new source.code.dto.response.forumThread.ForumThreadSummaryDto(
              ft.id,
              ft.title,
-             ft.dateCreated,
+             ft.createdAt,
              ft.text,
              ft.views,
              CAST((SELECT COUNT(ut2) FROM UserThread ut2 WHERE ut2.forumThread.id = ft.id) AS int),
@@ -34,8 +36,42 @@ public interface ForumThreadRepository extends JpaRepository<ForumThread, Intege
       LEFT JOIN UserThread ut ON ut.forumThread.id = ft.id AND ut.user.id = :userId
       WHERE (:fetchByInteraction = false AND ft.user.id = :userId) OR
             (:fetchByInteraction = true AND ut.id IS NOT NULL)
-      ORDER BY CASE WHEN :fetchByInteraction = true THEN ut.createdAt ELSE ft.dateCreated END DESC
+      ORDER BY CASE WHEN :fetchByInteraction = true THEN ut.createdAt ELSE ft.createdAt END DESC
     """)
     List<ForumThreadSummaryDto> findThreadSummaryUnified(@Param("userId") int userId,
                                                          @Param("fetchByInteraction") boolean fetchByInteraction);
+
+    @Query(value = """
+      SELECT new source.code.dto.response.forumThread.ForumThreadSummaryDto(
+             ft.id,
+             ft.title,
+             ft.createdAt,
+             ft.text,
+             ft.views,
+             CAST((SELECT COUNT(ut2) FROM UserThread ut2 WHERE ut2.forumThread.id = ft.id) AS int),
+             CAST((SELECT COUNT(c) FROM Comment c WHERE c.thread.id = ft.id) AS int),
+             u.username,
+             u.id,
+             (SELECT m.imageName FROM Media m
+              WHERE m.parentId = u.id
+              AND m.parentType = 'USER'
+              ORDER BY m.id ASC
+              LIMIT 1),
+             null,
+             CASE WHEN :fetchByInteraction = true THEN ut.createdAt ELSE null END)
+      FROM ForumThread ft
+      JOIN ft.user u
+      LEFT JOIN UserThread ut ON ut.forumThread.id = ft.id AND ut.user.id = :userId
+      WHERE (:fetchByInteraction = false AND ft.user.id = :userId) OR
+            (:fetchByInteraction = true AND ut.id IS NOT NULL)
+    """, countQuery = """
+      SELECT COUNT(ft)
+      FROM ForumThread ft
+      LEFT JOIN UserThread ut ON ut.forumThread.id = ft.id AND ut.user.id = :userId
+      WHERE (:fetchByInteraction = false AND ft.user.id = :userId) OR
+            (:fetchByInteraction = true AND ut.id IS NOT NULL)
+    """)
+    Page<ForumThreadSummaryDto> findThreadSummaryUnified(@Param("userId") int userId,
+                                                          @Param("fetchByInteraction") boolean fetchByInteraction,
+                                                          Pageable pageable);
 }

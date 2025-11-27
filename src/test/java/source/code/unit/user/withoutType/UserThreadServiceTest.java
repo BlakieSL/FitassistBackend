@@ -9,10 +9,15 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
+import source.code.helper.BaseUserEntity;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.forumThread.ForumThreadMapper;
 import source.code.model.thread.ForumThread;
@@ -26,7 +31,6 @@ import source.code.service.declaration.helpers.ImageUrlPopulationService;
 import source.code.service.declaration.helpers.SortingService;
 import source.code.service.implementation.user.interaction.withoutType.UserThreadServiceImpl;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -159,21 +163,22 @@ public class  UserThreadServiceTest {
     @Test
     public void getAllFromUser_ShouldReturnAllSavedThreadsFromUser() {
         int userId = 1;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+
         ForumThreadSummaryDto dto1 = new ForumThreadSummaryDto();
         dto1.setId(1);
         ForumThreadSummaryDto dto2 = new ForumThreadSummaryDto();
         dto2.setId(2);
 
-        when(forumThreadRepository.findThreadSummaryUnified(userId, true))
-                .thenReturn(List.of(dto1, dto2));
-        doReturn(Comparator.comparing(ForumThreadSummaryDto::getId))
-                .when(sortingService).comparator(any(), eq(Sort.Direction.DESC));
+        Page<ForumThreadSummaryDto> page = new PageImpl<>(List.of(dto1, dto2));
+        when(forumThreadRepository.findThreadSummaryUnified(eq(userId), eq(true), any(Pageable.class)))
+                .thenReturn(page);
 
-        var result = userThreadService.getAllFromUser(userId, Sort.Direction.DESC);
+        Page<BaseUserEntity> result = userThreadService.getAllFromUser(userId, pageable);
 
-        assertEquals(2, result.size());
-        verify(forumThreadRepository).findThreadSummaryUnified(userId, true);
-        verify(sortingService).comparator(any(), eq(Sort.Direction.DESC));
+        assertEquals(2, result.getContent().size());
+        assertEquals(2, result.getTotalElements());
+        verify(forumThreadRepository).findThreadSummaryUnified(eq(userId), eq(true), any(Pageable.class));
         verify(imageUrlPopulationService, times(2)).populateAuthorImage(
                 any(ForumThreadSummaryDto.class), any(), any());
     }
@@ -181,15 +186,16 @@ public class  UserThreadServiceTest {
     @Test
     public void getAllFromUser_ShouldReturnEmptyListIfNoSavedThreads() {
         int userId = 1;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        when(forumThreadRepository.findThreadSummaryUnified(userId, true))
-                .thenReturn(List.of());
-        doReturn(Comparator.comparing(ForumThreadSummaryDto::getId))
-                .when(sortingService).comparator(any(), eq(Sort.Direction.DESC));
+        Page<ForumThreadSummaryDto> page = new PageImpl<>(List.of());
+        when(forumThreadRepository.findThreadSummaryUnified(eq(userId), eq(true), any(Pageable.class)))
+                .thenReturn(page);
 
-        var result = userThreadService.getAllFromUser(userId, Sort.Direction.DESC);
+        Page<BaseUserEntity> result = userThreadService.getAllFromUser(userId, pageable);
 
-        assertTrue(result.isEmpty());
+        assertTrue(result.getContent().isEmpty());
+        assertEquals(0, result.getTotalElements());
     }
 
     @Test

@@ -475,17 +475,17 @@ public class UserCreatedServiceTest {
         return dto;
     }
 
-    private CommentSummaryDto createCommentSummaryDto(int id, LocalDateTime dateCreated) {
+    private CommentSummaryDto createCommentSummaryDto(int id, LocalDateTime createdAt) {
         CommentSummaryDto dto = new CommentSummaryDto();
         dto.setId(id);
-        dto.setDateCreated(dateCreated);
+        dto.setCreatedAt(createdAt);
         return dto;
     }
 
-    private ForumThreadSummaryDto createForumThreadSummaryDto(int id, LocalDateTime dateCreated) {
+    private ForumThreadSummaryDto createForumThreadSummaryDto(int id, LocalDateTime createdAt) {
         ForumThreadSummaryDto dto = new ForumThreadSummaryDto();
         dto.setId(id);
-        dto.setDateCreated(dateCreated);
+        dto.setCreatedAt(createdAt);
         return dto;
     }
 }

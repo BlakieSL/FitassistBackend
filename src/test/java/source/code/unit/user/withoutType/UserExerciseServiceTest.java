@@ -8,6 +8,10 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.exception.NotUniqueRecordException;
@@ -169,6 +173,7 @@ public class UserExerciseServiceTest {
     @Test
     public void getAllFromUser_ShouldReturnAllExercisesByType() {
         int userId = 1;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         Exercise exercise1 = new Exercise();
         exercise1.setId(1);
@@ -194,27 +199,32 @@ public class UserExerciseServiceTest {
         dto2.setId(2);
         dto2.setImageName("exercise2.jpg");
 
-        when(userExerciseRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(List.of(ue1, ue2));
+        Page<UserExercise> page = new PageImpl<>(List.of(ue1, ue2));
+        when(userExerciseRepository.findAllByUserIdWithMedia(eq(userId), any(Pageable.class)))
+                .thenReturn(page);
         when(exerciseMapper.toSummaryDto(exercise1)).thenReturn(dto1);
         when(exerciseMapper.toSummaryDto(exercise2)).thenReturn(dto2);
 
-        var result = userExerciseService.getAllFromUser(userId, Sort.Direction.DESC);
+        Page<BaseUserEntity> result = userExerciseService.getAllFromUser(userId, pageable);
 
-        assertEquals(2, result.size());
+        assertEquals(2, result.getContent().size());
+        assertEquals(2, result.getTotalElements());
         verify(exerciseMapper, times(2)).toSummaryDto(any(Exercise.class));
     }
 
     @Test
     public void getAllFromUser_ShouldReturnEmptyListIfNoExercises() {
         int userId = 1;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        when(userExerciseRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(List.of());
+        Page<UserExercise> page = new PageImpl<>(List.of());
+        when(userExerciseRepository.findAllByUserIdWithMedia(eq(userId), any(Pageable.class)))
+                .thenReturn(page);
 
-        var result = userExerciseService.getAllFromUser(userId, Sort.Direction.DESC);
+        Page<BaseUserEntity> result = userExerciseService.getAllFromUser(userId, pageable);
 
-        assertTrue(result.isEmpty());
+        assertTrue(result.getContent().isEmpty());
+        assertEquals(0, result.getTotalElements());
     }
 
     @Test
@@ -249,202 +259,5 @@ public class UserExerciseServiceTest {
                 () -> userExerciseService.calculateLikesAndSaves(exerciseId));
 
         verify(userExerciseRepository, never()).countByExerciseId(anyInt());
-    }
-
-    @Test
-    public void getAllFromUser_ShouldSortByInteractionDateDesc() {
-        int userId = 1;
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        Exercise exercise1 = new Exercise();
-        exercise1.setId(1);
-        exercise1.setMediaList(new ArrayList<>());
-
-        Exercise exercise2 = new Exercise();
-        exercise2.setId(2);
-        exercise2.setMediaList(new ArrayList<>());
-
-        UserExercise ue1 = UserExercise.of(new User(), exercise1);
-        ue1.setCreatedAt(older);
-        UserExercise ue2 = UserExercise.of(new User(), exercise2);
-        ue2.setCreatedAt(newer);
-
-        ExerciseSummaryDto dto1 = createExerciseSummaryDto(1, older);
-        ExerciseSummaryDto dto2 = createExerciseSummaryDto(2, newer);
-
-        when(userExerciseRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(new ArrayList<>(List.of(ue2, ue1)));
-        when(exerciseMapper.toSummaryDto(exercise1)).thenReturn(dto1);
-        when(exerciseMapper.toSummaryDto(exercise2)).thenReturn(dto2);
-
-        List<BaseUserEntity> result = userExerciseService.getAllFromUser(userId, Sort.Direction.DESC);
-
-        assertSortedResult(result, 2, 2, 1);
-        verify(userExerciseRepository).findAllByUserIdWithMedia(eq(userId), any(Sort.class));
-    }
-
-    @Test
-    public void getAllFromUser_ShouldSortByInteractionDateAsc() {
-        int userId = 1;
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        Exercise exercise1 = new Exercise();
-        exercise1.setId(1);
-        exercise1.setMediaList(new ArrayList<>());
-
-        Exercise exercise2 = new Exercise();
-        exercise2.setId(2);
-        exercise2.setMediaList(new ArrayList<>());
-
-        UserExercise ue1 = UserExercise.of(new User(), exercise1);
-        ue1.setCreatedAt(older);
-        UserExercise ue2 = UserExercise.of(new User(), exercise2);
-        ue2.setCreatedAt(newer);
-
-        ExerciseSummaryDto dto1 = createExerciseSummaryDto(1, older);
-        ExerciseSummaryDto dto2 = createExerciseSummaryDto(2, newer);
-
-        when(userExerciseRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(new ArrayList<>(List.of(ue1, ue2)));
-        when(exerciseMapper.toSummaryDto(exercise1)).thenReturn(dto1);
-        when(exerciseMapper.toSummaryDto(exercise2)).thenReturn(dto2);
-
-        List<BaseUserEntity> result = userExerciseService.getAllFromUser(userId, Sort.Direction.ASC);
-
-        assertSortedResult(result, 2, 1, 2);
-        verify(userExerciseRepository).findAllByUserIdWithMedia(eq(userId), any(Sort.class));
-    }
-
-    @Test
-    public void getAllFromUser_DefaultShouldSortDesc() {
-        int userId = 1;
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        Exercise exercise1 = new Exercise();
-        exercise1.setId(1);
-        exercise1.setMediaList(new ArrayList<>());
-
-        Exercise exercise2 = new Exercise();
-        exercise2.setId(2);
-        exercise2.setMediaList(new ArrayList<>());
-
-        UserExercise ue1 = UserExercise.of(new User(), exercise1);
-        ue1.setCreatedAt(older);
-        UserExercise ue2 = UserExercise.of(new User(), exercise2);
-        ue2.setCreatedAt(newer);
-
-        ExerciseSummaryDto dto1 = createExerciseSummaryDto(1, older);
-        ExerciseSummaryDto dto2 = createExerciseSummaryDto(2, newer);
-
-        when(userExerciseRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(new ArrayList<>(List.of(ue2, ue1)));
-        when(exerciseMapper.toSummaryDto(exercise1)).thenReturn(dto1);
-        when(exerciseMapper.toSummaryDto(exercise2)).thenReturn(dto2);
-
-        List<BaseUserEntity> result = userExerciseService.getAllFromUser(userId, Sort.Direction.DESC);
-
-        assertSortedResult(result, 2, 2, 1);
-        verify(userExerciseRepository).findAllByUserIdWithMedia(eq(userId), any(Sort.class));
-    }
-
-    @Test
-    public void getAllFromUser_ShouldHandleNullDates() {
-        int userId = 1;
-
-        Exercise exercise1 = new Exercise();
-        exercise1.setId(1);
-        exercise1.setMediaList(new ArrayList<>());
-
-        Exercise exercise2 = new Exercise();
-        exercise2.setId(2);
-        exercise2.setMediaList(new ArrayList<>());
-
-        Exercise exercise3 = new Exercise();
-        exercise3.setId(3);
-        exercise3.setMediaList(new ArrayList<>());
-
-        UserExercise ue1 = UserExercise.of(new User(), exercise1);
-        ue1.setCreatedAt(LocalDateTime.of(2024, 1, 1, 10, 0));
-        UserExercise ue2 = UserExercise.of(new User(), exercise2);
-        ue2.setCreatedAt(null);
-        UserExercise ue3 = UserExercise.of(new User(), exercise3);
-        ue3.setCreatedAt(LocalDateTime.of(2024, 1, 2, 10, 0));
-
-        ExerciseSummaryDto dto1 = createExerciseSummaryDto(1, LocalDateTime.of(2024, 1, 1, 10, 0));
-        ExerciseSummaryDto dto2 = createExerciseSummaryDto(2, null);
-        ExerciseSummaryDto dto3 = createExerciseSummaryDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
-
-        when(userExerciseRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(new ArrayList<>(List.of(ue3, ue1, ue2)));
-        when(exerciseMapper.toSummaryDto(exercise1)).thenReturn(dto1);
-        when(exerciseMapper.toSummaryDto(exercise2)).thenReturn(dto2);
-        when(exerciseMapper.toSummaryDto(exercise3)).thenReturn(dto3);
-
-        List<BaseUserEntity> result = userExerciseService.getAllFromUser(userId, Sort.Direction.DESC);
-
-        assertSortedResult(result, 3, 3, 1, 2);
-        verify(userExerciseRepository).findAllByUserIdWithMedia(eq(userId), any(Sort.class));
-    }
-
-    @Test
-    public void getAllFromUser_ShouldPopulateImageUrlsAfterSorting() {
-        int userId = 1;
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        Exercise exercise1 = new Exercise();
-        exercise1.setId(1);
-        exercise1.setMediaList(new ArrayList<>());
-        Media media1 = new Media();
-        media1.setImageName("image1.jpg");
-        exercise1.getMediaList().add(media1);
-
-        Exercise exercise2 = new Exercise();
-        exercise2.setId(2);
-        exercise2.setMediaList(new ArrayList<>());
-        Media media2 = new Media();
-        media2.setImageName("image2.jpg");
-        exercise2.getMediaList().add(media2);
-
-        UserExercise ue1 = UserExercise.of(new User(), exercise1);
-        ue1.setCreatedAt(older);
-        UserExercise ue2 = UserExercise.of(new User(), exercise2);
-        ue2.setCreatedAt(newer);
-
-        ExerciseSummaryDto dto1 = createExerciseSummaryDto(1, older);
-        dto1.setImageName("image1.jpg");
-        ExerciseSummaryDto dto2 = createExerciseSummaryDto(2, newer);
-        dto2.setImageName("image2.jpg");
-
-        when(userExerciseRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(new ArrayList<>(List.of(ue2, ue1)));
-        when(exerciseMapper.toSummaryDto(exercise1)).thenReturn(dto1);
-        when(exerciseMapper.toSummaryDto(exercise2)).thenReturn(dto2);
-
-        List<BaseUserEntity> result = userExerciseService.getAllFromUser(userId, Sort.Direction.DESC);
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        // Image URL population is handled by imagePopulationService internally
-        verify(exerciseMapper).toSummaryDto(exercise1);
-        verify(exerciseMapper).toSummaryDto(exercise2);
-    }
-
-    private ExerciseSummaryDto createExerciseSummaryDto(int id, LocalDateTime interactionDate) {
-        ExerciseSummaryDto dto = new ExerciseSummaryDto();
-        dto.setId(id);
-        dto.setUserExerciseInteractionCreatedAt(interactionDate);
-        return dto;
-    }
-
-    private void assertSortedResult(List<BaseUserEntity> result, int expectedSize, Integer... expectedIds) {
-        assertNotNull(result);
-        assertEquals(expectedSize, result.size());
-        for (int i = 0; i < expectedIds.length; i++) {
-            assertEquals(expectedIds[i], ((ExerciseSummaryDto) result.get(i)).getId());
-        }
     }
 }

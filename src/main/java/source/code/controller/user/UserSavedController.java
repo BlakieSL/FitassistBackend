@@ -1,6 +1,9 @@
 package source.code.controller.user;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +15,6 @@ import source.code.service.declaration.selector.SavedSelectorService;
 import source.code.service.declaration.user.SavedService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(path = "/api/user-saved")
 public class UserSavedController {
@@ -24,15 +25,14 @@ public class UserSavedController {
     }
 
     @GetMapping("/item-type/{itemType}/type/{type}/user/{userId}")
-    public ResponseEntity<List<BaseUserEntity>> getAllFromUser(
+    public ResponseEntity<Page<BaseUserEntity>> getAllFromUser(
             @PathVariable SavedEntityType itemType,
             @PathVariable TypeOfInteraction type,
             @PathVariable int userId,
-            @RequestParam(defaultValue = "DESC") Sort.Direction sort
+            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-
         SavedService savedService = savedSelectorService.getService(itemType);
-        List<BaseUserEntity> dto = savedService.getAllFromUser(userId, type, sort);
+        Page<BaseUserEntity> dto = savedService.getAllFromUser(userId, type, pageable);
         return ResponseEntity.ok(dto);
     }
 
@@ -69,14 +69,14 @@ public class UserSavedController {
     }
 
     @GetMapping("/item-type/{itemType}/user/{userId}")
-    public ResponseEntity<List<BaseUserEntity>> getAllFromUserWithoutType(
+    public ResponseEntity<Page<BaseUserEntity>> getAllFromUserWithoutType(
             @PathVariable SavedEntityType itemType,
             @PathVariable("userId") int userId,
-            @RequestParam(defaultValue = "DESC") Sort.Direction sort
+            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         SavedServiceWithoutType savedServiceWithoutType = savedSelectorService
                 .getServiceWithoutType(itemType);
-        List<BaseUserEntity> dto = savedServiceWithoutType.getAllFromUser(userId, sort);
+        Page<BaseUserEntity> dto = savedServiceWithoutType.getAllFromUser(userId, pageable);
         return ResponseEntity.ok(dto);
     }
 

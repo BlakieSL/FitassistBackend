@@ -43,7 +43,7 @@ public abstract class CommentMapper {
     @Mapping(target = "user", expression = "java(userIdToUser(userId))")
     @Mapping(target = "parentComment", source = "parentCommentId", qualifiedByName = "parentCommentIdToParentComment")
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "dateCreated", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "replies", ignore = true)
     @Mapping(target = "userCommentLikes", ignore = true)
     public abstract Comment toEntity(CommentCreateDto createDto, @Context int userId);
@@ -54,7 +54,7 @@ public abstract class CommentMapper {
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "parentComment", ignore = true)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "dateCreated", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "replies", ignore = true)
     @Mapping(target = "userCommentLikes", ignore = true)
     public abstract void update(@MappingTarget Comment comment, CommentUpdateDto updateDto);

@@ -1,14 +1,13 @@
 package source.code.service.declaration.user;
 
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.helper.BaseUserEntity;
-
-import java.util.List;
 
 public interface SavedServiceWithoutType {
     void saveToUser(int entityId);
     void deleteFromUser(int entityId);
-    List<BaseUserEntity> getAllFromUser(int userId, Sort.Direction sortDirection);
+    Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable);
     LikesAndSavesResponseDto calculateLikesAndSaves(int entityId);
 }

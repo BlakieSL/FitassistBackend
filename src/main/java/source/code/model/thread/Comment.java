@@ -38,8 +38,8 @@ public class Comment {
 
     @NotNull
     @PastOrPresent
-    @Column(nullable = false)
-    private LocalDateTime dateCreated;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     @NotNull
     @ManyToOne
@@ -68,7 +68,7 @@ public class Comment {
 
     @PrePersist
     public void prePersist() {
-        this.dateCreated = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 
     public static Comment of(Integer id, User user) {
