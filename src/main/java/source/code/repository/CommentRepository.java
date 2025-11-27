@@ -1,5 +1,7 @@
 package source.code.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -62,7 +64,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
       SELECT new source.code.dto.response.comment.CommentSummaryDto(
              c.id,
              c.text,
-             c.dateCreated,
+             c.createdAt,
              c.user.username,
              c.user.id,
              (SELECT m.imageName FROM Media m
@@ -83,7 +85,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
       SELECT new source.code.dto.response.comment.CommentSummaryDto(
              c.id,
              c.text,
-             c.dateCreated,
+             c.createdAt,
              u.username,
              u.id,
              (SELECT m.imageName FROM Media m
@@ -101,10 +103,43 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
       LEFT JOIN UserComment uc ON uc.comment.id = c.id AND uc.user.id = :userId AND (:type IS NULL OR uc.type = :type)
       WHERE (:fetchByInteraction = false AND c.user.id = :userId) OR
             (:fetchByInteraction = true AND uc.id IS NOT NULL)
-      ORDER BY CASE WHEN :fetchByInteraction = true THEN uc.createdAt ELSE c.dateCreated END DESC
+      ORDER BY CASE WHEN :fetchByInteraction = true THEN uc.createdAt ELSE c.createdAt END DESC
     """)
     List<CommentSummaryDto> findCommentSummaryUnified(@Param("userId") int userId,
                                                        @Param("type") TypeOfInteraction type,
                                                        @Param("fetchByInteraction") boolean fetchByInteraction);
 
+    @Query(value = """
+      SELECT new source.code.dto.response.comment.CommentSummaryDto(
+             c.id,
+             c.text,
+             c.createdAt,
+             u.username,
+             u.id,
+             (SELECT m.imageName FROM Media m
+              WHERE m.parentId = u.id
+              AND m.parentType = 'USER'
+              ORDER BY m.id ASC
+              LIMIT 1),
+             null,
+             CAST((SELECT COUNT(uc2) FROM UserComment uc2 WHERE uc2.comment.id = c.id AND uc2.type = 'LIKE') -
+                  (SELECT COUNT(uc3) FROM UserComment uc3 WHERE uc3.comment.id = c.id AND uc3.type = 'DISLIKE') AS int),
+             CAST((SELECT COUNT(cr) FROM Comment cr WHERE cr.parentComment.id = c.id) AS int),
+             CASE WHEN :fetchByInteraction = true THEN uc.createdAt ELSE null END)
+      FROM Comment c
+      JOIN c.user u
+      LEFT JOIN UserComment uc ON uc.comment.id = c.id AND uc.user.id = :userId AND (:type IS NULL OR uc.type = :type)
+      WHERE (:fetchByInteraction = false AND c.user.id = :userId) OR
+            (:fetchByInteraction = true AND uc.id IS NOT NULL)
+    """, countQuery = """
+      SELECT COUNT(c)
+      FROM Comment c
+      LEFT JOIN UserComment uc ON uc.comment.id = c.id AND uc.user.id = :userId AND (:type IS NULL OR uc.type = :type)
+      WHERE (:fetchByInteraction = false AND c.user.id = :userId) OR
+            (:fetchByInteraction = true AND uc.id IS NOT NULL)
+    """)
+    Page<CommentSummaryDto> findCommentSummaryUnified(@Param("userId") int userId,
+                                                       @Param("type") TypeOfInteraction type,
+                                                       @Param("fetchByInteraction") boolean fetchByInteraction,
+                                                       Pageable pageable);
 }

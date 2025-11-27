@@ -17,7 +17,7 @@ import java.util.List;
 public class CommentResponseDto implements Serializable {
     private Integer id;
     private String text;
-    private LocalDateTime dateCreated;
+    private LocalDateTime createdAt;
     private Integer threadId;
     private Integer userId;
     private String authorUsername;

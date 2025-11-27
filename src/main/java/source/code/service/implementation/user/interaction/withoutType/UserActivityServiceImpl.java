@@ -1,5 +1,7 @@
 package source.code.service.implementation.user.interaction.withoutType;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -63,21 +65,16 @@ public class UserActivityServiceImpl
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId, Sort.Direction sortDirection) {
+    public Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable) {
         return ((UserActivityRepository) userEntityRepository)
-                .findAllByUserIdWithMedia(userId, Sort.by(sortDirection, "createdAt"))
-                .stream()
+                .findAllByUserIdWithMedia(userId, pageable)
                 .map(ua -> {
                     ActivitySummaryDto dto = activityMapper.toSummaryDto(ua.getActivity());
                     dto.setUserActivityInteractionCreatedAt(ua.getCreatedAt());
-                    imagePopulationService.populateFirstImageFromMediaList(dto,
-                            ua.getActivity().getMediaList(),
-                            Media::getImageName,
-                            ActivitySummaryDto::setImageName,
-                            ActivitySummaryDto::setFirstImageUrl);
-                    return (BaseUserEntity) dto;
-                })
-                .toList();
+                    imagePopulationService.populateFirstImageFromMediaList(dto, ua.getActivity().getMediaList(),
+                            Media::getImageName, ActivitySummaryDto::setImageName, ActivitySummaryDto::setFirstImageUrl);
+                    return dto;
+                });
     }
 
     @Override

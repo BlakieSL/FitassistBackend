@@ -167,7 +167,7 @@ public class UserCreatedControllerTest {
 
     @UserCreatedSql
     @Test
-    @DisplayName("GET - /api/user-created/comments/user/{userId}?sort=DESC - Should return comments sorted by dateCreated DESC")
+    @DisplayName("GET - /api/user-created/comments/user/{userId}?sort=DESC - Should return comments sorted by createdAt DESC")
     void getUserCommentsSortedDesc() throws Exception {
         Utils.setUserContext(1);
         mockMvc.perform(get("/api/user-created/comments/user/1")
@@ -182,7 +182,7 @@ public class UserCreatedControllerTest {
 
     @UserCreatedSql
     @Test
-    @DisplayName("GET - /api/user-created/comments/user/{userId}?sort=ASC - Should return comments sorted by dateCreated ASC")
+    @DisplayName("GET - /api/user-created/comments/user/{userId}?sort=ASC - Should return comments sorted by createdAt ASC")
     void getUserCommentsSortedAsc() throws Exception {
         Utils.setUserContext(1);
         mockMvc.perform(get("/api/user-created/comments/user/1")
@@ -197,7 +197,7 @@ public class UserCreatedControllerTest {
 
     @UserCreatedSql
     @Test
-    @DisplayName("GET - /api/user-created/threads/user/{userId}?sort=DESC - Should return threads sorted by dateCreated DESC")
+    @DisplayName("GET - /api/user-created/threads/user/{userId}?sort=DESC - Should return threads sorted by createdAt DESC")
     void getUserThreadsSortedDesc() throws Exception {
         Utils.setUserContext(1);
         mockMvc.perform(get("/api/user-created/threads/user/1")
@@ -211,7 +211,7 @@ public class UserCreatedControllerTest {
 
     @UserCreatedSql
     @Test
-    @DisplayName("GET - /api/user-created/threads/user/{userId}?sort=ASC - Should return threads sorted by dateCreated ASC")
+    @DisplayName("GET - /api/user-created/threads/user/{userId}?sort=ASC - Should return threads sorted by createdAt ASC")
     void getUserThreadsSortedAsc() throws Exception {
         Utils.setUserContext(1);
         mockMvc.perform(get("/api/user-created/threads/user/1")

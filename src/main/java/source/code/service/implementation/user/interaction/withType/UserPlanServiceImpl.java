@@ -1,6 +1,7 @@
 package source.code.service.implementation.user.interaction.withType;
 
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
@@ -17,7 +18,6 @@ import source.code.repository.PlanRepository;
 import source.code.repository.UserPlanRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.ImageUrlPopulationService;
-import source.code.service.declaration.helpers.SortingService;
 import source.code.service.declaration.user.SavedService;
 
 import java.util.List;
@@ -28,33 +28,30 @@ public class UserPlanServiceImpl
         implements SavedService {
 
     private final ImageUrlPopulationService imagePopulationService;
-    private final SortingService sortingService;
 
     public UserPlanServiceImpl(UserPlanRepository userPlanRepository,
                                PlanRepository planRepository,
                                UserRepository userRepository,
                                PlanMapper planMapper,
-                               ImageUrlPopulationService imagePopulationService,
-                               SortingService sortingService) {
+                               ImageUrlPopulationService imagePopulationService) {
         super(userRepository,
                 planRepository,
                 userPlanRepository,
                 planMapper::toResponseDto,
                 Plan.class);
         this.imagePopulationService = imagePopulationService;
-        this.sortingService = sortingService;
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Sort.Direction sortDirection) {
-        return ((PlanRepository) entityRepository).findPlanSummaryUnified(userId, type, true, null)
-                .stream()
-                .peek(dto -> imagePopulationService.populateAuthorAndEntityImages(dto,
-                        PlanSummaryDto::getAuthorImageName, PlanSummaryDto::setAuthorImageUrl,
-                        PlanSummaryDto::getFirstImageName, PlanSummaryDto::setFirstImageUrl))
-                .sorted(sortingService.comparator(PlanSummaryDto::getInteractedWithAt, sortDirection))
-                .map(dto -> (BaseUserEntity) dto)
-                .toList();
+    public Page<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Pageable pageable) {
+        return ((PlanRepository) entityRepository)
+                .findPlanSummaryUnified(userId, type, true, null, pageable)
+                .map(dto -> {
+                    imagePopulationService.populateAuthorAndEntityImages(dto, PlanSummaryDto::getAuthorImageName,
+                            PlanSummaryDto::setAuthorImageUrl, PlanSummaryDto::getFirstImageName,
+                            PlanSummaryDto::setFirstImageUrl);
+                    return dto;
+                });
     }
 
     @Override

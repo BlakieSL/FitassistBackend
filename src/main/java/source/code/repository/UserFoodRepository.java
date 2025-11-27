@@ -1,5 +1,7 @@
 package source.code.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,6 +25,18 @@ public interface UserFoodRepository extends JpaRepository<UserFood, Integer> {
            WHERE uf.user.id = :userId
            """)
     List<UserFood> findAllByUserIdWithMedia(@Param("userId") int userId, Sort sort);
+
+    @Query(value = """
+           SELECT uf FROM UserFood uf
+           JOIN FETCH uf.food f
+           JOIN FETCH f.foodCategory
+           LEFT JOIN FETCH f.mediaList
+           WHERE uf.user.id = :userId
+           """, countQuery = """
+           SELECT COUNT(uf) FROM UserFood uf
+           WHERE uf.user.id = :userId
+           """)
+    Page<UserFood> findAllByUserIdWithMedia(@Param("userId") int userId, Pageable pageable);
 
     long countByFoodId(int foodId);
 

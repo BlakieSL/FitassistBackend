@@ -23,7 +23,7 @@ public class ActivitySpecification implements Specification<Activity> {
 
     @Override
     public Predicate toPredicate(@NonNull Root<Activity> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
-        dependencies.getFetchInitializer().initializeFetches(root, ACTIVITY_CATEGORY_FIELD);
+        dependencies.getFetchInitializer().initializeFetches(root, query, ACTIVITY_CATEGORY_FIELD);
         ActivityField field = dependencies.getFieldResolver().resolveField(criteria, ActivityField.class);
 
         return buildPredicateForField(builder, criteria, root, field, query);

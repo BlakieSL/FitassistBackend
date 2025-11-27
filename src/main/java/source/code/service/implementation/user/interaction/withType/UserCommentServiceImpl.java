@@ -1,6 +1,7 @@
 package source.code.service.implementation.user.interaction.withType;
 
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.comment.CommentResponseDto;
@@ -17,7 +18,6 @@ import source.code.repository.CommentRepository;
 import source.code.repository.UserCommentRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.ImageUrlPopulationService;
-import source.code.service.declaration.helpers.SortingService;
 import source.code.service.declaration.user.SavedService;
 
 import java.util.List;
@@ -28,28 +28,25 @@ public class UserCommentServiceImpl
         implements SavedService {
 
     private final ImageUrlPopulationService imagePopulationService;
-    private final SortingService sortingService;
 
     public UserCommentServiceImpl(UserRepository userRepository,
                                   JpaRepository<Comment, Integer> entityRepository,
                                   JpaRepository<UserComment, Integer> userEntityRepository,
                                   CommentMapper mapper,
-                                  ImageUrlPopulationService imagePopulationService,
-                                  SortingService sortingService) {
+                                  ImageUrlPopulationService imagePopulationService) {
         super(userRepository, entityRepository, userEntityRepository, mapper::toResponseDto, Comment.class);
         this.imagePopulationService = imagePopulationService;
-        this.sortingService = sortingService;
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Sort.Direction sortDirection) {
-        return ((CommentRepository) entityRepository).findCommentSummaryUnified(userId, type, true)
-                .stream()
-                .peek(dto -> imagePopulationService.populateAuthorImage(dto,
-                                CommentSummaryDto::getAuthorImageName, CommentSummaryDto::setAuthorImageUrl))
-                .sorted(sortingService.comparator(CommentSummaryDto::getUserCommentInteractionCreatedAt, sortDirection))
-                .map(dto -> (BaseUserEntity) dto)
-                .toList();
+    public Page<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Pageable pageable) {
+        return ((CommentRepository) entityRepository)
+                .findCommentSummaryUnified(userId, type, true, pageable)
+                .map(dto -> {
+                    imagePopulationService.populateAuthorImage(dto, CommentSummaryDto::getAuthorImageName,
+                            CommentSummaryDto::setAuthorImageUrl);
+                    return dto;
+                });
     }
 
     @Override

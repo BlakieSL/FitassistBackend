@@ -1,7 +1,9 @@
 package source.code.service.implementation.user.interaction.withType;
 
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
@@ -18,7 +20,6 @@ import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.RecipePopulationService;
-import source.code.service.declaration.helpers.SortingService;
 import source.code.service.declaration.user.SavedService;
 
 import java.util.List;
@@ -30,14 +31,12 @@ public class UserRecipeServiceImpl
 
     private final RecipeMapper recipeMapper;
     private final RecipePopulationService recipePopulationService;
-    private final SortingService sortingService;
 
     public UserRecipeServiceImpl(UserRecipeRepository userRecipeRepository,
                                  RecipeRepository recipeRepository,
                                  UserRepository userRepository,
                                  RecipeMapper recipeMapper,
-                                 RecipePopulationService recipePopulationService,
-                                 SortingService sortingService) {
+                                 RecipePopulationService recipePopulationService) {
         super(userRepository,
                 recipeRepository,
                 userRecipeRepository,
@@ -45,7 +44,6 @@ public class UserRecipeServiceImpl
                 Recipe.class);
         this.recipeMapper = recipeMapper;
         this.recipePopulationService = recipePopulationService;
-        this.sortingService = sortingService;
     }
 
     @Override
@@ -61,20 +59,19 @@ public class UserRecipeServiceImpl
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Sort.Direction sortDirection) {
-        var summaries = ((RecipeRepository) entityRepository)
-                .findInteractedByUserWithDetails(userId, type)
-                .stream()
+    public Page<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Pageable pageable) {
+        Page<Recipe> recipePage = ((RecipeRepository) entityRepository)
+                .findInteractedByUserWithDetails(userId, type, pageable);
+
+        List<RecipeSummaryDto> summaries = recipePage.getContent().stream()
                 .map(recipeMapper::toSummaryDto)
                 .toList();
 
         recipePopulationService.populate(summaries);
         recipePopulationService.populateInteractionDates(summaries, userId, type);
 
-        return summaries.stream()
-                .sorted(sortingService.comparator(RecipeSummaryDto::getUserRecipeInteractionCreatedAt, sortDirection))
-                .map(dto -> (BaseUserEntity) dto)
-                .toList();
+        return new PageImpl<>(summaries.stream().map(dto -> (BaseUserEntity) dto).toList(),
+                pageable, recipePage.getTotalElements());
     }
 
     @Override

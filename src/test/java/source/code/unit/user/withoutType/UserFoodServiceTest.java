@@ -8,6 +8,10 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import source.code.dto.response.food.FoodSummaryDto;
 import source.code.exception.NotUniqueRecordException;
@@ -167,8 +171,9 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    public void getAllFromUser_ShouldReturnAllFoodsByType() {
+    public void getAllFromUser_ShouldReturnPagedFoods() {
         int userId = 1;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         Food food1 = new Food();
         food1.setId(1);
@@ -194,26 +199,33 @@ public class UserFoodServiceTest {
         dto2.setId(2);
         dto2.setImageName("food2.jpg");
 
-        when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(List.of(uf1, uf2));
+        Page<UserFood> userFoodPage = new PageImpl<>(List.of(uf1, uf2), pageable, 2);
+
+        when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), eq(pageable)))
+                .thenReturn(userFoodPage);
         when(foodMapper.toSummaryDto(food1)).thenReturn(dto1);
         when(foodMapper.toSummaryDto(food2)).thenReturn(dto2);
 
-        var result = userFoodService.getAllFromUser(userId, Sort.Direction.DESC);
+        Page<BaseUserEntity> result = userFoodService.getAllFromUser(userId, pageable);
 
-        assertEquals(2, result.size());
+        assertEquals(2, result.getTotalElements());
+        assertEquals(2, result.getContent().size());
         verify(foodMapper, times(2)).toSummaryDto(any(Food.class));
     }
 
     @Test
-    public void getAllFromUser_ShouldReturnEmptyListIfNoFoods() {
+    public void getAllFromUser_ShouldReturnEmptyPageIfNoFoods() {
         int userId = 1;
-        when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(List.of());
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<UserFood> emptyPage = new PageImpl<>(List.of(), pageable, 0);
 
-        var result = userFoodService.getAllFromUser(userId, Sort.Direction.DESC);
+        when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), eq(pageable)))
+                .thenReturn(emptyPage);
+
+        Page<BaseUserEntity> result = userFoodService.getAllFromUser(userId, pageable);
 
         assertTrue(result.isEmpty());
+        assertEquals(0, result.getTotalElements());
     }
 
     @Test
@@ -251,148 +263,9 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    public void getAllFromUser_ShouldSortByInteractionDateDesc() {
+    public void getAllFromUser_ShouldPopulateImageUrls() {
         int userId = 1;
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        Food food1 = new Food();
-        food1.setId(1);
-        food1.setMediaList(new ArrayList<>());
-
-        Food food2 = new Food();
-        food2.setId(2);
-        food2.setMediaList(new ArrayList<>());
-
-        UserFood uf1 = UserFood.of(new User(), food1);
-        uf1.setCreatedAt(older);
-        UserFood uf2 = UserFood.of(new User(), food2);
-        uf2.setCreatedAt(newer);
-
-        FoodSummaryDto dto1 = createFoodResponseDto(1, older);
-        FoodSummaryDto dto2 = createFoodResponseDto(2, newer);
-
-        when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(new ArrayList<>(List.of(uf2, uf1)));
-        when(foodMapper.toSummaryDto(food1)).thenReturn(dto1);
-        when(foodMapper.toSummaryDto(food2)).thenReturn(dto2);
-
-        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, Sort.Direction.DESC);
-
-        assertSortedResult(result, 2, 2, 1);
-        verify(userFoodRepository).findAllByUserIdWithMedia(eq(userId), any(Sort.class));
-    }
-
-    @Test
-    public void getAllFromUser_ShouldSortByInteractionDateAsc() {
-        int userId = 1;
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        Food food1 = new Food();
-        food1.setId(1);
-        food1.setMediaList(new ArrayList<>());
-
-        Food food2 = new Food();
-        food2.setId(2);
-        food2.setMediaList(new ArrayList<>());
-
-        UserFood uf1 = UserFood.of(new User(), food1);
-        uf1.setCreatedAt(older);
-        UserFood uf2 = UserFood.of(new User(), food2);
-        uf2.setCreatedAt(newer);
-
-        FoodSummaryDto dto1 = createFoodResponseDto(1, older);
-        FoodSummaryDto dto2 = createFoodResponseDto(2, newer);
-
-        when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(new ArrayList<>(List.of(uf1, uf2)));
-        when(foodMapper.toSummaryDto(food1)).thenReturn(dto1);
-        when(foodMapper.toSummaryDto(food2)).thenReturn(dto2);
-
-        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, Sort.Direction.ASC);
-
-        assertSortedResult(result, 2, 1, 2);
-        verify(userFoodRepository).findAllByUserIdWithMedia(eq(userId), any(Sort.class));
-    }
-
-    @Test
-    public void getAllFromUser_DefaultShouldSortDesc() {
-        int userId = 1;
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        Food food1 = new Food();
-        food1.setId(1);
-        food1.setMediaList(new ArrayList<>());
-
-        Food food2 = new Food();
-        food2.setId(2);
-        food2.setMediaList(new ArrayList<>());
-
-        UserFood uf1 = UserFood.of(new User(), food1);
-        uf1.setCreatedAt(older);
-        UserFood uf2 = UserFood.of(new User(), food2);
-        uf2.setCreatedAt(newer);
-
-        FoodSummaryDto dto1 = createFoodResponseDto(1, older);
-        FoodSummaryDto dto2 = createFoodResponseDto(2, newer);
-
-        when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(new ArrayList<>(List.of(uf2, uf1)));
-        when(foodMapper.toSummaryDto(food1)).thenReturn(dto1);
-        when(foodMapper.toSummaryDto(food2)).thenReturn(dto2);
-
-        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, Sort.Direction.DESC);
-
-        assertSortedResult(result, 2, 2, 1);
-        verify(userFoodRepository).findAllByUserIdWithMedia(eq(userId), any(Sort.class));
-    }
-
-    @Test
-    public void getAllFromUser_ShouldHandleNullDates() {
-        int userId = 1;
-
-        Food food1 = new Food();
-        food1.setId(1);
-        food1.setMediaList(new ArrayList<>());
-
-        Food food2 = new Food();
-        food2.setId(2);
-        food2.setMediaList(new ArrayList<>());
-
-        Food food3 = new Food();
-        food3.setId(3);
-        food3.setMediaList(new ArrayList<>());
-
-        UserFood uf1 = UserFood.of(new User(), food1);
-        uf1.setCreatedAt(LocalDateTime.of(2024, 1, 1, 10, 0));
-        UserFood uf2 = UserFood.of(new User(), food2);
-        uf2.setCreatedAt(null);
-        UserFood uf3 = UserFood.of(new User(), food3);
-        uf3.setCreatedAt(LocalDateTime.of(2024, 1, 2, 10, 0));
-
-        FoodSummaryDto dto1 = createFoodResponseDto(1, LocalDateTime.of(2024, 1, 1, 10, 0));
-        FoodSummaryDto dto2 = createFoodResponseDto(2, null);
-        FoodSummaryDto dto3 = createFoodResponseDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
-
-        when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(new ArrayList<>(List.of(uf3, uf1, uf2)));
-        when(foodMapper.toSummaryDto(food1)).thenReturn(dto1);
-        when(foodMapper.toSummaryDto(food2)).thenReturn(dto2);
-        when(foodMapper.toSummaryDto(food3)).thenReturn(dto3);
-
-        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, Sort.Direction.DESC);
-
-        assertSortedResult(result, 3, 3, 1, 2);
-        verify(userFoodRepository).findAllByUserIdWithMedia(eq(userId), any(Sort.class));
-    }
-
-    @Test
-    public void getAllFromUser_ShouldPopulateImageUrlsAfterSorting() {
-        int userId = 1;
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+        Pageable pageable = PageRequest.of(0, 10);
 
         Food food1 = new Food();
         food1.setId(1);
@@ -409,41 +282,27 @@ public class UserFoodServiceTest {
         food2.getMediaList().add(media2);
 
         UserFood uf1 = UserFood.of(new User(), food1);
-        uf1.setCreatedAt(older);
         UserFood uf2 = UserFood.of(new User(), food2);
-        uf2.setCreatedAt(newer);
 
-        FoodSummaryDto dto1 = createFoodResponseDto(1, older);
+        FoodSummaryDto dto1 = new FoodSummaryDto();
+        dto1.setId(1);
         dto1.setImageName("image1.jpg");
-        FoodSummaryDto dto2 = createFoodResponseDto(2, newer);
+        FoodSummaryDto dto2 = new FoodSummaryDto();
+        dto2.setId(2);
         dto2.setImageName("image2.jpg");
 
-        when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(new ArrayList<>(List.of(uf2, uf1)));
+        Page<UserFood> userFoodPage = new PageImpl<>(List.of(uf1, uf2), pageable, 2);
+
+        when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), eq(pageable)))
+                .thenReturn(userFoodPage);
         when(foodMapper.toSummaryDto(food1)).thenReturn(dto1);
         when(foodMapper.toSummaryDto(food2)).thenReturn(dto2);
 
-        List<BaseUserEntity> result = userFoodService.getAllFromUser(userId, Sort.Direction.DESC);
+        Page<BaseUserEntity> result = userFoodService.getAllFromUser(userId, pageable);
 
         assertNotNull(result);
-        assertEquals(2, result.size());
-        // Image URL population is handled by imagePopulationService internally
+        assertEquals(2, result.getContent().size());
         verify(foodMapper).toSummaryDto(food1);
         verify(foodMapper).toSummaryDto(food2);
-    }
-
-    private FoodSummaryDto createFoodResponseDto(int id, LocalDateTime interactionDate) {
-        FoodSummaryDto dto = new FoodSummaryDto();
-        dto.setId(id);
-        dto.setUserFoodInteractionCreatedAt(interactionDate);
-        return dto;
-    }
-
-    private void assertSortedResult(List<BaseUserEntity> result, int expectedSize, Integer... expectedIds) {
-        assertNotNull(result);
-        assertEquals(expectedSize, result.size());
-        for (int i = 0; i < expectedIds.length; i++) {
-            assertEquals(expectedIds[i], ((FoodSummaryDto) result.get(i)).getId());
-        }
     }
 }

@@ -8,6 +8,10 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.exception.NotUniqueRecordException;
@@ -24,7 +28,6 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.ImageUrlPopulationService;
 import source.code.service.implementation.user.interaction.withoutType.UserActivityServiceImpl;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -165,8 +168,9 @@ public class UserActivityServiceTest {
     }
 
     @Test
-    public void getAllFromUser_ShouldReturnAllActivitiesByType() {
+    public void getAllFromUser_ShouldReturnPagedActivities() {
         int userId = 1;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         Activity activity1 = new Activity();
         activity1.setId(1);
@@ -184,27 +188,33 @@ public class UserActivityServiceTest {
         ActivitySummaryDto dto2 = new ActivitySummaryDto();
         dto2.setId(2);
 
-        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(List.of(ua1, ua2));
+        Page<UserActivity> userActivityPage = new PageImpl<>(List.of(ua1, ua2), pageable, 2);
+
+        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), eq(pageable)))
+                .thenReturn(userActivityPage);
         when(activityMapper.toSummaryDto(activity1)).thenReturn(dto1);
         when(activityMapper.toSummaryDto(activity2)).thenReturn(dto2);
 
-        var result = userActivityService.getAllFromUser(userId, Sort.Direction.DESC);
+        Page<BaseUserEntity> result = userActivityService.getAllFromUser(userId, pageable);
 
-        assertEquals(2, result.size());
+        assertEquals(2, result.getTotalElements());
+        assertEquals(2, result.getContent().size());
         verify(activityMapper, times(2)).toSummaryDto(any(Activity.class));
     }
 
     @Test
-    public void getAllFromUser_ShouldReturnEmptyListIfNoActivities() {
+    public void getAllFromUser_ShouldReturnEmptyPageIfNoActivities() {
         int userId = 1;
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<UserActivity> emptyPage = new PageImpl<>(List.of(), pageable, 0);
 
-        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(List.of());
+        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), eq(pageable)))
+                .thenReturn(emptyPage);
 
-        var result = userActivityService.getAllFromUser(userId, Sort.Direction.DESC);
+        Page<BaseUserEntity> result = userActivityService.getAllFromUser(userId, pageable);
 
         assertTrue(result.isEmpty());
+        assertEquals(0, result.getTotalElements());
     }
 
     @Test
@@ -239,195 +249,5 @@ public class UserActivityServiceTest {
                 () -> userActivityService.calculateLikesAndSaves(activityId));
 
         verify(userActivityRepository, never()).countByActivityId(anyInt());
-    }
-
-    @Test
-    public void getAllFromUser_ShouldSortByInteractionDateDesc() {
-        int userId = 1;
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        Activity activity1 = new Activity();
-        activity1.setId(1);
-        activity1.setMediaList(new ArrayList<>());
-
-        Activity activity2 = new Activity();
-        activity2.setId(2);
-        activity2.setMediaList(new ArrayList<>());
-
-        UserActivity ua1 = UserActivity.of(new User(), activity1);
-        ua1.setCreatedAt(older);
-        UserActivity ua2 = UserActivity.of(new User(), activity2);
-        ua2.setCreatedAt(newer);
-
-        ActivitySummaryDto dto1 = createActivityResponseDto(1, older);
-        ActivitySummaryDto dto2 = createActivityResponseDto(2, newer);
-
-        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(new ArrayList<>(List.of(ua2, ua1)));
-        when(activityMapper.toSummaryDto(activity1)).thenReturn(dto1);
-        when(activityMapper.toSummaryDto(activity2)).thenReturn(dto2);
-
-        List<BaseUserEntity> result = userActivityService.getAllFromUser(userId, Sort.Direction.DESC);
-
-        assertSortedResult(result, 2, 2, 1);
-    }
-
-    @Test
-    public void getAllFromUser_ShouldSortByInteractionDateAsc() {
-        int userId = 1;
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        Activity activity1 = new Activity();
-        activity1.setId(1);
-        activity1.setMediaList(new ArrayList<>());
-
-        Activity activity2 = new Activity();
-        activity2.setId(2);
-        activity2.setMediaList(new ArrayList<>());
-
-        UserActivity ua1 = UserActivity.of(new User(), activity1);
-        ua1.setCreatedAt(older);
-        UserActivity ua2 = UserActivity.of(new User(), activity2);
-        ua2.setCreatedAt(newer);
-
-        ActivitySummaryDto dto1 = createActivityResponseDto(1, older);
-        ActivitySummaryDto dto2 = createActivityResponseDto(2, newer);
-
-        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(new ArrayList<>(List.of(ua1, ua2)));
-        when(activityMapper.toSummaryDto(activity1)).thenReturn(dto1);
-        when(activityMapper.toSummaryDto(activity2)).thenReturn(dto2);
-
-        List<BaseUserEntity> result = userActivityService.getAllFromUser(userId, Sort.Direction.ASC);
-
-        assertSortedResult(result, 2, 1, 2);
-    }
-
-    @Test
-    public void getAllFromUser_DefaultShouldSortDesc() {
-        int userId = 1;
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        Activity activity1 = new Activity();
-        activity1.setId(1);
-        activity1.setMediaList(new ArrayList<>());
-
-        Activity activity2 = new Activity();
-        activity2.setId(2);
-        activity2.setMediaList(new ArrayList<>());
-
-        UserActivity ua1 = UserActivity.of(new User(), activity1);
-        ua1.setCreatedAt(older);
-        UserActivity ua2 = UserActivity.of(new User(), activity2);
-        ua2.setCreatedAt(newer);
-
-        ActivitySummaryDto dto1 = createActivityResponseDto(1, older);
-        ActivitySummaryDto dto2 = createActivityResponseDto(2, newer);
-
-        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(new ArrayList<>(List.of(ua2, ua1)));
-        when(activityMapper.toSummaryDto(activity1)).thenReturn(dto1);
-        when(activityMapper.toSummaryDto(activity2)).thenReturn(dto2);
-
-        List<BaseUserEntity> result = userActivityService.getAllFromUser(userId, Sort.Direction.DESC);
-
-        assertSortedResult(result, 2, 2, 1);
-    }
-
-    @Test
-    public void getAllFromUser_ShouldHandleNullDates() {
-        int userId = 1;
-
-        Activity activity1 = new Activity();
-        activity1.setId(1);
-        activity1.setMediaList(new ArrayList<>());
-
-        Activity activity2 = new Activity();
-        activity2.setId(2);
-        activity2.setMediaList(new ArrayList<>());
-
-        Activity activity3 = new Activity();
-        activity3.setId(3);
-        activity3.setMediaList(new ArrayList<>());
-
-        UserActivity ua1 = UserActivity.of(new User(), activity1);
-        ua1.setCreatedAt(LocalDateTime.of(2024, 1, 1, 10, 0));
-        UserActivity ua2 = UserActivity.of(new User(), activity2);
-        ua2.setCreatedAt(null);
-        UserActivity ua3 = UserActivity.of(new User(), activity3);
-        ua3.setCreatedAt(LocalDateTime.of(2024, 1, 2, 10, 0));
-
-        ActivitySummaryDto dto1 = createActivityResponseDto(1, LocalDateTime.of(2024, 1, 1, 10, 0));
-        ActivitySummaryDto dto2 = createActivityResponseDto(2, null);
-        ActivitySummaryDto dto3 = createActivityResponseDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
-
-        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(new ArrayList<>(List.of(ua3, ua1, ua2)));
-        when(activityMapper.toSummaryDto(activity1)).thenReturn(dto1);
-        when(activityMapper.toSummaryDto(activity2)).thenReturn(dto2);
-        when(activityMapper.toSummaryDto(activity3)).thenReturn(dto3);
-
-        List<BaseUserEntity> result = userActivityService.getAllFromUser(userId, Sort.Direction.DESC);
-
-        assertSortedResult(result, 3, 3, 1, 2);
-    }
-
-    @Test
-    public void getAllFromUser_ShouldPopulateImageUrlsAfterSorting() {
-        int userId = 1;
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        source.code.model.media.Media media1 = new source.code.model.media.Media();
-        media1.setImageName("image1.jpg");
-        source.code.model.media.Media media2 = new source.code.model.media.Media();
-        media2.setImageName("image2.jpg");
-
-        Activity activity1 = new Activity();
-        activity1.setId(1);
-        activity1.setMediaList(List.of(media1));
-
-        Activity activity2 = new Activity();
-        activity2.setId(2);
-        activity2.setMediaList(List.of(media2));
-
-        UserActivity ua1 = UserActivity.of(new User(), activity1);
-        ua1.setCreatedAt(older);
-        UserActivity ua2 = UserActivity.of(new User(), activity2);
-        ua2.setCreatedAt(newer);
-
-        ActivitySummaryDto dto1 = createActivityResponseDto(1, older);
-        ActivitySummaryDto dto2 = createActivityResponseDto(2, newer);
-
-        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), any(Sort.class)))
-                .thenReturn(new ArrayList<>(List.of(ua2, ua1)));
-        when(activityMapper.toSummaryDto(activity1)).thenReturn(dto1);
-        when(activityMapper.toSummaryDto(activity2)).thenReturn(dto2);
-
-        List<BaseUserEntity> result = userActivityService.getAllFromUser(userId, Sort.Direction.DESC);
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        // Image URL population is handled by imagePopulationService internally
-        verify(activityMapper).toSummaryDto(activity1);
-        verify(activityMapper).toSummaryDto(activity2);
-    }
-
-    private ActivitySummaryDto createActivityResponseDto(int id, LocalDateTime interactionDate) {
-        ActivitySummaryDto dto = new ActivitySummaryDto();
-        dto.setId(id);
-        dto.setUserActivityInteractionCreatedAt(interactionDate);
-        return dto;
-    }
-
-    private void assertSortedResult(List<BaseUserEntity> result, int expectedSize, Integer... expectedIds) {
-        assertNotNull(result);
-        assertEquals(expectedSize, result.size());
-        for (int i = 0; i < expectedIds.length; i++) {
-            assertEquals(expectedIds[i], ((ActivitySummaryDto) result.get(i)).getId());
-        }
     }
 }
