@@ -19,6 +19,7 @@ import source.code.model.workout.Workout;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -69,7 +70,7 @@ public class Plan implements IndexedEntity {
 
     @OneToMany(mappedBy = "plan", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
     @OrderBy("orderIndex ASC")
-    private final List<PlanInstruction> planInstructions = new ArrayList<>();
+    private final Set<PlanInstruction> planInstructions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
     private final Set<PlanCategoryAssociation> planCategoryAssociations = new HashSet<>();

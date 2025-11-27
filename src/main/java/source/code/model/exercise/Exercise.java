@@ -18,6 +18,7 @@ import source.code.model.workout.WorkoutSet;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -68,11 +69,11 @@ public class Exercise implements IndexedEntity {
 
     @OneToMany(mappedBy = "exercise", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @OrderBy("orderIndex ASC")
-    private final List<ExerciseInstruction> exerciseInstructions = new ArrayList<>();
+    private final Set<ExerciseInstruction> exerciseInstructions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "exercise", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @OrderBy("orderIndex ASC")
-    private final List<ExerciseTip> exerciseTips = new ArrayList<>();
+    private final Set<ExerciseTip> exerciseTips = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "exercise", cascade = {CascadeType.REMOVE}, fetch = FetchType.EAGER , orphanRemoval = true)
     private final Set<ExerciseTargetMuscle> exerciseTargetMuscles = new HashSet<>();

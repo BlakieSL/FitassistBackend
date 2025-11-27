@@ -159,9 +159,9 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
 
     private void populateImageUrls(RecipeResponseDto recipe) {
             List<String> imageUrls = Objects.requireNonNull(recipe.getImageNames()).stream()
-                    .map(s3Service::getImage)
-                    .toList();
-            recipe.setImageUrls(imageUrls);
+                .map(s3Service::getImage)
+                .toList();
+        recipe.setImageUrls(imageUrls);
     }
 
     private void populateUserInteractionsAndCounts(RecipeResponseDto recipe, int requestingUserId) {
