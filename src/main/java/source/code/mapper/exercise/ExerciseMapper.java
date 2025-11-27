@@ -93,24 +93,24 @@ public abstract class ExerciseMapper {
 
     @AfterMapping
     protected void setExerciseAssociations(@MappingTarget Exercise exercise, ExerciseCreateDto dto) {
-        Set<ExerciseInstruction> instructions = dto.getInstructions().stream()
+        List<ExerciseInstruction> instructions = dto.getInstructions().stream()
                 .map(instructionDto -> {
                     ExerciseInstruction instruction = ExerciseInstruction
                             .of(instructionDto.getOrderIndex(), instructionDto.getText());
                     instruction.setExercise(exercise);
                     return instruction;
-                }).collect(Collectors.toSet());
+                }).toList();
 
         exercise.getExerciseInstructions().addAll(instructions);
 
 
-        Set<ExerciseTip> tips = dto.getTips().stream()
+        List<ExerciseTip> tips = dto.getTips().stream()
                 .map(tipDto -> {
                     ExerciseTip tip = ExerciseTip
                             .createWithNumberAndText(tipDto.getOrderIndex(), tipDto.getText());
                     tip.setExercise(exercise);
                     return tip;
-                }).collect(Collectors.toSet());
+                }).toList();
 
         exercise.getExerciseTips().addAll(tips);
     }
