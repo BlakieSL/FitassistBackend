@@ -18,6 +18,7 @@ import source.code.model.user.UserRecipe;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -72,7 +73,7 @@ public class Recipe implements IndexedEntity {
 
     @OneToMany(mappedBy = "recipe", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
     @OrderBy("orderIndex ASC")
-    private final List<RecipeInstruction> recipeInstructions = new ArrayList<>();
+    private final Set<RecipeInstruction> recipeInstructions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();
