@@ -67,10 +67,12 @@ public class Exercise implements IndexedEntity {
     private ForceType forceType;
 
     @OneToMany(mappedBy = "exercise", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    private final Set<ExerciseInstruction> exerciseInstructions = new HashSet<>();
+    @OrderBy("orderIndex ASC")
+    private final List<ExerciseInstruction> exerciseInstructions = new ArrayList<>();
 
     @OneToMany(mappedBy = "exercise", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    private final Set<ExerciseTip> exerciseTips = new HashSet<>();
+    @OrderBy("orderIndex ASC")
+    private final List<ExerciseTip> exerciseTips = new ArrayList<>();
 
     @OneToMany(mappedBy = "exercise", cascade = {CascadeType.REMOVE}, fetch = FetchType.EAGER , orphanRemoval = true)
     private final Set<ExerciseTargetMuscle> exerciseTargetMuscles = new HashSet<>();
