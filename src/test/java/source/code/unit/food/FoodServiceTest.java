@@ -13,6 +13,10 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.dto.request.filter.FilterDto;
@@ -313,68 +317,66 @@ public class FoodServiceTest {
     }
 
     @Test
-    void getAllFoods_shouldReturnAllFoods() {
-        List<FoodSummaryDto> responseDtos = List.of(responseDto);
+    void getAllFoods_shouldReturnPagedFoods() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Food> foodPage = new PageImpl<>(List.of(food), pageable, 1);
 
-        when(repositoryHelper.findAll(eq(foodRepository), any(Function.class)))
-                .thenReturn(responseDtos);
-
-        List<FoodSummaryDto> result = foodService.getAllFoods();
-
-        assertEquals(responseDtos, result);
-        verify(repositoryHelper).findAll(eq(foodRepository), any(Function.class));
-    }
-
-    @Test
-    void getAllFoods_shouldReturnEmptyListWhenNoFoods() {
-        List<FoodSummaryDto> responseDtos = List.of();
-        when(repositoryHelper.findAll(eq(foodRepository), any(Function.class)))
-                .thenReturn(responseDtos);
-
-        List<FoodSummaryDto> result = foodService.getAllFoods();
-
-        assertTrue(result.isEmpty());
-        verify(repositoryHelper).findAll(eq(foodRepository), any(Function.class));
-    }
-
-    @Test
-    void getFilteredFoods_shouldReturnFilteredFoods() {
-        when(foodRepository.findAll(any(Specification.class))).thenReturn(List.of(food));
+        when(foodRepository.findAll(pageable)).thenReturn(foodPage);
         when(foodMapper.toSummaryDto(food)).thenReturn(responseDto);
 
-        List<FoodSummaryDto> result = foodService.getFilteredFoods(filter);
+        Page<FoodSummaryDto> result = foodService.getAllFoods(pageable);
 
-        assertEquals(1, result.size());
-        assertSame(responseDto, result.get(0));
-        verify(foodRepository).findAll(any(Specification.class));
+        assertEquals(1, result.getTotalElements());
+        assertEquals(responseDto, result.getContent().get(0));
+        verify(foodRepository).findAll(pageable);
         verify(foodMapper).toSummaryDto(food);
     }
 
     @Test
-    void getFilteredFoods_shouldReturnEmptyListWhenFilterHasNoCriteria() {
-        filter.setFilterCriteria(new ArrayList<>());
+    void getAllFoods_shouldReturnEmptyPageWhenNoFoods() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Food> emptyPage = new PageImpl<>(List.of(), pageable, 0);
 
-        when(foodRepository.findAll(any(Specification.class))).thenReturn(new ArrayList<>());
+        when(foodRepository.findAll(pageable)).thenReturn(emptyPage);
 
-        List<FoodSummaryDto> result = foodService.getFilteredFoods(filter);
+        Page<FoodSummaryDto> result = foodService.getAllFoods(pageable);
 
         assertTrue(result.isEmpty());
-        verify(foodRepository).findAll(any(Specification.class));
+        assertEquals(0, result.getTotalElements());
+        verify(foodRepository).findAll(pageable);
         verifyNoInteractions(foodMapper);
     }
 
     @Test
-    void getFilteredFoods_shouldReturnEmptyListWhenNoFoodsMatchFilter() {
+    void getFilteredFoods_shouldReturnPagedFilteredFoods() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Food> foodPage = new PageImpl<>(List.of(food), pageable, 1);
+
+        when(foodRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(foodPage);
+        when(foodMapper.toSummaryDto(food)).thenReturn(responseDto);
+
+        Page<FoodSummaryDto> result = foodService.getFilteredFoods(filter, pageable);
+
+        assertEquals(1, result.getTotalElements());
+        assertSame(responseDto, result.getContent().get(0));
+        verify(foodRepository).findAll(any(Specification.class), eq(pageable));
+        verify(foodMapper).toSummaryDto(food);
+    }
+
+    @Test
+    void getFilteredFoods_shouldReturnEmptyPageWhenNoFoodsMatchFilter() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setFilterKey("nonexistentKey");
         filter.setFilterCriteria(List.of(criteria));
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Food> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
 
-        when(foodRepository.findAll(any(Specification.class))).thenReturn(new ArrayList<>());
+        when(foodRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
 
-        List<FoodSummaryDto> result = foodService.getFilteredFoods(filter);
+        Page<FoodSummaryDto> result = foodService.getFilteredFoods(filter, pageable);
 
         assertTrue(result.isEmpty());
-        verify(foodRepository).findAll(any(Specification.class));
+        verify(foodRepository).findAll(any(Specification.class), eq(pageable));
         verifyNoInteractions(foodMapper);
     }
 
