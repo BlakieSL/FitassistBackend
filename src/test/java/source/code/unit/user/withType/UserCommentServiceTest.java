@@ -8,6 +8,10 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
@@ -24,11 +28,9 @@ import source.code.repository.CommentRepository;
 import source.code.repository.UserCommentRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.ImageUrlPopulationService;
-import source.code.service.declaration.helpers.SortingService;
 import source.code.service.implementation.user.interaction.withType.UserCommentServiceImpl;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,9 +56,6 @@ public class UserCommentServiceTest {
     @Mock
     private ImageUrlPopulationService imageUrlPopulationService;
 
-    @Mock
-    private SortingService sortingService;
-
     private UserCommentServiceImpl userCommentService;
 
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
@@ -69,8 +68,7 @@ public class UserCommentServiceTest {
                 commentRepository,
                 userCommentRepository,
                 commentMapper,
-                imageUrlPopulationService,
-                sortingService
+                imageUrlPopulationService
         );
     }
 
@@ -196,36 +194,38 @@ public class UserCommentServiceTest {
     public void getAllFromUser_ShouldReturnAllLikedCommentsFromUser() {
         TypeOfInteraction type = TypeOfInteraction.LIKE;
         int userId = 1;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+
         CommentSummaryDto dto1 = new CommentSummaryDto();
         dto1.setId(1);
         CommentSummaryDto dto2 = new CommentSummaryDto();
         dto2.setId(2);
 
-        when(commentRepository.findCommentSummaryUnified(userId, type, true))
-                .thenReturn(List.of(dto1, dto2));
-        doReturn(Comparator.comparing(CommentSummaryDto::getId))
-                .when(sortingService).comparator(any(), eq(Sort.Direction.DESC));
+        Page<CommentSummaryDto> page = new PageImpl<>(List.of(dto1, dto2));
+        when(commentRepository.findCommentSummaryUnified(eq(userId), eq(type), eq(true), any(Pageable.class)))
+                .thenReturn(page);
 
-        var result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
+        Page<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, pageable);
 
-        assertEquals(2, result.size());
-        verify(commentRepository).findCommentSummaryUnified(userId, type, true);
-        verify(sortingService).comparator(any(), eq(Sort.Direction.DESC));
+        assertEquals(2, result.getContent().size());
+        assertEquals(2, result.getTotalElements());
+        verify(commentRepository).findCommentSummaryUnified(eq(userId), eq(type), eq(true), any(Pageable.class));
     }
 
     @Test
     public void getAllFromUser_ShouldReturnEmptyListIfNoLikedComments() {
         int userId = 1;
         TypeOfInteraction type = TypeOfInteraction.LIKE;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        when(commentRepository.findCommentSummaryUnified(userId, type, true))
-                .thenReturn(List.of());
-        doReturn(Comparator.comparing(CommentSummaryDto::getId))
-                .when(sortingService).comparator(any(), eq(Sort.Direction.DESC));
+        Page<CommentSummaryDto> page = new PageImpl<>(List.of());
+        when(commentRepository.findCommentSummaryUnified(eq(userId), eq(type), eq(true), any(Pageable.class)))
+                .thenReturn(page);
 
-        var result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
+        Page<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, pageable);
 
-        assertTrue(result.isEmpty());
+        assertTrue(result.getContent().isEmpty());
+        assertEquals(0, result.getTotalElements());
     }
 
     @Test
@@ -256,153 +256,5 @@ public class UserCommentServiceTest {
         assertThrows(RecordNotFoundException.class, () -> userCommentService.calculateLikesAndSaves(commentId));
 
         verify(userCommentRepository, never()).countByCommentIdAndType(anyInt(), any(TypeOfInteraction.class));
-    }
-
-    @Test
-    public void getAllFromUser_WithType_ShouldSortByInteractionDateDesc() {
-        int userId = 1;
-        TypeOfInteraction type = TypeOfInteraction.LIKE;
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        CommentSummaryDto dto1 = createCommentSummaryDto(1, older);
-        CommentSummaryDto dto2 = createCommentSummaryDto(2, newer);
-
-        when(commentRepository.findCommentSummaryUnified(userId, type, true))
-                .thenReturn(List.of(dto1, dto2));
-        doReturn(Comparator.comparing(
-                CommentSummaryDto::getUserCommentInteractionCreatedAt,
-                Comparator.nullsLast(Comparator.reverseOrder())))
-                .when(sortingService).comparator(any(), eq(Sort.Direction.DESC));
-
-        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals(2, ((CommentSummaryDto) result.get(0)).getId());
-        assertEquals(1, ((CommentSummaryDto) result.get(1)).getId());
-        verify(commentRepository).findCommentSummaryUnified(userId, type, true);
-        verify(sortingService).comparator(any(), eq(Sort.Direction.DESC));
-    }
-
-    @Test
-    public void getAllFromUser_WithType_ShouldSortByInteractionDateAsc() {
-        int userId = 1;
-        TypeOfInteraction type = TypeOfInteraction.DISLIKE;
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        CommentSummaryDto dto1 = createCommentSummaryDto(1, older);
-        CommentSummaryDto dto2 = createCommentSummaryDto(2, newer);
-
-        when(commentRepository.findCommentSummaryUnified(userId, type, true))
-                .thenReturn(List.of(dto2, dto1));
-        doReturn(Comparator.comparing(
-                CommentSummaryDto::getUserCommentInteractionCreatedAt,
-                Comparator.nullsLast(Comparator.naturalOrder())))
-                .when(sortingService).comparator(any(), eq(Sort.Direction.ASC));
-
-        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, Sort.Direction.ASC);
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals(1, ((CommentSummaryDto) result.get(0)).getId());
-        assertEquals(2, ((CommentSummaryDto) result.get(1)).getId());
-        verify(commentRepository).findCommentSummaryUnified(userId, type, true);
-        verify(sortingService).comparator(any(), eq(Sort.Direction.ASC));
-    }
-
-    @Test
-    public void getAllFromUser_WithType_DefaultShouldSortDesc() {
-        int userId = 1;
-        TypeOfInteraction type = TypeOfInteraction.LIKE;
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        CommentSummaryDto dto1 = createCommentSummaryDto(1, older);
-        CommentSummaryDto dto2 = createCommentSummaryDto(2, newer);
-
-        when(commentRepository.findCommentSummaryUnified(userId, type, true))
-                .thenReturn(List.of(dto1, dto2));
-        doReturn(Comparator.comparing(
-                CommentSummaryDto::getUserCommentInteractionCreatedAt,
-                Comparator.nullsLast(Comparator.reverseOrder())))
-                .when(sortingService).comparator(any(), eq(Sort.Direction.DESC));
-
-        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals(2, ((CommentSummaryDto) result.get(0)).getId());
-        assertEquals(1, ((CommentSummaryDto) result.get(1)).getId());
-        verify(commentRepository).findCommentSummaryUnified(userId, type, true);
-        verify(sortingService).comparator(any(), eq(Sort.Direction.DESC));
-    }
-
-    @Test
-    public void getAllFromUser_WithType_ShouldHandleNullDates() {
-        int userId = 1;
-        TypeOfInteraction type = TypeOfInteraction.LIKE;
-
-        CommentSummaryDto dto1 = createCommentSummaryDto(1, LocalDateTime.of(2024, 1, 1, 10, 0));
-        CommentSummaryDto dto2 = createCommentSummaryDto(2, null);
-        CommentSummaryDto dto3 = createCommentSummaryDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
-
-        when(commentRepository.findCommentSummaryUnified(userId, type, true))
-                .thenReturn(List.of(dto1, dto2, dto3));
-        doReturn(Comparator.comparing(
-                CommentSummaryDto::getUserCommentInteractionCreatedAt,
-                Comparator.nullsLast(Comparator.reverseOrder())))
-                .when(sortingService).comparator(any(), eq(Sort.Direction.DESC));
-
-        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
-
-        assertNotNull(result);
-        assertEquals(3, result.size());
-        assertEquals(3, ((CommentSummaryDto) result.get(0)).getId());
-        assertEquals(1, ((CommentSummaryDto) result.get(1)).getId());
-        assertEquals(2, ((CommentSummaryDto) result.get(2)).getId());
-        verify(commentRepository).findCommentSummaryUnified(userId, type, true);
-        verify(sortingService).comparator(any(), eq(Sort.Direction.DESC));
-    }
-
-    @Test
-    public void getAllFromUser_WithType_ShouldPopulateAuthorImageUrls() {
-        int userId = 1;
-        TypeOfInteraction type = TypeOfInteraction.LIKE;
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        CommentSummaryDto dto1 = createCommentSummaryDto(1, older);
-        dto1.setAuthorImageName("author1.jpg");
-        CommentSummaryDto dto2 = createCommentSummaryDto(2, newer);
-        dto2.setAuthorImageName("author2.jpg");
-
-        when(commentRepository.findCommentSummaryUnified(userId, type, true))
-                .thenReturn(List.of(dto1, dto2));
-        doReturn(Comparator.comparing(CommentSummaryDto::getId))
-                .when(sortingService).comparator(any(), eq(Sort.Direction.DESC));
-
-        List<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, Sort.Direction.DESC);
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        verify(imageUrlPopulationService, times(2)).populateAuthorImage(
-                any(CommentSummaryDto.class), any(), any());
-    }
-
-    private CommentSummaryDto createCommentSummaryDto(int id, LocalDateTime interactionDate) {
-        CommentSummaryDto dto = new CommentSummaryDto();
-        dto.setId(id);
-        dto.setUserCommentInteractionCreatedAt(interactionDate);
-        return dto;
-    }
-
-    private void assertSortedResult(List<BaseUserEntity> result, int expectedSize, Integer... expectedIds) {
-        assertNotNull(result);
-        assertEquals(expectedSize, result.size());
-        for (int i = 0; i < expectedIds.length; i++) {
-            assertEquals(expectedIds[i], ((CommentSummaryDto) result.get(i)).getId());
-        }
     }
 }

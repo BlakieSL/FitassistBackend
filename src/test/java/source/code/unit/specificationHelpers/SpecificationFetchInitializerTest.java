@@ -1,5 +1,6 @@
 package source.code.unit.specificationHelpers;
 
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Fetch;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
@@ -21,6 +22,9 @@ public class SpecificationFetchInitializerTest {
     private Root<Object> root;
 
     @Mock
+    private CriteriaQuery<?> query;
+
+    @Mock
     private Fetch<Object, Object> fetch;
 
     @BeforeEach
@@ -30,18 +34,20 @@ public class SpecificationFetchInitializerTest {
 
     @Test
     void initializeFetches_shouldFetchSingleField() {
+        when(query.getResultType()).thenReturn((Class) Object.class);
         when(root.fetch("field1", JoinType.LEFT)).thenReturn(fetch);
 
-        fetchInitializer.initializeFetches(root, "field1");
+        fetchInitializer.initializeFetches(root, query, "field1");
 
         verify(root).fetch("field1", JoinType.LEFT);
     }
 
     @Test
     void initializeFetches_shouldFetchMultipleFields() {
+        when(query.getResultType()).thenReturn((Class) Object.class);
         when(root.fetch(anyString(), eq(JoinType.LEFT))).thenReturn(fetch);
 
-        fetchInitializer.initializeFetches(root, "field1", "field2", "field3");
+        fetchInitializer.initializeFetches(root, query, "field1", "field2", "field3");
 
         verify(root).fetch("field1", JoinType.LEFT);
         verify(root).fetch("field2", JoinType.LEFT);
@@ -50,19 +56,40 @@ public class SpecificationFetchInitializerTest {
 
     @Test
     void initializeFetches_shouldNotFetchWhenNoFieldsProvided() {
-        fetchInitializer.initializeFetches(root);
+        when(query.getResultType()).thenReturn((Class) Object.class);
+
+        fetchInitializer.initializeFetches(root, query);
 
         verify(root, never()).fetch(anyString(), any(JoinType.class));
     }
 
     @Test
     void initializeFetches_shouldUseLeftJoinType() {
+        when(query.getResultType()).thenReturn((Class) Object.class);
         when(root.fetch("field1", JoinType.LEFT)).thenReturn(fetch);
 
-        fetchInitializer.initializeFetches(root, "field1");
+        fetchInitializer.initializeFetches(root, query, "field1");
 
         verify(root).fetch("field1", JoinType.LEFT);
         verify(root, never()).fetch(anyString(), eq(JoinType.INNER));
         verify(root, never()).fetch(anyString(), eq(JoinType.RIGHT));
+    }
+
+    @Test
+    void initializeFetches_shouldSkipFetchForCountQuery() {
+        when(query.getResultType()).thenReturn((Class) Long.class);
+
+        fetchInitializer.initializeFetches(root, query, "field1", "field2");
+
+        verify(root, never()).fetch(anyString(), any(JoinType.class));
+    }
+
+    @Test
+    void initializeFetches_shouldSkipFetchForPrimitiveLongCountQuery() {
+        when(query.getResultType()).thenReturn((Class) long.class);
+
+        fetchInitializer.initializeFetches(root, query, "field1");
+
+        verify(root, never()).fetch(anyString(), any(JoinType.class));
     }
 }

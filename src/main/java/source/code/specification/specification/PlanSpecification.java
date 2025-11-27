@@ -38,8 +38,8 @@ public class PlanSpecification implements Specification<Plan> {
 
     @Override
     public Predicate toPredicate(@NonNull Root<Plan> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
-        dependencies.getFetchInitializer().initializeFetches(root, PLAN_TYPE_FIELD);
-        initializeComplexFetches(root);
+        dependencies.getFetchInitializer().initializeFetches(root, query, PLAN_TYPE_FIELD);
+        initializeComplexFetches(root, query);
 
         Predicate visibilityPredicate = dependencies.getVisibilityPredicateBuilder()
                 .buildVisibilityPredicate(builder, root, criteria, USER_FIELD, ID_FIELD, IS_PUBLIC_FIELD);
@@ -50,7 +50,11 @@ public class PlanSpecification implements Specification<Plan> {
         return builder.and(visibilityPredicate, fieldPredicate);
     }
 
-    private void initializeComplexFetches(Root<Plan> root) {
+    private void initializeComplexFetches(Root<Plan> root, CriteriaQuery<?> query) {
+        if (query.getResultType() == Long.class || query.getResultType() == long.class) {
+            return;
+        }
+
         Fetch<Plan, PlanCategoryAssociation> categoryAssociationsFetch =
                 root.fetch(PLAN_CATEGORY_ASSOCIATIONS_FIELD, JoinType.LEFT);
         categoryAssociationsFetch.fetch(PLAN_CATEGORY_FIELD, JoinType.LEFT);

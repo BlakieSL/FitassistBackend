@@ -12,7 +12,7 @@ INSERT INTO user (activity_level, birthday, email, gender, goal, height, passwor
                                                                                                          ('SUPER_ACTIVE', '1992-11-30', 'user4@example.com', 'FEMALE', 'BUILD_MUSCLE', 170.00, '$2a$10$exampleHash4', 'marathon_runner', 60.00),
                                                                                                          ('LIGHTLY_ACTIVE', '1985-07-04', 'user5@example.com', 'MALE', 'LOSE_WEIGHT', 182.00, '$2a$10$exampleHash5', 'weekend_warrior', 90.00);
 
-INSERT INTO thread (dateCreated, text, title, views, thread_category_id, user_id) VALUES
+INSERT INTO thread (created_at, text, title, views, thread_category_id, user_id) VALUES
                                                                                       (NOW(), 'What are your favorite fitness apps?', 'Favorite Apps', 150, 1, 1),
                                                                                       (NOW(), 'How to properly do deadlifts?', 'Deadlift Form', 320, 2, 2),
                                                                                       (NOW(), 'Best protein sources for vegetarians', 'Vegetarian Protein', 210, 3, 3),
@@ -26,7 +26,7 @@ INSERT INTO user_thread (thread_id, user_id, created_at) VALUES
                                                  (4, 1, NOW()), (4, 3, NOW()),
                                                  (5, 2, NOW()), (5, 4, NOW());
 
-INSERT INTO comment (text, dateCreated, parent_comment_id, thread_id, user_id) VALUES
+INSERT INTO comment (text, created_at, parent_comment_id, thread_id, user_id) VALUES
                                                                                    ('I really like MyFitnessPal for tracking', '2023-11-12 10:00:00.123456', NULL, 1, 2),
                                                                                    ('Keep your back straight and lift with legs', '2023-11-12 10:05:00.654321', NULL, 2, 1),
                                                                                    ('Lentils and quinoa are great options', '2023-11-12 10:10:00.987654', NULL, 3, 4),

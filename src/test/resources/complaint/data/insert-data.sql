@@ -12,14 +12,14 @@ INSERT INTO thread_category (name) VALUES
                                        ('Weight Loss'),
                                        ('General Discussion');
 
-INSERT INTO thread (dateCreated, text, title, views, thread_category_id, user_id) VALUES
+INSERT INTO thread (created_at, text, title, views, thread_category_id, user_id) VALUES
                                                                                       (NOW(), 'What is the best workout for beginners?', 'Beginner Workout', 125, 1, 1),
                                                                                           (NOW(), 'High protein meal ideas for muscle gain', 'Protein Meals', 89, 2, 2),
                                                                                           (NOW(), '5-day split vs full body workout', 'Workout Split', 42, 3, 3),
                                                                                       (NOW(), 'How to stay motivated during weight loss', 'Weight Loss Tips', 156, 4, 4),
                                                                                       (NOW(), 'Introduce yourself here!', 'New Members', 210, 5, 5);
 
-INSERT INTO comment (text, dateCreated, parent_comment_id, thread_id, user_id) VALUES
+INSERT INTO comment (text, created_at, parent_comment_id, thread_id, user_id) VALUES
                                                                                    ('I recommend starting with bodyweight exercises', '2025-11-13 08:35:00.123456', NULL, 1, 2),
                                                                                    ('Push-ups and squats are great for beginners', '2025-11-13 08:36:00.654321', NULL, 1, 3),
                                                                                    ('Thanks for the advice!', '2025-11-13 08:37:00.987654', 1, 1, 1),

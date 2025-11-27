@@ -1,6 +1,8 @@
 package source.code.repository;
 
 import io.lettuce.core.dynamic.annotation.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.model.plan.Plan;
@@ -65,6 +67,54 @@ public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecifi
                                                  @Param("type") TypeOfInteraction type,
                                                  @Param("fetchByInteraction") boolean fetchByInteraction,
                                                  @Param("isOwnProfile") Boolean isOwnProfile);
+
+    @Query(value = """
+      SELECT new source.code.dto.response.plan.PlanSummaryDto(
+             p.id,
+             p.name,
+             p.description,
+             p.isPublic,
+             u.username,
+             u.id,
+             (SELECT m.imageName FROM Media m
+              WHERE m.parentId = u.id
+              AND m.parentType = 'USER'
+              ORDER BY m.id ASC
+              LIMIT 1),
+             (SELECT m.imageName FROM Media m
+              WHERE m.parentId = p.id
+              AND m.parentType = 'PLAN'
+              ORDER BY m.id ASC
+              LIMIT 1),
+             null,
+             null,
+             CAST((SELECT COUNT(up1) FROM UserPlan up1 WHERE up1.plan.id = p.id AND up1.type = 'LIKE') AS int),
+             CAST((SELECT COUNT(up2) FROM UserPlan up2 WHERE up2.plan.id = p.id AND up2.type = 'SAVE') AS int),
+             p.views,
+             new source.code.dto.pojo.PlanTypeShortDto(p.planType.id, p.planType.name),
+             p.createdAt,
+             CASE WHEN :fetchByInteraction = true THEN up.createdAt ELSE null END)
+      FROM Plan p
+      JOIN p.user u
+      LEFT JOIN UserPlan up ON up.plan.id = p.id AND up.user.id = :userId AND (:type IS NULL OR up.type = :type)
+      WHERE (:fetchByInteraction = false AND
+             (((:isOwnProfile IS NULL OR :isOwnProfile = false) AND (p.isPublic = true AND p.user.id = :userId)) OR
+              (:isOwnProfile = true AND p.user.id = :userId))) OR
+            (:fetchByInteraction = true AND up.id IS NOT NULL AND p.isPublic = true)
+    """, countQuery = """
+      SELECT COUNT(p)
+      FROM Plan p
+      LEFT JOIN UserPlan up ON up.plan.id = p.id AND up.user.id = :userId AND (:type IS NULL OR up.type = :type)
+      WHERE (:fetchByInteraction = false AND
+             (((:isOwnProfile IS NULL OR :isOwnProfile = false) AND (p.isPublic = true AND p.user.id = :userId)) OR
+              (:isOwnProfile = true AND p.user.id = :userId))) OR
+            (:fetchByInteraction = true AND up.id IS NOT NULL AND p.isPublic = true)
+    """)
+    Page<PlanSummaryDto> findPlanSummaryUnified(@Param("userId") int userId,
+                                                 @Param("type") TypeOfInteraction type,
+                                                 @Param("fetchByInteraction") boolean fetchByInteraction,
+                                                 @Param("isOwnProfile") Boolean isOwnProfile,
+                                                 Pageable pageable);
 
     @Query("""
       SELECT new source.code.dto.response.plan.PlanSummaryDto(

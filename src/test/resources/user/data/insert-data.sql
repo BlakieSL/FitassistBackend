@@ -116,12 +116,12 @@ INSERT INTO workout_set (workout_set_group_id, exercise_id, repetitions, weight)
                                                                                      (5, 2, 8.00, 0.00), (5, 2, 8.00, 0.00),
                                                                                      (6, 3, 10.00, 60.00), (6, 1, 10.00, 50.00), (6, 4, 12.00, 8.00);
 
-INSERT INTO thread (title, text, dateCreated, views, user_id, thread_category_id) VALUES
+INSERT INTO thread (title, text, created_at, views, user_id, thread_category_id) VALUES
                                                                                       ('Getting started with fitness', 'What are some good beginner tips?', NOW(), 25, 1, 1),
                                                                                       ('Protein intake question', 'How much protein should I consume daily?', NOW(), 42, 2, 2),
                                                                                       ('Squat form check', 'Looking for feedback on my squat technique', NOW(), 18, 3, 3);
 
-INSERT INTO comment (text, dateCreated, thread_id, user_id, parent_comment_id) VALUES
+INSERT INTO comment (text, created_at, thread_id, user_id, parent_comment_id) VALUES
                                                                                    ('Start with bodyweight exercises and focus on form!', '2025-11-13 20:50:00.123456', 1, 2, NULL),
                                                                                    ('Thanks for the advice!', '2025-11-13 20:51:00.654321', 1, 1, 1),
                                                                                    ('1.6-2.2g per kg of body weight is a good range', '2025-11-13 20:52:00.987654', 2, 3, NULL),

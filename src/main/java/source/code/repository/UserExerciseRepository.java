@@ -1,5 +1,7 @@
 package source.code.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -27,6 +29,21 @@ public interface UserExerciseRepository extends JpaRepository<UserExercise, Inte
            WHERE ue.user.id = :userId
            """)
     List<UserExercise> findAllByUserIdWithMedia(@Param("userId") int userId, Sort sort);
+
+    @Query(value = """
+           SELECT ue FROM UserExercise ue
+           JOIN FETCH ue.exercise e
+           JOIN FETCH e.expertiseLevel
+           JOIN FETCH e.equipment
+           JOIN FETCH e.mechanicsType
+           JOIN FETCH e.forceType
+           LEFT JOIN FETCH e.mediaList
+           WHERE ue.user.id = :userId
+           """, countQuery = """
+           SELECT COUNT(ue) FROM UserExercise ue
+           WHERE ue.user.id = :userId
+           """)
+    Page<UserExercise> findAllByUserIdWithMedia(@Param("userId") int userId, Pageable pageable);
 
     long countByExerciseId(int exerciseId);
 }

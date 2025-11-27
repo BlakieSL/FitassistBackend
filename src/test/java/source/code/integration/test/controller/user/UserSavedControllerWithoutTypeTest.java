@@ -41,7 +41,8 @@ public class UserSavedControllerWithoutTypeTest {
         mockMvc.perform(get("/api/user-saved/item-type/ACTIVITY/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(2))
+                        jsonPath("$.content").value(hasSize(2)),
+                        jsonPath("$.totalElements").value(2)
                 );
     }
 
@@ -53,7 +54,8 @@ public class UserSavedControllerWithoutTypeTest {
         mockMvc.perform(get("/api/user-saved/item-type/EXERCISE/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(2))
+                        jsonPath("$.content").value(hasSize(2)),
+                        jsonPath("$.totalElements").value(2)
                 );
     }
 
@@ -65,7 +67,8 @@ public class UserSavedControllerWithoutTypeTest {
         mockMvc.perform(get("/api/user-saved/item-type/FOOD/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(2))
+                        jsonPath("$.content").value(hasSize(2)),
+                        jsonPath("$.totalElements").value(2)
                 );
     }
 
@@ -77,15 +80,16 @@ public class UserSavedControllerWithoutTypeTest {
         mockMvc.perform(get("/api/user-saved/item-type/FORUM_THREAD/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(1)),
-                        jsonPath("$[0].id").value(2),
-                        jsonPath("$[0].title").value("Protein intake question"),
-                        jsonPath("$[0].authorUsername").value("adminuser"),
-                        jsonPath("$[0].authorId").value(2),
-                        jsonPath("$[0].authorImageUrl").exists(),
-                        jsonPath("$[0].viewsCount").value(42),
-                        jsonPath("$[0].savesCount").value(2),
-                        jsonPath("$[0].commentsCount").value(2)
+                        jsonPath("$.content").value(hasSize(1)),
+                        jsonPath("$.content[0].id").value(2),
+                        jsonPath("$.content[0].title").value("Protein intake question"),
+                        jsonPath("$.content[0].authorUsername").value("adminuser"),
+                        jsonPath("$.content[0].authorId").value(2),
+                        jsonPath("$.content[0].authorImageUrl").exists(),
+                        jsonPath("$.content[0].viewsCount").value(42),
+                        jsonPath("$.content[0].savesCount").value(2),
+                        jsonPath("$.content[0].commentsCount").value(2),
+                        jsonPath("$.totalElements").value(1)
                 );
     }
 
@@ -179,11 +183,11 @@ public class UserSavedControllerWithoutTypeTest {
     @DisplayName("GET - /item-type/{itemType}/user/{userId}?sort=DESC - Should return items sorted DESC")
     void getAllFromUserWithoutTypeSortDesc() throws Exception {
         mockMvc.perform(get("/api/user-saved/item-type/ACTIVITY/user/1")
-                .param("sort", "DESC"))
+                .param("sort", "createdAt,DESC"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(2)),
-                        jsonPath("$[0].id").exists()
+                        jsonPath("$.content").value(hasSize(2)),
+                        jsonPath("$.content[0].id").exists()
                 );
     }
 
@@ -193,11 +197,11 @@ public class UserSavedControllerWithoutTypeTest {
     @DisplayName("GET - /item-type/{itemType}/user/{userId}?sort=ASC - Should return items sorted ASC")
     void getAllFromUserWithoutTypeSortAsc() throws Exception {
         mockMvc.perform(get("/api/user-saved/item-type/EXERCISE/user/1")
-                .param("sort", "ASC"))
+                .param("sort", "createdAt,ASC"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(2)),
-                        jsonPath("$[0].id").exists()
+                        jsonPath("$.content").value(hasSize(2)),
+                        jsonPath("$.content[0].id").exists()
                 );
     }
 
@@ -209,8 +213,9 @@ public class UserSavedControllerWithoutTypeTest {
         mockMvc.perform(get("/api/user-saved/item-type/FOOD/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(2)),
-                        jsonPath("$[0].id").exists()
+                        jsonPath("$.content").value(hasSize(2)),
+                        jsonPath("$.content[0].id").exists(),
+                        jsonPath("$.totalElements").value(2)
                 );
     }
 
@@ -220,11 +225,11 @@ public class UserSavedControllerWithoutTypeTest {
     @DisplayName("GET - /item-type/{itemType}/user/{userId}?sort=DESC - Should return threads sorted DESC")
     void getAllFromUserThreadsSortDesc() throws Exception {
         mockMvc.perform(get("/api/user-saved/item-type/FORUM_THREAD/user/1")
-                .param("sort", "DESC"))
+                .param("sort", "createdAt,DESC"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(1)),
-                        jsonPath("$[0].id").value(2)
+                        jsonPath("$.content").value(hasSize(1)),
+                        jsonPath("$.content[0].id").value(2)
                 );
     }
 
@@ -234,11 +239,11 @@ public class UserSavedControllerWithoutTypeTest {
     @DisplayName("GET - /item-type/{itemType}/user/{userId}?sort=ASC - Should return threads sorted ASC")
     void getAllFromUserThreadsSortAsc() throws Exception {
         mockMvc.perform(get("/api/user-saved/item-type/FORUM_THREAD/user/1")
-                .param("sort", "ASC"))
+                .param("sort", "createdAt,ASC"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(1)),
-                        jsonPath("$[0].id").value(2)
+                        jsonPath("$.content").value(hasSize(1)),
+                        jsonPath("$.content[0].id").value(2)
                 );
     }
 }

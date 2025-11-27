@@ -25,15 +25,19 @@ public class ExerciseSpecification implements Specification<Exercise> {
 
     @Override
     public Predicate toPredicate(@NonNull Root<Exercise> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
-        dependencies.getFetchInitializer().initializeFetches(root, EQUIPMENT_FIELD, EXPERTISE_LEVEL_FIELD, FORCE_TYPE_FIELD, MECHANICS_TYPE_FIELD);
-        initializeComplexFetches(root);
+        dependencies.getFetchInitializer().initializeFetches(root, query, EQUIPMENT_FIELD, EXPERTISE_LEVEL_FIELD, FORCE_TYPE_FIELD, MECHANICS_TYPE_FIELD);
+        initializeComplexFetches(root, query);
 
         ExerciseField field = dependencies.getFieldResolver().resolveField(criteria, ExerciseField.class);
 
         return buildPredicateForField(builder, criteria, root, field);
     }
 
-    private void initializeComplexFetches(Root<Exercise> root) {
+    private void initializeComplexFetches(Root<Exercise> root, CriteriaQuery<?> query) {
+        if (query.getResultType() == Long.class || query.getResultType() == long.class) {
+            return;
+        }
+
         Fetch<Exercise, ExerciseTargetMuscle> targetMuscleFetch =
                 root.fetch(EXERCISE_TARGET_MUSCLES_FIELD, JoinType.LEFT);
         targetMuscleFetch.fetch(TARGET_MUSCLE_FIELD, JoinType.LEFT);

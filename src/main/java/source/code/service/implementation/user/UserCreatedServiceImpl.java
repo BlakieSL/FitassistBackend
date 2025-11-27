@@ -74,7 +74,7 @@ public class UserCreatedServiceImpl implements UserCreatedService {
                 .stream()
                 .peek(dto -> imagePopulationService.populateAuthorImage(dto,
                         CommentSummaryDto::getAuthorImageName, CommentSummaryDto::setAuthorImageUrl))
-                .sorted(sortingService.comparator(CommentSummaryDto::getDateCreated, sortDirection))
+                .sorted(sortingService.comparator(CommentSummaryDto::getCreatedAt, sortDirection))
                 .toList();
     }
 
@@ -84,7 +84,7 @@ public class UserCreatedServiceImpl implements UserCreatedService {
                 .stream()
                 .peek(dto -> imagePopulationService.populateAuthorImage(dto,
                         ForumThreadSummaryDto::getAuthorImageName, ForumThreadSummaryDto::setAuthorImageUrl))
-                .sorted(sortingService.comparator(ForumThreadSummaryDto::getDateCreated, sortDirection))
+                .sorted(sortingService.comparator(ForumThreadSummaryDto::getCreatedAt, sortDirection))
                 .toList();
     }
 

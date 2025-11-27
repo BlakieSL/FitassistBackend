@@ -41,7 +41,8 @@ public class UserSavedControllerWithTypeTest {
         mockMvc.perform(get("/api/user-saved/item-type/PLAN/type/SAVE/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(3))
+                        jsonPath("$.content").value(hasSize(3)),
+                        jsonPath("$.totalElements").value(3)
                 );
     }
 
@@ -53,7 +54,8 @@ public class UserSavedControllerWithTypeTest {
         mockMvc.perform(get("/api/user-saved/item-type/RECIPE/type/SAVE/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(1))
+                        jsonPath("$.content").value(hasSize(1)),
+                        jsonPath("$.totalElements").value(1)
                 );
     }
 
@@ -65,7 +67,8 @@ public class UserSavedControllerWithTypeTest {
         mockMvc.perform(get("/api/user-saved/item-type/COMMENT/type/LIKE/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(1))
+                        jsonPath("$.content", hasSize(1)),
+                        jsonPath("$.totalElements").value(1)
                 );
 
     }
@@ -78,9 +81,10 @@ public class UserSavedControllerWithTypeTest {
         mockMvc.perform(get("/api/user-saved/item-type/COMMENT/type/DISLIKE/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(2)),
-                        jsonPath("$[0].id").value(2),
-                        jsonPath("$[1].id").value(1)
+                        jsonPath("$.content", hasSize(2)),
+                        jsonPath("$.content[0].id").value(2),
+                        jsonPath("$.content[1].id").value(1),
+                        jsonPath("$.totalElements").value(2)
                 );
     }
 
@@ -92,9 +96,10 @@ public class UserSavedControllerWithTypeTest {
         mockMvc.perform(get("/api/user-saved/item-type/PLAN/type/DISLIKE/user/2"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(2)),
-                        jsonPath("$[0].id").value(3),
-                        jsonPath("$[1].id").value(1)
+                        jsonPath("$.content", hasSize(2)),
+                        jsonPath("$.content[0].id").value(3),
+                        jsonPath("$.content[1].id").value(1),
+                        jsonPath("$.totalElements").value(2)
                 );
     }
 
@@ -106,9 +111,10 @@ public class UserSavedControllerWithTypeTest {
         mockMvc.perform(get("/api/user-saved/item-type/RECIPE/type/DISLIKE/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(2)),
-                        jsonPath("$[0].id").value(3),
-                        jsonPath("$[1].id").value(1)
+                        jsonPath("$.content", hasSize(2)),
+                        jsonPath("$.content[0].id").value(3),
+                        jsonPath("$.content[1].id").value(1),
+                        jsonPath("$.totalElements").value(2)
                 );
     }
 
@@ -249,13 +255,13 @@ public class UserSavedControllerWithTypeTest {
     @DisplayName("GET - /item-type/{itemType}/type/{type}/user/{userId}?sort=DESC - Should return items sorted DESC")
     void getAllFromUserSortDesc() throws Exception {
         mockMvc.perform(get("/api/user-saved/item-type/PLAN/type/SAVE/user/1")
-                .param("sort", "DESC"))
+                .param("sort", "createdAt,DESC"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(3)),
-                        jsonPath("$[0].id").value(3),
-                        jsonPath("$[1].id").value(2),
-                        jsonPath("$[2].id").value(1)
+                        jsonPath("$.content").value(hasSize(3)),
+                        jsonPath("$.content[0].id").value(3),
+                        jsonPath("$.content[1].id").value(2),
+                        jsonPath("$.content[2].id").value(1)
                 );
     }
 
@@ -265,13 +271,13 @@ public class UserSavedControllerWithTypeTest {
     @DisplayName("GET - /item-type/{itemType}/type/{type}/user/{userId}?sort=ASC - Should return items sorted ASC")
     void getAllFromUserSortAsc() throws Exception {
         mockMvc.perform(get("/api/user-saved/item-type/PLAN/type/SAVE/user/1")
-                .param("sort", "ASC"))
+                .param("sort", "createdAt,ASC"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(3)),
-                        jsonPath("$[0].id").value(1),
-                        jsonPath("$[1].id").value(2),
-                        jsonPath("$[2].id").value(3)
+                        jsonPath("$.content").value(hasSize(3)),
+                        jsonPath("$.content[0].id").value(1),
+                        jsonPath("$.content[1].id").value(2),
+                        jsonPath("$.content[2].id").value(3)
                 );
     }
 
@@ -283,7 +289,8 @@ public class UserSavedControllerWithTypeTest {
         mockMvc.perform(get("/api/user-saved/item-type/COMMENT/type/LIKE/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").exists()
+                        jsonPath("$.content").exists(),
+                        jsonPath("$.totalElements").exists()
                 );
     }
 }

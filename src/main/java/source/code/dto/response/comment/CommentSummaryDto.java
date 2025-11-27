@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class CommentSummaryDto implements BaseUserEntity, Serializable {
     private Integer id;
     private String text;
-    private LocalDateTime dateCreated;
+    private LocalDateTime createdAt;
     private String authorUsername;
     private Integer authorId;
     private String authorImageName;

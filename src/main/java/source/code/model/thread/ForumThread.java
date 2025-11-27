@@ -41,8 +41,8 @@ public class ForumThread {
 
     @NotNull
     @PastOrPresent
-    @Column(nullable = false)
-    private LocalDateTime dateCreated;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     @NotBlank
     @Column(nullable = false)
@@ -74,7 +74,7 @@ public class ForumThread {
 
     @PrePersist
     public void prePersist() {
-        this.dateCreated = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 
     public static ForumThread of(Integer id, User user) {

@@ -293,7 +293,7 @@ create table thread
 (
     id                 int auto_increment
         primary key,
-    dateCreated        datetime(6)  not null,
+    created_at         datetime(6)  not null,
     text               varchar(255) not null,
     title              varchar(50)  not null,
     views              int          not null,
@@ -310,7 +310,7 @@ create table comment
     id                int auto_increment
         primary key,
     text              varchar(255) not null,
-    dateCreated        datetime(6)  not null,
+    created_at        datetime(6)  not null,
     parent_comment_id int          null,
     thread_id         int          not null,
     user_id           int          not null,

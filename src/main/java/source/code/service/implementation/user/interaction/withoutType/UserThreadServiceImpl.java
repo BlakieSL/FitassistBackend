@@ -1,6 +1,7 @@
 package source.code.service.implementation.user.interaction.withoutType;
 
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.exception.RecordNotFoundException;
@@ -14,7 +15,6 @@ import source.code.repository.MediaRepository;
 import source.code.repository.UserRepository;
 import source.code.repository.UserThreadRepository;
 import source.code.service.declaration.helpers.ImageUrlPopulationService;
-import source.code.service.declaration.helpers.SortingService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
 import java.util.List;
@@ -25,15 +25,13 @@ public class UserThreadServiceImpl
 
     private final MediaRepository mediaRepository;
     private final ImageUrlPopulationService imagePopulationService;
-    private final SortingService sortingService;
 
     public UserThreadServiceImpl(UserThreadRepository userThreadRepository,
                                  ForumThreadRepository forumThreadRepository,
                                  UserRepository userRepository,
                                  ForumThreadMapper forumThreadMapper,
                                  MediaRepository mediaRepository,
-                                 ImageUrlPopulationService imagePopulationService,
-                                 SortingService sortingService) {
+                                 ImageUrlPopulationService imagePopulationService) {
         super(userRepository,
                 forumThreadRepository,
                 userThreadRepository,
@@ -41,7 +39,6 @@ public class UserThreadServiceImpl
                 ForumThread.class);
         this.mediaRepository = mediaRepository;
         this.imagePopulationService = imagePopulationService;
-        this.sortingService = sortingService;
     }
 
     @Override
@@ -67,14 +64,14 @@ public class UserThreadServiceImpl
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId, Sort.Direction sortDirection) {
-        return ((ForumThreadRepository) entityRepository).findThreadSummaryUnified(userId, true)
-                .stream()
-                .peek(dto -> imagePopulationService.populateAuthorImage(dto,
-                        ForumThreadSummaryDto::getAuthorImageName, ForumThreadSummaryDto::setAuthorImageUrl))
-                .sorted(sortingService.comparator(ForumThreadSummaryDto::getUserThreadInteractionCreatedAt, sortDirection))
-                .map(dto -> (BaseUserEntity) dto)
-                .toList();
+    public Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable) {
+        return ((ForumThreadRepository) entityRepository)
+                .findThreadSummaryUnified(userId, true, pageable)
+                .map(dto -> {
+                    imagePopulationService.populateAuthorImage(dto, ForumThreadSummaryDto::getAuthorImageName,
+                            ForumThreadSummaryDto::setAuthorImageUrl);
+                    return dto;
+                });
     }
 
     @Override

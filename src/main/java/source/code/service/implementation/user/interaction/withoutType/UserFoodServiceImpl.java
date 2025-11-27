@@ -1,5 +1,7 @@
 package source.code.service.implementation.user.interaction.withoutType;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -63,21 +65,16 @@ public class UserFoodServiceImpl
     }
 
     @Override
-    public List<BaseUserEntity> getAllFromUser(int userId, Sort.Direction sortDirection) {
+    public Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable) {
         return ((UserFoodRepository) userEntityRepository)
-                .findAllByUserIdWithMedia(userId, Sort.by(sortDirection, "createdAt"))
-                .stream()
+                .findAllByUserIdWithMedia(userId, pageable)
                 .map(uf -> {
                     FoodSummaryDto dto = foodMapper.toSummaryDto(uf.getFood());
                     dto.setUserFoodInteractionCreatedAt(uf.getCreatedAt());
-                    imagePopulationService.populateFirstImageFromMediaList(dto,
-                            uf.getFood().getMediaList(),
-                            Media::getImageName,
-                            FoodSummaryDto::setImageName,
-                            FoodSummaryDto::setFirstImageUrl);
-                    return (BaseUserEntity) dto;
-                })
-                .toList();
+                    imagePopulationService.populateFirstImageFromMediaList(dto, uf.getFood().getMediaList(),
+                            Media::getImageName, FoodSummaryDto::setImageName, FoodSummaryDto::setFirstImageUrl);
+                    return dto;
+                });
     }
 
     @Override

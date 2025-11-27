@@ -2,6 +2,8 @@ package source.code.repository;
 
 import io.lettuce.core.dynamic.annotation.Param;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
 import source.code.dto.response.recipe.RecipeSummaryDto;
@@ -93,6 +95,27 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
       AND r.isPublic = true
     """)
     List<Recipe> findInteractedByUserWithDetails(@Param("userId") int userId, @Param("type") TypeOfInteraction type);
+
+    @Query(value = """
+      SELECT DISTINCT r
+      FROM Recipe r
+      LEFT JOIN FETCH r.recipeCategoryAssociations rca
+      LEFT JOIN FETCH rca.recipeCategory
+      LEFT JOIN FETCH r.mediaList
+      LEFT JOIN FETCH r.user u
+      JOIN UserRecipe ur ON ur.recipe.id = r.id
+      WHERE ur.user.id = :userId
+      AND ur.type = :type
+      AND r.isPublic = true
+    """, countQuery = """
+      SELECT COUNT(DISTINCT r)
+      FROM Recipe r
+      JOIN UserRecipe ur ON ur.recipe.id = r.id
+      WHERE ur.user.id = :userId
+      AND ur.type = :type
+      AND r.isPublic = true
+    """)
+    Page<Recipe> findInteractedByUserWithDetails(@Param("userId") int userId, @Param("type") TypeOfInteraction type, Pageable pageable);
 
 /*
     @Query("""

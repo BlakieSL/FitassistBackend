@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class ForumThreadResponseDto implements Serializable {
     private Integer id;
     private String title;
-    private LocalDateTime dateCreated;
+    private LocalDateTime createdAt;
     private String text;
     private int views;
     private Integer userId;
