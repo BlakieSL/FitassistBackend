@@ -6,6 +6,8 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.filter.FilterDto;
@@ -150,20 +152,19 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    @Cacheable(value = CacheNames.ALL_FOODS)
-    public List<FoodSummaryDto> getAllFoods() {
-        return repositoryHelper.findAll(foodRepository, foodMapper::toSummaryDto);
+    public Page<FoodSummaryDto> getAllFoods(Pageable pageable) {
+        return foodRepository.findAll(pageable)
+                .map(foodMapper::toSummaryDto);
     }
 
     @Override
-    public List<FoodSummaryDto> getFilteredFoods(FilterDto filter) {
+    public Page<FoodSummaryDto> getFilteredFoods(FilterDto filter, Pageable pageable) {
         SpecificationFactory<Food> foodFactory = FoodSpecification::of;
         SpecificationBuilder<Food> specificationBuilder = SpecificationBuilder.of(filter, foodFactory, dependencies);
         Specification<Food> specification = specificationBuilder.build();
 
-        return foodRepository.findAll(specification).stream()
-                .map(foodMapper::toSummaryDto)
-                .toList();
+        return foodRepository.findAll(specification, pageable)
+                .map(foodMapper::toSummaryDto);
     }
 
 
