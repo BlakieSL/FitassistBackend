@@ -22,7 +22,7 @@ public interface RecipeService {
 
     RecipeResponseDto getRecipe(int id);
 
-    Page<RecipeSummaryDto> getAllRecipes(Boolean isPrivate, Pageable pageable);
+    Page<RecipeSummaryDto> getAllRecipes(Boolean showPrivate, Pageable pageable);
 
     Page<RecipeSummaryDto> getFilteredRecipes(FilterDto filter, Pageable pageable);
 
