@@ -66,6 +66,15 @@ public class PlanSpecification implements Specification<Plan> {
             case TYPE -> buildTypePredicate(builder, root);
             case CATEGORY -> buildCategoryPredicate(builder, root);
             case EQUIPMENT -> buildEquipmentPredicate(root, builder);
+            case SAVED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
+                    builder, criteria, root, LikesAndSaves.USER_PLANS.getFieldName(),
+                    TYPE_FIELD, TypeOfInteraction.SAVE);
+            case LIKED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
+                    builder, criteria, root, LikesAndSaves.USER_PLANS.getFieldName(),
+                    TYPE_FIELD, TypeOfInteraction.LIKE);
+            case DISLIKED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
+                    builder, criteria, root, LikesAndSaves.USER_PLANS.getFieldName(),
+                    TYPE_FIELD, TypeOfInteraction.DISLIKE);
             case SAVE -> buildInteractionPredicate(builder, root, TypeOfInteraction.SAVE);
             case LIKE -> buildInteractionPredicate(builder, root, TypeOfInteraction.LIKE);
         };

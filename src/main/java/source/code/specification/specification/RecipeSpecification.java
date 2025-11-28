@@ -53,6 +53,15 @@ public class RecipeSpecification implements Specification<Recipe> {
         return switch (field) {
             case CATEGORY -> buildCategoryPredicate(builder, root);
             case FOODS -> buildFoodsPredicate(builder, root);
+            case SAVED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
+                    builder, criteria, root, LikesAndSaves.USER_RECIPES.getFieldName(),
+                    TYPE_FIELD, TypeOfInteraction.SAVE);
+            case LIKED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
+                    builder, criteria, root, LikesAndSaves.USER_RECIPES.getFieldName(),
+                    TYPE_FIELD, TypeOfInteraction.LIKE);
+            case DISLIKED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
+                    builder, criteria, root, LikesAndSaves.USER_RECIPES.getFieldName(),
+                    TYPE_FIELD, TypeOfInteraction.DISLIKE);
             case SAVE -> buildInteractionPredicate(builder, root, TypeOfInteraction.SAVE);
             case LIKE -> buildInteractionPredicate(builder, root, TypeOfInteraction.LIKE);
         };

@@ -2,6 +2,9 @@ package source.code.helper.Enum.model.field;
 
 public enum RecipeField {
     SAVE,
+    SAVED_BY_USER,
+    LIKED_BY_USER,
+    DISLIKED_BY_USER,
     LIKE,
     CATEGORY("recipeCategoryAssociations"),
     FOODS("recipeFoods");
