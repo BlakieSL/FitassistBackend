@@ -1,4 +1,4 @@
-package source.code.dto.pojo.projection;
+package source.code.dto.pojo.projection.recipe;
 
 import java.time.LocalDateTime;
 

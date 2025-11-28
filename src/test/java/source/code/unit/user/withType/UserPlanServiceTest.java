@@ -28,11 +28,9 @@ import source.code.model.user.UserPlan;
 import source.code.repository.PlanRepository;
 import source.code.repository.UserPlanRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.helpers.ImageUrlPopulationService;
-import source.code.service.declaration.helpers.SortingService;
+import source.code.service.declaration.plan.PlanPopulationService;
 import source.code.service.implementation.user.interaction.withType.UserPlanServiceImpl;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,9 +50,7 @@ public class UserPlanServiceTest {
     @Mock
     private PlanMapper planMapper;
     @Mock
-    private ImageUrlPopulationService imageUrlPopulationService;
-    @Mock
-    private SortingService sortingService;
+    private PlanPopulationService planPopulationService;
     @InjectMocks
     private UserPlanServiceImpl userPlanService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
@@ -202,20 +198,36 @@ public class UserPlanServiceTest {
         TypeOfInteraction type = TypeOfInteraction.SAVE;
         Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
+        Plan plan1 = new Plan();
+        plan1.setId(1);
+        Plan plan2 = new Plan();
+        plan2.setId(2);
+
+        User user = new User();
+        user.setId(userId);
+
+        UserPlan userPlan1 = UserPlan.createWithUserPlanType(user, plan1, type);
+        UserPlan userPlan2 = UserPlan.createWithUserPlanType(user, plan2, type);
+
         PlanSummaryDto dto1 = new PlanSummaryDto();
         dto1.setId(1);
         PlanSummaryDto dto2 = new PlanSummaryDto();
         dto2.setId(2);
 
-        Page<PlanSummaryDto> page = new PageImpl<>(List.of(dto1, dto2));
-        when(planRepository.findPlanSummaryUnified(eq(userId), eq(type), eq(true), isNull(), any(Pageable.class)))
-                .thenReturn(page);
+        Page<UserPlan> userPlanPage = new PageImpl<>(List.of(userPlan1, userPlan2), pageable, 2);
+
+        when(userPlanRepository.findByUserIdAndTypeWithPlan(eq(userId), eq(type), any(Pageable.class)))
+                .thenReturn(userPlanPage);
+        when(planRepository.findByIdsWithDetails(any())).thenReturn(List.of(plan1, plan2));
+        when(planMapper.toSummaryDto(plan1)).thenReturn(dto1);
+        when(planMapper.toSummaryDto(plan2)).thenReturn(dto2);
 
         Page<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, pageable);
 
         assertEquals(2, result.getContent().size());
         assertEquals(2, result.getTotalElements());
-        verify(planRepository).findPlanSummaryUnified(eq(userId), eq(type), eq(true), isNull(), any(Pageable.class));
+        verify(userPlanRepository).findByUserIdAndTypeWithPlan(eq(userId), eq(type), any(Pageable.class));
+        verify(planPopulationService).populate(any(List.class));
     }
 
     @Test
@@ -224,9 +236,10 @@ public class UserPlanServiceTest {
         TypeOfInteraction type = TypeOfInteraction.SAVE;
         Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Page<PlanSummaryDto> page = new PageImpl<>(List.of());
-        when(planRepository.findPlanSummaryUnified(eq(userId), eq(type), eq(true), isNull(), any(Pageable.class)))
-                .thenReturn(page);
+        Page<UserPlan> emptyPage = new PageImpl<>(List.of(), pageable, 0);
+
+        when(userPlanRepository.findByUserIdAndTypeWithPlan(eq(userId), eq(type), any(Pageable.class)))
+                .thenReturn(emptyPage);
 
         Page<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, pageable);
 

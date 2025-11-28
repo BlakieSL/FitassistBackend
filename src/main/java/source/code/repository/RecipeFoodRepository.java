@@ -3,7 +3,7 @@ package source.code.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import source.code.dto.pojo.projection.RecipeIngredientCountProjection;
+import source.code.dto.pojo.projection.recipe.RecipeIngredientCountProjection;
 import source.code.model.recipe.RecipeFood;
 
 import java.util.List;
@@ -11,8 +11,6 @@ import java.util.Optional;
 
 public interface RecipeFoodRepository extends JpaRepository<RecipeFood, Integer> {
     List<RecipeFood> findByRecipeId(int recipeId);
-
-    List<RecipeFood> findByFoodId(int foodId);
 
     boolean existsByRecipeIdAndFoodId(int recipeId, int foodId);
 
