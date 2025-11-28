@@ -227,37 +227,4 @@ public class UserExerciseServiceTest {
         assertEquals(0, result.getTotalElements());
     }
 
-    @Test
-    public void calculateLikesAndSaves_ShouldReturnCorrectCounts() {
-        int exerciseId = 100;
-        long saveCount = 5;
-        long likeCount = 0L;
-        Exercise exercise = new Exercise();
-
-        when(exerciseRepository.findById(exerciseId)).thenReturn(Optional.of(exercise));
-        when(userExerciseRepository.countByExerciseId(exerciseId))
-                .thenReturn(likeCount);
-        when(userExerciseRepository.countByExerciseId(exerciseId))
-                .thenReturn(saveCount);
-
-        var result = userExerciseService.calculateLikesAndSaves(exerciseId);
-
-        assertEquals(saveCount, result.getSaves());
-        assertEquals(likeCount, result.getLikes());
-        verify(exerciseRepository).findById(exerciseId);
-        verify(userExerciseRepository).countByExerciseId(exerciseId);
-        verify(userExerciseRepository).countByExerciseId(exerciseId);
-    }
-
-    @Test
-    public void calculateLikesAndSaves_ShouldThrowRecordNotFoundExceptionIfExerciseNotFound() {
-        int exerciseId = 100;
-
-        when(exerciseRepository.findById(exerciseId)).thenReturn(Optional.empty());
-
-        assertThrows(RecordNotFoundException.class,
-                () -> userExerciseService.calculateLikesAndSaves(exerciseId));
-
-        verify(userExerciseRepository, never()).countByExerciseId(anyInt());
-    }
 }

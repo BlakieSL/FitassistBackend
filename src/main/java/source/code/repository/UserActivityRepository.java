@@ -14,16 +14,9 @@ import java.util.Optional;
 public interface UserActivityRepository extends JpaRepository<UserActivity, Integer> {
     boolean existsByUserIdAndActivityId(int userId, int activityId);
 
-    Optional<UserActivity> findByUserIdAndActivityId(int userId, int activityId);
+    long countByActivityId(int activityId);
 
-    @Query("""
-           SELECT ua FROM UserActivity ua
-           JOIN FETCH ua.activity a
-           JOIN FETCH a.activityCategory
-           LEFT JOIN FETCH a.mediaList
-           WHERE ua.user.id = :userId
-           """)
-    List<UserActivity> findAllByUserIdWithMedia(@Param("userId") int userId, Sort sort);
+    Optional<UserActivity> findByUserIdAndActivityId(int userId, int activityId);
 
     @Query(value = """
            SELECT ua FROM UserActivity ua
@@ -31,11 +24,6 @@ public interface UserActivityRepository extends JpaRepository<UserActivity, Inte
            JOIN FETCH a.activityCategory
            LEFT JOIN FETCH a.mediaList
            WHERE ua.user.id = :userId
-           """, countQuery = """
-           SELECT COUNT(ua) FROM UserActivity ua
-           WHERE ua.user.id = :userId
            """)
     Page<UserActivity> findAllByUserIdWithMedia(@Param("userId") int userId, Pageable pageable);
-
-    long countByActivityId(int activityId);
 }

@@ -15,17 +15,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRecipeRepository extends JpaRepository<UserRecipe, Integer> {
-    @Query("""
-        SELECT ur FROM UserRecipe ur
-        WHERE ur.recipe.isPublic = true AND ur.user.id = :userId AND ur.type = :type
-    """)
-    List<UserRecipe> findByUserIdAndType(int userId, TypeOfInteraction type);
-
     Optional<UserRecipe> findByUserIdAndRecipeIdAndType(int userId, int recipeId, TypeOfInteraction type);
 
     boolean existsByUserIdAndRecipeIdAndType(int userId, int recipeId, TypeOfInteraction type);
-
-    long countByRecipeIdAndType(int recipeId, TypeOfInteraction type);
 
     @Query("""
         SELECT
@@ -51,17 +43,6 @@ public interface UserRecipeRepository extends JpaRepository<UserRecipe, Integer>
         GROUP BY ur.recipe.id
     """)
     List<RecipeCountsProjection> findCountsByRecipeIds(@Param("recipeIds") List<Integer> recipeIds);
-
-    @Query("""
-        SELECT ur.recipe.id as recipeId, ur.createdAt as createdAt
-        FROM UserRecipe ur
-        WHERE ur.user.id = :userId
-        AND ur.type = :type
-        AND ur.recipe.id IN :recipeIds
-    """)
-    List<RecipeInteractionDateProjection> findInteractionDatesByRecipeIds(@Param("userId") int userId,
-                                                                          @Param("type") TypeOfInteraction type,
-                                                                          @Param("recipeIds") List<Integer> recipeIds);
 
     @Query(value = """
         SELECT ur

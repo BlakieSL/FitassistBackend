@@ -14,18 +14,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserPlanRepository extends JpaRepository<UserPlan, Integer> {
-    @Query("""
-        SELECT up FROM UserPlan up
-        WHERE up.plan.isPublic = true AND up.user.id = :userId AND up.type = :type
-    """)
-    List<UserPlan> findByUserIdAndType(@Param("userId") int userId,
-                                       @Param("type") TypeOfInteraction type);
-
     Optional<UserPlan> findByUserIdAndPlanIdAndType(int userId, int planId, TypeOfInteraction type);
 
     boolean existsByUserIdAndPlanIdAndType(int userId, int planId, TypeOfInteraction type);
 
-    long countByPlanIdAndType(int planId, TypeOfInteraction type);
 
     @Query("""
         SELECT
@@ -38,18 +30,6 @@ public interface UserPlanRepository extends JpaRepository<UserPlan, Integer> {
         GROUP BY up.plan.id
     """)
     List<PlanCountsProjection> findCountsByPlanIds(@Param("planIds") List<Integer> planIds);
-
-    @Query("""
-        SELECT up.plan.id as planId, up.createdAt as createdAt
-        FROM UserPlan up
-        WHERE up.user.id = :userId
-        AND up.type = :type
-        AND up.plan.id IN :planIds
-    """)
-    List<PlanInteractionDateProjection> findInteractionDatesByPlanIds(
-            @Param("userId") int userId,
-            @Param("type") TypeOfInteraction type,
-            @Param("planIds") List<Integer> planIds);
 
     @Query(value = """
         SELECT up

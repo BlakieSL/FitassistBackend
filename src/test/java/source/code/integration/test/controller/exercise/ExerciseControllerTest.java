@@ -223,13 +223,17 @@ public class ExerciseControllerTest {
 
     @ExerciseSql
     @Test
-    @DisplayName("GET - / - Should retrieve all exercises")
+    @DisplayName("GET - / - Should retrieve all exercises with pagination")
     void getAllExercises() throws Exception {
         Utils.setUserContext(1);
 
         mockMvc.perform(get("/api/exercises")
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpectAll(status().isOk());
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.content").isArray(),
+                        jsonPath("$.totalElements").isNumber()
+                );
     }
 
     @ExerciseSql

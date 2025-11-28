@@ -3,6 +3,8 @@ package source.code.service.declaration.activity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import source.code.dto.request.activity.ActivityCreateDto;
 import source.code.dto.request.activity.CalculateActivityCaloriesRequestDto;
 import source.code.dto.request.filter.FilterDto;
@@ -17,16 +19,15 @@ import java.util.List;
 public interface ActivityService {
     ActivitySummaryDto createActivity(ActivityCreateDto dto);
 
-    void updateActivity(int activityId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException;
+    void updateActivity(int activityId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
     void deleteActivity(int activityId);
 
     ActivityResponseDto getActivity(int id);
 
-    List<ActivitySummaryDto> getAllActivities();
+    Page<ActivitySummaryDto> getAllActivities(Pageable pageable);
 
-    List<ActivitySummaryDto> getFilteredActivities(FilterDto filter);
+    Page<ActivitySummaryDto> getFilteredActivities(FilterDto filter, Pageable pageable);
 
     List<Activity> getAllActivityEntities();
 

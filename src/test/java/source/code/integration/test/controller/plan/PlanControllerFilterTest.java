@@ -65,7 +65,7 @@ public class PlanControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(2))
+                        jsonPath("$.content", hasSize(2))
                 );
     }
 
@@ -82,7 +82,7 @@ public class PlanControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(5))
+                        jsonPath("$.content", hasSize(5))
                 );
     }
 
@@ -99,11 +99,11 @@ public class PlanControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(3)),
-                        jsonPath("$[*].name", containsInAnyOrder(
+                        jsonPath("$.content", hasSize(3)),
+                        jsonPath("$.content[*].name", containsInAnyOrder(
                                 "Beginner Strength", "Powerlifting", "Home Workout"
                         )),
-                        jsonPath("$[*].categories[?(@.id == 1)].name",
+                        jsonPath("$.content[*].categories[?(@.id == 1)].name",
                                 everyItem(is("Strength Training")))
                 );
     }
@@ -121,7 +121,7 @@ public class PlanControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(6))
+                        jsonPath("$.content", hasSize(6))
                 );
     }
 
@@ -138,7 +138,7 @@ public class PlanControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(6))
+                        jsonPath("$.content", hasSize(6))
                 );
     }
 
@@ -155,7 +155,7 @@ public class PlanControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(2))
+                        jsonPath("$.content", hasSize(2))
                 );
     }
 

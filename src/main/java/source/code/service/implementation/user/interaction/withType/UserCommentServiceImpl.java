@@ -86,30 +86,4 @@ public class UserCommentServiceImpl
                         type
                 ));
     }
-
-    @Override
-    protected List<UserComment> findAllByUserAndType(int userId, TypeOfInteraction type) {
-        return ((UserCommentRepository) userEntityRepository)
-                .findByUserIdAndType(userId, type);
-    }
-
-    @Override
-    protected Comment extractEntity(UserComment userEntity) {
-        return userEntity.getComment();
-    }
-
-    @Override
-    protected long countSaves(int entityId) {
-        return 0;
-    }
-
-    @Override
-    protected long countLikes(int entityId) {
-        long likes = ((UserCommentRepository) userEntityRepository)
-                .countByCommentIdAndType(entityId, TypeOfInteraction.LIKE);
-        long dislikes = ((UserCommentRepository) userEntityRepository)
-                .countByCommentIdAndType(entityId, TypeOfInteraction.DISLIKE);
-
-        return likes - dislikes;
-    }
 }

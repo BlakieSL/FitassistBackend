@@ -6,6 +6,10 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +21,6 @@ import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.dto.response.activity.ActivityResponseDto;
 import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.service.declaration.activity.ActivityService;
-
-import java.util.List;
-
 
 @RestController
 @RequestMapping(path = "/api/activities")
@@ -65,14 +66,18 @@ public class ActivityController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ActivitySummaryDto>> getAllActivities() {
-        return ResponseEntity.ok(activityService.getAllActivities());
+    public ResponseEntity<Page<ActivitySummaryDto>> getAllActivities(
+            @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        return ResponseEntity.ok(activityService.getAllActivities(pageable));
     }
 
     @PostMapping("/filter")
-    public ResponseEntity<List<ActivitySummaryDto>> getFilteredActivities(
-            @Valid @RequestBody FilterDto filterDto) {
-        List<ActivitySummaryDto> filteredActivities = activityService.getFilteredActivities(filterDto);
+    public ResponseEntity<Page<ActivitySummaryDto>> getFilteredActivities(
+            @Valid @RequestBody FilterDto filterDto,
+            @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        Page<ActivitySummaryDto> filteredActivities = activityService.getFilteredActivities(filterDto, pageable);
         return ResponseEntity.ok(filteredActivities);
     }
 

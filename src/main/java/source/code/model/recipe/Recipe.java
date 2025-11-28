@@ -25,6 +25,20 @@ import java.util.Set;
 @Entity
 @Table(name = "recipe")
 @NamedEntityGraph(name = "Recipe.withoutAssociations", attributeNodes = {})
+@NamedEntityGraph(
+        name = "Recipe.summary",
+        attributeNodes = {
+                @NamedAttributeNode("user"),
+                @NamedAttributeNode("mediaList"),
+                @NamedAttributeNode(value = "recipeCategoryAssociations", subgraph = "rca-subgraph")
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "rca-subgraph",
+                        attributeNodes = @NamedAttributeNode("recipeCategory")
+                )
+        }
+)
 @Getter
 @Setter
 @AllArgsConstructor

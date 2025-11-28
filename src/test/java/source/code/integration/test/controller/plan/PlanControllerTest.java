@@ -199,7 +199,8 @@ public class PlanControllerTest {
         mockMvc.perform(get("/api/plans/private"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(12))
+                        jsonPath("$.content", hasSize(12)),
+                        jsonPath("$.totalElements").value(12)
                 );
     }
 
@@ -211,7 +212,8 @@ public class PlanControllerTest {
         mockMvc.perform(get("/api/plans/private/false"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(12))
+                        jsonPath("$.content", hasSize(12)),
+                        jsonPath("$.totalElements").value(12)
                 );
     }
 
@@ -224,19 +226,21 @@ public class PlanControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(3))
+                        jsonPath("$.content", hasSize(3)),
+                        jsonPath("$.totalElements").value(3)
                 );
     }
 
     @Test
-    @DisplayName("GET - / - Should return empty list when no plans exist")
+    @DisplayName("GET - / - Should return empty page when no plans exist")
     void getAllPlansEmpty() throws Exception {
         Utils.setUserContext(1);
         mockMvc.perform(get("/api/plans/private")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(0))
+                        jsonPath("$.content", hasSize(0)),
+                        jsonPath("$.totalElements").value(0)
                 );
     }
 

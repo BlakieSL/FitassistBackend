@@ -4,6 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +16,8 @@ import source.code.annotation.plan.PublicPlanOrOwnerOrAdmin;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.response.plan.PlanResponseDto;
+import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.service.declaration.plan.PlanService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/plans")
@@ -55,16 +58,18 @@ public class PlanController {
     }
 
     @GetMapping({"/private", "/private/{isPrivate}"})
-    public ResponseEntity<List<PlanResponseDto>> getAllPlans(
-            @PathVariable(required = false) Boolean isPrivate) {
-        List<PlanResponseDto> plans = planService.getAllPlans(isPrivate);
+    public ResponseEntity<Page<PlanSummaryDto>> getAllPlans(
+            @PathVariable(required = false) Boolean isPrivate,
+            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PlanSummaryDto> plans = planService.getAllPlans(isPrivate, pageable);
         return ResponseEntity.ok(plans);
     }
 
     @PostMapping("/filter")
-    public ResponseEntity<List<PlanResponseDto>> getFilteredPlans(
-            @Valid @RequestBody FilterDto filterDto) {
-        List<PlanResponseDto> filtered = planService.getFilteredPlans(filterDto);
+    public ResponseEntity<Page<PlanSummaryDto>> getFilteredPlans(
+            @Valid @RequestBody FilterDto filterDto,
+            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PlanSummaryDto> filtered = planService.getFilteredPlans(filterDto, pageable);
         return ResponseEntity.ok(filtered);
     }
 

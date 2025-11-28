@@ -116,26 +116,4 @@ public class UserRecipeServiceImpl
                         type
                 ));
     }
-
-    @Override
-    protected List<UserRecipe> findAllByUserAndType(int userId, TypeOfInteraction type) {
-        return ((UserRecipeRepository) userEntityRepository).findByUserIdAndType(userId, type);
-    }
-
-    @Override
-    protected Recipe extractEntity(UserRecipe userRecipe) {
-        return userRecipe.getRecipe();
-    }
-
-    @Override
-    protected long countSaves(int recipeId) {
-        return ((UserRecipeRepository) userEntityRepository)
-                .countByRecipeIdAndType(recipeId, TypeOfInteraction.SAVE);
-    }
-
-    @Override
-    protected long countLikes(int recipeId) {
-        return ((UserRecipeRepository) userEntityRepository)
-                .countByRecipeIdAndType(recipeId, TypeOfInteraction.LIKE);
-    }
 }

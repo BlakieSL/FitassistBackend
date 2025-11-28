@@ -1,5 +1,7 @@
 package source.code.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -21,7 +23,7 @@ public interface ActivityRepository
 
     @EntityGraph(attributePaths = {"activityCategory"})
     @Query("SELECT a FROM Activity a")
-    List<Activity> findAllWithActivityCategory();
+    Page<Activity> findAllWithActivityCategory(Pageable pageable);
 
     @Query("SELECT a FROM Activity a " +
            "LEFT JOIN FETCH a.activityCategory " +

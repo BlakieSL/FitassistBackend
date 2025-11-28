@@ -118,39 +118,6 @@ public class UserSavedControllerWithTypeTest {
                 );
     }
 
-    @WithMockUser
-    @UserSavedSql
-    @Test
-    @DisplayName("GET - /item-type/{itemType}/{itemId}/likes-ans-saves - Should return likes and dislikes count for a comment")
-    void calculateLikesAndSaves() throws Exception {
-        mockMvc.perform(get("/api/user-saved/item-type/COMMENT/1/likes-ans-saves"))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.likes").value(0)
-                );
-    }
-
-    @WithMockUser
-    @UserSavedSql
-    @Test
-    @DisplayName("GET - /item-type/{itemType}/{itemId}/likes-ans-saves - Should return zero likes and saves for an item without likes and saves")
-    void calculateLikesAndSavesEmpty() throws Exception {
-        mockMvc.perform(get("/api/user-saved/item-type/PLAN/3/likes-ans-saves"))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.likes").value(0),
-                        jsonPath("$.saves").value(1)
-                );
-    }
-
-    @WithMockUser
-    @UserSavedSql
-    @Test
-    @DisplayName("GET - /item-type/{itemType}/{itemId}/likes-ans-saves - Should return 404 for non-existing item")
-    void calculateLikesAndSavesNotFound() throws Exception {
-        mockMvc.perform(get("/api/user-saved/item-type/PLAN/999/likes-ans-saves"))
-                .andExpectAll(status().isNotFound());
-    }
 
     @UserSavedSql
     @Test

@@ -1,5 +1,6 @@
 package source.code.service.implementation.user.interaction.withoutType;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.response.food.FoodSummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
+import source.code.helper.Enum.cache.CacheNames;
 import source.code.mapper.food.FoodMapper;
 import source.code.model.food.Food;
 import source.code.model.media.Media;
@@ -43,6 +45,31 @@ public class UserFoodServiceImpl
     }
 
     @Override
+    @CacheEvict(value = CacheNames.FOODS, key = "#entityId")
+    public void saveToUser(int entityId) {
+        super.saveToUser(entityId);
+    }
+
+    @Override
+    @CacheEvict(value = CacheNames.FOODS, key = "#entityId")
+    public void deleteFromUser(int entityId) {
+        super.deleteFromUser(entityId);
+    }
+
+    @Override
+    public Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable) {
+        return ((UserFoodRepository) userEntityRepository)
+                .findAllByUserIdWithMedia(userId, pageable)
+                .map(uf -> {
+                    FoodSummaryDto dto = foodMapper.toSummaryDto(uf.getFood());
+                    dto.setUserFoodInteractionCreatedAt(uf.getCreatedAt());
+                    imagePopulationService.populateFirstImageFromMediaList(dto, uf.getFood().getMediaList(),
+                            Media::getImageName, FoodSummaryDto::setImageName, FoodSummaryDto::setFirstImageUrl);
+                    return dto;
+                });
+    }
+
+    @Override
     protected boolean isAlreadySaved(int userId, int entityId) {
         return ((UserFoodRepository) userEntityRepository)
                 .existsByUserIdAndFoodId(userId, entityId);
@@ -62,41 +89,5 @@ public class UserFoodServiceImpl
                         userId,
                         entityId
                 ));
-    }
-
-    @Override
-    public Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable) {
-        return ((UserFoodRepository) userEntityRepository)
-                .findAllByUserIdWithMedia(userId, pageable)
-                .map(uf -> {
-                    FoodSummaryDto dto = foodMapper.toSummaryDto(uf.getFood());
-                    dto.setUserFoodInteractionCreatedAt(uf.getCreatedAt());
-                    imagePopulationService.populateFirstImageFromMediaList(dto, uf.getFood().getMediaList(),
-                            Media::getImageName, FoodSummaryDto::setImageName, FoodSummaryDto::setFirstImageUrl);
-                    return dto;
-                });
-    }
-
-    @Override
-    protected List<UserFood> findAllByUser(int userId) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
-        return ((UserFoodRepository) userEntityRepository)
-                .findAllByUserIdWithMedia(userId, sort);
-    }
-
-    @Override
-    protected Food extractEntity(UserFood userEntity) {
-        return userEntity.getFood();
-    }
-
-    @Override
-    protected long countSaves(int entityId) {
-        return ((UserFoodRepository) userEntityRepository)
-                .countByFoodId(entityId);
-    }
-
-    @Override
-    protected long countLikes(int entityId) {
-        return 0;
     }
 }
