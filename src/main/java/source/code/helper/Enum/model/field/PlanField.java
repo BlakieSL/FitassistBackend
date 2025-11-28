@@ -3,6 +3,9 @@ package source.code.helper.Enum.model.field;
 public enum PlanField {
     LIKE,
     SAVE,
+    SAVED_BY_USER,
+    LIKED_BY_USER,
+    DISLIKED_BY_USER,
     TYPE,
     EQUIPMENT,
     CATEGORY,

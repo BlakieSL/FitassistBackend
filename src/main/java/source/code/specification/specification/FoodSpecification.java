@@ -32,36 +32,24 @@ public class FoodSpecification implements Specification<Food> {
         return buildPredicateForField(builder, criteria, root, field, query);
     }
 
-    private Predicate buildPredicateForField(
-            CriteriaBuilder builder,
-            FilterCriteria criteria,
-            Root<Food> root,
-            FoodField field,
-            CriteriaQuery<?> query) {
+    private Predicate buildPredicateForField(CriteriaBuilder builder,
+                                             FilterCriteria criteria,
+                                             Root<Food> root,
+                                             FoodField field,
+                                             CriteriaQuery<?> query) {
         return switch (field) {
             case CALORIES -> buildNumericPredicate(builder, criteria, root.get(CALORIES_FIELD));
             case PROTEIN -> buildNumericPredicate(builder, criteria, root.get(PROTEIN_FIELD));
             case FAT -> buildNumericPredicate(builder, criteria, root.get(FAT_FIELD));
             case CARBOHYDRATES -> buildNumericPredicate(builder, criteria, root.get(CARBOHYDRATES_FIELD));
             case CATEGORY -> GenericSpecificationHelper.buildPredicateEntityProperty(
-                    builder,
-                    criteria,
-                    root,
-                    FOOD_CATEGORY_FIELD
-            );
+                    builder, criteria, root, FOOD_CATEGORY_FIELD);
+            case SAVED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
+                    builder, criteria, root, LikesAndSaves.USER_FOODS.getFieldName());
             case SAVE -> {
-                Predicate predicate = GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
-                        builder,
-                        criteria,
-                        root,
-                        LikesAndSaves.USER_FOODS.getFieldName(),
-                        null,
-                        null
-                );
-
                 query.groupBy(root.get("id"));
-
-                yield predicate;
+                yield GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
+                        builder, criteria, root, LikesAndSaves.USER_FOODS.getFieldName(), null, null);
             }
         };
     }

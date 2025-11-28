@@ -29,37 +29,22 @@ public class ActivitySpecification implements Specification<Activity> {
         return buildPredicateForField(builder, criteria, root, field, query);
     }
 
-    private Predicate buildPredicateForField(
-            CriteriaBuilder builder,
-            FilterCriteria criteria,
-            Root<Activity> root,
-            ActivityField field,
-            CriteriaQuery<?> query) {
+    private Predicate buildPredicateForField(CriteriaBuilder builder,
+                                             FilterCriteria criteria,
+                                             Root<Activity> root,
+                                             ActivityField field,
+                                             CriteriaQuery<?> query) {
         return switch (field) {
-            case ActivityField.CATEGORY -> GenericSpecificationHelper.buildPredicateEntityProperty(
-                    builder,
-                    criteria,
-                    root,
-                    ACTIVITY_CATEGORY_FIELD
-            );
-            case ActivityField.MET -> GenericSpecificationHelper.buildPredicateNumericProperty(
-                    builder,
-                    criteria,
-                    root.get(MET)
-            );
-            case ActivityField.SAVE -> {
-                Predicate predicate = GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
-                        builder,
-                        criteria,
-                        root,
-                        LikesAndSaves.USER_ACTIVITIES.getFieldName(),
-                        null,
-                        null
-                );
-
+            case CATEGORY -> GenericSpecificationHelper.buildPredicateEntityProperty(
+                    builder, criteria, root, ACTIVITY_CATEGORY_FIELD);
+            case MET -> GenericSpecificationHelper.buildPredicateNumericProperty(
+                    builder, criteria, root.get(MET));
+            case SAVED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
+                    builder, criteria, root, LikesAndSaves.USER_ACTIVITIES.getFieldName());
+            case SAVE -> {
                 query.groupBy(root.get("id"));
-
-                yield  predicate;
+                yield GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
+                        builder, criteria, root, LikesAndSaves.USER_ACTIVITIES.getFieldName(), null, null);
             }
         };
     }
