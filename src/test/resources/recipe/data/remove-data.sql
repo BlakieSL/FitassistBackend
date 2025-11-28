@@ -6,4 +6,4 @@ DELETE FROM recipe;
 DELETE FROM recipe_category;
 DELETE FROM food;
 DELETE FROM food_category;
-DELETE FROM user WHERE id = 1;
+DELETE FROM user WHERE id IN (1, 2);
