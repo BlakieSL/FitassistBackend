@@ -19,10 +19,12 @@ import source.code.model.user.UserRecipe;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.helpers.RecipePopulationService;
+import source.code.service.declaration.recipe.RecipePopulationService;
 import source.code.service.declaration.user.SavedService;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service("userRecipeService")
 public class UserRecipeServiceImpl
@@ -60,18 +62,33 @@ public class UserRecipeServiceImpl
 
     @Override
     public Page<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Pageable pageable) {
-        Page<Recipe> recipePage = ((RecipeRepository) entityRepository)
-                .findInteractedByUserWithDetails(userId, type, pageable);
+        Page<UserRecipe> userRecipePage = ((UserRecipeRepository) userEntityRepository)
+                .findByUserIdAndTypeWithRecipe(userId, type, pageable);
 
-        List<RecipeSummaryDto> summaries = recipePage.getContent().stream()
-                .map(recipeMapper::toSummaryDto)
+        if (userRecipePage.isEmpty()) return new PageImpl<>(List.of(), pageable, 0);
+
+        List<Integer> recipeIds = userRecipePage.getContent().stream()
+                .map(ur -> ur.getRecipe().getId())
+                .toList();
+
+        List<Recipe> recipesWithDetails = ((RecipeRepository) entityRepository).findByIdsWithDetails(recipeIds);
+
+        Map<Integer, Recipe> recipeMap = recipesWithDetails.stream()
+                .collect(Collectors.toMap(Recipe::getId, r -> r));
+
+        List<RecipeSummaryDto> summaries = userRecipePage.getContent().stream()
+                .map(ur -> {
+                    Recipe recipe = recipeMap.get(ur.getRecipe().getId());
+                    RecipeSummaryDto dto = recipeMapper.toSummaryDto(recipe);
+                    dto.setUserRecipeInteractionCreatedAt(ur.getCreatedAt());
+                    return dto;
+                })
                 .toList();
 
         recipePopulationService.populate(summaries);
-        recipePopulationService.populateInteractionDates(summaries, userId, type);
 
         return new PageImpl<>(summaries.stream().map(dto -> (BaseUserEntity) dto).toList(),
-                pageable, recipePage.getTotalElements());
+                pageable, userRecipePage.getTotalElements());
     }
 
     @Override

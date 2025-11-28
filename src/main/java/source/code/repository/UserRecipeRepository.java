@@ -1,11 +1,13 @@
 package source.code.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import source.code.dto.pojo.projection.RecipeCountsProjection;
-import source.code.dto.pojo.projection.RecipeInteractionDateProjection;
-import source.code.dto.pojo.projection.RecipeUserInteractionProjection;
+import source.code.dto.pojo.projection.recipe.RecipeCountsProjection;
+import source.code.dto.pojo.projection.recipe.RecipeInteractionDateProjection;
+import source.code.dto.pojo.projection.recipe.RecipeUserInteractionProjection;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.UserRecipe;
 
@@ -60,4 +62,16 @@ public interface UserRecipeRepository extends JpaRepository<UserRecipe, Integer>
     List<RecipeInteractionDateProjection> findInteractionDatesByRecipeIds(@Param("userId") int userId,
                                                                           @Param("type") TypeOfInteraction type,
                                                                           @Param("recipeIds") List<Integer> recipeIds);
+
+    @Query(value = """
+        SELECT ur
+        FROM UserRecipe ur
+        JOIN FETCH ur.recipe r
+        WHERE ur.user.id = :userId
+        AND ur.type = :type
+        AND r.isPublic = true
+    """)
+    Page<UserRecipe> findByUserIdAndTypeWithRecipe(@Param("userId") int userId,
+                                                    @Param("type") TypeOfInteraction type,
+                                                    Pageable pageable);
 }

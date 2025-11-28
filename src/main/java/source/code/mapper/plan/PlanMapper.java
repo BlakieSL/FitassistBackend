@@ -3,9 +3,12 @@ package source.code.mapper.plan;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.pojo.PlanCategoryShortDto;
+import source.code.dto.pojo.PlanTypeShortDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.request.plan.PlanUpdateDto;
 import source.code.dto.response.plan.PlanResponseDto;
+import source.code.dto.response.plan.PlanSummaryDto;
+import source.code.model.media.Media;
 import source.code.exception.RecordNotFoundException;
 import source.code.model.plan.Plan;
 import source.code.model.plan.PlanCategory;
@@ -41,6 +44,18 @@ public abstract class PlanMapper {
     @Mapping(target = "planType", source = "planType", qualifiedByName = "mapTypeToShortDto")
     @Mapping(target = "userId", source = "user", qualifiedByName = "userToUserId")
     public abstract PlanResponseDto toResponseDto(Plan plan);
+
+    @Mapping(target = "authorUsername", source = "user.username")
+    @Mapping(target = "authorId", source = "user.id")
+    @Mapping(target = "authorImageName", ignore = true)
+    @Mapping(target = "authorImageUrl", ignore = true)
+    @Mapping(target = "firstImageName", source = "mediaList", qualifiedByName = "mapMediaToFirstImageName")
+    @Mapping(target = "firstImageUrl", ignore = true)
+    @Mapping(target = "likesCount", ignore = true)
+    @Mapping(target = "savesCount", ignore = true)
+    @Mapping(target = "planType", source = "planType", qualifiedByName = "mapTypeToTypeShortDto")
+    @Mapping(target = "interactedWithAt", ignore = true)
+    public abstract PlanSummaryDto toSummaryDto(Plan plan);
 
     @Mapping(target = "planCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
     @Mapping(target = "planType", source = "planTypeId", qualifiedByName = "mapTypeIdToEntity")
@@ -121,5 +136,16 @@ public abstract class PlanMapper {
     @Named("mapTypeToShortDto")
     protected PlanCategoryShortDto mapTypeToShortDto(PlanType planType) {
         return new PlanCategoryShortDto(planType.getId(), planType.getName());
+    }
+
+    @Named("mapTypeToTypeShortDto")
+    protected PlanTypeShortDto mapTypeToTypeShortDto(PlanType planType) {
+        return new PlanTypeShortDto(planType.getId(), planType.getName());
+    }
+
+    @Named("mapMediaToFirstImageName")
+    protected String mapMediaToFirstImageName(List<Media> mediaList) {
+        if (mediaList.isEmpty()) return null;
+        return mediaList.getFirst().getImageName();
     }
 }

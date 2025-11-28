@@ -23,7 +23,7 @@ import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.recipe.Recipe;
 import source.code.repository.RecipeRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
-import source.code.service.declaration.helpers.RecipePopulationService;
+import source.code.service.declaration.recipe.RecipePopulationService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.declaration.recipe.RecipeService;

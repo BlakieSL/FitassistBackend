@@ -53,7 +53,7 @@ public class Plan implements IndexedEntity {
     private Boolean isPublic = false;
 
     @Column(nullable = false)
-    private Integer views = 0;
+    private Long views = 0L;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

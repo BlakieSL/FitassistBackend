@@ -9,18 +9,20 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.helper.user.AuthorizationUtil;
+import source.code.mapper.plan.PlanMapper;
 import source.code.mapper.recipe.RecipeMapper;
+import source.code.model.plan.Plan;
 import source.code.model.recipe.Recipe;
 import source.code.repository.*;
 import source.code.service.declaration.helpers.ImageUrlPopulationService;
-import source.code.service.declaration.helpers.RecipePopulationService;
-import source.code.service.declaration.helpers.SortingService;
+import source.code.service.declaration.plan.PlanPopulationService;
+import source.code.service.declaration.recipe.RecipePopulationService;
 import source.code.service.implementation.user.UserCreatedServiceImpl;
 
 import java.time.LocalDateTime;
@@ -28,6 +30,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -42,21 +45,25 @@ public class UserCreatedServiceTest {
     @Mock
     private ForumThreadRepository forumThreadRepository;
     @Mock
-    private RecipePopulationService recipePopulationService;
-    @Mock
-    private ImageUrlPopulationService imagePopulationService;
+    private PlanMapper planMapper;
     @Mock
     private RecipeMapper recipeMapper;
     @Mock
-    private SortingService sortingService;
+    private PlanPopulationService planPopulationService;
+    @Mock
+    private RecipePopulationService recipePopulationService;
+    @Mock
+    private ImageUrlPopulationService imagePopulationService;
     @InjectMocks
     private UserCreatedServiceImpl userCreatedService;
 
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
+    private Pageable defaultPageable;
 
     @BeforeEach
     void setUp() {
         mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
+        defaultPageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
     @AfterEach
@@ -71,36 +78,47 @@ public class UserCreatedServiceTest {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
+        Plan plan1 = new Plan();
+        plan1.setId(1);
+        Plan plan2 = new Plan();
+        plan2.setId(2);
+
         PlanSummaryDto dto1 = new PlanSummaryDto();
+        dto1.setId(1);
         dto1.setFirstImageName("image1.jpg");
         PlanSummaryDto dto2 = new PlanSummaryDto();
+        dto2.setId(2);
         dto2.setFirstImageName("image2.jpg");
 
-        when(planRepository.findPlanSummaryUnified(userId, null, false, true)).thenReturn(List.of(dto1, dto2));
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
+        Page<Plan> planPage = new PageImpl<>(List.of(plan1, plan2), defaultPageable, 2);
 
-        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId, Sort.Direction.DESC);
+        when(planRepository.findCreatedByUserWithDetails(eq(userId), eq(true), any(Pageable.class))).thenReturn(planPage);
+        when(planMapper.toSummaryDto(plan1)).thenReturn(dto1);
+        when(planMapper.toSummaryDto(plan2)).thenReturn(dto2);
+
+        Page<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId, defaultPageable);
 
         assertNotNull(result);
-        assertEquals(2, result.size());
-        assertTrue(result.contains(dto1));
-        assertTrue(result.contains(dto2));
-        verify(planRepository).findPlanSummaryUnified(userId, null, false, true);
+        assertEquals(2, result.getTotalElements());
+        assertTrue(result.getContent().contains(dto1));
+        assertTrue(result.getContent().contains(dto2));
+        verify(planRepository).findCreatedByUserWithDetails(eq(userId), eq(true), any(Pageable.class));
+        verify(planPopulationService).populate(any(List.class));
     }
 
     @Test
-    public void getCreatedPlans_ShouldReturnEmptyListWhenNoPlans() {
+    public void getCreatedPlans_ShouldReturnEmptyPageWhenNoPlans() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
-        when(planRepository.findPlanSummaryUnified(userId, null, false, true)).thenReturn(List.of());
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
+        Page<Plan> emptyPage = new PageImpl<>(List.of(), defaultPageable, 0);
+        when(planRepository.findCreatedByUserWithDetails(eq(userId), eq(true), any(Pageable.class))).thenReturn(emptyPage);
 
-        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId, Sort.Direction.DESC);
+        Page<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId, defaultPageable);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(planRepository).findPlanSummaryUnified(userId, null, false, true);
+        verify(planRepository).findCreatedByUserWithDetails(eq(userId), eq(true), any(Pageable.class));
     }
 
     @Test
@@ -120,36 +138,37 @@ public class UserCreatedServiceTest {
         dto2.setId(2);
         dto2.setFirstImageName("recipe2.jpg");
 
-        when(recipeRepository.findCreatedByUserWithDetails(userId, true)).thenReturn(List.of(recipe1, recipe2));
+        Page<Recipe> recipePage = new PageImpl<>(List.of(recipe1, recipe2), defaultPageable, 2);
+
+        when(recipeRepository.findCreatedByUserWithDetails(eq(userId), eq(true), any(Pageable.class))).thenReturn(recipePage);
         when(recipeMapper.toSummaryDto(recipe1)).thenReturn(dto1);
         when(recipeMapper.toSummaryDto(recipe2)).thenReturn(dto2);
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
 
-        List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, Sort.Direction.DESC);
+        Page<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, defaultPageable);
 
         assertNotNull(result);
-        assertEquals(2, result.size());
-        assertTrue(result.contains(dto1));
-        assertTrue(result.contains(dto2));
-        verify(recipeRepository).findCreatedByUserWithDetails(userId, true);
+        assertEquals(2, result.getTotalElements());
+        assertTrue(result.getContent().contains(dto1));
+        assertTrue(result.getContent().contains(dto2));
+        verify(recipeRepository).findCreatedByUserWithDetails(eq(userId), eq(true), any(Pageable.class));
         verify(recipeMapper).toSummaryDto(recipe1);
         verify(recipeMapper).toSummaryDto(recipe2);
         verify(recipePopulationService).populate(any(List.class));
     }
 
     @Test
-    public void getCreatedRecipes_ShouldReturnEmptyListWhenNoRecipes() {
+    public void getCreatedRecipes_ShouldReturnEmptyPageWhenNoRecipes() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
-        when(recipeRepository.findCreatedByUserWithDetails(userId, true)).thenReturn(List.of());
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
+        Page<Recipe> emptyPage = new PageImpl<>(List.of(), defaultPageable, 0);
+        when(recipeRepository.findCreatedByUserWithDetails(eq(userId), eq(true), any(Pageable.class))).thenReturn(emptyPage);
 
-        List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, Sort.Direction.DESC);
+        Page<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, defaultPageable);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(recipeRepository).findCreatedByUserWithDetails(userId, true);
+        verify(recipeRepository).findCreatedByUserWithDetails(eq(userId), eq(true), any(Pageable.class));
     }
 
     @Test
@@ -157,37 +176,40 @@ public class UserCreatedServiceTest {
         int userId = 1;
 
         CommentSummaryDto dto1 = new CommentSummaryDto();
+        dto1.setId(1);
         dto1.setAuthorId(1);
-        dto1.setAuthorImageUrl("author1.jpg");
+        dto1.setAuthorImageName("author1.jpg");
         CommentSummaryDto dto2 = new CommentSummaryDto();
+        dto2.setId(2);
         dto2.setAuthorId(2);
-        dto2.setAuthorImageUrl("author2.jpg");
+        dto2.setAuthorImageName("author2.jpg");
 
-        when(commentRepository.findCommentSummaryUnified(userId, null, false)).thenReturn(List.of(dto1, dto2));
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
+        Page<CommentSummaryDto> commentPage = new PageImpl<>(List.of(dto1, dto2), defaultPageable, 2);
 
-        List<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId, Sort.Direction.DESC);
+        when(commentRepository.findCommentSummaryUnified(eq(userId), eq(null), eq(false), any(Pageable.class))).thenReturn(commentPage);
+
+        Page<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId, defaultPageable);
 
         assertNotNull(result);
-        assertEquals(2, result.size());
-        assertTrue(result.contains(dto1));
-        assertTrue(result.contains(dto2));
-        verify(commentRepository).findCommentSummaryUnified(userId, null, false);
+        assertEquals(2, result.getTotalElements());
+        assertTrue(result.getContent().contains(dto1));
+        assertTrue(result.getContent().contains(dto2));
+        verify(commentRepository).findCommentSummaryUnified(eq(userId), eq(null), eq(false), any(Pageable.class));
     }
 
     @Test
-    public void getCreatedComments_ShouldReturnEmptyListWhenNoComments() {
+    public void getCreatedComments_ShouldReturnEmptyPageWhenNoComments() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
-        when(commentRepository.findCommentSummaryUnified(userId, null, false)).thenReturn(List.of());
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
+        Page<CommentSummaryDto> emptyPage = new PageImpl<>(List.of(), defaultPageable, 0);
+        when(commentRepository.findCommentSummaryUnified(eq(userId), eq(null), eq(false), any(Pageable.class))).thenReturn(emptyPage);
 
-        List<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId, Sort.Direction.DESC);
+        Page<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId, defaultPageable);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(commentRepository).findCommentSummaryUnified(userId, null, false);
+        verify(commentRepository).findCommentSummaryUnified(eq(userId), eq(null), eq(false), any(Pageable.class));
     }
 
     @Test
@@ -195,37 +217,40 @@ public class UserCreatedServiceTest {
         int userId = 1;
 
         ForumThreadSummaryDto dto1 = new ForumThreadSummaryDto();
+        dto1.setId(1);
         dto1.setAuthorId(1);
-        dto1.setAuthorImageUrl("author1.jpg");
+        dto1.setAuthorImageName("author1.jpg");
         ForumThreadSummaryDto dto2 = new ForumThreadSummaryDto();
+        dto2.setId(2);
         dto2.setAuthorId(2);
-        dto2.setAuthorImageUrl("author2.jpg");
+        dto2.setAuthorImageName("author2.jpg");
 
-        when(forumThreadRepository.findThreadSummaryUnified(userId, false)).thenReturn(List.of(dto1, dto2));
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
+        Page<ForumThreadSummaryDto> threadPage = new PageImpl<>(List.of(dto1, dto2), defaultPageable, 2);
 
-        List<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId, Sort.Direction.DESC);
+        when(forumThreadRepository.findThreadSummaryUnified(eq(userId), eq(false), any(Pageable.class))).thenReturn(threadPage);
+
+        Page<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId, defaultPageable);
 
         assertNotNull(result);
-        assertEquals(2, result.size());
-        assertTrue(result.contains(dto1));
-        assertTrue(result.contains(dto2));
-        verify(forumThreadRepository).findThreadSummaryUnified(userId, false);
+        assertEquals(2, result.getTotalElements());
+        assertTrue(result.getContent().contains(dto1));
+        assertTrue(result.getContent().contains(dto2));
+        verify(forumThreadRepository).findThreadSummaryUnified(eq(userId), eq(false), any(Pageable.class));
     }
 
     @Test
-    public void getCreatedThreads_ShouldReturnEmptyListWhenNoThreads() {
+    public void getCreatedThreads_ShouldReturnEmptyPageWhenNoThreads() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
-        when(forumThreadRepository.findThreadSummaryUnified(userId, false)).thenReturn(List.of());
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
+        Page<ForumThreadSummaryDto> emptyPage = new PageImpl<>(List.of(), defaultPageable, 0);
+        when(forumThreadRepository.findThreadSummaryUnified(eq(userId), eq(false), any(Pageable.class))).thenReturn(emptyPage);
 
-        List<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId, Sort.Direction.DESC);
+        Page<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId, defaultPageable);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(forumThreadRepository).findThreadSummaryUnified(userId, false);
+        verify(forumThreadRepository).findThreadSummaryUnified(eq(userId), eq(false), any(Pageable.class));
     }
 
     @Test
@@ -233,18 +258,24 @@ public class UserCreatedServiceTest {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
+        Plan plan1 = new Plan();
+        plan1.setId(1);
+
         PlanSummaryDto dto1 = new PlanSummaryDto();
+        dto1.setId(1);
         dto1.setFirstImageName(null);
 
-        when(planRepository.findPlanSummaryUnified(userId, null, false, true)).thenReturn(List.of(dto1));
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
+        Page<Plan> planPage = new PageImpl<>(List.of(plan1), defaultPageable, 1);
 
-        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId, Sort.Direction.DESC);
+        when(planRepository.findCreatedByUserWithDetails(eq(userId), eq(true), any(Pageable.class))).thenReturn(planPage);
+        when(planMapper.toSummaryDto(plan1)).thenReturn(dto1);
+
+        Page<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId, defaultPageable);
 
         assertNotNull(result);
-        assertEquals(1, result.size());
+        assertEquals(1, result.getTotalElements());
         assertNull(dto1.getFirstImageUrl());
-        verify(planRepository).findPlanSummaryUnified(userId, null, false, true);
+        verify(planRepository).findCreatedByUserWithDetails(eq(userId), eq(true), any(Pageable.class));
     }
 
     @Test
@@ -259,233 +290,70 @@ public class UserCreatedServiceTest {
         dto1.setId(1);
         dto1.setFirstImageName(null);
 
-        when(recipeRepository.findCreatedByUserWithDetails(userId, true)).thenReturn(List.of(recipe1));
-        when(recipeMapper.toSummaryDto(recipe1)).thenReturn(dto1);
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
+        Page<Recipe> recipePage = new PageImpl<>(List.of(recipe1), defaultPageable, 1);
 
-        List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, Sort.Direction.DESC);
+        when(recipeRepository.findCreatedByUserWithDetails(eq(userId), eq(true), any(Pageable.class))).thenReturn(recipePage);
+        when(recipeMapper.toSummaryDto(recipe1)).thenReturn(dto1);
+
+        Page<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, defaultPageable);
 
         assertNotNull(result);
-        assertEquals(1, result.size());
+        assertEquals(1, result.getTotalElements());
         assertNull(dto1.getFirstImageUrl());
-        verify(recipeRepository).findCreatedByUserWithDetails(userId, true);
+        verify(recipeRepository).findCreatedByUserWithDetails(eq(userId), eq(true), any(Pageable.class));
         verify(recipeMapper).toSummaryDto(recipe1);
         verify(recipePopulationService).populate(any(List.class));
     }
 
     @Test
-    public void getCreatedPlans_ShouldReturnPlansAndCallSortingService() {
+    public void getCreatedPlans_ShouldRespectPagination() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "createdAt"));
 
-        PlanSummaryDto dto1 = createPlanSummaryDto(1, older);
-        PlanSummaryDto dto2 = createPlanSummaryDto(2, newer);
+        Plan plan1 = new Plan();
+        plan1.setId(1);
 
-        when(planRepository.findPlanSummaryUnified(userId, null, false, true)).thenReturn(List.of(dto1, dto2));
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
+        PlanSummaryDto dto1 = new PlanSummaryDto();
+        dto1.setId(1);
 
-        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId, Sort.Direction.DESC);
+        Page<Plan> planPage = new PageImpl<>(List.of(plan1), pageable, 15);
+
+        when(planRepository.findCreatedByUserWithDetails(eq(userId), eq(true), any(Pageable.class))).thenReturn(planPage);
+        when(planMapper.toSummaryDto(plan1)).thenReturn(dto1);
+
+        Page<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId, pageable);
 
         assertNotNull(result);
-        assertEquals(2, result.size());
+        assertEquals(1, result.getContent().size());
+        assertTrue(result.getTotalElements() > 0);
+        verify(planRepository).findCreatedByUserWithDetails(eq(userId), eq(true), any(Pageable.class));
     }
 
     @Test
-    public void getCreatedPlans_ShouldReturnPlansWithAscDirection() {
+    public void getCreatedRecipes_ShouldRespectPagination() {
         int userId = 1;
         mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        PlanSummaryDto dto1 = createPlanSummaryDto(1, older);
-        PlanSummaryDto dto2 = createPlanSummaryDto(2, newer);
-
-        when(planRepository.findPlanSummaryUnified(userId, null, false, true)).thenReturn(List.of(dto2, dto1));
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
-
-        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId, Sort.Direction.ASC);
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-    }
-
-    @Test
-    public void getCreatedRecipes_ShouldSortByCreatedAtDesc() {
-        int userId = 1;
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         Recipe recipe1 = new Recipe();
         recipe1.setId(1);
-        Recipe recipe2 = new Recipe();
-        recipe2.setId(2);
 
-        RecipeSummaryDto dto1 = createRecipeSummaryDto(1, older);
-        RecipeSummaryDto dto2 = createRecipeSummaryDto(2, newer);
+        RecipeSummaryDto dto1 = new RecipeSummaryDto();
+        dto1.setId(1);
 
-        when(recipeRepository.findCreatedByUserWithDetails(userId, true)).thenReturn(List.of(recipe1, recipe2));
+        Page<Recipe> recipePage = new PageImpl<>(List.of(recipe1), pageable, 25);
+
+        when(recipeRepository.findCreatedByUserWithDetails(eq(userId), eq(true), any(Pageable.class))).thenReturn(recipePage);
         when(recipeMapper.toSummaryDto(recipe1)).thenReturn(dto1);
-        when(recipeMapper.toSummaryDto(recipe2)).thenReturn(dto2);
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
 
-        List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, Sort.Direction.DESC);
+        Page<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, pageable);
 
         assertNotNull(result);
-        assertEquals(2, result.size());
-    }
-
-    @Test
-    public void getCreatedRecipes_ShouldSortByCreatedAtAsc() {
-        int userId = 1;
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        Recipe recipe1 = new Recipe();
-        recipe1.setId(1);
-        Recipe recipe2 = new Recipe();
-        recipe2.setId(2);
-
-        RecipeSummaryDto dto1 = createRecipeSummaryDto(1, older);
-        RecipeSummaryDto dto2 = createRecipeSummaryDto(2, newer);
-
-        when(recipeRepository.findCreatedByUserWithDetails(userId, true)).thenReturn(List.of(recipe2, recipe1));
-        when(recipeMapper.toSummaryDto(recipe2)).thenReturn(dto2);
-        when(recipeMapper.toSummaryDto(recipe1)).thenReturn(dto1);
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
-
-        List<RecipeSummaryDto> result = userCreatedService.getCreatedRecipes(userId, Sort.Direction.ASC);
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-    }
-
-    @Test
-    public void getCreatedComments_ShouldSortByDateCreatedDesc() {
-        int userId = 1;
-
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        CommentSummaryDto dto1 = createCommentSummaryDto(1, older);
-        CommentSummaryDto dto2 = createCommentSummaryDto(2, newer);
-
-        when(commentRepository.findCommentSummaryUnified(userId, null, false)).thenReturn(List.of(dto1, dto2));
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
-
-        List<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId, Sort.Direction.DESC);
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-    }
-
-    @Test
-    public void getCreatedComments_ShouldSortByDateCreatedAsc() {
-        int userId = 1;
-
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        CommentSummaryDto dto1 = createCommentSummaryDto(1, older);
-        CommentSummaryDto dto2 = createCommentSummaryDto(2, newer);
-
-        when(commentRepository.findCommentSummaryUnified(userId, null, false)).thenReturn(List.of(dto2, dto1));
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
-
-        List<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId, Sort.Direction.ASC);
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-    }
-
-    @Test
-    public void getCreatedThreads_ShouldSortByDateCreatedDesc() {
-        int userId = 1;
-
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        ForumThreadSummaryDto dto1 = createForumThreadSummaryDto(1, older);
-        ForumThreadSummaryDto dto2 = createForumThreadSummaryDto(2, newer);
-
-        when(forumThreadRepository.findThreadSummaryUnified(userId, false)).thenReturn(List.of(dto1, dto2));
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
-
-        List<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId, Sort.Direction.DESC);
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-    }
-
-    @Test
-    public void getCreatedThreads_ShouldSortByDateCreatedAsc() {
-        int userId = 1;
-
-        LocalDateTime older = LocalDateTime.of(2024, 1, 1, 10, 0);
-        LocalDateTime newer = LocalDateTime.of(2024, 1, 2, 10, 0);
-
-        ForumThreadSummaryDto dto1 = createForumThreadSummaryDto(1, older);
-        ForumThreadSummaryDto dto2 = createForumThreadSummaryDto(2, newer);
-
-        when(forumThreadRepository.findThreadSummaryUnified(userId, false)).thenReturn(List.of(dto2, dto1));
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
-
-        List<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId, Sort.Direction.ASC);
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-    }
-
-    @Test
-    public void sortByCreatedAt_ShouldHandleNullDates() {
-        int userId = 1;
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-
-        PlanSummaryDto dto1 = createPlanSummaryDto(1, LocalDateTime.of(2024, 1, 1, 10, 0));
-        PlanSummaryDto dto2 = createPlanSummaryDto(2, null);
-        PlanSummaryDto dto3 = createPlanSummaryDto(3, LocalDateTime.of(2024, 1, 2, 10, 0));
-
-        when(planRepository.findPlanSummaryUnified(userId, null, false, true)).thenReturn(List.of(dto1, dto2, dto3));
-        when(sortingService.comparator(any(), any())).thenReturn((a, b) -> 0);
-
-        List<PlanSummaryDto> result = userCreatedService.getCreatedPlans(userId, Sort.Direction.DESC);
-
-        assertNotNull(result);
-        assertEquals(3, result.size());
-    }
-
-    private PlanSummaryDto createPlanSummaryDto(int id, LocalDateTime createdAt) {
-        PlanSummaryDto dto = new PlanSummaryDto();
-        dto.setId(id);
-        dto.setCreatedAt(createdAt);
-        return dto;
-    }
-
-    private RecipeSummaryDto createRecipeSummaryDto(int id, LocalDateTime createdAt) {
-        RecipeSummaryDto dto = new RecipeSummaryDto();
-        dto.setId(id);
-        dto.setCreatedAt(createdAt);
-        return dto;
-    }
-
-    private CommentSummaryDto createCommentSummaryDto(int id, LocalDateTime createdAt) {
-        CommentSummaryDto dto = new CommentSummaryDto();
-        dto.setId(id);
-        dto.setCreatedAt(createdAt);
-        return dto;
-    }
-
-    private ForumThreadSummaryDto createForumThreadSummaryDto(int id, LocalDateTime createdAt) {
-        ForumThreadSummaryDto dto = new ForumThreadSummaryDto();
-        dto.setId(id);
-        dto.setCreatedAt(createdAt);
-        return dto;
+        assertEquals(1, result.getContent().size());
+        assertTrue(result.getTotalElements() > 0);
+        verify(recipeRepository).findCreatedByUserWithDetails(eq(userId), eq(true), any(Pageable.class));
     }
 }

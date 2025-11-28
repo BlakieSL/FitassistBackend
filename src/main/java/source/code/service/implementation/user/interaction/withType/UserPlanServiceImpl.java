@@ -1,6 +1,7 @@
 package source.code.service.implementation.user.interaction.withType;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.plan.PlanResponseDto;
@@ -17,41 +18,64 @@ import source.code.model.user.UserPlan;
 import source.code.repository.PlanRepository;
 import source.code.repository.UserPlanRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.plan.PlanPopulationService;
 import source.code.service.declaration.user.SavedService;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service("userPlanService")
 public class UserPlanServiceImpl
         extends GenericSavedService<Plan, UserPlan, PlanResponseDto>
         implements SavedService {
 
-    private final ImageUrlPopulationService imagePopulationService;
+    private final PlanMapper planMapper;
+    private final PlanPopulationService planPopulationService;
 
     public UserPlanServiceImpl(UserPlanRepository userPlanRepository,
                                PlanRepository planRepository,
                                UserRepository userRepository,
                                PlanMapper planMapper,
-                               ImageUrlPopulationService imagePopulationService) {
+                               PlanPopulationService planPopulationService) {
         super(userRepository,
                 planRepository,
                 userPlanRepository,
                 planMapper::toResponseDto,
                 Plan.class);
-        this.imagePopulationService = imagePopulationService;
+        this.planMapper = planMapper;
+        this.planPopulationService = planPopulationService;
     }
 
     @Override
     public Page<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Pageable pageable) {
-        return ((PlanRepository) entityRepository)
-                .findPlanSummaryUnified(userId, type, true, null, pageable)
-                .map(dto -> {
-                    imagePopulationService.populateAuthorAndEntityImages(dto, PlanSummaryDto::getAuthorImageName,
-                            PlanSummaryDto::setAuthorImageUrl, PlanSummaryDto::getFirstImageName,
-                            PlanSummaryDto::setFirstImageUrl);
+        Page<UserPlan> userPlanPage = ((UserPlanRepository) userEntityRepository)
+                .findByUserIdAndTypeWithPlan(userId, type, pageable);
+
+        if (userPlanPage.isEmpty()) return new PageImpl<>(List.of(), pageable, 0);
+
+        List<Integer> planIds = userPlanPage.getContent().stream()
+                .map(up -> up.getPlan().getId())
+                .toList();
+
+        List<Plan> plansWithDetails = ((PlanRepository) entityRepository).findByIdsWithDetails(planIds);
+
+        Map<Integer, Plan> planMap = plansWithDetails.stream()
+                .collect(Collectors.toMap(Plan::getId, p -> p));
+
+        List<PlanSummaryDto> summaries = userPlanPage.getContent().stream()
+                .map(up -> {
+                    Plan plan = planMap.get(up.getPlan().getId());
+                    PlanSummaryDto dto = planMapper.toSummaryDto(plan);
+                    dto.setInteractedWithAt(up.getCreatedAt());
                     return dto;
-                });
+                })
+                .toList();
+
+        planPopulationService.populate(summaries);
+
+        return new PageImpl<>(summaries.stream().map(dto -> (BaseUserEntity) dto).toList(),
+                pageable, userPlanPage.getTotalElements());
     }
 
     @Override
