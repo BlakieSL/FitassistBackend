@@ -3,6 +3,8 @@ package source.code.service.declaration.recipe;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import source.code.dto.request.recipe.FilterRecipesByFoodsDto;
 import source.code.dto.request.recipe.RecipeFoodCreateDto;
 import source.code.dto.response.food.FoodSummaryDto;
@@ -19,5 +21,5 @@ public interface RecipeFoodService {
 
     List<FoodSummaryDto> getFoodsByRecipe(int recipeId);
 
-    List<RecipeSummaryDto> getRecipesByFoods(FilterRecipesByFoodsDto filter);
+    Page<RecipeSummaryDto> getRecipesByFoods(FilterRecipesByFoodsDto filter, Pageable pageable);
 }

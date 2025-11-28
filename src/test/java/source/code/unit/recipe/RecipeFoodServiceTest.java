@@ -9,6 +9,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import source.code.dto.request.recipe.FilterRecipesByFoodsDto;
 import source.code.dto.request.recipe.RecipeFoodCreateDto;
 import source.code.dto.response.food.FoodSummaryDto;
@@ -201,25 +205,29 @@ public class RecipeFoodServiceTest {
     void getRecipesByFoods_shouldReturnRecipesByFoods() {
         List<Integer> foodIds = List.of(foodId);
         FilterRecipesByFoodsDto filter = FilterRecipesByFoodsDto.of(foodIds);
+        Pageable pageable = PageRequest.of(0, 100);
         List<RecipeSummaryDto> recipeSummaryDtos = List.of(new RecipeSummaryDto());
+        Page<RecipeSummaryDto> recipePage = new PageImpl<>(recipeSummaryDtos, pageable, recipeSummaryDtos.size());
 
-        when(recipeService.getFilteredRecipes(any())).thenReturn(recipeSummaryDtos);
+        when(recipeService.getFilteredRecipes(any(), eq(pageable))).thenReturn(recipePage);
 
-        List<RecipeSummaryDto> result = recipeFoodService.getRecipesByFoods(filter);
+        Page<RecipeSummaryDto> result = recipeFoodService.getRecipesByFoods(filter, pageable);
 
-        assertEquals(1, result.size());
-        assertSame(recipeSummaryDtos.get(0), result.get(0));
+        assertEquals(1, result.getContent().size());
+        assertSame(recipeSummaryDtos.get(0), result.getContent().get(0));
     }
 
     @Test
-    void getRecipesByFoods_shouldReturnEmptyListWhenNoRecipes() {
+    void getRecipesByFoods_shouldReturnEmptyPageWhenNoRecipes() {
         List<Integer> foodIds = List.of(foodId);
         FilterRecipesByFoodsDto filter = FilterRecipesByFoodsDto.of(foodIds);
+        Pageable pageable = PageRequest.of(0, 100);
+        Page<RecipeSummaryDto> emptyPage = new PageImpl<>(List.of(), pageable, 0);
 
-        when(recipeService.getFilteredRecipes(any())).thenReturn(List.of());
+        when(recipeService.getFilteredRecipes(any(), eq(pageable))).thenReturn(emptyPage);
 
-        List<RecipeSummaryDto> result = recipeFoodService.getRecipesByFoods(filter);
+        Page<RecipeSummaryDto> result = recipeFoodService.getRecipesByFoods(filter, pageable);
 
-        assertTrue(result.isEmpty());
+        assertTrue(result.getContent().isEmpty());
     }
 }
