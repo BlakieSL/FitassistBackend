@@ -7,9 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import source.code.dto.response.comment.CommentSummaryDto;
+import source.code.dto.pojo.projection.comment.CommentRepliesCountProjection;
 import source.code.model.thread.Comment;
-import source.code.model.user.TypeOfInteraction;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,11 +17,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     @EntityGraph(value = "Comment.withoutAssociations")
     List<Comment> findAllByThreadIdAndParentCommentNull(int threadId);
 
-    List<Comment> findAllByParentCommentId(int commentId);
-
     long countAllByThreadId(int threadId);
-
-    List<Comment> findAllByUser_Id(Integer userId);
 
     @EntityGraph(value = "Comment.withoutAssociations")
     @Query("SELECT c FROM Comment c WHERE c.id = :id")
@@ -60,86 +55,22 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     """, nativeQuery = true)
     List<Object[]> findCommentHierarchy(Integer commentId);
 
-    @Query("""
-      SELECT new source.code.dto.response.comment.CommentSummaryDto(
-             c.id,
-             c.text,
-             c.createdAt,
-             c.user.username,
-             c.user.id,
-             (SELECT m.imageName FROM Media m
-              WHERE m.parentId = c.user.id
-              AND m.parentType = 'USER'
-              ORDER BY m.id ASC
-              LIMIT 1),
-             null,
-             SIZE(c.userCommentLikes) ,
-             SIZE(c.replies),
-             null)
+    @Query(value = """
+      SELECT DISTINCT c
       FROM Comment c
+      JOIN FETCH c.user u
+      LEFT JOIN FETCH c.replies
       WHERE c.user.id = :userId
     """)
-    List<CommentSummaryDto> findSummaryByUserId(Integer userId);
+    Page<Comment> findCreatedByUserWithDetails(@Param("userId") int userId, Pageable pageable);
 
     @Query("""
-      SELECT new source.code.dto.response.comment.CommentSummaryDto(
-             c.id,
-             c.text,
-             c.createdAt,
-             u.username,
-             u.id,
-             (SELECT m.imageName FROM Media m
-              WHERE m.parentId = u.id
-              AND m.parentType = 'USER'
-              ORDER BY m.id ASC
-              LIMIT 1),
-             null,
-             CAST((SELECT COUNT(uc2) FROM UserComment uc2 WHERE uc2.comment.id = c.id AND uc2.type = 'LIKE') -
-                  (SELECT COUNT(uc3) FROM UserComment uc3 WHERE uc3.comment.id = c.id AND uc3.type = 'DISLIKE') AS int),
-             CAST((SELECT COUNT(cr) FROM Comment cr WHERE cr.parentComment.id = c.id) AS int),
-             CASE WHEN :fetchByInteraction = true THEN uc.createdAt ELSE null END)
-      FROM Comment c
-      JOIN c.user u
-      LEFT JOIN UserComment uc ON uc.comment.id = c.id AND uc.user.id = :userId AND (:type IS NULL OR uc.type = :type)
-      WHERE (:fetchByInteraction = false AND c.user.id = :userId) OR
-            (:fetchByInteraction = true AND uc.id IS NOT NULL)
-      ORDER BY CASE WHEN :fetchByInteraction = true THEN uc.createdAt ELSE c.createdAt END DESC
+      SELECT
+          cr.parentComment.id as commentId,
+          COUNT(cr) as repliesCount
+      FROM Comment cr
+      WHERE cr.parentComment.id IN :commentIds
+      GROUP BY cr.parentComment.id
     """)
-    List<CommentSummaryDto> findCommentSummaryUnified(@Param("userId") int userId,
-                                                       @Param("type") TypeOfInteraction type,
-                                                       @Param("fetchByInteraction") boolean fetchByInteraction);
-
-    @Query(value = """
-      SELECT new source.code.dto.response.comment.CommentSummaryDto(
-             c.id,
-             c.text,
-             c.createdAt,
-             u.username,
-             u.id,
-             (SELECT m.imageName FROM Media m
-              WHERE m.parentId = u.id
-              AND m.parentType = 'USER'
-              ORDER BY m.id ASC
-              LIMIT 1),
-             null,
-             CAST((SELECT COUNT(uc2) FROM UserComment uc2 WHERE uc2.comment.id = c.id AND uc2.type = 'LIKE') -
-                  (SELECT COUNT(uc3) FROM UserComment uc3 WHERE uc3.comment.id = c.id AND uc3.type = 'DISLIKE') AS int),
-             CAST((SELECT COUNT(cr) FROM Comment cr WHERE cr.parentComment.id = c.id) AS int),
-             CASE WHEN :fetchByInteraction = true THEN uc.createdAt ELSE null END)
-      FROM Comment c
-      JOIN c.user u
-      LEFT JOIN UserComment uc ON uc.comment.id = c.id AND uc.user.id = :userId AND (:type IS NULL OR uc.type = :type)
-      WHERE (:fetchByInteraction = false AND c.user.id = :userId) OR
-            (:fetchByInteraction = true AND uc.id IS NOT NULL)
-    """, countQuery = """
-      SELECT COUNT(c)
-      FROM Comment c
-      LEFT JOIN UserComment uc ON uc.comment.id = c.id AND uc.user.id = :userId AND (:type IS NULL OR uc.type = :type)
-      WHERE (:fetchByInteraction = false AND c.user.id = :userId) OR
-            (:fetchByInteraction = true AND uc.id IS NOT NULL)
-    """)
-    Page<CommentSummaryDto> findCommentSummaryUnified(@Param("userId") int userId,
-                                                       @Param("type") TypeOfInteraction type,
-                                                       @Param("fetchByInteraction") boolean fetchByInteraction,
-                                                       Pageable pageable);
+    List<CommentRepliesCountProjection> findRepliesCountsByCommentIds(@Param("commentIds") List<Integer> commentIds);
 }
