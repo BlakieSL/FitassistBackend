@@ -39,7 +39,7 @@ import source.code.repository.FoodRepository;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserFoodRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
-import source.code.service.declaration.helpers.RecipePopulationService;
+import source.code.service.declaration.recipe.RecipePopulationService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.food.FoodServiceImpl;
@@ -50,8 +50,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

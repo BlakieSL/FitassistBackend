@@ -28,16 +28,15 @@ import source.code.model.user.UserRecipe;
 import source.code.repository.RecipeRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.helpers.RecipePopulationService;
-import source.code.service.declaration.helpers.SortingService;
+import source.code.service.declaration.recipe.RecipePopulationService;
 import source.code.service.implementation.user.interaction.withType.UserRecipeServiceImpl;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,8 +51,6 @@ public class UserRecipeServiceTest {
     private RecipeMapper recipeMapper;
     @Mock
     private RecipePopulationService recipePopulationService;
-    @Mock
-    private SortingService sortingService;
     @InjectMocks
     private UserRecipeServiceImpl userRecipeService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
@@ -204,14 +201,23 @@ public class UserRecipeServiceTest {
         recipe1.setId(1);
         Recipe recipe2 = new Recipe();
         recipe2.setId(2);
+
+        User user = new User();
+        user.setId(userId);
+
+        UserRecipe userRecipe1 = UserRecipe.createWithUserRecipeType(user, recipe1, type);
+        UserRecipe userRecipe2 = UserRecipe.createWithUserRecipeType(user, recipe2, type);
+
         RecipeSummaryDto dto1 = new RecipeSummaryDto();
         dto1.setId(1);
         RecipeSummaryDto dto2 = new RecipeSummaryDto();
         dto2.setId(2);
 
-        Page<Recipe> recipePage = new PageImpl<>(List.of(recipe1, recipe2));
-        when(recipeRepository.findInteractedByUserWithDetails(eq(userId), eq(type), any(Pageable.class)))
-                .thenReturn(recipePage);
+        Page<UserRecipe> userRecipePage = new PageImpl<>(List.of(userRecipe1, userRecipe2), pageable, 2);
+
+        when(userRecipeRepository.findByUserIdAndTypeWithRecipe(eq(userId), eq(type), any(Pageable.class)))
+                .thenReturn(userRecipePage);
+        when(recipeRepository.findByIdsWithDetails(any())).thenReturn(List.of(recipe1, recipe2));
         when(recipeMapper.toSummaryDto(recipe1)).thenReturn(dto1);
         when(recipeMapper.toSummaryDto(recipe2)).thenReturn(dto2);
 
@@ -219,9 +225,8 @@ public class UserRecipeServiceTest {
 
         assertEquals(2, result.getContent().size());
         assertEquals(2, result.getTotalElements());
-        verify(recipeRepository).findInteractedByUserWithDetails(eq(userId), eq(type), any(Pageable.class));
+        verify(userRecipeRepository).findByUserIdAndTypeWithRecipe(eq(userId), eq(type), any(Pageable.class));
         verify(recipePopulationService).populate(any(List.class));
-        verify(recipePopulationService).populateInteractionDates(any(List.class), eq(userId), eq(type));
     }
 
     @Test
@@ -230,9 +235,10 @@ public class UserRecipeServiceTest {
         TypeOfInteraction type = TypeOfInteraction.SAVE;
         Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Page<Recipe> recipePage = new PageImpl<>(List.of());
-        when(recipeRepository.findInteractedByUserWithDetails(eq(userId), eq(type), any(Pageable.class)))
-                .thenReturn(recipePage);
+        Page<UserRecipe> emptyPage = new PageImpl<>(List.of(), pageable, 0);
+
+        when(userRecipeRepository.findByUserIdAndTypeWithRecipe(eq(userId), eq(type), any(Pageable.class)))
+                .thenReturn(emptyPage);
 
         Page<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, pageable);
 

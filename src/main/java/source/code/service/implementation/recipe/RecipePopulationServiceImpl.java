@@ -1,10 +1,10 @@
-package source.code.service.implementation.helpers;
+package source.code.service.implementation.recipe;
 
 import org.springframework.stereotype.Service;
-import source.code.dto.pojo.projection.RecipeCountsProjection;
-import source.code.dto.pojo.projection.RecipeIngredientCountProjection;
-import source.code.dto.pojo.projection.RecipeInteractionDateProjection;
-import source.code.dto.pojo.projection.RecipeUserInteractionProjection;
+import source.code.dto.pojo.projection.recipe.RecipeCountsProjection;
+import source.code.dto.pojo.projection.recipe.RecipeIngredientCountProjection;
+import source.code.dto.pojo.projection.recipe.RecipeInteractionDateProjection;
+import source.code.dto.pojo.projection.recipe.RecipeUserInteractionProjection;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.helper.user.AuthorizationUtil;
@@ -15,7 +15,7 @@ import source.code.repository.MediaRepository;
 import source.code.repository.RecipeFoodRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.service.declaration.aws.AwsS3Service;
-import source.code.service.declaration.helpers.RecipePopulationService;
+import source.code.service.declaration.recipe.RecipePopulationService;
 
 import java.util.List;
 import java.util.Map;
@@ -59,30 +59,6 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
         populateAuthorImage(recipe);
         populateImageUrls(recipe);
         populateUserInteractionsAndCounts(recipe, userId);
-    }
-
-    @Override
-    public void populateInteractionDates(List<RecipeSummaryDto> recipes, int userId, TypeOfInteraction type) {
-        if (recipes.isEmpty()) return;
-
-        List<Integer> recipeIds = recipes.stream()
-                .map(RecipeSummaryDto::getId)
-                .toList();
-
-        Map<Integer, RecipeInteractionDateProjection> interactionDatesMap = userRecipeRepository
-                .findInteractionDatesByRecipeIds(userId, type, recipeIds)
-                .stream()
-                .collect(Collectors.toMap(
-                        RecipeInteractionDateProjection::getRecipeId,
-                        projection -> projection
-                ));
-
-        recipes.forEach(recipe -> {
-            RecipeInteractionDateProjection projection = interactionDatesMap.get(recipe.getId());
-            if (projection != null) {
-                recipe.setUserRecipeInteractionCreatedAt(projection.getCreatedAt());
-            }
-        });
     }
 
     private void populateAuthorImages(List<RecipeSummaryDto> recipes) {

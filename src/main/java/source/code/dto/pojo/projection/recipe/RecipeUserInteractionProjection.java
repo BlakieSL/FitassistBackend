@@ -1,4 +1,4 @@
-package source.code.dto.pojo.projection;
+package source.code.dto.pojo.projection.recipe;
 
 public interface RecipeUserInteractionProjection {
     Long getIsLiked();

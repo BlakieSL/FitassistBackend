@@ -25,9 +25,10 @@ public class PlanSummaryDto implements BaseUserEntity, Serializable {
     private String firstImageName;
     private String authorImageUrl;
     private String firstImageUrl;
-    private int likesCount;
-    private int savesCount;
-    private int views;
+    private long likesCount;
+    private long dislikesCount;
+    private long savesCount;
+    private long views;
     private PlanTypeShortDto planType;
     private LocalDateTime createdAt;
     private LocalDateTime interactedWithAt;
