@@ -50,7 +50,7 @@ public class RecipeControllerFilterTest {
 
     @RecipeSql
     @Test
-    @DisplayName("POST - /filter - Should filter private recipes when isPublic = false by category")
+    @DisplayName("POST - /filter - Should filter user's own recipes when isPublic = false by category")
     void filterPrivateRecipesByCategory() throws Exception {
         Utils.setUserContext(1);
         FilterDto filterDto = buildFilterDto("CATEGORY", 1, FilterOperation.EQUAL, false);
@@ -61,7 +61,7 @@ public class RecipeControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content", hasSize(1))
+                        jsonPath("$.content", hasSize(2))
                 );
     }
 
@@ -78,7 +78,7 @@ public class RecipeControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content", hasSize(1))
+                        jsonPath("$.content", hasSize(2))
                 );
     }
 
