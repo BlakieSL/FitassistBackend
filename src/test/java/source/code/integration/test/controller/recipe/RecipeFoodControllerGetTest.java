@@ -99,7 +99,7 @@ public class RecipeFoodControllerGetTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(1))
+                        jsonPath("$.content", hasSize(1))
                 );
     }
 }

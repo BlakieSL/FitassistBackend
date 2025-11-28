@@ -6,6 +6,9 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.filter.FilterDto;
@@ -118,30 +121,31 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    @Cacheable(value = CacheNames.ALL_RECIPES)
-    public List<RecipeSummaryDto> getAllRecipes(Boolean isPrivate) {
+    public Page<RecipeSummaryDto> getAllRecipes(Boolean isPrivate, Pageable pageable) {
         int userId = AuthorizationUtil.getUserId();
 
-        List<RecipeSummaryDto> summaries = recipeRepository.findAllWithDetails(isPrivate, userId).stream()
+        Page<Recipe> recipePage = recipeRepository.findAllWithDetails(isPrivate, userId, pageable);
+        List<RecipeSummaryDto> summaries = recipePage.getContent().stream()
                 .map(recipeMapper::toSummaryDto)
                 .toList();
         recipePopulationService.populate(summaries);
 
-        return summaries;
+        return new PageImpl<>(summaries, pageable, recipePage.getTotalElements());
     }
 
     @Override
-    public List<RecipeSummaryDto> getFilteredRecipes(FilterDto filter) {
+    public Page<RecipeSummaryDto> getFilteredRecipes(FilterDto filter, Pageable pageable) {
         SpecificationFactory<Recipe> recipeFactory = RecipeSpecification::of;
         SpecificationBuilder<Recipe> specificationBuilder = SpecificationBuilder.of(filter, recipeFactory, dependencies);
         Specification<Recipe> specification = specificationBuilder.build();
 
-        var summaries = recipeRepository.findAll(specification).stream()
+        Page<Recipe> recipePage = recipeRepository.findAll(specification, pageable);
+        List<RecipeSummaryDto> summaries = recipePage.getContent().stream()
                 .map(recipeMapper::toSummaryDto)
                 .toList();
         recipePopulationService.populate(summaries);
 
-        return summaries;
+        return new PageImpl<>(summaries, pageable, recipePage.getTotalElements());
     }
 
     @Override
