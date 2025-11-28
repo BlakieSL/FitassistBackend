@@ -22,11 +22,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
     @Query("SELECT r FROM Recipe r WHERE r.isPublic = true")
     List<Recipe> findAllWithoutAssociations();
 
-    @Override
-    @EntityGraph(value = "Recipe.summary")
-    @NotNull
-    List<Recipe> findAll(Specification<Recipe> spec);
-
     @EntityGraph(value = "Recipe.summary")
     @NotNull
     Page<Recipe> findAll(Specification<Recipe> spec, @NotNull Pageable pageable);

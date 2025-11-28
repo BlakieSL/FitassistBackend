@@ -30,7 +30,7 @@ public class RecipeSpecification implements Specification<Recipe> {
 
     @Override
     public Predicate toPredicate(@NonNull Root<Recipe> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
-        initializeComplexFetches(root);
+        //initializeComplexFetches(root);
 
         Predicate visibilityPredicate = dependencies.getVisibilityPredicateBuilder()
                 .buildVisibilityPredicate(builder, root, criteria, USER_FIELD, ID_FIELD, IS_PUBLIC_FIELD);

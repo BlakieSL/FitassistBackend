@@ -1,14 +1,22 @@
 package source.code.repository;
 
 import io.lettuce.core.dynamic.annotation.Param;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
 import source.code.model.plan.Plan;
 
 import java.util.List;
 
 public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecificationExecutor<Plan> {
+
+    @Override
+    @EntityGraph(value = "Plan.summary")
+    @NotNull
+    Page<Plan> findAll(Specification<Plan> spec, @NotNull Pageable pageable);
+
     @Modifying
     @Query("UPDATE Plan p SET p.views = p.views + 1 WHERE p.id = :planId")
     void incrementViews(@Param("planId") Integer planId);
