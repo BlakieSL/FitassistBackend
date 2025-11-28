@@ -3,19 +3,30 @@ package source.code.service.implementation.comment;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import source.code.dto.request.comment.CommentCreateDto;
 import source.code.dto.request.comment.CommentUpdateDto;
+import source.code.dto.request.filter.FilterDto;
 import source.code.dto.response.comment.CommentResponseDto;
+import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.comment.CommentMapper;
 import source.code.model.thread.Comment;
 import source.code.repository.CommentRepository;
+import source.code.service.declaration.comment.CommentPopulationService;
 import source.code.service.declaration.comment.CommentService;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.ValidationService;
+import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
+import source.code.specification.SpecificationBuilder;
+import source.code.specification.SpecificationFactory;
+import source.code.specification.specification.CommentSpecification;
 
 import java.util.*;
 
@@ -25,15 +36,21 @@ public class CommentServiceImpl implements CommentService {
     private final ValidationService validationService;
     private final CommentMapper commentMapper;
     private final CommentRepository commentRepository;
+    private final SpecificationDependencies dependencies;
+    private final CommentPopulationService commentPopulationService;
 
     public CommentServiceImpl(JsonPatchService jsonPatchService,
                               ValidationService validationService,
                               CommentMapper commentMapper,
-                              CommentRepository commentRepository) {
+                              CommentRepository commentRepository,
+                              SpecificationDependencies dependencies,
+                              CommentPopulationService commentPopulationService) {
         this.jsonPatchService = jsonPatchService;
         this.validationService = validationService;
         this.commentMapper = commentMapper;
         this.commentRepository = commentRepository;
+        this.dependencies = dependencies;
+        this.commentPopulationService = commentPopulationService;
     }
 
     @Override
@@ -122,5 +139,22 @@ public class CommentServiceImpl implements CommentService {
             throws JsonPatchException, JsonProcessingException
     {
         return jsonPatchService.createFromPatch(patch, CommentUpdateDto.class);
+    }
+
+    @Override
+    public Page<CommentSummaryDto> getFilteredComments(FilterDto filter, Pageable pageable) {
+        SpecificationFactory<Comment> commentFactory = CommentSpecification::of;
+        SpecificationBuilder<Comment> specificationBuilder = SpecificationBuilder.of(filter, commentFactory, dependencies);
+        Specification<Comment> specification = specificationBuilder.build();
+
+        Page<Comment> commentPage = commentRepository.findAll(specification, pageable);
+
+        List<CommentSummaryDto> summaries = commentPage.getContent().stream()
+                .map(commentMapper::toSummaryDto)
+                .toList();
+
+        commentPopulationService.populate(summaries);
+
+        return new PageImpl<>(summaries, pageable, commentPage.getTotalElements());
     }
 }

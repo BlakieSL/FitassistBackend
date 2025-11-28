@@ -209,4 +209,58 @@ public class PlanControllerFilterTest {
                         .content(requestJson))
                 .andExpect(status().isBadRequest());
     }
+
+    @PlanSql
+    @Test
+    @DisplayName("POST - /filter - Should retrieve plans saved by user 1 (user 1 saved plan 6)")
+    void filterPlansSavedByUser() throws Exception {
+        Utils.setUserContext(1);
+        FilterDto filterDto = buildFilterDto("SAVED_BY_USER", 1, FilterOperation.EQUAL);
+        String json = objectMapper.writeValueAsString(filterDto);
+
+        mockMvc.perform(post("/api/plans/filter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.content", hasSize(1)),
+                        jsonPath("$.content[0].name", is("Clean Eating"))
+                );
+    }
+
+    @PlanSql
+    @Test
+    @DisplayName("POST - /filter - Should retrieve plans liked by user 1 (user 1 liked plan 3)")
+    void filterPlansLikedByUser() throws Exception {
+        Utils.setUserContext(1);
+        FilterDto filterDto = buildFilterDto("LIKED_BY_USER", 1, FilterOperation.EQUAL);
+        String json = objectMapper.writeValueAsString(filterDto);
+
+        mockMvc.perform(post("/api/plans/filter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.content", hasSize(1)),
+                        jsonPath("$.content[0].name", is("Cardio Blast"))
+                );
+    }
+
+    @PlanSql
+    @Test
+    @DisplayName("POST - /filter - Should retrieve plans disliked by user 1 (user 1 disliked plan 9)")
+    void filterPlansDislikedByUser() throws Exception {
+        Utils.setUserContext(1);
+        FilterDto filterDto = buildFilterDto("DISLIKED_BY_USER", 1, FilterOperation.EQUAL);
+        String json = objectMapper.writeValueAsString(filterDto);
+
+        mockMvc.perform(post("/api/plans/filter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.content", hasSize(1)),
+                        jsonPath("$.content[0].name", is("5K Training"))
+                );
+    }
 }

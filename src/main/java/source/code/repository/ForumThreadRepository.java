@@ -3,6 +3,7 @@ package source.code.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import source.code.dto.pojo.projection.thread.ForumThreadCommentsCountProjection;
@@ -10,7 +11,7 @@ import source.code.model.thread.ForumThread;
 
 import java.util.List;
 
-public interface ForumThreadRepository extends JpaRepository<ForumThread, Integer> {
+public interface ForumThreadRepository extends JpaRepository<ForumThread, Integer>, JpaSpecificationExecutor<ForumThread> {
     List<ForumThread> findAllByThreadCategoryId(int categoryId);
 
     @Query(value = """

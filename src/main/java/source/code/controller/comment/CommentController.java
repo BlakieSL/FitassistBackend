@@ -4,12 +4,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.annotation.CommentOwnerOrAdmin;
 import source.code.dto.request.comment.CommentCreateDto;
+import source.code.dto.request.filter.FilterDto;
 import source.code.dto.response.comment.CommentResponseDto;
+import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.service.declaration.comment.CommentService;
 
 import java.util.List;
@@ -70,5 +76,14 @@ public class CommentController {
     public ResponseEntity<List<CommentResponseDto>> getReplies(@PathVariable int commentId) {
         List<CommentResponseDto> responseDtos = commentService.getReplies(commentId);
         return ResponseEntity.ok(responseDtos);
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<Page<CommentSummaryDto>> getFilteredComments(
+            @Valid @RequestBody FilterDto filterDto,
+            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        Page<CommentSummaryDto> comments = commentService.getFilteredComments(filterDto, pageable);
+        return ResponseEntity.ok(comments);
     }
 }
