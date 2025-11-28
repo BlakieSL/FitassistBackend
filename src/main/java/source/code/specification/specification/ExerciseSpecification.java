@@ -60,13 +60,10 @@ public class ExerciseSpecification implements Specification<Exercise> {
                     builder, criteria, root, FORCE_TYPE_FIELD);
             case TARGET_MUSCLE -> buildPredicateForTargetMuscle(
                     builder, criteria, root);
+            case SAVED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
+                    builder, criteria, root, LikesAndSaves.USER_EXERCISES.getFieldName());
             case SAVE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
-                    builder,
-                    criteria,
-                    root,
-                    LikesAndSaves.USER_EXERCISES.getFieldName(),
-                    null,
-                    null);
+                    builder, criteria, root, LikesAndSaves.USER_EXERCISES.getFieldName(), null, null);
         };
     }
 
