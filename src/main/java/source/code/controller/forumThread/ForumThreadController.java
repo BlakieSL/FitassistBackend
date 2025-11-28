@@ -4,11 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.annotation.ThreadOwnerOrAdmin;
+import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.forumThread.ForumThreadCreateDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
+import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.service.declaration.forumThread.ForumThreadService;
 
 import java.util.List;
@@ -67,5 +73,14 @@ public class ForumThreadController {
         List<ForumThreadResponseDto> responseDto = forumThreadService
                 .getForumThreadsByCategory(categoryId);
         return ResponseEntity.ok(responseDto);
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<Page<ForumThreadSummaryDto>> getFilteredForumThreads(
+            @Valid @RequestBody FilterDto filterDto,
+            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        Page<ForumThreadSummaryDto> threads = forumThreadService.getFilteredForumThreads(filterDto, pageable);
+        return ResponseEntity.ok(threads);
     }
 }
