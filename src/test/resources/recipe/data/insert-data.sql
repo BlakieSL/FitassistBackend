@@ -1,6 +1,7 @@
 INSERT INTO user (id, username, email, password, birthday, gender)
 VALUES
-    (1, 'testuser', 'test@example.com', 'password', '1990-01-01', 'MALE');
+    (1, 'testuser', 'test@example.com', 'password', '1990-01-01', 'MALE'),
+    (2, 'seconduser', 'second@example.com', 'password', '1992-05-15', 'FEMALE');
 
 INSERT INTO food_category (id, name)
 VALUES
@@ -24,8 +25,9 @@ INSERT INTO recipe (is_public, id, name, description, minutes_to_prepare, user_i
 VALUES
     (true, 1, 'Vegetable Stir Fry', 'Healthy vegetable dish', 15, 1, NOW()),
     (true, 2, 'Grilled Chicken', 'High protein meal', 25, 1, NOW()),
-    (true, 3, 'Chicken Rice Bowl', 'Balanced meal with protein and carbs', 30, 1, NOW()),
-    (false, 4, 'Secret Recipe', 'This is a private recipe', 20, 1, NOW());
+    (true, 3, 'Chicken Rice Bowl', 'Balanced meal with protein and carbs', 30, 2, NOW()),
+    (false, 4, 'Secret Recipe', 'This is a private recipe', 20, 1, NOW()),
+    (true, 5, 'Pasta Primavera', 'Fresh vegetable pasta', 35, 2, NOW());
 
 INSERT INTO recipe_category_association (id, recipe_id, recipe_category_id)
 VALUES
@@ -33,14 +35,18 @@ VALUES
     (2, 1, 3),
     (3, 2, 2),
     (4, 3, 2),
-    (5, 3, 3);
+    (5, 3, 3),
+    (6, 4, 1),
+    (7, 5, 1),
+    (8, 5, 3);
 
 INSERT INTO recipe_food (id, quantity, recipe_id, food_id)
 VALUES
     (1, 200, 1, 1),
     (2, 150, 2, 2),
     (3, 100, 3, 2),
-    (4, 150, 3, 3);
+    (4, 150, 3, 3),
+    (5, 100, 5, 1);
 
 INSERT INTO user_recipe (id, type, recipie_id, user_id, created_at)
 VALUES
@@ -57,4 +63,6 @@ VALUES
     ('RECIPE_INSTRUCTION', 4, 2, 'Grill for 6 minutes per side', 'Cooking', 2),
     ('RECIPE_INSTRUCTION', 5, 1, 'Cook rice according to package', 'Rice', 3),
     ('RECIPE_INSTRUCTION', 6, 2, 'Grill chicken separately', 'Chicken', 3),
-    ('RECIPE_INSTRUCTION', 7, 3, 'Combine in bowl', 'Assembly', 3);
+    ('RECIPE_INSTRUCTION', 7, 3, 'Combine in bowl', 'Assembly', 3),
+    ('RECIPE_INSTRUCTION', 8, 1, 'Cook pasta al dente', 'Pasta', 5),
+    ('RECIPE_INSTRUCTION', 9, 2, 'Saute vegetables', 'Vegetables', 5);
