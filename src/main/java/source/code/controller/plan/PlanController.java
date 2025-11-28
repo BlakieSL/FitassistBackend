@@ -57,11 +57,11 @@ public class PlanController {
         return ResponseEntity.ok(plan);
     }
 
-    @GetMapping({"/private", "/private/{isPrivate}"})
+    @GetMapping({"/private", "/private/{showPrivate}"})
     public ResponseEntity<Page<PlanSummaryDto>> getAllPlans(
-            @PathVariable(required = false) Boolean isPrivate,
+            @PathVariable(required = false) Boolean showPrivate,
             @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<PlanSummaryDto> plans = planService.getAllPlans(isPrivate, pageable);
+        Page<PlanSummaryDto> plans = planService.getAllPlans(showPrivate, pageable);
         return ResponseEntity.ok(plans);
     }
 

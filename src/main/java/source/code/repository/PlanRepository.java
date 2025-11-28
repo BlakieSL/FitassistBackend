@@ -29,12 +29,12 @@ public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecifi
     @Query("""
         SELECT p
         FROM Plan p
-        WHERE (:isPrivate IS NULL AND p.isPublic = true)
-           OR (:isPrivate = false AND p.isPublic = true)
-           OR (:isPrivate = true AND p.user.id = :userId)
+        WHERE (:showPrivate IS NULL AND p.isPublic = true)
+           OR (:showPrivate = false AND p.isPublic = true)
+           OR (:showPrivate = true AND p.user.id = :userId)
     """)
     Page<Plan> findAllWithAssociations(
-            @Param("isPrivate") Boolean isPrivate,
+            @Param("showPrivate") Boolean showPrivate,
             @Param("userId") int userId,
             Pageable pageable
     );

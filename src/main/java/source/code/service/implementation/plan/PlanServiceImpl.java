@@ -113,8 +113,8 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public Page<PlanSummaryDto> getAllPlans(Boolean isPrivate, Pageable pageable) {
-        Page<Plan> planPage = planRepository.findAllWithAssociations(isPrivate, AuthorizationUtil.getUserId(), pageable);
+    public Page<PlanSummaryDto> getAllPlans(Boolean showPrivate, Pageable pageable) {
+        Page<Plan> planPage = planRepository.findAllWithAssociations(showPrivate, AuthorizationUtil.getUserId(), pageable);
 
         List<PlanSummaryDto> summaries = planPage.getContent().stream()
                 .map(planMapper::toSummaryDto)

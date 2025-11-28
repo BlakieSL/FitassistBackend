@@ -22,7 +22,7 @@ public interface PlanService {
 
     PlanResponseDto getPlan(int id);
 
-    Page<PlanSummaryDto> getAllPlans(Boolean isPrivate, Pageable pageable);
+    Page<PlanSummaryDto> getAllPlans(Boolean showPrivate, Pageable pageable);
 
     Page<PlanSummaryDto> getFilteredPlans(FilterDto filter, Pageable pageable);
 

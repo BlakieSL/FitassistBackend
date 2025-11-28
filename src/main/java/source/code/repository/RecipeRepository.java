@@ -42,12 +42,12 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
     @Query("""
         SELECT r
         FROM Recipe r
-        WHERE (:isPrivate IS NULL AND r.isPublic = true)
-           OR (:isPrivate = false AND r.isPublic = true)
-           OR (:isPrivate = true AND r.user.id = :userId)
+        WHERE (:showPrivate IS NULL AND r.isPublic = true)
+           OR (:showPrivate = false AND r.isPublic = true)
+           OR (:showPrivate = true AND r.user.id = :userId)
     """)
     Page<Recipe> findAllWithDetails(
-            @Param("isPrivate") Boolean isPrivate,
+            @Param("showPrivate") Boolean showPrivate,
             @Param("userId") int userId,
             Pageable pageable
     );

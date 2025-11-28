@@ -121,10 +121,10 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Page<RecipeSummaryDto> getAllRecipes(Boolean isPrivate, Pageable pageable) {
+    public Page<RecipeSummaryDto> getAllRecipes(Boolean showPrivate, Pageable pageable) {
         int userId = AuthorizationUtil.getUserId();
 
-        Page<Recipe> recipePage = recipeRepository.findAllWithDetails(isPrivate, userId, pageable);
+        Page<Recipe> recipePage = recipeRepository.findAllWithDetails(showPrivate, userId, pageable);
         List<RecipeSummaryDto> summaries = recipePage.getContent().stream()
                 .map(recipeMapper::toSummaryDto)
                 .toList();
