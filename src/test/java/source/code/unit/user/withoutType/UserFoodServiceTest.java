@@ -229,40 +229,6 @@ public class UserFoodServiceTest {
     }
 
     @Test
-    public void calculateLikesAndSaves_ShouldReturnCorrectCounts() {
-        int foodId = 100;
-        long saveCount = 5;
-        long likeCount = 0L;
-        Food food = new Food();
-
-        when(foodRepository.findById(foodId)).thenReturn(Optional.of(food));
-        when(userFoodRepository.countByFoodId(foodId))
-                .thenReturn(likeCount);
-        when(userFoodRepository.countByFoodId(foodId))
-                .thenReturn(saveCount);
-
-        var result = userFoodService.calculateLikesAndSaves(foodId);
-
-        assertEquals(saveCount, result.getSaves());
-        assertEquals(likeCount, result.getLikes());
-        verify(foodRepository).findById(foodId);
-        verify(userFoodRepository).countByFoodId(foodId);
-        verify(userFoodRepository).countByFoodId(foodId);
-    }
-
-    @Test
-    public void calculateLikesAndSaves_ShouldThrowRecordNotFoundExceptionIfFoodNotFound() {
-        int foodId = 100;
-
-        when(foodRepository.findById(foodId)).thenReturn(Optional.empty());
-
-        assertThrows(RecordNotFoundException.class,
-                () -> userFoodService.calculateLikesAndSaves(foodId));
-
-        verify(userFoodRepository, never()).countByFoodId(anyInt());
-    }
-
-    @Test
     public void getAllFromUser_ShouldPopulateImageUrls() {
         int userId = 1;
         Pageable pageable = PageRequest.of(0, 10);

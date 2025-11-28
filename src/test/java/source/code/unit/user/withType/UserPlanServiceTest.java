@@ -246,40 +246,4 @@ public class UserPlanServiceTest {
         assertTrue(result.getContent().isEmpty());
         assertEquals(0, result.getTotalElements());
     }
-
-    @Test
-    public void calculateLikesAndSaves_ShouldReturnCorrectCounts() {
-        int planId = 100;
-        long saveCount = 5;
-        long likeCount = 10;
-        Plan plan = new Plan();
-        TypeOfInteraction saveType = TypeOfInteraction.SAVE;
-        TypeOfInteraction likeType = TypeOfInteraction.LIKE;
-
-        when(planRepository.findById(planId)).thenReturn(Optional.of(plan));
-        when(userPlanRepository.countByPlanIdAndType(planId, saveType))
-                .thenReturn(saveCount);
-        when(userPlanRepository.countByPlanIdAndType(planId, likeType))
-                .thenReturn(likeCount);
-
-        var result = userPlanService.calculateLikesAndSaves(planId);
-
-        assertEquals(saveCount, result.getSaves());
-        assertEquals(likeCount, result.getLikes());
-        verify(planRepository).findById(planId);
-        verify(userPlanRepository).countByPlanIdAndType(planId, saveType);
-        verify(userPlanRepository).countByPlanIdAndType(planId, likeType);
-    }
-
-    @Test
-    public void calculateLikesAndSaves_ShouldThrowRecordNotFoundExceptionIfPlanNotFound() {
-        int planId = 100;
-
-        when(planRepository.findById(planId)).thenReturn(Optional.empty());
-
-        assertThrows(RecordNotFoundException.class,
-                () -> userPlanService.calculateLikesAndSaves(planId));
-
-        verify(userPlanRepository, never()).countByPlanIdAndType(anyInt(), any());
-    }
 }

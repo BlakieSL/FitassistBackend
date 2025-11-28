@@ -1,5 +1,6 @@
 package source.code.service.implementation.user.interaction.withType;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,7 @@ import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
+import source.code.helper.Enum.cache.CacheNames;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.plan.PlanMapper;
 import source.code.model.plan.Plan;
@@ -45,6 +47,18 @@ public class UserPlanServiceImpl
                 Plan.class);
         this.planMapper = planMapper;
         this.planPopulationService = planPopulationService;
+    }
+
+    @Override
+    @CacheEvict(value = CacheNames.PLANS, key = "#entityId")
+    public void saveToUser(int entityId, TypeOfInteraction type) {
+        super.saveToUser(entityId, type);
+    }
+
+    @Override
+    @CacheEvict(value = CacheNames.PLANS, key = "#entityId")
+    public void deleteFromUser(int entityId, TypeOfInteraction type) {
+        super.deleteFromUser(entityId, type);
     }
 
     @Override
@@ -104,30 +118,4 @@ public class UserPlanServiceImpl
                 ));
     }
 
-    @Override
-    protected List<UserPlan> findAllByUserAndType(int userId, TypeOfInteraction type) {
-        return ((UserPlanRepository) userEntityRepository).findByUserIdAndType(userId, type);
-    }
-
-    @Override
-    protected Plan extractEntity(UserPlan userPlan) {
-        return userPlan.getPlan();
-    }
-
-    @Override
-    protected long countSaves(int planId) {
-        return ((UserPlanRepository) userEntityRepository).countByPlanIdAndType(planId, TypeOfInteraction.SAVE);
-    }
-
-    @Override
-    protected long countLikes(int planId) {
-        return ((UserPlanRepository) userEntityRepository).countByPlanIdAndType(planId, TypeOfInteraction.LIKE);
-    }
-
-    private boolean isCurrentUser(int userId) {
-        return getUserId() == userId;
-    }
-
-    private int getUserId() {
-        return AuthorizationUtil.getUserId();
-    }}
+}

@@ -6,12 +6,16 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.request.plan.PlanUpdateDto;
 import source.code.dto.response.plan.PlanResponseDto;
+import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.event.events.Plan.PlanCreateEvent;
 import source.code.event.events.Plan.PlanDeleteEvent;
 import source.code.event.events.Plan.PlanUpdateEvent;
@@ -24,6 +28,7 @@ import source.code.repository.TextRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
+import source.code.service.declaration.plan.PlanPopulationService;
 import source.code.service.declaration.plan.PlanService;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 import source.code.specification.SpecificationBuilder;
@@ -42,6 +47,7 @@ public class PlanServiceImpl implements PlanService {
     private final PlanRepository planRepository;
     private final TextRepository textRepository;
     private final SpecificationDependencies dependencies;
+    private final PlanPopulationService planPopulationService;
 
     public PlanServiceImpl(PlanMapper planMapper,
                            JsonPatchService jsonPatchService,
@@ -50,7 +56,8 @@ public class PlanServiceImpl implements PlanService {
                            RepositoryHelper repositoryHelper,
                            PlanRepository planRepository,
                            TextRepository textRepository,
-                           SpecificationDependencies dependencies) {
+                           SpecificationDependencies dependencies,
+                           PlanPopulationService planPopulationService) {
         this.planMapper = planMapper;
         this.jsonPatchService = jsonPatchService;
         this.validationService = validationService;
@@ -59,6 +66,7 @@ public class PlanServiceImpl implements PlanService {
         this.planRepository = planRepository;
         this.textRepository = textRepository;
         this.dependencies = dependencies;
+        this.planPopulationService = planPopulationService;
     }
 
     @Override
@@ -105,22 +113,33 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    @Cacheable(value = CacheNames.ALL_PLANS)
-    public List<PlanResponseDto> getAllPlans(Boolean isPrivate) {
-        return planRepository.findAllWithAssociations(isPrivate, AuthorizationUtil.getUserId()).stream()
-                .map(planMapper::toResponseDto)
+    public Page<PlanSummaryDto> getAllPlans(Boolean isPrivate, Pageable pageable) {
+        Page<Plan> planPage = planRepository.findAllWithAssociations(isPrivate, AuthorizationUtil.getUserId(), pageable);
+
+        List<PlanSummaryDto> summaries = planPage.getContent().stream()
+                .map(planMapper::toSummaryDto)
                 .toList();
+
+        planPopulationService.populate(summaries);
+
+        return new PageImpl<>(summaries, pageable, planPage.getTotalElements());
     }
 
     @Override
-    public List<PlanResponseDto> getFilteredPlans(FilterDto filter) {
+    public Page<PlanSummaryDto> getFilteredPlans(FilterDto filter, Pageable pageable) {
         SpecificationFactory<Plan> planFactory = PlanSpecification::of;
         SpecificationBuilder<Plan> specificationBuilder = SpecificationBuilder.of(filter, planFactory, dependencies);
         Specification<Plan> specification = specificationBuilder.build();
 
-        return planRepository.findAll(specification).stream()
-                .map(planMapper::toResponseDto)
+        Page<Plan> planPage = planRepository.findAll(specification, pageable);
+
+        List<PlanSummaryDto> summaries = planPage.getContent().stream()
+                .map(planMapper::toSummaryDto)
                 .toList();
+
+        planPopulationService.populate(summaries);
+
+        return new PageImpl<>(summaries, pageable, planPage.getTotalElements());
     }
 
     @Override

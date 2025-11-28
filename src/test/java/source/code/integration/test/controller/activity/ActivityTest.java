@@ -230,22 +230,23 @@ public class ActivityTest  {
         mockMvc.perform(get("/api/activities"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$[0].id").exists(),
-                        jsonPath("$[0].name").value("Brisk Walking"),
-                        jsonPath("$[0].met").value(3.5),
-                        jsonPath("$[0].categoryId").value(1)
+                        jsonPath("$.content[0].id").exists(),
+                        jsonPath("$.content[0].name").value("Brisk Walking"),
+                        jsonPath("$.content[0].met").value(3.5),
+                        jsonPath("$.content[0].categoryId").value(1)
                 );
     }
 
     @WithMockUser
     @Test
-    @DisplayName("GET - / - Should return empty list when no activities exist")
+    @DisplayName("GET - / - Should return empty page when no activities exist")
     void getAllActivitiesEmpty() throws Exception {
         mockMvc.perform(get("/api/activities"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").isArray(),
-                        jsonPath("$.length()").value(0)
+                        jsonPath("$.content").isArray(),
+                        jsonPath("$.content.length()").value(0),
+                        jsonPath("$.totalElements").value(0)
                 );
     }
 
@@ -264,10 +265,10 @@ public class ActivityTest  {
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$[0].id").exists(),
-                        jsonPath("$[0].name").value("Jogging"),
-                        jsonPath("$[0].met").value(6.0),
-                        jsonPath("$[0].categoryId").value(2)
+                        jsonPath("$.content[0].id").exists(),
+                        jsonPath("$.content[0].name").value("Jogging"),
+                        jsonPath("$.content[0].met").value(6.0),
+                        jsonPath("$.content[0].categoryId").value(2)
                 );
     }
 
@@ -286,10 +287,10 @@ public class ActivityTest  {
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$[0].id").exists(),
-                        jsonPath("$[0].name").value("Lap Swimming"),
-                        jsonPath("$[0].met").value(7.5),
-                        jsonPath("$[0].categoryId").value(4)
+                        jsonPath("$.content[0].id").exists(),
+                        jsonPath("$.content[0].name").value("Lap Swimming"),
+                        jsonPath("$.content[0].met").value(7.5),
+                        jsonPath("$.content[0].categoryId").value(4)
                 );
     }
 

@@ -6,6 +6,8 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.exercise.ExerciseCreateDto;
@@ -126,20 +128,19 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    @Cacheable(value = CacheNames.ALL_EXERCISES)
-    public List<ExerciseSummaryDto> getAllExercises() {
-        return repositoryHelper.findAll(exerciseRepository, exerciseMapper::toSummaryDto);
+    public Page<ExerciseSummaryDto> getAllExercises(Pageable pageable) {
+        return exerciseRepository.findAll(pageable)
+                .map(exerciseMapper::toSummaryDto);
     }
 
     @Override
-    public List<ExerciseSummaryDto> getFilteredExercises(FilterDto filter) {
+    public Page<ExerciseSummaryDto> getFilteredExercises(FilterDto filter, Pageable pageable) {
         SpecificationFactory<Exercise> exerciseFactory = ExerciseSpecification::of;
         SpecificationBuilder<Exercise> specificationBuilder = SpecificationBuilder.of(filter, exerciseFactory, dependencies);
         Specification<Exercise> specification = specificationBuilder.build();
 
-        return exerciseRepository.findAll(specification).stream()
-                .map(exerciseMapper::toSummaryDto)
-                .toList();
+        return exerciseRepository.findAll(specification, pageable)
+                .map(exerciseMapper::toSummaryDto);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package source.code.service.implementation.user.interaction.withoutType;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
+import source.code.helper.Enum.cache.CacheNames;
 import source.code.mapper.activity.ActivityMapper;
 import source.code.model.activity.Activity;
 import source.code.model.media.Media;
@@ -43,6 +45,31 @@ public class UserActivityServiceImpl
     }
 
     @Override
+    @CacheEvict(value = CacheNames.ACTIVITIES, key = "#entityId")
+    public void saveToUser(int entityId) {
+        super.saveToUser(entityId);
+    }
+
+    @Override
+    @CacheEvict(value = CacheNames.ACTIVITIES, key = "#entityId")
+    public void deleteFromUser(int entityId) {
+        super.deleteFromUser(entityId);
+    }
+
+    @Override
+    public Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable) {
+        return ((UserActivityRepository) userEntityRepository)
+                .findAllByUserIdWithMedia(userId, pageable)
+                .map(ua -> {
+                    ActivitySummaryDto dto = activityMapper.toSummaryDto(ua.getActivity());
+                    dto.setUserActivityInteractionCreatedAt(ua.getCreatedAt());
+                    imagePopulationService.populateFirstImageFromMediaList(dto, ua.getActivity().getMediaList(),
+                            Media::getImageName, ActivitySummaryDto::setImageName, ActivitySummaryDto::setFirstImageUrl);
+                    return dto;
+                });
+    }
+
+    @Override
     protected boolean isAlreadySaved(int userId, int entityId) {
         return ((UserActivityRepository) userEntityRepository)
                 .existsByUserIdAndActivityId(userId, entityId);
@@ -64,39 +91,4 @@ public class UserActivityServiceImpl
                 ));
     }
 
-    @Override
-    public Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable) {
-        return ((UserActivityRepository) userEntityRepository)
-                .findAllByUserIdWithMedia(userId, pageable)
-                .map(ua -> {
-                    ActivitySummaryDto dto = activityMapper.toSummaryDto(ua.getActivity());
-                    dto.setUserActivityInteractionCreatedAt(ua.getCreatedAt());
-                    imagePopulationService.populateFirstImageFromMediaList(dto, ua.getActivity().getMediaList(),
-                            Media::getImageName, ActivitySummaryDto::setImageName, ActivitySummaryDto::setFirstImageUrl);
-                    return dto;
-                });
-    }
-
-    @Override
-    protected List<UserActivity> findAllByUser(int userId) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
-        return ((UserActivityRepository) userEntityRepository)
-                .findAllByUserIdWithMedia(userId, sort);
-    }
-
-    @Override
-    protected Activity extractEntity(UserActivity userEntity) {
-        return userEntity.getActivity();
-    }
-
-    @Override
-    protected long countSaves(int entityId) {
-        return ((UserActivityRepository) userEntityRepository)
-                .countByActivityId(entityId);
-    }
-
-    @Override
-    protected long countLikes(int entityId) {
-        return 0;
-    }
 }

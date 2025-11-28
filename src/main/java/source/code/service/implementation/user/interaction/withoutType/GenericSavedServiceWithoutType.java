@@ -58,26 +58,9 @@ public abstract class GenericSavedServiceWithoutType<T, U, R> implements SavedSe
         userEntityRepository.delete(userEntity);
     }
 
-
-    @Override
-    public LikesAndSavesResponseDto calculateLikesAndSaves(int entityId) {
-        entityRepository.findById(entityId)
-                .orElseThrow(() -> RecordNotFoundException.of(entityType, entityId));
-
-        return LikesAndSavesResponseDto.of(countLikes(entityId), countSaves(entityId));
-    }
-
     protected abstract boolean isAlreadySaved(int userId, int entityId);
 
     protected abstract U createUserEntity(User user, T entity);
 
     protected abstract U findUserEntity(int userId, int entityId);
-
-    protected abstract List<U> findAllByUser(int userId);
-
-    protected abstract T extractEntity(U userEntity);
-
-    protected abstract long countSaves(int entityId);
-
-    protected abstract long countLikes(int entityId);
 }

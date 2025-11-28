@@ -3,6 +3,8 @@ package source.code.service.declaration.exercise;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import source.code.dto.request.exercise.ExerciseCreateDto;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.response.exercise.ExerciseResponseDto;
@@ -20,9 +22,9 @@ public interface ExerciseService {
 
     ExerciseResponseDto getExercise(int id);
 
-    List<ExerciseSummaryDto> getAllExercises();
+    Page<ExerciseSummaryDto> getAllExercises(Pageable pageable);
 
-    List<ExerciseSummaryDto> getFilteredExercises(FilterDto filter);
+    Page<ExerciseSummaryDto> getFilteredExercises(FilterDto filter, Pageable pageable);
 
     List<Exercise> getAllExerciseEntities();
 

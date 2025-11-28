@@ -250,34 +250,4 @@ public class UserCommentServiceTest {
         assertEquals(0, result.getTotalElements());
         verify(userCommentRepository).findByUserIdAndTypeWithComment(eq(userId), eq(type), any(Pageable.class));
     }
-
-    @Test
-    public void calculateLikesAndSaves_ShouldCalculateLikesAndReturnZeroForSaves() {
-        int commentId = 100;
-        int likeCount = 100;
-        Comment comment = new Comment();
-        TypeOfInteraction type = TypeOfInteraction.LIKE;
-
-        when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
-        when(userCommentRepository.countByCommentIdAndType(commentId, type)).thenReturn((long) likeCount);
-
-        var result = userCommentService.calculateLikesAndSaves(commentId);
-
-
-        assertEquals(likeCount, result.getLikes());
-        assertEquals(0, result.getSaves());
-        verify(commentRepository).findById(commentId);
-        verify(userCommentRepository).countByCommentIdAndType(commentId, type);
-    }
-
-    @Test
-    public void calculateLikesAndSaves_ShouldThrowRecordNotFoundExceptionIfCommentNotFound() {
-        int commentId = 100;
-
-        when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
-
-        assertThrows(RecordNotFoundException.class, () -> userCommentService.calculateLikesAndSaves(commentId));
-
-        verify(userCommentRepository, never()).countByCommentIdAndType(anyInt(), any(TypeOfInteraction.class));
-    }
 }

@@ -246,39 +246,4 @@ public class UserRecipeServiceTest {
         assertEquals(0, result.getTotalElements());
     }
 
-    @Test
-    public void calculateLikesAndSaves_ShouldReturnCorrectCounts() {
-        int recipeId = 100;
-        long saveCount = 5;
-        long likeCount = 10;
-        Recipe recipe = new Recipe();
-        TypeOfInteraction saveType = TypeOfInteraction.SAVE;
-        TypeOfInteraction likeType = TypeOfInteraction.LIKE;
-
-        when(recipeRepository.findById(recipeId)).thenReturn(Optional.of(recipe));
-        when(userRecipeRepository.countByRecipeIdAndType(recipeId,saveType))
-                .thenReturn(saveCount);
-        when(userRecipeRepository.countByRecipeIdAndType(recipeId, likeType))
-                .thenReturn(likeCount);
-
-        var result = userRecipeService.calculateLikesAndSaves(recipeId);
-
-        assertEquals(saveCount, result.getSaves());
-        assertEquals(likeCount, result.getLikes());
-        verify(recipeRepository).findById(recipeId);
-        verify(userRecipeRepository).countByRecipeIdAndType(recipeId, saveType);
-        verify(userRecipeRepository).countByRecipeIdAndType(recipeId, likeType);
-    }
-
-    @Test
-    public void calculateLikesAndSaves_ShouldThrowRecordNotFoundExceptionIfRecipeNotFound() {
-        int recipeId = 100;
-
-        when(recipeRepository.findById(recipeId)).thenReturn(Optional.empty());
-
-        assertThrows(RecordNotFoundException.class,
-                () -> userRecipeService.calculateLikesAndSaves(recipeId));
-
-        verify(userRecipeRepository, never()).countByRecipeIdAndType(anyInt(), any());
-    }
 }

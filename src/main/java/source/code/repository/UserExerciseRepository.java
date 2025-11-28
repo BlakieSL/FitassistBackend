@@ -12,23 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserExerciseRepository extends JpaRepository<UserExercise, Integer> {
-    List<UserExercise> findByUserId(int userId);
-
-    Optional<UserExercise> findByUserIdAndExerciseId(int userId, int exerciseId);
-
     boolean existsByUserIdAndExerciseId(int userId, int exerciseId);
 
-    @Query("""
-           SELECT ue FROM UserExercise ue
-           JOIN FETCH ue.exercise e
-           JOIN FETCH e.expertiseLevel
-           JOIN FETCH e.equipment
-           JOIN FETCH e.mechanicsType
-           JOIN FETCH e.forceType
-           LEFT JOIN FETCH e.mediaList
-           WHERE ue.user.id = :userId
-           """)
-    List<UserExercise> findAllByUserIdWithMedia(@Param("userId") int userId, Sort sort);
+    Optional<UserExercise> findByUserIdAndExerciseId(int userId, int exerciseId);
 
     @Query(value = """
            SELECT ue FROM UserExercise ue
@@ -39,11 +25,6 @@ public interface UserExerciseRepository extends JpaRepository<UserExercise, Inte
            JOIN FETCH e.forceType
            LEFT JOIN FETCH e.mediaList
            WHERE ue.user.id = :userId
-           """, countQuery = """
-           SELECT COUNT(ue) FROM UserExercise ue
-           WHERE ue.user.id = :userId
            """)
     Page<UserExercise> findAllByUserIdWithMedia(@Param("userId") int userId, Pageable pageable);
-
-    long countByExerciseId(int exerciseId);
 }

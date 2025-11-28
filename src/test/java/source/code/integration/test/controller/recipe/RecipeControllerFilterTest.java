@@ -61,7 +61,7 @@ public class RecipeControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(1))
+                        jsonPath("$.content", hasSize(1))
                 );
     }
 
@@ -78,7 +78,7 @@ public class RecipeControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(1))
+                        jsonPath("$.content", hasSize(1))
                 );
     }
 
@@ -95,11 +95,11 @@ public class RecipeControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(2)),
-                        jsonPath("$[*].name", containsInAnyOrder(
+                        jsonPath("$.content", hasSize(2)),
+                        jsonPath("$.content[*].name", containsInAnyOrder(
                                 "Grilled Chicken", "Chicken Rice Bowl"
                         )),
-                        jsonPath("$[*].foods[?(@.id == 2)].name",
+                        jsonPath("$.content[*].foods[?(@.id == 2)].name",
                                 everyItem(is("Chicken Breast")))
                 );
     }
@@ -117,8 +117,8 @@ public class RecipeControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(2)),
-                        jsonPath("$[*].name", containsInAnyOrder(
+                        jsonPath("$.content", hasSize(2)),
+                        jsonPath("$.content[*].name", containsInAnyOrder(
                                 "Vegetable Stir Fry", "Chicken Rice Bowl"
                         )));
     }
@@ -136,8 +136,8 @@ public class RecipeControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(2)),
-                        jsonPath("$[*].name", containsInAnyOrder(
+                        jsonPath("$.content", hasSize(2)),
+                        jsonPath("$.content[*].name", containsInAnyOrder(
                                 "Grilled Chicken", "Chicken Rice Bowl"
                         )));
     }

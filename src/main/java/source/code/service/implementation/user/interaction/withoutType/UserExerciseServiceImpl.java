@@ -1,5 +1,6 @@
 package source.code.service.implementation.user.interaction.withoutType;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
+import source.code.helper.Enum.cache.CacheNames;
 import source.code.mapper.exercise.ExerciseMapper;
 import source.code.model.exercise.Exercise;
 import source.code.model.media.Media;
@@ -39,6 +41,31 @@ public class UserExerciseServiceImpl
     }
 
     @Override
+    @CacheEvict(value = CacheNames.EXERCISES, key = "#entityId")
+    public void saveToUser(int entityId) {
+        super.saveToUser(entityId);
+    }
+
+    @Override
+    @CacheEvict(value = CacheNames.EXERCISES, key = "#entityId")
+    public void deleteFromUser(int entityId) {
+        super.deleteFromUser(entityId);
+    }
+
+    @Override
+    public Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable) {
+        return ((UserExerciseRepository) userEntityRepository)
+                .findAllByUserIdWithMedia(userId, pageable)
+                .map(ue -> {
+                    ExerciseSummaryDto dto = exerciseMapper.toSummaryDto(ue.getExercise());
+                    dto.setUserExerciseInteractionCreatedAt(ue.getCreatedAt());
+                    imagePopulationService.populateFirstImageFromMediaList(dto, ue.getExercise().getMediaList(),
+                            Media::getImageName, ExerciseSummaryDto::setImageName, ExerciseSummaryDto::setFirstImageUrl);
+                    return dto;
+                });
+    }
+
+    @Override
     protected boolean isAlreadySaved(int userId, int entityId) {
         return ((UserExerciseRepository) userEntityRepository)
                 .existsByUserIdAndExerciseId(userId, entityId);
@@ -58,41 +85,5 @@ public class UserExerciseServiceImpl
                         userId,
                         entityId
                 ));
-    }
-
-    @Override
-    public Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable) {
-        return ((UserExerciseRepository) userEntityRepository)
-                .findAllByUserIdWithMedia(userId, pageable)
-                .map(ue -> {
-                    ExerciseSummaryDto dto = exerciseMapper.toSummaryDto(ue.getExercise());
-                    dto.setUserExerciseInteractionCreatedAt(ue.getCreatedAt());
-                    imagePopulationService.populateFirstImageFromMediaList(dto, ue.getExercise().getMediaList(),
-                            Media::getImageName, ExerciseSummaryDto::setImageName, ExerciseSummaryDto::setFirstImageUrl);
-                    return dto;
-                });
-    }
-
-    @Override
-    protected List<UserExercise> findAllByUser(int userId) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
-        return ((UserExerciseRepository) userEntityRepository)
-                .findAllByUserIdWithMedia(userId, sort);
-    }
-
-    @Override
-    protected Exercise extractEntity(UserExercise userEntity) {
-        return userEntity.getExercise();
-    }
-
-    @Override
-    protected long countSaves(int entityId) {
-        return ((UserExerciseRepository) userEntityRepository)
-                .countByExerciseId(entityId);
-    }
-
-    @Override
-    protected long countLikes(int entityId) {
-        return 0;
     }
 }

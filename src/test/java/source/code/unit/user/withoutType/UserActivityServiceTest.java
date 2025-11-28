@@ -217,37 +217,4 @@ public class UserActivityServiceTest {
         assertEquals(0, result.getTotalElements());
     }
 
-    @Test
-    public void calculateLikesAndSaves_ShouldReturnCorrectCounts() {
-        int activityId = 100;
-        long likeCount = 0L;
-        long saveCount = 10;
-        Activity activity = new Activity();
-
-        when(activityRepository.findById(activityId)).thenReturn(Optional.of(activity));
-        when(userActivityRepository.countByActivityId(activityId))
-                .thenReturn(likeCount);
-        when(userActivityRepository.countByActivityId(activityId))
-                .thenReturn(saveCount);
-
-        var result = userActivityService.calculateLikesAndSaves(activityId);
-
-        assertEquals(saveCount, result.getSaves());
-        assertEquals(likeCount, result.getLikes());
-        verify(activityRepository).findById(activityId);
-        verify(userActivityRepository).countByActivityId(activityId);
-        verify(userActivityRepository).countByActivityId(activityId);
-    }
-
-    @Test
-    public void calculateLikesAndSaves_ShouldThrowRecordNotFoundExceptionIfActivityNotFound() {
-        int activityId = 100;
-
-        when(activityRepository.findById(activityId)).thenReturn(Optional.empty());
-
-        assertThrows(RecordNotFoundException.class,
-                () -> userActivityService.calculateLikesAndSaves(activityId));
-
-        verify(userActivityRepository, never()).countByActivityId(anyInt());
-    }
 }

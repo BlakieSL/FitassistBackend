@@ -3,9 +3,12 @@ package source.code.service.declaration.plan;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.response.plan.PlanResponseDto;
+import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.model.plan.Plan;
 
 import java.util.List;
@@ -19,9 +22,9 @@ public interface PlanService {
 
     PlanResponseDto getPlan(int id);
 
-    List<PlanResponseDto> getAllPlans(Boolean isPrivate);
+    Page<PlanSummaryDto> getAllPlans(Boolean isPrivate, Pageable pageable);
 
-    List<PlanResponseDto> getFilteredPlans(FilterDto filter);
+    Page<PlanSummaryDto> getFilteredPlans(FilterDto filter, Pageable pageable);
 
     List<Plan> getAllPlanEntities();
 

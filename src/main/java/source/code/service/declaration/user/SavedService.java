@@ -10,5 +10,4 @@ public interface SavedService {
     void saveToUser(int entityId, TypeOfInteraction type);
     void deleteFromUser(int entityId, TypeOfInteraction type);
     Page<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Pageable pageable);
-    LikesAndSavesResponseDto calculateLikesAndSaves(int entityId);
 }

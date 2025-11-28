@@ -11,21 +11,19 @@ import source.code.model.user.UserThread;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserThreadRepository
-        extends JpaRepository<UserThread, Integer>
-{
+public interface UserThreadRepository extends JpaRepository<UserThread, Integer> {
     boolean existsByUserIdAndForumThreadId(int userId, int forumThreadId);
+
     Optional<UserThread> findByUserIdAndForumThreadId(int userId, int forumThreadId);
 
-    @Query("""
-           SELECT ut FROM UserThread ut
-           JOIN FETCH ut.forumThread ft
-           JOIN FETCH ft.user
-           LEFT JOIN FETCH ft.userThreads
-           LEFT JOIN FETCH ft.comments
-           WHERE ut.user.id = :userId
-           """)
-    List<UserThread> findAllByUserId(@Param("userId") int userId);
+    @Query(value = """
+        SELECT ut
+        FROM UserThread ut
+        JOIN FETCH ut.forumThread ft
+        JOIN FETCH ft.user
+        WHERE ut.user.id = :userId
+    """)
+    Page<UserThread> findByUserIdWithThread(@Param("userId") int userId, Pageable pageable);
 
     @Query("""
         SELECT
@@ -36,13 +34,4 @@ public interface UserThreadRepository
         GROUP BY ut.forumThread.id
     """)
     List<ForumThreadCountsProjection> findSavesCountsByThreadIds(@Param("threadIds") List<Integer> threadIds);
-
-    @Query(value = """
-        SELECT ut
-        FROM UserThread ut
-        JOIN FETCH ut.forumThread ft
-        JOIN FETCH ft.user
-        WHERE ut.user.id = :userId
-    """)
-    Page<UserThread> findByUserIdWithThread(@Param("userId") int userId, Pageable pageable);
 }

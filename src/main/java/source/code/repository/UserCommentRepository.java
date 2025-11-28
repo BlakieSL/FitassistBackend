@@ -14,9 +14,8 @@ import java.util.Optional;
 
 public interface UserCommentRepository extends JpaRepository<UserComment, Integer> {
     boolean existsByUserIdAndCommentIdAndType(int userId, int commentId, TypeOfInteraction type);
+
     Optional<UserComment> findByUserIdAndCommentIdAndType(int userId, int commentId, TypeOfInteraction type);
-    List<UserComment> findByUserIdAndType(int userId, TypeOfInteraction type);
-    long countByCommentIdAndType(int commentId, TypeOfInteraction type);
 
     @Query("""
         SELECT

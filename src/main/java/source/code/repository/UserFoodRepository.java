@@ -18,13 +18,12 @@ public interface UserFoodRepository extends JpaRepository<UserFood, Integer> {
     Optional<UserFood> findByUserIdAndFoodId(int userId, int foodId);
 
     @Query("""
-           SELECT uf FROM UserFood uf
-           JOIN FETCH uf.food f
-           JOIN FETCH f.foodCategory
-           LEFT JOIN FETCH f.mediaList
-           WHERE uf.user.id = :userId
-           """)
-    List<UserFood> findAllByUserIdWithMedia(@Param("userId") int userId, Sort sort);
+        SELECT COUNT(uf) as savesCount,
+               SUM(CASE WHEN uf.user.id = :userId THEN 1 ELSE 0 END) as userSaved
+        FROM UserFood uf
+        WHERE uf.food.id = :foodId
+    """)
+    FoodSavesProjection findSavesCountAndUserSaved(@Param("foodId") int foodId, @Param("userId") int userId);
 
     @Query(value = """
            SELECT uf FROM UserFood uf
@@ -32,19 +31,6 @@ public interface UserFoodRepository extends JpaRepository<UserFood, Integer> {
            JOIN FETCH f.foodCategory
            LEFT JOIN FETCH f.mediaList
            WHERE uf.user.id = :userId
-           """, countQuery = """
-           SELECT COUNT(uf) FROM UserFood uf
-           WHERE uf.user.id = :userId
            """)
     Page<UserFood> findAllByUserIdWithMedia(@Param("userId") int userId, Pageable pageable);
-
-    long countByFoodId(int foodId);
-
-    @Query("""
-        SELECT COUNT(uf) as savesCount,
-               SUM(CASE WHEN uf.user.id = :userId THEN 1 ELSE 0 END) as userSaved
-        FROM UserFood uf
-        WHERE uf.food.id = :foodId
-    """)
-    FoodSavesProjection findSavesCountAndUserSaved(@Param("foodId") int foodId, @Param("userId") int userId);
 }

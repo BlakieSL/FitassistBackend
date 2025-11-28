@@ -4,6 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -59,16 +63,19 @@ public class ExerciseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ExerciseSummaryDto>> getAllExercises() {
-        List<ExerciseSummaryDto> exercises = exerciseService.getAllExercises();
+    public ResponseEntity<Page<ExerciseSummaryDto>> getAllExercises(
+            @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        Page<ExerciseSummaryDto> exercises = exerciseService.getAllExercises(pageable);
         return ResponseEntity.ok(exercises);
     }
 
     @PostMapping("/filter")
-    public ResponseEntity<List<ExerciseSummaryDto>> getFilteredExercises(
-            @Valid @RequestBody FilterDto filter
+    public ResponseEntity<Page<ExerciseSummaryDto>> getFilteredExercises(
+            @Valid @RequestBody FilterDto filter,
+            @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
     ) {
-        List<ExerciseSummaryDto> filtered = exerciseService.getFilteredExercises(filter);
+        Page<ExerciseSummaryDto> filtered = exerciseService.getFilteredExercises(filter, pageable);
         return ResponseEntity.ok(filtered);
     }
 

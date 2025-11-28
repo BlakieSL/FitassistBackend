@@ -13,6 +13,10 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.dto.request.activity.ActivityCreateDto;
@@ -80,6 +84,7 @@ public class ActivityServiceTest {
     private CalculateActivityCaloriesRequestDto calculateRequestDto;
     private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
     private FilterDto filter;
+    private Pageable pageable;
     @BeforeEach
     void setUp() {
         activity = new Activity();
@@ -95,6 +100,7 @@ public class ActivityServiceTest {
         patch = mock(JsonMergePatch.class);
         mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
         filter = new FilterDto();
+        pageable = PageRequest.of(0, 100);
     }
 
     @AfterEach
@@ -341,73 +347,76 @@ public class ActivityServiceTest {
 
     @Test
     void getAllActivities_shouldReturnAllActivities() {
-        List<Activity> activities = List.of(activity);
-        List<ActivitySummaryDto> responseDtos = List.of(responseDto);
+        Page<Activity> activityPage = new PageImpl<>(List.of(activity), pageable, 1);
 
-        when(activityRepository.findAllWithActivityCategory())
-                .thenReturn(activities);
+        when(activityRepository.findAllWithActivityCategory(pageable))
+                .thenReturn(activityPage);
         when(activityMapper.toSummaryDto(activity)).thenReturn(responseDto);
 
-        List<ActivitySummaryDto> result = activityService.getAllActivities();
+        Page<ActivitySummaryDto> result = activityService.getAllActivities(pageable);
 
-        assertEquals(responseDtos, result);
-        verify(activityRepository).findAllWithActivityCategory();
+        assertEquals(1, result.getTotalElements());
+        assertEquals(responseDto, result.getContent().get(0));
+        verify(activityRepository).findAllWithActivityCategory(pageable);
     }
 
     @Test
-    void getAllActivities_shouldReturnEmptyListWhenNoActivities() {
-        List<Activity> activities = List.of();
-        when(activityRepository.findAllWithActivityCategory())
-                .thenReturn(activities);
+    void getAllActivities_shouldReturnEmptyPageWhenNoActivities() {
+        Page<Activity> emptyPage = new PageImpl<>(List.of(), pageable, 0);
 
-        List<ActivitySummaryDto> result = activityService.getAllActivities();
+        when(activityRepository.findAllWithActivityCategory(pageable))
+                .thenReturn(emptyPage);
+
+        Page<ActivitySummaryDto> result = activityService.getAllActivities(pageable);
 
         assertTrue(result.isEmpty());
-        verify(activityRepository).findAllWithActivityCategory();
+        verify(activityRepository).findAllWithActivityCategory(pageable);
     }
 
     @Test
     void getFilteredActivities_shouldReturnFilteredActivities() {
-        when(activityRepository.findAll(any(Specification.class)))
-                .thenReturn(List.of(activity));
+        Page<Activity> activityPage = new PageImpl<>(List.of(activity), pageable, 1);
+
+        when(activityRepository.findAll(any(Specification.class), eq(pageable)))
+                .thenReturn(activityPage);
         when(activityMapper.toSummaryDto(activity)).thenReturn(responseDto);
 
-        List<ActivitySummaryDto> result = activityService.getFilteredActivities(filter);
+        Page<ActivitySummaryDto> result = activityService.getFilteredActivities(filter, pageable);
 
-        assertEquals(1, result.size());
-        assertSame(responseDto, result.get(0));
-        verify(activityRepository).findAll(any(Specification.class));
+        assertEquals(1, result.getTotalElements());
+        assertSame(responseDto, result.getContent().get(0));
+        verify(activityRepository).findAll(any(Specification.class), eq(pageable));
         verify(activityMapper).toSummaryDto(activity);
     }
 
     @Test
-    void getFilteredActivities_shouldReturnEmptyListWhenFilterHasNoCriteria() {
+    void getFilteredActivities_shouldReturnEmptyPageWhenFilterHasNoCriteria() {
         filter.setFilterCriteria(new ArrayList<>());
+        Page<Activity> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
 
-        when(activityRepository.findAll(any(Specification.class)))
-                .thenReturn(new ArrayList<>());
+        when(activityRepository.findAll(any(Specification.class), eq(pageable)))
+                .thenReturn(emptyPage);
 
-        List<ActivitySummaryDto> result = activityService.getFilteredActivities(filter);
+        Page<ActivitySummaryDto> result = activityService.getFilteredActivities(filter, pageable);
 
         assertTrue(result.isEmpty());
-        verify(activityRepository).findAll(any(Specification.class));
-        verifyNoInteractions(activityMapper);
+        verify(activityRepository).findAll(any(Specification.class), eq(pageable));
     }
 
     @Test
-    void getFilteredActivities_shouldReturnEmptyListWhenNoActivitiesMatchFilter() {
+    void getFilteredActivities_shouldReturnEmptyPageWhenNoActivitiesMatchFilter() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setFilterKey("nonexistentKey");
         filter.setFilterCriteria(List.of(criteria));
+        Page<Activity> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
 
-        when(activityRepository.findAll(any(Specification.class)))
-                .thenReturn(new ArrayList<>());
+        when(activityRepository.findAll(any(Specification.class), eq(pageable)))
+                .thenReturn(emptyPage);
 
-        List<ActivitySummaryDto> result = activityService.getFilteredActivities(filter);
+        Page<ActivitySummaryDto> result = activityService.getFilteredActivities(filter, pageable);
 
         assertTrue(result.isEmpty());
-        verify(activityRepository).findAll(any(Specification.class));
-        verifyNoInteractions(activityMapper);
+        verify(activityRepository).findAll(any(Specification.class), eq(pageable));
     }
 
     @Test

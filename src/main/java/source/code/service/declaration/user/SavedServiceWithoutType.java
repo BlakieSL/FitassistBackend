@@ -9,5 +9,4 @@ public interface SavedServiceWithoutType {
     void saveToUser(int entityId);
     void deleteFromUser(int entityId);
     Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable);
-    LikesAndSavesResponseDto calculateLikesAndSaves(int entityId);
 }
