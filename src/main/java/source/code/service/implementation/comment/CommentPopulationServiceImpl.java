@@ -80,8 +80,11 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
         comments.forEach(comment -> {
             CommentCountsProjection counts = countsMap.get(comment.getId());
             if (counts != null) {
-                comment.setLikesCount(counts.getLikesCount());
-                comment.setDislikesCount(counts.getDislikesCount());
+                comment.setLikesCount(counts.getLikesCount() != null ? counts.getLikesCount() : 0L);
+                comment.setDislikesCount(counts.getDislikesCount() != null ? counts.getDislikesCount() : 0L);
+            } else {
+                comment.setLikesCount(0L);
+                comment.setDislikesCount(0L);
             }
         });
     }
@@ -96,8 +99,7 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
                 ));
 
         comments.forEach(comment -> {
-            Long repliesCount = repliesCountMap.get(comment.getId());
-            comment.setRepliesCount(repliesCount);
+            comment.setRepliesCount(repliesCountMap.getOrDefault(comment.getId(), 0L));
         });
     }
 }

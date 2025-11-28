@@ -27,7 +27,7 @@ import source.code.model.user.UserComment;
 import source.code.repository.CommentRepository;
 import source.code.repository.UserCommentRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.comment.CommentPopulationService;
 import source.code.service.implementation.user.interaction.withType.UserCommentServiceImpl;
 
 import java.time.LocalDateTime;
@@ -54,7 +54,7 @@ public class UserCommentServiceTest {
     private CommentMapper commentMapper;
 
     @Mock
-    private ImageUrlPopulationService imageUrlPopulationService;
+    private CommentPopulationService commentPopulationService;
 
     private UserCommentServiceImpl userCommentService;
 
@@ -68,7 +68,7 @@ public class UserCommentServiceTest {
                 commentRepository,
                 userCommentRepository,
                 commentMapper,
-                imageUrlPopulationService
+                commentPopulationService
         );
     }
 
@@ -196,20 +196,42 @@ public class UserCommentServiceTest {
         int userId = 1;
         Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
+        User user = new User();
+        user.setId(1);
+
+        Comment comment1 = new Comment();
+        comment1.setId(1);
+        comment1.setUser(user);
+        Comment comment2 = new Comment();
+        comment2.setId(2);
+        comment2.setUser(user);
+
+        UserComment uc1 = new UserComment();
+        uc1.setComment(comment1);
+        uc1.setCreatedAt(LocalDateTime.now());
+        UserComment uc2 = new UserComment();
+        uc2.setComment(comment2);
+        uc2.setCreatedAt(LocalDateTime.now());
+
         CommentSummaryDto dto1 = new CommentSummaryDto();
         dto1.setId(1);
         CommentSummaryDto dto2 = new CommentSummaryDto();
         dto2.setId(2);
 
-        Page<CommentSummaryDto> page = new PageImpl<>(List.of(dto1, dto2));
-        when(commentRepository.findCommentSummaryUnified(eq(userId), eq(type), eq(true), any(Pageable.class)))
-                .thenReturn(page);
+        Page<UserComment> userCommentPage = new PageImpl<>(List.of(uc1, uc2), pageable, 2);
+        when(userCommentRepository.findByUserIdAndTypeWithComment(eq(userId), eq(type), any(Pageable.class)))
+                .thenReturn(userCommentPage);
+        when(commentMapper.toSummaryDto(comment1)).thenReturn(dto1);
+        when(commentMapper.toSummaryDto(comment2)).thenReturn(dto2);
 
         Page<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, pageable);
 
         assertEquals(2, result.getContent().size());
         assertEquals(2, result.getTotalElements());
-        verify(commentRepository).findCommentSummaryUnified(eq(userId), eq(type), eq(true), any(Pageable.class));
+        verify(userCommentRepository).findByUserIdAndTypeWithComment(eq(userId), eq(type), any(Pageable.class));
+        verify(commentMapper).toSummaryDto(comment1);
+        verify(commentMapper).toSummaryDto(comment2);
+        verify(commentPopulationService).populate(any(List.class));
     }
 
     @Test
@@ -218,14 +240,15 @@ public class UserCommentServiceTest {
         TypeOfInteraction type = TypeOfInteraction.LIKE;
         Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Page<CommentSummaryDto> page = new PageImpl<>(List.of());
-        when(commentRepository.findCommentSummaryUnified(eq(userId), eq(type), eq(true), any(Pageable.class)))
-                .thenReturn(page);
+        Page<UserComment> emptyPage = new PageImpl<>(List.of(), pageable, 0);
+        when(userCommentRepository.findByUserIdAndTypeWithComment(eq(userId), eq(type), any(Pageable.class)))
+                .thenReturn(emptyPage);
 
         Page<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, pageable);
 
         assertTrue(result.getContent().isEmpty());
         assertEquals(0, result.getTotalElements());
+        verify(userCommentRepository).findByUserIdAndTypeWithComment(eq(userId), eq(type), any(Pageable.class));
     }
 
     @Test

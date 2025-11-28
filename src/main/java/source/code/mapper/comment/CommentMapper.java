@@ -34,8 +34,13 @@ public abstract class CommentMapper {
     public abstract CommentResponseDto toResponseDto(Comment comment);
 
     @Mapping(target = "authorUsername", source = "user.username")
-    @Mapping(target = "likeCount", expression = "java(comment.getUserCommentLikes().size())")
-    @Mapping(target = "repliesCount", expression = "java(comment.getReplies().size())")
+    @Mapping(target = "authorId", source = "user.id")
+    @Mapping(target = "likesCount", ignore = true)
+    @Mapping(target = "dislikesCount", ignore = true)
+    @Mapping(target = "repliesCount", ignore = true)
+    @Mapping(target = "authorImageName", ignore = true)
+    @Mapping(target = "authorImageUrl", ignore = true)
+    @Mapping(target = "userCommentInteractionCreatedAt", ignore = true)
     public abstract CommentSummaryDto toSummaryDto(Comment comment);
 
     @Mapping(target = "text", source = "text")

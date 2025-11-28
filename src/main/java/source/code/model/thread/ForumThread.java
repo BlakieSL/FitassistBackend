@@ -52,12 +52,12 @@ public class ForumThread {
     private int views = 0;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thread_category_id", nullable = false)
     private ThreadCategory threadCategory;
 

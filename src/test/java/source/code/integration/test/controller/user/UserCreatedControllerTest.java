@@ -41,7 +41,8 @@ public class UserCreatedControllerTest {
         mockMvc.perform(get("/api/user-created/plans/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(1))
+                        jsonPath("$.content").value(hasSize(1)),
+                        jsonPath("$.totalElements").value(1)
                 );
     }
 
@@ -53,7 +54,8 @@ public class UserCreatedControllerTest {
         mockMvc.perform(get("/api/user-created/plans/user/{userId}", 1))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(2))
+                        jsonPath("$.content").value(hasSize(2)),
+                        jsonPath("$.totalElements").value(2)
                 );
     }
 
@@ -65,7 +67,8 @@ public class UserCreatedControllerTest {
         mockMvc.perform(get("/api/user-created/recipes/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(1))
+                        jsonPath("$.content").value(hasSize(1)),
+                        jsonPath("$.totalElements").value(1)
                 );
     }
 
@@ -77,7 +80,8 @@ public class UserCreatedControllerTest {
         mockMvc.perform(get("/api/user-created/recipes/user/{userId}", 1))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(2))
+                        jsonPath("$.content").value(hasSize(2)),
+                        jsonPath("$.totalElements").value(2)
                 );
     }
 
@@ -89,7 +93,8 @@ public class UserCreatedControllerTest {
         mockMvc.perform(get("/api/user-created/comments/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(2))
+                        jsonPath("$.content").value(hasSize(2)),
+                        jsonPath("$.totalElements").value(2)
                 );
     }
 
@@ -101,7 +106,8 @@ public class UserCreatedControllerTest {
         mockMvc.perform(get("/api/user-created/threads/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(1))
+                        jsonPath("$.content").value(hasSize(1)),
+                        jsonPath("$.totalElements").value(1)
                 );
     }
 
@@ -114,9 +120,10 @@ public class UserCreatedControllerTest {
                 .param("sort", "DESC"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(2)),
-                        jsonPath("$[0].id").exists(),
-                        jsonPath("$[1].id").exists()
+                        jsonPath("$.content").value(hasSize(2)),
+                        jsonPath("$.totalElements").value(2),
+                        jsonPath("$.content[0].id").exists(),
+                        jsonPath("$.content[1].id").exists()
                 );
     }
 
@@ -129,9 +136,10 @@ public class UserCreatedControllerTest {
                 .param("sort", "ASC"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(2)),
-                        jsonPath("$[0].id").exists(),
-                        jsonPath("$[1].id").exists()
+                        jsonPath("$.content").value(hasSize(2)),
+                        jsonPath("$.totalElements").value(2),
+                        jsonPath("$.content[0].id").exists(),
+                        jsonPath("$.content[1].id").exists()
                 );
     }
 
@@ -144,9 +152,10 @@ public class UserCreatedControllerTest {
                 .param("sort", "DESC"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(2)),
-                        jsonPath("$[0].id").exists(),
-                        jsonPath("$[1].id").exists()
+                        jsonPath("$.content").value(hasSize(2)),
+                        jsonPath("$.totalElements").value(2),
+                        jsonPath("$.content[0].id").exists(),
+                        jsonPath("$.content[1].id").exists()
                 );
     }
 
@@ -159,9 +168,10 @@ public class UserCreatedControllerTest {
                 .param("sort", "ASC"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(2)),
-                        jsonPath("$[0].id").exists(),
-                        jsonPath("$[1].id").exists()
+                        jsonPath("$.content").value(hasSize(2)),
+                        jsonPath("$.totalElements").value(2),
+                        jsonPath("$.content[0].id").exists(),
+                        jsonPath("$.content[1].id").exists()
                 );
     }
 
@@ -174,9 +184,10 @@ public class UserCreatedControllerTest {
                 .param("sort", "DESC"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(2)),
-                        jsonPath("$[0].id").exists(),
-                        jsonPath("$[1].id").exists()
+                        jsonPath("$.content").value(hasSize(2)),
+                        jsonPath("$.totalElements").value(2),
+                        jsonPath("$.content[0].id").exists(),
+                        jsonPath("$.content[1].id").exists()
                 );
     }
 
@@ -189,9 +200,10 @@ public class UserCreatedControllerTest {
                 .param("sort", "ASC"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(2)),
-                        jsonPath("$[0].id").exists(),
-                        jsonPath("$[1].id").exists()
+                        jsonPath("$.content").value(hasSize(2)),
+                        jsonPath("$.totalElements").value(2),
+                        jsonPath("$.content[0].id").exists(),
+                        jsonPath("$.content[1].id").exists()
                 );
     }
 
@@ -204,8 +216,9 @@ public class UserCreatedControllerTest {
                 .param("sort", "DESC"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(1)),
-                        jsonPath("$[0].id").exists()
+                        jsonPath("$.content").value(hasSize(1)),
+                        jsonPath("$.totalElements").value(1),
+                        jsonPath("$.content[0].id").exists()
                 );
     }
 
@@ -218,8 +231,9 @@ public class UserCreatedControllerTest {
                 .param("sort", "ASC"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(1)),
-                        jsonPath("$[0].id").exists()
+                        jsonPath("$.content").value(hasSize(1)),
+                        jsonPath("$.totalElements").value(1),
+                        jsonPath("$.content[0].id").exists()
                 );
     }
 
@@ -231,7 +245,8 @@ public class UserCreatedControllerTest {
         mockMvc.perform(get("/api/user-created/plans/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").value(hasSize(2))
+                        jsonPath("$.content").value(hasSize(2)),
+                        jsonPath("$.totalElements").value(2)
                 );
     }
 }
