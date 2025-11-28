@@ -24,13 +24,12 @@ import source.code.model.thread.ForumThread;
 import source.code.model.user.User;
 import source.code.model.user.UserThread;
 import source.code.repository.ForumThreadRepository;
-import source.code.repository.MediaRepository;
 import source.code.repository.UserRepository;
 import source.code.repository.UserThreadRepository;
-import source.code.service.declaration.helpers.ImageUrlPopulationService;
-import source.code.service.declaration.helpers.SortingService;
+import source.code.service.declaration.thread.ForumThreadPopulationService;
 import source.code.service.implementation.user.interaction.withoutType.UserThreadServiceImpl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +39,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class  UserThreadServiceTest {
+public class UserThreadServiceTest {
     @Mock
     private UserThreadRepository userThreadRepository;
     @Mock
@@ -50,11 +49,7 @@ public class  UserThreadServiceTest {
     @Mock
     private ForumThreadMapper forumThreadMapper;
     @Mock
-    private MediaRepository mediaRepository;
-    @Mock
-    private ImageUrlPopulationService imageUrlPopulationService;
-    @Mock
-    private SortingService sortingService;
+    private ForumThreadPopulationService forumThreadPopulationService;
     @InjectMocks
     private UserThreadServiceImpl userThreadService;
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
@@ -165,22 +160,42 @@ public class  UserThreadServiceTest {
         int userId = 1;
         Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
+        User user = new User();
+        user.setId(1);
+
+        ForumThread thread1 = new ForumThread();
+        thread1.setId(1);
+        thread1.setUser(user);
+        ForumThread thread2 = new ForumThread();
+        thread2.setId(2);
+        thread2.setUser(user);
+
+        UserThread ut1 = new UserThread();
+        ut1.setForumThread(thread1);
+        ut1.setCreatedAt(LocalDateTime.now());
+        UserThread ut2 = new UserThread();
+        ut2.setForumThread(thread2);
+        ut2.setCreatedAt(LocalDateTime.now());
+
         ForumThreadSummaryDto dto1 = new ForumThreadSummaryDto();
         dto1.setId(1);
         ForumThreadSummaryDto dto2 = new ForumThreadSummaryDto();
         dto2.setId(2);
 
-        Page<ForumThreadSummaryDto> page = new PageImpl<>(List.of(dto1, dto2));
-        when(forumThreadRepository.findThreadSummaryUnified(eq(userId), eq(true), any(Pageable.class)))
-                .thenReturn(page);
+        Page<UserThread> userThreadPage = new PageImpl<>(List.of(ut1, ut2), pageable, 2);
+        when(userThreadRepository.findByUserIdWithThread(eq(userId), any(Pageable.class)))
+                .thenReturn(userThreadPage);
+        when(forumThreadMapper.toSummaryDto(thread1)).thenReturn(dto1);
+        when(forumThreadMapper.toSummaryDto(thread2)).thenReturn(dto2);
 
         Page<BaseUserEntity> result = userThreadService.getAllFromUser(userId, pageable);
 
         assertEquals(2, result.getContent().size());
         assertEquals(2, result.getTotalElements());
-        verify(forumThreadRepository).findThreadSummaryUnified(eq(userId), eq(true), any(Pageable.class));
-        verify(imageUrlPopulationService, times(2)).populateAuthorImage(
-                any(ForumThreadSummaryDto.class), any(), any());
+        verify(userThreadRepository).findByUserIdWithThread(eq(userId), any(Pageable.class));
+        verify(forumThreadMapper).toSummaryDto(thread1);
+        verify(forumThreadMapper).toSummaryDto(thread2);
+        verify(forumThreadPopulationService).populate(any(List.class));
     }
 
     @Test
@@ -188,14 +203,15 @@ public class  UserThreadServiceTest {
         int userId = 1;
         Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Page<ForumThreadSummaryDto> page = new PageImpl<>(List.of());
-        when(forumThreadRepository.findThreadSummaryUnified(eq(userId), eq(true), any(Pageable.class)))
-                .thenReturn(page);
+        Page<UserThread> emptyPage = new PageImpl<>(List.of(), pageable, 0);
+        when(userThreadRepository.findByUserIdWithThread(eq(userId), any(Pageable.class)))
+                .thenReturn(emptyPage);
 
         Page<BaseUserEntity> result = userThreadService.getAllFromUser(userId, pageable);
 
         assertTrue(result.getContent().isEmpty());
         assertEquals(0, result.getTotalElements());
+        verify(userThreadRepository).findByUserIdWithThread(eq(userId), any(Pageable.class));
     }
 
     @Test

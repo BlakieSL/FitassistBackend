@@ -56,10 +56,9 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Object[]> findCommentHierarchy(Integer commentId);
 
     @Query(value = """
-      SELECT DISTINCT c
+      SELECT c
       FROM Comment c
       JOIN FETCH c.user u
-      LEFT JOIN FETCH c.replies
       WHERE c.user.id = :userId
     """)
     Page<Comment> findCreatedByUserWithDetails(@Param("userId") int userId, Pageable pageable);

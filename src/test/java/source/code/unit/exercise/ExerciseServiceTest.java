@@ -20,20 +20,24 @@ import source.code.dto.request.exercise.ExerciseUpdateDto;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
+import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.event.events.Exercise.ExerciseCreateEvent;
 import source.code.event.events.Exercise.ExerciseDeleteEvent;
 import source.code.event.events.Exercise.ExerciseUpdateEvent;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.exercise.ExerciseMapper;
+import source.code.mapper.plan.PlanMapper;
 import source.code.model.exercise.Exercise;
 import source.code.model.exercise.ExerciseTargetMuscle;
+import source.code.model.plan.Plan;
 import source.code.repository.ExerciseRepository;
 import source.code.repository.ExerciseTargetMuscleRepository;
 import source.code.repository.PlanRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
+import source.code.service.declaration.plan.PlanPopulationService;
 import source.code.service.implementation.exercise.ExerciseServiceImpl;
 
 import java.util.ArrayList;
@@ -50,6 +54,8 @@ public class ExerciseServiceTest {
     @Mock
     private ExerciseMapper exerciseMapper;
     @Mock
+    private PlanMapper planMapper;
+    @Mock
     private ValidationService validationService;
     @Mock
     private JsonPatchService jsonPatchService;
@@ -61,6 +67,8 @@ public class ExerciseServiceTest {
     private ExerciseTargetMuscleRepository exerciseTargetMuscleRepository;
     @Mock
     private PlanRepository planRepository;
+    @Mock
+    private PlanPopulationService planPopulationService;
     @InjectMocks
     private ExerciseServiceImpl exerciseService;
 
@@ -242,17 +250,25 @@ public class ExerciseServiceTest {
 
     @Test
     void getExercise_shouldReturnExerciseWhenFound() {
+        Plan plan = new Plan();
+        plan.setId(1);
+        PlanSummaryDto planSummaryDto = new PlanSummaryDto();
+        planSummaryDto.setId(1);
+
         when(exerciseRepository.findByIdWithMedia(exerciseId))
                 .thenReturn(java.util.Optional.of(exercise));
         when(exerciseMapper.toDetailedResponseDto(exercise)).thenReturn(responseDto);
-        when(planRepository.findPlanSummariesByExerciseId(exerciseId)).thenReturn(List.of());
+        when(planRepository.findByExerciseIdWithDetails(exerciseId)).thenReturn(List.of(plan));
+        when(planMapper.toSummaryDto(plan)).thenReturn(planSummaryDto);
 
         ExerciseResponseDto result = exerciseService.getExercise(exerciseId);
 
         assertEquals(responseDto, result);
         verify(exerciseRepository).findByIdWithMedia(exerciseId);
         verify(exerciseMapper).toDetailedResponseDto(exercise);
-        verify(planRepository).findPlanSummariesByExerciseId(exerciseId);
+        verify(planRepository).findByExerciseIdWithDetails(exerciseId);
+        verify(planMapper).toSummaryDto(plan);
+        verify(planPopulationService).populate(any(List.class));
     }
 
     @Test

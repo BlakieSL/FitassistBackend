@@ -21,7 +21,8 @@ public class CommentSummaryDto implements BaseUserEntity, Serializable {
     private Integer authorId;
     private String authorImageName;
     private String authorImageUrl;
-    private int likeCount;
-    private int repliesCount;
+    private long likesCount;
+    private long dislikesCount;
+    private long repliesCount;
     private LocalDateTime userCommentInteractionCreatedAt;
 }
