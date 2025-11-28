@@ -192,4 +192,41 @@ public class RecipeControllerFilterTest {
                         .content(requestJson))
                 .andExpectAll(status().isBadRequest());
     }
+
+    @RecipeSql
+    @Test
+    @DisplayName("POST - /filter - Should retrieve public recipes created by user 1")
+    void filterRecipesCreatedByUser1() throws Exception {
+        Utils.setUserContext(1);
+        FilterDto filterDto = buildFilterDto("CREATED_BY_USER", 1, FilterOperation.EQUAL);
+        String json = objectMapper.writeValueAsString(filterDto);
+
+        mockMvc.perform(post("/api/recipes/filter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.content", hasSize(2)),
+                        jsonPath("$.content[*].name", containsInAnyOrder(
+                                "Vegetable Stir Fry", "Grilled Chicken"
+                        ))
+                );
+    }
+
+    @RecipeSql
+    @Test
+    @DisplayName("POST - /filter - Should return empty when user has no recipes")
+    void filterRecipesCreatedByUserNoResults() throws Exception {
+        Utils.setUserContext(1);
+        FilterDto filterDto = buildFilterDto("CREATED_BY_USER", 999, FilterOperation.EQUAL);
+        String json = objectMapper.writeValueAsString(filterDto);
+
+        mockMvc.perform(post("/api/recipes/filter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.content", hasSize(0))
+                );
+    }
 }

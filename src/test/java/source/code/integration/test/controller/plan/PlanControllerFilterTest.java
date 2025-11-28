@@ -263,4 +263,41 @@ public class PlanControllerFilterTest {
                         jsonPath("$.content[0].name", is("5K Training"))
                 );
     }
+
+    @PlanSql
+    @Test
+    @DisplayName("POST - /filter - Should retrieve public plans created by user 1")
+    void filterPlansCreatedByUser1() throws Exception {
+        Utils.setUserContext(1);
+        FilterDto filterDto = buildFilterDto("CREATED_BY_USER", 1, FilterOperation.EQUAL);
+        String json = objectMapper.writeValueAsString(filterDto);
+
+        mockMvc.perform(post("/api/plans/filter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.content", hasSize(2)),
+                        jsonPath("$.content[*].name", containsInAnyOrder(
+                                "Beginner Strength", "Muscle Gain Diet"
+                        ))
+                );
+    }
+
+    @PlanSql
+    @Test
+    @DisplayName("POST - /filter - Should return empty when user has no plans")
+    void filterPlansCreatedByUserNoResults() throws Exception {
+        Utils.setUserContext(1);
+        FilterDto filterDto = buildFilterDto("CREATED_BY_USER", 999, FilterOperation.EQUAL);
+        String json = objectMapper.writeValueAsString(filterDto);
+
+        mockMvc.perform(post("/api/plans/filter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.content", hasSize(0))
+                );
+    }
 }
