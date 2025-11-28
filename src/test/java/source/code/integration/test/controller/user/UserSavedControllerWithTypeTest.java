@@ -42,7 +42,7 @@ public class UserSavedControllerWithTypeTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content").value(hasSize(3)),
-                        jsonPath("$.totalElements").value(3)
+                        jsonPath("$.page.totalElements").value(3)
                 );
     }
 
@@ -55,7 +55,7 @@ public class UserSavedControllerWithTypeTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content").value(hasSize(1)),
-                        jsonPath("$.totalElements").value(1)
+                        jsonPath("$.page.totalElements").value(1)
                 );
     }
 
@@ -68,7 +68,7 @@ public class UserSavedControllerWithTypeTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content", hasSize(1)),
-                        jsonPath("$.totalElements").value(1)
+                        jsonPath("$.page.totalElements").value(1)
                 );
 
     }
@@ -84,7 +84,7 @@ public class UserSavedControllerWithTypeTest {
                         jsonPath("$.content", hasSize(2)),
                         jsonPath("$.content[0].id").value(2),
                         jsonPath("$.content[1].id").value(1),
-                        jsonPath("$.totalElements").value(2)
+                        jsonPath("$.page.totalElements").value(2)
                 );
     }
 
@@ -99,7 +99,7 @@ public class UserSavedControllerWithTypeTest {
                         jsonPath("$.content", hasSize(2)),
                         jsonPath("$.content[0].id").value(3),
                         jsonPath("$.content[1].id").value(1),
-                        jsonPath("$.totalElements").value(2)
+                        jsonPath("$.page.totalElements").value(2)
                 );
     }
 
@@ -114,7 +114,7 @@ public class UserSavedControllerWithTypeTest {
                         jsonPath("$.content", hasSize(2)),
                         jsonPath("$.content[0].id").value(3),
                         jsonPath("$.content[1].id").value(1),
-                        jsonPath("$.totalElements").value(2)
+                        jsonPath("$.page.totalElements").value(2)
                 );
     }
 
@@ -257,7 +257,7 @@ public class UserSavedControllerWithTypeTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content").exists(),
-                        jsonPath("$.totalElements").exists()
+                        jsonPath("$.page.totalElements").exists()
                 );
     }
 }

@@ -205,10 +205,10 @@ public class FoodControllerTest {
                         jsonPath("$.content[0].name").value("Apple"),
                         jsonPath("$.content[1].id").value(2),
                         jsonPath("$.content[1].name").value("Banana"),
-                        jsonPath("$.totalElements").exists(),
-                        jsonPath("$.totalPages").exists(),
-                        jsonPath("$.size").exists(),
-                        jsonPath("$.number").value(0)
+                        jsonPath("$.page.totalElements").exists(),
+                        jsonPath("$.page.totalPages").exists(),
+                        jsonPath("$.page.size").exists(),
+                        jsonPath("$.page.number").value(0)
                 );
     }
 
@@ -223,8 +223,8 @@ public class FoodControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content.length()").value(2),
-                        jsonPath("$.size").value(2),
-                        jsonPath("$.number").value(0)
+                        jsonPath("$.page.size").value(2),
+                        jsonPath("$.page.number").value(0)
                 );
     }
 
@@ -249,7 +249,7 @@ public class FoodControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content").isEmpty(),
-                        jsonPath("$.totalElements").value(0)
+                        jsonPath("$.page.totalElements").value(0)
                 );
     }
 
