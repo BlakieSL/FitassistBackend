@@ -57,7 +57,7 @@ public class FoodControllerGetFilteredTest {
                         jsonPath("$.content[0].name").value("Apple"),
                         jsonPath("$.content[1].name").value("Banana"),
                         jsonPath("$.content.length()").value(2),
-                        jsonPath("$.totalElements").value(2)
+                        jsonPath("$.page.totalElements").value(2)
                 );
     }
 
@@ -77,7 +77,7 @@ public class FoodControllerGetFilteredTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content.length()").value(2),
-                        jsonPath("$.totalElements").value(2)
+                        jsonPath("$.page.totalElements").value(2)
                 );
     }
 
@@ -97,7 +97,7 @@ public class FoodControllerGetFilteredTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content.length()").value(3),
-                        jsonPath("$.totalElements").value(3)
+                        jsonPath("$.page.totalElements").value(3)
                 );
     }
 
@@ -119,7 +119,7 @@ public class FoodControllerGetFilteredTest {
                         jsonPath("$.content[0].name").value("Chicken Breast"),
                         jsonPath("$.content[1].name").value("Eggs"),
                         jsonPath("$.content.length()").value(2),
-                        jsonPath("$.totalElements").value(2)
+                        jsonPath("$.page.totalElements").value(2)
                 );
     }
 
@@ -142,7 +142,7 @@ public class FoodControllerGetFilteredTest {
                         jsonPath("$.content[1].name").value("Eggs"),
                         jsonPath("$.content[2].name").value("Greek Yogurt"),
                         jsonPath("$.content.length()").value(3),
-                        jsonPath("$.totalElements").value(3)
+                        jsonPath("$.page.totalElements").value(3)
                 );
     }
 
@@ -164,7 +164,7 @@ public class FoodControllerGetFilteredTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content.length()").value(2),
-                        jsonPath("$.totalElements").value(2)
+                        jsonPath("$.page.totalElements").value(2)
                 );
     }
 
@@ -186,9 +186,9 @@ public class FoodControllerGetFilteredTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content.length()").value(2),
-                        jsonPath("$.size").value(2),
-                        jsonPath("$.number").value(0),
-                        jsonPath("$.totalPages").exists()
+                        jsonPath("$.page.size").value(2),
+                        jsonPath("$.page.number").value(0),
+                        jsonPath("$.page.totalPages").exists()
                 );
     }
 

@@ -200,7 +200,7 @@ public class PlanControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content", hasSize(12)),
-                        jsonPath("$.totalElements").value(12)
+                        jsonPath("$.page.totalElements").value(12)
                 );
     }
 
@@ -213,7 +213,7 @@ public class PlanControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content", hasSize(12)),
-                        jsonPath("$.totalElements").value(12)
+                        jsonPath("$.page.totalElements").value(12)
                 );
     }
 
@@ -227,7 +227,7 @@ public class PlanControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content", hasSize(3)),
-                        jsonPath("$.totalElements").value(3)
+                        jsonPath("$.page.totalElements").value(3)
                 );
     }
 
@@ -240,7 +240,7 @@ public class PlanControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content", hasSize(0)),
-                        jsonPath("$.totalElements").value(0)
+                        jsonPath("$.page.totalElements").value(0)
                 );
     }
 
