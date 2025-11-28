@@ -15,17 +15,21 @@ import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.helper.user.AuthorizationUtil;
+import source.code.mapper.comment.CommentMapper;
+import source.code.mapper.forumThread.ForumThreadMapper;
 import source.code.mapper.plan.PlanMapper;
 import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.plan.Plan;
 import source.code.model.recipe.Recipe;
+import source.code.model.thread.Comment;
+import source.code.model.thread.ForumThread;
 import source.code.repository.*;
-import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.comment.CommentPopulationService;
 import source.code.service.declaration.plan.PlanPopulationService;
 import source.code.service.declaration.recipe.RecipePopulationService;
+import source.code.service.declaration.thread.ForumThreadPopulationService;
 import source.code.service.implementation.user.UserCreatedServiceImpl;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,11 +53,17 @@ public class UserCreatedServiceTest {
     @Mock
     private RecipeMapper recipeMapper;
     @Mock
+    private CommentMapper commentMapper;
+    @Mock
+    private ForumThreadMapper forumThreadMapper;
+    @Mock
     private PlanPopulationService planPopulationService;
     @Mock
     private RecipePopulationService recipePopulationService;
     @Mock
-    private ImageUrlPopulationService imagePopulationService;
+    private CommentPopulationService commentPopulationService;
+    @Mock
+    private ForumThreadPopulationService forumThreadPopulationService;
     @InjectMocks
     private UserCreatedServiceImpl userCreatedService;
 
@@ -175,6 +185,11 @@ public class UserCreatedServiceTest {
     public void getCreatedComments_ShouldReturnCommentSummaryDtos() {
         int userId = 1;
 
+        Comment comment1 = new Comment();
+        comment1.setId(1);
+        Comment comment2 = new Comment();
+        comment2.setId(2);
+
         CommentSummaryDto dto1 = new CommentSummaryDto();
         dto1.setId(1);
         dto1.setAuthorId(1);
@@ -184,9 +199,11 @@ public class UserCreatedServiceTest {
         dto2.setAuthorId(2);
         dto2.setAuthorImageName("author2.jpg");
 
-        Page<CommentSummaryDto> commentPage = new PageImpl<>(List.of(dto1, dto2), defaultPageable, 2);
+        Page<Comment> commentPage = new PageImpl<>(List.of(comment1, comment2), defaultPageable, 2);
 
-        when(commentRepository.findCommentSummaryUnified(eq(userId), eq(null), eq(false), any(Pageable.class))).thenReturn(commentPage);
+        when(commentRepository.findCreatedByUserWithDetails(eq(userId), any(Pageable.class))).thenReturn(commentPage);
+        when(commentMapper.toSummaryDto(comment1)).thenReturn(dto1);
+        when(commentMapper.toSummaryDto(comment2)).thenReturn(dto2);
 
         Page<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId, defaultPageable);
 
@@ -194,27 +211,34 @@ public class UserCreatedServiceTest {
         assertEquals(2, result.getTotalElements());
         assertTrue(result.getContent().contains(dto1));
         assertTrue(result.getContent().contains(dto2));
-        verify(commentRepository).findCommentSummaryUnified(eq(userId), eq(null), eq(false), any(Pageable.class));
+        verify(commentRepository).findCreatedByUserWithDetails(eq(userId), any(Pageable.class));
+        verify(commentMapper).toSummaryDto(comment1);
+        verify(commentMapper).toSummaryDto(comment2);
+        verify(commentPopulationService).populate(any(List.class));
     }
 
     @Test
     public void getCreatedComments_ShouldReturnEmptyPageWhenNoComments() {
         int userId = 1;
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
-        Page<CommentSummaryDto> emptyPage = new PageImpl<>(List.of(), defaultPageable, 0);
-        when(commentRepository.findCommentSummaryUnified(eq(userId), eq(null), eq(false), any(Pageable.class))).thenReturn(emptyPage);
+        Page<Comment> emptyPage = new PageImpl<>(List.of(), defaultPageable, 0);
+        when(commentRepository.findCreatedByUserWithDetails(eq(userId), any(Pageable.class))).thenReturn(emptyPage);
 
         Page<CommentSummaryDto> result = userCreatedService.getCreatedComments(userId, defaultPageable);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(commentRepository).findCommentSummaryUnified(eq(userId), eq(null), eq(false), any(Pageable.class));
+        verify(commentRepository).findCreatedByUserWithDetails(eq(userId), any(Pageable.class));
     }
 
     @Test
     public void getCreatedThreads_ShouldReturnForumThreadSummaryDtos() {
         int userId = 1;
+
+        ForumThread thread1 = new ForumThread();
+        thread1.setId(1);
+        ForumThread thread2 = new ForumThread();
+        thread2.setId(2);
 
         ForumThreadSummaryDto dto1 = new ForumThreadSummaryDto();
         dto1.setId(1);
@@ -225,9 +249,11 @@ public class UserCreatedServiceTest {
         dto2.setAuthorId(2);
         dto2.setAuthorImageName("author2.jpg");
 
-        Page<ForumThreadSummaryDto> threadPage = new PageImpl<>(List.of(dto1, dto2), defaultPageable, 2);
+        Page<ForumThread> threadPage = new PageImpl<>(List.of(thread1, thread2), defaultPageable, 2);
 
-        when(forumThreadRepository.findThreadSummaryUnified(eq(userId), eq(false), any(Pageable.class))).thenReturn(threadPage);
+        when(forumThreadRepository.findCreatedByUserWithDetails(eq(userId), any(Pageable.class))).thenReturn(threadPage);
+        when(forumThreadMapper.toSummaryDto(thread1)).thenReturn(dto1);
+        when(forumThreadMapper.toSummaryDto(thread2)).thenReturn(dto2);
 
         Page<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId, defaultPageable);
 
@@ -235,22 +261,24 @@ public class UserCreatedServiceTest {
         assertEquals(2, result.getTotalElements());
         assertTrue(result.getContent().contains(dto1));
         assertTrue(result.getContent().contains(dto2));
-        verify(forumThreadRepository).findThreadSummaryUnified(eq(userId), eq(false), any(Pageable.class));
+        verify(forumThreadRepository).findCreatedByUserWithDetails(eq(userId), any(Pageable.class));
+        verify(forumThreadMapper).toSummaryDto(thread1);
+        verify(forumThreadMapper).toSummaryDto(thread2);
+        verify(forumThreadPopulationService).populate(any(List.class));
     }
 
     @Test
     public void getCreatedThreads_ShouldReturnEmptyPageWhenNoThreads() {
         int userId = 1;
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 
-        Page<ForumThreadSummaryDto> emptyPage = new PageImpl<>(List.of(), defaultPageable, 0);
-        when(forumThreadRepository.findThreadSummaryUnified(eq(userId), eq(false), any(Pageable.class))).thenReturn(emptyPage);
+        Page<ForumThread> emptyPage = new PageImpl<>(List.of(), defaultPageable, 0);
+        when(forumThreadRepository.findCreatedByUserWithDetails(eq(userId), any(Pageable.class))).thenReturn(emptyPage);
 
         Page<ForumThreadSummaryDto> result = userCreatedService.getCreatedThreads(userId, defaultPageable);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(forumThreadRepository).findThreadSummaryUnified(eq(userId), eq(false), any(Pageable.class));
+        verify(forumThreadRepository).findCreatedByUserWithDetails(eq(userId), any(Pageable.class));
     }
 
     @Test

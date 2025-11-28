@@ -13,12 +13,14 @@ import source.code.dto.request.exercise.ExerciseUpdateDto;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
+import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.event.events.Exercise.ExerciseCreateEvent;
 import source.code.event.events.Exercise.ExerciseDeleteEvent;
 import source.code.event.events.Exercise.ExerciseUpdateEvent;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.cache.CacheNames;
 import source.code.mapper.exercise.ExerciseMapper;
+import source.code.mapper.plan.PlanMapper;
 import source.code.model.exercise.Exercise;
 import source.code.model.exercise.ExerciseTargetMuscle;
 import source.code.repository.ExerciseRepository;
@@ -28,6 +30,7 @@ import source.code.service.declaration.exercise.ExerciseService;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
+import source.code.service.declaration.plan.PlanPopulationService;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
@@ -41,13 +44,16 @@ public class ExerciseServiceImpl implements ExerciseService {
     private final JsonPatchService jsonPatchService;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final ExerciseMapper exerciseMapper;
+    private final PlanMapper planMapper;
     private final RepositoryHelper repositoryHelper;
     private final ExerciseRepository exerciseRepository;
     private final ExerciseTargetMuscleRepository exerciseTargetMuscleRepository;
     private final PlanRepository planRepository;
+    private final PlanPopulationService planPopulationService;
     private final SpecificationDependencies dependencies;
 
     public ExerciseServiceImpl(ExerciseMapper exerciseMapper,
+                               PlanMapper planMapper,
                                ValidationService validationService,
                                JsonPatchService jsonPatchService,
                                ApplicationEventPublisher applicationEventPublisher,
@@ -55,8 +61,10 @@ public class ExerciseServiceImpl implements ExerciseService {
                                ExerciseRepository exerciseRepository,
                                ExerciseTargetMuscleRepository exerciseTargetMuscleRepository,
                                PlanRepository planRepository,
+                               PlanPopulationService planPopulationService,
                                SpecificationDependencies dependencies) {
         this.exerciseMapper = exerciseMapper;
+        this.planMapper = planMapper;
         this.validationService = validationService;
         this.jsonPatchService = jsonPatchService;
         this.applicationEventPublisher = applicationEventPublisher;
@@ -64,6 +72,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         this.exerciseRepository = exerciseRepository;
         this.exerciseTargetMuscleRepository = exerciseTargetMuscleRepository;
         this.planRepository = planRepository;
+        this.planPopulationService = planPopulationService;
         this.dependencies = dependencies;
     }
 
@@ -106,7 +115,13 @@ public class ExerciseServiceImpl implements ExerciseService {
         Exercise exercise = exerciseRepository.findByIdWithMedia(exerciseId)
                 .orElseThrow(() -> RecordNotFoundException.of(Exercise.class, exerciseId));
         ExerciseResponseDto dto = exerciseMapper.toDetailedResponseDto(exercise);
-        dto.setPlans(planRepository.findPlanSummariesByExerciseId(exerciseId));
+
+        List<PlanSummaryDto> planSummaries = planRepository.findByExerciseIdWithDetails(exerciseId).stream()
+                .map(planMapper::toSummaryDto)
+                .toList();
+        planPopulationService.populate(planSummaries);
+        dto.setPlans(planSummaries);
+
         return dto;
     }
 

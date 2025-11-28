@@ -78,8 +78,7 @@ public class ForumThreadPopulationServiceImpl implements ForumThreadPopulationSe
                 ));
 
         threads.forEach(thread -> {
-            Long savesCount = savesCountMap.get(thread.getId());
-            thread.setSavesCount(savesCount);
+            thread.setSavesCount(savesCountMap.getOrDefault(thread.getId(), 0L));
         });
     }
 
@@ -93,8 +92,7 @@ public class ForumThreadPopulationServiceImpl implements ForumThreadPopulationSe
                 ));
 
         threads.forEach(thread -> {
-            Long commentsCount = commentsCountMap.get(thread.getId());
-            thread.setCommentsCount(commentsCount);
+            thread.setCommentsCount(commentsCountMap.getOrDefault(thread.getId(), 0L));
         });
     }
 }
