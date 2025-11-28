@@ -38,9 +38,10 @@ public class PlanSpecification implements Specification<Plan> {
 
     @Override
     public Predicate toPredicate(@NonNull Root<Plan> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
+       /*
         dependencies.getFetchInitializer().initializeFetches(root, query, PLAN_TYPE_FIELD);
         initializeComplexFetches(root, query);
-
+        */
         Predicate visibilityPredicate = dependencies.getVisibilityPredicateBuilder()
                 .buildVisibilityPredicate(builder, root, criteria, USER_FIELD, ID_FIELD, IS_PUBLIC_FIELD);
 
