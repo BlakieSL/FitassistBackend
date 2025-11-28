@@ -6,6 +6,8 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.activity.ActivityCreateDto;
@@ -132,22 +134,19 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    @Cacheable(value = CacheNames.ALL_ACTIVITIES)
-    public List<ActivitySummaryDto> getAllActivities() {
-        return activityRepository.findAllWithActivityCategory().stream()
-                .map(activityMapper::toSummaryDto)
-                .toList();
+    public Page<ActivitySummaryDto> getAllActivities(Pageable pageable) {
+        return activityRepository.findAllWithActivityCategory(pageable)
+                .map(activityMapper::toSummaryDto);
     }
 
     @Override
-    public List<ActivitySummaryDto> getFilteredActivities(FilterDto filter) {
+    public Page<ActivitySummaryDto> getFilteredActivities(FilterDto filter, Pageable pageable) {
         SpecificationFactory<Activity> activityFactory = ActivitySpecification::of;
         SpecificationBuilder<Activity> specificationBuilder = SpecificationBuilder.of(filter, activityFactory, dependencies);
         Specification<Activity> specification = specificationBuilder.build();
 
-        return activityRepository.findAll(specification).stream()
-                .map(activityMapper::toSummaryDto)
-                .toList();
+        return activityRepository.findAll(specification, pageable)
+                .map(activityMapper::toSummaryDto);
     }
 
     @Override

@@ -13,6 +13,10 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.dto.request.exercise.ExerciseCreateDto;
@@ -80,6 +84,7 @@ public class ExerciseServiceTest {
     private ExerciseUpdateDto patchedDto;
     private int exerciseId;
     private FilterDto filter;
+    private Pageable pageable;
     private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
 
     @BeforeEach
@@ -91,6 +96,7 @@ public class ExerciseServiceTest {
         patchedDto = new ExerciseUpdateDto();
         exerciseId = 1;
         filter = new FilterDto();
+        pageable = PageRequest.of(0, 100);
         patch = mock(JsonMergePatch.class);
         mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
     }
@@ -284,68 +290,71 @@ public class ExerciseServiceTest {
 
     @Test
     void getAllExercises_shouldReturnAllExercises() {
-        List<ExerciseSummaryDto> responseDtos = List.of(summaryDto);
+        Page<Exercise> exercisePage = new PageImpl<>(List.of(exercise), pageable, 1);
 
-        when(repositoryHelper.findAll(eq(exerciseRepository), any(Function.class)))
-                .thenReturn(responseDtos);
+        when(exerciseRepository.findAll(pageable)).thenReturn(exercisePage);
+        when(exerciseMapper.toSummaryDto(exercise)).thenReturn(summaryDto);
 
-        List<ExerciseSummaryDto> result = exerciseService.getAllExercises();
+        Page<ExerciseSummaryDto> result = exerciseService.getAllExercises(pageable);
 
-        assertEquals(responseDtos, result);
-        verify(repositoryHelper).findAll(eq(exerciseRepository), any(Function.class));
+        assertEquals(1, result.getTotalElements());
+        assertEquals(summaryDto, result.getContent().get(0));
+        verify(exerciseRepository).findAll(pageable);
     }
 
     @Test
-    void getAllExercises_shouldReturnEmptyListWhenNoExercises() {
-        List<ExerciseSummaryDto> responseDtos = List.of();
-        when(repositoryHelper.findAll(eq(exerciseRepository), any(Function.class)))
-                .thenReturn(responseDtos);
+    void getAllExercises_shouldReturnEmptyPageWhenNoExercises() {
+        Page<Exercise> emptyPage = new PageImpl<>(List.of(), pageable, 0);
 
-        List<ExerciseSummaryDto> result = exerciseService.getAllExercises();
+        when(exerciseRepository.findAll(pageable)).thenReturn(emptyPage);
+
+        Page<ExerciseSummaryDto> result = exerciseService.getAllExercises(pageable);
 
         assertTrue(result.isEmpty());
-        verify(repositoryHelper).findAll(eq(exerciseRepository), any(Function.class));
+        verify(exerciseRepository).findAll(pageable);
     }
 
     @Test
     void getFilteredExercises_shouldReturnFilteredExercises() {
-        when(exerciseRepository.findAll(any(Specification.class))).thenReturn(List.of(exercise));
+        Page<Exercise> exercisePage = new PageImpl<>(List.of(exercise), pageable, 1);
+
+        when(exerciseRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(exercisePage);
         when(exerciseMapper.toSummaryDto(exercise)).thenReturn(summaryDto);
 
-        List<ExerciseSummaryDto> result = exerciseService.getFilteredExercises(filter);
+        Page<ExerciseSummaryDto> result = exerciseService.getFilteredExercises(filter, pageable);
 
-        assertEquals(1, result.size());
-        assertSame(summaryDto, result.get(0));
-        verify(exerciseRepository).findAll(any(Specification.class));
+        assertEquals(1, result.getTotalElements());
+        assertSame(summaryDto, result.getContent().get(0));
+        verify(exerciseRepository).findAll(any(Specification.class), eq(pageable));
         verify(exerciseMapper).toSummaryDto(exercise);
     }
 
     @Test
-    void getFilteredExercises_shouldReturnEmptyListWhenFilterHasNoCriteria() {
+    void getFilteredExercises_shouldReturnEmptyPageWhenFilterHasNoCriteria() {
         filter.setFilterCriteria(new ArrayList<>());
+        Page<Exercise> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
 
-        when(exerciseRepository.findAll(any(Specification.class))).thenReturn(new ArrayList<>());
+        when(exerciseRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
 
-        List<ExerciseSummaryDto> result = exerciseService.getFilteredExercises(filter);
+        Page<ExerciseSummaryDto> result = exerciseService.getFilteredExercises(filter, pageable);
 
         assertTrue(result.isEmpty());
-        verify(exerciseRepository).findAll(any(Specification.class));
-        verifyNoInteractions(exerciseMapper);
+        verify(exerciseRepository).findAll(any(Specification.class), eq(pageable));
     }
 
     @Test
-    void getFilteredExercises_shouldReturnEmptyListWhenNoExercisesMatchFilter() {
+    void getFilteredExercises_shouldReturnEmptyPageWhenNoExercisesMatchFilter() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setFilterKey("nonexistentKey");
         filter.setFilterCriteria(List.of(criteria));
+        Page<Exercise> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
 
-        when(exerciseRepository.findAll(any(Specification.class))).thenReturn(new ArrayList<>());
+        when(exerciseRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
 
-        List<ExerciseSummaryDto> result = exerciseService.getFilteredExercises(filter);
+        Page<ExerciseSummaryDto> result = exerciseService.getFilteredExercises(filter, pageable);
 
         assertTrue(result.isEmpty());
-        verify(exerciseRepository).findAll(any(Specification.class));
-        verifyNoInteractions(exerciseMapper);
+        verify(exerciseRepository).findAll(any(Specification.class), eq(pageable));
     }
 
     @Test

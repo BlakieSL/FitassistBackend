@@ -93,40 +93,6 @@ public class UserSavedControllerWithoutTypeTest {
                 );
     }
 
-    @WithMockUser
-    @UserSavedSql
-    @Test
-    @DisplayName("GET - /item-type/{itemType}/{itemId}/likes-ans-saves - Should return likes and saves for an item")
-    void calculateLikesAndSaves() throws Exception {
-        mockMvc.perform(get("/api/user-saved/item-type/EXERCISE/1/likes-and-saves"))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.likes").value(0),
-                        jsonPath("$.saves").value(2)
-                );
-    }
-
-    @WithMockUser
-    @UserSavedSql
-    @Test
-    @DisplayName("GET - /item-type/{itemType}/{itemId}/likes-ans-saves - Should return zero likes and saves for an item without likes and saves")
-    void calculateLikesAndSavesEmpty() throws Exception {
-        mockMvc.perform(get("/api/user-saved/item-type/FORUM_THREAD/2/likes-and-saves"))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.likes").value(0),
-                        jsonPath("$.saves").value(0)
-                );
-    }
-
-    @WithMockUser
-    @Test
-    @DisplayName("GET - /item-type/{itemType}/{itemId}/likes-ans-saves - Should return 404 for non-existing item")
-    void calculateLikesAndSavesNotFound() throws Exception {
-        mockMvc.perform(get("/api/user-saved/item-type/EXERCISE/999/likes-and-saves"))
-                .andExpectAll(status().isNotFound());
-    }
-
     @UserSavedSql
     @Test
     @DisplayName("POST - /item-type/{itemType}/{itemId} - Should save an item to user")

@@ -213,27 +213,4 @@ public class UserThreadServiceTest {
         assertEquals(0, result.getTotalElements());
         verify(userThreadRepository).findByUserIdWithThread(eq(userId), any(Pageable.class));
     }
-
-    @Test
-    public void calculateLikesAndSaves_ShouldReturnZeroForBoth() {
-        int threadId = 100;
-        ForumThread thread = new ForumThread();
-
-        when(forumThreadRepository.findById(threadId)).thenReturn(Optional.of(thread));
-
-        var result = userThreadService.calculateLikesAndSaves(threadId);
-
-        assertEquals(0, result.getLikes());
-        assertEquals(0, result.getSaves());
-        verify(forumThreadRepository).findById(threadId);
-    }
-
-    @Test
-    public void calculateLikesAndSaves_ShouldThrowRecordNotFoundExceptionIfThreadNotFound() {
-        int threadId = 100;
-
-        when(forumThreadRepository.findById(threadId)).thenReturn(Optional.empty());
-
-        assertThrows(RecordNotFoundException.class, () -> userThreadService.calculateLikesAndSaves(threadId));
-    }
 }

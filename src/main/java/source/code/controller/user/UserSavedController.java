@@ -7,7 +7,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.helper.BaseUserEntity;
 import source.code.helper.Enum.model.SavedEntityType;
 import source.code.model.user.TypeOfInteraction;
@@ -33,16 +32,6 @@ public class UserSavedController {
     ) {
         SavedService savedService = savedSelectorService.getService(itemType);
         Page<BaseUserEntity> dto = savedService.getAllFromUser(userId, type, pageable);
-        return ResponseEntity.ok(dto);
-    }
-
-    @GetMapping("/item-type/{itemType}/{itemId}/likes-ans-saves")
-    public ResponseEntity<LikesAndSavesResponseDto> calculateLikesAndSaves(
-            @PathVariable SavedEntityType itemType,
-            @PathVariable int itemId
-    ) {
-        SavedService savedService = savedSelectorService.getService(itemType);
-        LikesAndSavesResponseDto dto = savedService.calculateLikesAndSaves(itemId);
         return ResponseEntity.ok(dto);
     }
 
@@ -102,14 +91,4 @@ public class UserSavedController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/item-type/{itemType}/{itemId}/likes-and-saves")
-    public ResponseEntity<LikesAndSavesResponseDto> calculateLikesAndSavesWithoutType(
-            @PathVariable SavedEntityType itemType,
-            @PathVariable int itemId
-    ) {
-        SavedServiceWithoutType savedServiceWithoutType = savedSelectorService
-                .getServiceWithoutType(itemType);
-        LikesAndSavesResponseDto dto = savedServiceWithoutType.calculateLikesAndSaves(itemId);
-        return ResponseEntity.ok(dto);
-    }
 }

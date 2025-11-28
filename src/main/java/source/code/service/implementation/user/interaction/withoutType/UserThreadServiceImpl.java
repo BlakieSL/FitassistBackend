@@ -42,28 +42,6 @@ public class UserThreadServiceImpl
     }
 
     @Override
-    protected boolean isAlreadySaved(int userId, int entityId) {
-        return ((UserThreadRepository) userEntityRepository)
-                .existsByUserIdAndForumThreadId(userId, entityId);
-    }
-
-    @Override
-    protected UserThread createUserEntity(User user, ForumThread entity) {
-        return UserThread.of(user, entity);
-    }
-
-    @Override
-    protected UserThread findUserEntity(int userId, int entityId) {
-        return ((UserThreadRepository) userEntityRepository)
-                .findByUserIdAndForumThreadId(userId, entityId)
-                .orElseThrow(() -> RecordNotFoundException.of(
-                        UserThread.class,
-                        userId,
-                        entityId
-                ));
-    }
-
-    @Override
     public Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable) {
         Page<UserThread> userThreadPage = ((UserThreadRepository) userEntityRepository)
                 .findByUserIdWithThread(userId, pageable);
@@ -85,22 +63,24 @@ public class UserThreadServiceImpl
     }
 
     @Override
-    protected List<UserThread> findAllByUser(int userId) {
-        return ((UserThreadRepository) userEntityRepository).findAllByUserId(userId);
+    protected boolean isAlreadySaved(int userId, int entityId) {
+        return ((UserThreadRepository) userEntityRepository)
+                .existsByUserIdAndForumThreadId(userId, entityId);
     }
 
     @Override
-    protected ForumThread extractEntity(UserThread userEntity) {
-        return userEntity.getForumThread();
+    protected UserThread createUserEntity(User user, ForumThread entity) {
+        return UserThread.of(user, entity);
     }
 
     @Override
-    protected long countSaves(int entityId) {
-        return 0;
-    }
-
-    @Override
-    protected long countLikes(int entityId) {
-        return 0;
+    protected UserThread findUserEntity(int userId, int entityId) {
+        return ((UserThreadRepository) userEntityRepository)
+                .findByUserIdAndForumThreadId(userId, entityId)
+                .orElseThrow(() -> RecordNotFoundException.of(
+                        UserThread.class,
+                        userId,
+                        entityId
+                ));
     }
 }

@@ -56,8 +56,8 @@ public class ExerciseControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(2)),
-                        jsonPath("$[0].expertiseLevel.id").value(1)
+                        jsonPath("$.content", hasSize(2)),
+                        jsonPath("$.content[0].expertiseLevel.id").value(1)
                 );
     }
 
@@ -74,7 +74,7 @@ public class ExerciseControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(2))
+                        jsonPath("$.content", hasSize(2))
                 );
     }
 
@@ -91,7 +91,7 @@ public class ExerciseControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(3))
+                        jsonPath("$.content", hasSize(3))
                 );
     }
 
@@ -108,7 +108,7 @@ public class ExerciseControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(2))
+                        jsonPath("$.content", hasSize(2))
                 );
     }
 
@@ -125,7 +125,7 @@ public class ExerciseControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(1))
+                        jsonPath("$.content", hasSize(1))
                 );
     }
 
@@ -142,7 +142,7 @@ public class ExerciseControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(2))
+                        jsonPath("$.content", hasSize(2))
                 );
     }
 

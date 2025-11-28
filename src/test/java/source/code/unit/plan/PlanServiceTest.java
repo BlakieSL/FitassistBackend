@@ -13,12 +13,17 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.request.plan.PlanUpdateDto;
 import source.code.dto.response.plan.PlanResponseDto;
+import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.event.events.Plan.PlanCreateEvent;
 import source.code.event.events.Plan.PlanDeleteEvent;
 import source.code.event.events.Plan.PlanUpdateEvent;
@@ -32,6 +37,7 @@ import source.code.repository.TextRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
+import source.code.service.declaration.plan.PlanPopulationService;
 import source.code.service.implementation.plan.PlanServiceImpl;
 
 import java.util.ArrayList;
@@ -59,6 +65,8 @@ public class PlanServiceTest {
     private ApplicationEventPublisher eventPublisher;
     @Mock
     private TextRepository textRepository;
+    @Mock
+    private PlanPopulationService planPopulationService;
 
     @InjectMocks
     private PlanServiceImpl planService;
@@ -66,21 +74,25 @@ public class PlanServiceTest {
     private Plan plan;
     private PlanCreateDto createDto;
     private PlanResponseDto responseDto;
+    private PlanSummaryDto summaryDto;
     private JsonMergePatch patch;
     private PlanUpdateDto patchedDto;
     private int planId;
     private int userId;
     private FilterDto filter;
+    private Pageable pageable;
     private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
     @BeforeEach
     void setUp() {
         plan = new Plan();
         createDto = new PlanCreateDto();
         responseDto = new PlanResponseDto();
+        summaryDto = new PlanSummaryDto();
         patchedDto = new PlanUpdateDto();
         planId = 1;
         userId = 1;
         filter = new FilterDto();
+        pageable = PageRequest.of(0, 100);
         patch = mock(JsonMergePatch.class);
         mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
     }
@@ -236,72 +248,83 @@ public class PlanServiceTest {
     void getAllPlans_shouldReturnPrivatePlans() {
         Boolean isPrivate = true;
         int userId = 1;
+        Page<Plan> planPage = new PageImpl<>(List.of(plan), pageable, 1);
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(planRepository.findAllWithAssociations(eq(isPrivate), eq(userId)))
-                .thenReturn(List.of(plan));
+        when(planRepository.findAllWithAssociations(eq(isPrivate), eq(userId), eq(pageable)))
+                .thenReturn(planPage);
+        when(planMapper.toSummaryDto(plan)).thenReturn(summaryDto);
 
-        List<PlanResponseDto> result = planService.getAllPlans(isPrivate);
+        Page<PlanSummaryDto> result = planService.getAllPlans(isPrivate, pageable);
 
         assertFalse(result.isEmpty());
-        verify(planRepository).findAllWithAssociations(eq(isPrivate), eq(userId));
+        assertEquals(1, result.getTotalElements());
+        verify(planRepository).findAllWithAssociations(eq(isPrivate), eq(userId), eq(pageable));
+        verify(planPopulationService).populate(anyList());
     }
 
     @Test
-    void getAllPlans_shouldReturnEmptyListWhenNoPlans() {
+    void getAllPlans_shouldReturnEmptyPageWhenNoPlans() {
         Boolean isPrivate = false;
         int userId = 1;
+        Page<Plan> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(planRepository.findAllWithAssociations(any(Boolean.class), eq(userId)))
-                .thenReturn(new ArrayList<>());
+        when(planRepository.findAllWithAssociations(any(Boolean.class), eq(userId), eq(pageable)))
+                .thenReturn(emptyPage);
 
-        List<PlanResponseDto> result = planService.getAllPlans(isPrivate);
+        Page<PlanSummaryDto> result = planService.getAllPlans(isPrivate, pageable);
 
         assertTrue(result.isEmpty());
-        verify(planRepository).findAllWithAssociations(eq(isPrivate), eq(userId));
+        assertEquals(0, result.getTotalElements());
+        verify(planRepository).findAllWithAssociations(eq(isPrivate), eq(userId), eq(pageable));
+        verify(planPopulationService).populate(anyList());
     }
 
     @Test
     void getFilteredPlans_shouldReturnFilteredPlans() {
-        when(planRepository.findAll(any(Specification.class))).thenReturn(List.of(plan));
-        when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
+        Page<Plan> planPage = new PageImpl<>(List.of(plan), pageable, 1);
 
-        List<PlanResponseDto> result = planService.getFilteredPlans(filter);
+        when(planRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(planPage);
+        when(planMapper.toSummaryDto(plan)).thenReturn(summaryDto);
 
-        assertEquals(1, result.size());
-        assertSame(responseDto, result.get(0));
-        verify(planRepository).findAll(any(Specification.class));
-        verify(planMapper).toResponseDto(plan);
+        Page<PlanSummaryDto> result = planService.getFilteredPlans(filter, pageable);
+
+        assertEquals(1, result.getTotalElements());
+        assertSame(summaryDto, result.getContent().get(0));
+        verify(planRepository).findAll(any(Specification.class), eq(pageable));
+        verify(planMapper).toSummaryDto(plan);
+        verify(planPopulationService).populate(anyList());
     }
 
     @Test
-    void getFilteredPlans_shouldReturnEmptyListWhenFilterHasNoCriteria() {
+    void getFilteredPlans_shouldReturnEmptyPageWhenFilterHasNoCriteria() {
         filter.setFilterCriteria(new ArrayList<>());
+        Page<Plan> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
 
-        when(planRepository.findAll(any(Specification.class))).thenReturn(new ArrayList<>());
+        when(planRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
 
-        List<PlanResponseDto> result = planService.getFilteredPlans(filter);
+        Page<PlanSummaryDto> result = planService.getFilteredPlans(filter, pageable);
 
         assertTrue(result.isEmpty());
-        verify(planRepository).findAll(any(Specification.class));
-        verifyNoInteractions(planMapper);
+        verify(planRepository).findAll(any(Specification.class), eq(pageable));
+        verify(planPopulationService).populate(anyList());
     }
 
     @Test
-    void getFilteredPlans_shouldReturnEmptyListWhenNoPlansMatchFilter() {
+    void getFilteredPlans_shouldReturnEmptyPageWhenNoPlansMatchFilter() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setFilterKey("nonexistentKey");
         filter.setFilterCriteria(List.of(criteria));
+        Page<Plan> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
 
-        when(planRepository.findAll(any(Specification.class))).thenReturn(new ArrayList<>());
+        when(planRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
 
-        List<PlanResponseDto> result = planService.getFilteredPlans(filter);
+        Page<PlanSummaryDto> result = planService.getFilteredPlans(filter, pageable);
 
         assertTrue(result.isEmpty());
-        verify(planRepository).findAll(any(Specification.class));
-        verifyNoInteractions(planMapper);
-
+        verify(planRepository).findAll(any(Specification.class), eq(pageable));
+        verify(planPopulationService).populate(anyList());
     }
 
     @Test

@@ -57,31 +57,9 @@ public abstract class GenericSavedService<T, U, R> {
         userEntityRepository.delete(userEntity);
     }
 
-    public List<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type) {
-        return findAllByUserAndType(userId, type).stream()
-                .map(this::extractEntity)
-                .map(entity -> (BaseUserEntity) map.apply(entity))
-                .toList();
-    }
-
-    public LikesAndSavesResponseDto calculateLikesAndSaves(int entityId) {
-        entityRepository.findById(entityId)
-                .orElseThrow(() -> RecordNotFoundException.of(entityType, entityId));
-
-        return LikesAndSavesResponseDto.of(countLikes(entityId), countSaves(entityId));
-    }
-
     protected abstract boolean isAlreadySaved(int userId, int entityId, TypeOfInteraction type);
 
     protected abstract U createUserEntity(User user, T entity, TypeOfInteraction type);
 
     protected abstract U findUserEntity(int userId, int entityId, TypeOfInteraction type);
-
-    protected abstract List<U> findAllByUserAndType(int userId, TypeOfInteraction type);
-
-    protected abstract T extractEntity(U userEntity);
-
-    protected abstract long countSaves(int entityId);
-
-    protected abstract long countLikes(int entityId);
 }
