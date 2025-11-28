@@ -42,7 +42,7 @@ public class UserSavedControllerWithoutTypeTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content").value(hasSize(2)),
-                        jsonPath("$.totalElements").value(2)
+                        jsonPath("$.page.totalElements").value(2)
                 );
     }
 
@@ -55,7 +55,7 @@ public class UserSavedControllerWithoutTypeTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content").value(hasSize(2)),
-                        jsonPath("$.totalElements").value(2)
+                        jsonPath("$.page.totalElements").value(2)
                 );
     }
 
@@ -68,7 +68,7 @@ public class UserSavedControllerWithoutTypeTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content").value(hasSize(2)),
-                        jsonPath("$.totalElements").value(2)
+                        jsonPath("$.page.totalElements").value(2)
                 );
     }
 
@@ -89,7 +89,7 @@ public class UserSavedControllerWithoutTypeTest {
                         jsonPath("$.content[0].viewsCount").value(42),
                         jsonPath("$.content[0].savesCount").value(2),
                         jsonPath("$.content[0].commentsCount").value(2),
-                        jsonPath("$.totalElements").value(1)
+                        jsonPath("$.page.totalElements").value(1)
                 );
     }
 
@@ -181,7 +181,7 @@ public class UserSavedControllerWithoutTypeTest {
                         status().isOk(),
                         jsonPath("$.content").value(hasSize(2)),
                         jsonPath("$.content[0].id").exists(),
-                        jsonPath("$.totalElements").value(2)
+                        jsonPath("$.page.totalElements").value(2)
                 );
     }
 

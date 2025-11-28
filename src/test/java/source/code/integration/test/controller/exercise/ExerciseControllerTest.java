@@ -232,7 +232,7 @@ public class ExerciseControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content").isArray(),
-                        jsonPath("$.totalElements").isNumber()
+                        jsonPath("$.page.totalElements").isNumber()
                 );
     }
 

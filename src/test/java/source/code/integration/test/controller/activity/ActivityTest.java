@@ -246,7 +246,7 @@ public class ActivityTest  {
                         status().isOk(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(0),
-                        jsonPath("$.totalElements").value(0)
+                        jsonPath("$.page.totalElements").value(0)
                 );
     }
 
