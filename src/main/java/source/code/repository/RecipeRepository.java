@@ -28,6 +28,10 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
     List<Recipe> findAll(Specification<Recipe> spec);
 
     @EntityGraph(value = "Recipe.summary")
+    @NotNull
+    Page<Recipe> findAll(Specification<Recipe> spec, @NotNull Pageable pageable);
+
+    @EntityGraph(value = "Recipe.summary")
     @Query("""
       SELECT r
       FROM Recipe r
@@ -47,7 +51,11 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
            OR (:isPrivate = false AND r.isPublic = true)
            OR (:isPrivate = true AND r.user.id = :userId)
     """)
-    List<Recipe> findAllWithDetails(@Param("isPrivate") Boolean isPrivate, @Param("userId") int userId);
+    Page<Recipe> findAllWithDetails(
+            @Param("isPrivate") Boolean isPrivate,
+            @Param("userId") int userId,
+            Pageable pageable
+    );
 
     @EntityGraph(value = "Recipe.summary")
     @Query("""

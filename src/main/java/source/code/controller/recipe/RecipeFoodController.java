@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -70,10 +74,11 @@ public class RecipeFoodController {
     }
 
     @PostMapping("/filter/foods")
-    public ResponseEntity<List<RecipeSummaryDto>> getRecipesByFoods(
-            @Valid @RequestBody FilterRecipesByFoodsDto filter
+    public ResponseEntity<Page<RecipeSummaryDto>> getRecipesByFoods(
+            @Valid @RequestBody FilterRecipesByFoodsDto filter,
+            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-       List<RecipeSummaryDto> recipes = recipeFoodService.getRecipesByFoods(filter);
+       Page<RecipeSummaryDto> recipes = recipeFoodService.getRecipesByFoods(filter, pageable);
        return ResponseEntity.ok(recipes);
     }
 }

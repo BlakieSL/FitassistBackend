@@ -13,6 +13,10 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.dto.request.filter.FilterDto;
@@ -242,32 +246,36 @@ public class RecipeServiceTest {
         List<Recipe> recipes = List.of(recipe);
         Boolean isPrivate = true;
         int userId = 1;
+        Pageable pageable = PageRequest.of(0, 100);
+        Page<Recipe> recipePage = new PageImpl<>(recipes, pageable, recipes.size());
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(recipeRepository.findAllWithDetails(eq(isPrivate), eq(userId))).thenReturn(recipes);
+        when(recipeRepository.findAllWithDetails(eq(isPrivate), eq(userId), eq(pageable))).thenReturn(recipePage);
         when(recipeMapper.toSummaryDto(recipe)).thenReturn(summaryDto);
 
-        List<RecipeSummaryDto> result = recipeService.getAllRecipes(isPrivate);
+        Page<RecipeSummaryDto> result = recipeService.getAllRecipes(isPrivate, pageable);
 
-        assertEquals(1, result.size());
-        assertEquals(summaryDto, result.get(0));
-        verify(recipeRepository).findAllWithDetails(eq(isPrivate), eq(userId));
+        assertEquals(1, result.getContent().size());
+        assertEquals(summaryDto, result.getContent().get(0));
+        verify(recipeRepository).findAllWithDetails(eq(isPrivate), eq(userId), eq(pageable));
         verify(recipeMapper).toSummaryDto(recipe);
         verify(recipePopulationService).populate(anyList());
     }
 
     @Test
-    void getAllRecipes_shouldReturnEmptyListWhenNoRecipes() {
+    void getAllRecipes_shouldReturnEmptyPageWhenNoRecipes() {
         Boolean isPrivate = false;
         int userId = 1;
+        Pageable pageable = PageRequest.of(0, 100);
+        Page<Recipe> emptyPage = new PageImpl<>(Collections.emptyList(), pageable, 0);
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(recipeRepository.findAllWithDetails(eq(isPrivate), eq(userId))).thenReturn(Collections.emptyList());
+        when(recipeRepository.findAllWithDetails(eq(isPrivate), eq(userId), eq(pageable))).thenReturn(emptyPage);
 
-        List<RecipeSummaryDto> result = recipeService.getAllRecipes(isPrivate);
+        Page<RecipeSummaryDto> result = recipeService.getAllRecipes(isPrivate, pageable);
 
-        assertTrue(result.isEmpty());
-        verify(recipeRepository).findAllWithDetails(eq(isPrivate), eq(userId));
+        assertTrue(result.getContent().isEmpty());
+        verify(recipeRepository).findAllWithDetails(eq(isPrivate), eq(userId), eq(pageable));
         verifyNoInteractions(recipeMapper);
         verify(recipePopulationService).populate(anyList());
     }
@@ -275,41 +283,50 @@ public class RecipeServiceTest {
     @Test
     void getFilteredRecipes_shouldReturnFilteredRecipes() {
         List<Recipe> recipes = List.of(recipe);
-        when(recipeRepository.findAll(any(Specification.class))).thenReturn(recipes);
+        Pageable pageable = PageRequest.of(0, 100);
+        Page<Recipe> recipePage = new PageImpl<>(recipes, pageable, recipes.size());
+
+        when(recipeRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(recipePage);
         when(recipeMapper.toSummaryDto(recipe)).thenReturn(summaryDto);
 
-        List<RecipeSummaryDto> result = recipeService.getFilteredRecipes(filter);
+        Page<RecipeSummaryDto> result = recipeService.getFilteredRecipes(filter, pageable);
 
-        assertEquals(1, result.size());
-        assertSame(summaryDto, result.get(0));
-        verify(recipeRepository).findAll(any(Specification.class));
+        assertEquals(1, result.getContent().size());
+        assertSame(summaryDto, result.getContent().get(0));
+        verify(recipeRepository).findAll(any(Specification.class), eq(pageable));
         verify(recipeMapper).toSummaryDto(recipe);
         verify(recipePopulationService).populate(anyList());
     }
 
     @Test
-    void getFilteredRecipes_shouldReturnEmptyListWhenFilterHasNoCriteria() {
+    void getFilteredRecipes_shouldReturnEmptyPageWhenFilterHasNoCriteria() {
         filter.setFilterCriteria(new ArrayList<>());
-        when(recipeRepository.findAll(any(Specification.class))).thenReturn(new ArrayList<>());
+        Pageable pageable = PageRequest.of(0, 100);
+        Page<Recipe> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
 
-        List<RecipeSummaryDto> result = recipeService.getFilteredRecipes(filter);
+        when(recipeRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
 
-        assertTrue(result.isEmpty());
-        verify(recipeRepository).findAll(any(Specification.class));
+        Page<RecipeSummaryDto> result = recipeService.getFilteredRecipes(filter, pageable);
+
+        assertTrue(result.getContent().isEmpty());
+        verify(recipeRepository).findAll(any(Specification.class), eq(pageable));
         verify(recipePopulationService).populate(anyList());
     }
 
     @Test
-    void getFilteredRecipes_shouldReturnEmptyListWhenNoRecipesMatchFilter() {
+    void getFilteredRecipes_shouldReturnEmptyPageWhenNoRecipesMatchFilter() {
         FilterCriteria criteria = new FilterCriteria();
         criteria.setFilterKey("nonexistentKey");
         filter.setFilterCriteria(List.of(criteria));
-        when(recipeRepository.findAll(any(Specification.class))).thenReturn(new ArrayList<>());
+        Pageable pageable = PageRequest.of(0, 100);
+        Page<Recipe> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
 
-        List<RecipeSummaryDto> result = recipeService.getFilteredRecipes(filter);
+        when(recipeRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
 
-        assertTrue(result.isEmpty());
-        verify(recipeRepository).findAll(any(Specification.class));
+        Page<RecipeSummaryDto> result = recipeService.getFilteredRecipes(filter, pageable);
+
+        assertTrue(result.getContent().isEmpty());
+        verify(recipeRepository).findAll(any(Specification.class), eq(pageable));
         verify(recipePopulationService).populate(anyList());
     }
 

@@ -4,6 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +18,6 @@ import source.code.dto.request.recipe.RecipeCreateDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.service.declaration.recipe.RecipeService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/recipes")
@@ -60,15 +62,19 @@ public class RecipeController {
     }
 
     @GetMapping({"/private", "/private/{isPrivate}"})
-    public ResponseEntity<List<RecipeSummaryDto>> getAllRecipes(@PathVariable(required = false) Boolean isPrivate) {
-        return ResponseEntity.ok(recipeService.getAllRecipes(isPrivate));
+    public ResponseEntity<Page<RecipeSummaryDto>> getAllRecipes(
+            @PathVariable(required = false) Boolean isPrivate,
+            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ResponseEntity.ok(recipeService.getAllRecipes(isPrivate, pageable));
     }
 
     @PostMapping("/filter")
-    public ResponseEntity<List<RecipeSummaryDto>> getFilteredRecipes(
-            @Valid @RequestBody FilterDto filterDto
+    public ResponseEntity<Page<RecipeSummaryDto>> getFilteredRecipes(
+            @Valid @RequestBody FilterDto filterDto,
+            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        List<RecipeSummaryDto> filtered = recipeService.getFilteredRecipes(filterDto);
+        Page<RecipeSummaryDto> filtered = recipeService.getFilteredRecipes(filterDto, pageable);
         return ResponseEntity.ok(filtered);
     }
 

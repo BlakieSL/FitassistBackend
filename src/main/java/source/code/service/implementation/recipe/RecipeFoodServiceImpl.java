@@ -7,6 +7,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.dto.request.filter.FilterDto;
@@ -119,15 +121,12 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
     }
 
     @Override
-    public List<RecipeSummaryDto> getRecipesByFoods(FilterRecipesByFoodsDto filter) {
+    public Page<RecipeSummaryDto> getRecipesByFoods(FilterRecipesByFoodsDto filter, Pageable pageable) {
         List<FilterCriteria> foodCriteriaList = filter.getFoodIds().stream()
                 .map(foodId -> FilterCriteria.of("FOODS", foodId, FilterOperation.EQUAL))
                 .toList();
 
-        return recipeService.getFilteredRecipes(FilterDto.of(
-                foodCriteriaList,
-                FilterDataOption.AND
-        ));
+        return recipeService.getFilteredRecipes(FilterDto.of(foodCriteriaList, FilterDataOption.AND), pageable);
     }
 
     private RecipeFood find(int recipeId, int foodId) {

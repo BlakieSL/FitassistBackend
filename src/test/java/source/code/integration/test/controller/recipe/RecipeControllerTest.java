@@ -227,7 +227,7 @@ public class RecipeControllerTest {
         mockMvc.perform(get("/api/recipes/private"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(3))
+                        jsonPath("$.content", hasSize(3))
                 );
     }
 
@@ -239,7 +239,7 @@ public class RecipeControllerTest {
         mockMvc.perform(get("/api/recipes/private/false"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(3))
+                        jsonPath("$.content", hasSize(3))
                 );
     }
 
@@ -251,18 +251,18 @@ public class RecipeControllerTest {
         mockMvc.perform(get("/api/recipes/private/true"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(4))
+                        jsonPath("$.content", hasSize(4))
                 );
     }
 
     @Test
-    @DisplayName("GET - /private/{isPrivate} - Should return empty list when no recipes")
+    @DisplayName("GET - /private/{isPrivate} - Should return empty page when no recipes")
     void getAllRecipesEmpty() throws Exception {
         Utils.setUserContext(1);
         mockMvc.perform(get("/api/recipes/private"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$", hasSize(0))
+                        jsonPath("$.content", hasSize(0))
                 );
     }
 
