@@ -90,10 +90,12 @@ public class Recipe implements IndexedEntity {
     private final Set<RecipeInstruction> recipeInstructions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();
+    @OrderBy("id ASC")
+    private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private final Set<RecipeFood> recipeFoods = new HashSet<>();
+    @OrderBy("id ASC")
+    private final Set<RecipeFood> recipeFoods = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE)
     private final Set<UserRecipe> userRecipes = new HashSet<>();
