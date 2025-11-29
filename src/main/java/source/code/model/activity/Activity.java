@@ -28,6 +28,12 @@ import java.util.Set;
         @NamedAttributeNode("dailyCartActivities"),
         @NamedAttributeNode("userActivities")
 })
+@NamedEntityGraph(
+        name = "Activity.summary",
+        attributeNodes = {
+                @NamedAttributeNode("activityCategory")
+        }
+)
 @Getter
 @Setter
 @AllArgsConstructor

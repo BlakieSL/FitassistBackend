@@ -25,6 +25,22 @@ import java.util.Set;
 @Entity
 @Table(name = "exercise")
 @NamedEntityGraph(name = "Exercise.withoutAssociations", attributeNodes = {})
+@NamedEntityGraph(
+        name = "Exercise.summary",
+        attributeNodes = {
+                @NamedAttributeNode("equipment"),
+                @NamedAttributeNode("expertiseLevel"),
+                @NamedAttributeNode("forceType"),
+                @NamedAttributeNode("mechanicsType"),
+                @NamedAttributeNode(value = "exerciseTargetMuscles", subgraph = "etm-subgraph")
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "etm-subgraph",
+                        attributeNodes = @NamedAttributeNode("targetMuscle")
+                )
+        }
+)
 @Getter
 @Setter
 @AllArgsConstructor
