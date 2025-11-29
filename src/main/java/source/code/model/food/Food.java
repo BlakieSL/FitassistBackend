@@ -22,6 +22,12 @@ import java.util.Set;
 @Entity
 @Table(name = "food")
 @NamedEntityGraph(name = "Food.withoutAssociations", attributeNodes = {})
+@NamedEntityGraph(
+        name = "Food.summary",
+        attributeNodes = {
+                @NamedAttributeNode("foodCategory")
+        }
+)
 @Getter
 @Setter
 @AllArgsConstructor

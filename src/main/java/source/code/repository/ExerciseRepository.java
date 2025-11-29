@@ -1,5 +1,9 @@
 package source.code.repository;
 
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -11,6 +15,10 @@ import java.util.Optional;
 
 public interface ExerciseRepository
         extends JpaRepository<Exercise, Integer>, JpaSpecificationExecutor<Exercise> {
+    @EntityGraph(value = "Exercise.summary")
+    @NotNull
+    Page<Exercise> findAll(Specification<Exercise> spec, @NotNull Pageable pageable);
+
     @EntityGraph(value = "Exercise.withoutAssociations")
     @Query("SELECT e FROM Exercise e")
     List<Exercise> findAllWithoutAssociations();
