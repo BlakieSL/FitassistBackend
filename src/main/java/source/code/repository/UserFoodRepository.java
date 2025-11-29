@@ -6,7 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import source.code.dto.pojo.projection.FoodSavesProjection;
+import source.code.dto.pojo.projection.SavesProjection;
 import source.code.model.user.UserFood;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public interface UserFoodRepository extends JpaRepository<UserFood, Integer> {
         FROM UserFood uf
         WHERE uf.food.id = :foodId
     """)
-    FoodSavesProjection findSavesCountAndUserSaved(@Param("foodId") int foodId, @Param("userId") int userId);
+    SavesProjection findSavesCountAndUserSaved(@Param("foodId") int foodId, @Param("userId") int userId);
 
     @Query(value = """
            SELECT uf FROM UserFood uf

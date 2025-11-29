@@ -28,6 +28,7 @@ import source.code.model.exercise.ExerciseTargetMuscle;
 import source.code.repository.ExerciseRepository;
 import source.code.repository.ExerciseTargetMuscleRepository;
 import source.code.repository.PlanRepository;
+import source.code.service.declaration.exercise.ExercisePopulationService;
 import source.code.service.declaration.exercise.ExerciseService;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
@@ -51,6 +52,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     private final ExerciseRepository exerciseRepository;
     private final ExerciseTargetMuscleRepository exerciseTargetMuscleRepository;
     private final PlanRepository planRepository;
+    private final ExercisePopulationService exercisePopulationService;
     private final PlanPopulationService planPopulationService;
     private final SpecificationDependencies dependencies;
 
@@ -63,6 +65,7 @@ public class ExerciseServiceImpl implements ExerciseService {
                                ExerciseRepository exerciseRepository,
                                ExerciseTargetMuscleRepository exerciseTargetMuscleRepository,
                                PlanRepository planRepository,
+                               ExercisePopulationService exercisePopulationService,
                                PlanPopulationService planPopulationService,
                                SpecificationDependencies dependencies) {
         this.exerciseMapper = exerciseMapper;
@@ -74,6 +77,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         this.exerciseRepository = exerciseRepository;
         this.exerciseTargetMuscleRepository = exerciseTargetMuscleRepository;
         this.planRepository = planRepository;
+        this.exercisePopulationService = exercisePopulationService;
         this.planPopulationService = planPopulationService;
         this.dependencies = dependencies;
     }
@@ -117,6 +121,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         Exercise exercise = exerciseRepository.findByIdWithMedia(exerciseId)
                 .orElseThrow(() -> RecordNotFoundException.of(Exercise.class, exerciseId));
         ExerciseResponseDto dto = exerciseMapper.toDetailedResponseDto(exercise);
+        exercisePopulationService.populate(dto);
 
         List<PlanSummaryDto> planSummaries = planRepository.findByExerciseIdWithDetails(exerciseId).stream()
                 .map(planMapper::toSummaryDto)
