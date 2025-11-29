@@ -23,6 +23,12 @@ import java.util.Set;
 @Table(name = "comment")
 @NamedEntityGraph(name = "Comment.withoutAssociations", attributeNodes = {})
 @NamedEntityGraph(name = "Comment.withAssociations", includeAllAttributes = true)
+@NamedEntityGraph(
+        name = "Comment.summary",
+        attributeNodes = {
+                @NamedAttributeNode("user")
+        }
+)
 @Getter
 @Setter
 @AllArgsConstructor

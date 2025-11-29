@@ -23,6 +23,12 @@ import java.util.Set;
 @Entity
 @Table(name = "thread")
 @NamedEntityGraph(name = "Thread.withoutAssociations", attributeNodes = {})
+@NamedEntityGraph(
+        name = "ForumThread.summary",
+        attributeNodes = {
+                @NamedAttributeNode("user")
+        }
+)
 @Getter
 @Setter
 @AllArgsConstructor

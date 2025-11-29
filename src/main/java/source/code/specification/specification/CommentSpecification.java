@@ -23,8 +23,6 @@ public class CommentSpecification implements Specification<Comment> {
     public Predicate toPredicate(@NonNull Root<Comment> root,
                                  CriteriaQuery<?> query,
                                  @NonNull CriteriaBuilder builder) {
-        dependencies.getFetchInitializer().initializeFetches(root, query, USER_FIELD);
-
         CommentField field = dependencies.getFieldResolver().resolveField(criteria, CommentField.class);
 
         return buildPredicateForField(builder, root, field);

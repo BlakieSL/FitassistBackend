@@ -25,8 +25,6 @@ public class FoodSpecification implements Specification<Food> {
 
     @Override
     public Predicate toPredicate(@NonNull Root<Food> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
-        dependencies.getFetchInitializer().initializeFetches(root, query, FOOD_CATEGORY_FIELD);
-
         FoodField field = dependencies.getFieldResolver().resolveField(criteria, FoodField.class);
 
         return buildPredicateForField(builder, criteria, root, field, query);

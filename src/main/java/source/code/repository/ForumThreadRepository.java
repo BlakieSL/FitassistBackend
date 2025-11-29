@@ -1,7 +1,10 @@
 package source.code.repository;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +15,10 @@ import source.code.model.thread.ForumThread;
 import java.util.List;
 
 public interface ForumThreadRepository extends JpaRepository<ForumThread, Integer>, JpaSpecificationExecutor<ForumThread> {
+    @EntityGraph(value = "ForumThread.summary")
+    @NotNull
+    Page<ForumThread> findAll(Specification<ForumThread> spec, @NotNull Pageable pageable);
+
     List<ForumThread> findAllByThreadCategoryId(int categoryId);
 
     @Query(value = """

@@ -23,8 +23,6 @@ public class ForumThreadSpecification implements Specification<ForumThread> {
     public Predicate toPredicate(@NonNull Root<ForumThread> root,
                                  CriteriaQuery<?> query,
                                  @NonNull CriteriaBuilder builder) {
-        dependencies.getFetchInitializer().initializeFetches(root, query, USER_FIELD);
-
         ForumThreadField field = dependencies.getFieldResolver().resolveField(criteria, ForumThreadField.class);
 
         return buildPredicateForField(builder, root, field);
