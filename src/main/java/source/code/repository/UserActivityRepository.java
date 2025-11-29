@@ -6,6 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import source.code.dto.pojo.projection.SavesProjection;
 import source.code.model.user.UserActivity;
 
 import java.util.List;
@@ -26,4 +27,12 @@ public interface UserActivityRepository extends JpaRepository<UserActivity, Inte
            WHERE ua.user.id = :userId
            """)
     Page<UserActivity> findAllByUserIdWithMedia(@Param("userId") int userId, Pageable pageable);
+
+    @Query("""
+        SELECT COUNT(ua) as savesCount,
+               SUM(CASE WHEN ua.user.id = :userId THEN 1 ELSE 0 END) as userSaved
+        FROM UserActivity ua
+        WHERE ua.activity.id = :activityId
+    """)
+    SavesProjection findSavesCountAndUserSaved(@Param("activityId") int activityId, @Param("userId") int userId);
 }

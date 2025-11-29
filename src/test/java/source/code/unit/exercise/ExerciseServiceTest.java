@@ -38,6 +38,7 @@ import source.code.model.plan.Plan;
 import source.code.repository.ExerciseRepository;
 import source.code.repository.ExerciseTargetMuscleRepository;
 import source.code.repository.PlanRepository;
+import source.code.service.declaration.exercise.ExercisePopulationService;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
@@ -71,6 +72,8 @@ public class ExerciseServiceTest {
     private ExerciseTargetMuscleRepository exerciseTargetMuscleRepository;
     @Mock
     private PlanRepository planRepository;
+    @Mock
+    private ExercisePopulationService exercisePopulationService;
     @Mock
     private PlanPopulationService planPopulationService;
     @InjectMocks
@@ -272,6 +275,7 @@ public class ExerciseServiceTest {
         assertEquals(responseDto, result);
         verify(exerciseRepository).findByIdWithMedia(exerciseId);
         verify(exerciseMapper).toDetailedResponseDto(exercise);
+        verify(exercisePopulationService).populate(responseDto);
         verify(planRepository).findByExerciseIdWithDetails(exerciseId);
         verify(planMapper).toSummaryDto(plan);
         verify(planPopulationService).populate(any(List.class));

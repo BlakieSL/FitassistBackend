@@ -22,14 +22,12 @@ import source.code.event.events.Food.FoodDeleteEvent;
 import source.code.event.events.Food.FoodUpdateEvent;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.cache.CacheNames;
-import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.food.FoodMapper;
 import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.food.Food;
 import source.code.repository.FoodRepository;
 import source.code.repository.RecipeRepository;
-import source.code.repository.UserFoodRepository;
-import source.code.dto.pojo.projection.FoodSavesProjection;
+import source.code.service.declaration.food.FoodPopulationService;
 import source.code.service.declaration.food.FoodService;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.recipe.RecipePopulationService;
@@ -54,7 +52,7 @@ public class FoodServiceImpl implements FoodService {
     private final RepositoryHelper repositoryHelper;
     private final FoodRepository foodRepository;
     private final RecipeRepository recipeRepository;
-    private final UserFoodRepository userFoodRepository;
+    private final FoodPopulationService foodPopulationService;
     private final RecipePopulationService recipePopulationService;
     private final SpecificationDependencies dependencies;
 
@@ -64,10 +62,10 @@ public class FoodServiceImpl implements FoodService {
             JsonPatchService jsonPatchService,
             FoodRepository foodRepository,
             RecipeRepository recipeRepository,
-            UserFoodRepository userFoodRepository,
             FoodMapper foodMapper,
             RecipeMapper recipeMapper,
             RepositoryHelper repositoryHelper,
+            FoodPopulationService foodPopulationService,
             RecipePopulationService recipePopulationService,
             SpecificationDependencies dependencies) {
         this.applicationEventPublisher = applicationEventPublisher;
@@ -75,10 +73,10 @@ public class FoodServiceImpl implements FoodService {
         this.jsonPatchService = jsonPatchService;
         this.foodRepository = foodRepository;
         this.recipeRepository = recipeRepository;
-        this.userFoodRepository = userFoodRepository;
         this.foodMapper = foodMapper;
         this.recipeMapper = recipeMapper;
         this.repositoryHelper = repositoryHelper;
+        this.foodPopulationService = foodPopulationService;
         this.recipePopulationService = recipePopulationService;
         this.dependencies = dependencies;
     }
@@ -135,11 +133,7 @@ public class FoodServiceImpl implements FoodService {
                 .orElseThrow(() -> RecordNotFoundException.of(Food.class, id));
 
         FoodResponseDto dto = foodMapper.toDetailedResponseDto(food);
-
-        int userId = AuthorizationUtil.getUserId();
-        FoodSavesProjection savesData = userFoodRepository.findSavesCountAndUserSaved(id, userId);
-        dto.setSavesCount(savesData.savesCount());
-        dto.setSaved(savesData.isSaved());
+        foodPopulationService.populate(dto);
 
         var summaries = recipeRepository.findAllWithDetailsByFoodId(id).stream()
                 .map(recipeMapper::toSummaryDto)

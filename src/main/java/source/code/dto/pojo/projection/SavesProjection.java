@@ -1,6 +1,6 @@
 package source.code.dto.pojo.projection;
 
-public interface FoodSavesProjection {
+public interface SavesProjection {
     Long getSavesCount();
     Long getUserSaved();
 

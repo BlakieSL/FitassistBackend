@@ -25,4 +25,6 @@ public class ExerciseResponseDto implements Serializable {
     private List<TargetMuscleShortDto> targetMuscles;
     private List<String> imageUrls;
     private List<PlanSummaryDto> plans;
+    private long savesCount;
+    private boolean saved;
 }

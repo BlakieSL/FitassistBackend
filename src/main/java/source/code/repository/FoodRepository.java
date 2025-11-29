@@ -28,7 +28,4 @@ public interface FoodRepository extends JpaRepository<Food, Integer>, JpaSpecifi
            "LEFT JOIN FETCH f.mediaList " +
            "WHERE f.id = :id")
     Optional<Food> findByIdWithMedia(@Param("id") int id);
-    
-    @Query("SELECT COUNT(uf) FROM UserFood uf WHERE uf.food.id = :foodId")
-    int countSavesByFoodId(@Param("foodId") int foodId);
 }
