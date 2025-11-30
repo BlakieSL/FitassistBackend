@@ -12,9 +12,7 @@ import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.ValidationService;
 
 @Service("planCategoryService")
-public class PlanCategoryServiceImpl
-        extends GenericCategoryService<PlanCategory>
-        implements CategoryService {
+public class PlanCategoryServiceImpl extends GenericCategoryService<PlanCategory> implements CategoryService {
     private final PlanCategoryRepository planCategoryRepository;
 
     protected PlanCategoryServiceImpl(ValidationService validationService,

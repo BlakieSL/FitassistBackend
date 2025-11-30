@@ -39,7 +39,6 @@ public class AuthAnnotationServiceImpl {
     private final ThreadComplaintRepository threadComplaintRepository;
     private final DailyCartActivityRepository dailyCartActivityRepository;
     private final DailyCartFoodRepository dailyCartFoodRepository;
-    private final UserRepository userRepository;
 
     public AuthAnnotationServiceImpl(CommentRepository commentRepository,
                                      RepositoryHelper repositoryHelper,
@@ -50,7 +49,12 @@ public class AuthAnnotationServiceImpl {
                                      RecipeInstructionRepository recipeInstructionRepository,
                                      PlanInstructionRepository planInstructionRepository,
                                      WorkoutRepository workoutRepository,
-                                     WorkoutSetRepository workoutSetRepository, WorkoutSetGroupRepository workoutSetGroupRepository, CommentComplaintRepository commentComplaintRepository, ThreadComplaintRepository threadComplaintRepository, DailyCartActivityRepository dailyCartActivityRepository, DailyCartFoodRepository dailyCartFoodRepository, UserRepository userRepository) {
+                                     WorkoutSetRepository workoutSetRepository,
+                                     WorkoutSetGroupRepository workoutSetGroupRepository,
+                                     CommentComplaintRepository commentComplaintRepository,
+                                     ThreadComplaintRepository threadComplaintRepository,
+                                     DailyCartActivityRepository dailyCartActivityRepository,
+                                     DailyCartFoodRepository dailyCartFoodRepository) {
         this.commentRepository = commentRepository;
         this.repositoryHelper = repositoryHelper;
         this.forumThreadRepository = forumThreadRepository;
@@ -66,7 +70,6 @@ public class AuthAnnotationServiceImpl {
         this.threadComplaintRepository = threadComplaintRepository;
         this.dailyCartActivityRepository = dailyCartActivityRepository;
         this.dailyCartFoodRepository = dailyCartFoodRepository;
-        this.userRepository = userRepository;
     }
 
     public boolean isCommentOwnerOrAdmin(int commentId)  {

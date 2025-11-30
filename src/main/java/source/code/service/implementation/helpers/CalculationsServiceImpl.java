@@ -26,7 +26,6 @@ public final class CalculationsServiceImpl implements CalculationsService {
     private static final BigDecimal MODERATELY_ACTIVE_FACTOR = BigDecimal.valueOf(1.55);
     private static final BigDecimal VERY_ACTIVE_FACTOR = BigDecimal.valueOf(1.725);
     private static final BigDecimal SUPER_ACTIVE_FACTOR = BigDecimal.valueOf(1.9);
-    private static final BigDecimal DEFAULT_FACTOR = BigDecimal.valueOf(1.2);
 
     private static final BigDecimal CALORIE_DEFICIT = BigDecimal.valueOf(200);
     private static final BigDecimal CALORIE_SURPLUS = BigDecimal.valueOf(200);

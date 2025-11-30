@@ -12,9 +12,7 @@ import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.ValidationService;
 
 @Service("activityCategoryService")
-public class ActivityCategoryServiceImpl
-        extends GenericCategoryService<ActivityCategory>
-        implements CategoryService {
+public class ActivityCategoryServiceImpl extends GenericCategoryService<ActivityCategory> implements CategoryService {
 
     private final ActivityCategoryRepository activityCategoryRepository;
 

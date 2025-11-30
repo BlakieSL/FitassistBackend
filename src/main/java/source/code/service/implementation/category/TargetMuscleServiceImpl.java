@@ -13,10 +13,7 @@ import source.code.service.declaration.helpers.ValidationService;
 
 
 @Service("targetMuscleService")
-public class TargetMuscleServiceImpl
-        extends GenericCategoryService<TargetMuscle>
-        implements CategoryService {
-
+public class TargetMuscleServiceImpl extends GenericCategoryService<TargetMuscle> implements CategoryService {
     private final TargetMuscleRepository targetMuscleRepository;
 
     protected TargetMuscleServiceImpl(ValidationService validationService,

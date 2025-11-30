@@ -60,10 +60,7 @@ public class MediaServiceImpl implements MediaService {
     }
 
     @Override
-    public List<MediaResponseDto> getAllMediaForParent(
-            int parentId,
-            MediaConnectedEntity parentType
-    ) {
+    public List<MediaResponseDto> getAllMediaForParent(int parentId, MediaConnectedEntity parentType) {
         return mediaRepository.findByParentIdAndParentType(parentId, parentType).stream()
                 .map(media -> {
                     String imageUrl = s3Service.getImage(media.getImageName());

@@ -18,6 +18,7 @@ public class ActivityPopulationServiceImpl implements ActivityPopulationService 
     @Override
     public void populate(ActivityResponseDto activity) {
         int userId = AuthorizationUtil.getUserId();
+
         SavesProjection savesData = userActivityRepository.findSavesCountAndUserSaved(activity.getId(), userId);
         activity.setSavesCount(savesData.savesCount());
         activity.setSaved(savesData.isSaved());
