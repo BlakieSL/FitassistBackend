@@ -11,7 +11,7 @@ import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.User;
 import source.code.repository.UserRepository;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public abstract class GenericSavedService<T, U, R> {
@@ -20,17 +20,20 @@ public abstract class GenericSavedService<T, U, R> {
     protected final JpaRepository<U, Integer> userEntityRepository;
     protected final Function<T, R> map;
     protected final Class<T> entityType;
+    protected final Class<U> userEntityType;
 
     public GenericSavedService(UserRepository userRepository,
                                JpaRepository<T, Integer> entityRepository,
                                JpaRepository<U, Integer> userEntityRepository,
                                Function<T, R> map,
-                               Class<T> entityType) {
+                               Class<T> entityType,
+                               Class<U> userEntityType) {
         this.userRepository = userRepository;
         this.entityRepository = entityRepository;
         this.userEntityRepository = userEntityRepository;
         this.map = map;
         this.entityType = entityType;
+        this.userEntityType = userEntityType;
     }
 
     @Transactional
@@ -38,6 +41,12 @@ public abstract class GenericSavedService<T, U, R> {
         int userId = AuthorizationUtil.getUserId();
         if (isAlreadySaved(userId, entityId, type)) {
             throw new NotUniqueRecordException(User.class, userId, entityId, type);
+        }
+
+        TypeOfInteraction oppositeType = type.getOpposite();
+        if (oppositeType != null) {
+            findUserEntityOptional(userId, entityId, oppositeType)
+                    .ifPresent(userEntityRepository::delete);
         }
 
         User user = userRepository.findById(userId)
@@ -61,5 +70,15 @@ public abstract class GenericSavedService<T, U, R> {
 
     protected abstract U createUserEntity(User user, T entity, TypeOfInteraction type);
 
-    protected abstract U findUserEntity(int userId, int entityId, TypeOfInteraction type);
+    protected U findUserEntity(int userId, int entityId, TypeOfInteraction type) {
+        return findUserEntityOptional(userId, entityId, type)
+                .orElseThrow(() -> RecordNotFoundException.of(
+                        userEntityType,
+                        userId,
+                        entityId,
+                        type
+                ));
+    }
+
+    protected abstract Optional<U> findUserEntityOptional(int userId, int entityId, TypeOfInteraction type);
 }
