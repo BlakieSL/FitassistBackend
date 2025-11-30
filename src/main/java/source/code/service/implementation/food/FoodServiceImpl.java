@@ -114,9 +114,7 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public FoodCalculatedMacrosResponseDto calculateFoodMacros(
-            int id, CalculateFoodMacrosRequestDto request
-    ) {
+    public FoodCalculatedMacrosResponseDto calculateFoodMacros(int id, CalculateFoodMacrosRequestDto request) {
         Food food = find(id);
         BigDecimal quantity = request.getQuantity();
         BigDecimal divisor = new BigDecimal("100");
@@ -171,9 +169,7 @@ public class FoodServiceImpl implements FoodService {
         return repositoryHelper.find(foodRepository, Food.class, foodId);
     }
 
-    private FoodUpdateDto applyPatchToFood(JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+    private FoodUpdateDto applyPatchToFood(JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
         return jsonPatchService.createFromPatch(patch, FoodUpdateDto.class);
     }
 }
