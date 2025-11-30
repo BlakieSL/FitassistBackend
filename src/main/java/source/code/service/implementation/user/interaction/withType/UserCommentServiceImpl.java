@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import source.code.dto.response.comment.CommentResponseDto;
 import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
-import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
 import source.code.mapper.comment.CommentMapper;
 import source.code.model.thread.Comment;
@@ -21,6 +20,7 @@ import source.code.service.declaration.comment.CommentPopulationService;
 import source.code.service.declaration.user.SavedService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service("userCommentService")
 public class UserCommentServiceImpl
@@ -35,7 +35,7 @@ public class UserCommentServiceImpl
                                   JpaRepository<UserComment, Integer> userEntityRepository,
                                   CommentMapper mapper,
                                   CommentPopulationService commentPopulationService) {
-        super(userRepository, entityRepository, userEntityRepository, mapper::toResponseDto, Comment.class);
+        super(userRepository, entityRepository, userEntityRepository, mapper::toResponseDto, Comment.class, UserComment.class);
         this.commentMapper = mapper;
         this.commentPopulationService = commentPopulationService;
     }
@@ -76,14 +76,8 @@ public class UserCommentServiceImpl
     }
 
     @Override
-    protected UserComment findUserEntity(int userId, int entityId, TypeOfInteraction type) {
+    protected Optional<UserComment> findUserEntityOptional(int userId, int entityId, TypeOfInteraction type) {
         return ((UserCommentRepository) userEntityRepository)
-                .findByUserIdAndCommentIdAndType(userId, entityId, type)
-                .orElseThrow(() -> RecordNotFoundException.of(
-                        UserComment.class,
-                        userId,
-                        entityId,
-                        type
-                ));
+                .findByUserIdAndCommentIdAndType(userId, entityId, type);
     }
 }

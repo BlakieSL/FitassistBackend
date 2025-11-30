@@ -75,6 +75,7 @@ public class LuceneInitialLoadServiceImpl implements LuceneInitialLoadService {
                         ).flatMap(List::stream)
                         .map(entity -> (IndexedEntity) entity)
                         .toList();
+
                 luceneIndexService.indexEntities(allEntities);
             } catch (Exception e) {
                 e.printStackTrace();
