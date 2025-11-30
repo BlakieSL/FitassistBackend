@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
-import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
 import source.code.helper.Enum.cache.CacheNames;
 import source.code.mapper.recipe.RecipeMapper;
@@ -24,6 +23,7 @@ import source.code.service.declaration.user.SavedService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service("userRecipeService")
@@ -43,7 +43,8 @@ public class UserRecipeServiceImpl
                 recipeRepository,
                 userRecipeRepository,
                 recipeMapper::toResponseDto,
-                Recipe.class);
+                Recipe.class,
+                UserRecipe.class);
         this.recipeMapper = recipeMapper;
         this.recipePopulationService = recipePopulationService;
     }
@@ -106,14 +107,8 @@ public class UserRecipeServiceImpl
     }
 
     @Override
-    protected UserRecipe findUserEntity(int userId, int recipeId, TypeOfInteraction type) {
+    protected Optional<UserRecipe> findUserEntityOptional(int userId, int entityId, TypeOfInteraction type) {
         return ((UserRecipeRepository) userEntityRepository)
-                .findByUserIdAndRecipeIdAndType(userId, recipeId, type)
-                .orElseThrow(() -> RecordNotFoundException.of(
-                        UserRecipe.class,
-                        userId,
-                        recipeId,
-                        type
-                ));
+                .findByUserIdAndRecipeIdAndType(userId, entityId, type);
     }
 }

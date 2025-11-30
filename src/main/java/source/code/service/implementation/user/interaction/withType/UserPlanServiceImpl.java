@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
-import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
 import source.code.helper.Enum.cache.CacheNames;
 import source.code.helper.user.AuthorizationUtil;
@@ -25,6 +24,7 @@ import source.code.service.declaration.user.SavedService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service("userPlanService")
@@ -44,7 +44,8 @@ public class UserPlanServiceImpl
                 planRepository,
                 userPlanRepository,
                 planMapper::toResponseDto,
-                Plan.class);
+                Plan.class,
+                UserPlan.class);
         this.planMapper = planMapper;
         this.planPopulationService = planPopulationService;
     }
@@ -107,15 +108,8 @@ public class UserPlanServiceImpl
     }
 
     @Override
-    protected UserPlan findUserEntity(int userId, int planId, TypeOfInteraction type) {
+    protected Optional<UserPlan> findUserEntityOptional(int userId, int entityId, TypeOfInteraction type) {
         return ((UserPlanRepository) userEntityRepository)
-                .findByUserIdAndPlanIdAndType(userId, planId, type)
-                .orElseThrow(() -> RecordNotFoundException.of(
-                        UserPlan.class,
-                        userId,
-                        planId,
-                        type
-                ));
+                .findByUserIdAndPlanIdAndType(userId, entityId, type);
     }
-
 }
