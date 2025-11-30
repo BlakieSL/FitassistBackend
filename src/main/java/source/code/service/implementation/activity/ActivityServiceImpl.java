@@ -109,11 +109,9 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public ActivityCalculatedResponseDto calculateCaloriesBurned(
-            int activityId, CalculateActivityCaloriesRequestDto request
-    ) {
+    public ActivityCalculatedResponseDto calculateCaloriesBurned(int activityId,
+                                                                 CalculateActivityCaloriesRequestDto request) {
         Activity activity = findActivity(activityId);
-
         BigDecimal weight = resolveWeightForCalculation(request);
 
         return activityMapper.toCalculatedDto(activity, weight, request.getTime());
@@ -153,8 +151,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     private ActivityUpdateDto applyPatchToActivity(JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         return jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class);
     }
 
@@ -184,9 +181,7 @@ public class ActivityServiceImpl implements ActivityService {
             return user.getWeight();
         }
 
-        throw new WeightRequiredException(
-                "Weight is required for calorie calculation. " +
-                        "Please provide it in the request or set it in your profile."
-        );
+        throw new WeightRequiredException("Weight is required for calorie calculation. " +
+                "Please provide it in the request or set it in your profile.");
     }
 }

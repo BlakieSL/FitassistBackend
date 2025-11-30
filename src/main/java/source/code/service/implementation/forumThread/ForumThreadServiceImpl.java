@@ -68,14 +68,13 @@ public class ForumThreadServiceImpl implements ForumThreadService {
     @Override
     @Transactional
     public void updateForumThread(int threadId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         ForumThread thread = find(threadId);
         ForumThreadUpdateDto patched = applyPatchToForumThread(patch);
 
         validationService.validate(patched);
         forumThreadMapper.update(thread, patched);
-        ForumThread saved = forumThreadRepository.save(thread);
+        forumThreadRepository.save(thread);
     }
 
     @Override
@@ -106,8 +105,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
     }
 
     private ForumThreadUpdateDto applyPatchToForumThread(JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         return jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class);
     }
 

@@ -44,7 +44,6 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
     private final ValidationService validationService;
     private final JsonPatchService jsonPatchService;
     private final FoodMapper foodMapper;
-    private final RecipeMapper recipeMapper;
     private final RecipeFoodMapper recipeFoodMapper;
     private final RepositoryHelper repositoryHelper;
     private final RecipeFoodRepository recipeFoodRepository;
@@ -54,7 +53,6 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
     public RecipeFoodServiceImpl(
             RecipeService recipeService,
             ValidationService validationService,
-            RecipeMapper recipeMapper,
             RecipeFoodMapper recipeFoodMapper,
             RecipeFoodRepository recipeFoodRepository,
             FoodRepository foodRepository,
@@ -64,7 +62,6 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
             RepositoryHelper repositoryHelper) {
         this.recipeService = recipeService;
         this.validationService = validationService;
-        this.recipeMapper = recipeMapper;
         this.recipeFoodMapper = recipeFoodMapper;
         this.recipeFoodRepository = recipeFoodRepository;
         this.foodRepository = foodRepository;

@@ -12,9 +12,7 @@ import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.ValidationService;
 
 @Service("foodCategoryService")
-public class FoodCategoryServiceImpl
-        extends GenericCategoryService<FoodCategory>
-        implements CategoryService {
+public class FoodCategoryServiceImpl extends GenericCategoryService<FoodCategory> implements CategoryService {
 
     private final FoodCategoryRepository foodCategoryRepository;
 
