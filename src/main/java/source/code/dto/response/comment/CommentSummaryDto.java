@@ -25,4 +25,6 @@ public class CommentSummaryDto implements BaseUserEntity, Serializable {
     private long dislikesCount;
     private long repliesCount;
     private LocalDateTime userCommentInteractionCreatedAt;
+    private boolean liked;
+    private boolean disliked;
 }

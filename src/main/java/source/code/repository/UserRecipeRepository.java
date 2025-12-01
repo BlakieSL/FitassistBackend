@@ -30,7 +30,8 @@ public interface UserRecipeRepository extends JpaRepository<UserRecipe, Integer>
         FROM UserRecipe ur
         WHERE ur.recipe.id = :recipeId
     """)
-    RecipeUserInteractionProjection findUserInteractionsAndCounts(int userId, int recipeId);
+    RecipeUserInteractionProjection findUserInteractionsAndCounts(@Param("userId") int userId,
+                                                                  @Param("recipeId") int recipeId);
 
     @Query("""
         SELECT

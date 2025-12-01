@@ -21,12 +21,15 @@ public interface UserCommentRepository extends JpaRepository<UserComment, Intege
         SELECT
             uc.comment.id as commentId,
             SUM(CASE WHEN uc.type = 'LIKE' THEN 1 ELSE 0 END) as likesCount,
-            SUM(CASE WHEN uc.type = 'DISLIKE' THEN 1 ELSE 0 END) as dislikesCount
+            SUM(CASE WHEN uc.type = 'DISLIKE' THEN 1 ELSE 0 END) as dislikesCount,
+            MAX(CASE WHEN uc.type = 'LIKE' AND uc.user.id = :userId THEN 1 ELSE 0 END) as isLiked,
+            MAX(CASE WHEN uc.type = 'DISLIKE' AND uc.user.id = :userId THEN 1 ELSE 0 END) as isDisliked
         FROM UserComment uc
         WHERE uc.comment.id IN :commentIds
         GROUP BY uc.comment.id
     """)
-    List<CommentCountsProjection> findCountsByCommentIds(@Param("commentIds") List<Integer> commentIds);
+    List<CommentCountsProjection> findCountsByCommentIds(@Param("userId") int userId,
+                                                         @Param("commentIds") List<Integer> commentIds);
 
     @Query(value = """
         SELECT uc
