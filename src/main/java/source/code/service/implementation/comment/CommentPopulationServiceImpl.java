@@ -5,6 +5,7 @@ import source.code.dto.pojo.projection.comment.CommentCountsProjection;
 import source.code.dto.pojo.projection.comment.CommentRepliesCountProjection;
 import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.helper.Enum.model.MediaConnectedEntity;
+import source.code.helper.user.AuthorizationUtil;
 import source.code.model.media.Media;
 import source.code.repository.CommentRepository;
 import source.code.repository.MediaRepository;
@@ -38,12 +39,14 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
     public void populate(List<CommentSummaryDto> comments) {
         if (comments.isEmpty()) return;
 
+        int userId = AuthorizationUtil.getUserId();
+
         List<Integer> commentIds = comments.stream()
                 .map(CommentSummaryDto::getId)
                 .toList();
 
         populateAuthorImages(comments);
-        populateCounts(comments, commentIds);
+        populateUserInteractionsAndCounts(comments, commentIds, userId);
         populateRepliesCounts(comments, commentIds);
     }
 
@@ -68,9 +71,9 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
         });
     }
 
-    private void populateCounts(List<CommentSummaryDto> comments, List<Integer> commentIds) {
+    private void populateUserInteractionsAndCounts(List<CommentSummaryDto> comments, List<Integer> commentIds, int userId) {
         Map<Integer, CommentCountsProjection> countsMap = userCommentRepository
-                .findCountsByCommentIds(commentIds)
+                .findCountsByCommentIds(userId, commentIds)
                 .stream()
                 .collect(Collectors.toMap(
                         CommentCountsProjection::getCommentId,
@@ -82,9 +85,13 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
             if (counts != null) {
                 comment.setLikesCount(counts.getLikesCount() != null ? counts.getLikesCount() : 0L);
                 comment.setDislikesCount(counts.getDislikesCount() != null ? counts.getDislikesCount() : 0L);
+                comment.setLiked(counts.isLiked());
+                comment.setDisliked(counts.isDisliked());
             } else {
                 comment.setLikesCount(0L);
                 comment.setDislikesCount(0L);
+                comment.setLiked(false);
+                comment.setDisliked(false);
             }
         });
     }
