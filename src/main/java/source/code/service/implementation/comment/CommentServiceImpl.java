@@ -65,8 +65,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void updateComment(int commentId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         Comment comment = commentRepository.findByIdWithoutAssociations(commentId)
                 .orElseThrow(() -> new RecordNotFoundException(Comment.class, commentId));
 
