@@ -73,28 +73,6 @@ public class CategoryControllerGetCategoryTest {
     @CategorySql
     @WithMockUser
     @Test
-    @DisplayName("GET - /EXERCISE/{id} - Should return exercise category by ID")
-    void getExerciseCategoryById() throws Exception {
-        mockMvc.perform(get("/api/categories/EXERCISE/1"))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.name").value("Chest")
-                );
-    }
-
-    @WithMockUser
-    @Test
-    @DisplayName("GET - /EXERCISE/{id} - Should return 404 for non-existing exercise category")
-    void getExerciseCategoryByIdNotFound() throws Exception {
-        mockMvc.perform(get("/api/categories/EXERCISE/999"))
-                .andExpectAll(
-                        status().isNotFound()
-                );
-    }
-
-    @CategorySql
-    @WithMockUser
-    @Test
     @DisplayName("GET - /RECIPE/{id} - Should return recipe category by ID")
     void getRecipeCategoryById() throws Exception {
         mockMvc.perform(get("/api/categories/RECIPE/1"))

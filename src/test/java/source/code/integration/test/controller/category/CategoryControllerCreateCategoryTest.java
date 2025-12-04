@@ -88,33 +88,6 @@ public class CategoryControllerCreateCategoryTest {
 
     @CategorySql
     @Test
-    @DisplayName("POST /EXERCISE - Should create an exercise category")
-    void createExerciseCategory() throws Exception {
-        Utils.setAdminContext(1);
-        String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("New Exercise Category"));
-        mockMvc.perform(post("/api/categories/EXERCISE")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpectAll(
-                        status().isCreated(),
-                        jsonPath("$.name").value("New Exercise Category")
-                );
-    }
-
-    @CategorySql
-    @Test
-    @DisplayName("POST /EXERCISE - Non-admin user should get 403 Forbidden")
-    void createExerciseCategoryAsUserShouldForbid() throws Exception {
-        Utils.setUserContext(1);
-        String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("User Exercise Category"));
-        mockMvc.perform(post("/api/categories/EXERCISE")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isForbidden());
-    }
-
-    @CategorySql
-    @Test
     @DisplayName("POST /RECIPE - Should create a recipe category")
     void createRecipeCategory() throws Exception {
         Utils.setAdminContext(1);

@@ -19,8 +19,6 @@ public class CategorySelectorServiceTest {
     @Mock
     private ActivityCategoryServiceImpl activityCategoryService;
     @Mock
-    private TargetMuscleServiceImpl targetMuscleService;
-    @Mock
     private RecipeCategoryServiceImpl recipeCategoryService;
     @Mock
     private PlanCategoryServiceImpl planCategoryService;
@@ -32,7 +30,6 @@ public class CategorySelectorServiceTest {
         categorySelectorService = new CategorySelectorServiceImpl(
                 foodCategoryService,
                 activityCategoryService,
-                targetMuscleService,
                 recipeCategoryService,
                 planCategoryService
         );
@@ -46,11 +43,6 @@ public class CategorySelectorServiceTest {
     @Test
     void getService_shouldReturnActivityCategoryService() {
         assertSame(activityCategoryService, categorySelectorService.getService(CategoryType.ACTIVITY));
-    }
-
-    @Test
-    void getService_shouldReturnTargetMuscleService() {
-        assertSame(targetMuscleService, categorySelectorService.getService(CategoryType.EXERCISE));
     }
 
     @Test

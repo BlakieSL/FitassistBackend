@@ -99,43 +99,6 @@ public class CategoryControllerDeleteCategoryTest {
 
     @CategorySql
     @Test
-    @DisplayName("DELETE /EXERCISE/{id} - Should delete an exercise category")
-    void deleteExerciseCategory() throws Exception {
-        Utils.setAdminContext(1);
-        mockMvc.perform(delete("/api/categories/EXERCISE/6"))
-                .andExpect(status().isNoContent());
-
-        mockMvc.perform(get("/api/categories/EXERCISE/6"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DisplayName("DELETE /EXERCISE/{id} - Should return 404 for non-existent exercise category")
-    void deleteNonExistentExerciseCategory() throws Exception {
-        Utils.setAdminContext(1);
-        mockMvc.perform(delete("/api/categories/EXERCISE/999"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DisplayName("DELETE /EXERCISE/{id} - Should return 403 for non-admin user")
-    void deleteExerciseCategoryAsNonAdmin() throws Exception {
-        Utils.setUserContext(2);
-        mockMvc.perform(delete("/api/categories/EXERCISE/1"))
-                .andExpect(status().isForbidden());
-    }
-
-    @CategorySql
-    @Test
-    @DisplayName("DELETE/EXERCISE/{id} - Should return 409 for exercise category with associated exercises")
-    void deleteExerciseCategoryWithAssociations() throws Exception {
-        Utils.setAdminContext(1);
-        mockMvc.perform(delete("/api/categories/EXERCISE/1"))
-                .andExpect(status().isConflict());
-    }
-
-    @CategorySql
-    @Test
     @DisplayName("DELETE /RECIPE/{id} - Should delete a recipe category")
     void deleteRecipeCategory() throws Exception {
         Utils.setAdminContext(1);
