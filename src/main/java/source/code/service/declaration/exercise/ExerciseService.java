@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import source.code.dto.request.exercise.ExerciseCreateDto;
 import source.code.dto.request.filter.FilterDto;
+import source.code.dto.response.exercise.ExerciseCategoriesResponseDto;
 import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.model.exercise.Exercise;
@@ -29,5 +30,7 @@ public interface ExerciseService {
     List<Exercise> getAllExerciseEntities();
 
     List<ExerciseSummaryDto> getExercisesByCategory(int categoryId);
+
+    ExerciseCategoriesResponseDto getAllExerciseCategories();
 }
 

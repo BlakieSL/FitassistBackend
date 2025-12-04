@@ -75,29 +75,6 @@ public class CategoryControllerGetAllTest {
     @WithMockUser
     @CategorySql
     @Test
-    @DisplayName("GET /EXERCISE - Should return exercise categories")
-    void getExerciseCategories() throws Exception {
-        mockMvc.perform(get("/api/categories/EXERCISE"))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$").isNotEmpty()
-                );
-    }
-
-    @WithMockUser
-    @Test
-    @DisplayName("GET /EXERCISE - Should return empty list for exercise categories")
-    void getExerciseCategoriesEmpty() throws Exception {
-        mockMvc.perform(get("/api/categories/EXERCISE"))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$").isEmpty()
-                );
-    }
-
-    @WithMockUser
-    @CategorySql
-    @Test
     @DisplayName("GET /RECIPE - Should return recipe categories")
     void getRecipeCategories() throws Exception {
         mockMvc.perform(get("/api/categories/RECIPE"))

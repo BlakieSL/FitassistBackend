@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import source.code.dto.request.exercise.ExerciseCreateDto;
 import source.code.dto.request.exercise.ExerciseUpdateDto;
 import source.code.dto.request.filter.FilterDto;
+import source.code.dto.response.category.CategoryResponseDto;
+import source.code.dto.response.exercise.ExerciseCategoriesResponseDto;
 import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.dto.response.plan.PlanSummaryDto;
@@ -25,9 +27,14 @@ import source.code.mapper.exercise.ExerciseMapper;
 import source.code.mapper.plan.PlanMapper;
 import source.code.model.exercise.Exercise;
 import source.code.model.exercise.ExerciseTargetMuscle;
+import source.code.repository.EquipmentRepository;
 import source.code.repository.ExerciseRepository;
 import source.code.repository.ExerciseTargetMuscleRepository;
+import source.code.repository.ExpertiseLevelRepository;
+import source.code.repository.ForceTypeRepository;
+import source.code.repository.MechanicsTypeRepository;
 import source.code.repository.PlanRepository;
+import source.code.repository.TargetMuscleRepository;
 import source.code.service.declaration.exercise.ExercisePopulationService;
 import source.code.service.declaration.exercise.ExerciseService;
 import source.code.service.declaration.helpers.JsonPatchService;
@@ -52,6 +59,11 @@ public class ExerciseServiceImpl implements ExerciseService {
     private final ExerciseRepository exerciseRepository;
     private final ExerciseTargetMuscleRepository exerciseTargetMuscleRepository;
     private final PlanRepository planRepository;
+    private final EquipmentRepository equipmentRepository;
+    private final ExpertiseLevelRepository expertiseLevelRepository;
+    private final ForceTypeRepository forceTypeRepository;
+    private final MechanicsTypeRepository mechanicsTypeRepository;
+    private final TargetMuscleRepository targetMuscleRepository;
     private final ExercisePopulationService exercisePopulationService;
     private final PlanPopulationService planPopulationService;
     private final SpecificationDependencies dependencies;
@@ -65,6 +77,11 @@ public class ExerciseServiceImpl implements ExerciseService {
                                ExerciseRepository exerciseRepository,
                                ExerciseTargetMuscleRepository exerciseTargetMuscleRepository,
                                PlanRepository planRepository,
+                               EquipmentRepository equipmentRepository,
+                               ExpertiseLevelRepository expertiseLevelRepository,
+                               ForceTypeRepository forceTypeRepository,
+                               MechanicsTypeRepository mechanicsTypeRepository,
+                               TargetMuscleRepository targetMuscleRepository,
                                ExercisePopulationService exercisePopulationService,
                                PlanPopulationService planPopulationService,
                                SpecificationDependencies dependencies) {
@@ -77,6 +94,11 @@ public class ExerciseServiceImpl implements ExerciseService {
         this.exerciseRepository = exerciseRepository;
         this.exerciseTargetMuscleRepository = exerciseTargetMuscleRepository;
         this.planRepository = planRepository;
+        this.equipmentRepository = equipmentRepository;
+        this.expertiseLevelRepository = expertiseLevelRepository;
+        this.forceTypeRepository = forceTypeRepository;
+        this.mechanicsTypeRepository = mechanicsTypeRepository;
+        this.targetMuscleRepository = targetMuscleRepository;
         this.exercisePopulationService = exercisePopulationService;
         this.planPopulationService = planPopulationService;
         this.dependencies = dependencies;
@@ -160,6 +182,32 @@ public class ExerciseServiceImpl implements ExerciseService {
                 .map(ExerciseTargetMuscle::getExercise)
                 .map(exerciseMapper::toSummaryDto)
                 .toList();
+    }
+
+    @Override
+    public ExerciseCategoriesResponseDto getAllExerciseCategories() {
+        var equipments = equipmentRepository.findAll().stream()
+                .map(equipment -> new CategoryResponseDto(equipment.getId(), equipment.getName()))
+                .toList();
+
+        var expertiseLevels = expertiseLevelRepository.findAll().stream()
+                .map(expertiseLevel -> new CategoryResponseDto(expertiseLevel.getId(), expertiseLevel.getName()))
+                .toList();
+
+        var forceTypes = forceTypeRepository.findAll().stream()
+                .map(forceType -> new CategoryResponseDto(forceType.getId(), forceType.getName()))
+                .toList();
+
+        var mechanicsTypes = mechanicsTypeRepository.findAll().stream()
+                .map(mechanicsType -> new CategoryResponseDto(mechanicsType.getId(), mechanicsType.getName()))
+                .toList();
+
+        var targetMuscles = targetMuscleRepository.findAll().stream()
+                .map(targetMuscle -> new CategoryResponseDto(targetMuscle.getId(), targetMuscle.getName()))
+                .toList();
+
+        return new ExerciseCategoriesResponseDto(equipments, expertiseLevels, forceTypes,
+                mechanicsTypes, targetMuscles);
     }
 
     private Exercise find(int exerciseId) {

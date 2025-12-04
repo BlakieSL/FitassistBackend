@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import source.code.annotation.AdminOnly;
 import source.code.dto.request.exercise.ExerciseCreateDto;
 import source.code.dto.request.filter.FilterDto;
+import source.code.dto.response.exercise.ExerciseCategoriesResponseDto;
 import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.service.declaration.exercise.ExerciseService;
@@ -84,5 +85,11 @@ public class ExerciseController {
             @PathVariable int categoryId
     ) {
         return ResponseEntity.ok(exerciseService.getExercisesByCategory(categoryId));
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<ExerciseCategoriesResponseDto> getAllExerciseCategories() {
+        ExerciseCategoriesResponseDto categories = exerciseService.getAllExerciseCategories();
+        return ResponseEntity.ok(categories);
     }
 }
