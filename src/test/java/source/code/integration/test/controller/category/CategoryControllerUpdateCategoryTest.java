@@ -101,40 +101,6 @@ public class CategoryControllerUpdateCategoryTest {
 
     @CategorySql
     @Test
-    @DisplayName("PATCH /EXERCISE/{id} - Should update an exercise category")
-    void updateExerciseCategory() throws Exception {
-        Utils.setAdminContext(1);
-        String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("Updated Exercise Category"));
-        mockMvc.perform(patch("/api/categories/EXERCISE/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isNoContent());
-    }
-
-    @Test
-    @DisplayName("PATCH /EXERCISE/{id} - Non-admin user should get 403 Forbidden")
-    void updateExerciseCategoryAsUserShouldForbid() throws Exception {
-        Utils.setUserContext(1);
-        String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("User Exercise Update"));
-        mockMvc.perform(patch("/api/categories/EXERCISE/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
-    @DisplayName("PATCH /EXERCISE/{id} - Should return 404 for non-existent exercise category")
-    void updateNonExistentExerciseCategory() throws Exception {
-        Utils.setAdminContext(1);
-        String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("Non-existent Exercise Category"));
-        mockMvc.perform(patch("/api/categories/EXERCISE/999")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isNotFound());
-    }
-
-    @CategorySql
-    @Test
     @DisplayName("PATCH /RECIPE/{id} - Should update a recipe category")
     void updateRecipeCategory() throws Exception {
         Utils.setAdminContext(1);

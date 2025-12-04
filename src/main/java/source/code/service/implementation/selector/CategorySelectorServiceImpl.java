@@ -10,7 +10,6 @@ import source.code.service.declaration.selector.CategorySelectorService;
 public class CategorySelectorServiceImpl implements CategorySelectorService {
     private final CategoryService foodCategoryService;
     private final CategoryService activityCategoryService;
-    private final CategoryService targetMuscleService;
     private final CategoryService recipeCategoryService;
     private final CategoryService planCategoryService;
 
@@ -18,15 +17,12 @@ public class CategorySelectorServiceImpl implements CategorySelectorService {
                                        CategoryService foodCategoryService,
                                        @Qualifier("activityCategoryService")
                                        CategoryService activityCategoryService,
-                                       @Qualifier("targetMuscleService")
-                                       CategoryService targetMuscleService,
                                        @Qualifier("recipeCategoryService")
                                        CategoryService recipeCategoryService,
                                        @Qualifier("planCategoryService")
                                        CategoryService planCategoryService) {
         this.foodCategoryService = foodCategoryService;
         this.activityCategoryService = activityCategoryService;
-        this.targetMuscleService = targetMuscleService;
         this.recipeCategoryService = recipeCategoryService;
         this.planCategoryService = planCategoryService;
     }
@@ -36,7 +32,6 @@ public class CategorySelectorServiceImpl implements CategorySelectorService {
         return switch (categoryType) {
             case FOOD -> foodCategoryService;
             case ACTIVITY -> activityCategoryService;
-            case EXERCISE -> targetMuscleService;
             case RECIPE -> recipeCategoryService;
             case PLAN -> planCategoryService;
         };
