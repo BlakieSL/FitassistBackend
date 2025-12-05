@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.plan.PlanCreateDto;
+import source.code.dto.response.plan.PlanCategoriesResponseDto;
 import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.model.plan.Plan;
@@ -29,4 +30,6 @@ public interface PlanService {
     List<Plan> getAllPlanEntities();
 
     void incrementViews(int planId);
+
+    PlanCategoriesResponseDto getAllPlanCategories();
 }
