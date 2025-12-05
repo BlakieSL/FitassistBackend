@@ -14,6 +14,7 @@ public class CacheNames {
 
     public static final String ALL_PLANS = "allPlans";
     public static final String PLANS = "plans";
+    public static final String PLAN_CATEGORIES = "planCategories";
 
     public static final String ALL_RECIPES = "allRecipes";
     public static final String RECIPES = "recipes";

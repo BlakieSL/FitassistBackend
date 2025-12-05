@@ -15,6 +15,7 @@ import source.code.annotation.plan.PlanOwnerOrAdmin;
 import source.code.annotation.plan.PublicPlanOrOwnerOrAdmin;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.plan.PlanCreateDto;
+import source.code.dto.response.plan.PlanCategoriesResponseDto;
 import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.service.declaration.plan.PlanService;
@@ -77,5 +78,11 @@ public class PlanController {
     public ResponseEntity<Void> incrementViews(@PathVariable int planId) {
         planService.incrementViews(planId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<PlanCategoriesResponseDto> getAllPlanCategories() {
+        PlanCategoriesResponseDto categories = planService.getAllPlanCategories();
+        return ResponseEntity.ok(categories);
     }
 }
