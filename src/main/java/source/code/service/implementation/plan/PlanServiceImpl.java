@@ -19,6 +19,7 @@ import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.plan.PlanCategoriesResponseDto;
 import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
+import source.code.exception.RecordNotFoundException;
 import source.code.event.events.Plan.PlanCreateEvent;
 import source.code.event.events.Plan.PlanDeleteEvent;
 import source.code.event.events.Plan.PlanUpdateEvent;
@@ -85,7 +86,9 @@ public class PlanServiceImpl implements PlanService {
         Plan saved = planRepository.save(mapped);
         applicationEventPublisher.publishEvent(PlanCreateEvent.of(this, saved));
 
-        return planMapper.toResponseDto(saved);
+        planRepository.flush();
+
+        return findAndMap(saved.getId());
     }
 
     @Override
@@ -116,8 +119,7 @@ public class PlanServiceImpl implements PlanService {
     @Override
     @Cacheable(value = CacheNames.PLANS, key = "#id")
     public PlanResponseDto getPlan(int id) {
-        Plan plan = find(id);
-        return planMapper.toResponseDto(plan);
+        return findAndMap(id);
     }
 
     @Override
@@ -183,9 +185,17 @@ public class PlanServiceImpl implements PlanService {
         return repositoryHelper.find(planRepository, Plan.class, planId);
     }
 
+    private PlanResponseDto findAndMap(int planId) {
+        Plan plan = planRepository.findByIdWithDetails(planId)
+                .orElseThrow(() -> RecordNotFoundException.of(Plan.class, planId));
+        PlanResponseDto dto = planMapper.toResponseDto(plan);
+        planPopulationService.populate(dto);
+
+        return dto;
+    }
+
     private PlanUpdateDto applyPatchToPlan(JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         return jsonPatchService.createFromPatch(patch, PlanUpdateDto.class);
     }
 }

@@ -6,8 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import source.code.dto.pojo.projection.recipe.RecipeCountsProjection;
-import source.code.dto.pojo.projection.recipe.RecipeInteractionDateProjection;
-import source.code.dto.pojo.projection.recipe.RecipeUserInteractionProjection;
+import source.code.dto.pojo.projection.recipe.RecipeAndPlanUserInteractionProjection;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.UserRecipe;
 
@@ -30,8 +29,8 @@ public interface UserRecipeRepository extends JpaRepository<UserRecipe, Integer>
         FROM UserRecipe ur
         WHERE ur.recipe.id = :recipeId
     """)
-    RecipeUserInteractionProjection findUserInteractionsAndCounts(@Param("userId") int userId,
-                                                                  @Param("recipeId") int recipeId);
+    RecipeAndPlanUserInteractionProjection findUserInteractionsAndCounts(@Param("userId") int userId,
+                                                                         @Param("recipeId") int recipeId);
 
     @Query("""
         SELECT

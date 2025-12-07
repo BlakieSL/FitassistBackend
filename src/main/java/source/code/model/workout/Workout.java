@@ -12,7 +12,7 @@ import lombok.Setter;
 import source.code.model.plan.Plan;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -43,9 +43,9 @@ public class Workout {
     @JoinColumn(name = "plan_id", nullable = false)
     private Plan plan;
 
-    @OneToMany(mappedBy = "workout",
-            cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
-    private final Set<WorkoutSetGroup> workoutSetGroups = new HashSet<>();
+    @OneToMany(mappedBy = "workout", cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
+    @OrderBy("orderIndex ASC")
+    private final Set<WorkoutSetGroup> workoutSetGroups = new LinkedHashSet<>();
 
     public static Workout of(Integer id, Plan plan) {
         Workout workout = new Workout();

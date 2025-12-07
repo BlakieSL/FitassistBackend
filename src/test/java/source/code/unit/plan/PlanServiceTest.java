@@ -42,6 +42,7 @@ import source.code.service.implementation.plan.PlanServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -106,23 +107,28 @@ public class PlanServiceTest {
 
     @Test
     void createPlan_shouldCreatePlan() {
+        plan.setId(planId);
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(planMapper.toEntity(createDto, userId)).thenReturn(plan);
         when(planRepository.save(plan)).thenReturn(plan);
+        when(planRepository.findByIdWithDetails(planId)).thenReturn(Optional.of(plan));
         when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
 
         PlanResponseDto result = planService.createPlan(createDto);
 
         assertEquals(responseDto, result);
+        verify(planPopulationService).populate(responseDto);
     }
 
     @Test
     void createPlan_shouldPublish() {
+        plan.setId(planId);
         ArgumentCaptor<PlanCreateEvent> eventCaptor = ArgumentCaptor
                 .forClass(PlanCreateEvent.class);
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(planMapper.toEntity(createDto, userId)).thenReturn(plan);
         when(planRepository.save(plan)).thenReturn(plan);
+        when(planRepository.findByIdWithDetails(planId)).thenReturn(Optional.of(plan));
         when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
 
         planService.createPlan(createDto);
@@ -226,18 +232,18 @@ public class PlanServiceTest {
 
     @Test
     void getPlan_shouldReturnPlanWhenFound() {
-        when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
+        when(planRepository.findByIdWithDetails(planId)).thenReturn(Optional.of(plan));
         when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
 
         PlanResponseDto result = planService.getPlan(planId);
 
         assertEquals(responseDto, result);
+        verify(planPopulationService).populate(responseDto);
     }
 
     @Test
     void getPlan_shouldThrowExceptionWhenPlanNotFound() {
-        when(repositoryHelper.find(planRepository, Plan.class, planId))
-                .thenThrow(RecordNotFoundException.of(Plan.class, planId));
+        when(planRepository.findByIdWithDetails(planId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> planService.getPlan(planId));
 

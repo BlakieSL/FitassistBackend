@@ -57,7 +57,7 @@ public class WorkoutControllerTest {
                         jsonPath("$.id").exists(),
                         jsonPath("$.name").value("Evening Workout"),
                         jsonPath("$.duration").value(45.0),
-                        jsonPath("$.planId").value(1)
+                        jsonPath("$.workoutSetGroups").isArray()
                 );
     }
 
@@ -226,7 +226,7 @@ public class WorkoutControllerTest {
                         jsonPath("$.id").value(id),
                         jsonPath("$.name").value("Morning Workout"),
                         jsonPath("$.duration").value(30.0),
-                        jsonPath("$.planId").value(1)
+                        jsonPath("$.workoutSetGroups").isArray()
                 );
     }
 
@@ -243,7 +243,7 @@ public class WorkoutControllerTest {
                         jsonPath("$.id").value(id),
                         jsonPath("$.name").value("Morning Workout"),
                         jsonPath("$.duration").value(30.0),
-                        jsonPath("$.planId").value(1)
+                        jsonPath("$.workoutSetGroups").isArray()
                 );
     }
 
@@ -282,7 +282,7 @@ public class WorkoutControllerTest {
                         jsonPath("$[0].id").value(1),
                         jsonPath("$[0].name").value("Morning Workout"),
                         jsonPath("$[0].duration").value(30.0),
-                        jsonPath("$[0].planId").value(planId)
+                        jsonPath("$[0].workoutSetGroups").isArray()
                 );
     }
 
@@ -300,7 +300,7 @@ public class WorkoutControllerTest {
                         jsonPath("$[0].id").value(1),
                         jsonPath("$[0].name").value("Morning Workout"),
                         jsonPath("$[0].duration").value(30.0),
-                        jsonPath("$[0].planId").value(planId)
+                        jsonPath("$[0].workoutSetGroups").isArray()
                 );
     }
 
@@ -318,7 +318,7 @@ public class WorkoutControllerTest {
                         jsonPath("$[0].id").value(1),
                         jsonPath("$[0].name").value("Morning Workout"),
                         jsonPath("$[0].duration").value(30.0),
-                        jsonPath("$[0].planId").value(planId)
+                        jsonPath("$[0].workoutSetGroups").isArray()
                 );
     }
 

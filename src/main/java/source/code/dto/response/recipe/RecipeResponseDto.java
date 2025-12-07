@@ -41,10 +41,9 @@ public class RecipeResponseDto implements Serializable {
 
     private BigDecimal totalCalories;
 
+    private List<RecipeFoodDto> foods;
     private List<RecipeInstructionResponseDto> instructions;
     private List<RecipeCategoryShortDto> categories;
-    private List<String> imageNames;
     private List<String> imageUrls;
-    private List<RecipeFoodDto> foods;
 
 }

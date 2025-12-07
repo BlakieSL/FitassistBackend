@@ -22,6 +22,7 @@ import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.workoutSetGroup.WorkoutSetGroupServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -66,14 +67,17 @@ public class WorkoutSetGroupServiceTest {
 
     @Test
     public void createWorkoutSetGroup_ShouldCreateNewWorkoutSetGroup() {
+        workoutSetGroup.setId(workoutSetGroupId);
         when(workoutSetGroupMapper.toEntity(createDto)).thenReturn(workoutSetGroup);
         when(workoutSetGroupRepository.save(workoutSetGroup)).thenReturn(workoutSetGroup);
+        when(workoutSetGroupRepository.findByIdWithDetails(workoutSetGroupId)).thenReturn(Optional.of(workoutSetGroup));
         when(workoutSetGroupMapper.toResponseDto(workoutSetGroup)).thenReturn(responseDto);
 
         WorkoutSetGroupResponseDto result = workoutSetGroupService.createWorkoutSetGroup(createDto);
 
         verify(workoutSetGroupMapper).toEntity(createDto);
         verify(workoutSetGroupRepository).save(workoutSetGroup);
+        verify(workoutSetGroupRepository).findByIdWithDetails(workoutSetGroupId);
         verify(workoutSetGroupMapper).toResponseDto(workoutSetGroup);
         assertEquals(responseDto, result);
     }
@@ -165,24 +169,23 @@ public class WorkoutSetGroupServiceTest {
 
     @Test
     public void getWorkoutSetGroup_ShouldReturnWorkoutSetGroupById() {
-        when(repositoryHelper.find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId)).thenReturn(workoutSetGroup);
+        when(workoutSetGroupRepository.findByIdWithDetails(workoutSetGroupId)).thenReturn(Optional.of(workoutSetGroup));
         when(workoutSetGroupMapper.toResponseDto(workoutSetGroup)).thenReturn(responseDto);
 
         WorkoutSetGroupResponseDto result = workoutSetGroupService.getWorkoutSetGroup(workoutSetGroupId);
 
-        verify(repositoryHelper).find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId);
+        verify(workoutSetGroupRepository).findByIdWithDetails(workoutSetGroupId);
         verify(workoutSetGroupMapper).toResponseDto(workoutSetGroup);
         assertEquals(responseDto, result);
     }
 
     @Test
     public void getWorkoutSetGroup_ShouldThrowExceptionWhenNotFound() {
-        when(repositoryHelper.find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId))
-                .thenThrow(RecordNotFoundException.class);
+        when(workoutSetGroupRepository.findByIdWithDetails(workoutSetGroupId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> workoutSetGroupService.getWorkoutSetGroup(workoutSetGroupId));
 
-        verify(repositoryHelper).find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId);
+        verify(workoutSetGroupRepository).findByIdWithDetails(workoutSetGroupId);
         verify(workoutSetGroupMapper, never()).toResponseDto(any());
     }
 

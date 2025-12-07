@@ -64,22 +64,22 @@ public class Exercise implements IndexedEntity {
     private String description;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "expertise_level_id", nullable = false)
     private ExpertiseLevel expertiseLevel;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "equipment_id", nullable = false)
     private Equipment equipment;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mechanics_type_id", nullable = false)
     private MechanicsType mechanicsType;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "force_type_id", nullable = false)
     private ForceType forceType;
 
@@ -91,7 +91,7 @@ public class Exercise implements IndexedEntity {
     @OrderBy("orderIndex ASC")
     private final Set<ExerciseTip> exerciseTips = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "exercise", cascade = {CascadeType.REMOVE}, fetch = FetchType.EAGER , orphanRemoval = true)
+    @OneToMany(mappedBy = "exercise", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     @OrderBy("priority DESC")
     private final Set<ExerciseTargetMuscle> exerciseTargetMuscles = new LinkedHashSet<>();
 

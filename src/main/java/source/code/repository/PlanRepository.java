@@ -9,8 +9,25 @@ import org.springframework.data.jpa.repository.*;
 import source.code.model.plan.Plan;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecificationExecutor<Plan> {
+
+    @Query("""
+        SELECT p
+        FROM Plan p
+        JOIN FETCH p.user
+        JOIN FETCH p.planType
+        LEFT JOIN FETCH p.planCategoryAssociations pca
+        LEFT JOIN FETCH pca.planCategory
+        LEFT JOIN FETCH p.planInstructions
+        LEFT JOIN FETCH p.workouts w
+        LEFT JOIN FETCH w.workoutSetGroups wsg
+        LEFT JOIN FETCH wsg.workoutSets ws
+        LEFT JOIN FETCH ws.exercise e
+        WHERE p.id = :planId
+    """)
+    Optional<Plan> findByIdWithDetails(@Param("planId") int planId);
 
     @Override
     @EntityGraph(value = "Plan.summary")
