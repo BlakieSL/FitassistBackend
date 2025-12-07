@@ -131,6 +131,23 @@ public class ExerciseControllerFilterTest {
 
     @ExerciseSql
     @Test
+    @DisplayName("POST - /filter - Should retrieve filtered exercises excluding target muscle with NOT_EQUAL")
+    void getFilteredExercisesByTargetMuscleNotEqual() throws Exception {
+        Utils.setUserContext(1);
+        FilterDto filterDto = buildFilterDto("TARGET_MUSCLE", 2, FilterOperation.NOT_EQUAL);
+        String json = objectMapper.writeValueAsString(filterDto);
+
+        mockMvc.perform(post("/api/exercises/filter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.content", hasSize(4))
+                );
+    }
+
+    @ExerciseSql
+    @Test
     @DisplayName("POST - /filter - Should retrieve filtered exercises by saves")
     void getFilteredExercisesBySaves() throws Exception {
         Utils.setUserContext(1);
