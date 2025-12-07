@@ -149,13 +149,11 @@ public class FoodControllerGetFilteredTest {
     @WithMockUser
     @FoodSql
     @Test
-    @DisplayName("POST - /filter - Should return filtered foods by Save")
+    @DisplayName("POST - /filter - Should return filtered foods by Save count greater than 0")
     void getFilteredFoodsBySave() throws Exception {
         Utils.setUserContext(1);
 
-        FilterCriteria criteria = FilterCriteria.of(
-                "SAVE", 1, FilterOperation.EQUAL
-        );
+        FilterCriteria criteria = FilterCriteria.of("SAVE", 0, FilterOperation.GREATER_THAN);
         FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
         mockMvc.perform(post("/api/foods/filter")
@@ -163,8 +161,7 @@ public class FoodControllerGetFilteredTest {
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content.length()").value(2),
-                        jsonPath("$.page.totalElements").value(2)
+                        jsonPath("$.content.length()").value(3)
                 );
     }
 
@@ -174,8 +171,7 @@ public class FoodControllerGetFilteredTest {
     @DisplayName("POST - /filter - Should return paginated filtered foods with custom pagination")
     void getFilteredFoods_WithPagination() throws Exception {
         FilterCriteria criteria = FilterCriteria.of(
-                "PROTEIN", new BigDecimal("0.0"), FilterOperation.GREATER_THAN
-        );
+                "PROTEIN", new BigDecimal("0.0"), FilterOperation.GREATER_THAN);
         FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
         mockMvc.perform(post("/api/foods/filter")

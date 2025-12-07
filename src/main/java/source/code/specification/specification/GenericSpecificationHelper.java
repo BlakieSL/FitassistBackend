@@ -27,22 +27,14 @@ public class GenericSpecificationHelper {
                                                               Join<T, J> join,
                                                               String subJoinProperty) {
         var value = validateAndGetId(criteria);
-        return buildIdBasedPredicate(builder, criteria, join.get(subJoinProperty).get("id"), value);
+        return buildCollectionIdBasedPredicate(builder, criteria, join, subJoinProperty, value);
     }
 
     public static <T> Predicate buildPredicateNumericProperty(CriteriaBuilder builder,
                                                               FilterCriteria criteria,
                                                               Path<BigDecimal> path) {
         var value = validateAndGetBigDecimal(criteria);
-        return switch (criteria.getOperation()) {
-            case GREATER_THAN -> builder.greaterThan(path, value);
-            case GREATER_THAN_EQUAL -> builder.greaterThanOrEqualTo(path, value);
-            case LESS_THAN -> builder.lessThan(path, value);
-            case LESS_THAN_EQUAL -> builder.lessThanOrEqualTo(path, value);
-            case EQUAL -> builder.equal(path, value);
-            case NOT_EQUAL -> builder.notEqual(path, value);
-            default -> throw new InvalidFilterOperationException(criteria.getOperation().name());
-        };
+        return buildNumericBasedPredicate(builder, criteria, path, value);
     }
 
     public static <T> Predicate buildSavedByUserPredicate(CriteriaBuilder builder,
@@ -105,8 +97,6 @@ public class GenericSpecificationHelper {
             case GREATER_THAN_EQUAL -> builder.greaterThanOrEqualTo(countExpression, value);
             case LESS_THAN -> builder.lessThan(countExpression, value);
             case LESS_THAN_EQUAL -> builder.lessThanOrEqualTo(countExpression, value);
-            case EQUAL -> builder.equal(countExpression, value);
-            case NOT_EQUAL -> builder.notEqual(countExpression, value);
             default -> throw new InvalidFilterValueException(criteria.getOperation().toString());
         };
     }
@@ -137,6 +127,19 @@ public class GenericSpecificationHelper {
         }
     }
 
+    private static Predicate buildNumericBasedPredicate(CriteriaBuilder builder,
+                                                        FilterCriteria criteria,
+                                                        Path<BigDecimal> path,
+                                                        BigDecimal value) {
+        return switch (criteria.getOperation()) {
+            case GREATER_THAN -> builder.greaterThan(path, value);
+            case GREATER_THAN_EQUAL -> builder.greaterThanOrEqualTo(path, value);
+            case LESS_THAN -> builder.lessThan(path, value);
+            case LESS_THAN_EQUAL -> builder.lessThanOrEqualTo(path, value);
+            default -> throw new InvalidFilterOperationException(criteria.getOperation().name());
+        };
+    }
+
     private static Predicate buildIdBasedPredicate(CriteriaBuilder builder,
                                                    FilterCriteria criteria,
                                                    Path<Integer> idPath,
@@ -145,6 +148,21 @@ public class GenericSpecificationHelper {
             case EQUAL -> builder.equal(idPath, value);
             case NOT_EQUAL -> builder.notEqual(idPath, value);
             default -> throw new InvalidFilterOperationException(criteria.getOperation().toString());
+        };
+    }
+
+    private static <T, J> Predicate buildCollectionIdBasedPredicate(CriteriaBuilder builder,
+                                                                    FilterCriteria criteria,
+                                                                    Join<T, J> join,
+                                                                    String subJoinProperty,
+                                                                    Object value) {
+        return switch (criteria.getOperation()) {
+            case EQUAL -> builder.equal(join.get(subJoinProperty).get("id"), value);
+            case NOT_EQUAL -> {
+                join.on(builder.equal(join.get(subJoinProperty).get("id"), value));
+                yield builder.isNull(join.get("id"));
+            }
+            default -> throw new InvalidFilterOperationException(criteria.getOperation().name());
         };
     }
 }
