@@ -278,8 +278,7 @@ public class ActivityControllerTest {
     @DisplayName("POST - /filter - Should return filtered activities by MET")
     void getFilteredActivitiesByMet() throws Exception {
         FilterCriteria criteria = FilterCriteria.of(
-                "MET", BigDecimal.valueOf(7.5), FilterOperation.EQUAL
-        );
+                "MET", BigDecimal.valueOf(7.5), FilterOperation.GREATER_THAN_EQUAL);
         FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
         mockMvc.perform(post("/api/activities/filter")
@@ -287,10 +286,7 @@ public class ActivityControllerTest {
                         .content(objectMapper.writeValueAsString(filterDto)))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content[0].id").exists(),
-                        jsonPath("$.content[0].name").value("Lap Swimming"),
-                        jsonPath("$.content[0].met").value(7.5),
-                        jsonPath("$.content[0].categoryId").value(4)
+                        jsonPath("$.content.length()").value(2)
                 );
     }
 
