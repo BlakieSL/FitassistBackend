@@ -1,3 +1,4 @@
+delete from media;
 delete from workout_set;
 delete from workout_set_group;
 delete from workout;

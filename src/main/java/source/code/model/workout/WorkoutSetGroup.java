@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -35,7 +35,8 @@ public class WorkoutSetGroup {
     private Workout workout;
 
     @OneToMany(mappedBy = "workoutSetGroup", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
-    private Set<WorkoutSet> workoutSets = new HashSet<>();
+    @OrderBy("id ASC")
+    private Set<WorkoutSet> workoutSets = new LinkedHashSet<>();
 
     public static WorkoutSetGroup of(Integer id, Workout workout) {
         WorkoutSetGroup workoutSetGroup = new WorkoutSetGroup();

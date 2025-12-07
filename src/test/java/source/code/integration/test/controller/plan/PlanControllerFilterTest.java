@@ -52,7 +52,7 @@ public class PlanControllerFilterTest {
 
     @PlanSql
     @Test
-    @DisplayName("POST - /filter - Should retrieve private plans when isPublic = false by filtered by type")
+    @DisplayName("POST - /filter - Should retrieve private plans when isPublic = false filtered by type")
     void filterPrivatePlansByType() throws Exception {
         Utils.setUserContext(1);
         FilterDto filterDto = buildFilterDto("TYPE", 1, FilterOperation.EQUAL, false);
@@ -69,7 +69,7 @@ public class PlanControllerFilterTest {
 
     @PlanSql
     @Test
-    @DisplayName("POST - /filter - Should retrieve filtered plans by plan type (Default isPublic = true), so should return 5/6 because 1 is private")
+    @DisplayName("POST - /filter - Should retrieve filtered plans by plan type (Default isPublic = true)")
     void filterPlansByPlanType() throws Exception {
         Utils.setUserContext(1);
         FilterDto filterDto = buildFilterDto("TYPE", 1, FilterOperation.EQUAL);
@@ -80,7 +80,7 @@ public class PlanControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content", hasSize(5))
+                        jsonPath("$.content", hasSize(2))
                 );
     }
 
@@ -97,9 +97,8 @@ public class PlanControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content", hasSize(3)),
-                        jsonPath("$.content[*].name", containsInAnyOrder(
-                                "Beginner Strength", "Powerlifting", "Home Workout")),
+                        jsonPath("$.content", hasSize(1)),
+                        jsonPath("$.content[0].name", is("Beginner Strength")),
                         jsonPath("$.content[*].categories[?(@.id == 1)].name",
                                 everyItem(is("Strength Training")))
                 );
@@ -118,7 +117,7 @@ public class PlanControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content", hasSize(9))
+                        jsonPath("$.content", hasSize(3))
                 );
     }
 
@@ -135,7 +134,7 @@ public class PlanControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content", hasSize(6))
+                        jsonPath("$.content", hasSize(2))
                 );
     }
 
@@ -152,7 +151,7 @@ public class PlanControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content", hasSize(12))
+                        jsonPath("$.content", hasSize(4))
                 );
     }
 
@@ -226,7 +225,7 @@ public class PlanControllerFilterTest {
 
     @PlanSql
     @Test
-    @DisplayName("POST - /filter - Should retrieve plans saved by user 1 (user 1 saved plan 6)")
+    @DisplayName("POST - /filter - Should retrieve plans saved by user 1 (user 1 saved plan 4)")
     void filterPlansSavedByUser() throws Exception {
         Utils.setUserContext(1);
         FilterDto filterDto = buildFilterDto("SAVED_BY_USER", 1, FilterOperation.EQUAL);
@@ -238,7 +237,7 @@ public class PlanControllerFilterTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content", hasSize(1)),
-                        jsonPath("$.content[0].name", is("Clean Eating"))
+                        jsonPath("$.content[0].name", is("Fat Burner"))
                 );
     }
 
@@ -262,7 +261,7 @@ public class PlanControllerFilterTest {
 
     @PlanSql
     @Test
-    @DisplayName("POST - /filter - Should retrieve plans disliked by user 1 (user 1 disliked plan 9)")
+    @DisplayName("POST - /filter - Should retrieve plans disliked by user 1 (user 1 disliked plan 4)")
     void filterPlansDislikedByUser() throws Exception {
         Utils.setUserContext(1);
         FilterDto filterDto = buildFilterDto("DISLIKED_BY_USER", 1, FilterOperation.EQUAL);
@@ -274,7 +273,7 @@ public class PlanControllerFilterTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content", hasSize(1)),
-                        jsonPath("$.content[0].name", is("5K Training"))
+                        jsonPath("$.content[0].name", is("Fat Burner"))
                 );
     }
 

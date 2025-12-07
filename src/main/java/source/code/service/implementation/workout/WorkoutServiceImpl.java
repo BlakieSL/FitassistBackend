@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import source.code.dto.request.workout.WorkoutCreateDto;
 import source.code.dto.request.workout.WorkoutUpdateDto;
 import source.code.dto.response.workout.WorkoutResponseDto;
+import source.code.exception.RecordNotFoundException;
 import source.code.mapper.workout.WorkoutMapper;
 import source.code.model.workout.Workout;
 import source.code.repository.WorkoutRepository;
@@ -41,15 +42,17 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Override
     @Transactional
     public WorkoutResponseDto createWorkout(WorkoutCreateDto workoutDto) {
-        Workout workout = workoutRepository.save(workoutMapper.toEntity(workoutDto));
-        return workoutMapper.toResponseDto(workout);
+        Workout saved = workoutRepository.save(workoutMapper.toEntity(workoutDto));
+
+        workoutRepository.flush();
+
+        return findAndMap(saved.getId());
     }
 
     @Override
     @Transactional
     public void updateWorkout(int workoutId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         Workout workout = find(workoutId);
         WorkoutUpdateDto patched = applyPatchToWorkout(patch);
 
@@ -67,8 +70,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public WorkoutResponseDto getWorkout(int id) {
-        Workout workout = find(id);
-        return workoutMapper.toResponseDto(workout);
+        return findAndMap(id);
     }
 
     @Override
@@ -82,9 +84,14 @@ public class WorkoutServiceImpl implements WorkoutService {
         return repositoryHelper.find(workoutRepository, Workout.class, workoutId);
     }
 
+    private WorkoutResponseDto findAndMap(int workoutId) {
+        Workout workout = workoutRepository.findByIdWithDetails(workoutId)
+                .orElseThrow(() -> new RecordNotFoundException(Workout.class, workoutId));
+        return workoutMapper.toResponseDto(workout);
+    }
+
     private WorkoutUpdateDto applyPatchToWorkout(JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         return jsonPatchService.createFromPatch(patch, WorkoutUpdateDto.class);
     }
 }
