@@ -1,6 +1,6 @@
 package source.code.dto.pojo.projection.recipe;
 
-public interface RecipeUserInteractionProjection {
+public interface RecipeAndPlanUserInteractionProjection {
     Long getIsLiked();
     Long getIsDisliked();
     Long getIsSaved();

@@ -49,7 +49,7 @@ public class WorkoutSetGroupControllerTest {
                         jsonPath("$.id").exists(),
                         jsonPath("$.orderIndex").value(1),
                         jsonPath("$.restSeconds").value(60),
-                        jsonPath("$.workoutId").value(1)
+                        jsonPath("$.workoutSets").isArray()
                 );
     }
 
@@ -230,7 +230,7 @@ public class WorkoutSetGroupControllerTest {
                         jsonPath("$.id").value(id),
                         jsonPath("$.orderIndex").value(1),
                         jsonPath("$.restSeconds").value(60),
-                        jsonPath("$.workoutId").value(1)
+                        jsonPath("$.workoutSets").isArray()
                 );
     }
 
@@ -247,7 +247,7 @@ public class WorkoutSetGroupControllerTest {
                         jsonPath("$.id").value(id),
                         jsonPath("$.orderIndex").value(1),
                         jsonPath("$.restSeconds").value(60),
-                        jsonPath("$.workoutId").value(1)
+                        jsonPath("$.workoutSets").isArray()
                 );
     }
 
@@ -264,7 +264,7 @@ public class WorkoutSetGroupControllerTest {
                         jsonPath("$.id").value(id),
                         jsonPath("$.orderIndex").value(1),
                         jsonPath("$.restSeconds").value(60),
-                        jsonPath("$.workoutId").value(1)
+                        jsonPath("$.workoutSets").isArray()
                 );
     }
 
@@ -300,9 +300,9 @@ public class WorkoutSetGroupControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$").isArray(),
-                        jsonPath("$[0].workoutId").value(workoutId),
                         jsonPath("$[0].orderIndex").value(1),
-                        jsonPath("$[0].restSeconds").value(60)
+                        jsonPath("$[0].restSeconds").value(60),
+                        jsonPath("$[0].workoutSets").isArray()
                 );
     }
 
@@ -317,9 +317,9 @@ public class WorkoutSetGroupControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$").isArray(),
-                        jsonPath("$[0].workoutId").value(workoutId),
                         jsonPath("$[0].orderIndex").value(1),
-                        jsonPath("$[0].restSeconds").value(90)
+                        jsonPath("$[0].restSeconds").value(90),
+                        jsonPath("$[0].workoutSets").isArray()
                 );
     }
 
@@ -334,9 +334,9 @@ public class WorkoutSetGroupControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$").isArray(),
-                        jsonPath("$[0].workoutId").value(workoutId),
                         jsonPath("$[0].orderIndex").value(1),
-                        jsonPath("$[0].restSeconds").value(90)
+                        jsonPath("$[0].restSeconds").value(90),
+                        jsonPath("$[0].workoutSets").isArray()
                 );
     }
 

@@ -22,12 +22,14 @@ import source.code.repository.PlanTypeRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
+import source.code.mapper.workout.WorkoutMapper;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {WorkoutMapper.class})
 public abstract class PlanMapper {
     @Autowired
     private UserRepository userRepository;
@@ -40,9 +42,20 @@ public abstract class PlanMapper {
     @Autowired
     private ExpertiseLevelRepository expertiseLevelRepository;
 
+    @Mapping(target = "authorUsername", source = "user.username")
+    @Mapping(target = "authorId", source = "user.id")
+    @Mapping(target = "authorImageName", ignore = true)
+    @Mapping(target = "authorImageUrl", ignore = true)
+    @Mapping(target = "likesCount", ignore = true)
+    @Mapping(target = "dislikesCount", ignore = true)
+    @Mapping(target = "savesCount", ignore = true)
+    @Mapping(target = "liked", ignore = true)
+    @Mapping(target = "disliked", ignore = true)
+    @Mapping(target = "saved", ignore = true)
     @Mapping(target = "categories", source = "planCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryShortDto")
+    @Mapping(target = "instructions", source = "planInstructions")
+    @Mapping(target = "imageUrls", ignore = true)
     @Mapping(target = "planType", source = "planType", qualifiedByName = "mapTypeToShortDto")
-    @Mapping(target = "userId", source = "user", qualifiedByName = "userToUserId")
     public abstract PlanResponseDto toResponseDto(Plan plan);
 
     @Mapping(target = "authorUsername", source = "user.username")
@@ -91,11 +104,6 @@ public abstract class PlanMapper {
                 )).toList();
 
         plan.getPlanInstructions().addAll(instructions);
-    }
-
-    @Named("userToUserId")
-    protected Integer userToUserId(User user) {
-        return user.getId();
     }
 
     @Named("userIdToUser")

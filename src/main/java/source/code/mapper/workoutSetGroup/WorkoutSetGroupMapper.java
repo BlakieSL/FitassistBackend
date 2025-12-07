@@ -5,16 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.workoutSetGroup.WorkoutSetGroupCreateDto;
 import source.code.dto.request.workoutSetGroup.WorkoutSetGroupUpdateDto;
 import source.code.dto.response.workoutSetGroup.WorkoutSetGroupResponseDto;
+import source.code.mapper.workoutSet.WorkoutSetMapper;
 import source.code.model.workout.Workout;
-import source.code.model.workout.WorkoutSet;
 import source.code.model.workout.WorkoutSetGroup;
 import source.code.repository.WorkoutRepository;
 import source.code.service.implementation.helpers.RepositoryHelperImpl;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {WorkoutSetMapper.class})
 public abstract class WorkoutSetGroupMapper {
     @Autowired
     private RepositoryHelperImpl repositoryHelper;
@@ -22,8 +19,6 @@ public abstract class WorkoutSetGroupMapper {
     @Autowired
     private WorkoutRepository workoutRepository;
 
-    @Mapping(target = "workoutId", source = "workout.id")
-    @Mapping(target = "workoutSetIds", source = "workoutSets", qualifiedByName = "mapWorkoutSetsToIds")
     public abstract WorkoutSetGroupResponseDto toResponseDto(WorkoutSetGroup workoutSetGroup);
 
     @Mapping(target = "workout", source = "workoutId", qualifiedByName = "mapWorkoutIdToWorkout")
@@ -41,12 +36,5 @@ public abstract class WorkoutSetGroupMapper {
     @Named("mapWorkoutIdToWorkout")
     protected Workout mapWorkoutIdToWorkout(int workoutId) {
         return repositoryHelper.find(workoutRepository, Workout.class, workoutId);
-    }
-
-    @Named("mapWorkoutSetsToIds")
-    protected Set<Integer> mapWorkoutSetsToIds(Set<WorkoutSet> workoutSets) {
-        return workoutSets.stream()
-                .map(WorkoutSet::getId)
-                .collect(Collectors.toSet());
     }
 }

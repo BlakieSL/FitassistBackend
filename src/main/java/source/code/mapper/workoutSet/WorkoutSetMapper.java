@@ -21,8 +21,8 @@ public abstract class WorkoutSetMapper {
     @Autowired
     private RepositoryHelper repositoryHelper;
 
-    @Mapping(target = "workoutSetGroupId", source = "workoutSetGroup.id")
     @Mapping(target = "exerciseId", source = "exercise.id")
+    @Mapping(target = "exerciseName", source = "exercise.name")
     public abstract WorkoutSetResponseDto toResponseDto(WorkoutSet workoutSet);
 
     @Mapping(target = "workoutSetGroup", source = "workoutSetGroupId", qualifiedByName = "mapWorkoutSetGroupIdToWorkoutSetGroup")
@@ -34,9 +34,7 @@ public abstract class WorkoutSetMapper {
     @Mapping(target = "workoutSetGroup", source = "workoutSetGroupId", qualifiedByName = "mapWorkoutSetGroupIdToWorkoutSetGroup")
     @Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExerciseIdToExercise")
     @Mapping(target = "id", ignore = true)
-    public abstract void updateWorkoutSet(
-            @MappingTarget WorkoutSet workoutSet, WorkoutSetUpdateDto updateDto);
-
+    public abstract void updateWorkoutSet(@MappingTarget WorkoutSet workoutSet, WorkoutSetUpdateDto updateDto);
 
     @Named("mapWorkoutSetGroupIdToWorkoutSetGroup")
     protected WorkoutSetGroup mapWorkoutSetGroupIdToWorkoutSetGroup(int workoutSetGroupId) {

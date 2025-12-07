@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.request.workoutSetGroup.WorkoutSetGroupCreateDto;
 import source.code.dto.request.workoutSetGroup.WorkoutSetGroupUpdateDto;
 import source.code.dto.response.workoutSetGroup.WorkoutSetGroupResponseDto;
+import source.code.exception.RecordNotFoundException;
 import source.code.mapper.workoutSetGroup.WorkoutSetGroupMapper;
 import source.code.model.workout.WorkoutSetGroup;
 import source.code.repository.WorkoutSetGroupRepository;
@@ -41,8 +42,11 @@ public class WorkoutSetGroupServiceImpl implements WorkoutSetGroupService {
     @Transactional
     @Override
     public WorkoutSetGroupResponseDto createWorkoutSetGroup(WorkoutSetGroupCreateDto createDto) {
-        WorkoutSetGroup workoutSetGroup = workoutSetGroupRepository.save(workoutSetGroupMapper.toEntity(createDto));
-        return workoutSetGroupMapper.toResponseDto(workoutSetGroup);
+        WorkoutSetGroup saved = workoutSetGroupRepository.save(workoutSetGroupMapper.toEntity(createDto));
+
+        workoutSetGroupRepository.flush();
+
+        return findAndMap(saved.getId());
     }
 
     @Transactional
@@ -65,8 +69,7 @@ public class WorkoutSetGroupServiceImpl implements WorkoutSetGroupService {
 
     @Override
     public WorkoutSetGroupResponseDto getWorkoutSetGroup(int workoutSetGroupId) {
-        WorkoutSetGroup workoutSetGroup = find(workoutSetGroupId);
-        return workoutSetGroupMapper.toResponseDto(workoutSetGroup);
+        return findAndMap(workoutSetGroupId);
     }
 
     @Override
@@ -78,6 +81,12 @@ public class WorkoutSetGroupServiceImpl implements WorkoutSetGroupService {
 
     private WorkoutSetGroup find(int workoutSetGroupId) {
         return repositoryHelper.find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId);
+    }
+
+    private WorkoutSetGroupResponseDto findAndMap(int workoutSetGroupId) {
+        WorkoutSetGroup workoutSetGroup = workoutSetGroupRepository.findByIdWithDetails(workoutSetGroupId)
+                .orElseThrow(() -> new RecordNotFoundException(WorkoutSetGroup.class, workoutSetGroupId));
+        return workoutSetGroupMapper.toResponseDto(workoutSetGroup);
     }
 
     private WorkoutSetGroupUpdateDto applyPatchToWorkoutSetGroup(JsonMergePatch patch)

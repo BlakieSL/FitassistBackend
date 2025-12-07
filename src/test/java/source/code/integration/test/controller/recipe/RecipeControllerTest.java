@@ -175,8 +175,8 @@ public class RecipeControllerTest {
                         jsonPath("$.isPublic").value(true),
                         jsonPath("$.authorUsername").value("testuser"),
                         jsonPath("$.authorId").value(1),
-                        jsonPath("$.authorImageName").isEmpty(),
-                        jsonPath("$.authorImageUrl").isEmpty(),
+                        jsonPath("$.authorImageName").value("user1_profile.jpg"),
+                        jsonPath("$.authorImageUrl").exists(),
                         jsonPath("$.likesCount").value(0),
                         jsonPath("$.dislikesCount").value(0),
                         jsonPath("$.savesCount").value(1),
@@ -195,9 +195,7 @@ public class RecipeControllerTest {
                         jsonPath("$.foods[0].foodId").value(1),
                         jsonPath("$.foods[0].foodName").value("Carrot"),
                         jsonPath("$.foods[0].quantity").value(200),
-                        jsonPath("$.imageNames").isArray(),
-                        jsonPath("$.imageNames.length()").value(0),
-                        jsonPath("$.imageUrls").isEmpty()
+                        jsonPath("$.imageUrls", hasSize(2))
                 );
     }
 

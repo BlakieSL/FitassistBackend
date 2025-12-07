@@ -26,10 +26,12 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
     @NotNull
     Page<Recipe> findAll(Specification<Recipe> spec, @NotNull Pageable pageable);
 
-    @EntityGraph(value = "Recipe.summary")
     @Query("""
       SELECT r
       FROM Recipe r
+      JOIN FETCH r.user
+      LEFT JOIN FETCH r.recipeCategoryAssociations rca
+      LEFT JOIN FETCH rca.recipeCategory
       LEFT JOIN FETCH r.recipeFoods rf
       LEFT JOIN FETCH rf.food f
       LEFT JOIN FETCH f.foodCategory

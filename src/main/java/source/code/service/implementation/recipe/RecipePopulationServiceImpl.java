@@ -3,14 +3,12 @@ package source.code.service.implementation.recipe;
 import org.springframework.stereotype.Service;
 import source.code.dto.pojo.projection.recipe.RecipeCountsProjection;
 import source.code.dto.pojo.projection.recipe.RecipeIngredientCountProjection;
-import source.code.dto.pojo.projection.recipe.RecipeInteractionDateProjection;
-import source.code.dto.pojo.projection.recipe.RecipeUserInteractionProjection;
+import source.code.dto.pojo.projection.recipe.RecipeAndPlanUserInteractionProjection;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.model.media.Media;
-import source.code.model.user.TypeOfInteraction;
 import source.code.repository.MediaRepository;
 import source.code.repository.RecipeFoodRepository;
 import source.code.repository.UserRecipeRepository;
@@ -124,8 +122,6 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
     }
 
     private void populateAuthorImage(RecipeResponseDto recipe) {
-        if (recipe.getAuthorId() == null) return;
-
         mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(recipe.getAuthorId(), MediaConnectedEntity.USER)
             .ifPresent(media -> {
                 recipe.setAuthorImageName(media.getImageName());
@@ -134,14 +130,15 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
     }
 
     private void populateImageUrls(RecipeResponseDto recipe) {
-            List<String> imageUrls = Objects.requireNonNull(recipe.getImageNames()).stream()
-                .map(s3Service::getImage)
+        List<String> imageUrls = mediaRepository.findByParentIdAndParentType(recipe.getId(), MediaConnectedEntity.RECIPE)
+                .stream()
+                .map(media -> s3Service.getImage(media.getImageName()))
                 .toList();
         recipe.setImageUrls(imageUrls);
     }
 
     private void populateUserInteractionsAndCounts(RecipeResponseDto recipe, int requestingUserId) {
-        RecipeUserInteractionProjection result = userRecipeRepository
+        RecipeAndPlanUserInteractionProjection result = userRecipeRepository
                 .findUserInteractionsAndCounts(requestingUserId, recipe.getId());
 
         if (result == null) return;

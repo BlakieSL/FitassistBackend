@@ -76,12 +76,7 @@ public class RecipeServiceImpl implements RecipeService {
 
         recipeRepository.flush();
 
-        Recipe recipe = recipeRepository.findByIdWithDetails(saved.getId())
-                .orElseThrow(() -> RecordNotFoundException.of(Recipe.class, saved.getId()));
-
-        RecipeResponseDto dto = recipeMapper.toResponseDto(recipe);
-        recipePopulationService.populate(dto);
-        return dto;
+        return findAndMap(saved.getId());
     }
 
     @Override
@@ -111,13 +106,7 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     @Cacheable(value = CacheNames.RECIPES, key = "#id")
     public RecipeResponseDto getRecipe(int id) {
-        Recipe recipe = recipeRepository.findByIdWithDetails(id)
-                .orElseThrow(() -> RecordNotFoundException.of(Recipe.class, id));
-
-        RecipeResponseDto dto = recipeMapper.toResponseDto(recipe);
-        recipePopulationService.populate(dto);
-
-        return dto;
+        return findAndMap(id);
     }
 
     @Override
@@ -161,6 +150,15 @@ public class RecipeServiceImpl implements RecipeService {
 
     private Recipe find(int recipeId) {
         return repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
+    }
+
+    private RecipeResponseDto findAndMap(int recipeId) {
+        Recipe recipe = recipeRepository.findByIdWithDetails(recipeId)
+                .orElseThrow(() -> RecordNotFoundException.of(Recipe.class, recipeId));
+
+        RecipeResponseDto dto = recipeMapper.toResponseDto(recipe);
+        recipePopulationService.populate(dto);
+        return dto;
     }
 
     private RecipeUpdateDto applyPatchToRecipe(JsonMergePatch patch)

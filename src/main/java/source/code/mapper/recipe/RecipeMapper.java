@@ -44,15 +44,14 @@ public abstract class RecipeMapper {
     @Mapping(target = "likesCount", ignore = true)
     @Mapping(target = "dislikesCount", ignore = true)
     @Mapping(target = "savesCount", ignore = true)
-    @Mapping(target = "totalCalories", ignore = true)
-    @Mapping(target = "instructions", source = "recipeInstructions", qualifiedByName = "mapInstructionsToDto")
-    @Mapping(target = "categories", source = "recipeCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryShortDto")
-    @Mapping(target = "imageNames", source = "mediaList", qualifiedByName = "mapMediaToImageNames")
-    @Mapping(target = "imageUrls", ignore = true)
-    @Mapping(target = "foods", source = "recipeFoods", qualifiedByName = "mapFoodsToDto")
     @Mapping(target = "liked", ignore = true)
     @Mapping(target = "disliked", ignore = true)
     @Mapping(target = "saved", ignore = true)
+    @Mapping(target = "totalCalories", ignore = true)
+    @Mapping(target = "categories", source = "recipeCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryShortDto")
+    @Mapping(target = "instructions", source = "recipeInstructions", qualifiedByName = "mapInstructionsToDto")
+    @Mapping(target = "imageUrls", ignore = true)
+    @Mapping(target = "foods", source = "recipeFoods", qualifiedByName = "mapFoodsToDto")
     public abstract RecipeResponseDto toResponseDto(Recipe recipe);
 
     @Mapping(target = "authorUsername", source = "user.username")
@@ -154,13 +153,6 @@ public abstract class RecipeMapper {
                         recipeFood.getFood().getName(),
                         recipeFood.getFood().getCalories()
                 ))
-                .toList();
-    }
-
-    @Named("mapMediaToImageNames")
-    protected List<String> mapMediaToImageNames(List<Media> mediaList) {
-        return mediaList.stream()
-                .map(Media::getImageName)
                 .toList();
     }
 

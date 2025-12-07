@@ -22,6 +22,7 @@ import source.code.service.implementation.helpers.ValidationServiceImpl;
 import source.code.service.implementation.workout.WorkoutServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -67,14 +68,17 @@ public class WorkoutServiceTest {
 
     @Test
     public void createWorkout() {
+        workout.setId(workoutId);
         when(workoutMapper.toEntity(workoutCreateDto)).thenReturn(workout);
         when(workoutRepository.save(workout)).thenReturn(workout);
+        when(workoutRepository.findByIdWithDetails(workoutId)).thenReturn(Optional.of(workout));
         when(workoutMapper.toResponseDto(workout)).thenReturn(workoutResponseDto);
 
         workoutService.createWorkout(workoutCreateDto);
 
         verify(workoutMapper).toEntity(workoutCreateDto);
         verify(workoutRepository).save(workout);
+        verify(workoutRepository).findByIdWithDetails(workoutId);
         verify(workoutMapper).toResponseDto(workout);
     }
 
@@ -165,23 +169,22 @@ public class WorkoutServiceTest {
 
     @Test
     public void getWorkout() {
-        when(repositoryHelper.find(workoutRepository, Workout.class, workoutId)).thenReturn(workout);
+        when(workoutRepository.findByIdWithDetails(workoutId)).thenReturn(Optional.of(workout));
         when(workoutMapper.toResponseDto(workout)).thenReturn(workoutResponseDto);
 
         WorkoutResponseDto result = workoutService.getWorkout(workoutId);
 
-        verify(repositoryHelper).find(workoutRepository, Workout.class, workoutId);
+        verify(workoutRepository).findByIdWithDetails(workoutId);
         verify(workoutMapper).toResponseDto(workout);
     }
 
     @Test
     public void getWorkoutNotFound() {
-        when(repositoryHelper.find(workoutRepository, Workout.class, workoutId))
-                .thenThrow(RecordNotFoundException.class);
+        when(workoutRepository.findByIdWithDetails(workoutId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> workoutService.getWorkout(workoutId));
 
-        verify(repositoryHelper).find(workoutRepository, Workout.class, workoutId);
+        verify(workoutRepository).findByIdWithDetails(workoutId);
         verify(workoutMapper, never()).toResponseDto(workout);
     }
 

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import source.code.dto.pojo.projection.plan.PlanCountsProjection;
 import source.code.dto.pojo.projection.plan.PlanInteractionDateProjection;
+import source.code.dto.pojo.projection.recipe.RecipeAndPlanUserInteractionProjection;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.UserPlan;
 
@@ -18,6 +19,19 @@ public interface UserPlanRepository extends JpaRepository<UserPlan, Integer> {
 
     boolean existsByUserIdAndPlanIdAndType(int userId, int planId, TypeOfInteraction type);
 
+    @Query("""
+        SELECT
+            MAX(CASE WHEN up.user.id = :userId AND up.type = 'LIKE' THEN 1 ELSE 0 END) as isLiked,
+            MAX(CASE WHEN up.user.id = :userId AND up.type = 'DISLIKE' THEN 1 ELSE 0 END) as isDisliked,
+            MAX(CASE WHEN up.user.id = :userId AND up.type = 'SAVE' THEN 1 ELSE 0 END) as isSaved,
+            SUM(CASE WHEN up.type = 'LIKE' THEN 1 ELSE 0 END) as likesCount,
+            SUM(CASE WHEN up.type = 'DISLIKE' THEN 1 ELSE 0 END) as dislikesCount,
+            SUM(CASE WHEN up.type = 'SAVE' THEN 1 ELSE 0 END) as savesCount
+        FROM UserPlan up
+        WHERE up.plan.id = :planId
+    """)
+    RecipeAndPlanUserInteractionProjection findUserInteractionsAndCounts(@Param("userId") int userId,
+                                                                         @Param("planId") int planId);
 
     @Query("""
         SELECT

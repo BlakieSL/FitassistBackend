@@ -160,15 +160,59 @@ public class PlanControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @WithMockUser
     @PlanSql
     @Test
-    @DisplayName("GET - /{id} - Should retrieve an existing plan")
+    @DisplayName("GET - /{id} - Should retrieve an existing plan with all fields")
     void getPlan() throws Exception {
+        Utils.setUserContext(2);
+
         mockMvc.perform(get("/api/plans/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.id").value(1)
+                        jsonPath("$.id").value(1),
+                        jsonPath("$.name").value("Beginner Strength"),
+                        jsonPath("$.description").value("Beginner workout plan"),
+                        jsonPath("$.isPublic").value(true),
+                        jsonPath("$.createdAt").exists(),
+                        jsonPath("$.views").value(0),
+
+                        jsonPath("$.authorId").value(1),
+                        jsonPath("$.authorUsername").value("fitness_lover"),
+                        jsonPath("$.authorImageName").value("user1_profile.jpg"),
+                        jsonPath("$.authorImageUrl").exists(),
+
+                        jsonPath("$.likesCount").value(1),
+                        jsonPath("$.dislikesCount").value(1),
+                        jsonPath("$.savesCount").value(0),
+
+                        jsonPath("$.liked").value(true),
+                        jsonPath("$.disliked").value(false),
+                        jsonPath("$.saved").value(false),
+
+                        jsonPath("$.planType.id").value(1),
+                        jsonPath("$.planType.name").value("Workout"),
+
+                        jsonPath("$.categories", hasSize(2)),
+
+                        jsonPath("$.instructions", hasSize(2)),
+                        jsonPath("$.instructions[0].orderIndex").value(1),
+                        jsonPath("$.instructions[0].text").value("Warm up for 10 minutes before starting"),
+                        jsonPath("$.instructions[1].orderIndex").value(2),
+
+                        jsonPath("$.imageUrls", hasSize(2)),
+
+                        jsonPath("$.workouts", hasSize(2)),
+                        jsonPath("$.workouts[0].name").value("Upper Body"),
+                        jsonPath("$.workouts[0].duration").value(60.0),
+
+                        jsonPath("$.workouts[0].workoutSetGroups", hasSize(2)),
+                        jsonPath("$.workouts[0].workoutSetGroups[0].orderIndex").value(1),
+                        jsonPath("$.workouts[0].workoutSetGroups[0].restSeconds").value(60),
+
+                        jsonPath("$.workouts[0].workoutSetGroups[0].workoutSets", hasSize(3)),
+                        jsonPath("$.workouts[0].workoutSetGroups[0].workoutSets[0].exerciseName").value("Barbell Bench Press"),
+                        jsonPath("$.workouts[0].workoutSetGroups[0].workoutSets[0].weight").value(135.0),
+                        jsonPath("$.workouts[0].workoutSetGroups[0].workoutSets[0].repetitions").value(10)
                 );
     }
 
@@ -186,7 +230,7 @@ public class PlanControllerTest {
     @DisplayName("GET - /{id} - Should return 403 when not owner or admin and plan is private")
     void getPrivatePlanForbidden() throws Exception {
         Utils.setUserContext(2);
-        mockMvc.perform(get("/api/plans/13")
+        mockMvc.perform(get("/api/plans/5")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
     }
@@ -199,8 +243,8 @@ public class PlanControllerTest {
         mockMvc.perform(get("/api/plans/private"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content", hasSize(12)),
-                        jsonPath("$.page.totalElements").value(12)
+                        jsonPath("$.content", hasSize(4)),
+                        jsonPath("$.page.totalElements").value(4)
                 );
     }
 
@@ -212,21 +256,21 @@ public class PlanControllerTest {
         mockMvc.perform(get("/api/plans/private/false"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content", hasSize(12)),
-                        jsonPath("$.page.totalElements").value(12)
+                        jsonPath("$.content", hasSize(4)),
+                        jsonPath("$.page.totalElements").value(4)
                 );
     }
 
     @PlanSql
     @Test
-    @DisplayName("GET - /private/{isPrivate} - Should retrieve all private plans when isPrivate is true")
+    @DisplayName("GET - /private/{isPrivate} - Should retrieve all private and public plans for current user when isPrivate is true")
     void getAllPrivatePlans() throws Exception {
         Utils.setUserContext(1);
         mockMvc.perform(get("/api/plans/private/true")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content", hasSize(3)),
+                        jsonPath("$.content", hasSize(1)),
                         jsonPath("$.page.totalElements").value(3)
                 );
     }

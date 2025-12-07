@@ -57,8 +57,9 @@ public class WorkoutSetControllerTest {
                         jsonPath("$.id").exists(),
                         jsonPath("$.weight").value(25.0),
                         jsonPath("$.repetitions").value(12.0),
-                        jsonPath("$.workoutSetGroupId").value(1),
-                        jsonPath("$.exerciseId").value(1)
+                        jsonPath("$.orderIndex").exists(),
+                        jsonPath("$.exerciseId").value(1),
+                        jsonPath("$.exerciseName").exists()
                 );
     }
 
@@ -240,8 +241,9 @@ public class WorkoutSetControllerTest {
                         jsonPath("$.id").value(id),
                         jsonPath("$.weight").value(20.0),
                         jsonPath("$.repetitions").value(10.0),
-                        jsonPath("$.workoutSetGroupId").value(1),
-                        jsonPath("$.exerciseId").value(1)
+                        jsonPath("$.orderIndex").exists(),
+                        jsonPath("$.exerciseId").value(1),
+                        jsonPath("$.exerciseName").exists()
                 );
     }
     @WorkoutSetSql
@@ -257,8 +259,9 @@ public class WorkoutSetControllerTest {
                         jsonPath("$.id").value(id),
                         jsonPath("$.weight").value(20.0),
                         jsonPath("$.repetitions").value(10.0),
-                        jsonPath("$.workoutSetGroupId").value(1),
-                        jsonPath("$.exerciseId").value(1)
+                        jsonPath("$.orderIndex").exists(),
+                        jsonPath("$.exerciseId").value(1),
+                        jsonPath("$.exerciseName").exists()
                 );
     }
 
@@ -275,8 +278,9 @@ public class WorkoutSetControllerTest {
                         jsonPath("$.id").value(id),
                         jsonPath("$.weight").value(20.0),
                         jsonPath("$.repetitions").value(10.0),
-                        jsonPath("$.workoutSetGroupId").value(1),
-                        jsonPath("$.exerciseId").value(1)
+                        jsonPath("$.orderIndex").exists(),
+                        jsonPath("$.exerciseId").value(1),
+                        jsonPath("$.exerciseName").exists()
                 );
     }
 
@@ -302,10 +306,11 @@ public class WorkoutSetControllerTest {
                         status().isOk(),
                         jsonPath("$").isArray(),
                         jsonPath("$[0].id").value(1),
-                        jsonPath("$[0].workoutSetGroupId").value(workoutSetGroupId),
+                        jsonPath("$[0].orderIndex").exists(),
                         jsonPath("$[0].weight").value(20.0),
                         jsonPath("$[0].repetitions").value(10.0),
-                        jsonPath("$[0].exerciseId").value(1)
+                        jsonPath("$[0].exerciseId").value(1),
+                        jsonPath("$[0].exerciseName").exists()
                 );
     }
 
@@ -321,10 +326,11 @@ public class WorkoutSetControllerTest {
                         status().isOk(),
                         jsonPath("$").isArray(),
                         jsonPath("$[0].id").value(1),
-                        jsonPath("$[0].workoutSetGroupId").value(workoutSetGroupId),
+                        jsonPath("$[0].orderIndex").exists(),
                         jsonPath("$[0].weight").value(20.0),
                         jsonPath("$[0].repetitions").value(10.0),
-                        jsonPath("$[0].exerciseId").value(1)
+                        jsonPath("$[0].exerciseId").value(1),
+                        jsonPath("$[0].exerciseName").exists()
                 );
     }
 
@@ -340,10 +346,11 @@ public class WorkoutSetControllerTest {
                         status().isOk(),
                         jsonPath("$").isArray(),
                         jsonPath("$[0].id").value(1),
-                        jsonPath("$[0].workoutSetGroupId").value(workoutSetGroupId),
+                        jsonPath("$[0].orderIndex").exists(),
                         jsonPath("$[0].weight").value(20.0),
                         jsonPath("$[0].repetitions").value(10.0),
-                        jsonPath("$[0].exerciseId").value(1)
+                        jsonPath("$[0].exerciseId").value(1),
+                        jsonPath("$[0].exerciseName").exists()
                 );
     }
 

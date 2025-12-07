@@ -1,22 +1,21 @@
 package source.code.dto.response.workoutSetGroup;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.response.workoutSet.WorkoutSetResponseDto;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutSetGroupResponseDto implements Serializable {
-    private Integer id;
-    private Integer orderIndex;
-    private Integer restSeconds;
-    private Integer workoutId;
-    private Set<Integer> workoutSetIds;
+    private int id;
+    private int orderIndex;
+    private int restSeconds;
+    private List<WorkoutSetResponseDto> workoutSets;
 }

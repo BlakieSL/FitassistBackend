@@ -3,8 +3,11 @@ package source.code.service.implementation.plan;
 import org.springframework.stereotype.Service;
 import source.code.dto.pojo.projection.plan.PlanCountsProjection;
 import source.code.dto.pojo.projection.plan.PlanInteractionDateProjection;
+import source.code.dto.pojo.projection.recipe.RecipeAndPlanUserInteractionProjection;
+import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.helper.Enum.model.MediaConnectedEntity;
+import source.code.helper.user.AuthorizationUtil;
 import source.code.model.media.Media;
 import source.code.model.user.TypeOfInteraction;
 import source.code.repository.MediaRepository;
@@ -14,6 +17,7 @@ import source.code.service.declaration.plan.PlanPopulationService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +46,15 @@ public class PlanPopulationServiceImpl implements PlanPopulationService {
         populateAuthorImages(plans);
         populateImageUrls(plans);
         populateCounts(plans, planIds);
+    }
+
+    @Override
+    public void populate(PlanResponseDto dto) {
+        int userId = AuthorizationUtil.getUserId();
+
+        populateAuthorImage(dto);
+        populateImageUrls(dto);
+        populateUserInteractionsAndCounts(dto, userId);
     }
 
     private void populateAuthorImages(List<PlanSummaryDto> plans) {
@@ -90,5 +103,35 @@ public class PlanPopulationServiceImpl implements PlanPopulationService {
                 plan.setSavesCount(counts.getSavesCount());
             }
         });
+    }
+
+    private void populateAuthorImage(PlanResponseDto plan) {
+        mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(plan.getAuthorId(), MediaConnectedEntity.USER)
+                .ifPresent(media -> {
+                    plan.setAuthorImageName(media.getImageName());
+                    plan.setAuthorImageUrl(s3Service.getImage(media.getImageName()));
+                });
+    }
+
+    private void populateImageUrls(PlanResponseDto plan) {
+        List<String> imageUrls = mediaRepository.findByParentIdAndParentType(plan.getId(), MediaConnectedEntity.PLAN)
+                .stream()
+                .map(media -> s3Service.getImage(media.getImageName()))
+                .toList();
+        plan.setImageUrls(imageUrls);
+    }
+
+    private void populateUserInteractionsAndCounts(PlanResponseDto plan, int requestingUserId) {
+        RecipeAndPlanUserInteractionProjection result = userPlanRepository
+                .findUserInteractionsAndCounts(requestingUserId, plan.getId());
+
+        if (result == null) return;
+
+        plan.setLiked(result.isLiked());
+        plan.setDisliked(result.isDisliked());
+        plan.setSaved(result.isSaved());
+        plan.setLikesCount(result.likesCount());
+        plan.setDislikesCount(result.dislikesCount());
+        plan.setSavesCount(result.savesCount());
     }
 }
