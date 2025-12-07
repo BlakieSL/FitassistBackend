@@ -39,8 +39,6 @@ public class PlanControllerFilterTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
-    private PlanRepository planRepository;
 
     private FilterDto buildFilterDto(String filterKey, Object value, FilterOperation operation) {
         FilterCriteria criteria = FilterCriteria.of(filterKey, value, operation);
@@ -101,8 +99,7 @@ public class PlanControllerFilterTest {
                         status().isOk(),
                         jsonPath("$.content", hasSize(3)),
                         jsonPath("$.content[*].name", containsInAnyOrder(
-                                "Beginner Strength", "Powerlifting", "Home Workout"
-                        )),
+                                "Beginner Strength", "Powerlifting", "Home Workout")),
                         jsonPath("$.content[*].categories[?(@.id == 1)].name",
                                 everyItem(is("Strength Training")))
                 );
@@ -110,10 +107,27 @@ public class PlanControllerFilterTest {
 
     @PlanSql
     @Test
-    @DisplayName("POST - /filter - Should retrieve filtered plans by plan like")
+    @DisplayName("POST - /filter - Should retrieve filtered plans excluding category with NOT_EQUAL")
+    void filterPlansByPlanCategoryNotEqual() throws Exception {
+        Utils.setUserContext(1);
+        FilterDto filterDto = buildFilterDto("CATEGORY", 1, FilterOperation.NOT_EQUAL);
+        String json = objectMapper.writeValueAsString(filterDto);
+
+        mockMvc.perform(post("/api/plans/filter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.content", hasSize(9))
+                );
+    }
+
+    @PlanSql
+    @Test
+    @DisplayName("POST - /filter - Should retrieve filtered plans by plan like count greater than 0")
     void filterPlansByPlanLike() throws Exception {
         Utils.setUserContext(1);
-        FilterDto filterDto = buildFilterDto("LIKE", 1, FilterOperation.EQUAL);
+        FilterDto filterDto = buildFilterDto("LIKE", 0, FilterOperation.GREATER_THAN);
         String json = objectMapper.writeValueAsString(filterDto);
 
         mockMvc.perform(post("/api/plans/filter")
@@ -127,10 +141,10 @@ public class PlanControllerFilterTest {
 
     @PlanSql
     @Test
-    @DisplayName("POST - /filter - Should retrieve filtered plans by plan save")
+    @DisplayName("POST - /filter - Should retrieve filtered plans by plan save count less than or equal to 1")
     void filterPlansByPlanSave() throws Exception {
         Utils.setUserContext(1);
-        FilterDto filterDto = buildFilterDto("SAVE", 1, FilterOperation.EQUAL);
+        FilterDto filterDto = buildFilterDto("SAVE", 1, FilterOperation.LESS_THAN_EQUAL);
         String json = objectMapper.writeValueAsString(filterDto);
 
         mockMvc.perform(post("/api/plans/filter")
@@ -138,7 +152,7 @@ public class PlanControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content", hasSize(6))
+                        jsonPath("$.content", hasSize(12))
                 );
     }
 

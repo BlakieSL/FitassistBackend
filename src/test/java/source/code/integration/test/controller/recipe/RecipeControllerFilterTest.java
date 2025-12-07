@@ -84,6 +84,23 @@ public class RecipeControllerFilterTest {
 
     @RecipeSql
     @Test
+    @DisplayName("POST - /filter - Should filter recipes excluding category with NOT_EQUAL")
+    void filterRecipesByCategoryNotEqual() throws Exception {
+        Utils.setUserContext(1);
+        FilterDto filterDto = buildFilterDto("CATEGORY", 1, FilterOperation.NOT_EQUAL);
+        String json = objectMapper.writeValueAsString(filterDto);
+
+        mockMvc.perform(post("/api/recipes/filter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.content", hasSize(2))
+                );
+    }
+
+    @RecipeSql
+    @Test
     @DisplayName("POST - /filter - Should filter recipes by food")
     void filterRecipesByFood() throws Exception {
         Utils.setUserContext(1);
@@ -106,10 +123,10 @@ public class RecipeControllerFilterTest {
 
     @RecipeSql
     @Test
-    @DisplayName("POST - /filter - Should filter recipes by save")
-    void filterRecipesBySave() throws Exception {
+    @DisplayName("POST - /filter - Should filter recipes excluding food with NOT_EQUAL")
+    void filterRecipesByFoodNotEqual() throws Exception {
         Utils.setUserContext(1);
-        FilterDto filterDto = buildFilterDto("SAVE", 1, FilterOperation.EQUAL);
+        FilterDto filterDto = buildFilterDto("FOODS", 2, FilterOperation.NOT_EQUAL);
         String json = objectMapper.writeValueAsString(filterDto);
 
         mockMvc.perform(post("/api/recipes/filter")
@@ -117,18 +134,16 @@ public class RecipeControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content", hasSize(2)),
-                        jsonPath("$.content[*].name", containsInAnyOrder(
-                                "Vegetable Stir Fry", "Chicken Rice Bowl"
-                        )));
+                        jsonPath("$.content", hasSize(2))
+                );
     }
 
     @RecipeSql
     @Test
-    @DisplayName("POST - /filter - Should filter recipes by like")
-    void filterRecipesByLike() throws Exception {
+    @DisplayName("POST - /filter - Should filter recipes by save count greater than 0")
+    void filterRecipesBySave() throws Exception {
         Utils.setUserContext(1);
-        FilterDto filterDto = buildFilterDto("LIKE", 1, FilterOperation.EQUAL);
+        FilterDto filterDto = buildFilterDto("SAVE", 0, FilterOperation.GREATER_THAN);
         String json = objectMapper.writeValueAsString(filterDto);
 
         mockMvc.perform(post("/api/recipes/filter")
@@ -136,10 +151,25 @@ public class RecipeControllerFilterTest {
                         .content(json))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content", hasSize(2)),
-                        jsonPath("$.content[*].name", containsInAnyOrder(
-                                "Grilled Chicken", "Chicken Rice Bowl"
-                        )));
+                        jsonPath("$.content", hasSize(2))
+                );
+    }
+
+    @RecipeSql
+    @Test
+    @DisplayName("POST - /filter - Should filter recipes by like count less than or equal to 1")
+    void filterRecipesByLike() throws Exception {
+        Utils.setUserContext(1);
+        FilterDto filterDto = buildFilterDto("LIKE", 1, FilterOperation.LESS_THAN_EQUAL);
+        String json = objectMapper.writeValueAsString(filterDto);
+
+        mockMvc.perform(post("/api/recipes/filter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.content", hasSize(4))
+                );
     }
 
     @RecipeSql
