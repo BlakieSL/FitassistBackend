@@ -22,6 +22,8 @@ import source.code.dto.pojo.FilterCriteria;
 import source.code.dto.request.exercise.ExerciseCreateDto;
 import source.code.dto.request.exercise.ExerciseUpdateDto;
 import source.code.dto.request.filter.FilterDto;
+import source.code.dto.response.category.CategoryResponseDto;
+import source.code.dto.response.exercise.ExerciseCategoriesResponseDto;
 import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.dto.response.plan.PlanSummaryDto;
@@ -32,12 +34,23 @@ import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.exercise.ExerciseMapper;
 import source.code.mapper.plan.PlanMapper;
+import source.code.model.exercise.Equipment;
 import source.code.model.exercise.Exercise;
 import source.code.model.exercise.ExerciseTargetMuscle;
+import source.code.model.exercise.ExpertiseLevel;
+import source.code.model.exercise.ForceType;
+import source.code.model.exercise.MechanicsType;
+import source.code.model.exercise.TargetMuscle;
 import source.code.model.plan.Plan;
+import source.code.repository.EquipmentRepository;
 import source.code.repository.ExerciseRepository;
 import source.code.repository.ExerciseTargetMuscleRepository;
+import source.code.repository.ExpertiseLevelRepository;
+import source.code.repository.ForceTypeRepository;
+import source.code.repository.MechanicsTypeRepository;
 import source.code.repository.PlanRepository;
+import source.code.repository.TargetMuscleRepository;
+import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 import source.code.service.declaration.exercise.ExercisePopulationService;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
@@ -47,6 +60,7 @@ import source.code.service.implementation.exercise.ExerciseServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -72,9 +86,21 @@ public class ExerciseServiceTest {
     @Mock
     private PlanRepository planRepository;
     @Mock
+    private EquipmentRepository equipmentRepository;
+    @Mock
+    private ExpertiseLevelRepository expertiseLevelRepository;
+    @Mock
+    private ForceTypeRepository forceTypeRepository;
+    @Mock
+    private MechanicsTypeRepository mechanicsTypeRepository;
+    @Mock
+    private TargetMuscleRepository targetMuscleRepository;
+    @Mock
     private ExercisePopulationService exercisePopulationService;
     @Mock
     private PlanPopulationService planPopulationService;
+    @Mock
+    private SpecificationDependencies dependencies;
     @InjectMocks
     private ExerciseServiceImpl exerciseService;
 
@@ -144,8 +170,8 @@ public class ExerciseServiceTest {
 
     @Test
     void updateExercise_shouldUpdate() throws JsonPatchException, JsonProcessingException {
-        when(repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId))
-                .thenReturn(exercise);
+        when(exerciseRepository.findByIdWithDetails(exerciseId))
+                .thenReturn(Optional.of(exercise));
         when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class))
                 .thenReturn(patchedDto);
         when(exerciseRepository.save(exercise)).thenReturn(exercise);
@@ -162,8 +188,8 @@ public class ExerciseServiceTest {
         ArgumentCaptor<ExerciseUpdateEvent> eventCaptor = ArgumentCaptor
                 .forClass(ExerciseUpdateEvent.class);
 
-        when(repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId))
-                .thenReturn(exercise);
+        when(exerciseRepository.findByIdWithDetails(exerciseId))
+                .thenReturn(Optional.of(exercise));
         when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class))
                 .thenReturn(patchedDto);
         when(exerciseRepository.save(exercise)).thenReturn(exercise);
@@ -176,8 +202,8 @@ public class ExerciseServiceTest {
 
     @Test
     void updateExercise_shouldThrowExceptionWhenExerciseNotFound() {
-        when(repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId))
-                .thenThrow(RecordNotFoundException.of(Exercise.class, exerciseId));
+        when(exerciseRepository.findByIdWithDetails(exerciseId))
+                .thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class,
                 () -> exerciseService.updateExercise(exerciseId, patch)
@@ -191,8 +217,8 @@ public class ExerciseServiceTest {
     void updateExercise_shouldThrowExceptionWhenPatchFails()
             throws JsonPatchException, JsonProcessingException
     {
-        when(repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId))
-                .thenReturn(exercise);
+        when(exerciseRepository.findByIdWithDetails(exerciseId))
+                .thenReturn(Optional.of(exercise));
         when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class))
                 .thenThrow(JsonPatchException.class);
 
@@ -208,8 +234,8 @@ public class ExerciseServiceTest {
     void updateExercise_shouldThrowExceptionWhenValidationFails()
             throws JsonPatchException, JsonProcessingException
     {
-        when(repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId))
-                .thenReturn(exercise);
+        when(exerciseRepository.findByIdWithDetails(exerciseId))
+                .thenReturn(Optional.of(exercise));
         when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class))
                 .thenReturn(patchedDto);
 
