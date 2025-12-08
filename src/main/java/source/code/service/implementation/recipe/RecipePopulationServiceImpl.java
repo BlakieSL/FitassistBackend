@@ -1,13 +1,13 @@
 package source.code.service.implementation.recipe;
 
 import org.springframework.stereotype.Service;
+import source.code.dto.pojo.projection.recipe.RecipeAndPlanUserInteractionProjection;
 import source.code.dto.pojo.projection.recipe.RecipeCountsProjection;
 import source.code.dto.pojo.projection.recipe.RecipeIngredientCountProjection;
-import source.code.dto.pojo.projection.recipe.RecipeAndPlanUserInteractionProjection;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
-import source.code.helper.user.AuthorizationUtil;
 import source.code.helper.Enum.model.MediaConnectedEntity;
+import source.code.helper.user.AuthorizationUtil;
 import source.code.model.media.Media;
 import source.code.repository.MediaRepository;
 import source.code.repository.RecipeFoodRepository;
@@ -17,7 +17,6 @@ import source.code.service.declaration.recipe.RecipePopulationService;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service

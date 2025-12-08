@@ -5,8 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import source.code.dto.pojo.projection.recipe.RecipeCountsProjection;
 import source.code.dto.pojo.projection.recipe.RecipeAndPlanUserInteractionProjection;
+import source.code.dto.pojo.projection.recipe.RecipeCountsProjection;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.UserRecipe;
 

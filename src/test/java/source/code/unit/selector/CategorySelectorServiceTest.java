@@ -6,7 +6,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.helper.Enum.model.CategoryType;
-import source.code.service.implementation.category.*;
+import source.code.service.implementation.category.ActivityCategoryServiceImpl;
+import source.code.service.implementation.category.FoodCategoryServiceImpl;
+import source.code.service.implementation.category.PlanCategoryServiceImpl;
+import source.code.service.implementation.category.RecipeCategoryServiceImpl;
 import source.code.service.implementation.selector.CategorySelectorServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertSame;

@@ -16,11 +16,7 @@ import source.code.model.text.ExerciseTip;
 import source.code.model.user.UserExercise;
 import source.code.model.workout.WorkoutSetExercise;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "exercise")

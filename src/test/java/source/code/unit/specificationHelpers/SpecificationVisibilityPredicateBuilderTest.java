@@ -15,7 +15,7 @@ import source.code.dto.pojo.FilterCriteria;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.service.implementation.specificationHelpers.SpecificationVisibilityPredicateBuilderImpl;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

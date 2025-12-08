@@ -6,9 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
-import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.model.recipe.Recipe;
-import source.code.model.user.TypeOfInteraction;
 
 import java.util.List;
 import java.util.Optional;

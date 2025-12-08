@@ -101,7 +101,7 @@ public class GenericSpecificationHelper {
         };
     }
 
-    private static int validateAndGetId(FilterCriteria criteria) {
+    public static int validateAndGetId(FilterCriteria criteria) {
         var value = criteria.getValue();
         try {
             return ((Number) value).intValue();

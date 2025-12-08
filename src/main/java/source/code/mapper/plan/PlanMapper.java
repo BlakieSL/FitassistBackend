@@ -7,20 +7,19 @@ import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.request.plan.PlanUpdateDto;
 import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
-import source.code.model.media.Media;
 import source.code.exception.RecordNotFoundException;
+import source.code.helper.Enum.model.PlanStructureType;
+import source.code.mapper.workout.WorkoutMapper;
+import source.code.model.media.Media;
 import source.code.model.plan.Plan;
 import source.code.model.plan.PlanCategory;
 import source.code.model.plan.PlanCategoryAssociation;
 import source.code.model.text.PlanInstruction;
 import source.code.model.user.User;
-import source.code.helper.Enum.model.PlanStructureType;
 import source.code.repository.ExpertiseLevelRepository;
 import source.code.repository.PlanCategoryRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.RepositoryHelper;
-
-import source.code.mapper.workout.WorkoutMapper;
 
 import java.util.List;
 import java.util.Optional;

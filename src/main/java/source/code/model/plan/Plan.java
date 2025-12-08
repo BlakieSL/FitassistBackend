@@ -18,11 +18,7 @@ import source.code.model.user.UserPlan;
 import source.code.model.workout.Workout;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "plan")

@@ -2,7 +2,6 @@ package source.code.service.declaration.recipe;
 
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
-import source.code.model.user.TypeOfInteraction;
 
 import java.util.List;
 

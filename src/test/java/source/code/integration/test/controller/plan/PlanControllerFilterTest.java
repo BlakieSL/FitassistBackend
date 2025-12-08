@@ -19,7 +19,6 @@ import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
-import source.code.repository.PlanRepository;
 
 import java.util.ArrayList;
 import java.util.List;

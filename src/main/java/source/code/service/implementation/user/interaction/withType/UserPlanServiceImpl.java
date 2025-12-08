@@ -10,7 +10,6 @@ import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.helper.BaseUserEntity;
 import source.code.helper.Enum.cache.CacheNames;
-import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.plan.PlanMapper;
 import source.code.model.plan.Plan;
 import source.code.model.user.TypeOfInteraction;
