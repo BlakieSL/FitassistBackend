@@ -203,9 +203,9 @@ public class ExerciseControllerTest {
                         jsonPath("$.plans[0].likesCount").isNumber(),
                         jsonPath("$.plans[0].savesCount").isNumber(),
                         jsonPath("$.plans[0].views").isNumber(),
-                        jsonPath("$.plans[0].planType").exists(),
-                        jsonPath("$.plans[0].planType.id").isNumber(),
-                        jsonPath("$.plans[0].planType.name").isString(),
+                        jsonPath("$.plans[0].planStructureType").exists(),
+                        jsonPath("$.plans[0].planStructureType.value").isString(),
+                        jsonPath("$.plans[0].planStructureType.name").isString(),
                         jsonPath("$.plans[0].createdAt").exists(),
                         jsonPath("$.plans[0].interactedWithAt").doesNotExist()
                 );

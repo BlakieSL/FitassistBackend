@@ -31,7 +31,7 @@ public class PlanCreateDto {
     private Boolean isPublic = false;
 
     @NotNull
-    private PlanStructureType structureType;
+    private PlanStructureType planStructureType;
 
     private List<Integer> categoryIds;
 
