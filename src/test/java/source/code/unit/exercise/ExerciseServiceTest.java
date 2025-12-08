@@ -47,7 +47,6 @@ import source.code.service.implementation.exercise.ExerciseServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -113,13 +112,17 @@ public class ExerciseServiceTest {
 
     @Test
     void createExercise_shouldCreateExerciseAndPublish() {
+        exercise.setId(exerciseId);
         when(exerciseMapper.toEntity(createDto)).thenReturn(exercise);
         when(exerciseRepository.save(exercise)).thenReturn(exercise);
-        when(exerciseMapper.toSummaryDto(exercise)).thenReturn(summaryDto);
+        when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(java.util.Optional.of(exercise));
+        when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
 
-        ExerciseSummaryDto result = exerciseService.createExercise(createDto);
+        ExerciseResponseDto result = exerciseService.createExercise(createDto);
 
-        assertEquals(summaryDto, result);
+        assertEquals(responseDto, result);
+        verify(exerciseRepository).flush();
+        verify(exercisePopulationService).populate(responseDto);
     }
 
     @Test
@@ -127,9 +130,11 @@ public class ExerciseServiceTest {
         ArgumentCaptor<ExerciseCreateEvent> eventCaptor = ArgumentCaptor
                 .forClass(ExerciseCreateEvent.class);
 
+        exercise.setId(exerciseId);
         when(exerciseMapper.toEntity(createDto)).thenReturn(exercise);
         when(exerciseRepository.save(exercise)).thenReturn(exercise);
-        when(exerciseMapper.toSummaryDto(exercise)).thenReturn(summaryDto);
+        when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(java.util.Optional.of(exercise));
+        when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
 
         exerciseService.createExercise(createDto);
 
@@ -264,17 +269,17 @@ public class ExerciseServiceTest {
         PlanSummaryDto planSummaryDto = new PlanSummaryDto();
         planSummaryDto.setId(1);
 
-        when(exerciseRepository.findByIdWithMedia(exerciseId))
+        when(exerciseRepository.findByIdWithDetails(exerciseId))
                 .thenReturn(java.util.Optional.of(exercise));
-        when(exerciseMapper.toDetailedResponseDto(exercise)).thenReturn(responseDto);
+        when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
         when(planRepository.findByExerciseIdWithDetails(exerciseId)).thenReturn(List.of(plan));
         when(planMapper.toSummaryDto(plan)).thenReturn(planSummaryDto);
 
         ExerciseResponseDto result = exerciseService.getExercise(exerciseId);
 
         assertEquals(responseDto, result);
-        verify(exerciseRepository).findByIdWithMedia(exerciseId);
-        verify(exerciseMapper).toDetailedResponseDto(exercise);
+        verify(exerciseRepository).findByIdWithDetails(exerciseId);
+        verify(exerciseMapper).toResponseDto(exercise);
         verify(exercisePopulationService).populate(responseDto);
         verify(planRepository).findByExerciseIdWithDetails(exerciseId);
         verify(planMapper).toSummaryDto(plan);
@@ -283,12 +288,12 @@ public class ExerciseServiceTest {
 
     @Test
     void getExercise_shouldThrowExceptionWhenExerciseNotFound() {
-        when(exerciseRepository.findByIdWithMedia(exerciseId))
+        when(exerciseRepository.findByIdWithDetails(exerciseId))
                 .thenReturn(java.util.Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> exerciseService.getExercise(exerciseId));
 
-        verify(exerciseRepository).findByIdWithMedia(exerciseId);
+        verify(exerciseRepository).findByIdWithDetails(exerciseId);
         verifyNoInteractions(exerciseMapper);
     }
 

@@ -2,11 +2,14 @@ package source.code.mapper.exercise;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import source.code.dto.pojo.CategoryDto;
 import source.code.dto.pojo.TargetMuscleShortDto;
 import source.code.dto.request.exercise.ExerciseCreateDto;
 import source.code.dto.request.exercise.ExerciseUpdateDto;
 import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
+import source.code.dto.response.text.ExerciseInstructionResponseDto;
+import source.code.dto.response.text.ExerciseTipResponseDto;
 import source.code.model.exercise.*;
 import source.code.model.text.ExerciseInstruction;
 import source.code.model.text.ExerciseTip;
@@ -54,16 +57,10 @@ public abstract class ExerciseMapper {
     @Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsToShortDto")
     @Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceToShortDto")
     @Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToShortDto")
+    @Mapping(target = "instructions", source = "exerciseInstructions", qualifiedByName = "mapInstructionsToDto")
+    @Mapping(target = "tips", source = "exerciseTips", qualifiedByName = "mapTipsToDto")
     @Mapping(target = "imageUrls", ignore = true)
-    public abstract ExerciseResponseDto toDetailedResponseDto(Exercise exercise);
-
-    @AfterMapping
-    protected void mapImageUrls(@MappingTarget ExerciseResponseDto dto, Exercise exercise) {
-        List<String> imageUrls = exercise.getMediaList().stream()
-                .map(media -> awsS3Service.getImage(media.getImageName()))
-                .toList();
-        dto.setImageUrls(imageUrls);
-    }
+    public abstract ExerciseResponseDto toResponseDto(Exercise exercise);
 
     @Mapping(target = "exerciseTargetMuscles", source = "targetMusclesIds", qualifiedByName = "mapTargetMuscleIdsToAssociations")
     @Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevel")
@@ -161,41 +158,59 @@ public abstract class ExerciseMapper {
 
     @Named("mapExpertiseLevel")
     protected ExpertiseLevel mapExpertiseLevel(Integer expertiseLevelId) {
-        return repositoryHelper.find(expertiseLevelRepository, ExpertiseLevel.class, expertiseLevelId);
+        return expertiseLevelRepository.getReferenceById(expertiseLevelId);
     }
 
     @Named("mapMechanicsType")
     protected MechanicsType mapMechanicsType(Integer mechanicsTypeId) {
-        return repositoryHelper.find(mechanicsTypeRepository, MechanicsType.class, mechanicsTypeId);
+        return mechanicsTypeRepository.getReferenceById(mechanicsTypeId);
     }
 
     @Named("mapForceType")
     protected ForceType mapForceType(Integer forceTypeId) {
-        return repositoryHelper.find(forceTypeRepository, ForceType.class, forceTypeId);
+        return forceTypeRepository.getReferenceById(forceTypeId);
     }
 
     @Named("mapExerciseEquipment")
     protected Equipment mapExerciseEquipment(Integer equipmentId) {
-        return repositoryHelper.find(equipmentRepository, Equipment.class, equipmentId);
+        return equipmentRepository.getReferenceById(equipmentId);
     }
 
     @Named("mapExpertiseToCategoryDto")
-    protected source.code.dto.pojo.CategoryDto mapExpertiseToCategoryDto(ExpertiseLevel expertiseLevel) {
-        return new source.code.dto.pojo.CategoryDto(expertiseLevel.getId(), expertiseLevel.getName());
+    protected CategoryDto mapExpertiseToCategoryDto(ExpertiseLevel expertiseLevel) {
+        return new CategoryDto(expertiseLevel.getId(), expertiseLevel.getName());
     }
 
     @Named("mapMechanicsToCategoryDto")
-    protected source.code.dto.pojo.CategoryDto mapMechanicsToCategoryDto(MechanicsType mechanicsType) {
-        return new source.code.dto.pojo.CategoryDto(mechanicsType.getId(), mechanicsType.getName());
+    protected CategoryDto mapMechanicsToCategoryDto(MechanicsType mechanicsType) {
+        return new CategoryDto(mechanicsType.getId(), mechanicsType.getName());
     }
 
     @Named("mapForceToCategoryDto")
-    protected source.code.dto.pojo.CategoryDto mapForceToCategoryDto(ForceType forceType) {
-        return new source.code.dto.pojo.CategoryDto(forceType.getId(), forceType.getName());
+    protected CategoryDto mapForceToCategoryDto(ForceType forceType) {
+        return new CategoryDto(forceType.getId(), forceType.getName());
     }
 
     @Named("mapEquipmentToCategoryDto")
-    protected source.code.dto.pojo.CategoryDto mapEquipmentToCategoryDto(Equipment equipment) {
-        return new source.code.dto.pojo.CategoryDto(equipment.getId(), equipment.getName());
+    protected CategoryDto mapEquipmentToCategoryDto(Equipment equipment) {
+        return new CategoryDto(equipment.getId(), equipment.getName());
+    }
+
+    @Named("mapInstructionsToDto")
+    protected List<ExerciseInstructionResponseDto> mapInstructionsToDto(Set<ExerciseInstruction> instructions) {
+        return instructions.stream()
+                .map(instruction -> new ExerciseInstructionResponseDto(
+                        instruction.getId(),
+                        instruction.getOrderIndex(),
+                        instruction.getText()
+                ))
+                .toList();
+    }
+
+    @Named("mapTipsToDto")
+    protected List<ExerciseTipResponseDto> mapTipsToDto(Set<ExerciseTip> tips) {
+        return tips.stream()
+                .map(tip -> new ExerciseTipResponseDto(tip.getId(), tip.getOrderIndex(), tip.getText()))
+                .toList();
     }
 }
