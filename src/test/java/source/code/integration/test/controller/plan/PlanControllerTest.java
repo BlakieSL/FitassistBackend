@@ -44,7 +44,7 @@ public class PlanControllerTest {
         PlanCreateDto createDto = new PlanCreateDto();
         createDto.setName("Test Plan");
         createDto.setDescription("A test plan description");
-        createDto.setStructureType(PlanStructureType.WEEKLY_SPLIT);
+        createDto.setPlanStructureType(PlanStructureType.WEEKLY_SPLIT);
 
         mockMvc.perform(post("/api/plans")
                 .contentType(MediaType.APPLICATION_JSON)

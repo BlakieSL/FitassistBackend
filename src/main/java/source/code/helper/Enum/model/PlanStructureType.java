@@ -1,6 +1,8 @@
 package source.code.helper.Enum.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -15,5 +17,10 @@ public enum PlanStructureType {
 
     public String getValue() {
         return this.name();
+    }
+
+    @JsonCreator
+    public static PlanStructureType create(@JsonProperty("value") String value) {
+        return PlanStructureType.valueOf(value);
     }
 }
