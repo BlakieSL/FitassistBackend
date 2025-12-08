@@ -26,4 +26,7 @@ public class WorkoutUpdateDto {
 
     @Positive
     private Integer orderIndex;
+
+    @PositiveOrZero
+    private Integer restDaysAfter;
 }

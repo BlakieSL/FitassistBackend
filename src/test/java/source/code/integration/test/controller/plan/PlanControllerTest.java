@@ -12,6 +12,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.request.plan.PlanUpdateDto;
+import source.code.helper.Enum.model.PlanStructureType;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
@@ -43,7 +44,7 @@ public class PlanControllerTest {
         PlanCreateDto createDto = new PlanCreateDto();
         createDto.setName("Test Plan");
         createDto.setDescription("A test plan description");
-        createDto.setPlanTypeId(1);
+        createDto.setStructureType(PlanStructureType.WEEKLY_SPLIT);
 
         mockMvc.perform(post("/api/plans")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -189,8 +190,7 @@ public class PlanControllerTest {
                         jsonPath("$.disliked").value(false),
                         jsonPath("$.saved").value(false),
 
-                        jsonPath("$.planType.id").value(1),
-                        jsonPath("$.planType.name").value("Workout"),
+                        jsonPath("$.planStructureType").value("WEEKLY_SPLIT"),
 
                         jsonPath("$.categories", hasSize(2)),
 

@@ -43,6 +43,11 @@ public class Workout {
     private Integer orderIndex;
 
     @NotNull
+    @PositiveOrZero
+    @Column(name = "rest_days_after", nullable = false)
+    private Integer restDaysAfter;
+
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "plan_id", nullable = false)
     private Plan plan;

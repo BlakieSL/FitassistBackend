@@ -3,7 +3,6 @@ package source.code.mapper.plan;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.pojo.PlanCategoryShortDto;
-import source.code.dto.pojo.PlanTypeShortDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.request.plan.PlanUpdateDto;
 import source.code.dto.response.plan.PlanResponseDto;
@@ -13,12 +12,10 @@ import source.code.exception.RecordNotFoundException;
 import source.code.model.plan.Plan;
 import source.code.model.plan.PlanCategory;
 import source.code.model.plan.PlanCategoryAssociation;
-import source.code.model.plan.PlanType;
 import source.code.model.text.PlanInstruction;
 import source.code.model.user.User;
 import source.code.repository.ExpertiseLevelRepository;
 import source.code.repository.PlanCategoryRepository;
-import source.code.repository.PlanTypeRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
@@ -38,8 +35,6 @@ public abstract class PlanMapper {
     @Autowired
     private PlanCategoryRepository planCategoryRepository;
     @Autowired
-    private PlanTypeRepository planTypeRepository;
-    @Autowired
     private ExpertiseLevelRepository expertiseLevelRepository;
 
     @Mapping(target = "authorUsername", source = "user.username")
@@ -55,7 +50,6 @@ public abstract class PlanMapper {
     @Mapping(target = "categories", source = "planCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryShortDto")
     @Mapping(target = "instructions", source = "planInstructions")
     @Mapping(target = "imageUrls", ignore = true)
-    @Mapping(target = "planType", source = "planType", qualifiedByName = "mapTypeToShortDto")
     public abstract PlanResponseDto toResponseDto(Plan plan);
 
     @Mapping(target = "authorUsername", source = "user.username")
@@ -66,12 +60,10 @@ public abstract class PlanMapper {
     @Mapping(target = "firstImageUrl", ignore = true)
     @Mapping(target = "likesCount", ignore = true)
     @Mapping(target = "savesCount", ignore = true)
-    @Mapping(target = "planType", source = "planType", qualifiedByName = "mapTypeToTypeShortDto")
     @Mapping(target = "interactedWithAt", ignore = true)
     public abstract PlanSummaryDto toSummaryDto(Plan plan);
 
     @Mapping(target = "planCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
-    @Mapping(target = "planType", source = "planTypeId", qualifiedByName = "mapTypeIdToEntity")
     @Mapping(target = "user", expression = "java(userIdToUser(userId))")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userPlans", ignore = true)
@@ -81,7 +73,6 @@ public abstract class PlanMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "planCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")
-    @Mapping(target = "planType", source = "planTypeId", qualifiedByName = "mapTypeIdToEntity")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "userPlans", ignore = true)
@@ -134,21 +125,6 @@ public abstract class PlanMapper {
                         association.getPlanCategory().getName()
                 ))
                 .toList();
-    }
-
-    @Named("mapTypeIdToEntity")
-    protected PlanType mapTypeIdToEntity(int planTypeId) {
-        return repositoryHelper.find(planTypeRepository, PlanType.class, planTypeId);
-    }
-
-    @Named("mapTypeToShortDto")
-    protected PlanCategoryShortDto mapTypeToShortDto(PlanType planType) {
-        return new PlanCategoryShortDto(planType.getId(), planType.getName());
-    }
-
-    @Named("mapTypeToTypeShortDto")
-    protected PlanTypeShortDto mapTypeToTypeShortDto(PlanType planType) {
-        return new PlanTypeShortDto(planType.getId(), planType.getName());
     }
 
     @Named("mapMediaToFirstImageName")

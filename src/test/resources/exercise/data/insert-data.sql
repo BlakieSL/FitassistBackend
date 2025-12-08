@@ -37,23 +37,16 @@ INSERT INTO user_exercise (user_id, exercise_id, created_at) VALUES
 (1, 2, NOW());
 
 
-INSERT INTO plan_type (name) VALUES
-('BEGINNER'),
-('INTERMEDIATE'),
-('ADVANCED'),
-('MAINTENANCE'),
-('WEIGHT_LOSS');
+INSERT INTO plan (is_public, name, description, structure_type, user_id, created_at) VALUES
+(true,'3-Day Beginner Plan', 'A 3-day plan for beginners', 'WEEKLY_SPLIT', 1, NOW()),
+(true, '5-Day Strength Plan', 'Full body strength training', 'FIXED_PROGRAM', 1, NOW()),
+(true, '4-Day Fat Loss Plan', 'Cardio and HIIT focused', 'WEEKLY_SPLIT', 1, NOW());
 
-INSERT INTO plan (is_public, name, description, plan_type_id, user_id, created_at) VALUES
-(true,'3-Day Beginner Plan', 'A 3-day plan for beginners', 1, 1, NOW()),
-(true, '5-Day Strength Plan', 'Full body strength training', 2, 1, NOW()),
-(true, '4-Day Fat Loss Plan', 'Cardio and HIIT focused', 5, 1, NOW());
-
-INSERT INTO workout (name, duration, plan_id, orderIndex) VALUES
-('Full Body Strength', 60, 1, 1),
-('Upper Body Push', 45, 1, 2),
-('Lower Body Focus', 60, 2, 1),
-('Cardio & Core', 30, 3, 1);
+INSERT INTO workout (name, duration, plan_id, orderIndex, rest_days_after) VALUES
+('Full Body Strength', 60, 1, 1, 1),
+('Upper Body Push', 45, 1, 2, 1),
+('Lower Body Focus', 60, 2, 1, 2),
+('Cardio & Core', 30, 3, 1, 0);
 
 INSERT INTO workout_set_group (orderIndex, restSeconds, workout_id) VALUES
 (1, 60, 1),

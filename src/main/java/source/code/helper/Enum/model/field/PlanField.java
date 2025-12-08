@@ -7,7 +7,7 @@ public enum PlanField {
     LIKED_BY_USER,
     DISLIKED_BY_USER,
     CREATED_BY_USER,
-    TYPE,
+    STRUCTURE_TYPE,
     EQUIPMENT,
     CATEGORY,
 }
