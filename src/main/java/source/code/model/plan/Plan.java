@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
+import source.code.helper.Enum.model.PlanStructureType;
 import source.code.helper.search.IndexedEntity;
 import source.code.model.media.Media;
 import source.code.model.text.PlanInstruction;
@@ -31,7 +32,6 @@ import java.util.Set;
         attributeNodes = {
                 @NamedAttributeNode("user"),
                 @NamedAttributeNode("mediaList"),
-                @NamedAttributeNode("planType"),
                 @NamedAttributeNode(value = "planCategoryAssociations", subgraph = "pca-subgraph")
         },
         subgraphs = {
@@ -79,16 +79,17 @@ public class Plan implements IndexedEntity {
     private User user;
 
     @NotNull
-    @ManyToOne
-    @JoinColumn(name = "plan_type_id", nullable = false)
-    private PlanType planType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "structure_type", nullable = false)
+    private PlanStructureType planStructureType;
 
     @OneToMany(mappedBy = "plan", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
     @OrderBy("orderIndex ASC")
     private final Set<PlanInstruction> planInstructions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
-    private final Set<PlanCategoryAssociation> planCategoryAssociations = new HashSet<>();
+    @OrderBy("id ASC")
+    private final Set<PlanCategoryAssociation> planCategoryAssociations = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OrderBy("orderIndex ASC")

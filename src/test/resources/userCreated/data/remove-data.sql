@@ -14,6 +14,5 @@ DELETE FROM user;
 DELETE FROM role;
 DELETE FROM recipe_category;
 DELETE FROM plan_category;
-DELETE FROM plan_type;
 DELETE FROM thread_category;
 SET FOREIGN_KEY_CHECKS = 1;

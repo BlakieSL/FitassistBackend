@@ -36,11 +36,8 @@ INSERT INTO recipe (is_public, id, description, name, user_id, created_at) VALUE
 (true, 1, 'Healthy carrot soup', 'Carrot Soup', 1, NOW()),
 (false, 2, 'Private recipe', 'Private Recipe', 1, NOW());
 
-INSERT INTO plan_type (id, name) VALUES
-(1, 'Fitness');
-
-INSERT INTO plan (is_public, id, description, name, plan_type_id, user_id, created_at) VALUES
-(true, 3, 'Beginner workout plan', 'Beginner Plan', 1, 1, NOW());
+INSERT INTO plan (is_public, id, description, name, structure_type, user_id, created_at) VALUES
+(true, 3, 'Beginner workout plan', 'Beginner Plan', 'WEEKLY_SPLIT', 1, NOW());
 
 INSERT INTO text (type, orderIndex, text, exercise_id) VALUES
 ('EXERCISE_INSTRUCTION', 0, 'Starting position: Lie prone...', 1),

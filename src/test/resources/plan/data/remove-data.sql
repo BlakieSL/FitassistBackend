@@ -15,5 +15,4 @@ delete from plan_category_association;
 delete from plan_category;
 delete from user_plan;
 delete from plan;
-delete from plan_type;
 delete from user;

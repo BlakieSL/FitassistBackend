@@ -1,9 +1,6 @@
 INSERT INTO role (name) VALUES
 ('USER'), ('ADMIN'), ('MOD');
 
-INSERT INTO plan_type (name) VALUES
-('Workout');
-
 INSERT INTO plan_category (name) VALUES
 ('Strength');
 
@@ -23,10 +20,10 @@ INSERT INTO user_roles (users_id, roles_id) VALUES
 (2, 1), (2, 2),
 (3, 1), (3, 3);
 
-INSERT INTO plan (is_public, name, description, user_id, plan_type_id, created_at) VALUES
-(true, 'Summer Cut', '12-week fat loss program', 1, 1, NOW()),
-(true, 'Strength Builder', '6-month strength program', 1, 1, NOW()),
-(true, 'Balanced Lifestyle', 'General fitness maintenance', 2, 1, NOW());
+INSERT INTO plan (is_public, name, description, user_id, structure_type, created_at) VALUES
+(true, 'Summer Cut', '12-week fat loss program', 1, 'WEEKLY_SPLIT', NOW()),
+(true, 'Strength Builder', '6-month strength program', 1, 'FIXED_PROGRAM', NOW()),
+(true, 'Balanced Lifestyle', 'General fitness maintenance', 2, 'WEEKLY_SPLIT', NOW());
 
 INSERT INTO plan_category_association (plan_id, plan_category_id) VALUES
 (1, 1),

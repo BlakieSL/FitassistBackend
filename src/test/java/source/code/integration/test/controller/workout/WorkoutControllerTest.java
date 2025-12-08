@@ -47,7 +47,8 @@ public class WorkoutControllerTest {
                 "Evening Workout",
                 new BigDecimal("45.0"),
                 1,
-                1
+                1,
+                0
         );
 
         mockMvc.perform(post("/api/workouts")

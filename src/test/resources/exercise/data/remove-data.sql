@@ -2,7 +2,6 @@ delete from workout_set;
 delete from workout_set_group;
 delete from workout;
 delete from plan;
-delete from plan_type;
 delete from text;
 delete from user_exercise;
 delete from exercise_target_muscle;

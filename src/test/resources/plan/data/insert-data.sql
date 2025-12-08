@@ -3,11 +3,6 @@ INSERT INTO user (id, activity_level, birthday, email, gender, goal, height, pas
 (2, 'VERY_ACTIVE', '1985-08-22', 'user2@example.com', 'MALE', 'MAINTAIN_WEIGHT', 175.00, '$2a$10$exampleHash2', 'gym_enthusiast', 75.00),
 (3, 'SEDENTARY', '1992-11-10', 'user3@example.com', 'MALE', 'LOSE_WEIGHT', 185.00, '$2a$10$exampleHash3', 'office_worker', 90.00);
 
-INSERT INTO plan_type (id, name) VALUES
-(1, 'Workout'),
-(2, 'Meal'),
-(3, 'Hybrid');
-
 INSERT INTO plan_category (id, name) VALUES
 (1, 'Strength Training'),
 (2, 'Cardio'),
@@ -44,12 +39,12 @@ INSERT INTO exercise_target_muscle (exercise_id, target_muscle_id, priority) VAL
 (2, 3, 1.0), (2, 1, 0.6),
 (3, 2, 1.0), (3, 3, 0.6);
 
-INSERT INTO plan (is_public, id, description, name, plan_type_id, user_id, created_at) VALUES
-(true, 1, 'Beginner workout plan', 'Beginner Strength', 1, 1, NOW()),
-(true, 2, 'High protein meal plan', 'Muscle Gain Diet', 2, 1, NOW()),
-(true, 3, 'Cardio challenge', 'Cardio Blast', 1, 2, NOW()),
-(true, 4, 'Weight loss program', 'Fat Burner', 3, 3, NOW()),
-(false, 5, 'Private workout plan', 'Private Plan', 1, 1, NOW());
+INSERT INTO plan (is_public, id, description, name, structure_type, user_id, created_at) VALUES
+(true, 1, 'Beginner workout plan', 'Beginner Strength', 'WEEKLY_SPLIT', 1, NOW()),
+(true, 2, 'High protein meal plan', 'Muscle Gain Diet', 'FIXED_PROGRAM', 1, NOW()),
+(true, 3, 'Cardio challenge', 'Cardio Blast', 'WEEKLY_SPLIT', 2, NOW()),
+(true, 4, 'Weight loss program', 'Fat Burner', 'FIXED_PROGRAM', 3, NOW()),
+(false, 5, 'Private workout plan', 'Private Plan', 'WEEKLY_SPLIT', 1, NOW());
 
 INSERT INTO plan_category_association (id, plan_id, plan_category_id) VALUES
 (1, 1, 1),
@@ -67,11 +62,11 @@ INSERT INTO user_plan (id, type, plan_id, user_id, created_at) VALUES
 (5, 'SAVE', 4, 1, NOW()),
 (6, 'DISLIKE', 4, 1, NOW());
 
-INSERT INTO workout (id, duration, name, plan_id, orderIndex) VALUES
-(1, 60.0, 'Upper Body', 1, 1),
-(2, 45.0, 'Lower Body', 1, 2),
-(3, 30.0, 'HIIT Session', 3, 1),
-(4, 50.0, 'Full Body', 4, 1);
+INSERT INTO workout (id, duration, name, plan_id, orderIndex, rest_days_after) VALUES
+(1, 60.0, 'Upper Body', 1, 1, 1),
+(2, 45.0, 'Lower Body', 1, 2, 2),
+(3, 30.0, 'HIIT Session', 3, 1, 0),
+(4, 50.0, 'Full Body', 4, 1, 1);
 
 INSERT INTO workout_set_group (id, orderIndex, restSeconds, workout_id) VALUES
 (1, 1, 60, 1),

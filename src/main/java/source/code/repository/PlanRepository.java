@@ -17,7 +17,6 @@ public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecifi
         SELECT p
         FROM Plan p
         JOIN FETCH p.user
-        JOIN FETCH p.planType
         LEFT JOIN FETCH p.planCategoryAssociations pca
         LEFT JOIN FETCH pca.planCategory
         LEFT JOIN FETCH p.planInstructions

@@ -7,6 +7,7 @@ import lombok.Setter;
 import source.code.dto.pojo.PlanCategoryShortDto;
 import source.code.dto.response.text.PlanInstructionResponseDto;
 import source.code.dto.response.workout.WorkoutResponseDto;
+import source.code.helper.Enum.model.PlanStructureType;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -37,7 +38,7 @@ public class PlanResponseDto implements Serializable {
     private boolean disliked;
     private boolean saved;
 
-    private PlanCategoryShortDto planType;
+    private PlanStructureType planStructureType;
     private List<WorkoutResponseDto> workouts;
     private List<PlanInstructionResponseDto> instructions;
     private List<PlanCategoryShortDto> categories;

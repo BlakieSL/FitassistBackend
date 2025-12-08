@@ -16,8 +16,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class RecipeCategoryAssociation {
-    public static final String RECIPE_CATEGORY = "recipeCategory";
-
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

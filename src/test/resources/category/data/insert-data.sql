@@ -5,9 +5,6 @@ INSERT INTO food_category (name) VALUES
 INSERT INTO activity_category (name) VALUES
 ('Cardio'), ('Strength'), ('Flexibility'), ('Balance'), ('Sports');
 
-INSERT INTO plan_type (name) VALUES
-('Weight Loss'), ('Muscle Gain'), ('Maintenance'), ('Athletic'), ('Rehabilitation');
-
 INSERT INTO plan_category (name) VALUES
 ('Beginner'), ('Intermediate'), ('Advanced'), ('Short-Term'), ('Long-Term');
 
@@ -50,12 +47,12 @@ INSERT INTO activity (met, name, activity_category_id) VALUES
 (2.5, 'Tai Chi', 4),
 (8.0, 'Basketball', 5);
 
-INSERT INTO plan (is_public, description, name, plan_type_id, user_id, created_at) VALUES
-(true, 'Weight loss program', 'Slim Down', 1, 1, NOW()),
-(true, 'Muscle building plan', 'Gain Muscle', 2, 2, NOW()),
-(true, 'Maintain current fitness', 'Stay Fit', 3, 3, NOW()),
-(true, 'Athletic performance', 'Peak Performance', 4, 4, NOW()),
-(true, 'Injury recovery', 'Recovery Plan', 5, 5, NOW());
+INSERT INTO plan (is_public, description, name, structure_type, user_id, created_at) VALUES
+(true, 'Weight loss program', 'Slim Down', 'WEEKLY_SPLIT', 1, NOW()),
+(true, 'Muscle building plan', 'Gain Muscle', 'FIXED_PROGRAM', 2, NOW()),
+(true, 'Maintain current fitness', 'Stay Fit', 'WEEKLY_SPLIT', 3, NOW()),
+(true, 'Athletic performance', 'Peak Performance', 'FIXED_PROGRAM', 4, NOW()),
+(true, 'Injury recovery', 'Recovery Plan', 'WEEKLY_SPLIT', 5, NOW());
 
 INSERT INTO recipe (is_public, description, name, user_id, created_at) VALUES
 (true,'Healthy breakfast', 'Morning Oats', 1, NOW()),
