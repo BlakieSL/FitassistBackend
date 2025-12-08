@@ -15,9 +15,10 @@ public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
         LEFT JOIN FETCH w.workoutSetGroups wsg
         LEFT JOIN FETCH wsg.workoutSets ws
         LEFT JOIN FETCH ws.exercise e
-        WHERE w.id = :workoutId
+        WHERE w.plan.id = :planId
+        ORDER BY w.orderIndex ASC
     """)
-    List<Workout> findAllByPlanId(int planId);
+    List<Workout> findAllByPlanId(@Param("planId") int planId);
 
     @Query("""
         SELECT w

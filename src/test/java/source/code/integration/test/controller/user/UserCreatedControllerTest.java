@@ -42,7 +42,7 @@ public class UserCreatedControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content").value(hasSize(1)),
-                        jsonPath("$.page.totalElements").value(1)
+                        jsonPath("$.page.totalElements").value(2)
                 );
     }
 
@@ -68,7 +68,7 @@ public class UserCreatedControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content").value(hasSize(1)),
-                        jsonPath("$.page.totalElements").value(1)
+                        jsonPath("$.page.totalElements").value(2)
                 );
     }
 

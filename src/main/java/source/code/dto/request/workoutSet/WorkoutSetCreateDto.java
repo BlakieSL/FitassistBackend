@@ -1,6 +1,7 @@
 package source.code.dto.request.workoutSet;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import java.math.BigDecimal;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class    WorkoutSetCreateDto {
+public class WorkoutSetCreateDto {
     @NotNull
     private BigDecimal weight;
 
@@ -24,4 +25,8 @@ public class    WorkoutSetCreateDto {
 
     @NotNull
     private Integer exerciseId;
+
+    @NotNull
+    @Positive
+    private Integer orderIndex;
 }

@@ -39,6 +39,10 @@ public class Workout {
     private BigDecimal duration;
 
     @NotNull
+    @Column(nullable = false)
+    private Integer orderIndex;
+
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "plan_id", nullable = false)
     private Plan plan;

@@ -94,12 +94,12 @@ INSERT INTO plan_category_association (plan_id, plan_category_id) VALUES
 (2, 2),
 (3, 3);
 
-INSERT INTO workout (name, duration, plan_id) VALUES
-('Upper Body A', 60.00, 1),
-('Lower Body A', 45.00, 1),
-('Push Day', 75.00, 2),
-('Pull Day', 75.00, 2),
-('Full Body', 50.00, 3);
+INSERT INTO workout (name, duration, plan_id, orderIndex) VALUES
+('Upper Body A', 60.00, 1, 1),
+('Lower Body A', 45.00, 1, 2),
+('Push Day', 75.00, 2, 1),
+('Pull Day', 75.00, 2, 2),
+('Full Body', 50.00, 3, 1);
 
 INSERT INTO workout_set_group (workout_id, orderIndex, restSeconds) VALUES
 (1, 1, 90), (1, 2, 60),
@@ -108,13 +108,13 @@ INSERT INTO workout_set_group (workout_id, orderIndex, restSeconds) VALUES
 (4, 1, 90),
 (5, 1, 60);
 
-INSERT INTO workout_set (workout_set_group_id, exercise_id, repetitions, weight) VALUES
-(1, 1, 10.00, 60.00), (1, 1, 8.00, 70.00), (1, 1, 6.00, 80.00),
-(2, 4, 12.00, 10.00), (2, 4, 10.00, 12.50),
-(3, 3, 8.00, 100.00), (3, 3, 8.00, 100.00), (3, 3, 8.00, 100.00),
-(4, 1, 5.00, 80.00), (4, 1, 5.00, 80.00), (4, 1, 5.00, 80.00),
-(5, 2, 8.00, 0.00), (5, 2, 8.00, 0.00),
-(6, 3, 10.00, 60.00), (6, 1, 10.00, 50.00), (6, 4, 12.00, 8.00);
+INSERT INTO workout_set (workout_set_group_id, exercise_id, repetitions, weight, orderIndex) VALUES
+(1, 1, 10.00, 60.00, 1), (1, 1, 8.00, 70.00, 2), (1, 1, 6.00, 80.00, 3),
+(2, 4, 12.00, 10.00, 1), (2, 4, 10.00, 12.50, 2),
+(3, 3, 8.00, 100.00, 1), (3, 3, 8.00, 100.00, 2), (3, 3, 8.00, 100.00, 3),
+(4, 1, 5.00, 80.00, 1), (4, 1, 5.00, 80.00, 2), (4, 1, 5.00, 80.00, 3),
+(5, 2, 8.00, 0.00, 1), (5, 2, 8.00, 0.00, 2),
+(6, 3, 10.00, 60.00, 1), (6, 1, 10.00, 50.00, 2), (6, 4, 12.00, 8.00, 3);
 
 INSERT INTO thread (title, text, created_at, views, user_id, thread_category_id) VALUES
 ('Getting started with fitness', 'What are some good beginner tips?', NOW(), 25, 1, 1),
