@@ -1,37 +1,29 @@
 package source.code.specification.specification;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import lombok.AllArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.helper.Enum.model.field.ForumThreadField;
 import source.code.model.thread.ForumThread;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
+import source.code.specification.PredicateContext;
 
-@AllArgsConstructor(staticName = "of")
-public class ForumThreadSpecification implements Specification<ForumThread> {
-    private static final String USER_FIELD = "user";
+import static source.code.specification.SpecificationConstants.USER_FIELD;
 
-    private final FilterCriteria criteria;
-    private final SpecificationDependencies dependencies;
+public class ForumThreadSpecification extends AbstractSpecification<ForumThread, ForumThreadField> {
 
-    @Override
-    public Predicate toPredicate(@NonNull Root<ForumThread> root,
-                                 CriteriaQuery<?> query,
-                                 @NonNull CriteriaBuilder builder) {
-        ForumThreadField field = dependencies.getFieldResolver().resolveField(criteria, ForumThreadField.class);
-
-        return buildPredicateForField(builder, root, field);
+    public ForumThreadSpecification(FilterCriteria criteria, SpecificationDependencies dependencies) {
+        super(criteria, dependencies);
     }
 
-    private Predicate buildPredicateForField(CriteriaBuilder builder, Root<ForumThread> root, ForumThreadField field) {
+    @Override
+    protected Class<ForumThreadField> getFieldClass() {
+        return ForumThreadField.class;
+    }
+
+    @Override
+    protected Predicate buildPredicateForField(PredicateContext<ForumThread> context, ForumThreadField field) {
         return switch (field) {
-            case CREATED_BY_USER -> GenericSpecificationHelper.buildPredicateEntityProperty(
-                    builder, criteria, root, USER_FIELD);
+            case CREATED_BY_USER -> GenericSpecificationHelper.buildPredicateEntityProperty(context, USER_FIELD);
         };
     }
 }

@@ -137,7 +137,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public Page<ActivitySummaryDto> getFilteredActivities(FilterDto filter, Pageable pageable) {
-        SpecificationFactory<Activity> activityFactory = ActivitySpecification::of;
+        SpecificationFactory<Activity> activityFactory = ActivitySpecification::new;
         SpecificationBuilder<Activity> specificationBuilder = SpecificationBuilder.of(filter, activityFactory, dependencies);
         Specification<Activity> specification = specificationBuilder.build();
 

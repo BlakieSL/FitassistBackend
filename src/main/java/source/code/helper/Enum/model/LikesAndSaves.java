@@ -13,10 +13,6 @@ public enum LikesAndSaves {
         this.fieldName = fieldName;
     }
 
-    LikesAndSaves() {
-
-    }
-
     public String getFieldName() {
         return fieldName;
     }
