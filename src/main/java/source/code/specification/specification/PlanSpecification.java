@@ -114,9 +114,10 @@ public class PlanSpecification implements Specification<Plan> {
     }
 
     private PlanStructureType parseStructureType(Object value) {
-        if (value instanceof PlanStructureType type) {
-            return type;
+        try {
+            return PlanStructureType.valueOf(value.toString());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidFilterValueException(value.toString());
         }
-        throw new InvalidFilterValueException(value.toString());
     }
 }

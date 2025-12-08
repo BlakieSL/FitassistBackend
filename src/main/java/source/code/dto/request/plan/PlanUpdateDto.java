@@ -21,6 +21,6 @@ public class PlanUpdateDto {
     @Size(max = DESCRIPTION_MAX_LENGTH)
     private String description;
     private Boolean isPublic;
-    private PlanStructureType structureType;
+    private PlanStructureType planStructureType;
     private List<Integer> categoryIds;
 }

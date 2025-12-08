@@ -52,10 +52,10 @@ public class PlanControllerFilterTest {
 
     @PlanSql
     @Test
-    @DisplayName("POST - /filter - Should retrieve private plans when isPublic = false filtered by type")
-    void filterPrivatePlansByType() throws Exception {
+    @DisplayName("POST - /filter - Should retrieve private plans when isPublic = false filtered by structure type")
+    void filterPrivatePlansByStructureType() throws Exception {
         Utils.setUserContext(1);
-        FilterDto filterDto = buildFilterDto("TYPE", 1, FilterOperation.EQUAL, false);
+        FilterDto filterDto = buildFilterDto("STRUCTURE_TYPE", "WEEKLY_SPLIT", FilterOperation.EQUAL, false);
         String json = objectMapper.writeValueAsString(filterDto);
 
         mockMvc.perform(post("/api/plans/filter")
@@ -69,10 +69,10 @@ public class PlanControllerFilterTest {
 
     @PlanSql
     @Test
-    @DisplayName("POST - /filter - Should retrieve filtered plans by plan type (Default isPublic = true)")
-    void filterPlansByPlanType() throws Exception {
+    @DisplayName("POST - /filter - Should retrieve filtered plans by plan structure type (Default isPublic = true)")
+    void filterPlansByPlanStructureType() throws Exception {
         Utils.setUserContext(1);
-        FilterDto filterDto = buildFilterDto("TYPE", 1, FilterOperation.EQUAL);
+        FilterDto filterDto = buildFilterDto("STRUCTURE_TYPE", "WEEKLY_SPLIT", FilterOperation.EQUAL);
         String json = objectMapper.writeValueAsString(filterDto);
 
         mockMvc.perform(post("/api/plans/filter")
@@ -191,7 +191,7 @@ public class PlanControllerFilterTest {
     @DisplayName("POST - /filter - Should return 400, when invalid filter value")
     void filterPlansInvalidFilterValue() throws Exception {
         Utils.setUserContext(1);
-        FilterDto filterDto = buildFilterDto("TYPE", "invalidValue", FilterOperation.EQUAL);
+        FilterDto filterDto = buildFilterDto("STRUCTURE_TYPE", "invalidValue", FilterOperation.EQUAL);
         String json = objectMapper.writeValueAsString(filterDto);
 
         mockMvc.perform(post("/api/plans/filter")
@@ -209,8 +209,8 @@ public class PlanControllerFilterTest {
         String requestJson = """
                 {
                     "filterCriteria": [{
-                        "filterKey": "TYPE",
-                        "value": 1,
+                        "filterKey": "STRUCTURE_TYPE",
+                        "value": "WEEKLY_SPLIT",
                         "operation": "CONTAINS"
                     }],
                     "dataOption": "AND"
