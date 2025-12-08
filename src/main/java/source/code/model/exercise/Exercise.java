@@ -14,7 +14,7 @@ import source.code.model.media.Media;
 import source.code.model.text.ExerciseInstruction;
 import source.code.model.text.ExerciseTip;
 import source.code.model.user.UserExercise;
-import source.code.model.workout.WorkoutSet;
+import source.code.model.workout.WorkoutSetExercise;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -96,7 +96,7 @@ public class Exercise implements IndexedEntity {
     private final Set<ExerciseTargetMuscle> exerciseTargetMuscles = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "exercise")
-    private final Set<WorkoutSet> workoutSets = new HashSet<>();
+    private final Set<WorkoutSetExercise> workoutSetExercises = new HashSet<>();
 
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.REMOVE)
     private final Set<UserExercise> userExercises = new HashSet<>();

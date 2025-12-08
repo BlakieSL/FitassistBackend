@@ -190,7 +190,8 @@ public class PlanControllerTest {
                         jsonPath("$.disliked").value(false),
                         jsonPath("$.saved").value(false),
 
-                        jsonPath("$.planStructureType").value("WEEKLY_SPLIT"),
+                        jsonPath("$.planStructureType.value").value("WEEKLY_SPLIT"),
+                        jsonPath("$.planStructureType.name").value("Weekly Split"),
 
                         jsonPath("$.categories", hasSize(2)),
 
@@ -205,14 +206,14 @@ public class PlanControllerTest {
                         jsonPath("$.workouts[0].name").value("Upper Body"),
                         jsonPath("$.workouts[0].duration").value(60.0),
 
-                        jsonPath("$.workouts[0].workoutSetGroups", hasSize(2)),
-                        jsonPath("$.workouts[0].workoutSetGroups[0].orderIndex").value(1),
-                        jsonPath("$.workouts[0].workoutSetGroups[0].restSeconds").value(60),
+                        jsonPath("$.workouts[0].workoutSets", hasSize(2)),
+                        jsonPath("$.workouts[0].workoutSets[0].orderIndex").value(1),
+                        jsonPath("$.workouts[0].workoutSets[0].restSeconds").value(60),
 
-                        jsonPath("$.workouts[0].workoutSetGroups[0].workoutSets", hasSize(3)),
-                        jsonPath("$.workouts[0].workoutSetGroups[0].workoutSets[0].exerciseName").value("Barbell Bench Press"),
-                        jsonPath("$.workouts[0].workoutSetGroups[0].workoutSets[0].weight").value(135.0),
-                        jsonPath("$.workouts[0].workoutSetGroups[0].workoutSets[0].repetitions").value(10)
+                        jsonPath("$.workouts[0].workoutSets[0].workoutSetExercises", hasSize(3)),
+                        jsonPath("$.workouts[0].workoutSets[0].workoutSetExercises[0].exerciseName").value("Barbell Bench Press"),
+                        jsonPath("$.workouts[0].workoutSets[0].workoutSetExercises[0].weight").value(135.0),
+                        jsonPath("$.workouts[0].workoutSets[0].workoutSetExercises[0].repetitions").value(10)
                 );
     }
 

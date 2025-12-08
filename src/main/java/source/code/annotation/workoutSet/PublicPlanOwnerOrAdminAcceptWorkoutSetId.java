@@ -1,5 +1,4 @@
-package source.code.annotation.workoutSetGroup;
-
+package source.code.annotation.workoutSet;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 

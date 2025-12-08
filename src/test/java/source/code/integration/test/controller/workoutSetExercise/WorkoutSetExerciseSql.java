@@ -1,4 +1,5 @@
-package source.code.integration.test.controller.workoutSet;
+package source.code.integration.test.controller.workoutSetExercise;
+
 
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
@@ -13,5 +14,5 @@ import java.lang.annotation.Target;
         @Sql(scripts = "classpath:workoutSet/data/insert-data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "classpath:workoutSet/data/remove-data.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 })
-public @interface WorkoutSetSql {
+public @interface WorkoutSetExerciseSql {
 }

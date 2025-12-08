@@ -18,8 +18,6 @@ import source.code.integration.containers.MySqlContainerInitializer;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
-import java.math.BigDecimal;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(properties = "schema.name=general")
 @ContextConfiguration(initializers = {MySqlContainerInitializer.class})
 public class WorkoutSetControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -42,13 +39,7 @@ public class WorkoutSetControllerTest {
     void createWorkoutSet() throws Exception {
         Utils.setUserContext(1);
 
-        var request = new WorkoutSetCreateDto(
-                new BigDecimal("25.0"),
-                new BigDecimal("12.0"),
-                1,
-                1,
-                1
-        );
+        var request = new WorkoutSetCreateDto(1, 60, 1);
 
         mockMvc.perform(post("/api/workout-sets")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -56,25 +47,22 @@ public class WorkoutSetControllerTest {
                 .andExpectAll(
                         status().isCreated(),
                         jsonPath("$.id").exists(),
-                        jsonPath("$.weight").value(25.0),
-                        jsonPath("$.repetitions").value(12.0),
-                        jsonPath("$.orderIndex").exists(),
-                        jsonPath("$.exerciseId").value(1),
-                        jsonPath("$.exerciseName").exists()
+                        jsonPath("$.orderIndex").value(1),
+                        jsonPath("$.restSeconds").value(60),
+                        jsonPath("$.workoutSetExercises").isArray()
                 );
     }
 
     @WorkoutSetSql
     @Test
-    @DisplayName("PATCH - /{id} - Should update an existing Workout Set when owner")
+    @DisplayName("PATCH - /{id} - Should update an existing Workout Set")
     void updateWorkoutSet() throws Exception {
         Utils.setUserContext(1);
 
         int id = 1;
         var patch = """
                 {
-                    "weight": 25.0,
-                    "repetitions": 15.0
+                    "restSeconds": 90
                 }
                 """;
 
@@ -86,14 +74,14 @@ public class WorkoutSetControllerTest {
 
     @WorkoutSetSql
     @Test
-    @DisplayName("PATCH - /{id} - Should update an existing Workout Set when admin")
+    @DisplayName("PATCH - /{id} - Should update an existing Workout Set whe admin")
     void updateWorkoutSetAsAdmin() throws Exception {
         Utils.setAdminContext(2);
 
         int id = 1;
         var patch = """
                 {
-                    "weight": 30.0
+                    "restSeconds": 90
                 }
                 """;
 
@@ -105,33 +93,14 @@ public class WorkoutSetControllerTest {
 
     @WorkoutSetSql
     @Test
-    @DisplayName("PATCH - /{id} - Should return 403 when not owner or admin")
-    void updateWorkoutSetNotOwnerOrAdmin() throws Exception {
-        Utils.setUserContext(3);
-
-        int id = 1;
-        var patch = """
-                {
-                    "weight": 25.0
-                }
-                """;
-
-        mockMvc.perform(patch("/api/workout-sets/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(patch))
-                .andExpectAll(status().isForbidden());
-    }
-
-    @WorkoutSetSql
-    @Test
-    @DisplayName("PATCH - /{id} - Should return 404 when Workout Set not found")
+    @DisplayName("PATCH - /{id} - Should return 404 when Workout Set does not exist")
     void updateWorkoutSetNotFound() throws Exception {
         Utils.setUserContext(1);
 
         int id = 999;
         var patch = """
                 {
-                    "weight": 25.0
+                    "restSeconds": 90
                 }
                 """;
 
@@ -143,14 +112,33 @@ public class WorkoutSetControllerTest {
 
     @WorkoutSetSql
     @Test
-    @DisplayName("PATCH - /{id} - Should return 400 when invalid patch")
-    void updateWorkoutSetInvalidPatch() throws Exception {
+    @DisplayName("PATCH - /{id} - Should return 403 when user is not owner or admin")
+    void updateWorkoutSetForbidden() throws Exception {
+        Utils.setUserContext(3);
+
+        int id = 1;
+        var patch = """
+                {
+                    "restSeconds": 90
+                }
+                """;
+
+        mockMvc.perform(patch("/api/workout-sets/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(patch))
+                .andExpectAll(status().isForbidden());
+    }
+
+    @WorkoutSetSql
+    @Test
+    @DisplayName("PATCH - /{id} - Should return 400 when request body is invalid")
+    void updateWorkoutSetBadRequest() throws Exception {
         Utils.setUserContext(1);
 
         int id = 1;
         var patch = """
                 {
-                    "weight": -1
+                    "restSeconds": -10
                 }
                 """;
 
@@ -169,7 +157,7 @@ public class WorkoutSetControllerTest {
         int id = 1;
         var patch = """
                 {
-                    "invalidField": "someValue"
+                    "random": 90
                 }
                 """;
 
@@ -181,7 +169,7 @@ public class WorkoutSetControllerTest {
 
     @WorkoutSetSql
     @Test
-    @DisplayName("DELETE - /{id} - Should delete an existing Workout Set when owner")
+    @DisplayName("DELETE -/{id} - Should delete an existing Workout Set")
     void deleteWorkoutSet() throws Exception {
         Utils.setUserContext(1);
         int id = 1;
@@ -195,7 +183,7 @@ public class WorkoutSetControllerTest {
 
     @WorkoutSetSql
     @Test
-    @DisplayName("DELETE - /{id} - Should delete an existing Workout Set when admin")
+    @DisplayName("DELETE -/{id} - Should delete an existing Workout Set when admin")
     void deleteWorkoutSetAsAdmin() throws Exception {
         Utils.setAdminContext(2);
         int id = 1;
@@ -209,18 +197,7 @@ public class WorkoutSetControllerTest {
 
     @WorkoutSetSql
     @Test
-    @DisplayName("DELETE - /{id} - Should return 403 when not owner or admin")
-    void deleteWorkoutSetNotOwnerOrAdmin() throws Exception {
-        Utils.setUserContext(3);
-        int id = 1;
-
-        mockMvc.perform(delete("/api/workout-sets/{id}", id))
-                .andExpectAll(status().isForbidden());
-    }
-
-    @WorkoutSetSql
-    @Test
-    @DisplayName("DELETE - /{id} - Should return 404 when Workout Set not found")
+    @DisplayName("DELETE -/{id} - Should return 404 when Workout Set does not exist")
     void deleteWorkoutSetNotFound() throws Exception {
         Utils.setUserContext(1);
         int id = 999;
@@ -229,10 +206,21 @@ public class WorkoutSetControllerTest {
                 .andExpectAll(status().isNotFound());
     }
 
+    @WorkoutSetSql
+    @Test
+    @DisplayName("DELETE -/{id} - Should return 403 when user is not owner or admin")
+    void deleteWorkoutSetForbidden() throws Exception {
+        Utils.setUserContext(3);
+        int id = 1;
+
+        mockMvc.perform(delete("/api/workout-sets/{id}", id))
+                .andExpectAll(status().isForbidden());
+    }
+
     @WithMockUser
     @WorkoutSetSql
     @Test
-    @DisplayName("GET - /{workoutSetId} - Should return an existing Workout Set when Plan is public")
+    @DisplayName("GET - /{workoutSetId} - Should return an existing Workout Set when public")
     void getWorkoutSetPublic() throws Exception {
         int id = 1;
 
@@ -240,13 +228,12 @@ public class WorkoutSetControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.id").value(id),
-                        jsonPath("$.weight").value(20.0),
-                        jsonPath("$.repetitions").value(10.0),
-                        jsonPath("$.orderIndex").exists(),
-                        jsonPath("$.exerciseId").value(1),
-                        jsonPath("$.exerciseName").exists()
+                        jsonPath("$.orderIndex").value(1),
+                        jsonPath("$.restSeconds").value(60),
+                        jsonPath("$.workoutSetExercises").isArray()
                 );
     }
+
     @WorkoutSetSql
     @Test
     @DisplayName("GET - /{workoutSetId} - Should return an existing Workout Set when owner")
@@ -258,11 +245,9 @@ public class WorkoutSetControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.id").value(id),
-                        jsonPath("$.weight").value(20.0),
-                        jsonPath("$.repetitions").value(10.0),
-                        jsonPath("$.orderIndex").exists(),
-                        jsonPath("$.exerciseId").value(1),
-                        jsonPath("$.exerciseName").exists()
+                        jsonPath("$.orderIndex").value(1),
+                        jsonPath("$.restSeconds").value(60),
+                        jsonPath("$.workoutSetExercises").isArray()
                 );
     }
 
@@ -277,103 +262,102 @@ public class WorkoutSetControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.id").value(id),
-                        jsonPath("$.weight").value(20.0),
-                        jsonPath("$.repetitions").value(10.0),
-                        jsonPath("$.orderIndex").exists(),
-                        jsonPath("$.exerciseId").value(1),
-                        jsonPath("$.exerciseName").exists()
+                        jsonPath("$.orderIndex").value(1),
+                        jsonPath("$.restSeconds").value(60),
+                        jsonPath("$.workoutSetExercises").isArray()
                 );
+    }
+
+    @WorkoutSetSql
+    @Test
+    @DisplayName("GET - /{workoutSetId} - Should return 403 when user is not owner or admin and plan is private")
+    void getWorkoutSetForbidden() throws Exception {
+        Utils.setUserContext(1);
+        int id = 2;
+
+        mockMvc.perform(get("/api/workout-sets/{id}", id))
+                .andExpectAll(status().isForbidden());
     }
 
     @WithMockUser
     @Test
-    @DisplayName("GET - /{workoutSetId} - Should return 404 when Workout Set not found")
+    @DisplayName("GET - /{workoutSetId} - Should return 404 when Workout Set does not exist")
     void getWorkoutSetNotFound() throws Exception {
         int id = 999;
 
         mockMvc.perform(get("/api/workout-sets/{id}", id))
-                .andExpect(status().isNotFound());
+                .andExpectAll(status().isNotFound());
     }
 
     @WithMockUser
     @WorkoutSetSql
     @Test
-    @DisplayName("GET - /workout-set-groups/{workoutSetGroupId} - Should return all Workout Sets for a Workout Set Group when Plan is public")
-    void getAllWorkoutSetsForWorkoutSetGroup() throws Exception {
-        int workoutSetGroupId = 1;
+    @DisplayName("GET - /workouts/{workoutId} - Should return all Workout Sets for a Workout when public")
+    void getAllWorkoutSetsForWorkout() throws Exception {
+        int workoutId = 1;
 
-        mockMvc.perform(get("/api/workout-sets/workout-set-groups/{workoutSetGroupId}", workoutSetGroupId))
+        mockMvc.perform(get("/api/workout-sets/workouts/{workoutId}", workoutId))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$").isArray(),
-                        jsonPath("$[0].id").value(1),
-                        jsonPath("$[0].orderIndex").exists(),
-                        jsonPath("$[0].weight").value(20.0),
-                        jsonPath("$[0].repetitions").value(10.0),
-                        jsonPath("$[0].exerciseId").value(1),
-                        jsonPath("$[0].exerciseName").exists()
+                        jsonPath("$[0].orderIndex").value(1),
+                        jsonPath("$[0].restSeconds").value(60),
+                        jsonPath("$[0].workoutSetExercises").isArray()
                 );
     }
 
     @WorkoutSetSql
     @Test
-    @DisplayName("GET - /workout-set-groups/{workoutSetGroupId} - Should return all Workout Sets for a Workout Set Group when owner")
-    void getAllWorkoutSetsForWorkoutSetGroupOwner() throws Exception {
-        Utils.setUserContext(1);
-        int workoutSetGroupId = 1;
+    @DisplayName("GET - /workouts/{workoutId} - Should return all Workout Sets for a Workout when owner")
+    void getAllWorkoutSetsForWorkoutOwner() throws Exception {
+        Utils.setUserContext(2);
+        int workoutId = 2;
 
-        mockMvc.perform(get("/api/workout-sets/workout-set-groups/{workoutSetGroupId}", workoutSetGroupId))
+        mockMvc.perform(get("/api/workout-sets/workouts/{workoutId}", workoutId))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$").isArray(),
-                        jsonPath("$[0].id").value(1),
-                        jsonPath("$[0].orderIndex").exists(),
-                        jsonPath("$[0].weight").value(20.0),
-                        jsonPath("$[0].repetitions").value(10.0),
-                        jsonPath("$[0].exerciseId").value(1),
-                        jsonPath("$[0].exerciseName").exists()
+                        jsonPath("$[0].orderIndex").value(1),
+                        jsonPath("$[0].restSeconds").value(90),
+                        jsonPath("$[0].workoutSetExercises").isArray()
                 );
     }
 
     @WorkoutSetSql
     @Test
-    @DisplayName("GET - /workout-set-groups/{workoutSetGroupId} - Should return all Workout Sets for a Workout Set Group when admin")
-    void getAllWorkoutSetsForWorkoutSetGroupAdmin() throws Exception {
+    @DisplayName("GET - /workouts/{workoutId} - Should return all Workout Sets for a Workout when admin")
+    void getAllWorkoutSetsForWorkoutAdmin() throws Exception {
         Utils.setAdminContext(2);
-        int workoutSetGroupId = 1;
+        int workoutId = 2;
 
-        mockMvc.perform(get("/api/workout-sets/workout-set-groups/{workoutSetGroupId}", workoutSetGroupId))
+        mockMvc.perform(get("/api/workout-sets/workouts/{workoutId}", workoutId))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$").isArray(),
-                        jsonPath("$[0].id").value(1),
-                        jsonPath("$[0].orderIndex").exists(),
-                        jsonPath("$[0].weight").value(20.0),
-                        jsonPath("$[0].repetitions").value(10.0),
-                        jsonPath("$[0].exerciseId").value(1),
-                        jsonPath("$[0].exerciseName").exists()
+                        jsonPath("$[0].orderIndex").value(1),
+                        jsonPath("$[0].restSeconds").value(90),
+                        jsonPath("$[0].workoutSetExercises").isArray()
                 );
     }
 
     @WorkoutSetSql
     @Test
-    @DisplayName("GET - /workout-set-groups/{workoutSetGroupId} - Should return 403 when not owner or admin and plan is private")
-    void getAllWorkoutSetsForWorkoutSetGroupForbidden() throws Exception {
+    @DisplayName("GET - /workouts/{workoutId} - Should return 403 when user is not owner or admin and plan is private")
+    void getAllWorkoutSetsForWorkoutForbidden() throws Exception {
         Utils.setUserContext(1);
-        int workoutSetGroupId = 2;
+        int workoutId = 2;
 
-        mockMvc.perform(get("/api/workout-sets/workout-set-groups/{workoutSetGroupId}", workoutSetGroupId))
+        mockMvc.perform(get("/api/workout-sets/workouts/{workoutId}", workoutId))
                 .andExpectAll(status().isForbidden());
     }
 
-
     @WithMockUser
     @Test
-    @DisplayName("GET - /workout-set-groups/{workoutSetGroupId} - Should return return 404 when WorkoutSetGroup not found")
-    void getAllWorkoutSetsForWorkoutSetGroupEmpty() throws Exception {
-        int workoutSetGroupId = 999;
+    @DisplayName("GET - /workouts/{workoutId} - Should return 404 when Workout not found")
+    void getAllWorkoutSetsForWorkoutEmpty() throws Exception {
+        int workoutId = 999;
 
-        mockMvc.perform(get("/api/workout-sets/workout-set-groups/{workoutSetGroupId}", workoutSetGroupId))
+        mockMvc.perform(get("/api/workout-sets/workouts/{workoutId}", workoutId))
                 .andExpectAll(status().isNotFound());
     }
 }

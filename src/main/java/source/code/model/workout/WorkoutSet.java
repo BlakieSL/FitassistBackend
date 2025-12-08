@@ -6,9 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.model.exercise.Exercise;
 
-import java.math.BigDecimal;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "workout_set")
@@ -23,30 +23,31 @@ public class WorkoutSet {
 
     @NotNull
     @Column(nullable = false)
-    private BigDecimal weight;
-
-    @NotNull
-    @Column(nullable = false)
-    private BigDecimal repetitions;
-
-    @NotNull
-    @Column(nullable = false)
     private Integer orderIndex;
 
     @NotNull
-    @ManyToOne
-    @JoinColumn(name = "workout_set_group_id", nullable = false)
-    private WorkoutSetGroup workoutSetGroup;
+    @Column(nullable = false)
+    private Integer restSeconds;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "exercise_id", nullable = false)
-    private Exercise exercise;
+    @JoinColumn(name = "workout_id", nullable = false)
+    private Workout workout;
 
-    public static WorkoutSet of(Integer id, WorkoutSetGroup workoutSetGroup) {
+    @OneToMany(mappedBy = "workoutSet", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @OrderBy("orderIndex ASC")
+    private Set<WorkoutSetExercise> workoutSetExercises = new LinkedHashSet<>();
+
+    public static WorkoutSet of(Integer id, Workout workout) {
         WorkoutSet workoutSet = new WorkoutSet();
         workoutSet.setId(id);
-        workoutSet.setWorkoutSetGroup(workoutSetGroup);
+        workoutSet.setWorkout(workout);
+        return workoutSet;
+    }
+
+    public static WorkoutSet of(Workout workout) {
+        WorkoutSet workoutSet = new WorkoutSet();
+        workoutSet.setWorkout(workout);
         return workoutSet;
     }
 }

@@ -449,7 +449,7 @@ create table workout
         foreign key (plan_id) references plan (id)
 );
 
-create table workout_set_group
+create table workout_set
 (
     id          int auto_increment
         primary key,
@@ -460,18 +460,18 @@ create table workout_set_group
         foreign key (workout_id) references workout (id)
 );
 
-create table workout_set
+create table workout_set_exercise
 (
-    id                   int auto_increment
+    id             int auto_increment
         primary key,
-    repetitions          decimal(38, 2) not null,
-    weight               decimal(38, 2) not null,
-    exercise_id          int            not null,
-    workout_set_group_id int            not null,
-    orderIndex           int            not null,
+    repetitions    decimal(38, 2) not null,
+    weight         decimal(38, 2) not null,
+    exercise_id    int            not null,
+    workout_set_id int            not null,
+    orderIndex     int            not null,
     constraint FKhg1c36fv3o7wlsv0w31m7un18
         foreign key (exercise_id) references exercise (id),
     constraint FKqt2vub0hl6yhxaul5hwpbjwwe
-        foreign key (workout_set_group_id) references workout_set_group (id)
+        foreign key (workout_set_id) references workout_set (id)
 );
 

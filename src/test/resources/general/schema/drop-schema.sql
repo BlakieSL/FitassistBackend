@@ -1,6 +1,6 @@
 -- Drop tables in reverse order of dependencies
+DROP TABLE IF EXISTS workout_set_exercise;
 DROP TABLE IF EXISTS workout_set;
-DROP TABLE IF EXISTS workout_set_group;
 DROP TABLE IF EXISTS workout;
 DROP TABLE IF EXISTS user_plan;
 DROP TABLE IF EXISTS text;

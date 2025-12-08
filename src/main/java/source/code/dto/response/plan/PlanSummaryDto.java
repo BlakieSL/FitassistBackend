@@ -29,7 +29,7 @@ public class PlanSummaryDto implements BaseUserEntity, Serializable {
     private long dislikesCount;
     private long savesCount;
     private long views;
-    private PlanStructureType structureType;
+    private PlanStructureType planStructureType;
     private LocalDateTime createdAt;
     private LocalDateTime interactedWithAt;
 }

@@ -18,7 +18,7 @@ import source.code.model.thread.Comment;
 import source.code.model.thread.ForumThread;
 import source.code.model.workout.Workout;
 import source.code.model.workout.WorkoutSet;
-import source.code.model.workout.WorkoutSetGroup;
+import source.code.model.workout.WorkoutSetExercise;
 import source.code.repository.*;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
@@ -34,7 +34,7 @@ public class AuthAnnotationServiceImpl {
     private final PlanInstructionRepository planInstructionRepository;
     private final WorkoutRepository workoutRepository;
     private final WorkoutSetRepository workoutSetRepository;
-    private final WorkoutSetGroupRepository workoutSetGroupRepository;
+    private final WorkoutSetExerciseRepository workoutSetExerciseRepository;
     private final CommentComplaintRepository commentComplaintRepository;
     private final ThreadComplaintRepository threadComplaintRepository;
     private final DailyCartActivityRepository dailyCartActivityRepository;
@@ -50,7 +50,7 @@ public class AuthAnnotationServiceImpl {
                                      PlanInstructionRepository planInstructionRepository,
                                      WorkoutRepository workoutRepository,
                                      WorkoutSetRepository workoutSetRepository,
-                                     WorkoutSetGroupRepository workoutSetGroupRepository,
+                                     WorkoutSetExerciseRepository workoutSetExerciseRepository,
                                      CommentComplaintRepository commentComplaintRepository,
                                      ThreadComplaintRepository threadComplaintRepository,
                                      DailyCartActivityRepository dailyCartActivityRepository,
@@ -65,7 +65,7 @@ public class AuthAnnotationServiceImpl {
         this.planInstructionRepository = planInstructionRepository;
         this.workoutRepository = workoutRepository;
         this.workoutSetRepository = workoutSetRepository;
-        this.workoutSetGroupRepository = workoutSetGroupRepository;
+        this.workoutSetExerciseRepository = workoutSetExerciseRepository;
         this.commentComplaintRepository = commentComplaintRepository;
         this.threadComplaintRepository = threadComplaintRepository;
         this.dailyCartActivityRepository = dailyCartActivityRepository;
@@ -176,6 +176,30 @@ public class AuthAnnotationServiceImpl {
         return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
     }
 
+    public boolean isWorkoutSetExerciseOwnerOrAdmin(int workoutSetExerciseId) {
+        WorkoutSetExercise workoutSetExercise = repositoryHelper.find(
+                workoutSetExerciseRepository,
+                WorkoutSetExercise.class,
+                workoutSetExerciseId
+        );
+        return AuthorizationUtil.isOwnerOrAdmin(workoutSetExercise
+                .getWorkoutSet()
+                .getWorkout()
+                .getPlan()
+                .getUser()
+                .getId());
+    }
+
+    public boolean isPublicWorkoutSetExerciseOrOwnerOrAdmin(int workoutSetExerciseId) {
+        WorkoutSetExercise workoutSetExercise = repositoryHelper
+                .find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
+        var plan = workoutSetExercise.getWorkoutSet().getWorkout().getPlan();
+        if (plan.getIsPublic()) {
+            return true;
+        }
+        return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
+    }
+
     public boolean isWorkoutSetOwnerOrAdmin(int workoutSetId) {
         WorkoutSet workoutSet = repositoryHelper.find(
                 workoutSetRepository,
@@ -183,7 +207,6 @@ public class AuthAnnotationServiceImpl {
                 workoutSetId
         );
         return AuthorizationUtil.isOwnerOrAdmin(workoutSet
-                .getWorkoutSetGroup()
                 .getWorkout()
                 .getPlan()
                 .getUser()
@@ -193,31 +216,8 @@ public class AuthAnnotationServiceImpl {
     public boolean isPublicWorkoutSetOrOwnerOrAdmin(int workoutSetId) {
         WorkoutSet workoutSet = repositoryHelper
                 .find(workoutSetRepository, WorkoutSet.class, workoutSetId);
-        var plan = workoutSet.getWorkoutSetGroup().getWorkout().getPlan();
-        if (plan.getIsPublic()) {
-            return true;
-        }
-        return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
-    }
 
-    public boolean isWorkoutSetGroupOwnerOrAdmin(int workoutSetGroupId) {
-        WorkoutSetGroup workoutSetGroup = repositoryHelper.find(
-                workoutSetGroupRepository,
-                WorkoutSetGroup.class,
-                workoutSetGroupId
-        );
-        return AuthorizationUtil.isOwnerOrAdmin(workoutSetGroup
-                .getWorkout()
-                .getPlan()
-                .getUser()
-                .getId());
-    }
-
-    public boolean isPublicWorkoutSetGroupOrOwnerOrAdmin(int workoutSetGroupId) {
-        WorkoutSetGroup workoutSetGroup = repositoryHelper
-                .find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId);
-
-        var plan = workoutSetGroup.getWorkout().getPlan();
+        var plan = workoutSet.getWorkout().getPlan();
         if (plan.getIsPublic()) {
             return true;
         }

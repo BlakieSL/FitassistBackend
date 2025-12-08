@@ -1,5 +1,5 @@
+delete from workout_set_exercise;
 delete from workout_set;
-delete from workout_set_group;
 delete from workout;
 delete from plan;
 delete from text;

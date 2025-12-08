@@ -21,9 +21,9 @@ public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecifi
         LEFT JOIN FETCH pca.planCategory
         LEFT JOIN FETCH p.planInstructions
         LEFT JOIN FETCH p.workouts w
-        LEFT JOIN FETCH w.workoutSetGroups wsg
-        LEFT JOIN FETCH wsg.workoutSets ws
-        LEFT JOIN FETCH ws.exercise e
+        LEFT JOIN FETCH w.workoutSets ws
+        LEFT JOIN FETCH ws.workoutSetExercises wse
+        LEFT JOIN FETCH wse.exercise e
         WHERE p.id = :planId
     """)
     Optional<Plan> findByIdWithDetails(@Param("planId") int planId);
@@ -60,9 +60,9 @@ public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecifi
         SELECT p
         FROM Plan p
         JOIN p.workouts w
-        JOIN w.workoutSetGroups wsg
-        JOIN wsg.workoutSets ws
-        WHERE ws.exercise.id = :exerciseId
+        JOIN w.workoutSets ws
+        JOIN ws.workoutSetExercises wse
+        WHERE wse.exercise.id = :exerciseId
           AND p.isPublic = true
         ORDER BY p.createdAt DESC
     """)

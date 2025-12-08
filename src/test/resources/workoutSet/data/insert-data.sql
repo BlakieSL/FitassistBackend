@@ -35,10 +35,10 @@ INSERT INTO workout (id, duration, name, plan_id, orderIndex, rest_days_after) V
 (1, 30.0, 'Morning Workout', 1, 1, 1),
 (2, 45.0, 'Evening Workout', 2, 1, 0);
 
-INSERT INTO workout_set_group (id, orderIndex, restSeconds, workout_id) VALUES
+INSERT INTO workout_set (id, orderIndex, restSeconds, workout_id) VALUES
 (1, 1, 60, 1),
 (2, 1, 90, 2);
 
-INSERT INTO workout_set (id, repetitions, weight, exercise_id, workout_set_group_id, orderIndex) VALUES
+INSERT INTO workout_set_exercise (id, repetitions, weight, exercise_id, workout_set_id, orderIndex) VALUES
 (1, 10.0, 20.0, 1, 1, 1),
 (2, 10.0, 20.0, 1, 2, 1);

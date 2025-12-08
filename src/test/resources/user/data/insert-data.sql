@@ -98,14 +98,14 @@ INSERT INTO workout (name, duration, plan_id, orderIndex, rest_days_after) VALUE
 ('Pull Day', 75.00, 2, 2, 1),
 ('Full Body', 50.00, 3, 1, 0);
 
-INSERT INTO workout_set_group (workout_id, orderIndex, restSeconds) VALUES
+INSERT INTO workout_set (workout_id, orderIndex, restSeconds) VALUES
 (1, 1, 90), (1, 2, 60),
 (2, 1, 120),
 (3, 1, 90), (3, 2, 90),
 (4, 1, 90),
 (5, 1, 60);
 
-INSERT INTO workout_set (workout_set_group_id, exercise_id, repetitions, weight, orderIndex) VALUES
+INSERT INTO workout_set_exercise (workout_set_id, exercise_id, repetitions, weight, orderIndex) VALUES
 (1, 1, 10.00, 60.00, 1), (1, 1, 8.00, 70.00, 2), (1, 1, 6.00, 80.00, 3),
 (2, 4, 12.00, 10.00, 1), (2, 4, 10.00, 12.50, 2),
 (3, 3, 8.00, 100.00, 1), (3, 3, 8.00, 100.00, 2), (3, 3, 8.00, 100.00, 3),
