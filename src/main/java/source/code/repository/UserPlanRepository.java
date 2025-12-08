@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import source.code.dto.pojo.projection.plan.PlanCountsProjection;
-import source.code.dto.pojo.projection.plan.PlanInteractionDateProjection;
 import source.code.dto.pojo.projection.recipe.RecipeAndPlanUserInteractionProjection;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.UserPlan;

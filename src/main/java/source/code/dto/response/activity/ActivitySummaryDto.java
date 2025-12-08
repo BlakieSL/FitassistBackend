@@ -1,6 +1,9 @@
 package source.code.dto.response.activity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import source.code.helper.BaseUserEntity;
 
 import java.io.Serializable;

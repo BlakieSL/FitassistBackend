@@ -7,13 +7,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.dto.response.plan.PlanSummaryDto;
-import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.model.media.Media;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.implementation.helpers.ImageUrlPopulationServiceImpl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

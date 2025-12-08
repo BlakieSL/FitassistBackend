@@ -2,7 +2,6 @@ package source.code.service.implementation.user.interaction.withoutType;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import source.code.dto.response.LikesAndSavesResponseDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
@@ -10,7 +9,6 @@ import source.code.model.user.User;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
-import java.util.List;
 import java.util.function.Function;
 
 public abstract class GenericSavedServiceWithoutType<T, U, R> implements SavedServiceWithoutType {

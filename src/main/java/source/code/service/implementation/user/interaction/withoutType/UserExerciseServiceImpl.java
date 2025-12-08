@@ -3,7 +3,6 @@ package source.code.service.implementation.user.interaction.withoutType;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
@@ -19,8 +18,6 @@ import source.code.repository.UserExerciseRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.ImageUrlPopulationService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
-
-import java.util.List;
 
 @Service("userExerciseService")
 public class UserExerciseServiceImpl
