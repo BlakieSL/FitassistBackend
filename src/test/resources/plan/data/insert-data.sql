@@ -67,11 +67,11 @@ INSERT INTO user_plan (id, type, plan_id, user_id, created_at) VALUES
 (5, 'SAVE', 4, 1, NOW()),
 (6, 'DISLIKE', 4, 1, NOW());
 
-INSERT INTO workout (id, duration, name, plan_id) VALUES
-(1, 60.0, 'Upper Body', 1),
-(2, 45.0, 'Lower Body', 1),
-(3, 30.0, 'HIIT Session', 3),
-(4, 50.0, 'Full Body', 4);
+INSERT INTO workout (id, duration, name, plan_id, orderIndex) VALUES
+(1, 60.0, 'Upper Body', 1, 1),
+(2, 45.0, 'Lower Body', 1, 2),
+(3, 30.0, 'HIIT Session', 3, 1),
+(4, 50.0, 'Full Body', 4, 1);
 
 INSERT INTO workout_set_group (id, orderIndex, restSeconds, workout_id) VALUES
 (1, 1, 60, 1),
@@ -79,14 +79,14 @@ INSERT INTO workout_set_group (id, orderIndex, restSeconds, workout_id) VALUES
 (3, 1, 90, 2),
 (4, 1, 30, 3);
 
-INSERT INTO workout_set (id, repetitions, weight, exercise_id, workout_set_group_id) VALUES
-(1, 10, 135.0, 1, 1),
-(2, 10, 135.0, 1, 1),
-(3, 8, 135.0, 1, 1),
-(4, 12, 30.0, 2, 2),
-(5, 12, 30.0, 2, 2),
-(6, 8, 185.0, 3, 3),
-(7, 15, 0.0, 2, 4);
+INSERT INTO workout_set (id, repetitions, weight, exercise_id, workout_set_group_id, orderIndex) VALUES
+(1, 10, 135.0, 1, 1, 1),
+(2, 10, 135.0, 1, 1, 2),
+(3, 8, 135.0, 1, 1, 3),
+(4, 12, 30.0, 2, 2, 1),
+(5, 12, 30.0, 2, 2, 2),
+(6, 8, 185.0, 3, 3, 1),
+(7, 15, 0.0, 2, 4, 1);
 
 INSERT INTO text (type, id, orderIndex, text, title, plan_id) VALUES
 ('PLAN_INSTRUCTION', 1, 1, 'Warm up for 10 minutes before starting', 'Warm Up', 1),

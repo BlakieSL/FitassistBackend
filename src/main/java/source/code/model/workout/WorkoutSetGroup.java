@@ -35,7 +35,7 @@ public class WorkoutSetGroup {
     private Workout workout;
 
     @OneToMany(mappedBy = "workoutSetGroup", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
-    @OrderBy("id ASC")
+    @OrderBy("orderIndex ASC")
     private Set<WorkoutSet> workoutSets = new LinkedHashSet<>();
 
     public static WorkoutSetGroup of(Integer id, Workout workout) {

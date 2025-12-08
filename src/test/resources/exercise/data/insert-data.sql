@@ -49,11 +49,11 @@ INSERT INTO plan (is_public, name, description, plan_type_id, user_id, created_a
 (true, '5-Day Strength Plan', 'Full body strength training', 2, 1, NOW()),
 (true, '4-Day Fat Loss Plan', 'Cardio and HIIT focused', 5, 1, NOW());
 
-INSERT INTO workout (name, duration, plan_id) VALUES
-('Full Body Strength', 60, 1),
-('Upper Body Push', 45, 1),
-('Lower Body Focus', 60, 2),
-('Cardio & Core', 30, 3);
+INSERT INTO workout (name, duration, plan_id, orderIndex) VALUES
+('Full Body Strength', 60, 1, 1),
+('Upper Body Push', 45, 1, 2),
+('Lower Body Focus', 60, 2, 1),
+('Cardio & Core', 30, 3, 1);
 
 INSERT INTO workout_set_group (orderIndex, restSeconds, workout_id) VALUES
 (1, 60, 1),
@@ -62,11 +62,11 @@ INSERT INTO workout_set_group (orderIndex, restSeconds, workout_id) VALUES
 (1, 60, 3),
 (1, 120, 4);
 
-INSERT INTO workout_set (exercise_id, workout_set_group_id, repetitions, weight) VALUES
-(1, 1, 10, 50.00),
-(2, 1, 12, 30.00),
-(3, 2, 8, 80.00),
-(4, 3, 15, 20.00),
-(1, 4, 12, 55.00),
-(3, 4, 10, 90.00),
-(2, 5, 3, 0.00);
+INSERT INTO workout_set (exercise_id, workout_set_group_id, repetitions, weight, orderIndex) VALUES
+(1, 1, 10, 50.00, 1),
+(2, 1, 12, 30.00, 2),
+(3, 2, 8, 80.00, 1),
+(4, 3, 15, 20.00, 1),
+(1, 4, 12, 55.00, 2),
+(3, 4, 10, 90.00, 3),
+(2, 5, 3, 0.00, 1);

@@ -46,6 +46,7 @@ public class WorkoutSetControllerTest {
                 new BigDecimal("25.0"),
                 new BigDecimal("12.0"),
                 1,
+                1,
                 1
         );
 

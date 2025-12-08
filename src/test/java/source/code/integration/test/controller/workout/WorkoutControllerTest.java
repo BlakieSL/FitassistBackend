@@ -46,6 +46,7 @@ public class WorkoutControllerTest {
         var request = new WorkoutCreateDto(
                 "Evening Workout",
                 new BigDecimal("45.0"),
+                1,
                 1
         );
 

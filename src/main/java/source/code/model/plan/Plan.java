@@ -91,7 +91,7 @@ public class Plan implements IndexedEntity {
     private final Set<PlanCategoryAssociation> planCategoryAssociations = new HashSet<>();
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @OrderBy("id ASC")
+    @OrderBy("orderIndex ASC")
     private final Set<Workout> workouts = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE)
