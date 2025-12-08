@@ -36,9 +36,9 @@ import source.code.repository.FoodRepository;
 import source.code.repository.RecipeRepository;
 import source.code.service.declaration.food.FoodPopulationService;
 import source.code.service.declaration.helpers.JsonPatchService;
-import source.code.service.declaration.recipe.RecipePopulationService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
+import source.code.service.declaration.recipe.RecipePopulationService;
 import source.code.service.implementation.food.FoodServiceImpl;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 

@@ -2,14 +2,12 @@ package source.code.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import source.code.dto.pojo.projection.SavesProjection;
 import source.code.model.user.UserFood;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface UserFoodRepository extends JpaRepository<UserFood, Integer> {

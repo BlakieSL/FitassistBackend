@@ -1,6 +1,9 @@
 package source.code.mapper.daily;
 
-import org.mapstruct.*;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.model.daily.DailyCartActivity;

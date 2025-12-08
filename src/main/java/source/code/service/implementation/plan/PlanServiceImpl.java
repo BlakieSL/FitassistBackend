@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
-import org.hibernate.annotations.Cache;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -19,15 +18,19 @@ import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.plan.PlanCategoriesResponseDto;
 import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
-import source.code.exception.RecordNotFoundException;
 import source.code.event.events.Plan.PlanCreateEvent;
 import source.code.event.events.Plan.PlanDeleteEvent;
 import source.code.event.events.Plan.PlanUpdateEvent;
+import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.cache.CacheNames;
+import source.code.helper.Enum.model.PlanStructureType;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.plan.PlanMapper;
 import source.code.model.plan.Plan;
-import source.code.repository.*;
+import source.code.repository.EquipmentRepository;
+import source.code.repository.PlanCategoryRepository;
+import source.code.repository.PlanRepository;
+import source.code.repository.TextRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
@@ -37,7 +40,6 @@ import source.code.service.implementation.specificationHelpers.SpecificationDepe
 import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.PlanSpecification;
-import source.code.helper.Enum.model.PlanStructureType;
 
 import java.util.List;
 

@@ -8,7 +8,8 @@ import source.code.dto.pojo.FilterCriteria;
 import source.code.exception.InvalidFilterKeyException;
 import source.code.service.implementation.specificationHelpers.SpecificationFieldResolverImpl;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 public class SpecificationFieldResolverTest {

@@ -16,11 +16,7 @@ import source.code.model.user.User;
 import source.code.model.user.UserRecipe;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "recipe")
