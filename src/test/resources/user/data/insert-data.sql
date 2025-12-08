@@ -13,9 +13,6 @@ INSERT INTO recipe_category (name) VALUES
 INSERT INTO plan_category (name) VALUES
 ('Weight Loss'), ('Muscle Gain'), ('Maintenance'), ('Endurance');
 
-INSERT INTO plan_type (name) VALUES
-('Diet'), ('Workout'), ('Mixed');
-
 INSERT INTO thread_category (name) VALUES
 ('General'), ('Nutrition'), ('Workouts'), ('Progress');
 
@@ -84,22 +81,22 @@ INSERT INTO recipe_food (recipe_id, food_id, quantity) VALUES
 (2, 2, 150.00), (2, 3, 100.00),
 (3, 5, 150.00), (3, 1, 100.00);
 
-INSERT INTO plan (is_public, name, description, user_id, plan_type_id, created_at) VALUES
-(true, 'Summer Cut', '12-week fat loss program', 1, 3, NOW()),
-(true, 'Strength Builder', '6-month strength program', 2, 2, NOW()),
-(true, 'Balanced Lifestyle', 'General fitness maintenance', 3, 3, NOW());
+INSERT INTO plan (is_public, name, description, user_id, structure_type, created_at) VALUES
+(true, 'Summer Cut', '12-week fat loss program', 1, 'WEEKLY_SPLIT', NOW()),
+(true, 'Strength Builder', '6-month strength program', 2, 'FIXED_PROGRAM', NOW()),
+(true, 'Balanced Lifestyle', 'General fitness maintenance', 3, 'WEEKLY_SPLIT', NOW());
 
 INSERT INTO plan_category_association (plan_id, plan_category_id) VALUES
 (1, 1),
 (2, 2),
 (3, 3);
 
-INSERT INTO workout (name, duration, plan_id, orderIndex) VALUES
-('Upper Body A', 60.00, 1, 1),
-('Lower Body A', 45.00, 1, 2),
-('Push Day', 75.00, 2, 1),
-('Pull Day', 75.00, 2, 2),
-('Full Body', 50.00, 3, 1);
+INSERT INTO workout (name, duration, plan_id, orderIndex, rest_days_after) VALUES
+('Upper Body A', 60.00, 1, 1, 1),
+('Lower Body A', 45.00, 1, 2, 2),
+('Push Day', 75.00, 2, 1, 1),
+('Pull Day', 75.00, 2, 2, 1),
+('Full Body', 50.00, 3, 1, 0);
 
 INSERT INTO workout_set_group (workout_id, orderIndex, restSeconds) VALUES
 (1, 1, 90), (1, 2, 60),

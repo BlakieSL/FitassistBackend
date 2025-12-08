@@ -18,5 +18,6 @@ public class WorkoutResponseDto implements Serializable {
     private int id;
     private String name;
     private BigDecimal duration;
+    private int restDaysAfter;
     private List<WorkoutSetGroupResponseDto> workoutSetGroups;
 }

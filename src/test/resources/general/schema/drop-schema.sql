@@ -30,7 +30,6 @@ DROP TABLE IF EXISTS target_muscle;
 DROP TABLE IF EXISTS thread_category;
 DROP TABLE IF EXISTS role;
 DROP TABLE IF EXISTS recipe_category;
-DROP TABLE IF EXISTS plan_type;
 DROP TABLE IF EXISTS plan_category;
 DROP TABLE IF EXISTS food;
 DROP TABLE IF EXISTS food_category;

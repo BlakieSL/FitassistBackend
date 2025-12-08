@@ -37,6 +37,7 @@ import source.code.service.implementation.specificationHelpers.SpecificationDepe
 import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.PlanSpecification;
+import source.code.helper.Enum.model.PlanStructureType;
 
 import java.util.List;
 
@@ -51,7 +52,6 @@ public class PlanServiceImpl implements PlanService {
     private final TextRepository textRepository;
     private final SpecificationDependencies dependencies;
     private final PlanPopulationService planPopulationService;
-    private final PlanTypeRepository planTypeRepository;
     private final PlanCategoryRepository planCategoryRepository;
     private final EquipmentRepository equipmentRepository;
 
@@ -63,7 +63,9 @@ public class PlanServiceImpl implements PlanService {
                            PlanRepository planRepository,
                            TextRepository textRepository,
                            SpecificationDependencies dependencies,
-                           PlanPopulationService planPopulationService, PlanTypeRepository planTypeRepository, PlanCategoryRepository planCategoryRepository, EquipmentRepository equipmentRepository) {
+                           PlanPopulationService planPopulationService,
+                           PlanCategoryRepository planCategoryRepository,
+                           EquipmentRepository equipmentRepository) {
         this.planMapper = planMapper;
         this.jsonPatchService = jsonPatchService;
         this.validationService = validationService;
@@ -73,7 +75,6 @@ public class PlanServiceImpl implements PlanService {
         this.textRepository = textRepository;
         this.dependencies = dependencies;
         this.planPopulationService = planPopulationService;
-        this.planTypeRepository = planTypeRepository;
         this.planCategoryRepository = planCategoryRepository;
         this.equipmentRepository = equipmentRepository;
     }
@@ -166,9 +167,7 @@ public class PlanServiceImpl implements PlanService {
     @Override
     @Cacheable(value = CacheNames.PLAN_CATEGORIES)
     public PlanCategoriesResponseDto getAllPlanCategories() {
-        var types = planTypeRepository.findAll().stream()
-                .map(type -> new CategoryResponseDto(type.getId(), type.getName()))
-                .toList();
+        var structureTypes = List.of(PlanStructureType.values());
 
         var categories = planCategoryRepository.findAll().stream()
                 .map(category -> new CategoryResponseDto(category.getId(), category.getName()))
@@ -178,7 +177,7 @@ public class PlanServiceImpl implements PlanService {
                 .map(equipment -> new CategoryResponseDto(equipment.getId(), equipment.getName()))
                 .toList();
 
-        return new PlanCategoriesResponseDto(types, categories, equipments);
+        return new PlanCategoriesResponseDto(structureTypes, categories, equipments);
     }
 
     private Plan find(int planId) {

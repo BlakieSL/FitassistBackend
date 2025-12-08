@@ -27,16 +27,13 @@ INSERT INTO mechanics_type (id, name) VALUES
 INSERT INTO exercise (id, description, name, equipment_id, expertise_level_id, force_type_id, mechanics_type_id) VALUES
 (1, 'Standard pushup exercise', 'Pushups', 1, 1, 1, 1);
 
-INSERT INTO plan_type (id, name) VALUES
-(1, 'Fitness');
+INSERT INTO plan (is_public, id, description, name, structure_type, user_id, created_at) VALUES
+(true, 1, 'Beginner workout plan', 'Beginner Plan', 'WEEKLY_SPLIT', 1, NOW()),
+(false, 2, 'Advanced workout plan', 'Advanced Plan', 'FIXED_PROGRAM', 2, NOW());
 
-INSERT INTO plan (is_public, id, description, name, plan_type_id, user_id, created_at) VALUES
-(true, 1, 'Beginner workout plan', 'Beginner Plan', 1, 1, NOW()),
-(false, 2, 'Advanced workout plan', 'Advanced Plan', 1, 2, NOW());
-
-INSERT INTO workout (id, duration, name, plan_id, orderIndex) VALUES
-(1, 30.0, 'Morning Workout', 1, 1),
-(2, 45.0, 'Evening Workout', 2, 1);
+INSERT INTO workout (id, duration, name, plan_id, orderIndex, rest_days_after) VALUES
+(1, 30.0, 'Morning Workout', 1, 1, 1),
+(2, 45.0, 'Evening Workout', 2, 1, 0);
 
 INSERT INTO workout_set_group (id, orderIndex, restSeconds, workout_id) VALUES
 (1, 1, 60, 1),

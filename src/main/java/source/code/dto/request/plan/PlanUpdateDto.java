@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.helper.Enum.model.PlanStructureType;
 
 import java.util.List;
 
@@ -20,6 +21,6 @@ public class PlanUpdateDto {
     @Size(max = DESCRIPTION_MAX_LENGTH)
     private String description;
     private Boolean isPublic;
-    private Integer planTypeId;
+    private PlanStructureType structureType;
     private List<Integer> categoryIds;
 }

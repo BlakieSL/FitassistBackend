@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
+import source.code.exception.InvalidFilterOperationException;
+import source.code.exception.InvalidFilterValueException;
 import source.code.helper.Enum.model.LikesAndSaves;
+import source.code.helper.Enum.model.PlanStructureType;
 import source.code.helper.Enum.model.field.PlanField;
 import source.code.model.exercise.Equipment;
 import source.code.model.exercise.Exercise;
@@ -22,7 +25,7 @@ import source.code.service.implementation.specificationHelpers.SpecificationDepe
 public class PlanSpecification implements Specification<Plan> {
     private static final String PLAN_CATEGORY_ASSOCIATIONS_FIELD = "planCategoryAssociations";
     private static final String PLAN_CATEGORY_FIELD = "planCategory";
-    private static final String PLAN_TYPE_FIELD = "planType";
+    private static final String STRUCTURE_TYPE_FIELD = "structureType";
     private static final String USER_FIELD = "user";
     private static final String IS_PUBLIC_FIELD = "isPublic";
     private static final String WORKOUTS_FIELD = "workouts";
@@ -38,10 +41,6 @@ public class PlanSpecification implements Specification<Plan> {
 
     @Override
     public Predicate toPredicate(@NonNull Root<Plan> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
-       /*
-        dependencies.getFetchInitializer().initializeFetches(root, query, PLAN_TYPE_FIELD);
-        initializeComplexFetches(root, query);
-        */
         Predicate visibilityPredicate = dependencies.getVisibilityPredicateBuilder()
                 .buildVisibilityPredicate(builder, root, criteria, USER_FIELD, ID_FIELD, IS_PUBLIC_FIELD);
 
@@ -51,19 +50,9 @@ public class PlanSpecification implements Specification<Plan> {
         return builder.and(visibilityPredicate, fieldPredicate);
     }
 
-    private void initializeComplexFetches(Root<Plan> root, CriteriaQuery<?> query) {
-        if (query.getResultType() == Long.class || query.getResultType() == long.class) {
-            return;
-        }
-
-        Fetch<Plan, PlanCategoryAssociation> categoryAssociationsFetch =
-                root.fetch(PLAN_CATEGORY_ASSOCIATIONS_FIELD, JoinType.LEFT);
-        categoryAssociationsFetch.fetch(PLAN_CATEGORY_FIELD, JoinType.LEFT);
-    }
-
     private Predicate buildPredicateForField(CriteriaBuilder builder, Root<Plan> root, PlanField field) {
         return switch (field) {
-            case TYPE -> buildTypePredicate(builder, root);
+            case STRUCTURE_TYPE -> buildStructureTypePredicate(builder, root);
             case CATEGORY -> buildCategoryPredicate(builder, root);
             case EQUIPMENT -> buildEquipmentPredicate(root, builder);
             case CREATED_BY_USER -> GenericSpecificationHelper.buildPredicateEntityProperty(
@@ -114,8 +103,21 @@ public class PlanSpecification implements Specification<Plan> {
                 TYPE_FIELD, interactionType);
     }
 
-    private Predicate buildTypePredicate(CriteriaBuilder builder, Root<Plan> root) {
-        return GenericSpecificationHelper
-                .buildPredicateEntityProperty(builder, criteria, root, PLAN_TYPE_FIELD);
+    private Predicate buildStructureTypePredicate(CriteriaBuilder builder, Root<Plan> root) {
+        PlanStructureType structureType = parseStructureType(criteria.getValue());
+        Path<PlanStructureType> path = root.get(STRUCTURE_TYPE_FIELD);
+
+        return switch (criteria.getOperation()) {
+            case EQUAL -> builder.equal(path, structureType);
+            case NOT_EQUAL -> builder.notEqual(path, structureType);
+            default -> throw new InvalidFilterOperationException(criteria.getOperation().name());
+        };
+    }
+
+    private PlanStructureType parseStructureType(Object value) {
+        if (value instanceof PlanStructureType type) {
+            return type;
+        }
+        throw new InvalidFilterValueException(value.toString());
     }
 }

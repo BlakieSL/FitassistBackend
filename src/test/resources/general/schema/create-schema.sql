@@ -101,13 +101,6 @@ create table plan_category
     name varchar(50) not null
 );
 
-create table plan_type
-(
-    id   int auto_increment
-        primary key,
-    name varchar(255) not null
-);
-
 create table recipe_category
 (
     id   int auto_increment
@@ -203,19 +196,17 @@ create table daily_cart_food
 
 create table plan
 (
-    id           int auto_increment
+    id             int auto_increment
         primary key,
-    description  varchar(255) not null,
-    name         varchar(100) not null,
-    views        int          not null default 0,
-    is_public BOOLEAN NOT NULL,
-    created_at   datetime(6)  not null,
-    plan_type_id int          not null,
-    user_id      int          not null,
+    description    varchar(255) not null,
+    name           varchar(100) not null,
+    views          int          not null default 0,
+    is_public      BOOLEAN      NOT NULL,
+    created_at     datetime(6)  not null,
+    structure_type enum ('WEEKLY_SPLIT', 'FIXED_PROGRAM') not null,
+    user_id        int          not null,
     constraint FK271ok4ss5pcte25w6o3hvv60x
-        foreign key (user_id) references user (id),
-    constraint FKt7sis5umk6kofuhe2lawg6oje
-        foreign key (plan_type_id) references plan_type (id)
+        foreign key (user_id) references user (id)
 );
 
 create table plan_category_association
@@ -447,12 +438,13 @@ create table user_thread
 
 create table workout
 (
-    id         int auto_increment
+    id              int auto_increment
         primary key,
-    duration   decimal(38, 2) not null,
-    name       varchar(50)    not null,
-    plan_id    int            not null,
-    orderIndex int            not null,
+    duration        decimal(38, 2) not null,
+    name            varchar(50)    not null,
+    plan_id         int            not null,
+    orderIndex      int            not null,
+    rest_days_after int            not null,
     constraint FK2ijomxprmdq73lr3kwu4mhh20
         foreign key (plan_id) references plan (id)
 );

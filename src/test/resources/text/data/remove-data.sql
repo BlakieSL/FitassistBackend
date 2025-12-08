@@ -3,7 +3,6 @@ DELETE FROM user_exercise;
 DELETE FROM text;
 
 DELETE FROM plan;
-DELETE FROM plan_type;
 
 DELETE FROM recipe;
 

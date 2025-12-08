@@ -29,4 +29,8 @@ public class WorkoutCreateDto {
     @NotNull
     @Positive
     private Integer orderIndex;
+
+    @NotNull
+    @PositiveOrZero
+    private Integer restDaysAfter;
 }

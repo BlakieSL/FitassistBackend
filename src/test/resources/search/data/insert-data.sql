@@ -19,9 +19,6 @@ INSERT INTO activity_category (name) VALUES
 INSERT INTO food_category (name) VALUES
 ('Fruits'), ('Vegetables'), ('Proteins'), ('Grains'), ('Dairy'), ('Fats');
 
-INSERT INTO plan_type (name) VALUES
-('Workout Plan'), ('Nutrition Plan'), ('Hybrid Plan');
-
 INSERT INTO recipe_category (name) VALUES
 ('Breakfast'), ('Lunch'), ('Dinner'), ('Snack'), ('Dessert');
 
@@ -60,7 +57,7 @@ INSERT INTO recipe (is_public, name, description, user_id, created_at) VALUES
 (true, 'Grilled Chicken & Veggies', 'Simple grilled chicken breast with roasted broccoli.', 1, NOW()),
 (true, 'Salmon & Rice Dinner', 'Baked salmon served with brown rice and steamed vegetables.', 1, NOW());
 
-INSERT INTO plan (is_public, name, description, plan_type_id, user_id, created_at) VALUES
-(true, 'Beginner Full Body Workout', 'A simple plan for starting out.', 1, 1, NOW()),
-(true, 'High-Protein Nutrition Guide', 'Meal ideas focusing on protein intake.', 2, 1, NOW()),
-(true, 'Fat Loss Hybrid Plan', 'Combines workouts and diet for fat loss.', 3, 1, NOW());
+INSERT INTO plan (is_public, name, description, structure_type, user_id, created_at) VALUES
+(true, 'Beginner Full Body Workout', 'A simple plan for starting out.', 'WEEKLY_SPLIT', 1, NOW()),
+(true, 'High-Protein Nutrition Guide', 'Meal ideas focusing on protein intake.', 'FIXED_PROGRAM', 1, NOW()),
+(true, 'Fat Loss Hybrid Plan', 'Combines workouts and diet for fat loss.', 'WEEKLY_SPLIT', 1, NOW());

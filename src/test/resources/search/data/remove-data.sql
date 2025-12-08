@@ -7,7 +7,6 @@ DELETE FROM mechanics_type;
 DELETE FROM target_muscle;
 DELETE FROM activity_category;
 DELETE FROM food_category;
-DELETE FROM plan_type;
 DELETE FROM recipe_category;
 DELETE FROM role;
 
