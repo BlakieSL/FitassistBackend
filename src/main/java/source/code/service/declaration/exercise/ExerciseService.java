@@ -15,7 +15,7 @@ import source.code.model.exercise.Exercise;
 import java.util.List;
 
 public interface ExerciseService {
-    ExerciseSummaryDto createExercise(ExerciseCreateDto dto);
+    ExerciseResponseDto createExercise(ExerciseCreateDto dto);
 
     void updateExercise(int exerciseId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
