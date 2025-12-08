@@ -23,7 +23,7 @@ import source.code.model.thread.ForumThread;
 import source.code.model.user.User;
 import source.code.model.workout.Workout;
 import source.code.model.workout.WorkoutSet;
-import source.code.model.workout.WorkoutSetGroup;
+import source.code.model.workout.WorkoutSetExercise;
 import source.code.repository.*;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.implementation.annotation.AuthAnnotationServiceImpl;
@@ -56,9 +56,9 @@ public class AuthAnnotationServiceTest {
     @Mock
     private WorkoutRepository workoutRepository;
     @Mock
-    private WorkoutSetRepository workoutSetRepository;
+    private WorkoutSetExerciseRepository workoutSetExerciseRepository;
     @Mock
-    private WorkoutSetGroupRepository workoutSetGroupRepository;
+    private WorkoutSetRepository workoutSetRepository;
     @Mock
     private CommentComplaintRepository commentComplaintRepository;
     @Mock
@@ -411,12 +411,29 @@ public class AuthAnnotationServiceTest {
     }
 
     @Test
+    void isWorkoutSetExerciseOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdmin() {
+        int workoutSetExerciseId = 9;
+        Plan plan = Plan.of(user);
+        Workout workout = Workout.of(plan);
+        WorkoutSet workoutSet = WorkoutSet.of(workout);
+        WorkoutSetExercise workoutSetExercise = WorkoutSetExercise.of(workoutSetExerciseId, workoutSet);
+
+        when(repositoryHelper.find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId))
+                .thenReturn(workoutSetExercise);
+        mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
+                .thenReturn(true);
+
+        boolean result = authAnnotationService.isWorkoutSetExerciseOwnerOrAdmin(workoutSetExerciseId);
+
+        assertTrue(result);
+    }
+
+    @Test
     void isWorkoutSetOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdmin() {
         int workoutSetId = 9;
         Plan plan = Plan.of(user);
         Workout workout = Workout.of(plan);
-        WorkoutSetGroup workoutSetGroup = WorkoutSetGroup.of(workout);
-        WorkoutSet workoutSet = WorkoutSet.of(workoutSetId, workoutSetGroup);
+        WorkoutSet workoutSet = WorkoutSet.of(workout);
 
         when(repositoryHelper.find(workoutSetRepository, WorkoutSet.class, workoutSetId))
                 .thenReturn(workoutSet);
@@ -424,23 +441,6 @@ public class AuthAnnotationServiceTest {
                 .thenReturn(true);
 
         boolean result = authAnnotationService.isWorkoutSetOwnerOrAdmin(workoutSetId);
-
-        assertTrue(result);
-    }
-
-    @Test
-    void isWorkoutSetGroupOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdmin() {
-        int workoutSetGroupId = 9;
-        Plan plan = Plan.of(user);
-        Workout workout = Workout.of(plan);
-        WorkoutSetGroup workoutSetGroup = WorkoutSetGroup.of(workout);
-
-        when(repositoryHelper.find(workoutSetGroupRepository, WorkoutSetGroup.class, workoutSetGroupId))
-                .thenReturn(workoutSetGroup);
-        mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
-                .thenReturn(true);
-
-        boolean result = authAnnotationService.isWorkoutSetGroupOwnerOrAdmin(workoutSetGroupId);
 
         assertTrue(result);
     }

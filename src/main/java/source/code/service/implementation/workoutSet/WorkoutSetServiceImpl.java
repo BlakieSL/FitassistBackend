@@ -3,11 +3,12 @@ package source.code.service.implementation.workoutSet;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import source.code.dto.request.workoutSet.WorkoutSetCreateDto;
 import source.code.dto.request.workoutSet.WorkoutSetUpdateDto;
 import source.code.dto.response.workoutSet.WorkoutSetResponseDto;
+import source.code.exception.RecordNotFoundException;
 import source.code.mapper.workoutSet.WorkoutSetMapper;
 import source.code.model.workout.WorkoutSet;
 import source.code.repository.WorkoutSetRepository;
@@ -22,33 +23,35 @@ import java.util.List;
 public class WorkoutSetServiceImpl implements WorkoutSetService {
     private final JsonPatchService jsonPatchService;
     private final ValidationService validationService;
-    private final WorkoutSetMapper workoutSetMapper;
     private final RepositoryHelper repositoryHelper;
     private final WorkoutSetRepository workoutSetRepository;
+    private final WorkoutSetMapper workoutSetMapper;
 
     public WorkoutSetServiceImpl(JsonPatchService jsonPatchService,
                                  ValidationService validationService,
-                                 WorkoutSetMapper workoutSetMapper,
                                  RepositoryHelper repositoryHelper,
-                                 WorkoutSetRepository workoutSetRepository) {
+                                 WorkoutSetRepository workoutSetRepository,
+                                 WorkoutSetMapper workoutSetMapper) {
         this.jsonPatchService = jsonPatchService;
         this.validationService = validationService;
-        this.workoutSetMapper = workoutSetMapper;
         this.repositoryHelper = repositoryHelper;
         this.workoutSetRepository = workoutSetRepository;
+        this.workoutSetMapper = workoutSetMapper;
     }
 
-    @Override
     @Transactional
+    @Override
     public WorkoutSetResponseDto createWorkoutSet(WorkoutSetCreateDto createDto) {
-        WorkoutSet workoutSet = workoutSetRepository.save(workoutSetMapper.toEntity(createDto));
-        return workoutSetMapper.toResponseDto(workoutSet);
+        WorkoutSet saved = workoutSetRepository.save(workoutSetMapper.toEntity(createDto));
+
+        workoutSetRepository.flush();
+
+        return findAndMap(saved.getId());
     }
 
-    @Override
     @Transactional
-    public void updateWorkoutSet(int workoutSetId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
+    @Override
+    public void updateWorkoutSet(int workoutSetId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
         WorkoutSet workoutSet = find(workoutSetId);
         WorkoutSetUpdateDto patched = applyPatchToWorkoutSet(patch);
 
@@ -57,8 +60,8 @@ public class WorkoutSetServiceImpl implements WorkoutSetService {
         workoutSetRepository.save(workoutSet);
     }
 
-    @Override
     @Transactional
+    @Override
     public void deleteWorkoutSet(int workoutSetId) {
         WorkoutSet workoutSet = find(workoutSetId);
         workoutSetRepository.delete(workoutSet);
@@ -66,24 +69,28 @@ public class WorkoutSetServiceImpl implements WorkoutSetService {
 
     @Override
     public WorkoutSetResponseDto getWorkoutSet(int workoutSetId) {
-        WorkoutSet workoutSet = find(workoutSetId);
-        return workoutSetMapper.toResponseDto(workoutSet);
+        return findAndMap(workoutSetId);
     }
 
     @Override
-    public List<WorkoutSetResponseDto> getAllWorkoutSetsForWorkoutSetGroup(int workoutSetGroupId) {
-        return workoutSetRepository.findAllByWorkoutSetGroupId(workoutSetGroupId).stream()
+    public List<WorkoutSetResponseDto> getAllWorkoutSetsForWorkout(int workoutId) {
+        return workoutSetRepository.findAllByWorkoutId(workoutId).stream()
                 .map(workoutSetMapper::toResponseDto)
                 .toList();
     }
 
-    private WorkoutSet find(int workoutId) {
-        return repositoryHelper.find(workoutSetRepository, WorkoutSet.class, workoutId);
+    private WorkoutSet find(int workoutSetId) {
+        return repositoryHelper.find(workoutSetRepository, WorkoutSet.class, workoutSetId);
+    }
+
+    private WorkoutSetResponseDto findAndMap(int workoutSetId) {
+        WorkoutSet workoutSet = workoutSetRepository.findByIdWithDetails(workoutSetId)
+                .orElseThrow(() -> new RecordNotFoundException(WorkoutSet.class, workoutSetId));
+        return workoutSetMapper.toResponseDto(workoutSet);
     }
 
     private WorkoutSetUpdateDto applyPatchToWorkoutSet(JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         return jsonPatchService.createFromPatch(patch, WorkoutSetUpdateDto.class);
     }
 }

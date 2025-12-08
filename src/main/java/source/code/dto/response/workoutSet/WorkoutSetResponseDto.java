@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.response.workoutSetExercise.WorkoutSetExerciseResponseDto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,9 +16,6 @@ import java.math.BigDecimal;
 public class WorkoutSetResponseDto implements Serializable {
     private int id;
     private int orderIndex;
-    private BigDecimal weight;
-    private BigDecimal repetitions;
-
-    private int exerciseId;
-    private String exerciseName;
+    private int restSeconds;
+    private List<WorkoutSetExerciseResponseDto> workoutSetExercises;
 }

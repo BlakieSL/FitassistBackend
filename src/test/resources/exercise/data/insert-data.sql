@@ -48,14 +48,14 @@ INSERT INTO workout (name, duration, plan_id, orderIndex, rest_days_after) VALUE
 ('Lower Body Focus', 60, 2, 1, 2),
 ('Cardio & Core', 30, 3, 1, 0);
 
-INSERT INTO workout_set_group (orderIndex, restSeconds, workout_id) VALUES
+INSERT INTO workout_set (orderIndex, restSeconds, workout_id) VALUES
 (1, 60, 1),
 (2, 90, 1),
 (1, 60, 2),
 (1, 60, 3),
 (1, 120, 4);
 
-INSERT INTO workout_set (exercise_id, workout_set_group_id, repetitions, weight, orderIndex) VALUES
+INSERT INTO workout_set_exercise (exercise_id, workout_set_id, repetitions, weight, orderIndex) VALUES
 (1, 1, 10, 50.00, 1),
 (2, 1, 12, 30.00, 2),
 (3, 2, 8, 80.00, 1),

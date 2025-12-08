@@ -17,20 +17,19 @@ import source.code.model.plan.PlanCategoryAssociation;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.workout.Workout;
 import source.code.model.workout.WorkoutSet;
-import source.code.model.workout.WorkoutSetGroup;
+import source.code.model.workout.WorkoutSetExercise;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 
 
 @AllArgsConstructor(staticName = "of")
 public class PlanSpecification implements Specification<Plan> {
     private static final String PLAN_CATEGORY_ASSOCIATIONS_FIELD = "planCategoryAssociations";
-    private static final String PLAN_CATEGORY_FIELD = "planCategory";
     private static final String STRUCTURE_TYPE_FIELD = "structureType";
     private static final String USER_FIELD = "user";
     private static final String IS_PUBLIC_FIELD = "isPublic";
     private static final String WORKOUTS_FIELD = "workouts";
-    private static final String WORKOUT_SET_GROUPS_FIELD = "workoutSetGroups";
     private static final String WORKOUT_SETS_FIELD = "workoutSets";
+    private static final String WORKOUT_SET_EXERCISES_FIELD = "workoutSetExercises";
     private static final String EXERCISE_FIELD = "exercise";
     private static final String EQUIPMENT_FIELD = "equipment";
     private static final String TYPE_FIELD = "type";
@@ -81,9 +80,9 @@ public class PlanSpecification implements Specification<Plan> {
 
     private Predicate buildEquipmentPredicate(Root<Plan> root, CriteriaBuilder builder) {
         Join<Plan, Workout> workoutJoin = root.join(WORKOUTS_FIELD);
-        Join<Workout, WorkoutSetGroup> setGroupJoin = workoutJoin.join(WORKOUT_SET_GROUPS_FIELD);
-        Join<WorkoutSetGroup, WorkoutSet> setJoin = setGroupJoin.join(WORKOUT_SETS_FIELD);
-        Join<WorkoutSet, Exercise> exerciseJoin = setJoin.join(EXERCISE_FIELD);
+        Join<Workout, WorkoutSet> workoutSetJoin = workoutJoin.join(WORKOUT_SETS_FIELD);
+        Join<WorkoutSet, WorkoutSetExercise> workoutSetExerciseJoin = workoutSetJoin.join(WORKOUT_SET_EXERCISES_FIELD);
+        Join<WorkoutSetExercise, Exercise> exerciseJoin = workoutSetExerciseJoin.join(EXERCISE_FIELD);
         Join<Exercise, Equipment> equipmentJoin = exerciseJoin.join(EQUIPMENT_FIELD);
 
         return switch (criteria.getOperation()) {
