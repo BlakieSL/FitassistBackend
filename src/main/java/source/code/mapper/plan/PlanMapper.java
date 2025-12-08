@@ -14,6 +14,7 @@ import source.code.model.plan.PlanCategory;
 import source.code.model.plan.PlanCategoryAssociation;
 import source.code.model.text.PlanInstruction;
 import source.code.model.user.User;
+import source.code.helper.Enum.model.PlanStructureType;
 import source.code.repository.ExpertiseLevelRepository;
 import source.code.repository.PlanCategoryRepository;
 import source.code.repository.UserRepository;
@@ -95,6 +96,17 @@ public abstract class PlanMapper {
                 )).toList();
 
         plan.getPlanInstructions().addAll(instructions);
+    }
+
+    @AfterMapping
+    protected void calculateTotalWeeks(@MappingTarget PlanResponseDto dto, Plan plan) {
+        if (plan.getPlanStructureType() != PlanStructureType.FIXED_PROGRAM) return;
+
+        int totalDays = plan.getWorkouts().stream()
+                .mapToInt(workout -> workout.getRestDaysAfter() + 1)
+                .sum();
+
+        dto.setTotalWeeks((int) Math.ceil(totalDays / 7.0));
     }
 
     @Named("userIdToUser")
