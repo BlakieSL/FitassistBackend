@@ -38,6 +38,8 @@ public class PlanResponseDto implements Serializable {
     private boolean disliked;
     private boolean saved;
 
+    private Integer totalWeeks;
+
     private PlanStructureType planStructureType;
     private List<WorkoutResponseDto> workouts;
     private List<PlanInstructionResponseDto> instructions;
