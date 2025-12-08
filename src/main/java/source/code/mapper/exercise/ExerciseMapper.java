@@ -69,7 +69,7 @@ public abstract class ExerciseMapper {
     @Mapping(target = "equipment", source = "equipmentId", qualifiedByName = "mapExerciseEquipment")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userExercises", ignore = true)
-    @Mapping(target = "workoutSets", ignore = true)
+    @Mapping(target = "workoutSetExercises", ignore = true)
     @Mapping(target = "exerciseInstructions", ignore = true)
     @Mapping(target = "exerciseTips", ignore = true)
     public abstract Exercise toEntity(ExerciseCreateDto dto);
@@ -82,7 +82,7 @@ public abstract class ExerciseMapper {
     @Mapping(target = "equipment", source = "equipmentId", qualifiedByName = "mapExerciseEquipment")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userExercises", ignore = true)
-    @Mapping(target = "workoutSets", ignore = true)
+    @Mapping(target = "workoutSetExercises", ignore = true)
     @Mapping(target = "exerciseInstructions", ignore = true)
     @Mapping(target = "exerciseTips", ignore = true)
     public abstract void updateExerciseFromDto(@MappingTarget Exercise exercise, ExerciseUpdateDto request);

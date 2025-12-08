@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@authAnnotationServiceImpl.isWorkoutSetOwnerOrAdmin(#createDto.workoutSetGroupId)")
+@PreAuthorize("@authAnnotationServiceImpl.isWorkoutOwnerOrAdmin(#createDto.workoutId)")
 public @interface WorkoutSetOwnerOrAdminCreation {
 }

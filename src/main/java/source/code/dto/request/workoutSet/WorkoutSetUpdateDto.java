@@ -6,19 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutSetUpdateDto {
     @Positive
-    private BigDecimal weight;
-    @Positive
-    private BigDecimal repetitions;
-    private Integer workoutSetGroupId;
-    private Integer exerciseId;
-    @Positive
     private Integer orderIndex;
+    @Positive
+    private Integer restSeconds;
+    private Integer workoutId;
 }

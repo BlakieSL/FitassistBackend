@@ -68,13 +68,13 @@ INSERT INTO workout (id, duration, name, plan_id, orderIndex, rest_days_after) V
 (3, 30.0, 'HIIT Session', 3, 1, 0),
 (4, 50.0, 'Full Body', 4, 1, 1);
 
-INSERT INTO workout_set_group (id, orderIndex, restSeconds, workout_id) VALUES
+INSERT INTO workout_set (id, orderIndex, restSeconds, workout_id) VALUES
 (1, 1, 60, 1),
 (2, 2, 60, 1),
 (3, 1, 90, 2),
 (4, 1, 30, 3);
 
-INSERT INTO workout_set (id, repetitions, weight, exercise_id, workout_set_group_id, orderIndex) VALUES
+INSERT INTO workout_set_exercise (id, repetitions, weight, exercise_id, workout_set_id, orderIndex) VALUES
 (1, 10, 135.0, 1, 1, 1),
 (2, 10, 135.0, 1, 1, 2),
 (3, 8, 135.0, 1, 1, 3),

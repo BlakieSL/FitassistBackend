@@ -59,7 +59,7 @@ public class WorkoutControllerTest {
                         jsonPath("$.id").exists(),
                         jsonPath("$.name").value("Evening Workout"),
                         jsonPath("$.duration").value(45.0),
-                        jsonPath("$.workoutSetGroups").isArray()
+                        jsonPath("$.workoutSets").isArray()
                 );
     }
 
@@ -228,7 +228,7 @@ public class WorkoutControllerTest {
                         jsonPath("$.id").value(id),
                         jsonPath("$.name").value("Morning Workout"),
                         jsonPath("$.duration").value(30.0),
-                        jsonPath("$.workoutSetGroups").isArray()
+                        jsonPath("$.workoutSets").isArray()
                 );
     }
 
@@ -245,7 +245,7 @@ public class WorkoutControllerTest {
                         jsonPath("$.id").value(id),
                         jsonPath("$.name").value("Morning Workout"),
                         jsonPath("$.duration").value(30.0),
-                        jsonPath("$.workoutSetGroups").isArray()
+                        jsonPath("$.workoutSets").isArray()
                 );
     }
 
@@ -284,7 +284,7 @@ public class WorkoutControllerTest {
                         jsonPath("$[0].id").value(1),
                         jsonPath("$[0].name").value("Morning Workout"),
                         jsonPath("$[0].duration").value(30.0),
-                        jsonPath("$[0].workoutSetGroups").isArray()
+                        jsonPath("$[0].workoutSets").isArray()
                 );
     }
 
@@ -302,7 +302,7 @@ public class WorkoutControllerTest {
                         jsonPath("$[0].id").value(1),
                         jsonPath("$[0].name").value("Morning Workout"),
                         jsonPath("$[0].duration").value(30.0),
-                        jsonPath("$[0].workoutSetGroups").isArray()
+                        jsonPath("$[0].workoutSets").isArray()
                 );
     }
 
@@ -320,7 +320,7 @@ public class WorkoutControllerTest {
                         jsonPath("$[0].id").value(1),
                         jsonPath("$[0].name").value("Morning Workout"),
                         jsonPath("$[0].duration").value(30.0),
-                        jsonPath("$[0].workoutSetGroups").isArray()
+                        jsonPath("$[0].workoutSets").isArray()
                 );
     }
 

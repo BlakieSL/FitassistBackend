@@ -1,6 +1,6 @@
 delete from media;
+delete from workout_set_exercise;
 delete from workout_set;
-delete from workout_set_group;
 delete from workout;
 delete from exercise_target_muscle;
 delete from user_exercise;

@@ -12,9 +12,9 @@ public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
     @Query("""
         SELECT w
         FROM Workout w
-        LEFT JOIN FETCH w.workoutSetGroups wsg
-        LEFT JOIN FETCH wsg.workoutSets ws
-        LEFT JOIN FETCH ws.exercise e
+        LEFT JOIN FETCH w.workoutSets ws
+        LEFT JOIN FETCH ws.workoutSetExercises wse
+        LEFT JOIN FETCH wse.exercise e
         WHERE w.plan.id = :planId
         ORDER BY w.orderIndex ASC
     """)
@@ -23,9 +23,9 @@ public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
     @Query("""
         SELECT w
         FROM Workout w
-        LEFT JOIN FETCH w.workoutSetGroups wsg
-        LEFT JOIN FETCH wsg.workoutSets ws
-        LEFT JOIN FETCH ws.exercise e
+        LEFT JOIN FETCH w.workoutSets ws
+        LEFT JOIN FETCH ws.workoutSetExercises wse
+        LEFT JOIN FETCH wse.exercise e
         WHERE w.id = :workoutId
     """)
     Optional<Workout> findByIdWithDetails(@Param("workoutId") int workoutId);

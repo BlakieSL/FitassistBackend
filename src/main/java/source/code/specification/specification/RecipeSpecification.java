@@ -30,8 +30,6 @@ public class RecipeSpecification implements Specification<Recipe> {
 
     @Override
     public Predicate toPredicate(@NonNull Root<Recipe> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
-        //initializeComplexFetches(root);
-
         Predicate visibilityPredicate = dependencies.getVisibilityPredicateBuilder()
                 .buildVisibilityPredicate(builder, root, criteria, USER_FIELD, ID_FIELD, IS_PUBLIC_FIELD);
 
@@ -39,12 +37,6 @@ public class RecipeSpecification implements Specification<Recipe> {
 
         Predicate fieldPredicate = buildPredicateForField(builder, root, field);
         return builder.and(visibilityPredicate, fieldPredicate);
-    }
-
-    private void initializeComplexFetches(Root<Recipe> root) {
-        Fetch<Recipe, RecipeCategoryAssociation> categoryAssociationsFetch =
-                root.fetch(RECIPE_CATEGORY_ASSOCIATIONS_FIELD, JoinType.LEFT);
-        categoryAssociationsFetch.fetch(RECIPE_CATEGORY_FIELD, JoinType.LEFT);
     }
 
     private Predicate buildPredicateForField(

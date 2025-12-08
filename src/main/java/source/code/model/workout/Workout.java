@@ -54,7 +54,7 @@ public class Workout {
 
     @OneToMany(mappedBy = "workout", cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
     @OrderBy("orderIndex ASC")
-    private final Set<WorkoutSetGroup> workoutSetGroups = new LinkedHashSet<>();
+    private final Set<WorkoutSet> workoutSets = new LinkedHashSet<>();
 
     public static Workout of(Integer id, Plan plan) {
         Workout workout = new Workout();

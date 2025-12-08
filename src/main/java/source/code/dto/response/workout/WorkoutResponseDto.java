@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.dto.response.workoutSetGroup.WorkoutSetGroupResponseDto;
+import source.code.dto.response.workoutSet.WorkoutSetResponseDto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -19,5 +19,5 @@ public class WorkoutResponseDto implements Serializable {
     private String name;
     private BigDecimal duration;
     private int restDaysAfter;
-    private List<WorkoutSetGroupResponseDto> workoutSetGroups;
+    private List<WorkoutSetResponseDto> workoutSets;
 }
