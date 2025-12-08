@@ -447,11 +447,12 @@ create table user_thread
 
 create table workout
 (
-    id       int auto_increment
+    id         int auto_increment
         primary key,
-    duration decimal(38, 2) not null,
-    name     varchar(50)    not null,
-    plan_id  int            not null,
+    duration   decimal(38, 2) not null,
+    name       varchar(50)    not null,
+    plan_id    int            not null,
+    orderIndex int            not null,
     constraint FK2ijomxprmdq73lr3kwu4mhh20
         foreign key (plan_id) references plan (id)
 );
@@ -475,6 +476,7 @@ create table workout_set
     weight               decimal(38, 2) not null,
     exercise_id          int            not null,
     workout_set_group_id int            not null,
+    orderIndex           int            not null,
     constraint FKhg1c36fv3o7wlsv0w31m7un18
         foreign key (exercise_id) references exercise (id),
     constraint FKqt2vub0hl6yhxaul5hwpbjwwe

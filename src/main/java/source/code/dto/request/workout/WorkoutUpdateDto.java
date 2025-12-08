@@ -1,6 +1,7 @@
 package source.code.dto.request.workout;
 
 
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -22,4 +23,7 @@ public class WorkoutUpdateDto {
 
     @PositiveOrZero
     private BigDecimal duration;
+
+    @Positive
+    private Integer orderIndex;
 }

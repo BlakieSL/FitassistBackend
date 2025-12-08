@@ -30,6 +30,10 @@ public class WorkoutSet {
     private BigDecimal repetitions;
 
     @NotNull
+    @Column(nullable = false)
+    private Integer orderIndex;
+
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "workout_set_group_id", nullable = false)
     private WorkoutSetGroup workoutSetGroup;

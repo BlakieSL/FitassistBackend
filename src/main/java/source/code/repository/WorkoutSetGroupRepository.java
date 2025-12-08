@@ -1,5 +1,6 @@
 package source.code.repository;
 
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import source.code.model.workout.WorkoutSetGroup;
@@ -13,9 +14,9 @@ public interface WorkoutSetGroupRepository extends JpaRepository<WorkoutSetGroup
         FROM WorkoutSetGroup wsg
         LEFT JOIN FETCH wsg.workoutSets ws
         LEFT JOIN FETCH ws.exercise e
-        WHERE wsg.id = :id
+        WHERE wsg.workout.id = :workoutId
     """)
-    List<WorkoutSetGroup> findAllByWorkoutId(Integer workoutId);
+    List<WorkoutSetGroup> findAllByWorkoutId(@Param("workoutId") Integer workoutId);
 
     @Query("""
         SELECT wsg
@@ -24,5 +25,5 @@ public interface WorkoutSetGroupRepository extends JpaRepository<WorkoutSetGroup
         LEFT JOIN FETCH ws.exercise e
         WHERE wsg.id = :id
     """)
-    Optional<WorkoutSetGroup> findByIdWithDetails(int id);
+    Optional<WorkoutSetGroup> findByIdWithDetails(@Param("id") int id);
 }
