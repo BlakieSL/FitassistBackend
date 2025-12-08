@@ -140,7 +140,7 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public Page<PlanSummaryDto> getFilteredPlans(FilterDto filter, Pageable pageable) {
-        SpecificationFactory<Plan> planFactory = PlanSpecification::of;
+        SpecificationFactory<Plan> planFactory = PlanSpecification::new;
         SpecificationBuilder<Plan> specificationBuilder = SpecificationBuilder.of(filter, planFactory, dependencies);
         Specification<Plan> specification = specificationBuilder.build();
 

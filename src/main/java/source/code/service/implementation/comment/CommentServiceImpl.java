@@ -142,7 +142,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Page<CommentSummaryDto> getFilteredComments(FilterDto filter, Pageable pageable) {
-        SpecificationFactory<Comment> commentFactory = CommentSpecification::of;
+        SpecificationFactory<Comment> commentFactory = CommentSpecification::new;
         SpecificationBuilder<Comment> specificationBuilder = SpecificationBuilder.of(filter, commentFactory, dependencies);
         Specification<Comment> specification = specificationBuilder.build();
 

@@ -115,7 +115,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 
     @Override
     public Page<ForumThreadSummaryDto> getFilteredForumThreads(FilterDto filter, Pageable pageable) {
-        SpecificationFactory<ForumThread> threadFactory = ForumThreadSpecification::of;
+        SpecificationFactory<ForumThread> threadFactory = ForumThreadSpecification::new;
         SpecificationBuilder<ForumThread> specificationBuilder = SpecificationBuilder.of(filter, threadFactory, dependencies);
         Specification<ForumThread> specification = specificationBuilder.build();
 

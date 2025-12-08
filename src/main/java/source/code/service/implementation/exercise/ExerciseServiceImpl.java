@@ -155,7 +155,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Override
     public Page<ExerciseSummaryDto> getFilteredExercises(FilterDto filter, Pageable pageable) {
-        SpecificationFactory<Exercise> exerciseFactory = ExerciseSpecification::of;
+        SpecificationFactory<Exercise> exerciseFactory = ExerciseSpecification::new;
         SpecificationBuilder<Exercise> specificationBuilder = SpecificationBuilder.of(filter, exerciseFactory, dependencies);
         Specification<Exercise> specification = specificationBuilder.build();
 

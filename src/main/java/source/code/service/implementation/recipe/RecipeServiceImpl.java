@@ -124,7 +124,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public Page<RecipeSummaryDto> getFilteredRecipes(FilterDto filter, Pageable pageable) {
-        SpecificationFactory<Recipe> recipeFactory = RecipeSpecification::of;
+        SpecificationFactory<Recipe> recipeFactory = RecipeSpecification::new;
         SpecificationBuilder<Recipe> specificationBuilder = SpecificationBuilder.of(filter, recipeFactory, dependencies);
         Specification<Recipe> specification = specificationBuilder.build();
 

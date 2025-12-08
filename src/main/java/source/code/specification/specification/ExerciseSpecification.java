@@ -1,20 +1,17 @@
 package source.code.specification.specification;
 
-import jakarta.persistence.criteria.*;
-import lombok.AllArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.lang.NonNull;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.helper.Enum.model.LikesAndSaves;
 import source.code.helper.Enum.model.field.ExerciseField;
 import source.code.model.exercise.Exercise;
 import source.code.model.exercise.ExerciseTargetMuscle;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
+import source.code.specification.PredicateContext;
 
-@AllArgsConstructor(staticName = "of")
-public class ExerciseSpecification implements Specification<Exercise> {
-    private final FilterCriteria criteria;
-    private final SpecificationDependencies dependencies;
+public class ExerciseSpecification extends AbstractSpecification<Exercise, ExerciseField> {
 
     private static final String EXERCISE_TARGET_MUSCLES_FIELD = "exerciseTargetMuscles";
     private static final String TARGET_MUSCLE_FIELD = "targetMuscle";
@@ -23,49 +20,34 @@ public class ExerciseSpecification implements Specification<Exercise> {
     private static final String FORCE_TYPE_FIELD = "forceType";
     private static final String MECHANICS_TYPE_FIELD = "mechanicsType";
 
-    @Override
-    public Predicate toPredicate(@NonNull Root<Exercise> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
-        ExerciseField field = dependencies.getFieldResolver().resolveField(criteria, ExerciseField.class);
-
-        return buildPredicateForField(builder, criteria, root, field);
+    public ExerciseSpecification(FilterCriteria criteria, SpecificationDependencies dependencies) {
+        super(criteria, dependencies);
     }
 
-    private Predicate buildPredicateForField(
-            CriteriaBuilder builder,
-            FilterCriteria criteria,
-            Root<Exercise> root,
-            ExerciseField field) {
+    @Override
+    protected Class<ExerciseField> getFieldClass() {
+        return ExerciseField.class;
+    }
 
+    @Override
+    protected Predicate buildPredicateForField(PredicateContext<Exercise> context, ExerciseField field) {
         return switch (field) {
-            case EXPERTISE_LEVEL -> buildPredicateForEntityProperty(
-                    builder, criteria, root, EXPERTISE_LEVEL_FIELD);
-            case EQUIPMENT -> buildPredicateForEntityProperty(
-                    builder, criteria, root, EQUIPMENT_FIELD);
-            case MECHANICS_TYPE -> buildPredicateForEntityProperty(
-                    builder, criteria, root, MECHANICS_TYPE_FIELD);
-            case FORCE_TYPE -> buildPredicateForEntityProperty(
-                    builder, criteria, root, FORCE_TYPE_FIELD);
-            case TARGET_MUSCLE -> buildPredicateForTargetMuscle(
-                    builder, criteria, root);
+            case EXPERTISE_LEVEL -> GenericSpecificationHelper.buildPredicateEntityProperty(context, EXPERTISE_LEVEL_FIELD);
+            case EQUIPMENT -> GenericSpecificationHelper.buildPredicateEntityProperty(context, EQUIPMENT_FIELD);
+            case MECHANICS_TYPE -> GenericSpecificationHelper.buildPredicateEntityProperty(context, MECHANICS_TYPE_FIELD);
+            case FORCE_TYPE -> GenericSpecificationHelper.buildPredicateEntityProperty(context, FORCE_TYPE_FIELD);
+            case TARGET_MUSCLE -> buildTargetMusclePredicate(context);
             case SAVED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
-                    builder, criteria, root, LikesAndSaves.USER_EXERCISES.getFieldName());
+                    context, LikesAndSaves.USER_EXERCISES.getFieldName());
             case SAVE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
-                    builder, criteria, root, LikesAndSaves.USER_EXERCISES.getFieldName(), null, null);
+                    context, LikesAndSaves.USER_EXERCISES.getFieldName(), null, null);
         };
     }
 
-    private Predicate buildPredicateForEntityProperty(
-            CriteriaBuilder builder,
-            FilterCriteria criteria,
-            Root<?> root,
-            String property) {
-        return GenericSpecificationHelper.buildPredicateEntityProperty(builder, criteria, root, property);
-    }
+    private Predicate buildTargetMusclePredicate(PredicateContext<Exercise> context) {
+        Join<Exercise, ExerciseTargetMuscle> targetMuscleJoin =
+                context.root().join(EXERCISE_TARGET_MUSCLES_FIELD, JoinType.LEFT);
 
-    private Predicate buildPredicateForTargetMuscle(CriteriaBuilder builder, FilterCriteria criteria, Root<Exercise> root) {
-        Join<Exercise, ExerciseTargetMuscle> targetMuscleJoin = root.join(EXERCISE_TARGET_MUSCLES_FIELD, JoinType.LEFT);
-
-        return GenericSpecificationHelper
-                .buildPredicateJoinProperty(builder, criteria, targetMuscleJoin, TARGET_MUSCLE_FIELD);
+        return GenericSpecificationHelper.buildPredicateJoinProperty(context, targetMuscleJoin, TARGET_MUSCLE_FIELD);
     }
 }

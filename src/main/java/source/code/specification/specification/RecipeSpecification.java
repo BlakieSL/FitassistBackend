@@ -1,9 +1,7 @@
 package source.code.specification.specification;
 
 import jakarta.persistence.criteria.*;
-import lombok.AllArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.lang.NonNull;
+import org.jetbrains.annotations.NotNull;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.helper.Enum.model.LikesAndSaves;
 import source.code.helper.Enum.model.field.RecipeField;
@@ -12,77 +10,68 @@ import source.code.model.recipe.RecipeCategoryAssociation;
 import source.code.model.recipe.RecipeFood;
 import source.code.model.user.TypeOfInteraction;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
+import source.code.specification.PredicateContext;
 
-@AllArgsConstructor(staticName = "of")
-public class RecipeSpecification implements Specification<Recipe> {
+import static source.code.specification.SpecificationConstants.*;
+
+public class RecipeSpecification extends AbstractSpecification<Recipe, RecipeField> {
 
     private static final String RECIPE_CATEGORY_ASSOCIATIONS_FIELD = "recipeCategoryAssociations";
     private static final String RECIPE_CATEGORY_FIELD = "recipeCategory";
-    private static final String USER_FIELD = "user";
-    private static final String IS_PUBLIC_FIELD = "isPublic";
     private static final String RECIPE_FOODS_FIELD = "recipeFoods";
     private static final String FOOD_FIELD = "food";
-    private static final String TYPE_FIELD = "type";
-    private static final String ID_FIELD = "id";
 
-    private final FilterCriteria criteria;
-    private final SpecificationDependencies dependencies;
+    public RecipeSpecification(FilterCriteria criteria, SpecificationDependencies dependencies) {
+        super(criteria, dependencies);
+    }
 
     @Override
-    public Predicate toPredicate(@NonNull Root<Recipe> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
+    protected Class<RecipeField> getFieldClass() {
+        return RecipeField.class;
+    }
+
+    @Override
+    public Predicate toPredicate(@NotNull Root<Recipe> root, CriteriaQuery<?> query, @NotNull CriteriaBuilder builder) {
         Predicate visibilityPredicate = dependencies.getVisibilityPredicateBuilder()
                 .buildVisibilityPredicate(builder, root, criteria, USER_FIELD, ID_FIELD, IS_PUBLIC_FIELD);
 
         RecipeField field = dependencies.getFieldResolver().resolveField(criteria, RecipeField.class);
+        PredicateContext<Recipe> context = new PredicateContext<>(builder, root, query, criteria);
+        Predicate fieldPredicate = buildPredicateForField(context, field);
 
-        Predicate fieldPredicate = buildPredicateForField(builder, root, field);
         return builder.and(visibilityPredicate, fieldPredicate);
     }
 
-    private Predicate buildPredicateForField(
-            CriteriaBuilder builder, Root<Recipe> root, RecipeField field) {
-
+    @Override
+    protected Predicate buildPredicateForField(PredicateContext<Recipe> context, RecipeField field) {
         return switch (field) {
-            case CATEGORY -> buildCategoryPredicate(builder, root);
-            case FOODS -> buildFoodsPredicate(builder, root);
-            case CREATED_BY_USER -> GenericSpecificationHelper.buildPredicateEntityProperty(
-                    builder, criteria, root, USER_FIELD);
+            case CATEGORY -> buildCategoryPredicate(context);
+            case FOODS -> buildFoodsPredicate(context);
+            case CREATED_BY_USER -> GenericSpecificationHelper.buildPredicateEntityProperty(context, USER_FIELD);
             case SAVED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
-                    builder, criteria, root, LikesAndSaves.USER_RECIPES.getFieldName(),
-                    TYPE_FIELD, TypeOfInteraction.SAVE);
+                    context, LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.SAVE);
             case LIKED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
-                    builder, criteria, root, LikesAndSaves.USER_RECIPES.getFieldName(),
-                    TYPE_FIELD, TypeOfInteraction.LIKE);
+                    context, LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.LIKE);
             case DISLIKED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
-                    builder, criteria, root, LikesAndSaves.USER_RECIPES.getFieldName(),
-                    TYPE_FIELD, TypeOfInteraction.DISLIKE);
-            case SAVE -> buildInteractionPredicate(builder, root, TypeOfInteraction.SAVE);
-            case LIKE -> buildInteractionPredicate(builder, root, TypeOfInteraction.LIKE);
+                    context, LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.DISLIKE);
+            case SAVE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
+                    context, LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.SAVE);
+            case LIKE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
+                    context, LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.LIKE);
         };
     }
 
-    private Predicate buildCategoryPredicate(CriteriaBuilder builder, Root<Recipe> root) {
+    private Predicate buildCategoryPredicate(PredicateContext<Recipe> context) {
         Join<Recipe, RecipeCategoryAssociation> categoryAssociationJoin =
-                root.join(RECIPE_CATEGORY_ASSOCIATIONS_FIELD, JoinType.LEFT);
+                context.root().join(RECIPE_CATEGORY_ASSOCIATIONS_FIELD, JoinType.LEFT);
 
         return GenericSpecificationHelper.buildPredicateJoinProperty(
-                builder, criteria, categoryAssociationJoin, RECIPE_CATEGORY_FIELD);
+                context, categoryAssociationJoin, RECIPE_CATEGORY_FIELD);
     }
 
-    private Predicate buildFoodsPredicate(CriteriaBuilder builder, Root<Recipe> root) {
-        Join<Recipe, RecipeFood> recipeFoodsJoin =
-                root.join(RECIPE_FOODS_FIELD, JoinType.LEFT);
+    private Predicate buildFoodsPredicate(PredicateContext<Recipe> context) {
+        Join<Recipe, RecipeFood> recipeFoodsJoin = context.root().join(RECIPE_FOODS_FIELD, JoinType.LEFT);
 
-        return GenericSpecificationHelper.buildPredicateJoinProperty(
-                builder, criteria, recipeFoodsJoin, FOOD_FIELD);
-    }
-
-    private Predicate buildInteractionPredicate(
-            CriteriaBuilder builder, Root<Recipe> root, TypeOfInteraction interactionType) {
-
-        return GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
-                builder, criteria, root,
-                LikesAndSaves.USER_RECIPES.getFieldName(),
-                TYPE_FIELD, interactionType);
+        return GenericSpecificationHelper.buildPredicateJoinProperty(context, recipeFoodsJoin, FOOD_FIELD);
     }
 }
