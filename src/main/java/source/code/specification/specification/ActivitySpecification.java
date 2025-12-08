@@ -1,49 +1,40 @@
 package source.code.specification.specification;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import lombok.AllArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.lang.NonNull;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.helper.Enum.model.LikesAndSaves;
 import source.code.helper.Enum.model.field.ActivityField;
 import source.code.model.activity.Activity;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
+import source.code.specification.PredicateContext;
 
-@AllArgsConstructor(staticName = "of")
-public class ActivitySpecification implements Specification<Activity> {
-    private final FilterCriteria criteria;
-    private final SpecificationDependencies dependencies;
+import static source.code.specification.SpecificationConstants.ID_FIELD;
+
+public class ActivitySpecification extends AbstractSpecification<Activity, ActivityField> {
 
     private static final String ACTIVITY_CATEGORY_FIELD = "activityCategory";
-    private static final String MET = "met";
+    private static final String MET_FIELD = "met";
 
-    @Override
-    public Predicate toPredicate(@NonNull Root<Activity> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
-        ActivityField field = dependencies.getFieldResolver().resolveField(criteria, ActivityField.class);
-
-        return buildPredicateForField(builder, criteria, root, field, query);
+    public ActivitySpecification(FilterCriteria criteria, SpecificationDependencies dependencies) {
+        super(criteria, dependencies);
     }
 
-    private Predicate buildPredicateForField(CriteriaBuilder builder,
-                                             FilterCriteria criteria,
-                                             Root<Activity> root,
-                                             ActivityField field,
-                                             CriteriaQuery<?> query) {
+    @Override
+    protected Class<ActivityField> getFieldClass() {
+        return ActivityField.class;
+    }
+
+    @Override
+    protected Predicate buildPredicateForField(PredicateContext<Activity> context, ActivityField field) {
         return switch (field) {
-            case CATEGORY -> GenericSpecificationHelper.buildPredicateEntityProperty(
-                    builder, criteria, root, ACTIVITY_CATEGORY_FIELD);
-            case MET -> GenericSpecificationHelper.buildPredicateNumericProperty(
-                    builder, criteria, root.get(MET));
+            case CATEGORY -> GenericSpecificationHelper.buildPredicateEntityProperty(context, ACTIVITY_CATEGORY_FIELD);
+            case MET -> GenericSpecificationHelper.buildPredicateNumericProperty(context, context.root().get(MET_FIELD));
             case SAVED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
-                    builder, criteria, root, LikesAndSaves.USER_ACTIVITIES.getFieldName());
+                    context, LikesAndSaves.USER_ACTIVITIES.getFieldName());
             case SAVE -> {
-                query.groupBy(root.get("id"));
+                context.query().groupBy(context.root().get(ID_FIELD));
                 yield GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
-                        builder, criteria, root, LikesAndSaves.USER_ACTIVITIES.getFieldName(), null, null);
+                        context, LikesAndSaves.USER_ACTIVITIES.getFieldName(), null, null);
             }
         };
     }
