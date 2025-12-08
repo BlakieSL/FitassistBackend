@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.pojo.TargetMuscleShortDto;
 import source.code.dto.response.plan.PlanSummaryDto;
+import source.code.dto.response.text.ExerciseInstructionResponseDto;
+import source.code.dto.response.text.ExerciseTipResponseDto;
 
 import java.io.Serializable;
 import java.util.List;
@@ -27,4 +29,6 @@ public class ExerciseResponseDto implements Serializable {
     private List<PlanSummaryDto> plans;
     private long savesCount;
     private boolean saved;
+    private List<ExerciseInstructionResponseDto> instructions;
+    private List<ExerciseTipResponseDto> tips;
 }

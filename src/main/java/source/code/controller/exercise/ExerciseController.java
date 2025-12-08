@@ -32,10 +32,10 @@ public class ExerciseController {
 
     @AdminOnly
     @PostMapping
-    public ResponseEntity<ExerciseSummaryDto> createExercise(
+    public ResponseEntity<ExerciseResponseDto> createExercise(
             @Valid @RequestBody ExerciseCreateDto dto
     ) {
-        ExerciseSummaryDto savedExercise = exerciseService.createExercise(dto);
+        ExerciseResponseDto savedExercise = exerciseService.createExercise(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedExercise);
     }
 

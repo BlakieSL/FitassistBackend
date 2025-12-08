@@ -106,11 +106,13 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Override
     @Transactional
-    public ExerciseSummaryDto createExercise(ExerciseCreateDto dto) {
-        Exercise exercise = exerciseRepository.save(exerciseMapper.toEntity(dto));
-        applicationEventPublisher.publishEvent(ExerciseCreateEvent.of(this, exercise));
+    public ExerciseResponseDto createExercise(ExerciseCreateDto dto) {
+        Exercise saved = exerciseRepository.save(exerciseMapper.toEntity(dto));
+        applicationEventPublisher.publishEvent(ExerciseCreateEvent.of(this, saved));
 
-        return exerciseMapper.toSummaryDto(exercise);
+        exerciseRepository.flush();
+
+        return findAndMap(saved.getId());
     }
 
     @Override
@@ -118,7 +120,8 @@ public class ExerciseServiceImpl implements ExerciseService {
     public void updateExercise(int exerciseId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException
     {
-        Exercise exercise = find(exerciseId);
+        Exercise exercise = exerciseRepository.findByIdWithDetails(exerciseId)
+                .orElseThrow(() -> RecordNotFoundException.of(Exercise.class, exerciseId));
         ExerciseUpdateDto patchedExerciseUpdateDto = applyPatchToExercise(patch);
 
         validationService.validate(patchedExerciseUpdateDto);
@@ -140,10 +143,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     @Cacheable(value = CacheNames.EXERCISES, key = "#exerciseId")
     public ExerciseResponseDto getExercise(int exerciseId) {
-        Exercise exercise = exerciseRepository.findByIdWithMedia(exerciseId)
-                .orElseThrow(() -> RecordNotFoundException.of(Exercise.class, exerciseId));
-        ExerciseResponseDto dto = exerciseMapper.toDetailedResponseDto(exercise);
-        exercisePopulationService.populate(dto);
+        ExerciseResponseDto dto = findAndMap(exerciseId);
 
         List<PlanSummaryDto> planSummaries = planRepository.findByExerciseIdWithDetails(exerciseId).stream()
                 .map(planMapper::toSummaryDto)
@@ -213,6 +213,15 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     private Exercise find(int exerciseId) {
         return repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId);
+    }
+
+    private ExerciseResponseDto findAndMap(int exerciseId) {
+        Exercise exercise = exerciseRepository.findByIdWithDetails(exerciseId)
+                .orElseThrow(() -> RecordNotFoundException.of(Exercise.class, exerciseId));
+        ExerciseResponseDto dto = exerciseMapper.toResponseDto(exercise);
+        exercisePopulationService.populate(dto);
+
+        return dto;
     }
 
     private ExerciseUpdateDto applyPatchToExercise(JsonMergePatch patch)

@@ -28,14 +28,17 @@ public interface ExerciseRepository
     @Query("SELECT e FROM Exercise e")
     List<Exercise> findAllWithoutAssociations();
 
-    @Query("SELECT e FROM Exercise e " +
-           "LEFT JOIN FETCH e.expertiseLevel " +
-           "LEFT JOIN FETCH e.equipment " +
-           "LEFT JOIN FETCH e.mechanicsType " +
-           "LEFT JOIN FETCH e.forceType " +
-           "LEFT JOIN FETCH e.exerciseTargetMuscles etm " +
-           "LEFT JOIN FETCH etm.targetMuscle " +
-           "LEFT JOIN FETCH e.mediaList " +
-           "WHERE e.id = :id")
-    Optional<Exercise> findByIdWithMedia(int id);
+    @Query("""
+           SELECT e FROM Exercise e
+           LEFT JOIN FETCH e.expertiseLevel
+           LEFT JOIN FETCH e.equipment
+           LEFT JOIN FETCH e.mechanicsType
+           LEFT JOIN FETCH e.forceType
+           LEFT JOIN FETCH e.exerciseTargetMuscles etm
+           LEFT JOIN FETCH etm.targetMuscle
+           LEFT JOIN FETCH e.exerciseInstructions
+           LEFT JOIN FETCH e.exerciseTips
+           WHERE e.id = :id
+           """)
+    Optional<Exercise> findByIdWithDetails(int id);
 }

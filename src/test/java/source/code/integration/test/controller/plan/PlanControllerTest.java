@@ -270,7 +270,7 @@ public class PlanControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content", hasSize(1)),
+                        jsonPath("$.content", hasSize(3)),
                         jsonPath("$.page.totalElements").value(3)
                 );
     }

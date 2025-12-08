@@ -41,7 +41,7 @@ public class UserCreatedControllerTest {
         mockMvc.perform(get("/api/user-created/plans/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content").value(hasSize(1)),
+                        jsonPath("$.content").value(hasSize(2)),
                         jsonPath("$.page.totalElements").value(2)
                 );
     }
@@ -67,7 +67,7 @@ public class UserCreatedControllerTest {
         mockMvc.perform(get("/api/user-created/recipes/user/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.content").value(hasSize(1)),
+                        jsonPath("$.content").value(hasSize(2)),
                         jsonPath("$.page.totalElements").value(2)
                 );
     }
