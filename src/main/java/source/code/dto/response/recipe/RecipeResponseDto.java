@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.dto.pojo.RecipeCategoryShortDto;
 import source.code.dto.pojo.RecipeFoodDto;
+import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.text.RecipeInstructionResponseDto;
 
 import java.io.Serializable;
@@ -43,7 +43,7 @@ public class RecipeResponseDto implements Serializable {
 
     private List<RecipeFoodDto> foods;
     private List<RecipeInstructionResponseDto> instructions;
-    private List<RecipeCategoryShortDto> categories;
+    private List<CategoryResponseDto> categories;
     private List<String> imageUrls;
 
 }
