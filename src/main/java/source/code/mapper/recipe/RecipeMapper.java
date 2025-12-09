@@ -2,9 +2,9 @@ package source.code.mapper.recipe;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.pojo.RecipeCategoryShortDto;
 import source.code.dto.pojo.RecipeFoodDto;
 import source.code.dto.request.recipe.RecipeCreateDto;
+import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.request.recipe.RecipeUpdateDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
@@ -48,7 +48,7 @@ public abstract class RecipeMapper {
     @Mapping(target = "disliked", ignore = true)
     @Mapping(target = "saved", ignore = true)
     @Mapping(target = "totalCalories", ignore = true)
-    @Mapping(target = "categories", source = "recipeCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryShortDto")
+    @Mapping(target = "categories", source = "recipeCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryResponseDto")
     @Mapping(target = "instructions", source = "recipeInstructions", qualifiedByName = "mapInstructionsToDto")
     @Mapping(target = "imageUrls", ignore = true)
     @Mapping(target = "foods", source = "recipeFoods", qualifiedByName = "mapFoodsToDto")
@@ -64,7 +64,7 @@ public abstract class RecipeMapper {
     @Mapping(target = "dislikesCount", ignore = true)
     @Mapping(target = "savesCount", ignore = true)
     @Mapping(target = "ingredientsCount", ignore = true)
-    @Mapping(target = "categories", source = "recipeCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryShortDto")
+    @Mapping(target = "categories", source = "recipeCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryResponseDto")
     @Mapping(target = "userRecipeInteractionCreatedAt", ignore = true)
     public abstract RecipeSummaryDto toSummaryDto(Recipe recipe);
 
@@ -114,11 +114,11 @@ public abstract class RecipeMapper {
                 .collect(Collectors.toSet());
     }
 
-    @Named("mapAssociationsToCategoryShortDto")
-    protected List<RecipeCategoryShortDto> mapAssociationsToCategoryShortDto(
+    @Named("mapAssociationsToCategoryResponseDto")
+    protected List<CategoryResponseDto> mapAssociationsToCategoryResponseDto(
             Set<RecipeCategoryAssociation> associations) {
         return associations.stream()
-                .map(association -> new RecipeCategoryShortDto(
+                .map(association -> new CategoryResponseDto(
                         association.getRecipeCategory().getId(),
                         association.getRecipeCategory().getName()
                 ))

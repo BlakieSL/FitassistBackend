@@ -2,7 +2,7 @@ package source.code.mapper.plan;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.pojo.PlanCategoryShortDto;
+import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.request.plan.PlanUpdateDto;
 import source.code.dto.response.plan.PlanResponseDto;
@@ -47,7 +47,7 @@ public abstract class PlanMapper {
     @Mapping(target = "liked", ignore = true)
     @Mapping(target = "disliked", ignore = true)
     @Mapping(target = "saved", ignore = true)
-    @Mapping(target = "categories", source = "planCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryShortDto")
+    @Mapping(target = "categories", source = "planCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryResponseDto")
     @Mapping(target = "instructions", source = "planInstructions")
     @Mapping(target = "imageUrls", ignore = true)
     public abstract PlanResponseDto toResponseDto(Plan plan);
@@ -99,13 +99,15 @@ public abstract class PlanMapper {
 
     @AfterMapping
     protected void calculateTotalWeeks(@MappingTarget PlanResponseDto dto, Plan plan) {
-        if (plan.getPlanStructureType() != PlanStructureType.FIXED_PROGRAM) return;
+        int currentDay = 0;
+        for (var workoutDto : dto.getWorkouts()) {
+            workoutDto.setWeekIndex((currentDay / 7) + 1);
+            workoutDto.setDayOfWeekIndex((currentDay % 7) + 1);
 
-        int totalDays = plan.getWorkouts().stream()
-                .mapToInt(workout -> workout.getRestDaysAfter() + 1)
-                .sum();
+            currentDay += workoutDto.getRestDaysAfter() + 1;
+        }
 
-        dto.setTotalWeeks((int) Math.ceil(totalDays / 7.0));
+        dto.setTotalWeeks((int) Math.ceil(currentDay / 7.0));
     }
 
     @Named("userIdToUser")
@@ -127,11 +129,11 @@ public abstract class PlanMapper {
                 .collect(Collectors.toSet());
     }
 
-    @Named("mapAssociationsToCategoryShortDto")
-    protected List<PlanCategoryShortDto> mapAssociationsToCategoryShortDto(
+    @Named("mapAssociationsToCategoryResponseDto")
+    protected List<CategoryResponseDto> mapAssociationsToCategoryResponseDto(
             Set<PlanCategoryAssociation> associations) {
         return associations.stream()
-                .map(association -> new PlanCategoryShortDto(
+                .map(association -> new CategoryResponseDto(
                         association.getPlanCategory().getId(),
                         association.getPlanCategory().getName()
                 ))

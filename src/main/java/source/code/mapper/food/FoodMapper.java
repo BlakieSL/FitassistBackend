@@ -4,6 +4,7 @@ import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.food.FoodCreateDto;
 import source.code.dto.request.food.FoodUpdateDto;
+import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.food.FoodResponseDto;
 import source.code.dto.response.food.FoodSummaryDto;
@@ -29,13 +30,11 @@ public abstract class FoodMapper {
     @Autowired
     private AwsS3Service awsS3Service;
 
-    @Mapping(target = "categoryName", source = "foodCategory.name")
-    @Mapping(target = "categoryId", source = "foodCategory.id")
+    @Mapping(target = "category", source = "foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
     @Mapping(target = "firstImageUrl", ignore = true)
     public abstract FoodSummaryDto toSummaryDto(Food food);
 
-    @Mapping(target = "categoryName", source = "foodCategory.name")
-    @Mapping(target = "categoryId", source = "foodCategory.id")
+    @Mapping(target = "category", source = "foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
     @Mapping(target = "quantity", expression = "java(factor.multiply(new BigDecimal(100)))")
     public abstract FoodCalculatedMacrosResponseDto toDtoWithFactor(Food food, @Context BigDecimal factor);
 
@@ -54,8 +53,7 @@ public abstract class FoodMapper {
     @Mapping(target = "userFoods", ignore = true)
     public abstract void updateFood(@MappingTarget Food food, FoodUpdateDto request);
 
-    @Mapping(target = "categoryName", source = "foodCategory.name")
-    @Mapping(target = "categoryId", source = "foodCategory.id")
+    @Mapping(target = "category", source = "foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
     @Mapping(target = "imageUrls", ignore = true)
     @Mapping(target = "recipes", ignore = true)
     @Mapping(target = "savesCount", ignore = true)
@@ -88,5 +86,10 @@ public abstract class FoodMapper {
     @Named("categoryIdToFoodCategory")
     protected FoodCategory categoryIdToFoodCategory(int categoryId) {
         return repositoryHelper.find(foodCategoryRepository, FoodCategory.class, categoryId);
+    }
+
+    @Named("mapFoodCategoryToResponseDto")
+    protected CategoryResponseDto mapFoodCategoryToResponseDto(FoodCategory category) {
+        return new CategoryResponseDto(category.getId(), category.getName());
     }
 }
