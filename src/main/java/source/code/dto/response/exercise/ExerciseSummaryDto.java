@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.dto.pojo.CategoryDto;
+import source.code.dto.response.category.CategoryResponseDto;
 import source.code.helper.BaseUserEntity;
 
 import java.io.Serializable;
@@ -20,9 +20,9 @@ public class ExerciseSummaryDto implements BaseUserEntity, Serializable {
     private String description;
     private String imageName;
     private String firstImageUrl;
-    private CategoryDto expertiseLevel;
-    private CategoryDto equipment;
-    private CategoryDto mechanicsType;
-    private CategoryDto forceType;
+    private CategoryResponseDto expertiseLevel;
+    private CategoryResponseDto equipment;
+    private CategoryResponseDto mechanicsType;
+    private CategoryResponseDto forceType;
     private LocalDateTime userExerciseInteractionCreatedAt;
 }

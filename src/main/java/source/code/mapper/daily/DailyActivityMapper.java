@@ -1,11 +1,10 @@
 package source.code.mapper.daily;
 
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
+import source.code.dto.response.category.CategoryResponseDto;
+import source.code.model.activity.ActivityCategory;
 import source.code.model.daily.DailyCartActivity;
 import source.code.service.declaration.helpers.CalculationsService;
 
@@ -20,8 +19,7 @@ public abstract class DailyActivityMapper {
     @Mapping(target = "id", source = "activity.id")
     @Mapping(target = "name", source = "activity.name")
     @Mapping(target = "met", source = "activity.met")
-    @Mapping(target = "categoryName", source = "activity.activityCategory.name")
-    @Mapping(target = "categoryId", source = "activity.activityCategory.id")
+    @Mapping(target = "category", source = "activity.activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
     @Mapping(target = "caloriesBurned", ignore = true)
     @Mapping(target = "time", source = "time")
     @Mapping(target = "weight", source = "weight")
@@ -39,5 +37,10 @@ public abstract class DailyActivityMapper {
                 dailyCartActivity.getActivity().getMet());
 
         responseDto.setCaloriesBurned(caloriesBurned.setScale(0, RoundingMode.HALF_UP).intValue());
+    }
+
+    @Named("mapActivityCategoryToResponseDto")
+    protected CategoryResponseDto mapActivityCategoryToResponseDto(ActivityCategory category) {
+        return new CategoryResponseDto(category.getId(), category.getName());
     }
 }

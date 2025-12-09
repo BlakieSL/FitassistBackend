@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.dto.pojo.RecipeCategoryShortDto;
+import source.code.dto.response.category.CategoryResponseDto;
 import source.code.helper.BaseUserEntity;
 
 import java.io.Serializable;
@@ -38,6 +38,6 @@ public class  RecipeSummaryDto implements BaseUserEntity, Serializable {
     private long savesCount;
     private long ingredientsCount;
 
-    private List<RecipeCategoryShortDto> categories = new ArrayList<>();
+    private List<CategoryResponseDto> categories = new ArrayList<>();
     private LocalDateTime userRecipeInteractionCreatedAt;
 }

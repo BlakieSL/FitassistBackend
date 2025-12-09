@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.response.category.CategoryResponseDto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -19,7 +20,6 @@ public class FoodCalculatedMacrosResponseDto implements Serializable {
     private BigDecimal protein;
     private BigDecimal fat;
     private BigDecimal carbohydrates;
-    private int categoryId;
-    private String categoryName;
+    private CategoryResponseDto category;
     private BigDecimal quantity;
 }

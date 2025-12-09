@@ -1,6 +1,7 @@
 package source.code.dto.response.food;
 
 import lombok.*;
+import source.code.dto.response.category.CategoryResponseDto;
 import source.code.helper.BaseUserEntity;
 
 import java.io.Serializable;
@@ -20,8 +21,7 @@ public class FoodSummaryDto implements BaseUserEntity, Serializable {
     private BigDecimal protein;
     private BigDecimal fat;
     private BigDecimal carbohydrates;
-    private int categoryId;
-    private String categoryName;
+    private CategoryResponseDto category;
     private String imageName;
     private String firstImageUrl;
     private LocalDateTime userFoodInteractionCreatedAt;

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.response.category.CategoryResponseDto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -16,8 +17,7 @@ public class ActivityCalculatedResponseDto implements Serializable {
     private Integer id;
     private String name;
     private BigDecimal met;
-    private String categoryName;
-    private int categoryId;
+    private CategoryResponseDto category;
     private int caloriesBurned;
     private int time;
     private BigDecimal weight;

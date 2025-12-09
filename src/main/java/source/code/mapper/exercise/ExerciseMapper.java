@@ -2,8 +2,8 @@ package source.code.mapper.exercise;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.pojo.CategoryDto;
-import source.code.dto.pojo.TargetMuscleShortDto;
+import source.code.dto.response.category.CategoryResponseDto;
+import source.code.dto.response.exercise.TargetMuscleResponseDto;
 import source.code.dto.request.exercise.ExerciseCreateDto;
 import source.code.dto.request.exercise.ExerciseUpdateDto;
 import source.code.dto.response.exercise.ExerciseResponseDto;
@@ -45,18 +45,18 @@ public abstract class ExerciseMapper {
     @Autowired
     private AwsS3Service awsS3Service;
 
-    @Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseToCategoryDto")
-    @Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsToCategoryDto")
-    @Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceToCategoryDto")
-    @Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToCategoryDto")
+    @Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseToCategoryResponseDto")
+    @Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsToCategoryResponseDto")
+    @Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceToCategoryResponseDto")
+    @Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToCategoryResponseDto")
     @Mapping(target = "firstImageUrl", ignore = true)
     public abstract ExerciseSummaryDto toSummaryDto(Exercise exercise);
 
-    @Mapping(target = "targetMuscles", source = "exerciseTargetMuscles", qualifiedByName = "mapAssociationsToCategoryShortDto")
-    @Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseToShortDto")
-    @Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsToShortDto")
-    @Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceToShortDto")
-    @Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToShortDto")
+    @Mapping(target = "targetMuscles", source = "exerciseTargetMuscles", qualifiedByName = "mapAssociationsToTargetMuscleResponseDto")
+    @Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseToCategoryResponseDto")
+    @Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsToCategoryResponseDto")
+    @Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceToCategoryResponseDto")
+    @Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToCategoryResponseDto")
     @Mapping(target = "instructions", source = "exerciseInstructions", qualifiedByName = "mapInstructionsToDto")
     @Mapping(target = "tips", source = "exerciseTips", qualifiedByName = "mapTipsToDto")
     @Mapping(target = "imageUrls", ignore = true)
@@ -125,35 +125,35 @@ public abstract class ExerciseMapper {
                 .collect(Collectors.toSet());
     }
 
-    @Named("mapAssociationsToCategoryShortDto")
-    protected List<TargetMuscleShortDto> mapAssociationsToCategoryShortDto(
+    @Named("mapAssociationsToTargetMuscleResponseDto")
+    protected List<TargetMuscleResponseDto> mapAssociationsToTargetMuscleResponseDto(
             Set<ExerciseTargetMuscle> associations) {
         return associations.stream()
-                .map(association -> TargetMuscleShortDto.create(
+                .map(association -> TargetMuscleResponseDto.create(
                         association.getTargetMuscle().getId(),
                         association.getTargetMuscle().getName(),
                         association.getPriority()))
                 .toList();
     }
 
-    @Named("mapExpertiseToShortDto")
-    protected TargetMuscleShortDto mapExpertiseToShortDto(ExpertiseLevel expertiseLevel) {
-        return new TargetMuscleShortDto(expertiseLevel.getId(), expertiseLevel.getName());
+    @Named("mapExpertiseToCategoryResponseDto")
+    protected CategoryResponseDto mapExpertiseToCategoryResponseDto(ExpertiseLevel expertiseLevel) {
+        return new CategoryResponseDto(expertiseLevel.getId(), expertiseLevel.getName());
     }
 
-    @Named("mapMechanicsToShortDto")
-    protected TargetMuscleShortDto mapMechanicsToShortDto(MechanicsType mechanicsType) {
-        return new TargetMuscleShortDto(mechanicsType.getId(), mechanicsType.getName());
+    @Named("mapMechanicsToCategoryResponseDto")
+    protected CategoryResponseDto mapMechanicsToCategoryResponseDto(MechanicsType mechanicsType) {
+        return new CategoryResponseDto(mechanicsType.getId(), mechanicsType.getName());
     }
 
-    @Named("mapForceToShortDto")
-    protected TargetMuscleShortDto mapForceToShortDto(ForceType forceType) {
-        return new TargetMuscleShortDto(forceType.getId(), forceType.getName());
+    @Named("mapForceToCategoryResponseDto")
+    protected CategoryResponseDto mapForceToCategoryResponseDto(ForceType forceType) {
+        return new CategoryResponseDto(forceType.getId(), forceType.getName());
     }
 
-    @Named("mapEquipmentToShortDto")
-    protected TargetMuscleShortDto mapEquipmentToShortDto(Equipment equipment) {
-        return new TargetMuscleShortDto(equipment.getId(), equipment.getName());
+    @Named("mapEquipmentToCategoryResponseDto")
+    protected CategoryResponseDto mapEquipmentToCategoryResponseDto(Equipment equipment) {
+        return new CategoryResponseDto(equipment.getId(), equipment.getName());
     }
 
     @Named("mapExpertiseLevel")
@@ -174,26 +174,6 @@ public abstract class ExerciseMapper {
     @Named("mapExerciseEquipment")
     protected Equipment mapExerciseEquipment(Integer equipmentId) {
         return equipmentRepository.getReferenceById(equipmentId);
-    }
-
-    @Named("mapExpertiseToCategoryDto")
-    protected CategoryDto mapExpertiseToCategoryDto(ExpertiseLevel expertiseLevel) {
-        return new CategoryDto(expertiseLevel.getId(), expertiseLevel.getName());
-    }
-
-    @Named("mapMechanicsToCategoryDto")
-    protected CategoryDto mapMechanicsToCategoryDto(MechanicsType mechanicsType) {
-        return new CategoryDto(mechanicsType.getId(), mechanicsType.getName());
-    }
-
-    @Named("mapForceToCategoryDto")
-    protected CategoryDto mapForceToCategoryDto(ForceType forceType) {
-        return new CategoryDto(forceType.getId(), forceType.getName());
-    }
-
-    @Named("mapEquipmentToCategoryDto")
-    protected CategoryDto mapEquipmentToCategoryDto(Equipment equipment) {
-        return new CategoryDto(equipment.getId(), equipment.getName());
     }
 
     @Named("mapInstructionsToDto")

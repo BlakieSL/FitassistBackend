@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.response.category.CategoryResponseDto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -17,8 +18,7 @@ public class ActivityResponseDto implements Serializable {
     private Integer id;
     private String name;
     private BigDecimal met;
-    private String categoryName;
-    private int categoryId;
+    private CategoryResponseDto category;
     private List<String> imageUrls;
     private long savesCount;
     private boolean saved;

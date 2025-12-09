@@ -7,6 +7,7 @@ import source.code.dto.request.activity.ActivityUpdateDto;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.dto.response.activity.ActivityResponseDto;
 import source.code.dto.response.activity.ActivitySummaryDto;
+import source.code.dto.response.category.CategoryResponseDto;
 import source.code.model.activity.Activity;
 import source.code.model.activity.ActivityCategory;
 import source.code.repository.ActivityCategoryRepository;
@@ -32,13 +33,11 @@ public abstract class  ActivityMapper {
     @Autowired
     private AwsS3Service awsS3Service;
 
-    @Mapping(target = "categoryName", source = "activityCategory.name")
-    @Mapping(target = "categoryId", source = "activityCategory.id")
+    @Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
     @Mapping(target = "firstImageUrl", ignore = true)
     public abstract ActivitySummaryDto toSummaryDto(Activity activity);
 
-    @Mapping(target = "categoryName", source = "activityCategory.name")
-    @Mapping(target = "categoryId", source = "activityCategory.id")
+    @Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
     @Mapping(target = "caloriesBurned", ignore = true)
     @Mapping(target = "time", ignore = true)
     public abstract ActivityCalculatedResponseDto toCalculatedDto(
@@ -72,8 +71,7 @@ public abstract class  ActivityMapper {
         dto.setWeight(weight);
     }
 
-    @Mapping(target = "categoryName", source = "activityCategory.name")
-    @Mapping(target = "categoryId", source = "activityCategory.id")
+    @Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
     @Mapping(target = "imageUrls", ignore = true)
     @Mapping(target = "savesCount", ignore = true)
     @Mapping(target = "saved", ignore = true)
@@ -90,5 +88,10 @@ public abstract class  ActivityMapper {
     @Named("categoryIdToActivityCategory")
     protected ActivityCategory categoryIdToActivityCategory(int categoryId) {
         return repositoryHelper.find(activityCategoryRepository, ActivityCategory.class, categoryId);
+    }
+
+    @Named("mapActivityCategoryToResponseDto")
+    protected CategoryResponseDto mapActivityCategoryToResponseDto(ActivityCategory category) {
+        return new CategoryResponseDto(category.getId(), category.getName());
     }
 }

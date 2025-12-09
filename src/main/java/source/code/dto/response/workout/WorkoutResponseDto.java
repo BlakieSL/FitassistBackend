@@ -19,5 +19,7 @@ public class WorkoutResponseDto implements Serializable {
     private String name;
     private BigDecimal duration;
     private int restDaysAfter;
+    private Integer weekIndex;
+    private Integer dayOfWeekIndex;
     private List<WorkoutSetResponseDto> workoutSets;
 }

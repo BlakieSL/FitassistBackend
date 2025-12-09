@@ -1,13 +1,12 @@
 package source.code.mapper.daily;
 
-import org.mapstruct.AfterMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
+import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.daily.DailyFoodsResponseDto;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
 import source.code.model.daily.DailyCartFood;
 import source.code.model.food.Food;
+import source.code.model.food.FoodCategory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -22,8 +21,7 @@ public abstract class DailyFoodMapper {
     @Mapping(target = "protein", ignore = true)
     @Mapping(target = "fat", ignore = true)
     @Mapping(target = "carbohydrates", ignore = true)
-    @Mapping(target = "categoryId", source = "dailyCartFood.food.foodCategory.id")
-    @Mapping(target = "categoryName", source = "dailyCartFood.food.foodCategory.name")
+    @Mapping(target = "category", source = "dailyCartFood.food.foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
     @Mapping(target = "quantity", source = "dailyCartFood.quantity")
     public abstract FoodCalculatedMacrosResponseDto toFoodCalculatedMacrosResponseDto(
             DailyCartFood dailyCartFood
@@ -68,5 +66,10 @@ public abstract class DailyFoodMapper {
                                 DailyFoodsResponseDto::create
                         )
                 );
+    }
+
+    @Named("mapFoodCategoryToResponseDto")
+    protected CategoryResponseDto mapFoodCategoryToResponseDto(FoodCategory category) {
+        return new CategoryResponseDto(category.getId(), category.getName());
     }
 }
