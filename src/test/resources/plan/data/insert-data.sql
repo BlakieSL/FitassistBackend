@@ -62,19 +62,19 @@ INSERT INTO user_plan (id, type, plan_id, user_id, created_at) VALUES
 (5, 'SAVE', 4, 1, NOW()),
 (6, 'DISLIKE', 4, 1, NOW());
 
-INSERT INTO workout (id, duration, name, plan_id, orderIndex, rest_days_after) VALUES
+INSERT INTO workout (id, duration, name, plan_id, order_index, rest_days_after) VALUES
 (1, 60.0, 'Upper Body', 1, 1, 1),
 (2, 45.0, 'Lower Body', 1, 2, 2),
 (3, 30.0, 'HIIT Session', 3, 1, 0),
 (4, 50.0, 'Full Body', 4, 1, 1);
 
-INSERT INTO workout_set (id, orderIndex, restSeconds, workout_id) VALUES
+INSERT INTO workout_set (id, order_index, rest_seconds, workout_id) VALUES
 (1, 1, 60, 1),
 (2, 2, 60, 1),
 (3, 1, 90, 2),
 (4, 1, 30, 3);
 
-INSERT INTO workout_set_exercise (id, repetitions, weight, exercise_id, workout_set_id, orderIndex) VALUES
+INSERT INTO workout_set_exercise (id, repetitions, weight, exercise_id, workout_set_id, order_index) VALUES
 (1, 10, 135.0, 1, 1, 1),
 (2, 10, 135.0, 1, 1, 2),
 (3, 8, 135.0, 1, 1, 3),
@@ -83,14 +83,14 @@ INSERT INTO workout_set_exercise (id, repetitions, weight, exercise_id, workout_
 (6, 8, 185.0, 3, 3, 1),
 (7, 15, 0.0, 2, 4, 1);
 
-INSERT INTO text (type, id, orderIndex, text, title, plan_id) VALUES
+INSERT INTO text (type, id, order_index, text, title, plan_id) VALUES
 ('PLAN_INSTRUCTION', 1, 1, 'Warm up for 10 minutes before starting', 'Warm Up', 1),
 ('PLAN_INSTRUCTION', 2, 2, 'Perform 3 sets of 8-12 reps for each exercise', 'Workout Structure', 1),
 ('PLAN_INSTRUCTION', 3, 1, 'Meal prep on Sundays for the whole week', 'Meal Prep', 2),
 ('PLAN_INSTRUCTION', 4, 1, 'Start with 5 minute warm up', 'Cardio Warm Up', 3),
 ('PLAN_INSTRUCTION', 5, 1, 'Circuit training: 3 rounds', 'Workout Structure', 4);
 
-INSERT INTO media (id, imageName, parent_id, parentType) VALUES
+INSERT INTO media (id, image_name, parent_id, parentType) VALUES
 (1, 'plan1_image1.jpg', 1, 'PLAN'),
 (2, 'plan1_image2.jpg', 1, 'PLAN'),
 (3, 'user1_profile.jpg', 1, 'USER');

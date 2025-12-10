@@ -22,7 +22,7 @@ public class Media {
     private Integer id;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "image_name", nullable = false)
     private String imageName;
 
     @NotNull

@@ -42,20 +42,20 @@ INSERT INTO plan (is_public, name, description, structure_type, user_id, created
 (true, '5-Day Strength Plan', 'Full body strength training', 'FIXED_PROGRAM', 1, NOW()),
 (true, '4-Day Fat Loss Plan', 'Cardio and HIIT focused', 'WEEKLY_SPLIT', 1, NOW());
 
-INSERT INTO workout (name, duration, plan_id, orderIndex, rest_days_after) VALUES
+INSERT INTO workout (name, duration, plan_id, order_index, rest_days_after) VALUES
 ('Full Body Strength', 60, 1, 1, 1),
 ('Upper Body Push', 45, 1, 2, 1),
 ('Lower Body Focus', 60, 2, 1, 2),
 ('Cardio & Core', 30, 3, 1, 0);
 
-INSERT INTO workout_set (orderIndex, restSeconds, workout_id) VALUES
+INSERT INTO workout_set (order_index, rest_seconds, workout_id) VALUES
 (1, 60, 1),
 (2, 90, 1),
 (1, 60, 2),
 (1, 60, 3),
 (1, 120, 4);
 
-INSERT INTO workout_set_exercise (exercise_id, workout_set_id, repetitions, weight, orderIndex) VALUES
+INSERT INTO workout_set_exercise (exercise_id, workout_set_id, repetitions, weight, order_index) VALUES
 (1, 1, 10, 50.00, 1),
 (2, 1, 12, 30.00, 2),
 (3, 2, 8, 80.00, 1),

@@ -47,7 +47,7 @@ INSERT INTO user_recipe (id, type, recipie_id, user_id, created_at) VALUES
 (3, 'SAVE', 3, 1, NOW()),
 (4, 'LIKE', 3, 1, NOW());
 
-INSERT INTO text (type, id, orderIndex, text, title, recipe_id) VALUES
+INSERT INTO text (type, id, order_index, text, title, recipe_id) VALUES
 ('RECIPE_INSTRUCTION', 1, 1, 'Chop all vegetables', 'Prep', 1),
 ('RECIPE_INSTRUCTION', 2, 2, 'Stir fry for 5 minutes', 'Cooking', 1),
 ('RECIPE_INSTRUCTION', 3, 1, 'Season chicken with salt and pepper', 'Prep', 2),
@@ -58,7 +58,7 @@ INSERT INTO text (type, id, orderIndex, text, title, recipe_id) VALUES
 ('RECIPE_INSTRUCTION', 8, 1, 'Cook pasta al dente', 'Pasta', 5),
 ('RECIPE_INSTRUCTION', 9, 2, 'Saute vegetables', 'Vegetables', 5);
 
-INSERT INTO media (id, imageName, parent_id, parentType) VALUES
+INSERT INTO media (id, image_name, parent_id, parentType) VALUES
 (1, 'recipe1_image1.jpg', 1, 'RECIPE'),
 (2, 'recipe1_image2.jpg', 1, 'RECIPE'),
 (3, 'user1_profile.jpg', 1, 'USER');
