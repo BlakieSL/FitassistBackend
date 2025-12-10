@@ -42,7 +42,7 @@ INSERT INTO user_recipe (id, type, recipie_id, user_id, created_at) VALUES
 (3, 'SAVE', 3, 1, NOW()),
 (4, 'LIKE', 3, 1, NOW());
 
-INSERT INTO text (type, id, orderIndex, text, title, recipe_id) VALUES
+INSERT INTO text (type, id, order_index, text, title, recipe_id) VALUES
 ('RECIPE_INSTRUCTION', 1, 1, 'Chop all vegetables', 'Prep', 1),
 ('RECIPE_INSTRUCTION', 2, 2, 'Stir fry for 5 minutes', 'Cooking', 1),
 ('RECIPE_INSTRUCTION', 3, 1, 'Season chicken with salt and pepper', 'Prep', 2),

@@ -1,4 +1,4 @@
-INSERT INTO media (imageName, parent_id, parentType) VALUES
+INSERT INTO media (image_name, parent_id, parentType) VALUES
 ('image1.jpg', 1, 'FOOD'),
 ('image2.png', 2, 'EXERCISE'),
 ('image3.gif', 1, 'RECIPE'),

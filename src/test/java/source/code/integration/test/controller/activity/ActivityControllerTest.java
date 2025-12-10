@@ -61,7 +61,7 @@ public class ActivityControllerTest {
                         jsonPath("$.id").exists(),
                         jsonPath("$.name").value("Swimming"),
                         jsonPath("$.met").value(7.5),
-                        jsonPath("$.categoryId").value(1)
+                        jsonPath("$.category.id").value(1)
                 );
     }
 
@@ -188,8 +188,8 @@ public class ActivityControllerTest {
                         jsonPath("$.id").value(1),
                         jsonPath("$.name").value("Brisk Walking"),
                         jsonPath("$.met").value(3.5),
-                        jsonPath("$.categoryId").value(1),
-                        jsonPath("$.categoryName").value("Walking"),
+                        jsonPath("$.category.id").value(1),
+                        jsonPath("$.category.name").value("Walking"),
                         jsonPath("$.imageUrls").isArray(),
                         jsonPath("$.savesCount").value(1),
                         jsonPath("$.saved").value(true)
@@ -233,7 +233,7 @@ public class ActivityControllerTest {
                         jsonPath("$.content[0].id").exists(),
                         jsonPath("$.content[0].name").value("Brisk Walking"),
                         jsonPath("$.content[0].met").value(3.5),
-                        jsonPath("$.content[0].categoryId").value(1)
+                        jsonPath("$.content[0].category.id").value(1)
                 );
     }
 
@@ -268,7 +268,7 @@ public class ActivityControllerTest {
                         jsonPath("$.content[0].id").exists(),
                         jsonPath("$.content[0].name").value("Jogging"),
                         jsonPath("$.content[0].met").value(6.0),
-                        jsonPath("$.content[0].categoryId").value(2)
+                        jsonPath("$.content[0].category.id").value(2)
                 );
     }
 

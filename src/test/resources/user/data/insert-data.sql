@@ -91,21 +91,21 @@ INSERT INTO plan_category_association (plan_id, plan_category_id) VALUES
 (2, 2),
 (3, 3);
 
-INSERT INTO workout (name, duration, plan_id, orderIndex, rest_days_after) VALUES
+INSERT INTO workout (name, duration, plan_id, order_index, rest_days_after) VALUES
 ('Upper Body A', 60.00, 1, 1, 1),
 ('Lower Body A', 45.00, 1, 2, 2),
 ('Push Day', 75.00, 2, 1, 1),
 ('Pull Day', 75.00, 2, 2, 1),
 ('Full Body', 50.00, 3, 1, 0);
 
-INSERT INTO workout_set (workout_id, orderIndex, restSeconds) VALUES
+INSERT INTO workout_set (workout_id, order_index, rest_seconds) VALUES
 (1, 1, 90), (1, 2, 60),
 (2, 1, 120),
 (3, 1, 90), (3, 2, 90),
 (4, 1, 90),
 (5, 1, 60);
 
-INSERT INTO workout_set_exercise (workout_set_id, exercise_id, repetitions, weight, orderIndex) VALUES
+INSERT INTO workout_set_exercise (workout_set_id, exercise_id, repetitions, weight, order_index) VALUES
 (1, 1, 10.00, 60.00, 1), (1, 1, 8.00, 70.00, 2), (1, 1, 6.00, 80.00, 3),
 (2, 4, 12.00, 10.00, 1), (2, 4, 10.00, 12.50, 2),
 (3, 3, 8.00, 100.00, 1), (3, 3, 8.00, 100.00, 2), (3, 3, 8.00, 100.00, 3),
@@ -187,7 +187,7 @@ INSERT INTO daily_cart_food (daily_cart_id, food_id, quantity) VALUES
 (2, 5, 200.00), (2, 1, 100.00),
 (3, 4, 150.00), (3, 2, 150.00);
 
-INSERT INTO media (imageName, parent_id, parentType) VALUES
+INSERT INTO media (image_name, parent_id, parentType) VALUES
 ('user1-profile.jpg', 1, 'USER'),
 ('user2-profile.jpg', 2, 'USER'),
 ('user3-profile.jpg', 3, 'USER');

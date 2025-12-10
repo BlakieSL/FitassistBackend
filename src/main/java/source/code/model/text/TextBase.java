@@ -21,7 +21,7 @@ public abstract class TextBase {
     private Integer id;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "order_index", nullable = false)
     private short orderIndex;
 
     @NotBlank

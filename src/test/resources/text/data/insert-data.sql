@@ -39,16 +39,16 @@ INSERT INTO recipe (is_public, id, description, name, user_id, created_at) VALUE
 INSERT INTO plan (is_public, id, description, name, structure_type, user_id, created_at) VALUES
 (true, 3, 'Beginner workout plan', 'Beginner Plan', 'WEEKLY_SPLIT', 1, NOW());
 
-INSERT INTO text (type, orderIndex, text, exercise_id) VALUES
+INSERT INTO text (type, order_index, text, exercise_id) VALUES
 ('EXERCISE_INSTRUCTION', 0, 'Starting position: Lie prone...', 1),
 ('EXERCISE_INSTRUCTION', 1, 'Lower your body...', 1),
 ('EXERCISE_INSTRUCTION', 2, 'Push back up...', 1);
 
-INSERT INTO text (type, orderIndex, text, recipe_id) VALUES
+INSERT INTO text (type, order_index, text, recipe_id) VALUES
 ('RECIPE_INSTRUCTION', 0, 'Peel and chop carrots...', 1),
 ('RECIPE_INSTRUCTION', 1, 'Simmer for 20 minutes...', 1);
 
-INSERT INTO text (type, orderIndex, text, plan_id) VALUES
+INSERT INTO text (type, order_index, text, plan_id) VALUES
 ('PLAN_INSTRUCTION', 0, 'Start with warm-up...', 3);
 
 INSERT INTO user_exercise (id, exercise_id, user_id, created_at) VALUES
