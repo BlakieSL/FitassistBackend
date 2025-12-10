@@ -30,7 +30,7 @@ public class WorkoutSetExercise {
     private BigDecimal repetitions;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "order_index", nullable = false)
     private Integer orderIndex;
 
     @NotNull

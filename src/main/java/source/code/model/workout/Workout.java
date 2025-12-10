@@ -39,7 +39,7 @@ public class Workout {
     private BigDecimal duration;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "order_index", nullable = false)
     private Integer orderIndex;
 
     @NotNull
