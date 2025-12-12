@@ -200,7 +200,7 @@ create table plan
         primary key,
     description    varchar(255) not null,
     name           varchar(100) not null,
-    views          int          not null default 0,
+    views          bigint       not null default 0,
     is_public      BOOLEAN      NOT NULL,
     created_at     datetime(6)  not null,
     structure_type enum ('WEEKLY_SPLIT', 'FIXED_PROGRAM') not null,
@@ -287,7 +287,7 @@ create table thread
     created_at         datetime(6)  not null,
     text               varchar(255) not null,
     title              varchar(50)  not null,
-    views              int          not null,
+    views              bigint       not null default 0,
     thread_category_id int          not null,
     user_id            int          not null,
     constraint FK2rmkr0vlimyhly7n8460ysfl9
