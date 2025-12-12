@@ -50,15 +50,18 @@ public class UserCommentServiceImpl
         List<CommentSummaryDto> summaries = userCommentPage.getContent().stream()
                 .map(uc -> {
                     CommentSummaryDto dto = commentMapper.toSummaryDto(uc.getComment());
-                    dto.setUserCommentInteractionCreatedAt(uc.getCreatedAt());
+                    dto.setInteractedWithAt(uc.getCreatedAt());
                     return dto;
                 })
                 .toList();
 
         commentPopulationService.populate(summaries);
 
-        return new PageImpl<>(summaries.stream().map(dto -> (BaseUserEntity) dto).toList(),
-                pageable, userCommentPage.getTotalElements());
+        return new PageImpl<>(
+                summaries.stream().map(dto -> (BaseUserEntity) dto).toList(),
+                pageable,
+                userCommentPage.getTotalElements()
+        );
     }
 
     @Override

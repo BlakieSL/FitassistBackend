@@ -81,15 +81,18 @@ public class UserRecipeServiceImpl
                 .map(ur -> {
                     Recipe recipe = recipeMap.get(ur.getRecipe().getId());
                     RecipeSummaryDto dto = recipeMapper.toSummaryDto(recipe);
-                    dto.setUserRecipeInteractionCreatedAt(ur.getCreatedAt());
+                    dto.setInteractedWithAt(ur.getCreatedAt());
                     return dto;
                 })
                 .toList();
 
         recipePopulationService.populate(summaries);
 
-        return new PageImpl<>(summaries.stream().map(dto -> (BaseUserEntity) dto).toList(),
-                pageable, userRecipePage.getTotalElements());
+        return new PageImpl<>(
+                summaries.stream().map(dto -> (BaseUserEntity) dto).toList(),
+                pageable,
+                userRecipePage.getTotalElements()
+        );
     }
 
     @Override

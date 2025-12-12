@@ -177,11 +177,11 @@ public class ForumThreadControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @WithMockUser
     @ForumThreadSql
     @Test
     @DisplayName("GET - / - Should return all forum threads")
     void getAllForumThreads_ShouldReturnAllForumThreads() throws Exception {
+        Utils.setUserContext(1);
         mockMvc.perform(get("/api/threads"))
                 .andExpectAll(
                         status().isOk(),
@@ -191,10 +191,10 @@ public class ForumThreadControllerTest {
                 );
     }
 
-    @WithMockUser
     @Test
     @DisplayName("GET - / - Should return empty list when no forum threads exist")
     void getAllForumThreads_ShouldReturnEmptyList_WhenNoForumThreadsExist() throws Exception {
+        Utils.setUserContext(1);
         mockMvc.perform(get("/api/threads"))
                 .andExpectAll(
                         status().isOk(),
@@ -203,11 +203,11 @@ public class ForumThreadControllerTest {
                 );
     }
 
-    @WithMockUser
     @ForumThreadSql
     @Test
     @DisplayName("GET - /categories/{categoryId} - Should return forum threads by category")
     void getForumThreadsByCategory_ShouldReturnForumThreadsByCategory() throws Exception {
+        Utils.setUserContext(1);
         mockMvc.perform(get("/api/threads/categories/1"))
                 .andExpectAll(
                         status().isOk(),
@@ -217,10 +217,10 @@ public class ForumThreadControllerTest {
                 );
     }
 
-    @WithMockUser
     @Test
     @DisplayName("GET - /categories/{categoryId} - Should return empty list when no category with such id does not exist")
     void getForumThreadsByCategory_ShouldReturnEmptyList_WhenCategoryDoesNotExist() throws Exception {
+        Utils.setUserContext(1);
         mockMvc.perform(get("/api/threads/categories/9999"))
                 .andExpectAll(
                         status().isOk(),

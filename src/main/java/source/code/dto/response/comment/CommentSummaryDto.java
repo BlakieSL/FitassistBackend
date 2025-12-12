@@ -14,17 +14,21 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentSummaryDto implements BaseUserEntity, Serializable {
+    private LocalDateTime createdAt;
     private Integer id;
     private String text;
-    private LocalDateTime createdAt;
+
     private String authorUsername;
     private Integer authorId;
     private String authorImageName;
     private String authorImageUrl;
+
+    private LocalDateTime interactedWithAt;
+
     private long likesCount;
     private long dislikesCount;
     private long repliesCount;
-    private LocalDateTime userCommentInteractionCreatedAt;
-    private boolean liked;
-    private boolean disliked;
+
+    private Boolean liked;
+    private Boolean disliked;
 }

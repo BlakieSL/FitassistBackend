@@ -28,17 +28,17 @@ public class ExercisePopulationServiceImpl implements ExercisePopulationService 
     public void populate(ExerciseResponseDto exercise) {
         int userId = AuthorizationUtil.getUserId();
 
-        populateUserInteractionsAndCounts(exercise, userId);
-        populateImageUrls(exercise);
+        fetchAndPopulateUserInteractionsAndCounts(exercise, userId);
+        fetchAndPopulateImageUrls(exercise);
     }
 
-    private void populateUserInteractionsAndCounts(ExerciseResponseDto exercise, int userId) {
+    private void fetchAndPopulateUserInteractionsAndCounts(ExerciseResponseDto exercise, int userId) {
         SavesProjection savesData = userExerciseRepository.findSavesCountAndUserSaved(exercise.getId(), userId);
         exercise.setSavesCount(savesData.savesCount());
         exercise.setSaved(savesData.isSaved());
     }
 
-    private void populateImageUrls(ExerciseResponseDto exercise) {
+    private void fetchAndPopulateImageUrls(ExerciseResponseDto exercise) {
         List<String> imageUrls = mediaRepository.findByParentIdAndParentType(exercise.getId(), MediaConnectedEntity.EXERCISE)
                 .stream()
                 .map(media -> awsS3Service.getImage(media.getImageName()))

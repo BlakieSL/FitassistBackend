@@ -56,8 +56,13 @@ public class UserExerciseServiceImpl
                 .map(ue -> {
                     ExerciseSummaryDto dto = exerciseMapper.toSummaryDto(ue.getExercise());
                     dto.setUserExerciseInteractionCreatedAt(ue.getCreatedAt());
-                    imagePopulationService.populateFirstImageFromMediaList(dto, ue.getExercise().getMediaList(),
-                            Media::getImageName, ExerciseSummaryDto::setImageName, ExerciseSummaryDto::setFirstImageUrl);
+                    imagePopulationService.populateFirstImageFromMediaList(
+                            dto,
+                            ue.getExercise().getMediaList(),
+                            Media::getImageName,
+                            ExerciseSummaryDto::setImageName,
+                            ExerciseSummaryDto::setFirstImageUrl
+                    );
                     return dto;
                 });
     }

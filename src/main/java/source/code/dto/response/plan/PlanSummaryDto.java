@@ -15,21 +15,28 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlanSummaryDto implements BaseUserEntity, Serializable {
+    private LocalDateTime createdAt;
     private Integer id;
     private String name;
     private String description;
     private boolean isPublic;
+    private String firstImageName;
+    private String firstImageUrl;
+    private PlanStructureType planStructureType;
+
     private String authorUsername;
     private Integer authorId;
     private String authorImageName;
-    private String firstImageName;
     private String authorImageUrl;
-    private String firstImageUrl;
+
+    private LocalDateTime interactedWithAt;
+
     private long likesCount;
     private long dislikesCount;
     private long savesCount;
     private long views;
-    private PlanStructureType planStructureType;
-    private LocalDateTime createdAt;
-    private LocalDateTime interactedWithAt;
+
+    private Boolean liked;
+    private Boolean disliked;
+    private Boolean saved;
 }
