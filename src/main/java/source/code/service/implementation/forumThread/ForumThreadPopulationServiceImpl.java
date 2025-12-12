@@ -1,10 +1,13 @@
-package source.code.service.implementation.thread;
+package source.code.service.implementation.forumThread;
 
 import org.springframework.stereotype.Service;
 import source.code.dto.pojo.projection.thread.ForumThreadCommentsCountProjection;
 import source.code.dto.pojo.projection.thread.ForumThreadCountsProjection;
+import source.code.dto.pojo.projection.thread.ForumThreadUserInteractionProjection;
+import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.helper.Enum.model.MediaConnectedEntity;
+import source.code.helper.user.AuthorizationUtil;
 import source.code.model.media.Media;
 import source.code.repository.ForumThreadRepository;
 import source.code.repository.MediaRepository;
@@ -45,6 +48,33 @@ public class ForumThreadPopulationServiceImpl implements ForumThreadPopulationSe
         populateAuthorImages(threads);
         populateSavesCounts(threads, threadIds);
         populateCommentsCounts(threads, threadIds);
+    }
+
+    @Override
+    public void populate(ForumThreadResponseDto thread) {
+        int userId = AuthorizationUtil.getUserId();
+
+        populateAuthorImage(thread);
+        populateUserInteractionAndCounts(thread, userId);
+    }
+
+    private void populateAuthorImage(ForumThreadResponseDto thread) {
+        mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(thread.getAuthorId(), MediaConnectedEntity.USER)
+                .ifPresent(media -> {
+                    thread.setAuthorImageName(media.getImageName());
+                    thread.setAuthorImageUrl(s3Service.getImage(media.getImageName()));
+                });
+    }
+
+    private void populateUserInteractionAndCounts(ForumThreadResponseDto thread, int userId) {
+        ForumThreadUserInteractionProjection result = userThreadRepository
+                .findUserInteractionAndCounts(userId, thread.getId());
+
+        if (result == null) return;
+
+        thread.setSaved(result.isSaved());
+        thread.setSavesCount(result.savesCount());
+        thread.setCommentsCount(result.commentsCount());
     }
 
     private void populateAuthorImages(List<ForumThreadSummaryDto> threads) {
