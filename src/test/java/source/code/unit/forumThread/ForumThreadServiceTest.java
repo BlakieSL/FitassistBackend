@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.request.forumThread.ForumThreadCreateDto;
 import source.code.dto.request.forumThread.ForumThreadUpdateDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
+import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.forumThread.ForumThreadMapper;
@@ -54,6 +55,7 @@ public class ForumThreadServiceTest {
     private ForumThread forumThread;
     private ForumThreadCreateDto createDto;
     private ForumThreadResponseDto responseDto;
+    private ForumThreadSummaryDto summaryDto;
     private JsonMergePatch patch;
     private ForumThreadUpdateDto patchedDto;
     private int threadId;
@@ -64,6 +66,7 @@ public class ForumThreadServiceTest {
         forumThread = new ForumThread();
         createDto = new ForumThreadCreateDto();
         responseDto = new ForumThreadResponseDto();
+        summaryDto = new ForumThreadSummaryDto();
         patchedDto = new ForumThreadUpdateDto();
         threadId = 1;
         patch = mock(JsonMergePatch.class);
@@ -186,21 +189,22 @@ public class ForumThreadServiceTest {
 
     @Test
     void getAllForumThreads_shouldReturnAllForumThreads() {
-        List<ForumThreadResponseDto> responseDtos = List.of(responseDto);
+        List<ForumThreadSummaryDto> summaries = List.of(summaryDto);
 
         when(forumThreadRepository.findAll()).thenReturn(List.of(forumThread));
-        when(forumThreadMapper.toResponseDto(forumThread)).thenReturn(responseDto);
+        when(forumThreadMapper.toSummaryDto(forumThread)).thenReturn(summaryDto);
 
-        List<ForumThreadResponseDto> result = forumThreadService.getAllForumThreads();
+        List<ForumThreadSummaryDto> result = forumThreadService.getAllForumThreads();
 
-        assertEquals(responseDtos, result);
+        assertEquals(summaries, result);
+        verify(forumThreadPopulationService).populate(summaries);
     }
 
     @Test
     void getAllForumThreads_shouldReturnEmptyListWhenNoThreads() {
         when(forumThreadRepository.findAll()).thenReturn(List.of());
 
-        List<ForumThreadResponseDto> result = forumThreadService.getAllForumThreads();
+        List<ForumThreadSummaryDto> result = forumThreadService.getAllForumThreads();
 
         assertTrue(result.isEmpty());
     }
@@ -208,15 +212,18 @@ public class ForumThreadServiceTest {
     @Test
     void getForumThreadsByCategory_shouldReturnThreadsForCategory() {
         int categoryId = 1;
+        List<ForumThreadSummaryDto> summaries = List.of(summaryDto);
+
         when(forumThreadRepository.findAllByThreadCategoryId(categoryId))
                 .thenReturn(List.of(forumThread));
-        when(forumThreadMapper.toResponseDto(forumThread)).thenReturn(responseDto);
+        when(forumThreadMapper.toSummaryDto(forumThread)).thenReturn(summaryDto);
 
-        List<ForumThreadResponseDto> result = forumThreadService
+        List<ForumThreadSummaryDto> result = forumThreadService
                 .getForumThreadsByCategory(categoryId);
 
         assertEquals(1, result.size());
-        assertSame(responseDto, result.get(0));
+        assertSame(summaryDto, result.get(0));
+        verify(forumThreadPopulationService).populate(summaries);
     }
 
     @Test
@@ -224,7 +231,7 @@ public class ForumThreadServiceTest {
         int categoryId = 1;
         when(forumThreadRepository.findAllByThreadCategoryId(categoryId)).thenReturn(List.of());
 
-        List<ForumThreadResponseDto> result = forumThreadService.
+        List<ForumThreadSummaryDto> result = forumThreadService.
                 getForumThreadsByCategory(categoryId);
 
         assertTrue(result.isEmpty());
