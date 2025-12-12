@@ -143,12 +143,6 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public Page<FoodSummaryDto> getAllFoods(Pageable pageable) {
-        return foodRepository.findAll(pageable)
-                .map(foodMapper::toSummaryDto);
-    }
-
-    @Override
     public Page<FoodSummaryDto> getFilteredFoods(FilterDto filter, Pageable pageable) {
         SpecificationFactory<Food> foodFactory = FoodSpecification::new;
         SpecificationBuilder<Food> specificationBuilder = SpecificationBuilder.of(filter, foodFactory, dependencies);

@@ -24,8 +24,6 @@ public interface FoodService {
 
     FoodResponseDto getFood(int foodId);
 
-    Page<FoodSummaryDto> getAllFoods(Pageable pageable);
-
     Page<FoodSummaryDto> getFilteredFoods(FilterDto filter, Pageable pageable);
 
     List<Food> getAllFoodEntities();

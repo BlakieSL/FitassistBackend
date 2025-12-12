@@ -17,8 +17,6 @@ import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.service.declaration.forumThread.ForumThreadService;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/threads")
 public class ForumThreadController {
@@ -58,21 +56,6 @@ public class ForumThreadController {
     public ResponseEntity<ForumThreadResponseDto> getForumThread(@PathVariable int forumThreadId) {
         ForumThreadResponseDto responseDto = forumThreadService.getForumThread(forumThreadId);
         return ResponseEntity.ok(responseDto);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<ForumThreadSummaryDto>> getAllForumThreads() {
-        List<ForumThreadSummaryDto> summaries = forumThreadService.getAllForumThreads();
-        return ResponseEntity.ok(summaries);
-    }
-
-    @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<List<ForumThreadSummaryDto>> getForumThreadsByCategory(
-            @PathVariable int categoryId
-    ) {
-        List<ForumThreadSummaryDto> summaries = forumThreadService
-                .getForumThreadsByCategory(categoryId);
-        return ResponseEntity.ok(summaries);
     }
 
     @PostMapping("/filter")

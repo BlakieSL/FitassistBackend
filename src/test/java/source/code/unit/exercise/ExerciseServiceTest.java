@@ -310,32 +310,6 @@ public class ExerciseServiceTest {
     }
 
     @Test
-    void getAllExercises_shouldReturnAllExercises() {
-        Page<Exercise> exercisePage = new PageImpl<>(List.of(exercise), pageable, 1);
-
-        when(exerciseRepository.findAll(pageable)).thenReturn(exercisePage);
-        when(exerciseMapper.toSummaryDto(exercise)).thenReturn(summaryDto);
-
-        Page<ExerciseSummaryDto> result = exerciseService.getAllExercises(pageable);
-
-        assertEquals(1, result.getTotalElements());
-        assertEquals(summaryDto, result.getContent().get(0));
-        verify(exerciseRepository).findAll(pageable);
-    }
-
-    @Test
-    void getAllExercises_shouldReturnEmptyPageWhenNoExercises() {
-        Page<Exercise> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-
-        when(exerciseRepository.findAll(pageable)).thenReturn(emptyPage);
-
-        Page<ExerciseSummaryDto> result = exerciseService.getAllExercises(pageable);
-
-        assertTrue(result.isEmpty());
-        verify(exerciseRepository).findAll(pageable);
-    }
-
-    @Test
     void getFilteredExercises_shouldReturnFilteredExercises() {
         Page<Exercise> exercisePage = new PageImpl<>(List.of(exercise), pageable, 1);
 
@@ -400,34 +374,4 @@ public class ExerciseServiceTest {
         verify(exerciseRepository).findAllWithoutAssociations();
     }
 
-    @Test
-    void getExercisesByCategory_shouldReturnExercisesForCategory() {
-        int categoryId = 1;
-        ExerciseTargetMuscle exerciseTargetMuscle = new ExerciseTargetMuscle();
-        exerciseTargetMuscle.setExercise(exercise);
-
-        when(exerciseTargetMuscleRepository.findByTargetMuscleId(categoryId))
-                .thenReturn(List.of(exerciseTargetMuscle));
-        when(exerciseMapper.toSummaryDto(exercise)).thenReturn(summaryDto);
-
-        List<ExerciseSummaryDto> result = exerciseService.getExercisesByCategory(categoryId);
-
-        assertEquals(1, result.size());
-        assertSame(summaryDto, result.get(0));
-        verify(exerciseTargetMuscleRepository).findByTargetMuscleId(categoryId);
-        verify(exerciseMapper).toSummaryDto(exercise);
-    }
-
-    @Test
-    void getExercisesByCategory_shouldReturnEmptyListWhenNoExercises() {
-        int categoryId = 1;
-        when(exerciseTargetMuscleRepository.findByTargetMuscleId(categoryId))
-                .thenReturn(new ArrayList<>());
-
-        List<ExerciseSummaryDto> result = exerciseService.getExercisesByCategory(categoryId);
-
-        assertTrue(result.isEmpty());
-        verify(exerciseTargetMuscleRepository).findByTargetMuscleId(categoryId);
-        verifyNoInteractions(exerciseMapper);
-    }
 }

@@ -236,59 +236,6 @@ public class PlanControllerTest {
                 .andExpect(status().isForbidden());
     }
 
-    @PlanSql
-    @Test
-    @DisplayName("GET - /private/{isPrivate} - Should retrieve all public plans when isPrivate is null")
-    void getAllPlans() throws Exception {
-        Utils.setUserContext(1);
-        mockMvc.perform(get("/api/plans/private"))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.content", hasSize(4)),
-                        jsonPath("$.page.totalElements").value(4)
-                );
-    }
-
-    @PlanSql
-    @Test
-    @DisplayName("GET - /private/{isPrivate} - Should retrieve all public plans when isPrivate is false")
-    void getAllPublicPlans() throws Exception {
-        Utils.setUserContext(1);
-        mockMvc.perform(get("/api/plans/private/false"))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.content", hasSize(4)),
-                        jsonPath("$.page.totalElements").value(4)
-                );
-    }
-
-    @PlanSql
-    @Test
-    @DisplayName("GET - /private/{isPrivate} - Should retrieve all private and public plans for current user when isPrivate is true")
-    void getAllPrivatePlans() throws Exception {
-        Utils.setUserContext(1);
-        mockMvc.perform(get("/api/plans/private/true")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.content", hasSize(3)),
-                        jsonPath("$.page.totalElements").value(3)
-                );
-    }
-
-    @Test
-    @DisplayName("GET - / - Should return empty page when no plans exist")
-    void getAllPlansEmpty() throws Exception {
-        Utils.setUserContext(1);
-        mockMvc.perform(get("/api/plans/private")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.content", hasSize(0)),
-                        jsonPath("$.page.totalElements").value(0)
-                );
-    }
-
     @WithMockUser
     @PlanSql
     @Test

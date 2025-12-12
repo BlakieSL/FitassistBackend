@@ -11,6 +11,8 @@ import static source.code.specification.SpecificationConstants.USER_FIELD;
 
 public class ForumThreadSpecification extends AbstractSpecification<ForumThread, ForumThreadField> {
 
+    private static final String THREAD_CATEGORY_FIELD = "threadCategory";
+
     public ForumThreadSpecification(FilterCriteria criteria, SpecificationDependencies dependencies) {
         super(criteria, dependencies);
     }
@@ -24,6 +26,7 @@ public class ForumThreadSpecification extends AbstractSpecification<ForumThread,
     protected Predicate buildPredicateForField(PredicateContext<ForumThread> context, ForumThreadField field) {
         return switch (field) {
             case CREATED_BY_USER -> GenericSpecificationHelper.buildPredicateEntityProperty(context, USER_FIELD);
+            case CATEGORY -> GenericSpecificationHelper.buildPredicateEntityProperty(context, THREAD_CATEGORY_FIELD);
         };
     }
 }

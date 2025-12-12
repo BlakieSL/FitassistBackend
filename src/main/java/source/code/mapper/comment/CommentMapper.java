@@ -40,7 +40,7 @@ public abstract class CommentMapper {
     @Mapping(target = "repliesCount", ignore = true)
     @Mapping(target = "authorImageName", ignore = true)
     @Mapping(target = "authorImageUrl", ignore = true)
-    @Mapping(target = "userCommentInteractionCreatedAt", ignore = true)
+    @Mapping(target = "interactedWithAt", ignore = true)
     public abstract CommentSummaryDto toSummaryDto(Comment comment);
 
     @Mapping(target = "text", source = "text")

@@ -25,8 +25,6 @@ public interface ActivityService {
 
     ActivityResponseDto getActivity(int id);
 
-    Page<ActivitySummaryDto> getAllActivities(Pageable pageable);
-
     Page<ActivitySummaryDto> getFilteredActivities(FilterDto filter, Pageable pageable);
 
     List<Activity> getAllActivityEntities();

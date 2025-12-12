@@ -21,6 +21,7 @@ public interface UserThreadRepository extends JpaRepository<UserThread, Integer>
         FROM UserThread ut
         JOIN FETCH ut.forumThread ft
         JOIN FETCH ft.user
+        JOIN FETCH ft.threadCategory
         WHERE ut.user.id = :userId
     """)
     Page<UserThread> findByUserIdWithThread(@Param("userId") int userId, Pageable pageable);

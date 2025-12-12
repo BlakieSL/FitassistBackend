@@ -27,9 +27,6 @@ public interface ForumThreadRepository extends JpaRepository<ForumThread, Intege
     @NotNull
     List<ForumThread> findAll();
 
-    @EntityGraph(value = "ForumThread.summary")
-    List<ForumThread> findAllByThreadCategoryId(int categoryId);
-
     @Query(value = """
       SELECT ft
       FROM ForumThread ft

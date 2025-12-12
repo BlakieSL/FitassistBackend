@@ -195,66 +195,6 @@ public class FoodControllerTest {
     @WithMockUser
     @FoodSql
     @Test
-    @DisplayName("GET - / - Should return paginated foods with default pagination")
-    void getAllFoods_ShouldReturnPaginatedFoods() throws Exception {
-        mockMvc.perform(get("/api/foods"))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.content[0].id").value(1),
-                        jsonPath("$.content[0].name").value("Apple"),
-                        jsonPath("$.content[1].id").value(2),
-                        jsonPath("$.content[1].name").value("Banana"),
-                        jsonPath("$.page.totalElements").exists(),
-                        jsonPath("$.page.totalPages").exists(),
-                        jsonPath("$.page.size").exists(),
-                        jsonPath("$.page.number").value(0)
-                );
-    }
-
-    @WithMockUser
-    @FoodSql
-    @Test
-    @DisplayName("GET - / - Should return paginated foods with custom page size")
-    void getAllFoods_ShouldReturnPaginatedFoods_WithCustomPageSize() throws Exception {
-        mockMvc.perform(get("/api/foods")
-                        .param("page", "0")
-                        .param("size", "2"))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.content.length()").value(2),
-                        jsonPath("$.page.size").value(2),
-                        jsonPath("$.page.number").value(0)
-                );
-    }
-
-    @WithMockUser
-    @FoodSql
-    @Test
-    @DisplayName("GET - / - Should return sorted foods")
-    void getAllFoods_ShouldReturnSortedFoods() throws Exception {
-        mockMvc.perform(get("/api/foods")
-                        .param("sort", "name,desc"))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.content[0].name").value("Greek Yogurt")
-                );
-    }
-
-    @WithMockUser
-    @Test
-    @DisplayName("GET - / - Should return empty page when no foods exist")
-    void getAllFoods_ShouldReturnEmptyPage_WhenNoFoodsExist() throws Exception {
-        mockMvc.perform(get("/api/foods"))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.content").isEmpty(),
-                        jsonPath("$.page.totalElements").value(0)
-                );
-    }
-
-    @WithMockUser
-    @FoodSql
-    @Test
     @DisplayName("POST - /{id}/calculate-macros - Should calculate food macros")
     void calculateFoodMacros_ShouldCalculateMacros_WhenRequestIsValid() throws Exception {
         Utils.setUserContext(1);

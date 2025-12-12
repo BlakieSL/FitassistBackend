@@ -19,8 +19,6 @@ import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.service.declaration.exercise.ExerciseService;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/exercises")
 public class ExerciseController {
@@ -63,14 +61,6 @@ public class ExerciseController {
         return ResponseEntity.ok(exercise);
     }
 
-    @GetMapping
-    public ResponseEntity<Page<ExerciseSummaryDto>> getAllExercises(
-            @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
-    ) {
-        Page<ExerciseSummaryDto> exercises = exerciseService.getAllExercises(pageable);
-        return ResponseEntity.ok(exercises);
-    }
-
     @PostMapping("/filter")
     public ResponseEntity<Page<ExerciseSummaryDto>> getFilteredExercises(
             @Valid @RequestBody FilterDto filter,
@@ -78,13 +68,6 @@ public class ExerciseController {
     ) {
         Page<ExerciseSummaryDto> filtered = exerciseService.getFilteredExercises(filter, pageable);
         return ResponseEntity.ok(filtered);
-    }
-
-    @GetMapping("/{categoryId}/categories")
-    public ResponseEntity<List<ExerciseSummaryDto>> getExercisesByCategory(
-            @PathVariable int categoryId
-    ) {
-        return ResponseEntity.ok(exerciseService.getExercisesByCategory(categoryId));
     }
 
     @GetMapping("/categories")

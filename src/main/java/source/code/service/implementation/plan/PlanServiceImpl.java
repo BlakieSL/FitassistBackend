@@ -126,19 +126,6 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public Page<PlanSummaryDto> getAllPlans(Boolean showPrivate, Pageable pageable) {
-        Page<Plan> planPage = planRepository.findAllWithAssociations(showPrivate, AuthorizationUtil.getUserId(), pageable);
-
-        List<PlanSummaryDto> summaries = planPage.getContent().stream()
-                .map(planMapper::toSummaryDto)
-                .toList();
-
-        planPopulationService.populate(summaries);
-
-        return new PageImpl<>(summaries, pageable, planPage.getTotalElements());
-    }
-
-    @Override
     public Page<PlanSummaryDto> getFilteredPlans(FilterDto filter, Pageable pageable) {
         SpecificationFactory<Plan> planFactory = PlanSpecification::new;
         SpecificationBuilder<Plan> specificationBuilder = SpecificationBuilder.of(filter, planFactory, dependencies);

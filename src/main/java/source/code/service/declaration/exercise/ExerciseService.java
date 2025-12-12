@@ -23,13 +23,9 @@ public interface ExerciseService {
 
     ExerciseResponseDto getExercise(int id);
 
-    Page<ExerciseSummaryDto> getAllExercises(Pageable pageable);
-
     Page<ExerciseSummaryDto> getFilteredExercises(FilterDto filter, Pageable pageable);
 
     List<Exercise> getAllExerciseEntities();
-
-    List<ExerciseSummaryDto> getExercisesByCategory(int categoryId);
 
     ExerciseCategoriesResponseDto getAllExerciseCategories();
 }

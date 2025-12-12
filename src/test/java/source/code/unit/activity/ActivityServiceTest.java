@@ -340,34 +340,6 @@ public class ActivityServiceTest {
     }
 
     @Test
-    void getAllActivities_shouldReturnAllActivities() {
-        Page<Activity> activityPage = new PageImpl<>(List.of(activity), pageable, 1);
-
-        when(activityRepository.findAllWithActivityCategory(pageable))
-                .thenReturn(activityPage);
-        when(activityMapper.toSummaryDto(activity)).thenReturn(responseDto);
-
-        Page<ActivitySummaryDto> result = activityService.getAllActivities(pageable);
-
-        assertEquals(1, result.getTotalElements());
-        assertEquals(responseDto, result.getContent().get(0));
-        verify(activityRepository).findAllWithActivityCategory(pageable);
-    }
-
-    @Test
-    void getAllActivities_shouldReturnEmptyPageWhenNoActivities() {
-        Page<Activity> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-
-        when(activityRepository.findAllWithActivityCategory(pageable))
-                .thenReturn(emptyPage);
-
-        Page<ActivitySummaryDto> result = activityService.getAllActivities(pageable);
-
-        assertTrue(result.isEmpty());
-        verify(activityRepository).findAllWithActivityCategory(pageable);
-    }
-
-    @Test
     void getFilteredActivities_shouldReturnFilteredActivities() {
         Page<Activity> activityPage = new PageImpl<>(List.of(activity), pageable, 1);
 

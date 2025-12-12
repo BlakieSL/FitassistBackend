@@ -100,26 +100,6 @@ public class ForumThreadServiceImpl implements ForumThreadService {
         return responseDto;
     }
 
-    @Override
-    public List<ForumThreadSummaryDto> getAllForumThreads() {
-        List<ForumThreadSummaryDto> summaries = forumThreadRepository.findAll().stream()
-                .map(forumThreadMapper::toSummaryDto)
-                .toList();
-
-        forumThreadPopulationService.populate(summaries);
-        return summaries;
-    }
-
-    @Override
-    public List<ForumThreadSummaryDto> getForumThreadsByCategory(int categoryId) {
-        List<ForumThreadSummaryDto> summaries = forumThreadRepository.findAllByThreadCategoryId(categoryId).stream()
-                .map(forumThreadMapper::toSummaryDto)
-                .toList();
-
-        forumThreadPopulationService.populate(summaries);
-        return summaries;
-    }
-
     private ForumThreadUpdateDto applyPatchToForumThread(JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException {
         return jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class);

@@ -87,8 +87,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     @Transactional
     public void updateActivity(int activityId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         Activity activity = findActivity(activityId);
         ActivityUpdateDto patched = applyPatchToActivity(patch);
 
@@ -127,12 +126,6 @@ public class ActivityServiceImpl implements ActivityService {
         activityPopulationService.populate(dto);
 
         return dto;
-    }
-
-    @Override
-    public Page<ActivitySummaryDto> getAllActivities(Pageable pageable) {
-        return activityRepository.findAllWithActivityCategory(pageable)
-                .map(activityMapper::toSummaryDto);
     }
 
     @Override
