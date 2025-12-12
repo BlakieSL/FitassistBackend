@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.pojo.AuthorDto;
 import source.code.dto.response.category.CategoryResponseDto;
 
 import java.io.Serializable;
@@ -24,10 +25,7 @@ public class ForumThreadResponseDto implements Serializable {
 
     private CategoryResponseDto category;
 
-    private String authorUsername;
-    private Integer authorId;
-    private String authorImageName;
-    private String authorImageUrl;
+    private AuthorDto author;
 
     private boolean saved;
 }

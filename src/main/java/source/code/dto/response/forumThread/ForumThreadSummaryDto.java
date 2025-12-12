@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.pojo.AuthorDto;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.helper.BaseUserEntity;
 
@@ -21,10 +22,7 @@ public class ForumThreadSummaryDto implements BaseUserEntity, Serializable {
     private String text;
     private CategoryResponseDto category;
 
-    private String authorUsername;
-    private Integer authorId;
-    private String authorImageName;
-    private String authorImageUrl;
+    private AuthorDto author;
 
     private LocalDateTime interactedWithAt;
 

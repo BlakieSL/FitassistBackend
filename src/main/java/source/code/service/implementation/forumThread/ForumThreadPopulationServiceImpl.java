@@ -52,10 +52,10 @@ public class ForumThreadPopulationServiceImpl implements ForumThreadPopulationSe
     }
 
     private void fetchAndPopulateAuthorImage(ForumThreadResponseDto thread) {
-        mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(thread.getAuthorId(), MediaConnectedEntity.USER)
+        mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(thread.getAuthor().getId(), MediaConnectedEntity.USER)
                 .ifPresent(media -> {
-                    thread.setAuthorImageName(media.getImageName());
-                    thread.setAuthorImageUrl(s3Service.getImage(media.getImageName()));
+                    thread.getAuthor().setImageName(media.getImageName());
+                    thread.getAuthor().setImageUrl(s3Service.getImage(media.getImageName()));
                 });
     }
 
@@ -72,7 +72,7 @@ public class ForumThreadPopulationServiceImpl implements ForumThreadPopulationSe
 
     private void fetchAndPopulateAuthorImages(List<ForumThreadSummaryDto> threads) {
         List<Integer> authorIds = threads.stream()
-                .map(ForumThreadSummaryDto::getAuthorId)
+                .map(thread -> thread.getAuthor().getId())
                 .toList();
 
         if (authorIds.isEmpty()) return;
@@ -83,10 +83,10 @@ public class ForumThreadPopulationServiceImpl implements ForumThreadPopulationSe
                 .collect(Collectors.toMap(Media::getParentId, Media::getImageName));
 
         threads.forEach(thread -> {
-            String imageName = authorImageMap.get(thread.getAuthorId());
+            String imageName = authorImageMap.get(thread.getAuthor().getId());
             if (imageName != null) {
-                thread.setAuthorImageName(imageName);
-                thread.setAuthorImageUrl(s3Service.getImage(imageName));
+                thread.getAuthor().setImageName(imageName);
+                thread.getAuthor().setImageUrl(s3Service.getImage(imageName));
             }
         });
     }
