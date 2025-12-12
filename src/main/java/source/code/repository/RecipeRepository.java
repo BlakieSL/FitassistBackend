@@ -46,11 +46,9 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
            OR (:showPrivate = false AND r.isPublic = true)
            OR (:showPrivate = true AND r.user.id = :userId)
     """)
-    Page<Recipe> findAllWithDetails(
-            @Param("showPrivate") Boolean showPrivate,
-            @Param("userId") int userId,
-            Pageable pageable
-    );
+    Page<Recipe> findAllWithDetails(@Param("showPrivate") Boolean showPrivate,
+                                    @Param("userId") int userId,
+                                    Pageable pageable);
 
     @EntityGraph(value = "Recipe.summary")
     @Query("""
