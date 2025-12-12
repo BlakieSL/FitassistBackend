@@ -55,7 +55,8 @@ public class ForumThreadControllerTest {
                         jsonPath("$.text").value("This is the content of the new thread"),
                         jsonPath("$.category.id").value(1),
                         jsonPath("$.category.name").exists(),
-                        jsonPath("$.userId").value(1)
+                        jsonPath("$.authorId").value(1),
+                        jsonPath("$.saved").exists()
                 );
     }
 
@@ -155,11 +156,11 @@ public class ForumThreadControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @WithMockUser
     @ForumThreadSql
     @Test
     @DisplayName("GET - /{forumThreadId} - Should return a forum thread by ID")
     void getForumThread_ShouldReturnForumThreadById() throws Exception {
+        Utils.setUserContext(1);
         mockMvc.perform(get("/api/threads/1"))
                 .andExpectAll(
                         status().isOk(),

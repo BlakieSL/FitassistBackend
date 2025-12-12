@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@AllArgsConstructor(staticName = "of")
+@AllArgsConstructor
 @NoArgsConstructor
 public class ForumThreadResponseDto implements Serializable {
     private Integer id;
@@ -19,6 +19,15 @@ public class ForumThreadResponseDto implements Serializable {
     private LocalDateTime createdAt;
     private String text;
     private long views;
-    private Integer userId;
+    private long savesCount;
+    private long commentsCount;
+
     private CategoryResponseDto category;
+
+    private String authorUsername;
+    private Integer authorId;
+    private String authorImageName;
+    private String authorImageUrl;
+
+    private boolean saved;
 }
