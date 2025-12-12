@@ -22,9 +22,12 @@ import source.code.repository.ForumThreadRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
+import source.code.service.declaration.thread.ForumThreadPopulationService;
 import source.code.service.implementation.forumThread.ForumThreadServiceImpl;
+import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -41,6 +44,10 @@ public class ForumThreadServiceTest {
     private JsonPatchService jsonPatchService;
     @Mock
     private ForumThreadRepository forumThreadRepository;
+    @Mock
+    private SpecificationDependencies dependencies;
+    @Mock
+    private ForumThreadPopulationService forumThreadPopulationService;
     @InjectMocks
     private ForumThreadServiceImpl forumThreadService;
 
@@ -73,14 +80,17 @@ public class ForumThreadServiceTest {
     @Test
     void createForumThread_shouldCreateForumThread() {
         int userId = 1;
+        forumThread.setId(threadId);
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(forumThreadMapper.toEntity(createDto, userId)).thenReturn(forumThread);
         when(forumThreadRepository.save(forumThread)).thenReturn(forumThread);
+        when(forumThreadRepository.findByIdWithDetails(threadId)).thenReturn(Optional.of(forumThread));
         when(forumThreadMapper.toResponseDto(forumThread)).thenReturn(responseDto);
 
         ForumThreadResponseDto result = forumThreadService.createForumThread(createDto);
 
         assertEquals(responseDto, result);
+        verify(forumThreadPopulationService).populate(responseDto);
     }
 
     @Test
@@ -154,19 +164,18 @@ public class ForumThreadServiceTest {
 
     @Test
     void getForumThread_shouldReturnForumThreadWhenFound() {
-        when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
-                .thenReturn(forumThread);
+        when(forumThreadRepository.findByIdWithDetails(threadId)).thenReturn(Optional.of(forumThread));
         when(forumThreadMapper.toResponseDto(forumThread)).thenReturn(responseDto);
 
         ForumThreadResponseDto result = forumThreadService.getForumThread(threadId);
 
         assertEquals(responseDto, result);
+        verify(forumThreadPopulationService).populate(responseDto);
     }
 
     @Test
     void getForumThread_shouldThrowExceptionWhenThreadNotFound() {
-        when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
-                .thenThrow(RecordNotFoundException.of(ForumThread.class, threadId));
+        when(forumThreadRepository.findByIdWithDetails(threadId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class,
                 () -> forumThreadService.getForumThread(threadId)

@@ -14,6 +14,7 @@ import source.code.dto.request.forumThread.ForumThreadCreateDto;
 import source.code.dto.request.forumThread.ForumThreadUpdateDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
+import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.forumThread.ForumThreadMapper;
 import source.code.model.thread.ForumThread;
@@ -62,7 +63,14 @@ public class ForumThreadServiceImpl implements ForumThreadService {
         int userId = AuthorizationUtil.getUserId();
         ForumThread mapped = forumThreadMapper.toEntity(createDto, userId);
         ForumThread saved = forumThreadRepository.save(mapped);
-        return forumThreadMapper.toResponseDto(saved);
+
+        forumThreadRepository.flush();
+
+        ForumThread forumThread = findWithDetails(saved.getId());
+
+        ForumThreadResponseDto responseDto = forumThreadMapper.toResponseDto(forumThread);
+        forumThreadPopulationService.populate(responseDto);
+        return responseDto;
     }
 
     @Override
@@ -86,8 +94,10 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 
     @Override
     public ForumThreadResponseDto getForumThread(int threadId) {
-        ForumThread thread = find(threadId);
-        return forumThreadMapper.toResponseDto(thread);
+        ForumThread thread = findWithDetails(threadId);
+        ForumThreadResponseDto responseDto = forumThreadMapper.toResponseDto(thread);
+        forumThreadPopulationService.populate(responseDto);
+        return responseDto;
     }
 
     @Override
@@ -111,6 +121,11 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 
     private ForumThread find(int threadId) {
         return repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId);
+    }
+
+    private ForumThread findWithDetails(int threadId) {
+        return forumThreadRepository.findByIdWithDetails(threadId)
+                .orElseThrow(() -> new RecordNotFoundException(ForumThread.class, threadId));
     }
 
     @Override

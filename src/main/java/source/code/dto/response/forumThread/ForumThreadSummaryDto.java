@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.response.category.CategoryResponseDto;
 import source.code.helper.BaseUserEntity;
 
 import java.io.Serializable;
@@ -18,9 +19,10 @@ public class ForumThreadSummaryDto implements BaseUserEntity, Serializable {
     private String title;
     private LocalDateTime createdAt;
     private String text;
-    private long viewsCount;
+    private long views;
     private long savesCount;
     private long commentsCount;
+    private CategoryResponseDto category;
     private String authorUsername;
     private Integer authorId;
     private String authorImageName;

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import source.code.dto.pojo.projection.thread.ForumThreadCountsProjection;
+import source.code.dto.pojo.projection.thread.ForumThreadUserInteractionProjection;
 import source.code.model.user.UserThread;
 
 import java.util.List;
@@ -34,4 +35,15 @@ public interface UserThreadRepository extends JpaRepository<UserThread, Integer>
         GROUP BY ut.forumThread.id
     """)
     List<ForumThreadCountsProjection> findSavesCountsByThreadIds(@Param("threadIds") List<Integer> threadIds);
+
+    @Query("""
+        SELECT
+            MAX(CASE WHEN ut.user.id = :userId THEN 1 ELSE 0 END) as isSaved,
+            COUNT(ut) as savesCount,
+            (SELECT COUNT(c) FROM Comment c WHERE c.thread.id = :threadId) as commentsCount
+        FROM UserThread ut
+        WHERE ut.forumThread.id = :threadId
+    """)
+    ForumThreadUserInteractionProjection findUserInteractionAndCounts(@Param("userId") int userId,
+                                                                      @Param("threadId") int threadId);
 }

@@ -26,7 +26,8 @@ import java.util.Set;
 @NamedEntityGraph(
         name = "ForumThread.summary",
         attributeNodes = {
-                @NamedAttributeNode("user")
+                @NamedAttributeNode("user"),
+                @NamedAttributeNode("threadCategory")
         }
 )
 @Getter
