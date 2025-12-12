@@ -225,34 +225,6 @@ public class ActivityControllerTest {
     @WithMockUser
     @ActivitySql
     @Test
-    @DisplayName("GET - / - Should return all activities")
-    void getAllActivities() throws Exception {
-        mockMvc.perform(get("/api/activities"))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.content[0].id").exists(),
-                        jsonPath("$.content[0].name").value("Brisk Walking"),
-                        jsonPath("$.content[0].met").value(3.5),
-                        jsonPath("$.content[0].category.id").value(1)
-                );
-    }
-
-    @WithMockUser
-    @Test
-    @DisplayName("GET - / - Should return empty page when no activities exist")
-    void getAllActivitiesEmpty() throws Exception {
-        mockMvc.perform(get("/api/activities"))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.content").isArray(),
-                        jsonPath("$.content.length()").value(0),
-                        jsonPath("$.page.totalElements").value(0)
-                );
-    }
-
-    @WithMockUser
-    @ActivitySql
-    @Test
     @DisplayName("POST - /filter - Should return filtered activities by Category")
     void getFilteredActivitiesByCategory() throws Exception {
         FilterCriteria criteria = FilterCriteria.of(

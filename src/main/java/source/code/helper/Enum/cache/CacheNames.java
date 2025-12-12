@@ -9,7 +9,6 @@ public class CacheNames {
 
     public static final String ALL_EXERCISES = "allExercises";
     public static final String EXERCISES = "exercises";
-    public static final String EXERCISES_BY_CATEGORY = "exercisesByCategory";
     public static final String EXERCISE_CATEGORIES = "exerciseCategories";
 
     public static final String ALL_PLANS = "allPlans";

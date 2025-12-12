@@ -18,7 +18,5 @@ public interface ForumThreadService {
             throws JsonPatchException, JsonProcessingException;
     void deleteForumThread(int forumThreadId);
     ForumThreadResponseDto getForumThread(int forumThreadId);
-    List<ForumThreadSummaryDto> getAllForumThreads();
-    List<ForumThreadSummaryDto> getForumThreadsByCategory(int categoryId);
     Page<ForumThreadSummaryDto> getFilteredForumThreads(FilterDto filter, Pageable pageable);
 }

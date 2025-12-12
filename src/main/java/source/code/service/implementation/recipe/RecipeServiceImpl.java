@@ -110,19 +110,6 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Page<RecipeSummaryDto> getAllRecipes(Boolean showPrivate, Pageable pageable) {
-        int userId = AuthorizationUtil.getUserId();
-
-        Page<Recipe> recipePage = recipeRepository.findAllWithDetails(showPrivate, userId, pageable);
-        List<RecipeSummaryDto> summaries = recipePage.getContent().stream()
-                .map(recipeMapper::toSummaryDto)
-                .toList();
-        recipePopulationService.populate(summaries);
-
-        return new PageImpl<>(summaries, pageable, recipePage.getTotalElements());
-    }
-
-    @Override
     public Page<RecipeSummaryDto> getFilteredRecipes(FilterDto filter, Pageable pageable) {
         SpecificationFactory<Recipe> recipeFactory = RecipeSpecification::new;
         SpecificationBuilder<Recipe> specificationBuilder = SpecificationBuilder.of(filter, recipeFactory, dependencies);

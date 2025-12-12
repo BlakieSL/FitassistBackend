@@ -26,7 +26,6 @@ import source.code.helper.Enum.cache.CacheNames;
 import source.code.mapper.exercise.ExerciseMapper;
 import source.code.mapper.plan.PlanMapper;
 import source.code.model.exercise.Exercise;
-import source.code.model.exercise.ExerciseTargetMuscle;
 import source.code.repository.*;
 import source.code.service.declaration.exercise.ExercisePopulationService;
 import source.code.service.declaration.exercise.ExerciseService;
@@ -148,12 +147,6 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public Page<ExerciseSummaryDto> getAllExercises(Pageable pageable) {
-        return exerciseRepository.findAll(pageable)
-                .map(exerciseMapper::toSummaryDto);
-    }
-
-    @Override
     public Page<ExerciseSummaryDto> getFilteredExercises(FilterDto filter, Pageable pageable) {
         SpecificationFactory<Exercise> exerciseFactory = ExerciseSpecification::new;
         SpecificationBuilder<Exercise> specificationBuilder = SpecificationBuilder.of(filter, exerciseFactory, dependencies);
@@ -166,15 +159,6 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     public List<Exercise> getAllExerciseEntities() {
         return exerciseRepository.findAllWithoutAssociations();
-    }
-
-    @Override
-    @Cacheable(value = CacheNames.EXERCISES_BY_CATEGORY, key = "#categoryId")
-    public List<ExerciseSummaryDto> getExercisesByCategory(int categoryId) {
-        return exerciseTargetMuscleRepository.findByTargetMuscleId(categoryId).stream()
-                .map(ExerciseTargetMuscle::getExercise)
-                .map(exerciseMapper::toSummaryDto)
-                .toList();
     }
 
     @Override
