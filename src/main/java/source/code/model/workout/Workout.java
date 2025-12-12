@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.plan.Plan;
 
-import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -36,16 +35,16 @@ public class Workout {
     @NotNull
     @PositiveOrZero
     @Column(nullable = false)
-    private BigDecimal duration;
+    private Short duration;
 
     @NotNull
     @Column(name = "order_index", nullable = false)
-    private Integer orderIndex;
+    private Short orderIndex;
 
     @NotNull
     @PositiveOrZero
     @Column(name = "rest_days_after", nullable = false)
-    private Integer restDaysAfter;
+    private Byte restDaysAfter;
 
     @NotNull
     @ManyToOne

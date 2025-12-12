@@ -23,11 +23,11 @@ public class WorkoutSet {
 
     @NotNull
     @Column(name = "order_index", nullable = false)
-    private Integer orderIndex;
+    private Short orderIndex;
 
     @NotNull
     @Column(name = "rest_seconds", nullable = false)
-    private Integer restSeconds;
+    private Short restSeconds;
 
     @NotNull
     @ManyToOne

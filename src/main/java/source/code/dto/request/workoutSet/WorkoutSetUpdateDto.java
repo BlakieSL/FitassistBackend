@@ -12,8 +12,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class WorkoutSetUpdateDto {
     @Positive
-    private Integer orderIndex;
+    private Short orderIndex;
     @Positive
-    private Integer restSeconds;
+    private Short restSeconds;
     private Integer workoutId;
 }

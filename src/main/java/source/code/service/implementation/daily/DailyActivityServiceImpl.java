@@ -111,12 +111,12 @@ public class DailyActivityServiceImpl implements DailyActivityService {
                 .orElse(DailyActivitiesResponseDto.of(Collections.emptyList(), 0));
     }
 
-    private void updateOrAddDailyActivityItem(DailyCart dailyCart, Activity activity, int time, BigDecimal weight) {
+    private void updateOrAddDailyActivityItem(DailyCart dailyCart, Activity activity, Short time, BigDecimal weight) {
         dailyCartActivityRepository
                 .findByDailyCartIdAndActivityId(dailyCart.getId(), activity.getId())
                 .ifPresentOrElse(
                         foundItem -> {
-                            foundItem.setTime(foundItem.getTime() + time);
+                            foundItem.setTime((short) (foundItem.getTime() + time));
                             foundItem.setWeight(weight);
                         },
                         () -> {
@@ -126,7 +126,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
                 );
     }
 
-    private void updateTime(DailyCartActivity dailyCartActivity, int time) {
+    private void updateTime(DailyCartActivity dailyCartActivity, Short time) {
         dailyCartActivity.setTime(time);
     }
 

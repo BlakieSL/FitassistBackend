@@ -16,9 +16,9 @@ public class WorkoutSetExerciseUpdateDto {
     @Positive
     private BigDecimal weight;
     @Positive
-    private BigDecimal repetitions;
+    private Short repetitions;
     private Integer workoutSetId;
     private Integer exerciseId;
     @Positive
-    private Integer orderIndex;
+    private Short orderIndex;
 }

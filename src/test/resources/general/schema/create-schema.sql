@@ -171,7 +171,7 @@ create table daily_cart_activity
 (
     id            int auto_increment
         primary key,
-    time          int            not null,
+    time          smallint       not null,
     weight        decimal(38, 2) null,
     activity_id   int            not null,
     daily_cart_id int            not null,
@@ -440,22 +440,22 @@ create table workout
 (
     id              int auto_increment
         primary key,
-    duration        decimal(38, 2) not null,
+    duration        smallint       not null,
     name            varchar(50)    not null,
     plan_id         int            not null,
-    order_index      int            not null,
-    rest_days_after int            not null,
+    order_index     smallint       not null,
+    rest_days_after tinyint        not null,
     constraint FK2ijomxprmdq73lr3kwu4mhh20
         foreign key (plan_id) references plan (id)
 );
 
 create table workout_set
 (
-    id          int auto_increment
+    id           int auto_increment
         primary key,
-    order_index  int not null,
-    rest_seconds int not null,
-    workout_id  int not null,
+    order_index  smallint not null,
+    rest_seconds smallint not null,
+    workout_id   int      not null,
     constraint FKdm91qulyw807de6ydwcm8bky4
         foreign key (workout_id) references workout (id)
 );
@@ -464,11 +464,11 @@ create table workout_set_exercise
 (
     id             int auto_increment
         primary key,
-    repetitions    decimal(38, 2) not null,
+    repetitions    smallint       not null,
     weight         decimal(38, 2) not null,
     exercise_id    int            not null,
     workout_set_id int            not null,
-    order_index     int            not null,
+    order_index    smallint       not null,
     constraint FKhg1c36fv3o7wlsv0w31m7un18
         foreign key (exercise_id) references exercise (id),
     constraint FKqt2vub0hl6yhxaul5hwpbjwwe

@@ -84,7 +84,8 @@ public class DailyActivityServiceTest {
         activity.setId(1);
         dailyCart.setId(1);
         dailyCartActivity.setId(1);
-        createDto.setTime(60);
+        dailyCartActivity.setTime((short) 30);
+        createDto.setTime((short) 60);
         createDto.setWeight(new BigDecimal("75.00"));
         createDto.setDate(LocalDate.now());
 
@@ -118,7 +119,7 @@ public class DailyActivityServiceTest {
         dailyActivityService.addActivityToDailyCart(ACTIVITY_ID, createDto);
 
         verify(dailyCartRepository).save(dailyCart);
-        assertEquals(dailyCart.getDailyCartActivities().get(0).getTime(), createDto.getTime());
+        assertEquals((short) 90, dailyCart.getDailyCartActivities().get(0).getTime());
         assertEquals(dailyCart.getDailyCartActivities().get(0).getWeight(), createDto.getWeight());
     }
 
@@ -198,7 +199,7 @@ public class DailyActivityServiceTest {
     @Test
     void updateDailyActivityItem_shouldUpdate() throws JsonPatchException, JsonProcessingException {
         DailyActivityItemUpdateDto patchedDto = new DailyActivityItemUpdateDto();
-        patchedDto.setTime(120);
+        patchedDto.setTime((short) 120);
         patchedDto.setWeight(new BigDecimal("80.00"));
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
@@ -254,7 +255,7 @@ public class DailyActivityServiceTest {
             throws JsonPatchException, JsonProcessingException
     {
         DailyActivityItemUpdateDto patchedDto = new DailyActivityItemUpdateDto();
-        patchedDto.setTime(120);
+        patchedDto.setTime((short) 120);
 
         when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID))
                 .thenReturn(Optional.of(dailyCartActivity));

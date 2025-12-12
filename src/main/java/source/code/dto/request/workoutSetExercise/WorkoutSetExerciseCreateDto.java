@@ -18,7 +18,8 @@ public class WorkoutSetExerciseCreateDto {
     private BigDecimal weight;
 
     @NotNull
-    private BigDecimal repetitions;
+    @Positive
+    private Short repetitions;
 
     @NotNull
     private Integer workoutSetId;
@@ -28,5 +29,5 @@ public class WorkoutSetExerciseCreateDto {
 
     @NotNull
     @Positive
-    private Integer orderIndex;
+    private Short orderIndex;
 }

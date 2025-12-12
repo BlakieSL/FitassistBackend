@@ -63,10 +63,10 @@ INSERT INTO user_plan (id, type, plan_id, user_id, created_at) VALUES
 (6, 'DISLIKE', 4, 1, NOW());
 
 INSERT INTO workout (id, duration, name, plan_id, order_index, rest_days_after) VALUES
-(1, 60.0, 'Upper Body', 1, 1, 1),
-(2, 45.0, 'Lower Body', 1, 2, 2),
-(3, 30.0, 'HIIT Session', 3, 1, 0),
-(4, 50.0, 'Full Body', 4, 1, 1);
+(1, 60, 'Upper Body', 1, 1, 1),
+(2, 45, 'Lower Body', 1, 2, 2),
+(3, 30, 'HIIT Session', 3, 1, 0),
+(4, 50, 'Full Body', 4, 1, 1);
 
 INSERT INTO workout_set (id, order_index, rest_seconds, workout_id) VALUES
 (1, 1, 60, 1),

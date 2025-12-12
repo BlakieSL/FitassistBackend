@@ -13,11 +13,11 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutSetExerciseResponseDto implements Serializable {
-    private int id;
-    private int orderIndex;
+    private Integer id;
+    private Short orderIndex;
     private BigDecimal weight;
-    private BigDecimal repetitions;
+    private Short repetitions;
 
-    private int exerciseId;
+    private Integer exerciseId;
     private String exerciseName;
 }
