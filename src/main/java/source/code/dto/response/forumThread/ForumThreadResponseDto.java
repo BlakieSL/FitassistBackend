@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.response.category.CategoryResponseDto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -19,5 +20,5 @@ public class ForumThreadResponseDto implements Serializable {
     private String text;
     private long views;
     private Integer userId;
-    private Integer threadCategoryId;
+    private CategoryResponseDto category;
 }
