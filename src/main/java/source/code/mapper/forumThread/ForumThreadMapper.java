@@ -2,6 +2,7 @@ package source.code.mapper.forumThread;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import source.code.dto.pojo.AuthorDto;
 import source.code.dto.request.forumThread.ForumThreadCreateDto;
 import source.code.dto.request.forumThread.ForumThreadUpdateDto;
 import source.code.dto.response.category.CategoryResponseDto;
@@ -25,32 +26,18 @@ public abstract class ForumThreadMapper {
     @Autowired
     private CommentRepository commentRepository;
 
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "title", source = "title")
-    @Mapping(target = "createdAt", source = "createdAt")
-    @Mapping(target = "text", source = "text")
-    @Mapping(target = "views", source = "views")
     @Mapping(target = "savesCount", ignore = true)
     @Mapping(target = "commentsCount", ignore = true)
     @Mapping(target = "category", source = "threadCategory", qualifiedByName = "threadCategoryToCategoryResponseDto")
-    @Mapping(target = "authorUsername", source = "user.username")
-    @Mapping(target = "authorId", source = "user.id")
-    @Mapping(target = "authorImageName", ignore = true)
-    @Mapping(target = "authorImageUrl", ignore = true)
+    @Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
     @Mapping(target = "saved", ignore = true)
     public abstract ForumThreadResponseDto toResponseDto(ForumThread forumThread);
 
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "title", source = "title")
-    @Mapping(target = "createdAt", source = "createdAt")
-    @Mapping(target = "text", source = "text")
-    @Mapping(target = "views", source = "views")
     @Mapping(target = "savesCount", ignore = true)
     @Mapping(target = "commentsCount", ignore = true)
     @Mapping(target = "category", source = "threadCategory", qualifiedByName = "threadCategoryToCategoryResponseDto")
-    @Mapping(target = "authorUsername", source = "user.username")
-    @Mapping(target = "authorId", source = "user.id")
-    @Mapping(target = "authorImageUrl", ignore = true)
+    @Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
+    @Mapping(target = "interactedWithAt", ignore = true)
     public abstract ForumThreadSummaryDto toSummaryDto(ForumThread forumThread);
 
     @Mapping(target = "title", source = "title")
@@ -107,5 +94,13 @@ public abstract class ForumThreadMapper {
     protected Comment commentIdToComment(Integer commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> RecordNotFoundException.of(Comment.class, commentId));
+    }
+
+    @Named("userToAuthorDto")
+    protected AuthorDto userToAuthorDto(User user) {
+        AuthorDto authorDto = new AuthorDto();
+        authorDto.setId(user.getId());
+        authorDto.setUsername(user.getUsername());
+        return authorDto;
     }
 }

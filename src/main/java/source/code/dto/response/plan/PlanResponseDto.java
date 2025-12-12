@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.pojo.AuthorDto;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.text.PlanInstructionResponseDto;
 import source.code.dto.response.workout.WorkoutResponseDto;
@@ -25,10 +26,7 @@ public class PlanResponseDto implements Serializable {
     private LocalDateTime createdAt;
     private long views;
 
-    private String authorUsername;
-    private Integer authorId;
-    private String authorImageName;
-    private String authorImageUrl;
+    private AuthorDto author;
 
     private long likesCount;
     private long dislikesCount;

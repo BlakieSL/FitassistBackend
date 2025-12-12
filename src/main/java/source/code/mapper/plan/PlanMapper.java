@@ -2,6 +2,7 @@ package source.code.mapper.plan;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import source.code.dto.pojo.AuthorDto;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.request.plan.PlanUpdateDto;
@@ -37,10 +38,7 @@ public abstract class PlanMapper {
     @Autowired
     private ExpertiseLevelRepository expertiseLevelRepository;
 
-    @Mapping(target = "authorUsername", source = "user.username")
-    @Mapping(target = "authorId", source = "user.id")
-    @Mapping(target = "authorImageName", ignore = true)
-    @Mapping(target = "authorImageUrl", ignore = true)
+    @Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
     @Mapping(target = "likesCount", ignore = true)
     @Mapping(target = "dislikesCount", ignore = true)
     @Mapping(target = "savesCount", ignore = true)
@@ -52,10 +50,7 @@ public abstract class PlanMapper {
     @Mapping(target = "imageUrls", ignore = true)
     public abstract PlanResponseDto toResponseDto(Plan plan);
 
-    @Mapping(target = "authorUsername", source = "user.username")
-    @Mapping(target = "authorId", source = "user.id")
-    @Mapping(target = "authorImageName", ignore = true)
-    @Mapping(target = "authorImageUrl", ignore = true)
+    @Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
     @Mapping(target = "firstImageName", source = "mediaList", qualifiedByName = "mapMediaToFirstImageName")
     @Mapping(target = "firstImageUrl", ignore = true)
     @Mapping(target = "likesCount", ignore = true)
@@ -144,5 +139,13 @@ public abstract class PlanMapper {
     protected String mapMediaToFirstImageName(List<Media> mediaList) {
         if (mediaList.isEmpty()) return null;
         return mediaList.getFirst().getImageName();
+    }
+
+    @Named("userToAuthorDto")
+    protected AuthorDto userToAuthorDto(User user) {
+        AuthorDto authorDto = new AuthorDto();
+        authorDto.setId(user.getId());
+        authorDto.setUsername(user.getUsername());
+        return authorDto;
     }
 }
