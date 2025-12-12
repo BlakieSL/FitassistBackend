@@ -16,6 +16,7 @@ public abstract class DailyActivityMapper {
     @Autowired
     private CalculationsService calculationsService;
 
+    @Mapping(target = "dailyItemId", source = "id")
     @Mapping(target = "id", source = "activity.id")
     @Mapping(target = "name", source = "activity.name")
     @Mapping(target = "met", source = "activity.met")
@@ -23,8 +24,7 @@ public abstract class DailyActivityMapper {
     @Mapping(target = "caloriesBurned", ignore = true)
     @Mapping(target = "time", source = "time")
     @Mapping(target = "weight", source = "weight")
-    public abstract ActivityCalculatedResponseDto toActivityCalculatedResponseDto(
-            DailyCartActivity dailyCartActivity);
+    public abstract ActivityCalculatedResponseDto toActivityCalculatedResponseDto(DailyCartActivity dailyCartActivity);
 
     @AfterMapping
     protected void setCaloriesBurned(
