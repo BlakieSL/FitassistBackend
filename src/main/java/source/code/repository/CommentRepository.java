@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
-import source.code.dto.pojo.projection.comment.CommentRepliesCountProjection;
 import source.code.model.thread.Comment;
 
 import java.util.List;
@@ -65,14 +64,4 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaS
       WHERE c.user.id = :userId
     """)
     Page<Comment> findCreatedByUserWithDetails(@Param("userId") int userId, Pageable pageable);
-
-    @Query("""
-      SELECT
-          cr.parentComment.id as commentId,
-          COUNT(cr) as repliesCount
-      FROM Comment cr
-      WHERE cr.parentComment.id IN :commentIds
-      GROUP BY cr.parentComment.id
-    """)
-    List<CommentRepliesCountProjection> findRepliesCountsByCommentIds(@Param("commentIds") List<Integer> commentIds);
 }

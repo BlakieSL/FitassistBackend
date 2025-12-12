@@ -60,8 +60,13 @@ public class UserActivityServiceImpl
                 .map(ua -> {
                     ActivitySummaryDto dto = activityMapper.toSummaryDto(ua.getActivity());
                     dto.setUserActivityInteractionCreatedAt(ua.getCreatedAt());
-                    imagePopulationService.populateFirstImageFromMediaList(dto, ua.getActivity().getMediaList(),
-                            Media::getImageName, ActivitySummaryDto::setImageName, ActivitySummaryDto::setFirstImageUrl);
+                    imagePopulationService.populateFirstImageFromMediaList(
+                            dto,
+                            ua.getActivity().getMediaList(),
+                            Media::getImageName,
+                            ActivitySummaryDto::setImageName,
+                            ActivitySummaryDto::setFirstImageUrl
+                    );
                     return dto;
                 });
     }

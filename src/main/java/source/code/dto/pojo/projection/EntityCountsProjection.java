@@ -1,6 +1,7 @@
-package source.code.dto.pojo.projection.recipe;
+package source.code.dto.pojo.projection;
 
-public interface RecipeAndPlanUserInteractionProjection {
+public interface EntityCountsProjection {
+    Integer getEntityId();
     Long getIsLiked();
     Long getIsDisliked();
     Long getIsSaved();

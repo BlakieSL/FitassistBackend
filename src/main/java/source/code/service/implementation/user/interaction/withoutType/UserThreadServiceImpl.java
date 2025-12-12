@@ -51,15 +51,18 @@ public class UserThreadServiceImpl
         List<ForumThreadSummaryDto> summaries = userThreadPage.getContent().stream()
                 .map(ut -> {
                     ForumThreadSummaryDto dto = forumThreadMapper.toSummaryDto(ut.getForumThread());
-                    dto.setUserThreadInteractionCreatedAt(ut.getCreatedAt());
+                    dto.setInteractedWithAt(ut.getCreatedAt());
                     return dto;
                 })
                 .toList();
 
         forumThreadPopulationService.populate(summaries);
 
-        return new PageImpl<>(summaries.stream().map(dto -> (BaseUserEntity) dto).toList(),
-                pageable, userThreadPage.getTotalElements());
+        return new PageImpl<>(
+                summaries.stream().map(dto -> (BaseUserEntity) dto).toList(),
+                pageable,
+                userThreadPage.getTotalElements()
+        );
     }
 
     @Override

@@ -49,11 +49,9 @@ public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecifi
            OR (:showPrivate = false AND p.isPublic = true)
            OR (:showPrivate = true AND p.user.id = :userId)
     """)
-    Page<Plan> findAllWithAssociations(
-            @Param("showPrivate") Boolean showPrivate,
-            @Param("userId") int userId,
-            Pageable pageable
-    );
+    Page<Plan> findAllWithAssociations(@Param("showPrivate") Boolean showPrivate,
+                                       @Param("userId") int userId,
+                                       Pageable pageable);
 
     @EntityGraph(value = "Plan.summary")
     @Query("""
@@ -77,11 +75,9 @@ public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecifi
                AND p.user.id = :userId)
            OR (:isOwnProfile = true AND p.user.id = :userId)
     """)
-    Page<Plan> findCreatedByUserWithDetails(
-            @Param("userId") int userId,
-            @Param("isOwnProfile") boolean isOwnProfile,
-            Pageable pageable
-    );
+    Page<Plan> findCreatedByUserWithDetails(@Param("userId") int userId,
+                                            @Param("isOwnProfile") boolean isOwnProfile,
+                                            Pageable pageable);
 
     @EntityGraph(value = "Plan.summary")
     @Query("""

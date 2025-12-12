@@ -2,12 +2,10 @@ package source.code.service.implementation.comment;
 
 import org.springframework.stereotype.Service;
 import source.code.dto.pojo.projection.comment.CommentCountsProjection;
-import source.code.dto.pojo.projection.comment.CommentRepliesCountProjection;
 import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.model.media.Media;
-import source.code.repository.CommentRepository;
 import source.code.repository.MediaRepository;
 import source.code.repository.UserCommentRepository;
 import source.code.service.declaration.aws.AwsS3Service;
@@ -20,17 +18,14 @@ import java.util.stream.Collectors;
 @Service
 public class CommentPopulationServiceImpl implements CommentPopulationService {
     private final UserCommentRepository userCommentRepository;
-    private final CommentRepository commentRepository;
     private final MediaRepository mediaRepository;
     private final AwsS3Service s3Service;
 
     public CommentPopulationServiceImpl(
             UserCommentRepository userCommentRepository,
-            CommentRepository commentRepository,
             MediaRepository mediaRepository,
             AwsS3Service s3Service) {
         this.userCommentRepository = userCommentRepository;
-        this.commentRepository = commentRepository;
         this.mediaRepository = mediaRepository;
         this.s3Service = s3Service;
     }
@@ -46,8 +41,7 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
                 .toList();
 
         populateAuthorImages(comments);
-        populateUserInteractionsAndCounts(comments, commentIds, userId);
-        populateRepliesCounts(comments, commentIds);
+        populateCounts(comments, commentIds, userId);
     }
 
     private void populateAuthorImages(List<CommentSummaryDto> comments) {
@@ -71,7 +65,7 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
         });
     }
 
-    private void populateUserInteractionsAndCounts(List<CommentSummaryDto> comments, List<Integer> commentIds, int userId) {
+    private void populateCounts(List<CommentSummaryDto> comments, List<Integer> commentIds, int userId) {
         Map<Integer, CommentCountsProjection> countsMap = userCommentRepository
                 .findCountsByCommentIds(userId, commentIds)
                 .stream()
@@ -83,30 +77,18 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
         comments.forEach(comment -> {
             CommentCountsProjection counts = countsMap.get(comment.getId());
             if (counts != null) {
-                comment.setLikesCount(counts.getLikesCount() != null ? counts.getLikesCount() : 0L);
-                comment.setDislikesCount(counts.getDislikesCount() != null ? counts.getDislikesCount() : 0L);
+                comment.setLikesCount(counts.likesCount());
+                comment.setDislikesCount(counts.dislikesCount());
                 comment.setLiked(counts.isLiked());
                 comment.setDisliked(counts.isDisliked());
+                comment.setRepliesCount(counts.repliesCount());
             } else {
                 comment.setLikesCount(0L);
                 comment.setDislikesCount(0L);
                 comment.setLiked(false);
                 comment.setDisliked(false);
+                comment.setRepliesCount(0L);
             }
-        });
-    }
-
-    private void populateRepliesCounts(List<CommentSummaryDto> comments, List<Integer> commentIds) {
-        Map<Integer, Long> repliesCountMap = commentRepository
-                .findRepliesCountsByCommentIds(commentIds)
-                .stream()
-                .collect(Collectors.toMap(
-                        CommentRepliesCountProjection::getCommentId,
-                        CommentRepliesCountProjection::getRepliesCount
-                ));
-
-        comments.forEach(comment -> {
-            comment.setRepliesCount(repliesCountMap.getOrDefault(comment.getId(), 0L));
         });
     }
 }

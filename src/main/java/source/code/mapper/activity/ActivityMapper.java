@@ -34,14 +34,21 @@ public abstract class  ActivityMapper {
     private AwsS3Service awsS3Service;
 
     @Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
+    @Mapping(target = "imageUrls", ignore = true)
+    @Mapping(target = "savesCount", ignore = true)
+    @Mapping(target = "saved", ignore = true)
+    public abstract ActivityResponseDto toDetailedResponseDto(Activity activity);
+
+    @Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
     @Mapping(target = "firstImageUrl", ignore = true)
     public abstract ActivitySummaryDto toSummaryDto(Activity activity);
 
     @Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
     @Mapping(target = "caloriesBurned", ignore = true)
     @Mapping(target = "time", ignore = true)
-    public abstract ActivityCalculatedResponseDto toCalculatedDto(
-            Activity activity, @Context BigDecimal weight, @Context int time);
+    public abstract ActivityCalculatedResponseDto toCalculatedDto(Activity activity,
+                                                                  @Context BigDecimal weight,
+                                                                  @Context int time);
 
     @Mapping(target = "activityCategory", source = "categoryId", qualifiedByName = "categoryIdToActivityCategory")
     @Mapping(target = "id", ignore = true)
@@ -57,12 +64,11 @@ public abstract class  ActivityMapper {
     public abstract void updateActivityFromDto(@MappingTarget Activity activity, ActivityUpdateDto request);
 
     @AfterMapping
-    protected void setCaloriesBurned(
-            @MappingTarget ActivityCalculatedResponseDto dto, Activity activity,
-            @Context BigDecimal weight, @Context int time
-    ) {
-        BigDecimal caloriesBurned = calculationsService.calculateCaloriesBurned(
-                time, weight, activity.getMet());
+    protected void setCaloriesBurned(@MappingTarget ActivityCalculatedResponseDto dto,
+                                     Activity activity,
+                                     @Context BigDecimal weight,
+                                     @Context int time) {
+        BigDecimal caloriesBurned = calculationsService.calculateCaloriesBurned(time, weight, activity.getMet());
 
         int calories = caloriesBurned.setScale(0, RoundingMode.HALF_UP).intValue();
 
@@ -70,12 +76,6 @@ public abstract class  ActivityMapper {
         dto.setTime(time);
         dto.setWeight(weight);
     }
-
-    @Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
-    @Mapping(target = "imageUrls", ignore = true)
-    @Mapping(target = "savesCount", ignore = true)
-    @Mapping(target = "saved", ignore = true)
-    public abstract ActivityResponseDto toDetailedResponseDto(Activity activity);
 
     @AfterMapping
     protected void mapImageUrls(@MappingTarget ActivityResponseDto dto, Activity activity) {

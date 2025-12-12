@@ -15,17 +15,22 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ForumThreadSummaryDto implements BaseUserEntity, Serializable {
+    private LocalDateTime createdAt;
     private Integer id;
     private String title;
-    private LocalDateTime createdAt;
     private String text;
-    private long views;
-    private long savesCount;
-    private long commentsCount;
     private CategoryResponseDto category;
+
     private String authorUsername;
     private Integer authorId;
     private String authorImageName;
     private String authorImageUrl;
-    private LocalDateTime userThreadInteractionCreatedAt;
+
+    private LocalDateTime interactedWithAt;
+
+    private long views;
+    private long savesCount;
+    private long commentsCount;
+
+    private Boolean saved;
 }

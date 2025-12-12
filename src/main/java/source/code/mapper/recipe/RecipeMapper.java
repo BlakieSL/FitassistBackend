@@ -115,8 +115,7 @@ public abstract class RecipeMapper {
     }
 
     @Named("mapAssociationsToCategoryResponseDto")
-    protected List<CategoryResponseDto> mapAssociationsToCategoryResponseDto(
-            Set<RecipeCategoryAssociation> associations) {
+    protected List<CategoryResponseDto> mapAssociationsToCategoryResponseDto(Set<RecipeCategoryAssociation> associations) {
         return associations.stream()
                 .map(association -> new CategoryResponseDto(
                         association.getRecipeCategory().getId(),

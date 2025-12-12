@@ -1,8 +1,7 @@
 package source.code.service.implementation.recipe;
 
 import org.springframework.stereotype.Service;
-import source.code.dto.pojo.projection.recipe.RecipeAndPlanUserInteractionProjection;
-import source.code.dto.pojo.projection.recipe.RecipeCountsProjection;
+import source.code.dto.pojo.projection.EntityCountsProjection;
 import source.code.dto.pojo.projection.recipe.RecipeIngredientCountProjection;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
@@ -43,22 +42,22 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
 
         List<Integer> recipeIds = recipes.stream().map(RecipeSummaryDto::getId).toList();
 
-        populateAuthorImages(recipes);
+        fetchAndPopulateAuthorImages(recipes);
         populateImageUrls(recipes);
-        populateCounts(recipes, recipeIds);
-        populateIngredientsCount(recipes, recipeIds);
+        fetchAndPopulateCounts(recipes, recipeIds);
+        fetchAndPopulateIngredientsCount(recipes, recipeIds);
     }
 
     @Override
     public void populate(RecipeResponseDto recipe) {
         int userId = AuthorizationUtil.getUserId();
 
-        populateAuthorImage(recipe);
-        populateImageUrls(recipe);
-        populateUserInteractionsAndCounts(recipe, userId);
+        fetchAndPopulateAuthorImage(recipe);
+        fetchAndPopulateImageUrls(recipe);
+        fetchAndPopulateUserInteractionsAndCounts(recipe, userId);
     }
 
-    private void populateAuthorImages(List<RecipeSummaryDto> recipes) {
+    private void fetchAndPopulateAuthorImages(List<RecipeSummaryDto> recipes) {
         List<Integer> authorIds = recipes.stream()
                 .map(RecipeSummaryDto::getAuthorId)
                 .toList();
@@ -87,26 +86,31 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
         });
     }
 
-    private void populateCounts(List<RecipeSummaryDto> recipes, List<Integer> recipeIds) {
-        Map<Integer, RecipeCountsProjection> countsMap = userRecipeRepository
-                .findCountsByRecipeIds(recipeIds)
+    private void fetchAndPopulateCounts(List<RecipeSummaryDto> recipes, List<Integer> recipeIds) {
+        int userId = AuthorizationUtil.getUserId();
+
+        Map<Integer, EntityCountsProjection> countsMap = userRecipeRepository
+                .findCountsByRecipeIds(userId, recipeIds)
                 .stream()
                 .collect(Collectors.toMap(
-                        RecipeCountsProjection::getRecipeId,
+                        EntityCountsProjection::getEntityId,
                         projection -> projection
                 ));
 
         recipes.forEach(recipe -> {
-            RecipeCountsProjection counts = countsMap.get(recipe.getId());
+            EntityCountsProjection counts = countsMap.get(recipe.getId());
             if (counts != null) {
-                recipe.setLikesCount(counts.getLikesCount());
-                recipe.setDislikesCount(counts.getDislikesCount());
-                recipe.setSavesCount(counts.getSavesCount());
+                recipe.setLikesCount(counts.likesCount());
+                recipe.setDislikesCount(counts.dislikesCount());
+                recipe.setSavesCount(counts.savesCount());
+                recipe.setLiked(counts.isLiked());
+                recipe.setDisliked(counts.isDisliked());
+                recipe.setSaved(counts.isSaved());
             }
         });
     }
 
-    private void populateIngredientsCount(List<RecipeSummaryDto> recipes, List<Integer> recipeIds) {
+    private void fetchAndPopulateIngredientsCount(List<RecipeSummaryDto> recipes, List<Integer> recipeIds) {
         Map<Integer, Long> ingredientsMap = recipeFoodRepository
                 .countByRecipeIds(recipeIds)
                 .stream()
@@ -120,7 +124,7 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
         );
     }
 
-    private void populateAuthorImage(RecipeResponseDto recipe) {
+    private void fetchAndPopulateAuthorImage(RecipeResponseDto recipe) {
         mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(recipe.getAuthorId(), MediaConnectedEntity.USER)
             .ifPresent(media -> {
                 recipe.setAuthorImageName(media.getImageName());
@@ -128,7 +132,7 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
             });
     }
 
-    private void populateImageUrls(RecipeResponseDto recipe) {
+    private void fetchAndPopulateImageUrls(RecipeResponseDto recipe) {
         List<String> imageUrls = mediaRepository.findByParentIdAndParentType(recipe.getId(), MediaConnectedEntity.RECIPE)
                 .stream()
                 .map(media -> s3Service.getImage(media.getImageName()))
@@ -136,9 +140,9 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
         recipe.setImageUrls(imageUrls);
     }
 
-    private void populateUserInteractionsAndCounts(RecipeResponseDto recipe, int requestingUserId) {
-        RecipeAndPlanUserInteractionProjection result = userRecipeRepository
-                .findUserInteractionsAndCounts(requestingUserId, recipe.getId());
+    private void fetchAndPopulateUserInteractionsAndCounts(RecipeResponseDto recipe, int requestingUserId) {
+        EntityCountsProjection result = userRecipeRepository
+                .findCountsByRecipeId(requestingUserId, recipe.getId());
 
         if (result == null) return;
 

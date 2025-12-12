@@ -60,8 +60,13 @@ public class UserFoodServiceImpl
                 .map(uf -> {
                     FoodSummaryDto dto = foodMapper.toSummaryDto(uf.getFood());
                     dto.setUserFoodInteractionCreatedAt(uf.getCreatedAt());
-                    imagePopulationService.populateFirstImageFromMediaList(dto, uf.getFood().getMediaList(),
-                            Media::getImageName, FoodSummaryDto::setImageName, FoodSummaryDto::setFirstImageUrl);
+                    imagePopulationService.populateFirstImageFromMediaList(
+                            dto,
+                            uf.getFood().getMediaList(),
+                            Media::getImageName,
+                            FoodSummaryDto::setImageName,
+                            FoodSummaryDto::setFirstImageUrl
+                    );
                     return dto;
                 });
     }

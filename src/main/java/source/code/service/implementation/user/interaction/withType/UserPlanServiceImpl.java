@@ -88,8 +88,11 @@ public class UserPlanServiceImpl
 
         planPopulationService.populate(summaries);
 
-        return new PageImpl<>(summaries.stream().map(dto -> (BaseUserEntity) dto).toList(),
-                pageable, userPlanPage.getTotalElements());
+        return new PageImpl<>(
+                summaries.stream().map(dto -> (BaseUserEntity) dto).toList(),
+                pageable,
+                userPlanPage.getTotalElements()
+        );
     }
 
     @Override
