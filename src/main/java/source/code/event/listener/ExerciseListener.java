@@ -7,7 +7,6 @@ import source.code.event.events.Exercise.ExerciseDeleteEvent;
 import source.code.event.events.Exercise.ExerciseUpdateEvent;
 import source.code.helper.Enum.cache.CacheNames;
 import source.code.model.exercise.Exercise;
-import source.code.model.exercise.ExerciseTargetMuscle;
 import source.code.service.declaration.cache.CacheService;
 import source.code.service.declaration.search.LuceneIndexService;
 
@@ -53,15 +52,5 @@ public class ExerciseListener {
 
     private void clearCommonCache(Exercise exercise) {
         cacheService.clearCache(CacheNames.ALL_EXERCISES);
-        clearExercisesByCategoryCache(exercise);
-    }
-
-    private void clearExercisesByCategoryCache(Exercise exercise) {
-        if (exercise.getExerciseTargetMuscles() != null) {
-            for (ExerciseTargetMuscle association : exercise.getExerciseTargetMuscles()) {
-                cacheService.evictCache(CacheNames.EXERCISES_BY_CATEGORY,
-                        association.getTargetMuscle().getId());
-            }
-        }
     }
 }

@@ -251,43 +251,6 @@ public class PlanServiceTest {
     }
 
     @Test
-    void getAllPlans_shouldReturnPrivatePlans() {
-        Boolean isPrivate = true;
-        int userId = 1;
-        Page<Plan> planPage = new PageImpl<>(List.of(plan), pageable, 1);
-
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(planRepository.findAllWithAssociations(eq(isPrivate), eq(userId), eq(pageable)))
-                .thenReturn(planPage);
-        when(planMapper.toSummaryDto(plan)).thenReturn(summaryDto);
-
-        Page<PlanSummaryDto> result = planService.getAllPlans(isPrivate, pageable);
-
-        assertFalse(result.isEmpty());
-        assertEquals(1, result.getTotalElements());
-        verify(planRepository).findAllWithAssociations(eq(isPrivate), eq(userId), eq(pageable));
-        verify(planPopulationService).populate(anyList());
-    }
-
-    @Test
-    void getAllPlans_shouldReturnEmptyPageWhenNoPlans() {
-        Boolean isPrivate = false;
-        int userId = 1;
-        Page<Plan> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
-
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(planRepository.findAllWithAssociations(any(Boolean.class), eq(userId), eq(pageable)))
-                .thenReturn(emptyPage);
-
-        Page<PlanSummaryDto> result = planService.getAllPlans(isPrivate, pageable);
-
-        assertTrue(result.isEmpty());
-        assertEquals(0, result.getTotalElements());
-        verify(planRepository).findAllWithAssociations(eq(isPrivate), eq(userId), eq(pageable));
-        verify(planPopulationService).populate(anyList());
-    }
-
-    @Test
     void getFilteredPlans_shouldReturnFilteredPlans() {
         Page<Plan> planPage = new PageImpl<>(List.of(plan), pageable, 1);
 

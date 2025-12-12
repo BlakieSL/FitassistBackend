@@ -65,18 +65,9 @@ public class ActivityController {
         return ResponseEntity.ok(activity);
     }
 
-    @GetMapping
-    public ResponseEntity<Page<ActivitySummaryDto>> getAllActivities(
-            @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
-    ) {
-        return ResponseEntity.ok(activityService.getAllActivities(pageable));
-    }
-
     @PostMapping("/filter")
-    public ResponseEntity<Page<ActivitySummaryDto>> getFilteredActivities(
-            @Valid @RequestBody FilterDto filterDto,
-            @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
-    ) {
+    public ResponseEntity<Page<ActivitySummaryDto>> getFilteredActivities(@Valid @RequestBody FilterDto filterDto,
+                                                                          @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<ActivitySummaryDto> filteredActivities = activityService.getFilteredActivities(filterDto, pageable);
         return ResponseEntity.ok(filteredActivities);
     }

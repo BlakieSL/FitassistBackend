@@ -221,29 +221,4 @@ public class ExerciseControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @ExerciseSql
-    @Test
-    @DisplayName("GET - / - Should retrieve all exercises with pagination")
-    void getAllExercises() throws Exception {
-        Utils.setUserContext(1);
-
-        mockMvc.perform(get("/api/exercises")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.content").isArray(),
-                        jsonPath("$.page.totalElements").isNumber()
-                );
-    }
-
-    @ExerciseSql
-    @Test
-    @DisplayName("GET - /{categoryId}/categories - Should retrieve exercises by category")
-    void getExercisesByCategory() throws Exception {
-        Utils.setUserContext(1);
-
-        mockMvc.perform(get("/api/exercises/1/categories")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpectAll(status().isOk());
-    }
 }

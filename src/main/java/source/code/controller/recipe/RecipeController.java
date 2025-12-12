@@ -61,14 +61,6 @@ public class RecipeController {
         return ResponseEntity.ok(recipe);
     }
 
-    @GetMapping({"/private", "/private/{showPrivate}"})
-    public ResponseEntity<Page<RecipeSummaryDto>> getAllRecipes(
-            @PathVariable(required = false) Boolean showPrivate,
-            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
-        return ResponseEntity.ok(recipeService.getAllRecipes(showPrivate, pageable));
-    }
-
     @PostMapping("/filter")
     public ResponseEntity<Page<RecipeSummaryDto>> getFilteredRecipes(
             @Valid @RequestBody FilterDto filterDto,

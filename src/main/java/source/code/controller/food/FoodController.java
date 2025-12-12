@@ -57,14 +57,6 @@ public class FoodController {
         return ResponseEntity.ok(food);
     }
 
-    @GetMapping
-    public ResponseEntity<Page<FoodSummaryDto>> getAllFoods(
-            @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
-    ) {
-        Page<FoodSummaryDto> response = foodService.getAllFoods(pageable);
-        return ResponseEntity.ok(response);
-    }
-
     @PostMapping("/filter")
     public ResponseEntity<Page<FoodSummaryDto>> getFilteredFoods(
             @Valid @RequestBody FilterDto filterDto,

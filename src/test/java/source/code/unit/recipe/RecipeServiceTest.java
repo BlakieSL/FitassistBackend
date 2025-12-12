@@ -242,45 +242,6 @@ public class RecipeServiceTest {
     }
 
     @Test
-    void getAllRecipes_shouldReturnAllRecipes() {
-        List<Recipe> recipes = List.of(recipe);
-        Boolean isPrivate = true;
-        int userId = 1;
-        Pageable pageable = PageRequest.of(0, 100);
-        Page<Recipe> recipePage = new PageImpl<>(recipes, pageable, recipes.size());
-
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(recipeRepository.findAllWithDetails(eq(isPrivate), eq(userId), eq(pageable))).thenReturn(recipePage);
-        when(recipeMapper.toSummaryDto(recipe)).thenReturn(summaryDto);
-
-        Page<RecipeSummaryDto> result = recipeService.getAllRecipes(isPrivate, pageable);
-
-        assertEquals(1, result.getContent().size());
-        assertEquals(summaryDto, result.getContent().get(0));
-        verify(recipeRepository).findAllWithDetails(eq(isPrivate), eq(userId), eq(pageable));
-        verify(recipeMapper).toSummaryDto(recipe);
-        verify(recipePopulationService).populate(anyList());
-    }
-
-    @Test
-    void getAllRecipes_shouldReturnEmptyPageWhenNoRecipes() {
-        Boolean isPrivate = false;
-        int userId = 1;
-        Pageable pageable = PageRequest.of(0, 100);
-        Page<Recipe> emptyPage = new PageImpl<>(Collections.emptyList(), pageable, 0);
-
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(recipeRepository.findAllWithDetails(eq(isPrivate), eq(userId), eq(pageable))).thenReturn(emptyPage);
-
-        Page<RecipeSummaryDto> result = recipeService.getAllRecipes(isPrivate, pageable);
-
-        assertTrue(result.getContent().isEmpty());
-        verify(recipeRepository).findAllWithDetails(eq(isPrivate), eq(userId), eq(pageable));
-        verifyNoInteractions(recipeMapper);
-        verify(recipePopulationService).populate(anyList());
-    }
-
-    @Test
     void getFilteredRecipes_shouldReturnFilteredRecipes() {
         List<Recipe> recipes = List.of(recipe);
         Pageable pageable = PageRequest.of(0, 100);

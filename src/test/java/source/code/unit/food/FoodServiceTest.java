@@ -293,37 +293,6 @@ public class FoodServiceTest {
     }
 
     @Test
-    void getAllFoods_shouldReturnPagedFoods() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Food> foodPage = new PageImpl<>(List.of(food), pageable, 1);
-
-        when(foodRepository.findAll(pageable)).thenReturn(foodPage);
-        when(foodMapper.toSummaryDto(food)).thenReturn(responseDto);
-
-        Page<FoodSummaryDto> result = foodService.getAllFoods(pageable);
-
-        assertEquals(1, result.getTotalElements());
-        assertEquals(responseDto, result.getContent().get(0));
-        verify(foodRepository).findAll(pageable);
-        verify(foodMapper).toSummaryDto(food);
-    }
-
-    @Test
-    void getAllFoods_shouldReturnEmptyPageWhenNoFoods() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Food> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-
-        when(foodRepository.findAll(pageable)).thenReturn(emptyPage);
-
-        Page<FoodSummaryDto> result = foodService.getAllFoods(pageable);
-
-        assertTrue(result.isEmpty());
-        assertEquals(0, result.getTotalElements());
-        verify(foodRepository).findAll(pageable);
-        verifyNoInteractions(foodMapper);
-    }
-
-    @Test
     void getFilteredFoods_shouldReturnPagedFilteredFoods() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Food> foodPage = new PageImpl<>(List.of(food), pageable, 1);
