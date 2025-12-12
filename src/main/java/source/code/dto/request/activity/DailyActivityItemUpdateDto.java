@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 public class DailyActivityItemUpdateDto {
     @NotNull
     @Positive
-    private int time;
+    private Short time;
 
     @Positive
     private BigDecimal weight;

@@ -105,7 +105,7 @@ public class DailyActivityTest {
         Utils.setUserContext(1);
 
         DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
-        request.setTime(30);
+        request.setTime((short) 30);
         request.setWeight(new BigDecimal("75.50"));
         request.setDate(LocalDate.of(2023, 10, 6));
 
@@ -122,7 +122,7 @@ public class DailyActivityTest {
         Utils.setUserContext(1);
 
         DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
-        request.setTime(20);
+        request.setTime((short) 20);
         request.setWeight(new BigDecimal("72.00"));
         request.setDate(LocalDate.of(2023, 10, 5));
 
@@ -151,7 +151,7 @@ public class DailyActivityTest {
         Utils.setUserContext(1);
 
         DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
-        request.setTime(30);
+        request.setTime((short) 30);
         request.setWeight(new BigDecimal("75.00"));
         request.setDate(LocalDate.of(2023, 10, 6));
 
@@ -168,7 +168,7 @@ public class DailyActivityTest {
         Utils.setUserContext(1);
 
         DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
-        updateDto.setTime(40);
+        updateDto.setTime((short) 40);
         updateDto.setWeight(new BigDecimal("80.00"));
 
         mockMvc.perform(patch("/api/daily-activities/modify-activity/1")
@@ -210,7 +210,7 @@ public class DailyActivityTest {
         Utils.setUserContext(1);
 
         DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
-        updateDto.setTime(-10);
+        updateDto.setTime((short) -10);
 
         mockMvc.perform(patch("/api/daily-activities/modify-activity/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -225,7 +225,7 @@ public class DailyActivityTest {
         Utils.setUserContext(2);
 
         DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
-        updateDto.setTime(40);
+        updateDto.setTime((short) 40);
 
         mockMvc.perform(patch("/api/daily-activities/modify-activity/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -281,7 +281,7 @@ public class DailyActivityTest {
         Utils.setUserContext(2);
 
         DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
-        request.setTime(30);
+        request.setTime((short) 30);
         request.setDate(LocalDate.of(2023, 10, 6));
 
         mockMvc.perform(post("/api/daily-activities/add/3")

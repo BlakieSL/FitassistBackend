@@ -44,10 +44,10 @@ public class WorkoutSetExerciseControllerTest {
 
         var request = new WorkoutSetExerciseCreateDto(
                 new BigDecimal("25.0"),
-                new BigDecimal("12.0"),
+                (short) 12,
                 1,
                 1,
-                1
+                (short) 1
         );
 
         mockMvc.perform(post("/api/workout-set-exercises")
@@ -57,7 +57,7 @@ public class WorkoutSetExerciseControllerTest {
                         status().isCreated(),
                         jsonPath("$.id").exists(),
                         jsonPath("$.weight").value(25.0),
-                        jsonPath("$.repetitions").value(12.0),
+                        jsonPath("$.repetitions").value(12),
                         jsonPath("$.orderIndex").exists(),
                         jsonPath("$.exerciseId").value(1),
                         jsonPath("$.exerciseName").exists()
@@ -241,7 +241,7 @@ public class WorkoutSetExerciseControllerTest {
                         status().isOk(),
                         jsonPath("$.id").value(id),
                         jsonPath("$.weight").value(20.0),
-                        jsonPath("$.repetitions").value(10.0),
+                        jsonPath("$.repetitions").value(10),
                         jsonPath("$.orderIndex").exists(),
                         jsonPath("$.exerciseId").value(1),
                         jsonPath("$.exerciseName").exists()
@@ -259,7 +259,7 @@ public class WorkoutSetExerciseControllerTest {
                         status().isOk(),
                         jsonPath("$.id").value(id),
                         jsonPath("$.weight").value(20.0),
-                        jsonPath("$.repetitions").value(10.0),
+                        jsonPath("$.repetitions").value(10),
                         jsonPath("$.orderIndex").exists(),
                         jsonPath("$.exerciseId").value(1),
                         jsonPath("$.exerciseName").exists()
@@ -278,7 +278,7 @@ public class WorkoutSetExerciseControllerTest {
                         status().isOk(),
                         jsonPath("$.id").value(id),
                         jsonPath("$.weight").value(20.0),
-                        jsonPath("$.repetitions").value(10.0),
+                        jsonPath("$.repetitions").value(10),
                         jsonPath("$.orderIndex").exists(),
                         jsonPath("$.exerciseId").value(1),
                         jsonPath("$.exerciseName").exists()
@@ -309,7 +309,7 @@ public class WorkoutSetExerciseControllerTest {
                         jsonPath("$[0].id").value(1),
                         jsonPath("$[0].orderIndex").exists(),
                         jsonPath("$[0].weight").value(20.0),
-                        jsonPath("$[0].repetitions").value(10.0),
+                        jsonPath("$[0].repetitions").value(10),
                         jsonPath("$[0].exerciseId").value(1),
                         jsonPath("$[0].exerciseName").exists()
                 );
@@ -329,7 +329,7 @@ public class WorkoutSetExerciseControllerTest {
                         jsonPath("$[0].id").value(1),
                         jsonPath("$[0].orderIndex").exists(),
                         jsonPath("$[0].weight").value(20.0),
-                        jsonPath("$[0].repetitions").value(10.0),
+                        jsonPath("$[0].repetitions").value(10),
                         jsonPath("$[0].exerciseId").value(1),
                         jsonPath("$[0].exerciseName").exists()
                 );
@@ -349,7 +349,7 @@ public class WorkoutSetExerciseControllerTest {
                         jsonPath("$[0].id").value(1),
                         jsonPath("$[0].orderIndex").exists(),
                         jsonPath("$[0].weight").value(20.0),
-                        jsonPath("$[0].repetitions").value(10.0),
+                        jsonPath("$[0].repetitions").value(10),
                         jsonPath("$[0].exerciseId").value(1),
                         jsonPath("$[0].exerciseName").exists()
                 );

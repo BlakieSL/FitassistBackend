@@ -19,8 +19,6 @@ import source.code.integration.containers.MySqlContainerInitializer;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
-import java.math.BigDecimal;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,10 +43,10 @@ public class WorkoutControllerTest {
 
         var request = new WorkoutCreateDto(
                 "Evening Workout",
-                new BigDecimal("45.0"),
+                (short) 45,
                 1,
-                1,
-                0
+                (short) 1,
+                (byte) 0
         );
 
         mockMvc.perform(post("/api/workouts")
@@ -72,7 +70,7 @@ public class WorkoutControllerTest {
         int id = 1;
         WorkoutUpdateDto updateDto = new WorkoutUpdateDto();
         updateDto.setName("Updated Morning Workout");
-        updateDto.setDuration(BigDecimal.valueOf(40.0));
+        updateDto.setDuration((short) 40);
 
         mockMvc.perform(patch("/api/workouts/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -88,7 +86,7 @@ public class WorkoutControllerTest {
 
         int id = 1;
         WorkoutUpdateDto updateDto = new WorkoutUpdateDto();
-        updateDto.setDuration(BigDecimal.valueOf(35.0));
+        updateDto.setDuration((short) 35);
 
         mockMvc.perform(patch("/api/workouts/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -136,7 +134,7 @@ public class WorkoutControllerTest {
 
         int id = 1;
         WorkoutUpdateDto updateDto = new WorkoutUpdateDto();
-        updateDto.setDuration(BigDecimal.valueOf(-10.0));
+        updateDto.setDuration((short) -10);
 
         mockMvc.perform(patch("/api/workouts/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)

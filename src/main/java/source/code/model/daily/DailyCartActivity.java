@@ -26,7 +26,7 @@ public class DailyCartActivity {
     @NotNull
     @Positive
     @Column(nullable = false)
-    private int time;
+    private Short time;
 
     @Positive
     @Column(precision = 38, scale = 2)
@@ -45,7 +45,7 @@ public class DailyCartActivity {
     public static DailyCartActivity of(
             Activity activity,
             DailyCart dailyCart,
-            int time,
+            Short time,
             BigDecimal weight
     ) {
         DailyCartActivity dailyCartActivity = new DailyCartActivity();

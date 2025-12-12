@@ -14,8 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutSetResponseDto implements Serializable {
-    private int id;
-    private int orderIndex;
-    private int restSeconds;
+    private Integer id;
+    private Short orderIndex;
+    private Short restSeconds;
     private List<WorkoutSetExerciseResponseDto> workoutSetExercises;
 }
