@@ -53,7 +53,8 @@ public class ForumThreadControllerTest {
                         jsonPath("$.id").exists(),
                         jsonPath("$.title").value("New Thread Title"),
                         jsonPath("$.text").value("This is the content of the new thread"),
-                        jsonPath("$.threadCategoryId").value(1),
+                        jsonPath("$.category.id").value(1),
+                        jsonPath("$.category.name").exists(),
                         jsonPath("$.userId").value(1)
                 );
     }
