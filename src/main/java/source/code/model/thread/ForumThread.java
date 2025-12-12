@@ -55,7 +55,7 @@ public class ForumThread {
     private String text;
 
     @Column(nullable = false)
-    private int views = 0;
+    private long views = 0L;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)

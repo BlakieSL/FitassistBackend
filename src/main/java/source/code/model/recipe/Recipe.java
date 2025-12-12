@@ -66,7 +66,7 @@ public class Recipe implements IndexedEntity {
     private Boolean isPublic = false;
 
     @Column(nullable = false)
-    private Long views = 0L;
+    private long views = 0L;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

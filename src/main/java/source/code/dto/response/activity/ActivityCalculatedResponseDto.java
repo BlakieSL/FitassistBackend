@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActivityCalculatedResponseDto implements Serializable {
+    private Integer dailyItemId;
     private Integer id;
     private String name;
     private BigDecimal met;

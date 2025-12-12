@@ -17,7 +17,7 @@ public class ForumThreadResponseDto implements Serializable {
     private String title;
     private LocalDateTime createdAt;
     private String text;
-    private int views;
+    private long views;
     private Integer userId;
     private Integer threadCategoryId;
 }

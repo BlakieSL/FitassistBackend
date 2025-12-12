@@ -15,23 +15,20 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class DailyFoodMapper {
-    @Mapping(target = "id", source = "dailyCartFood.food.id")
-    @Mapping(target = "name", source = "dailyCartFood.food.name")
+    @Mapping(target = "dailyItemId", source = "id")
+    @Mapping(target = "id", source = "food.id")
+    @Mapping(target = "name", source = "food.name")
     @Mapping(target = "calories", ignore = true)
     @Mapping(target = "protein", ignore = true)
     @Mapping(target = "fat", ignore = true)
     @Mapping(target = "carbohydrates", ignore = true)
-    @Mapping(target = "category", source = "dailyCartFood.food.foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
-    @Mapping(target = "quantity", source = "dailyCartFood.quantity")
-    public abstract FoodCalculatedMacrosResponseDto toFoodCalculatedMacrosResponseDto(
-            DailyCartFood dailyCartFood
-    );
+    @Mapping(target = "category", source = "food.foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
+    @Mapping(target = "quantity", source = "quantity")
+    public abstract FoodCalculatedMacrosResponseDto toFoodCalculatedMacrosResponseDto(DailyCartFood dailyCartFood);
 
     @AfterMapping
-    protected void setCalculatedMacros(
-            @MappingTarget FoodCalculatedMacrosResponseDto responseDto,
-            DailyCartFood dailyCartFood
-    ) {
+    protected void setCalculatedMacros(@MappingTarget FoodCalculatedMacrosResponseDto responseDto,
+                                       DailyCartFood dailyCartFood) {
         Food food = dailyCartFood.getFood();
         BigDecimal quantity = dailyCartFood.getQuantity();
 
