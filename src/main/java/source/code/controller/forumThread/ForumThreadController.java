@@ -61,18 +61,18 @@ public class ForumThreadController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ForumThreadResponseDto>> getAllForumThreads() {
-        List<ForumThreadResponseDto> responseDto = forumThreadService.getAllForumThreads();
-        return ResponseEntity.ok(responseDto);
+    public ResponseEntity<List<ForumThreadSummaryDto>> getAllForumThreads() {
+        List<ForumThreadSummaryDto> summaries = forumThreadService.getAllForumThreads();
+        return ResponseEntity.ok(summaries);
     }
 
     @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<List<ForumThreadResponseDto>> getForumThreadsByCategory(
+    public ResponseEntity<List<ForumThreadSummaryDto>> getForumThreadsByCategory(
             @PathVariable int categoryId
     ) {
-        List<ForumThreadResponseDto> responseDto = forumThreadService
+        List<ForumThreadSummaryDto> summaries = forumThreadService
                 .getForumThreadsByCategory(categoryId);
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.ok(summaries);
     }
 
     @PostMapping("/filter")

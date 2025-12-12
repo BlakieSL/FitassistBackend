@@ -101,17 +101,23 @@ public class ForumThreadServiceImpl implements ForumThreadService {
     }
 
     @Override
-    public List<ForumThreadResponseDto> getAllForumThreads() {
-        return forumThreadRepository.findAll().stream()
-                .map(forumThreadMapper::toResponseDto)
+    public List<ForumThreadSummaryDto> getAllForumThreads() {
+        List<ForumThreadSummaryDto> summaries = forumThreadRepository.findAll().stream()
+                .map(forumThreadMapper::toSummaryDto)
                 .toList();
+
+        forumThreadPopulationService.populate(summaries);
+        return summaries;
     }
 
     @Override
-    public List<ForumThreadResponseDto> getForumThreadsByCategory(int categoryId) {
-        return forumThreadRepository.findAllByThreadCategoryId(categoryId).stream()
-                .map(forumThreadMapper::toResponseDto)
+    public List<ForumThreadSummaryDto> getForumThreadsByCategory(int categoryId) {
+        List<ForumThreadSummaryDto> summaries = forumThreadRepository.findAllByThreadCategoryId(categoryId).stream()
+                .map(forumThreadMapper::toSummaryDto)
                 .toList();
+
+        forumThreadPopulationService.populate(summaries);
+        return summaries;
     }
 
     private ForumThreadUpdateDto applyPatchToForumThread(JsonMergePatch patch)
