@@ -27,11 +27,11 @@ public class WorkoutSetExercise {
 
     @NotNull
     @Column(nullable = false)
-    private BigDecimal repetitions;
+    private Short repetitions;
 
     @NotNull
     @Column(name = "order_index", nullable = false)
-    private Integer orderIndex;
+    private Short orderIndex;
 
     @NotNull
     @ManyToOne
