@@ -59,7 +59,7 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
 
     private void fetchAndPopulateAuthorImages(List<RecipeSummaryDto> recipes) {
         List<Integer> authorIds = recipes.stream()
-                .map(RecipeSummaryDto::getAuthorId)
+                .map(recipe -> recipe.getAuthor().getId())
                 .toList();
 
         if (authorIds.isEmpty()) return;
@@ -70,10 +70,10 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
                 .collect(Collectors.toMap(Media::getParentId, Media::getImageName));
 
         recipes.forEach(recipe -> {
-            String imageName = authorImageMap.get(recipe.getAuthorId());
+            String imageName = authorImageMap.get(recipe.getAuthor().getId());
             if (imageName != null) {
-                recipe.setAuthorImageName(imageName);
-                recipe.setAuthorImageUrl(s3Service.getImage(imageName));
+                recipe.getAuthor().setImageName(imageName);
+                recipe.getAuthor().setImageUrl(s3Service.getImage(imageName));
             }
         });
     }
@@ -125,10 +125,10 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
     }
 
     private void fetchAndPopulateAuthorImage(RecipeResponseDto recipe) {
-        mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(recipe.getAuthorId(), MediaConnectedEntity.USER)
+        mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(recipe.getAuthor().getId(), MediaConnectedEntity.USER)
             .ifPresent(media -> {
-                recipe.setAuthorImageName(media.getImageName());
-                recipe.setAuthorImageUrl(s3Service.getImage(media.getImageName()));
+                recipe.getAuthor().setImageName(media.getImageName());
+                recipe.getAuthor().setImageUrl(s3Service.getImage(media.getImageName()));
             });
     }
 

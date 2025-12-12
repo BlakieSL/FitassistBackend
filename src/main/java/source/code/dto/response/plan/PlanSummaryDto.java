@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.pojo.AuthorDto;
 import source.code.helper.BaseUserEntity;
 import source.code.helper.Enum.model.PlanStructureType;
 
@@ -24,10 +25,7 @@ public class PlanSummaryDto implements BaseUserEntity, Serializable {
     private String firstImageUrl;
     private PlanStructureType planStructureType;
 
-    private String authorUsername;
-    private Integer authorId;
-    private String authorImageName;
-    private String authorImageUrl;
+    private AuthorDto author;
 
     private LocalDateTime interactedWithAt;
 

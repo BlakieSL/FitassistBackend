@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.pojo.AuthorDto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -20,9 +21,7 @@ public class CommentResponseDto implements Serializable {
     private LocalDateTime createdAt;
     private Integer threadId;
     private Integer userId;
-    private String authorUsername;
-    private Integer authorId;
-    private String authorImageUrl;
+    private AuthorDto author;
     private Integer parentCommentId;
     private List<CommentResponseDto> replies;
 }

@@ -177,10 +177,10 @@ public class PlanControllerTest {
                         jsonPath("$.createdAt").exists(),
                         jsonPath("$.views").value(0),
 
-                        jsonPath("$.authorId").value(1),
-                        jsonPath("$.authorUsername").value("fitness_lover"),
-                        jsonPath("$.authorImageName").value("user1_profile.jpg"),
-                        jsonPath("$.authorImageUrl").exists(),
+                        jsonPath("$.author.id").value(1),
+                        jsonPath("$.author.username").value("fitness_lover"),
+                        jsonPath("$.author.imageName").value("user1_profile.jpg"),
+                        jsonPath("$.author.imageUrl").exists(),
 
                         jsonPath("$.likesCount").value(1),
                         jsonPath("$.dislikesCount").value(1),

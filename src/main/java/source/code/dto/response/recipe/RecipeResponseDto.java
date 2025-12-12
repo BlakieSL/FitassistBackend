@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.pojo.AuthorDto;
 import source.code.dto.pojo.RecipeFoodDto;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.text.RecipeInstructionResponseDto;
@@ -26,10 +27,7 @@ public class RecipeResponseDto implements Serializable {
     private short minutesToPrepare;
     private long views;
 
-    private String authorUsername;
-    private Integer authorId;
-    private String authorImageName;
-    private String authorImageUrl;
+    private AuthorDto author;
 
     private long likesCount;
     private long dislikesCount;

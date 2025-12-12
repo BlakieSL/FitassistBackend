@@ -163,8 +163,8 @@ public class FoodControllerTest {
                         jsonPath("$.recipes[0].name").exists(),
                         jsonPath("$.recipes[0].description").exists(),
                         jsonPath("$.recipes[0].public").exists(),
-                        jsonPath("$.recipes[0].authorUsername").exists(),
-                        jsonPath("$.recipes[0].authorId").exists()
+                        jsonPath("$.recipes[0].author.username").exists(),
+                        jsonPath("$.recipes[0].author.id").exists()
                 );
     }
 

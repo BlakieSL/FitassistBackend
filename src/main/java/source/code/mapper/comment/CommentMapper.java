@@ -2,6 +2,7 @@ package source.code.mapper.comment;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import source.code.dto.pojo.AuthorDto;
 import source.code.dto.request.comment.CommentCreateDto;
 import source.code.dto.request.comment.CommentUpdateDto;
 import source.code.dto.response.comment.CommentResponseDto;
@@ -29,17 +30,15 @@ public abstract class CommentMapper {
 
     @Mapping(target = "threadId", source = "thread", qualifiedByName = "threadToThreadId")
     @Mapping(target = "userId", source = "user", qualifiedByName = "userToUserId")
+    @Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
     @Mapping(target = "parentCommentId", source = "parentComment", qualifiedByName = "parentCommentToParentCommentId")
     @Mapping(target = "replies", ignore = true)
     public abstract CommentResponseDto toResponseDto(Comment comment);
 
-    @Mapping(target = "authorUsername", source = "user.username")
-    @Mapping(target = "authorId", source = "user.id")
+    @Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
     @Mapping(target = "likesCount", ignore = true)
     @Mapping(target = "dislikesCount", ignore = true)
     @Mapping(target = "repliesCount", ignore = true)
-    @Mapping(target = "authorImageName", ignore = true)
-    @Mapping(target = "authorImageUrl", ignore = true)
     @Mapping(target = "interactedWithAt", ignore = true)
     public abstract CommentSummaryDto toSummaryDto(Comment comment);
 
@@ -99,5 +98,13 @@ public abstract class CommentMapper {
                 .map(id -> commentRepository.findById(id)
                         .orElseThrow(() -> RecordNotFoundException.of(Comment.class, id)))
                 .orElse(null);
+    }
+
+    @Named("userToAuthorDto")
+    protected AuthorDto userToAuthorDto(User user) {
+        AuthorDto authorDto = new AuthorDto();
+        authorDto.setId(user.getId());
+        authorDto.setUsername(user.getUsername());
+        return authorDto;
     }
 }

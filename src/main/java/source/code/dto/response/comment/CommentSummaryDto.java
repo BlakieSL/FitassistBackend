@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.pojo.AuthorDto;
 import source.code.helper.BaseUserEntity;
 
 import java.io.Serializable;
@@ -18,10 +19,7 @@ public class CommentSummaryDto implements BaseUserEntity, Serializable {
     private Integer id;
     private String text;
 
-    private String authorUsername;
-    private Integer authorId;
-    private String authorImageName;
-    private String authorImageUrl;
+    private AuthorDto author;
 
     private LocalDateTime interactedWithAt;
 

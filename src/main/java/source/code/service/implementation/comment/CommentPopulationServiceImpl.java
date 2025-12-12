@@ -46,7 +46,7 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
 
     private void populateAuthorImages(List<CommentSummaryDto> comments) {
         List<Integer> authorIds = comments.stream()
-                .map(CommentSummaryDto::getAuthorId)
+                .map(comment -> comment.getAuthor().getId())
                 .toList();
 
         if (authorIds.isEmpty()) return;
@@ -57,10 +57,10 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
                 .collect(Collectors.toMap(Media::getParentId, Media::getImageName));
 
         comments.forEach(comment -> {
-            String imageName = authorImageMap.get(comment.getAuthorId());
+            String imageName = authorImageMap.get(comment.getAuthor().getId());
             if (imageName != null) {
-                comment.setAuthorImageName(imageName);
-                comment.setAuthorImageUrl(s3Service.getImage(imageName));
+                comment.getAuthor().setImageName(imageName);
+                comment.getAuthor().setImageUrl(s3Service.getImage(imageName));
             }
         });
     }

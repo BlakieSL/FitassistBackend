@@ -55,7 +55,7 @@ public class PlanPopulationServiceImpl implements PlanPopulationService {
 
     private void fetchAndPopulateAuthorImages(List<PlanSummaryDto> plans) {
         List<Integer> authorIds = plans.stream()
-                .map(PlanSummaryDto::getAuthorId)
+                .map(plan -> plan.getAuthor().getId())
                 .toList();
 
         if (authorIds.isEmpty()) return;
@@ -66,10 +66,10 @@ public class PlanPopulationServiceImpl implements PlanPopulationService {
                 .collect(Collectors.toMap(Media::getParentId, Media::getImageName));
 
         plans.forEach(plan -> {
-            String imageName = authorImageMap.get(plan.getAuthorId());
+            String imageName = authorImageMap.get(plan.getAuthor().getId());
             if (imageName != null) {
-                plan.setAuthorImageName(imageName);
-                plan.setAuthorImageUrl(s3Service.getImage(imageName));
+                plan.getAuthor().setImageName(imageName);
+                plan.getAuthor().setImageUrl(s3Service.getImage(imageName));
             }
         });
     }
@@ -107,10 +107,10 @@ public class PlanPopulationServiceImpl implements PlanPopulationService {
     }
 
     private void fetchAndPopulateAuthorImage(PlanResponseDto plan) {
-        mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(plan.getAuthorId(), MediaConnectedEntity.USER)
+        mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(plan.getAuthor().getId(), MediaConnectedEntity.USER)
                 .ifPresent(media -> {
-                    plan.setAuthorImageName(media.getImageName());
-                    plan.setAuthorImageUrl(s3Service.getImage(media.getImageName()));
+                    plan.getAuthor().setImageName(media.getImageName());
+                    plan.getAuthor().setImageUrl(s3Service.getImage(media.getImageName()));
                 });
     }
 
