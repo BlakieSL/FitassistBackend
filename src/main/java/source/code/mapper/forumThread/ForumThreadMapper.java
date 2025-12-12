@@ -4,6 +4,7 @@ import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.forumThread.ForumThreadCreateDto;
 import source.code.dto.request.forumThread.ForumThreadUpdateDto;
+import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.exception.RecordNotFoundException;
@@ -30,7 +31,7 @@ public abstract class ForumThreadMapper {
     @Mapping(target = "text", source = "text")
     @Mapping(target = "views", source = "views")
     @Mapping(target = "userId", source = "user", qualifiedByName = "userToUserId")
-    @Mapping(target = "threadCategoryId", source = "threadCategory", qualifiedByName = "threadCategoryToThreadCategoryId")
+    @Mapping(target = "category", source = "threadCategory", qualifiedByName = "threadCategoryToCategoryResponseDto")
     public abstract ForumThreadResponseDto toResponseDto(ForumThread forumThread);
 
     @Mapping(target = "id", source = "id")
@@ -73,9 +74,9 @@ public abstract class ForumThreadMapper {
         return user.getId();
     }
 
-    @Named("threadCategoryToThreadCategoryId")
-    protected Integer threadCategoryToThreadCategoryId(ThreadCategory threadCategory) {
-        return threadCategory.getId();
+    @Named("threadCategoryToCategoryResponseDto")
+    protected CategoryResponseDto threadCategoryToCategoryResponseDto(ThreadCategory threadCategory) {
+        return new CategoryResponseDto(threadCategory.getId(), threadCategory.getName());
     }
 
     @Named("commentsToCommentIds")
