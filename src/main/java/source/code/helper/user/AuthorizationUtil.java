@@ -24,9 +24,10 @@ public class AuthorizationUtil {
 
 
     public static int getUserId() {
-        CustomAuthenticationToken auth = (CustomAuthenticationToken) SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-        return auth.getUserId();
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth instanceof CustomAuthenticationToken) {
+            return ((CustomAuthenticationToken) auth).getUserId();
+        }
+        return -1;
     }
 }

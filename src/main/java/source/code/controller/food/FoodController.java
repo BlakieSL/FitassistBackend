@@ -31,8 +31,8 @@ public class FoodController {
 
     @AdminOnly
     @PostMapping
-    public ResponseEntity<FoodSummaryDto> createFood(@Valid @RequestBody FoodCreateDto dto) {
-        FoodSummaryDto response = foodService.createFood(dto);
+    public ResponseEntity<FoodResponseDto> createFood(@Valid @RequestBody FoodCreateDto dto) {
+        FoodResponseDto response = foodService.createFood(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

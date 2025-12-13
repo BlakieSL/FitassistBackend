@@ -53,13 +53,13 @@ public class FoodPopulationServiceTest {
         when(savesProjection.isSaved()).thenReturn(true);
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userFoodRepository.findSavesCountAndUserSaved(foodId, userId)).thenReturn(savesProjection);
+        when(userFoodRepository.findCountsAndInteractionsByFoodId(foodId, userId)).thenReturn(savesProjection);
 
         foodPopulationService.populate(foodResponseDto);
 
         assertEquals(5, foodResponseDto.getSavesCount());
         assertTrue(foodResponseDto.isSaved());
-        verify(userFoodRepository).findSavesCountAndUserSaved(foodId, userId);
+        verify(userFoodRepository).findCountsAndInteractionsByFoodId(foodId, userId);
     }
 
     @Test
@@ -69,12 +69,12 @@ public class FoodPopulationServiceTest {
         when(savesProjection.isSaved()).thenReturn(false);
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userFoodRepository.findSavesCountAndUserSaved(foodId, userId)).thenReturn(savesProjection);
+        when(userFoodRepository.findCountsAndInteractionsByFoodId(foodId, userId)).thenReturn(savesProjection);
 
         foodPopulationService.populate(foodResponseDto);
 
         assertEquals(0, foodResponseDto.getSavesCount());
         assertFalse(foodResponseDto.isSaved());
-        verify(userFoodRepository).findSavesCountAndUserSaved(foodId, userId);
+        verify(userFoodRepository).findCountsAndInteractionsByFoodId(foodId, userId);
     }
 }

@@ -11,6 +11,15 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * fetched with db (findByIdWithMedia) -> mapper -> populated in createFood and getFood
+ *
+ * Mapper sets: id, name, calories, protein, fat, carbohydrates, category, imageUrls (via @AfterMapping)
+ * Population sets: savesCount, saved
+ * recipes - set manually only in getFood via recipeRepository.findAllWithDetailsByFoodId -> recipeMapper -> recipePopulationService
+ *
+ * saved - when user not authenticated (userId=-1), always false since query matches on userId
+ */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,6 +34,7 @@ public class FoodResponseDto implements Serializable {
     private CategoryResponseDto category;
     private List<String> imageUrls;
     private List<RecipeSummaryDto> recipes;
+
     private long savesCount;
     private boolean saved;
 }

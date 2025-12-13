@@ -29,10 +29,13 @@ public abstract class CommentMapper {
     private ForumThreadRepository forumThreadRepository;
 
     @Mapping(target = "threadId", source = "thread", qualifiedByName = "threadToThreadId")
-    @Mapping(target = "userId", source = "user", qualifiedByName = "userToUserId")
     @Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
     @Mapping(target = "parentCommentId", source = "parentComment", qualifiedByName = "parentCommentToParentCommentId")
     @Mapping(target = "replies", ignore = true)
+    @Mapping(target = "likesCount", ignore = true)
+    @Mapping(target = "dislikesCount", ignore = true)
+    @Mapping(target = "liked", ignore = true)
+    @Mapping(target = "disliked", ignore = true)
     public abstract CommentResponseDto toResponseDto(Comment comment);
 
     @Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")

@@ -31,8 +31,8 @@ public interface UserPlanRepository extends JpaRepository<UserPlan, Integer> {
         WHERE p.id = :planId
         GROUP BY p.id
     """)
-    EntityCountsProjection findCountsByPlanId(@Param("userId") int userId,
-                                              @Param("planId") int planId);
+    EntityCountsProjection findCountsAndInteractionsByPlanId(@Param("userId") int userId,
+                                                             @Param("planId") int planId);
 
     @Query("""
         SELECT
@@ -48,8 +48,8 @@ public interface UserPlanRepository extends JpaRepository<UserPlan, Integer> {
         WHERE p.id IN :planIds
         GROUP BY p.id
     """)
-    List<EntityCountsProjection> findCountsByPlanIds(@Param("userId") int userId,
-                                                     @Param("planIds") List<Integer> planIds);
+    List<EntityCountsProjection> findCountsAndInteractionsByPlanIds(@Param("userId") int userId,
+                                                                    @Param("planIds") List<Integer> planIds);
 
     @Query(value = """
         SELECT up
@@ -59,8 +59,7 @@ public interface UserPlanRepository extends JpaRepository<UserPlan, Integer> {
         AND up.type = :type
         AND p.isPublic = true
     """)
-    Page<UserPlan> findByUserIdAndTypeWithPlan(
-            @Param("userId") int userId,
-            @Param("type") TypeOfInteraction type,
-            Pageable pageable);
+    Page<UserPlan> findAllByUserIdAndType(@Param("userId") int userId,
+                                          @Param("type") TypeOfInteraction type,
+                                          Pageable pageable);
 }

@@ -58,12 +58,6 @@ public class CommentController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping("/count/{threadId}")
-    public ResponseEntity<Long> countCommentsForThread(@PathVariable int threadId) {
-        long count = commentService.countCommentsForThread(threadId);
-        return ResponseEntity.ok(count);
-    }
-
     @GetMapping("/top/{threadId}")
     public ResponseEntity<List<CommentResponseDto>> getTopCommentsForThread(
             @PathVariable int threadId

@@ -28,6 +28,7 @@ import source.code.model.recipe.RecipeFood;
 import source.code.repository.FoodRepository;
 import source.code.repository.RecipeFoodRepository;
 import source.code.repository.RecipeRepository;
+import source.code.service.declaration.food.FoodPopulationService;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
@@ -63,6 +64,8 @@ public class RecipeFoodServiceTest {
     private FoodRepository foodRepository;
     @Mock
     private RecipeRepository recipeRepository;
+    @Mock
+    private FoodPopulationService foodPopulationService;
 
     @InjectMocks
     private RecipeFoodServiceImpl recipeFoodService;

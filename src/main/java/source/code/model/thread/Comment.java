@@ -26,7 +26,8 @@ import java.util.Set;
 @NamedEntityGraph(
         name = "Comment.summary",
         attributeNodes = {
-                @NamedAttributeNode("user")
+                @NamedAttributeNode("user"),
+                @NamedAttributeNode("thread")
         }
 )
 @Getter

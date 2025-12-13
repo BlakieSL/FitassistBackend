@@ -44,9 +44,7 @@ public class UserThreadServiceImpl
     @Override
     public Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable) {
         Page<UserThread> userThreadPage = ((UserThreadRepository) userEntityRepository)
-                .findByUserIdWithThread(userId, pageable);
-
-        if (userThreadPage.isEmpty()) return new PageImpl<>(List.of(), pageable, 0);
+                .findAllByUserId(userId, pageable);
 
         List<ForumThreadSummaryDto> summaries = userThreadPage.getContent().stream()
                 .map(ut -> {

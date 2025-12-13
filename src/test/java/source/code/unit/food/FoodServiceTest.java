@@ -103,23 +103,28 @@ public class FoodServiceTest {
     }
 
     @Test
-    void createFood_shouldCreateFood() {
+    void createFood_shouldCreateFoodAndPopulate() {
+        food.setId(foodId);
         when(foodMapper.toEntity(createDto)).thenReturn(food);
         when(foodRepository.save(food)).thenReturn(food);
-        when(foodMapper.toSummaryDto(food)).thenReturn(responseDto);
+        when(foodRepository.findByIdWithMedia(foodId)).thenReturn(Optional.of(food));
+        when(foodMapper.toDetailedResponseDto(food)).thenReturn(detailedResponseDto);
 
-        FoodSummaryDto result = foodService.createFood(createDto);
+        FoodResponseDto result = foodService.createFood(createDto);
 
-        assertEquals(responseDto, result);
+        assertEquals(detailedResponseDto, result);
+        verify(foodPopulationService).populate(detailedResponseDto);
     }
 
     @Test
     void createFood_shouldPublishEvent() {
         ArgumentCaptor<FoodCreateEvent> eventCaptor = ArgumentCaptor.forClass(FoodCreateEvent.class);
 
+        food.setId(foodId);
         when(foodMapper.toEntity(createDto)).thenReturn(food);
         when(foodRepository.save(food)).thenReturn(food);
-        when(foodMapper.toSummaryDto(food)).thenReturn(responseDto);
+        when(foodRepository.findByIdWithMedia(foodId)).thenReturn(Optional.of(food));
+        when(foodMapper.toDetailedResponseDto(food)).thenReturn(detailedResponseDto);
 
         foodService.createFood(createDto);
 

@@ -43,9 +43,7 @@ public class UserCommentServiceImpl
     @Override
     public Page<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Pageable pageable) {
         Page<UserComment> userCommentPage = ((UserCommentRepository) userEntityRepository)
-                .findByUserIdAndTypeWithComment(userId, type, pageable);
-
-        if (userCommentPage.isEmpty()) return new PageImpl<>(List.of(), pageable, 0);
+                .findAllByUserIdAndType(userId, type, pageable);
 
         List<CommentSummaryDto> summaries = userCommentPage.getContent().stream()
                 .map(uc -> {

@@ -24,7 +24,7 @@ public interface UserThreadRepository extends JpaRepository<UserThread, Integer>
         JOIN FETCH ft.threadCategory
         WHERE ut.user.id = :userId
     """)
-    Page<UserThread> findByUserIdWithThread(@Param("userId") int userId, Pageable pageable);
+    Page<UserThread> findAllByUserId(@Param("userId") int userId, Pageable pageable);
 
     @Query("""
         SELECT
@@ -37,8 +37,8 @@ public interface UserThreadRepository extends JpaRepository<UserThread, Integer>
         WHERE ft.id IN :threadIds
         GROUP BY ft.id
     """)
-    List<ForumThreadCountsProjection> findCountsByThreadIds(@Param("userId") int userId,
-                                                            @Param("threadIds") List<Integer> threadIds);
+    List<ForumThreadCountsProjection> findCountsAndInteractionsByThreadIds(@Param("userId") int userId,
+                                                                           @Param("threadIds") List<Integer> threadIds);
 
     @Query("""
         SELECT
@@ -51,6 +51,6 @@ public interface UserThreadRepository extends JpaRepository<UserThread, Integer>
         WHERE ft.id = :threadId
         GROUP BY ft.id
     """)
-    ForumThreadCountsProjection findCountsByThreadId(@Param("userId") int userId,
-                                                     @Param("threadId") int threadId);
+    ForumThreadCountsProjection findCountsAndInteractionsByThreadId(@Param("userId") int userId,
+                                                                    @Param("threadId") int threadId);
 }
