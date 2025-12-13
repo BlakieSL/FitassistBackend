@@ -52,6 +52,7 @@ public abstract class PlanMapper {
 
     @Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
     @Mapping(target = "firstImageName", source = "mediaList", qualifiedByName = "mapMediaToFirstImageName")
+    @Mapping(target = "categories", source = "planCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryResponseDto")
     @Mapping(target = "firstImageUrl", ignore = true)
     @Mapping(target = "likesCount", ignore = true)
     @Mapping(target = "savesCount", ignore = true)
