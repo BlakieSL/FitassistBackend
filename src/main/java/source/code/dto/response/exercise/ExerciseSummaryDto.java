@@ -35,7 +35,7 @@ public class ExerciseSummaryDto implements BaseUserEntity, Serializable {
     private CategoryResponseDto mechanicsType;
     private CategoryResponseDto forceType;
 
-    private LocalDateTime userExerciseInteractionCreatedAt;
+    private LocalDateTime interactionCreatedAt;
 
     private long savesCount;
     private Boolean saved;

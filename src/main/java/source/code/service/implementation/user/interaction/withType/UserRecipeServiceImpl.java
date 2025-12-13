@@ -79,7 +79,7 @@ public class UserRecipeServiceImpl
                 .map(ur -> {
                     Recipe recipe = recipeMap.get(ur.getRecipe().getId());
                     RecipeSummaryDto dto = recipeMapper.toSummaryDto(recipe);
-                    dto.setInteractedWithAt(ur.getCreatedAt());
+                    dto.setInteractionCreatedAt(ur.getCreatedAt());
                     return dto;
                 })
                 .toList();

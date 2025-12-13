@@ -151,8 +151,6 @@ public class FoodControllerGetFilteredTest {
     @Test
     @DisplayName("POST - /filter - Should return filtered foods by Save count greater than 0")
     void getFilteredFoodsBySave() throws Exception {
-        Utils.setUserContext(1);
-
         FilterCriteria criteria = FilterCriteria.of("SAVE", 0, FilterOperation.GREATER_THAN);
         FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 

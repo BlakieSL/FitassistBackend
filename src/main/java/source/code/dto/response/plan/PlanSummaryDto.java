@@ -38,7 +38,7 @@ public class PlanSummaryDto implements BaseUserEntity, Serializable {
 
     private AuthorDto author;
 
-    private LocalDateTime interactedWithAt;
+    private LocalDateTime interactionCreatedAt;
 
     private long likesCount;
     private long dislikesCount;
