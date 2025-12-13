@@ -60,7 +60,7 @@ public abstract class RecipeMapper {
     @Mapping(target = "savesCount", ignore = true)
     @Mapping(target = "ingredientsCount", ignore = true)
     @Mapping(target = "categories", source = "recipeCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryResponseDto")
-    @Mapping(target = "interactedWithAt", ignore = true)
+    @Mapping(target = "interactionCreatedAt", ignore = true)
     public abstract RecipeSummaryDto toSummaryDto(Recipe recipe);
 
     @Mapping(target = "recipeCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")

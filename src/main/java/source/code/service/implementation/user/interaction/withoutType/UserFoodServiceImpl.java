@@ -63,7 +63,7 @@ public class UserFoodServiceImpl
         List<FoodSummaryDto> summaries = userFoodPage.getContent().stream()
                 .map(uf -> {
                     FoodSummaryDto dto = foodMapper.toSummaryDto(uf.getFood());
-                    dto.setUserFoodInteractionCreatedAt(uf.getCreatedAt());
+                    dto.setInteractionCreatedAt(uf.getCreatedAt());
                     return dto;
                 })
                 .toList();

@@ -36,7 +36,7 @@ public class FoodSummaryDto implements BaseUserEntity, Serializable {
     private String imageName;
     private String firstImageUrl;
 
-    private LocalDateTime userFoodInteractionCreatedAt;
+    private LocalDateTime interactionCreatedAt;
 
     private long savesCount;
 

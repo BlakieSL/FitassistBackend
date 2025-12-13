@@ -55,7 +55,7 @@ public abstract class PlanMapper {
     @Mapping(target = "firstImageUrl", ignore = true)
     @Mapping(target = "likesCount", ignore = true)
     @Mapping(target = "savesCount", ignore = true)
-    @Mapping(target = "interactedWithAt", ignore = true)
+    @Mapping(target = "interactionCreatedAt", ignore = true)
     public abstract PlanSummaryDto toSummaryDto(Plan plan);
 
     @Mapping(target = "planCategoryAssociations", source = "categoryIds", qualifiedByName = "mapCategoryIdsToAssociations")

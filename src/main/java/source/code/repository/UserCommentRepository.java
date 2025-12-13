@@ -37,8 +37,8 @@ public interface UserCommentRepository extends JpaRepository<UserComment, Intege
         SELECT uc
         FROM UserComment uc
         JOIN FETCH uc.comment c
-        JOIN FETCH c.user u
-        WHERE u.id = :userId
+        JOIN FETCH c.user
+        WHERE uc.user.id = :userId
         AND uc.type = :type
     """)
     Page<UserComment> findAllByUserIdAndType(@Param("userId") int userId,

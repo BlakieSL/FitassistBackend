@@ -64,7 +64,6 @@ public class UserSavedControllerWithTypeTest {
     @Test
     @DisplayName("GET - /item-type/{itemType}/type/{type} - Should return all public saved items of a specific type LIKE")
     void getAllFromUserLike() throws Exception {
-        Utils.setUserContext(1);
         mockMvc.perform(get("/api/user-saved/item-type/COMMENT/type/LIKE/user/1"))
                 .andExpectAll(
                         status().isOk(),
@@ -79,7 +78,6 @@ public class UserSavedControllerWithTypeTest {
     @Test
     @DisplayName("GET - /item-type/{itemType}/type/{type}/user/{userId} - Should return all items with DISLIKE type for COMMENT")
     void getAllFromUserDislikeComment() throws Exception {
-        Utils.setUserContext(1);
         mockMvc.perform(get("/api/user-saved/item-type/COMMENT/type/DISLIKE/user/1"))
                 .andExpectAll(
                         status().isOk(),

@@ -49,7 +49,7 @@ public class UserThreadServiceImpl
         List<ForumThreadSummaryDto> summaries = userThreadPage.getContent().stream()
                 .map(ut -> {
                     ForumThreadSummaryDto dto = forumThreadMapper.toSummaryDto(ut.getForumThread());
-                    dto.setInteractedWithAt(ut.getCreatedAt());
+                    dto.setInteractionCreatedAt(ut.getCreatedAt());
                     return dto;
                 })
                 .toList();

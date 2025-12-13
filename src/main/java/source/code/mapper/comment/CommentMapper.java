@@ -42,7 +42,7 @@ public abstract class CommentMapper {
     @Mapping(target = "likesCount", ignore = true)
     @Mapping(target = "dislikesCount", ignore = true)
     @Mapping(target = "repliesCount", ignore = true)
-    @Mapping(target = "interactedWithAt", ignore = true)
+    @Mapping(target = "interactionCreatedAt", ignore = true)
     public abstract CommentSummaryDto toSummaryDto(Comment comment);
 
     @Mapping(target = "text", source = "text")

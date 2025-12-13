@@ -59,7 +59,7 @@ public class UserExerciseServiceImpl
         List<ExerciseSummaryDto> summaries = userExercisePage.getContent().stream()
                 .map(ue -> {
                     ExerciseSummaryDto dto = exerciseMapper.toSummaryDto(ue.getExercise());
-                    dto.setUserExerciseInteractionCreatedAt(ue.getCreatedAt());
+                    dto.setInteractionCreatedAt(ue.getCreatedAt());
                     return dto;
                 })
                 .toList();

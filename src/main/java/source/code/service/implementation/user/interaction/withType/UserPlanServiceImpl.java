@@ -79,7 +79,7 @@ public class UserPlanServiceImpl
                 .map(up -> {
                     Plan plan = planMap.get(up.getPlan().getId());
                     PlanSummaryDto dto = planMapper.toSummaryDto(plan);
-                    dto.setInteractedWithAt(up.getCreatedAt());
+                    dto.setInteractionCreatedAt(up.getCreatedAt());
                     return dto;
                 })
                 .toList();

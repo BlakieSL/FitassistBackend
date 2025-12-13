@@ -33,7 +33,7 @@ public class ActivitySummaryDto implements BaseUserEntity, Serializable {
     private String imageName;
     private String firstImageUrl;
 
-    private LocalDateTime userActivityInteractionCreatedAt;
+    private LocalDateTime interactionCreatedAt;
 
     private long savesCount;
     private Boolean saved;

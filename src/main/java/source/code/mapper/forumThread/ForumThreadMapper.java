@@ -37,7 +37,7 @@ public abstract class ForumThreadMapper {
     @Mapping(target = "commentsCount", ignore = true)
     @Mapping(target = "category", source = "threadCategory", qualifiedByName = "threadCategoryToCategoryResponseDto")
     @Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
-    @Mapping(target = "interactedWithAt", ignore = true)
+    @Mapping(target = "interactionCreatedAt", ignore = true)
     public abstract ForumThreadSummaryDto toSummaryDto(ForumThread forumThread);
 
     @Mapping(target = "title", source = "title")

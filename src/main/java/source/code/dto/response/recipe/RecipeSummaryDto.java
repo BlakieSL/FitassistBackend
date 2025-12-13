@@ -41,7 +41,7 @@ public class RecipeSummaryDto implements BaseUserEntity, Serializable {
 
     private AuthorDto author;
 
-    private LocalDateTime interactedWithAt;
+    private LocalDateTime interactionCreatedAt;
 
     private long views;
     private long likesCount;
