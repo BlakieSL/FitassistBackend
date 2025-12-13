@@ -173,30 +173,6 @@ public class CommentControllerTest {
     @WithMockUser
     @CommentSql
     @Test
-    @DisplayName("GET - /count/{threadId} - Should count comments for thread")
-    public void countCommentsForThread() throws Exception {
-        mockMvc.perform(get("/api/comments/count/1"))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$").value(2)
-                );
-    }
-
-    @WithMockUser
-    @CommentSql
-    @Test
-    @DisplayName("GET - /count/{threadId} - Should return 0 when thread does not exist")
-    public void countCommentsForThreadNotFound() throws Exception {
-        mockMvc.perform(get("/api/comments/count/999"))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$").value(0)
-                );
-    }
-
-    @WithMockUser
-    @CommentSql
-    @Test
     @DisplayName("GET - /top/{threadId} - Should get top comments for thread")
     public void getTopCommentsForThread() throws Exception {
         mockMvc.perform(get("/api/comments/top/1"))

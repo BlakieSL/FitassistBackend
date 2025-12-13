@@ -212,7 +212,7 @@ public class UserPlanServiceTest {
 
         Page<UserPlan> userPlanPage = new PageImpl<>(List.of(userPlan1, userPlan2), pageable, 2);
 
-        when(userPlanRepository.findByUserIdAndTypeWithPlan(eq(userId), eq(type), any(Pageable.class)))
+        when(userPlanRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
                 .thenReturn(userPlanPage);
         when(planRepository.findByIdsWithDetails(any())).thenReturn(List.of(plan1, plan2));
         when(planMapper.toSummaryDto(plan1)).thenReturn(dto1);
@@ -222,7 +222,7 @@ public class UserPlanServiceTest {
 
         assertEquals(2, result.getContent().size());
         assertEquals(2, result.getTotalElements());
-        verify(userPlanRepository).findByUserIdAndTypeWithPlan(eq(userId), eq(type), any(Pageable.class));
+        verify(userPlanRepository).findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class));
         verify(planPopulationService).populate(any(List.class));
     }
 
@@ -234,7 +234,7 @@ public class UserPlanServiceTest {
 
         Page<UserPlan> emptyPage = new PageImpl<>(List.of(), pageable, 0);
 
-        when(userPlanRepository.findByUserIdAndTypeWithPlan(eq(userId), eq(type), any(Pageable.class)))
+        when(userPlanRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
                 .thenReturn(emptyPage);
 
         Page<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, pageable);

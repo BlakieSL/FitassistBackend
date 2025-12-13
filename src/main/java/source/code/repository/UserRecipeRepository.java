@@ -31,8 +31,8 @@ public interface UserRecipeRepository extends JpaRepository<UserRecipe, Integer>
         WHERE r.id = :recipeId
         GROUP BY r.id
     """)
-    EntityCountsProjection findCountsByRecipeId(@Param("userId") int userId,
-                                                @Param("recipeId") int recipeId);
+    EntityCountsProjection findCountsAndInteractionsByRecipeId(@Param("userId") int userId,
+                                                               @Param("recipeId") int recipeId);
 
     @Query("""
         SELECT
@@ -48,8 +48,8 @@ public interface UserRecipeRepository extends JpaRepository<UserRecipe, Integer>
         WHERE r.id IN :recipeIds
         GROUP BY r.id
     """)
-    List<EntityCountsProjection> findCountsByRecipeIds(@Param("userId") int userId,
-                                                       @Param("recipeIds") List<Integer> recipeIds);
+    List<EntityCountsProjection> findCountsAndInteractionsByRecipeIds(@Param("userId") int userId,
+                                                                      @Param("recipeIds") List<Integer> recipeIds);
 
     @Query(value = """
         SELECT ur
@@ -59,7 +59,7 @@ public interface UserRecipeRepository extends JpaRepository<UserRecipe, Integer>
         AND ur.type = :type
         AND r.isPublic = true
     """)
-    Page<UserRecipe> findByUserIdAndTypeWithRecipe(@Param("userId") int userId,
-                                                    @Param("type") TypeOfInteraction type,
-                                                    Pageable pageable);
+    Page<UserRecipe> findAllByUserIdAndType(@Param("userId") int userId,
+                                            @Param("type") TypeOfInteraction type,
+                                            Pageable pageable);
 }

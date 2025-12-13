@@ -16,7 +16,7 @@ import source.code.model.food.Food;
 import java.util.List;
 
 public interface FoodService {
-    FoodSummaryDto createFood(FoodCreateDto request);
+    FoodResponseDto createFood(FoodCreateDto request);
 
     void updateFood(int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 

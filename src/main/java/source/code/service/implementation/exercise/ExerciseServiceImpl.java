@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -152,8 +153,15 @@ public class ExerciseServiceImpl implements ExerciseService {
         SpecificationBuilder<Exercise> specificationBuilder = SpecificationBuilder.of(filter, exerciseFactory, dependencies);
         Specification<Exercise> specification = specificationBuilder.build();
 
-        return exerciseRepository.findAll(specification, pageable)
-                .map(exerciseMapper::toSummaryDto);
+        Page<Exercise> exercisePage = exerciseRepository.findAll(specification, pageable);
+
+        List<ExerciseSummaryDto> summaries = exercisePage.getContent().stream()
+                .map(exerciseMapper::toSummaryDto)
+                .toList();
+
+        exercisePopulationService.populate(summaries);
+
+        return new PageImpl<>(summaries, pageable, exercisePage.getTotalElements());
     }
 
     @Override

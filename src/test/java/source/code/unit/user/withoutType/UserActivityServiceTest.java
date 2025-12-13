@@ -21,7 +21,7 @@ import source.code.model.user.UserActivity;
 import source.code.repository.ActivityRepository;
 import source.code.repository.UserActivityRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.activity.ActivityPopulationService;
 import source.code.service.implementation.user.interaction.withoutType.UserActivityServiceImpl;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class UserActivityServiceTest {
     @Mock
     private ActivityMapper activityMapper;
     @Mock
-    private ImageUrlPopulationService imagePopulationService;
+    private ActivityPopulationService activityPopulationService;
     private UserActivityServiceImpl userActivityService;
 
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
@@ -57,7 +57,7 @@ public class UserActivityServiceTest {
                 activityRepository,
                 userActivityRepository,
                 activityMapper,
-                imagePopulationService
+                activityPopulationService
         );
     }
 
@@ -197,6 +197,7 @@ public class UserActivityServiceTest {
         assertEquals(2, result.getTotalElements());
         assertEquals(2, result.getContent().size());
         verify(activityMapper, times(2)).toSummaryDto(any(Activity.class));
+        verify(activityPopulationService).populate(anyList());
     }
 
     @Test

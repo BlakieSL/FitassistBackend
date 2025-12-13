@@ -66,11 +66,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 
         forumThreadRepository.flush();
 
-        ForumThread forumThread = findWithDetails(saved.getId());
-
-        ForumThreadResponseDto responseDto = forumThreadMapper.toResponseDto(forumThread);
-        forumThreadPopulationService.populate(responseDto);
-        return responseDto;
+        return findAndMap(saved.getId());
     }
 
     @Override
@@ -94,10 +90,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 
     @Override
     public ForumThreadResponseDto getForumThread(int threadId) {
-        ForumThread thread = findWithDetails(threadId);
-        ForumThreadResponseDto responseDto = forumThreadMapper.toResponseDto(thread);
-        forumThreadPopulationService.populate(responseDto);
-        return responseDto;
+        return findAndMap(threadId);
     }
 
     private ForumThreadUpdateDto applyPatchToForumThread(JsonMergePatch patch)
@@ -109,9 +102,11 @@ public class ForumThreadServiceImpl implements ForumThreadService {
         return repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId);
     }
 
-    private ForumThread findWithDetails(int threadId) {
-        return forumThreadRepository.findByIdWithDetails(threadId)
-                .orElseThrow(() -> new RecordNotFoundException(ForumThread.class, threadId));
+    private ForumThreadResponseDto findAndMap(int threadId) {
+        ForumThread thread = find(threadId);
+        ForumThreadResponseDto responseDto = forumThreadMapper.toResponseDto(thread);
+        forumThreadPopulationService.populate(responseDto);
+        return responseDto;
     }
 
     @Override

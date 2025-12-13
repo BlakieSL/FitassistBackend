@@ -10,6 +10,7 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.pojo.projection.SavesProjection;
 import source.code.dto.response.exercise.ExerciseResponseDto;
+import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.helper.user.AuthorizationUtil;
 import source.code.model.media.Media;
@@ -66,7 +67,7 @@ public class ExercisePopulationServiceTest {
         media.setImageName("test-image.jpg");
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userExerciseRepository.findSavesCountAndUserSaved(exerciseId, userId)).thenReturn(savesProjection);
+        when(userExerciseRepository.findCountsAndInteractions(exerciseId, userId)).thenReturn(savesProjection);
         when(mediaRepository.findByParentIdAndParentType(exerciseId, MediaConnectedEntity.EXERCISE)).thenReturn(List.of(media));
         when(awsS3Service.getImage("test-image.jpg")).thenReturn("https://s3.example.com/test-image.jpg");
 
@@ -75,7 +76,7 @@ public class ExercisePopulationServiceTest {
         assertEquals(10, exerciseResponseDto.getSavesCount());
         assertFalse(exerciseResponseDto.isSaved());
         assertEquals(List.of("https://s3.example.com/test-image.jpg"), exerciseResponseDto.getImageUrls());
-        verify(userExerciseRepository).findSavesCountAndUserSaved(exerciseId, userId);
+        verify(userExerciseRepository).findCountsAndInteractions(exerciseId, userId);
         verify(mediaRepository).findByParentIdAndParentType(exerciseId, MediaConnectedEntity.EXERCISE);
         verify(awsS3Service).getImage("test-image.jpg");
     }
@@ -87,7 +88,7 @@ public class ExercisePopulationServiceTest {
         when(savesProjection.isSaved()).thenReturn(false);
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userExerciseRepository.findSavesCountAndUserSaved(exerciseId, userId)).thenReturn(savesProjection);
+        when(userExerciseRepository.findCountsAndInteractions(exerciseId, userId)).thenReturn(savesProjection);
         when(mediaRepository.findByParentIdAndParentType(exerciseId, MediaConnectedEntity.EXERCISE)).thenReturn(List.of());
 
         exercisePopulationService.populate(exerciseResponseDto);
@@ -95,7 +96,52 @@ public class ExercisePopulationServiceTest {
         assertEquals(0, exerciseResponseDto.getSavesCount());
         assertFalse(exerciseResponseDto.isSaved());
         assertTrue(exerciseResponseDto.getImageUrls().isEmpty());
-        verify(userExerciseRepository).findSavesCountAndUserSaved(exerciseId, userId);
+        verify(userExerciseRepository).findCountsAndInteractions(exerciseId, userId);
         verify(mediaRepository).findByParentIdAndParentType(exerciseId, MediaConnectedEntity.EXERCISE);
+    }
+
+    @Test
+    void populateList_shouldPopulateImageUrlsAndCounts() {
+        ExerciseSummaryDto dto1 = new ExerciseSummaryDto();
+        dto1.setId(1);
+        dto1.setImageName("image1.jpg");
+        ExerciseSummaryDto dto2 = new ExerciseSummaryDto();
+        dto2.setId(2);
+        dto2.setImageName("image2.jpg");
+        List<ExerciseSummaryDto> exercises = List.of(dto1, dto2);
+
+        SavesProjection projection1 = mock(SavesProjection.class);
+        when(projection1.getEntityId()).thenReturn(1);
+        when(projection1.savesCount()).thenReturn(5L);
+        when(projection1.isSaved()).thenReturn(true);
+
+        SavesProjection projection2 = mock(SavesProjection.class);
+        when(projection2.getEntityId()).thenReturn(2);
+        when(projection2.savesCount()).thenReturn(3L);
+        when(projection2.isSaved()).thenReturn(false);
+
+        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+        when(userExerciseRepository.findCountsAndInteractionsByExerciseIds(eq(userId), anyList()))
+                .thenReturn(List.of(projection1, projection2));
+        when(awsS3Service.getImage("image1.jpg")).thenReturn("http://s3/image1.jpg");
+        when(awsS3Service.getImage("image2.jpg")).thenReturn("http://s3/image2.jpg");
+
+        exercisePopulationService.populate(exercises);
+
+        assertEquals("http://s3/image1.jpg", dto1.getFirstImageUrl());
+        assertEquals(5L, dto1.getSavesCount());
+        assertTrue(dto1.getSaved());
+
+        assertEquals("http://s3/image2.jpg", dto2.getFirstImageUrl());
+        assertEquals(3L, dto2.getSavesCount());
+        assertFalse(dto2.getSaved());
+    }
+
+    @Test
+    void populateList_shouldReturnEarlyForEmptyList() {
+        exercisePopulationService.populate(List.of());
+
+        verifyNoInteractions(userExerciseRepository);
+        verifyNoInteractions(awsS3Service);
     }
 }

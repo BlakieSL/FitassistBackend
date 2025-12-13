@@ -11,6 +11,16 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * fetched with db (findAll) -> mapper -> populated in getFilteredActivities
+ * fetched with db (UserActivityRepository.findAllByUserIdWithMedia) -> mapper + set interactedWithAt -> populated in UserActivityService.getAllFromUser
+ *
+ * Mapper sets: id, name, met, category, imageName (from mediaList)
+ * Population sets: firstImageUrl, savesCount, isSaved
+ *
+ * userActivityInteractionCreatedAt - only set in UserActivityService.getAllFromUser
+ * isSaved - when user not authenticated (userId=-1), always false since query matches on userId
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,4 +34,7 @@ public class ActivitySummaryDto implements BaseUserEntity, Serializable {
     private String firstImageUrl;
 
     private LocalDateTime userActivityInteractionCreatedAt;
+
+    private long savesCount;
+    private Boolean saved;
 }

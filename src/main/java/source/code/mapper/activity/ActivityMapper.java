@@ -15,6 +15,8 @@ import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.CalculationsService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
+import source.code.model.media.Media;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -40,6 +42,7 @@ public abstract class  ActivityMapper {
     public abstract ActivityResponseDto toDetailedResponseDto(Activity activity);
 
     @Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
+    @Mapping(target = "imageName", source = "mediaList", qualifiedByName = "mapMediaToFirstImageName")
     @Mapping(target = "firstImageUrl", ignore = true)
     public abstract ActivitySummaryDto toSummaryDto(Activity activity);
 
@@ -93,5 +96,11 @@ public abstract class  ActivityMapper {
     @Named("mapActivityCategoryToResponseDto")
     protected CategoryResponseDto mapActivityCategoryToResponseDto(ActivityCategory category) {
         return new CategoryResponseDto(category.getId(), category.getName());
+    }
+
+    @Named("mapMediaToFirstImageName")
+    protected String mapMediaToFirstImageName(List<Media> mediaList) {
+        if (mediaList.isEmpty()) return null;
+        return mediaList.getFirst().getImageName();
     }
 }

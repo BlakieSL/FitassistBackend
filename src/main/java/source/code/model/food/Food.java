@@ -25,7 +25,8 @@ import java.util.Set;
 @NamedEntityGraph(
         name = "Food.summary",
         attributeNodes = {
-                @NamedAttributeNode("foodCategory")
+                @NamedAttributeNode("foodCategory"),
+                @NamedAttributeNode("mediaList")
         }
 )
 @Getter

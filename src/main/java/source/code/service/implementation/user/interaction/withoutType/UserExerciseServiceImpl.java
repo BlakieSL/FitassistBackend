@@ -2,6 +2,7 @@ package source.code.service.implementation.user.interaction.withoutType;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -11,13 +12,14 @@ import source.code.helper.BaseUserEntity;
 import source.code.helper.Enum.cache.CacheNames;
 import source.code.mapper.exercise.ExerciseMapper;
 import source.code.model.exercise.Exercise;
-import source.code.model.media.Media;
 import source.code.model.user.User;
 import source.code.model.user.UserExercise;
 import source.code.repository.UserExerciseRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.exercise.ExercisePopulationService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
+
+import java.util.List;
 
 @Service("userExerciseService")
 public class UserExerciseServiceImpl
@@ -25,16 +27,16 @@ public class UserExerciseServiceImpl
         implements SavedServiceWithoutType {
 
     private final ExerciseMapper exerciseMapper;
-    private final ImageUrlPopulationService imagePopulationService;
+    private final ExercisePopulationService exercisePopulationService;
 
     public UserExerciseServiceImpl(UserRepository userRepository,
                                    JpaRepository<Exercise, Integer> entityRepository,
                                    JpaRepository<UserExercise, Integer> userEntityRepository,
                                    ExerciseMapper mapper,
-                                   ImageUrlPopulationService imagePopulationService) {
+                                   ExercisePopulationService exercisePopulationService) {
         super(userRepository, entityRepository, userEntityRepository, mapper::toSummaryDto, Exercise.class);
         this.exerciseMapper = mapper;
-        this.imagePopulationService = imagePopulationService;
+        this.exercisePopulationService = exercisePopulationService;
     }
 
     @Override
@@ -51,20 +53,24 @@ public class UserExerciseServiceImpl
 
     @Override
     public Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable) {
-        return ((UserExerciseRepository) userEntityRepository)
-                .findAllByUserIdWithMedia(userId, pageable)
+        Page<UserExercise> userExercisePage = ((UserExerciseRepository) userEntityRepository)
+                .findAllByUserIdWithMedia(userId, pageable);
+
+        List<ExerciseSummaryDto> summaries = userExercisePage.getContent().stream()
                 .map(ue -> {
                     ExerciseSummaryDto dto = exerciseMapper.toSummaryDto(ue.getExercise());
                     dto.setUserExerciseInteractionCreatedAt(ue.getCreatedAt());
-                    imagePopulationService.populateFirstImageFromMediaList(
-                            dto,
-                            ue.getExercise().getMediaList(),
-                            Media::getImageName,
-                            ExerciseSummaryDto::setImageName,
-                            ExerciseSummaryDto::setFirstImageUrl
-                    );
                     return dto;
-                });
+                })
+                .toList();
+
+        exercisePopulationService.populate(summaries);
+
+        return new PageImpl<>(
+                summaries.stream().map(dto -> (BaseUserEntity) dto).toList(),
+                pageable,
+                userExercisePage.getTotalElements()
+        );
     }
 
     @Override

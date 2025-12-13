@@ -179,7 +179,7 @@ public class UserThreadServiceTest {
         dto2.setId(2);
 
         Page<UserThread> userThreadPage = new PageImpl<>(List.of(ut1, ut2), pageable, 2);
-        when(userThreadRepository.findByUserIdWithThread(eq(userId), any(Pageable.class)))
+        when(userThreadRepository.findAllByUserId(eq(userId), any(Pageable.class)))
                 .thenReturn(userThreadPage);
         when(forumThreadMapper.toSummaryDto(thread1)).thenReturn(dto1);
         when(forumThreadMapper.toSummaryDto(thread2)).thenReturn(dto2);
@@ -188,7 +188,7 @@ public class UserThreadServiceTest {
 
         assertEquals(2, result.getContent().size());
         assertEquals(2, result.getTotalElements());
-        verify(userThreadRepository).findByUserIdWithThread(eq(userId), any(Pageable.class));
+        verify(userThreadRepository).findAllByUserId(eq(userId), any(Pageable.class));
         verify(forumThreadMapper).toSummaryDto(thread1);
         verify(forumThreadMapper).toSummaryDto(thread2);
         verify(forumThreadPopulationService).populate(any(List.class));
@@ -200,13 +200,13 @@ public class UserThreadServiceTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         Page<UserThread> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-        when(userThreadRepository.findByUserIdWithThread(eq(userId), any(Pageable.class)))
+        when(userThreadRepository.findAllByUserId(eq(userId), any(Pageable.class)))
                 .thenReturn(emptyPage);
 
         Page<BaseUserEntity> result = userThreadService.getAllFromUser(userId, pageable);
 
         assertTrue(result.getContent().isEmpty());
         assertEquals(0, result.getTotalElements());
-        verify(userThreadRepository).findByUserIdWithThread(eq(userId), any(Pageable.class));
+        verify(userThreadRepository).findAllByUserId(eq(userId), any(Pageable.class));
     }
 }

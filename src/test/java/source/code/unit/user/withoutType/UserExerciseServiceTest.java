@@ -22,7 +22,7 @@ import source.code.model.user.UserExercise;
 import source.code.repository.ExerciseRepository;
 import source.code.repository.UserExerciseRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.exercise.ExercisePopulationService;
 import source.code.service.implementation.user.interaction.withoutType.UserExerciseServiceImpl;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class UserExerciseServiceTest {
     @Mock
     private ExerciseMapper exerciseMapper;
     @Mock
-    private ImageUrlPopulationService imagePopulationService;
+    private ExercisePopulationService exercisePopulationService;
     private UserExerciseServiceImpl userExerciseService;
 
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
@@ -57,7 +57,7 @@ public class UserExerciseServiceTest {
                 exerciseRepository,
                 userExerciseRepository,
                 exerciseMapper,
-                imagePopulationService
+                exercisePopulationService
         );
     }
 
@@ -205,6 +205,7 @@ public class UserExerciseServiceTest {
         assertEquals(2, result.getContent().size());
         assertEquals(2, result.getTotalElements());
         verify(exerciseMapper, times(2)).toSummaryDto(any(Exercise.class));
+        verify(exercisePopulationService).populate(anyList());
     }
 
     @Test

@@ -34,10 +34,10 @@ public class ActivityController {
 
     @AdminOnly
     @PostMapping
-    public ResponseEntity<ActivitySummaryDto> createActivity(
+    public ResponseEntity<ActivityResponseDto> createActivity(
             @Valid @RequestBody ActivityCreateDto dto)
     {
-        ActivitySummaryDto response = activityService.createActivity(dto);
+        ActivityResponseDto response = activityService.createActivity(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

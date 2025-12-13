@@ -22,7 +22,7 @@ import source.code.model.user.UserFood;
 import source.code.repository.FoodRepository;
 import source.code.repository.UserFoodRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.helpers.ImageUrlPopulationService;
+import source.code.service.declaration.food.FoodPopulationService;
 import source.code.service.implementation.user.interaction.withoutType.UserFoodServiceImpl;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class UserFoodServiceTest {
     @Mock
     private FoodMapper foodMapper;
     @Mock
-    private ImageUrlPopulationService imagePopulationService;
+    private FoodPopulationService foodPopulationService;
     private UserFoodServiceImpl userFoodService;
 
     private MockedStatic<AuthorizationUtil> mockedAuthUtil;
@@ -58,7 +58,7 @@ public class UserFoodServiceTest {
                 foodRepository,
                 userFoodRepository,
                 foodMapper,
-                imagePopulationService
+                foodPopulationService
         );
     }
 

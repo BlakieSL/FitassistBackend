@@ -19,6 +19,7 @@ import source.code.helper.user.AuthorizationUtil;
 import source.code.mapper.comment.CommentMapper;
 import source.code.model.thread.Comment;
 import source.code.repository.CommentRepository;
+import source.code.service.declaration.comment.CommentPopulationService;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
@@ -43,6 +44,8 @@ public class CommentServiceTest {
     private RepositoryHelper repositoryHelper;
     @Mock
     private CommentRepository commentRepository;
+    @Mock
+    private CommentPopulationService commentPopulationService;
     @InjectMocks
     private CommentServiceImpl commentService;
 
@@ -75,19 +78,22 @@ public class CommentServiceTest {
     @Test
     void createComment_shouldCreateComment() {
         int userId = 1;
+        comment.setId(commentId);
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(commentMapper.toEntity(createDto, userId)).thenReturn(comment);
         when(commentRepository.save(comment)).thenReturn(comment);
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
         when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
 
         CommentResponseDto result = commentService.createComment(createDto);
 
         assertEquals(responseDto, result);
+        verify(commentPopulationService).populate(responseDto);
     }
 
     @Test
     void updateComment_shouldUpdate() throws JsonPatchException, JsonProcessingException {
-        when(commentRepository.findByIdWithoutAssociations(commentId)).thenReturn(Optional.of(comment));
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
         when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class))
                 .thenReturn(patchedDto);
 
@@ -100,18 +106,18 @@ public class CommentServiceTest {
 
     @Test
     void updateComment_shouldThrowExceptionWhenCommentNotFound() {
-        when(commentRepository.findByIdWithoutAssociations(commentId)).thenReturn(Optional.empty());
+        when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> commentService.updateComment(commentId, patch));
 
         verifyNoInteractions(commentMapper, jsonPatchService, validationService);
-        verify(commentRepository, times(1)).findByIdWithoutAssociations(commentId);
+        verify(commentRepository, times(1)).findById(commentId);
     }
 
     @Test
     void updateComment_shouldThrowExceptionWhenPatchFails()
             throws JsonPatchException, JsonProcessingException {
-        when(commentRepository.findByIdWithoutAssociations(commentId)).thenReturn(Optional.of(comment));
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
         when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class))
                 .thenThrow(JsonPatchException.class);
 
@@ -124,7 +130,7 @@ public class CommentServiceTest {
     @Test
     void updateComment_shouldThrowExceptionWhenValidationFails()
             throws JsonPatchException, JsonProcessingException {
-        when(commentRepository.findByIdWithoutAssociations(commentId)).thenReturn(Optional.of(comment));
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
         when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class)).thenReturn(patchedDto);
 
         doThrow(new RuntimeException("Validation failed")).when(validationService).validate(patchedDto);
@@ -146,32 +152,22 @@ public class CommentServiceTest {
 
     @Test
     void getComment_shouldReturnCommentWhenFound() {
-        when(commentRepository.findByIdWithoutAssociations(commentId)).thenReturn(Optional.of(comment));
+        when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
         when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
 
         CommentResponseDto result = commentService.getComment(commentId);
 
         assertEquals(responseDto, result);
+        verify(commentPopulationService).populate(responseDto);
     }
 
     @Test
     void getComment_shouldThrowExceptionWhenCommentNotFound() {
-        when(commentRepository.findByIdWithoutAssociations(commentId)).thenReturn(Optional.empty());
+        when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () -> commentService.getComment(commentId));
 
         verifyNoInteractions(commentMapper);
-    }
-
-    @Test
-    void countCommentsForThread_shouldReturnCount() {
-        int threadId = 1;
-        long count = 5L;
-        when(commentRepository.countAllByThreadId(threadId)).thenReturn(count);
-
-        long result = commentService.countCommentsForThread(threadId);
-
-        assertEquals(count, result);
     }
 
     @Test
@@ -186,5 +182,6 @@ public class CommentServiceTest {
         List<CommentResponseDto> result = commentService.getTopCommentsForThread(threadId);
 
         assertEquals(responseDtos, result);
+        verify(commentPopulationService).populateList(responseDtos);
     }
 }

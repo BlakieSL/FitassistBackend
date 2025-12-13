@@ -86,7 +86,7 @@ public class UserSavedControllerWithoutTypeTest {
                         jsonPath("$.content[0].author.username").value("adminuser"),
                         jsonPath("$.content[0].author.id").value(2),
                         jsonPath("$.content[0].author.imageUrl").exists(),
-                        jsonPath("$.content[0].viewsCount").value(42),
+                        jsonPath("$.content[0].views").value(42),
                         jsonPath("$.content[0].savesCount").value(2),
                         jsonPath("$.content[0].commentsCount").value(2),
                         jsonPath("$.page.totalElements").value(1)

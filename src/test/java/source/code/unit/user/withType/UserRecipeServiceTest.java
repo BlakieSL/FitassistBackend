@@ -211,7 +211,7 @@ public class UserRecipeServiceTest {
 
         Page<UserRecipe> userRecipePage = new PageImpl<>(List.of(userRecipe1, userRecipe2), pageable, 2);
 
-        when(userRecipeRepository.findByUserIdAndTypeWithRecipe(eq(userId), eq(type), any(Pageable.class)))
+        when(userRecipeRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
                 .thenReturn(userRecipePage);
         when(recipeRepository.findByIdsWithDetails(any())).thenReturn(List.of(recipe1, recipe2));
         when(recipeMapper.toSummaryDto(recipe1)).thenReturn(dto1);
@@ -221,7 +221,7 @@ public class UserRecipeServiceTest {
 
         assertEquals(2, result.getContent().size());
         assertEquals(2, result.getTotalElements());
-        verify(userRecipeRepository).findByUserIdAndTypeWithRecipe(eq(userId), eq(type), any(Pageable.class));
+        verify(userRecipeRepository).findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class));
         verify(recipePopulationService).populate(any(List.class));
     }
 
@@ -233,7 +233,7 @@ public class UserRecipeServiceTest {
 
         Page<UserRecipe> emptyPage = new PageImpl<>(List.of(), pageable, 0);
 
-        when(userRecipeRepository.findByUserIdAndTypeWithRecipe(eq(userId), eq(type), any(Pageable.class)))
+        when(userRecipeRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
                 .thenReturn(emptyPage);
 
         Page<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, pageable);

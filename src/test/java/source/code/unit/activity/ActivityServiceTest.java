@@ -112,13 +112,16 @@ public class ActivityServiceTest {
 
     @Test
     void createActivity_shouldCreateActivityAndPublish() {
+        activity.setId(activityId);
         when(activityMapper.toEntity(createDto)).thenReturn(activity);
         when(activityRepository.save(activity)).thenReturn(activity);
-        when(activityMapper.toSummaryDto(activity)).thenReturn(responseDto);
+        when(activityRepository.findByIdWithMedia(activityId)).thenReturn(Optional.of(activity));
+        when(activityMapper.toDetailedResponseDto(activity)).thenReturn(detailedResponseDto);
 
-        ActivitySummaryDto result = activityService.createActivity(createDto);
+        ActivityResponseDto result = activityService.createActivity(createDto);
 
-        assertEquals(responseDto, result);
+        assertEquals(detailedResponseDto, result);
+        verify(activityPopulationService).populate(detailedResponseDto);
     }
 
     @Test
@@ -126,9 +129,11 @@ public class ActivityServiceTest {
         ArgumentCaptor<ActivityCreateEvent> eventCaptor = ArgumentCaptor
                 .forClass(ActivityCreateEvent.class);
 
+        activity.setId(activityId);
         when(activityMapper.toEntity(createDto)).thenReturn(activity);
         when(activityRepository.save(activity)).thenReturn(activity);
-        when(activityMapper.toSummaryDto(activity)).thenReturn(responseDto);
+        when(activityRepository.findByIdWithMedia(activityId)).thenReturn(Optional.of(activity));
+        when(activityMapper.toDetailedResponseDto(activity)).thenReturn(detailedResponseDto);
 
         activityService.createActivity(createDto);
 

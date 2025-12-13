@@ -30,18 +30,18 @@ public interface UserCommentRepository extends JpaRepository<UserComment, Intege
         WHERE c.id IN :commentIds
         GROUP BY c.id
     """)
-    List<CommentCountsProjection> findCountsByCommentIds(@Param("userId") int userId,
-                                                         @Param("commentIds") List<Integer> commentIds);
+    List<CommentCountsProjection> findCountsAndInteractionsByCommentIds(@Param("userId") int userId,
+                                                                        @Param("commentIds") List<Integer> commentIds);
 
     @Query(value = """
         SELECT uc
         FROM UserComment uc
         JOIN FETCH uc.comment c
-        JOIN FETCH c.user
-        WHERE uc.user.id = :userId
+        JOIN FETCH c.user u
+        WHERE u.id = :userId
         AND uc.type = :type
     """)
-    Page<UserComment> findByUserIdAndTypeWithComment(@Param("userId") int userId,
-                                                      @Param("type") TypeOfInteraction type,
-                                                      Pageable pageable);
+    Page<UserComment> findAllByUserIdAndType(@Param("userId") int userId,
+                                             @Param("type") TypeOfInteraction type,
+                                             Pageable pageable);
 }

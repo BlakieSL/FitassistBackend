@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -77,11 +78,13 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     @Transactional
-    public ActivitySummaryDto createActivity(ActivityCreateDto dto) {
+    public ActivityResponseDto createActivity(ActivityCreateDto dto) {
         Activity activity = activityRepository.save(activityMapper.toEntity(dto));
         eventPublisher.publishEvent(ActivityCreateEvent.of(this, activity));
 
-        return activityMapper.toSummaryDto(activity);
+        activityRepository.flush();
+
+        return findAndMap(activity.getId());
     }
 
     @Override
@@ -119,13 +122,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     @Cacheable(value = CacheNames.ACTIVITIES, key = "#activityId")
     public ActivityResponseDto getActivity(int activityId) {
-        Activity activity = activityRepository.findByIdWithMedia(activityId)
-                .orElseThrow(() -> RecordNotFoundException.of(Activity.class, activityId));
-
-        ActivityResponseDto dto = activityMapper.toDetailedResponseDto(activity);
-        activityPopulationService.populate(dto);
-
-        return dto;
+        return findAndMap(activityId);
     }
 
     @Override
@@ -134,8 +131,15 @@ public class ActivityServiceImpl implements ActivityService {
         SpecificationBuilder<Activity> specificationBuilder = SpecificationBuilder.of(filter, activityFactory, dependencies);
         Specification<Activity> specification = specificationBuilder.build();
 
-        return activityRepository.findAll(specification, pageable)
-                .map(activityMapper::toSummaryDto);
+        Page<Activity> activityPage = activityRepository.findAll(specification, pageable);
+
+        List<ActivitySummaryDto> summaries = activityPage.getContent().stream()
+                .map(activityMapper::toSummaryDto)
+                .toList();
+
+        activityPopulationService.populate(summaries);
+
+        return new PageImpl<>(summaries, pageable, activityPage.getTotalElements());
     }
 
     @Override
@@ -150,6 +154,14 @@ public class ActivityServiceImpl implements ActivityService {
 
     private Activity findActivity(int activityId) {
         return repositoryHelper.find(activityRepository, Activity.class, activityId);
+    }
+
+    private ActivityResponseDto findAndMap(int activityId) {
+        Activity activity = activityRepository.findByIdWithMedia(activityId)
+                .orElseThrow(() -> RecordNotFoundException.of(Activity.class, activityId));
+        ActivityResponseDto dto = activityMapper.toDetailedResponseDto(activity);
+        activityPopulationService.populate(dto);
+        return dto;
     }
 
     private Activity findActivityWithAssociations(int activityId) {

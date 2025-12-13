@@ -10,6 +10,16 @@ import source.code.helper.BaseUserEntity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * fetched with db (findAll) -> mapper -> populated in getFilteredComments
+ * fetched with db (UserCommentRepository.findAllByUserIdAndType) -> mapper -> populated in UserCommentService.getAllFromUser
+ *
+ * Mapper sets: id, text, createdAt, author (id, username)
+ * Population sets: author.imageName/imageUrl, likesCount, dislikesCount, repliesCount, liked, disliked
+ *
+ * interactedWithAt - only set in UserCommentService.getAllFromUser
+ * liked/disliked - when user not authenticated (userId=-1), always false since query matches on userId
+ */
 @Getter
 @Setter
 @NoArgsConstructor

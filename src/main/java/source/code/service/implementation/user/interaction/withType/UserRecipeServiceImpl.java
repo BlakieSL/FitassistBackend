@@ -64,9 +64,7 @@ public class UserRecipeServiceImpl
     @Override
     public Page<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Pageable pageable) {
         Page<UserRecipe> userRecipePage = ((UserRecipeRepository) userEntityRepository)
-                .findByUserIdAndTypeWithRecipe(userId, type, pageable);
-
-        if (userRecipePage.isEmpty()) return new PageImpl<>(List.of(), pageable, 0);
+                .findAllByUserIdAndType(userId, type, pageable);
 
         List<Integer> recipeIds = userRecipePage.getContent().stream()
                 .map(ur -> ur.getRecipe().getId())

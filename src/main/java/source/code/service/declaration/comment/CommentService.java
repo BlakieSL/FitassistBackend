@@ -18,7 +18,6 @@ public interface CommentService {
             throws JsonPatchException, JsonProcessingException;
     void deleteComment(int commentId);
     CommentResponseDto getComment(int commentId);
-    long countCommentsForThread(int threadId);
     List<CommentResponseDto> getTopCommentsForThread(int threadId);
     List<CommentResponseDto> getReplies(int commentId);
     Page<CommentSummaryDto> getFilteredComments(FilterDto filter, Pageable pageable);

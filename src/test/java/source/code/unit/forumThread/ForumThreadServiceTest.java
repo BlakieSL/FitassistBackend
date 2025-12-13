@@ -87,7 +87,8 @@ public class ForumThreadServiceTest {
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
         when(forumThreadMapper.toEntity(createDto, userId)).thenReturn(forumThread);
         when(forumThreadRepository.save(forumThread)).thenReturn(forumThread);
-        when(forumThreadRepository.findByIdWithDetails(threadId)).thenReturn(Optional.of(forumThread));
+        when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
+                .thenReturn(forumThread);
         when(forumThreadMapper.toResponseDto(forumThread)).thenReturn(responseDto);
 
         ForumThreadResponseDto result = forumThreadService.createForumThread(createDto);
@@ -167,7 +168,8 @@ public class ForumThreadServiceTest {
 
     @Test
     void getForumThread_shouldReturnForumThreadWhenFound() {
-        when(forumThreadRepository.findByIdWithDetails(threadId)).thenReturn(Optional.of(forumThread));
+        when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
+                .thenReturn(forumThread);
         when(forumThreadMapper.toResponseDto(forumThread)).thenReturn(responseDto);
 
         ForumThreadResponseDto result = forumThreadService.getForumThread(threadId);
@@ -178,7 +180,8 @@ public class ForumThreadServiceTest {
 
     @Test
     void getForumThread_shouldThrowExceptionWhenThreadNotFound() {
-        when(forumThreadRepository.findByIdWithDetails(threadId)).thenReturn(Optional.empty());
+        when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
+                .thenThrow(RecordNotFoundException.of(ForumThread.class, threadId));
 
         assertThrows(RecordNotFoundException.class,
                 () -> forumThreadService.getForumThread(threadId)

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import source.code.dto.pojo.projection.SavesProjection;
 import source.code.model.user.UserExercise;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserExerciseRepository extends JpaRepository<UserExercise, Integer> {
@@ -33,5 +34,15 @@ public interface UserExerciseRepository extends JpaRepository<UserExercise, Inte
         FROM UserExercise ue
         WHERE ue.exercise.id = :exerciseId
     """)
-    SavesProjection findSavesCountAndUserSaved(@Param("exerciseId") int exerciseId, @Param("userId") int userId);
+    SavesProjection findCountsAndInteractions(@Param("exerciseId") int exerciseId, @Param("userId") int userId);
+
+    @Query("""
+        SELECT ue.exercise.id as entityId,
+               COUNT(ue) as savesCount,
+               SUM(CASE WHEN ue.user.id = :userId THEN 1 ELSE 0 END) as userSaved
+        FROM UserExercise ue
+        WHERE ue.exercise.id IN :exerciseIds
+        GROUP BY ue.exercise.id
+    """)
+    List<SavesProjection> findCountsAndInteractionsByExerciseIds(@Param("userId") int userId, @Param("exerciseIds") List<Integer> exerciseIds);
 }

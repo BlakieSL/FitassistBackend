@@ -40,7 +40,7 @@ public class ForumThreadPopulationServiceImpl implements ForumThreadPopulationSe
                 .toList();
 
         fetchAndPopulateAuthorImages(threads);
-        fetchAndPopulateCounts(threads, threadIds);
+        fetchAndPopulateUserInteractionAndCounts(threads, threadIds);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ForumThreadPopulationServiceImpl implements ForumThreadPopulationSe
 
     private void fetchAndPopulateUserInteractionAndCounts(ForumThreadResponseDto thread, int userId) {
         ForumThreadCountsProjection result = userThreadRepository
-                .findCountsByThreadId(userId, thread.getId());
+                .findCountsAndInteractionsByThreadId(userId, thread.getId());
 
         if (result == null) return;
 
@@ -91,11 +91,11 @@ public class ForumThreadPopulationServiceImpl implements ForumThreadPopulationSe
         });
     }
 
-    private void fetchAndPopulateCounts(List<ForumThreadSummaryDto> threads, List<Integer> threadIds) {
+    private void fetchAndPopulateUserInteractionAndCounts(List<ForumThreadSummaryDto> threads, List<Integer> threadIds) {
         int userId = AuthorizationUtil.getUserId();
 
         Map<Integer, ForumThreadCountsProjection> countsMap = userThreadRepository
-                .findCountsByThreadIds(userId, threadIds)
+                .findCountsAndInteractionsByThreadIds(userId, threadIds)
                 .stream()
                 .collect(Collectors.toMap(
                         ForumThreadCountsProjection::getThreadId,

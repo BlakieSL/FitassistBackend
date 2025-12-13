@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -83,11 +84,13 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     @Transactional
-    public FoodSummaryDto createFood(FoodCreateDto request) {
+    public FoodResponseDto createFood(FoodCreateDto request) {
         Food food = foodRepository.save(foodMapper.toEntity(request));
         applicationEventPublisher.publishEvent(FoodCreateEvent.of(this, food));
 
-        return foodMapper.toSummaryDto(food);
+        foodRepository.flush();
+
+        return findAndMap(food.getId());
     }
 
     @Override
@@ -127,11 +130,7 @@ public class FoodServiceImpl implements FoodService {
     @Override
     @Cacheable(value = CacheNames.FOODS, key = "#id")
     public FoodResponseDto getFood(int id) {
-        Food food = foodRepository.findByIdWithMedia(id)
-                .orElseThrow(() -> RecordNotFoundException.of(Food.class, id));
-
-        FoodResponseDto dto = foodMapper.toDetailedResponseDto(food);
-        foodPopulationService.populate(dto);
+        FoodResponseDto dto = findAndMap(id);
 
         var summaries = recipeRepository.findAllWithDetailsByFoodId(id).stream()
                 .map(recipeMapper::toSummaryDto)
@@ -148,8 +147,15 @@ public class FoodServiceImpl implements FoodService {
         SpecificationBuilder<Food> specificationBuilder = SpecificationBuilder.of(filter, foodFactory, dependencies);
         Specification<Food> specification = specificationBuilder.build();
 
-        return foodRepository.findAll(specification, pageable)
-                .map(foodMapper::toSummaryDto);
+        Page<Food> foodPage = foodRepository.findAll(specification, pageable);
+
+        List<FoodSummaryDto> summaries = foodPage.getContent().stream()
+                .map(foodMapper::toSummaryDto)
+                .toList();
+
+        foodPopulationService.populate(summaries);
+
+        return new PageImpl<>(summaries, pageable, foodPage.getTotalElements());
     }
 
 
@@ -161,6 +167,14 @@ public class FoodServiceImpl implements FoodService {
 
     private Food find(int foodId) {
         return repositoryHelper.find(foodRepository, Food.class, foodId);
+    }
+
+    private FoodResponseDto findAndMap(int foodId) {
+        Food food = foodRepository.findByIdWithMedia(foodId)
+                .orElseThrow(() -> RecordNotFoundException.of(Food.class, foodId));
+        FoodResponseDto dto = foodMapper.toDetailedResponseDto(food);
+        foodPopulationService.populate(dto);
+        return dto;
     }
 
     private FoodUpdateDto applyPatchToFood(JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {

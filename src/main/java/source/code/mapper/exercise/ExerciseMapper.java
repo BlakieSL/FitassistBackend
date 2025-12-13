@@ -11,6 +11,7 @@ import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.dto.response.text.ExerciseInstructionResponseDto;
 import source.code.dto.response.text.ExerciseTipResponseDto;
 import source.code.model.exercise.*;
+import source.code.model.media.Media;
 import source.code.model.text.ExerciseInstruction;
 import source.code.model.text.ExerciseTip;
 import source.code.repository.*;
@@ -49,6 +50,7 @@ public abstract class ExerciseMapper {
     @Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsToCategoryResponseDto")
     @Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceToCategoryResponseDto")
     @Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToCategoryResponseDto")
+    @Mapping(target = "imageName", source = "mediaList", qualifiedByName = "mapMediaToFirstImageName")
     @Mapping(target = "firstImageUrl", ignore = true)
     public abstract ExerciseSummaryDto toSummaryDto(Exercise exercise);
 
@@ -192,5 +194,11 @@ public abstract class ExerciseMapper {
         return tips.stream()
                 .map(tip -> new ExerciseTipResponseDto(tip.getId(), tip.getOrderIndex(), tip.getText()))
                 .toList();
+    }
+
+    @Named("mapMediaToFirstImageName")
+    protected String mapMediaToFirstImageName(List<Media> mediaList) {
+        if (mediaList.isEmpty()) return null;
+        return mediaList.getFirst().getImageName();
     }
 }
