@@ -28,7 +28,8 @@ import java.util.*;
                 @NamedAttributeNode("expertiseLevel"),
                 @NamedAttributeNode("forceType"),
                 @NamedAttributeNode("mechanicsType"),
-                @NamedAttributeNode(value = "exerciseTargetMuscles", subgraph = "etm-subgraph")
+                @NamedAttributeNode(value = "exerciseTargetMuscles", subgraph = "etm-subgraph"),
+                @NamedAttributeNode("mediaList")
         },
         subgraphs = {
                 @NamedSubgraph(

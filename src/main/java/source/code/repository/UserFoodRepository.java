@@ -17,12 +17,10 @@ public interface UserFoodRepository extends JpaRepository<UserFood, Integer> {
     Optional<UserFood> findByUserIdAndFoodId(int userId, int foodId);
 
     @Query("""
-        SELECT uf.food.id as entityId,
-               COUNT(uf) as savesCount,
+        SELECT COUNT(uf) as savesCount,
                SUM(CASE WHEN uf.user.id = :userId THEN 1 ELSE 0 END) as userSaved
         FROM UserFood uf
         WHERE uf.food.id = :foodId
-        GROUP BY uf.food.id
     """)
     SavesProjection findCountsAndInteractionsByFoodId(@Param("foodId") int foodId, @Param("userId") int userId);
 
