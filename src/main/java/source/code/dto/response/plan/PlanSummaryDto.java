@@ -6,17 +6,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.pojo.AuthorDto;
 import source.code.helper.BaseUserEntity;
+import source.code.dto.response.category.CategoryResponseDto;
 import source.code.helper.Enum.model.PlanStructureType;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * fetched with db (findAll) -> mapper -> populated in getFilteredPlans
  * fetched with db (PlanRepository.findByIdsWithDetails) -> mapper + set interactedWithAt -> populated in UserPlanService.getAllFromUser
  * fetched with db (PlanRepository.findByExerciseIdWithDetails) -> mapper -> populated in ExerciseService.getExercise
  *
- * Mapper sets: id, name, description, isPublic, createdAt, views, author (id, username), firstImageName (from mediaList), planStructureType
+ * Mapper sets: id, name, description, isPublic, createdAt, views, author (id, username), firstImageName (from mediaList), planStructureType, categories
  * Population sets: author.imageName, author.imageUrl, firstImageUrl, likesCount, dislikesCount, savesCount, liked, disliked, saved
  *
  * interactedWithAt - only set in UserPlanService.getAllFromUser
@@ -35,6 +38,7 @@ public class PlanSummaryDto implements BaseUserEntity, Serializable {
     private String firstImageName;
     private String firstImageUrl;
     private PlanStructureType planStructureType;
+    private List<CategoryResponseDto> categories = new ArrayList<>();
 
     private AuthorDto author;
 
