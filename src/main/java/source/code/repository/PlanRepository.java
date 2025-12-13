@@ -45,18 +45,6 @@ public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecifi
     @Query("""
         SELECT p
         FROM Plan p
-        WHERE (:showPrivate IS NULL AND p.isPublic = true)
-           OR (:showPrivate = false AND p.isPublic = true)
-           OR (:showPrivate = true AND p.user.id = :userId)
-    """)
-    Page<Plan> findAllWithAssociations(@Param("showPrivate") Boolean showPrivate,
-                                       @Param("userId") int userId,
-                                       Pageable pageable);
-
-    @EntityGraph(value = "Plan.summary")
-    @Query("""
-        SELECT p
-        FROM Plan p
         JOIN p.workouts w
         JOIN w.workoutSets ws
         JOIN ws.workoutSetExercises wse
@@ -65,19 +53,6 @@ public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecifi
         ORDER BY p.createdAt DESC
     """)
     List<Plan> findByExerciseIdWithDetails(@Param("exerciseId") int exerciseId);
-
-    @EntityGraph(value = "Plan.summary")
-    @Query("""
-        SELECT p
-        FROM Plan p
-        WHERE ((:isOwnProfile = false OR :isOwnProfile IS NULL)
-               AND p.isPublic = true
-               AND p.user.id = :userId)
-           OR (:isOwnProfile = true AND p.user.id = :userId)
-    """)
-    Page<Plan> findCreatedByUserWithDetails(@Param("userId") int userId,
-                                            @Param("isOwnProfile") boolean isOwnProfile,
-                                            Pageable pageable);
 
     @EntityGraph(value = "Plan.summary")
     @Query("""
