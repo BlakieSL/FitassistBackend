@@ -17,11 +17,6 @@ public interface ExerciseRepository
         extends JpaRepository<Exercise, Integer>, JpaSpecificationExecutor<Exercise> {
     @EntityGraph(value = "Exercise.summary")
     @NotNull
-    @Override
-    Page<Exercise> findAll(@NotNull Pageable pageable);
-
-    @EntityGraph(value = "Exercise.summary")
-    @NotNull
     Page<Exercise> findAll(Specification<Exercise> spec, @NotNull Pageable pageable);
 
     @EntityGraph(value = "Exercise.withoutAssociations")

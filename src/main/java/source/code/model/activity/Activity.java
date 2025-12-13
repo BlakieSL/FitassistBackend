@@ -31,7 +31,8 @@ import java.util.Set;
 @NamedEntityGraph(
         name = "Activity.summary",
         attributeNodes = {
-                @NamedAttributeNode("activityCategory")
+                @NamedAttributeNode("activityCategory"),
+                @NamedAttributeNode("mediaList")
         }
 )
 @Getter
