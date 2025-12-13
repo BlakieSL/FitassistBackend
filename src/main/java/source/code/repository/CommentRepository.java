@@ -14,20 +14,16 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaSpecificationExecutor<Comment> {
     @EntityGraph(value = "Comment.summary")
     @NotNull
+    @Override
     Page<Comment> findAll(Specification<Comment> spec, @NotNull Pageable pageable);
 
-    @EntityGraph(value = "Comment.withoutAssociations")
+    @EntityGraph(value = "Comment.summary")
+    @NotNull
+    @Override
+    Optional<Comment> findById(@NotNull Integer id);
+
+    @EntityGraph(value = "Comment.summary")
     List<Comment> findAllByThreadIdAndParentCommentNull(int threadId);
-
-    long countAllByThreadId(int threadId);
-
-    @EntityGraph(value = "Comment.withoutAssociations")
-    @Query("SELECT c FROM Comment c WHERE c.id = :id")
-    Optional<Comment> findByIdWithoutAssociations(Integer id);
-
-    @Modifying
-    @Query(nativeQuery = true, value = "DELETE FROM comment WHERE id = :id")
-    void deleteCommentDirectly(int id);
 
     @Query(value = """
     WITH RECURSIVE comment_tree AS (
@@ -36,7 +32,8 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaS
             c.text,
             c.thread_id,
             c.user_id,
-            c.parent_comment_id
+            c.parent_comment_id,
+            c.created_at
         FROM comment c
         WHERE c.parent_comment_id = :commentId
 
@@ -47,21 +44,26 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaS
             c.text,
             c.thread_id,
             c.user_id,
-            c.parent_comment_id
+            c.parent_comment_id,
+            c.created_at
         FROM comment c
         INNER JOIN comment_tree ct ON c.parent_comment_id = ct.id
     )
-    SELECT *
-    FROM comment_tree
-    ORDER BY id
+    SELECT
+        ct.id,
+        ct.text,
+        ct.thread_id,
+        ct.user_id,
+        ct.parent_comment_id,
+        ct.created_at,
+        u.username
+    FROM comment_tree ct
+    JOIN user u ON u.id = ct.user_id
+    ORDER BY ct.id
     """, nativeQuery = true)
     List<Object[]> findCommentHierarchy(Integer commentId);
 
-    @Query(value = """
-      SELECT c
-      FROM Comment c
-      JOIN FETCH c.user u
-      WHERE c.user.id = :userId
-    """)
-    Page<Comment> findCreatedByUserWithDetails(@Param("userId") int userId, Pageable pageable);
+    @Modifying
+    @Query(nativeQuery = true, value = "DELETE FROM comment WHERE id = :id")
+    void deleteCommentDirectly(int id);
 }

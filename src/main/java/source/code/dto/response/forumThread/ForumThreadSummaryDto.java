@@ -11,6 +11,16 @@ import source.code.helper.BaseUserEntity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * fetched with db (findAll) -> mapper -> populated in getFilteredForumThreads
+ * fetched with db (UserThreadRepository.findAllByUserId) -> mapper -> populated in UserThreadService.getAllFromUser
+ *
+ * Mapper sets: id, title, text, createdAt, views, category, author (id, username)
+ * Population sets: author.imageName/imageUrl, savesCount, commentsCount, saved
+ *
+ * interactedWithAt - only set in UserThreadService.getAllFromUser
+ * saved - when user not authenticated (userId=-1), always false since query matches on userId
+ */
 @Getter
 @Setter
 @AllArgsConstructor

@@ -10,7 +10,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RecipeFoodRepository extends JpaRepository<RecipeFood, Integer> {
-    List<RecipeFood> findByRecipeId(int recipeId);
+    @Query("""
+        SELECT rf FROM RecipeFood rf
+        JOIN FETCH rf.food f
+        LEFT JOIN FETCH f.foodCategory
+        LEFT JOIN FETCH f.mediaList
+        WHERE rf.recipe.id = :recipeId
+    """)
+    List<RecipeFood> findByRecipeId(@Param("recipeId") int recipeId);
 
     boolean existsByRecipeIdAndFoodId(int recipeId, int foodId);
 

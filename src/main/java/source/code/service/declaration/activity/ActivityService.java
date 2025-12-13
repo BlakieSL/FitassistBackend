@@ -17,7 +17,7 @@ import java.util.List;
 
 
 public interface ActivityService {
-    ActivitySummaryDto createActivity(ActivityCreateDto dto);
+    ActivityResponseDto createActivity(ActivityCreateDto dto);
 
     void updateActivity(int activityId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 

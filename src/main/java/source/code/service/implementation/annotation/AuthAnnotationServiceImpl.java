@@ -73,7 +73,7 @@ public class AuthAnnotationServiceImpl {
     }
 
     public boolean isCommentOwnerOrAdmin(int commentId)  {
-        Comment comment = commentRepository.findByIdWithoutAssociations(commentId)
+        Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RecordNotFoundException(Comment.class, commentId));
         return AuthorizationUtil.isOwnerOrAdmin(comment.getUser().getId());
     }

@@ -14,6 +14,8 @@ import source.code.repository.FoodCategoryRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
+import source.code.model.media.Media;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -31,6 +33,7 @@ public abstract class FoodMapper {
     private AwsS3Service awsS3Service;
 
     @Mapping(target = "category", source = "foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
+    @Mapping(target = "imageName", source = "mediaList", qualifiedByName = "mapMediaToFirstImageName")
     @Mapping(target = "firstImageUrl", ignore = true)
     public abstract FoodSummaryDto toSummaryDto(Food food);
 
@@ -91,5 +94,11 @@ public abstract class FoodMapper {
     @Named("mapFoodCategoryToResponseDto")
     protected CategoryResponseDto mapFoodCategoryToResponseDto(FoodCategory category) {
         return new CategoryResponseDto(category.getId(), category.getName());
+    }
+
+    @Named("mapMediaToFirstImageName")
+    protected String mapMediaToFirstImageName(List<Media> mediaList) {
+        if (mediaList.isEmpty()) return null;
+        return mediaList.getFirst().getImageName();
     }
 }

@@ -42,37 +42,10 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
     @Query("""
         SELECT r
         FROM Recipe r
-        WHERE (:showPrivate IS NULL AND r.isPublic = true)
-           OR (:showPrivate = false AND r.isPublic = true)
-           OR (:showPrivate = true AND r.user.id = :userId)
-    """)
-    Page<Recipe> findAllWithDetails(@Param("showPrivate") Boolean showPrivate,
-                                    @Param("userId") int userId,
-                                    Pageable pageable);
-
-    @EntityGraph(value = "Recipe.summary")
-    @Query("""
-        SELECT r
-        FROM Recipe r
         JOIN r.recipeFoods rf
         WHERE rf.food.id = :foodId
     """)
     List<Recipe> findAllWithDetailsByFoodId(@Param("foodId") int foodId);
-
-    @EntityGraph(value = "Recipe.summary")
-    @Query("""
-        SELECT r
-        FROM Recipe r
-        WHERE ((:isOwnProfile = false OR :isOwnProfile IS NULL)
-               AND r.isPublic = true
-               AND r.user.id = :userId)
-           OR (:isOwnProfile = true AND r.user.id = :userId)
-    """)
-    Page<Recipe> findCreatedByUserWithDetails(
-            @Param("userId") int userId,
-            @Param("isOwnProfile") boolean isOwnProfile,
-            Pageable pageable
-    );
 
     @EntityGraph(value = "Recipe.summary")
     @Query("""

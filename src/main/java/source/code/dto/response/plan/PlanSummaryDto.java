@@ -11,6 +11,17 @@ import source.code.helper.Enum.model.PlanStructureType;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * fetched with db (findAll) -> mapper -> populated in getFilteredPlans
+ * fetched with db (PlanRepository.findByIdsWithDetails) -> mapper + set interactedWithAt -> populated in UserPlanService.getAllFromUser
+ * fetched with db (PlanRepository.findByExerciseIdWithDetails) -> mapper -> populated in ExerciseService.getExercise
+ *
+ * Mapper sets: id, name, description, isPublic, createdAt, views, author (id, username), firstImageName (from mediaList), planStructureType
+ * Population sets: author.imageName, author.imageUrl, firstImageUrl, likesCount, dislikesCount, savesCount, liked, disliked, saved
+ *
+ * interactedWithAt - only set in UserPlanService.getAllFromUser
+ * liked/disliked/saved - when user not authenticated (userId=-1), always false since query matches on userId
+ */
 @Getter
 @Setter
 @NoArgsConstructor

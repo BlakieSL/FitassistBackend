@@ -17,21 +17,15 @@ import java.util.Optional;
 public interface ForumThreadRepository extends JpaRepository<ForumThread, Integer>, JpaSpecificationExecutor<ForumThread> {
     @EntityGraph(value = "ForumThread.summary")
     @NotNull
+    @Override
     Page<ForumThread> findAll(Specification<ForumThread> spec, @NotNull Pageable pageable);
 
     @EntityGraph(value = "ForumThread.summary")
-    @Query("SELECT ft FROM ForumThread ft WHERE ft.id = :id")
-    Optional<ForumThread> findByIdWithDetails(@Param("id") Integer id);
+    @NotNull
+    @Override
+    Optional<ForumThread> findById(@NotNull Integer id);
 
     @EntityGraph(value = "ForumThread.summary")
     @NotNull
     List<ForumThread> findAll();
-
-    @Query(value = """
-      SELECT ft
-      FROM ForumThread ft
-      JOIN FETCH ft.user u
-      WHERE ft.user.id = :userId
-    """)
-    Page<ForumThread> findCreatedByUserWithDetails(@Param("userId") int userId, Pageable pageable);
 }

@@ -64,9 +64,7 @@ public class UserPlanServiceImpl
     @Override
     public Page<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Pageable pageable) {
         Page<UserPlan> userPlanPage = ((UserPlanRepository) userEntityRepository)
-                .findByUserIdAndTypeWithPlan(userId, type, pageable);
-
-        if (userPlanPage.isEmpty()) return new PageImpl<>(List.of(), pageable, 0);
+                .findAllByUserIdAndType(userId, type, pageable);
 
         List<Integer> planIds = userPlanPage.getContent().stream()
                 .map(up -> up.getPlan().getId())

@@ -32,6 +32,7 @@ import source.code.repository.RecipeRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
+import source.code.service.declaration.food.FoodPopulationService;
 import source.code.service.declaration.recipe.RecipeFoodService;
 import source.code.service.declaration.recipe.RecipeService;
 
@@ -48,6 +49,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
     private final RecipeFoodRepository recipeFoodRepository;
     private final FoodRepository foodRepository;
     private final RecipeRepository recipeRepository;
+    private final FoodPopulationService foodPopulationService;
 
     public RecipeFoodServiceImpl(
             RecipeService recipeService,
@@ -58,7 +60,8 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
             RecipeRepository recipeRepository,
             JsonPatchService jsonPatchService,
             FoodMapper foodMapper,
-            RepositoryHelper repositoryHelper) {
+            RepositoryHelper repositoryHelper,
+            FoodPopulationService foodPopulationService) {
         this.recipeService = recipeService;
         this.validationService = validationService;
         this.recipeFoodMapper = recipeFoodMapper;
@@ -68,6 +71,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
         this.jsonPatchService = jsonPatchService;
         this.foodMapper = foodMapper;
         this.repositoryHelper = repositoryHelper;
+        this.foodPopulationService = foodPopulationService;
     }
 
     @Override
@@ -110,10 +114,14 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
     @Override
     @Cacheable(value = CacheNames.FOODS_BY_RECIPE, key = "#recipeId")
     public List<FoodSummaryDto> getFoodsByRecipe(int recipeId) {
-        return recipeFoodRepository.findByRecipeId(recipeId).stream()
+        List<FoodSummaryDto> summaries = recipeFoodRepository.findByRecipeId(recipeId).stream()
                 .map(RecipeFood::getFood)
                 .map(foodMapper::toSummaryDto)
                 .toList();
+
+        foodPopulationService.populate(summaries);
+
+        return summaries;
     }
 
     @Override

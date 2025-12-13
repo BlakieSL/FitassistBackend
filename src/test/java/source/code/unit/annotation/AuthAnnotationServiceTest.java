@@ -89,7 +89,7 @@ public class AuthAnnotationServiceTest {
     void isCommentOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdmin() {
         int commentId = 1;
         Comment comment = Comment.of(commentId, user);
-        when(commentRepository.findByIdWithoutAssociations(commentId))
+        when(commentRepository.findById(commentId))
                 .thenReturn(Optional.of(comment));
         mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId))
                 .thenReturn(true);

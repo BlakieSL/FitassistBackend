@@ -44,7 +44,7 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
 
         fetchAndPopulateAuthorImages(recipes);
         populateImageUrls(recipes);
-        fetchAndPopulateCounts(recipes, recipeIds);
+        fetchAndPopulateUserInteractionsAndCounts(recipes, recipeIds);
         fetchAndPopulateIngredientsCount(recipes, recipeIds);
     }
 
@@ -86,11 +86,11 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
         });
     }
 
-    private void fetchAndPopulateCounts(List<RecipeSummaryDto> recipes, List<Integer> recipeIds) {
+    private void fetchAndPopulateUserInteractionsAndCounts(List<RecipeSummaryDto> recipes, List<Integer> recipeIds) {
         int userId = AuthorizationUtil.getUserId();
 
         Map<Integer, EntityCountsProjection> countsMap = userRecipeRepository
-                .findCountsByRecipeIds(userId, recipeIds)
+                .findCountsAndInteractionsByRecipeIds(userId, recipeIds)
                 .stream()
                 .collect(Collectors.toMap(
                         EntityCountsProjection::getEntityId,
@@ -142,7 +142,7 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
 
     private void fetchAndPopulateUserInteractionsAndCounts(RecipeResponseDto recipe, int requestingUserId) {
         EntityCountsProjection result = userRecipeRepository
-                .findCountsByRecipeId(requestingUserId, recipe.getId());
+                .findCountsAndInteractionsByRecipeId(requestingUserId, recipe.getId());
 
         if (result == null) return;
 

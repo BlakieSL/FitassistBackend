@@ -41,7 +41,7 @@ public class PlanPopulationServiceImpl implements PlanPopulationService {
 
         fetchAndPopulateAuthorImages(plans);
         populateImageUrls(plans);
-        fetchAndPopulateCounts(plans, planIds);
+        fetchAndPopulateUserInteractionsAndCounts(plans, planIds);
     }
 
     @Override
@@ -82,11 +82,11 @@ public class PlanPopulationServiceImpl implements PlanPopulationService {
         });
     }
 
-    private void fetchAndPopulateCounts(List<PlanSummaryDto> plans, List<Integer> planIds) {
+    private void fetchAndPopulateUserInteractionsAndCounts(List<PlanSummaryDto> plans, List<Integer> planIds) {
         int userId = AuthorizationUtil.getUserId();
 
         Map<Integer, EntityCountsProjection> countsMap = userPlanRepository
-                .findCountsByPlanIds(userId, planIds)
+                .findCountsAndInteractionsByPlanIds(userId, planIds)
                 .stream()
                 .collect(Collectors.toMap(
                         EntityCountsProjection::getEntityId,
@@ -123,7 +123,7 @@ public class PlanPopulationServiceImpl implements PlanPopulationService {
     }
 
     private void fetchAndPopulateUserInteractionsAndCounts(PlanResponseDto plan, int requestingUserId) {
-        EntityCountsProjection result = userPlanRepository.findCountsByPlanId(requestingUserId, plan.getId());
+        EntityCountsProjection result = userPlanRepository.findCountsAndInteractionsByPlanId(requestingUserId, plan.getId());
 
         if (result == null) return;
 

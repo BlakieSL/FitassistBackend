@@ -84,8 +84,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
     @Override
     @Transactional
     public void updateDailyActivityItem(int dailyActivityItemId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         DailyCartActivity dailyCartActivity = findWithoutAssociations(dailyActivityItemId);
         DailyActivityItemUpdateDto patchedDto = applyPatchToDailyActivityItem(patch);
         validationService.validate(patchedDto);

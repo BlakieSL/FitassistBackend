@@ -215,7 +215,7 @@ public class UserCommentServiceTest {
         dto2.setId(2);
 
         Page<UserComment> userCommentPage = new PageImpl<>(List.of(uc1, uc2), pageable, 2);
-        when(userCommentRepository.findByUserIdAndTypeWithComment(eq(userId), eq(type), any(Pageable.class)))
+        when(userCommentRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
                 .thenReturn(userCommentPage);
         when(commentMapper.toSummaryDto(comment1)).thenReturn(dto1);
         when(commentMapper.toSummaryDto(comment2)).thenReturn(dto2);
@@ -224,7 +224,7 @@ public class UserCommentServiceTest {
 
         assertEquals(2, result.getContent().size());
         assertEquals(2, result.getTotalElements());
-        verify(userCommentRepository).findByUserIdAndTypeWithComment(eq(userId), eq(type), any(Pageable.class));
+        verify(userCommentRepository).findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class));
         verify(commentMapper).toSummaryDto(comment1);
         verify(commentMapper).toSummaryDto(comment2);
         verify(commentPopulationService).populate(any(List.class));
@@ -237,13 +237,13 @@ public class UserCommentServiceTest {
         Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         Page<UserComment> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-        when(userCommentRepository.findByUserIdAndTypeWithComment(eq(userId), eq(type), any(Pageable.class)))
+        when(userCommentRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
                 .thenReturn(emptyPage);
 
         Page<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, pageable);
 
         assertTrue(result.getContent().isEmpty());
         assertEquals(0, result.getTotalElements());
-        verify(userCommentRepository).findByUserIdAndTypeWithComment(eq(userId), eq(type), any(Pageable.class));
+        verify(userCommentRepository).findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class));
     }
 }

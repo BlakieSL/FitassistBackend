@@ -10,6 +10,16 @@ import source.code.helper.BaseUserEntity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * fetched with db (findAll) -> mapper -> populated in getFilteredExercises
+ * fetched with db (UserExerciseRepository.findAllByUserIdWithMedia) -> mapper + set interactedWithAt -> populated in UserExerciseService.getAllFromUser
+ *
+ * Mapper sets: id, name, description, expertiseLevel, equipment, mechanicsType, forceType, imageName (from mediaList)
+ * Population sets: firstImageUrl, savesCount, saved
+ *
+ * userExerciseInteractionCreatedAt - only set in UserExerciseService.getAllFromUser
+ * saved - when user not authenticated (userId=-1), always false since query matches on userId
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,4 +36,7 @@ public class ExerciseSummaryDto implements BaseUserEntity, Serializable {
     private CategoryResponseDto forceType;
 
     private LocalDateTime userExerciseInteractionCreatedAt;
+
+    private long savesCount;
+    private Boolean saved;
 }
