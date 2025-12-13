@@ -48,7 +48,7 @@ public class UserCommentServiceImpl
         List<CommentSummaryDto> summaries = userCommentPage.getContent().stream()
                 .map(uc -> {
                     CommentSummaryDto dto = commentMapper.toSummaryDto(uc.getComment());
-                    dto.setInteractedWithAt(uc.getCreatedAt());
+                    dto.setInteractionCreatedAt(uc.getCreatedAt());
                     return dto;
                 })
                 .toList();

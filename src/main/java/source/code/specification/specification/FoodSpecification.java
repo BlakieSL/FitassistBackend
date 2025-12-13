@@ -8,8 +8,6 @@ import source.code.model.food.Food;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 import source.code.specification.PredicateContext;
 
-import static source.code.specification.SpecificationConstants.ID_FIELD;
-
 public class FoodSpecification extends AbstractSpecification<Food, FoodField> {
 
     private static final String FOOD_CATEGORY_FIELD = "foodCategory";
@@ -37,11 +35,8 @@ public class FoodSpecification extends AbstractSpecification<Food, FoodField> {
             case CATEGORY -> GenericSpecificationHelper.buildPredicateEntityProperty(context, FOOD_CATEGORY_FIELD);
             case SAVED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
                     context, LikesAndSaves.USER_FOODS.getFieldName());
-            case SAVE -> {
-                context.query().groupBy(context.root().get(ID_FIELD));
-                yield GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
-                        context, LikesAndSaves.USER_FOODS.getFieldName(), null, null);
-            }
+            case SAVE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
+                    context, LikesAndSaves.USER_FOODS.getFieldName(), null, null);
         };
     }
 }

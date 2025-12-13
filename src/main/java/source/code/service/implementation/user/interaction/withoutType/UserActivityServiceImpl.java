@@ -63,7 +63,7 @@ public class UserActivityServiceImpl
         List<ActivitySummaryDto> summaries = userActivityPage.getContent().stream()
                 .map(ua -> {
                     ActivitySummaryDto dto = activityMapper.toSummaryDto(ua.getActivity());
-                    dto.setUserActivityInteractionCreatedAt(ua.getCreatedAt());
+                    dto.setInteractionCreatedAt(ua.getCreatedAt());
                     return dto;
                 })
                 .toList();

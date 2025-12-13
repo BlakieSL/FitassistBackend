@@ -8,8 +8,6 @@ import source.code.model.activity.Activity;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 import source.code.specification.PredicateContext;
 
-import static source.code.specification.SpecificationConstants.ID_FIELD;
-
 public class ActivitySpecification extends AbstractSpecification<Activity, ActivityField> {
 
     private static final String ACTIVITY_CATEGORY_FIELD = "activityCategory";
@@ -31,11 +29,8 @@ public class ActivitySpecification extends AbstractSpecification<Activity, Activ
             case MET -> GenericSpecificationHelper.buildPredicateNumericProperty(context, context.root().get(MET_FIELD));
             case SAVED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
                     context, LikesAndSaves.USER_ACTIVITIES.getFieldName());
-            case SAVE -> {
-                context.query().groupBy(context.root().get(ID_FIELD));
-                yield GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
-                        context, LikesAndSaves.USER_ACTIVITIES.getFieldName(), null, null);
-            }
+            case SAVE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(
+                    context, LikesAndSaves.USER_ACTIVITIES.getFieldName(), null, null);
         };
     }
 }
