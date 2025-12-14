@@ -17,7 +17,7 @@ public class CacheNames {
 
     public static final String ALL_RECIPES = "allRecipes";
     public static final String RECIPES = "recipes";
-    
+
     public static final String ALL_CATEGORIES = "allCategories";
     public static final String ALL_TEXT_BY_PARENT = "allTextByParent";
     public static final String FOODS_BY_RECIPE = "foodsByRecipe";

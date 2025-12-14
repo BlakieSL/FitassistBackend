@@ -16,7 +16,7 @@ import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
 import source.code.helper.user.AuthorizationUtil;
-import source.code.mapper.plan.PlanMapper;
+import source.code.mapper.PlanMapper;
 import source.code.model.plan.Plan;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.User;

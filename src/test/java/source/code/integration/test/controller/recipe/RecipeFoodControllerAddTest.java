@@ -41,8 +41,8 @@ public class RecipeFoodControllerAddTest {
         var request = new RecipeFoodCreateDto();
 
         mockMvc.perform(post("/api/recipe-food/4/add/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(status().isCreated());
     }
 

@@ -1,4 +1,4 @@
-package source.code.mapper.complaint;
+package source.code.mapper;
 
 
 import org.mapstruct.Context;
@@ -23,8 +23,10 @@ import source.code.repository.UserRepository;
 public abstract class ComplaintMapper {
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private CommentRepository commentRepository;
+
     @Autowired
     private ForumThreadRepository threadRepository;
 
@@ -39,10 +41,8 @@ public abstract class ComplaintMapper {
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "user", expression = "java(toUserFromUserId(userId))")
     @Mapping(target = "thread", source = "parentId", qualifiedByName = "toThreadFromParentId")
-    public abstract ThreadComplaint toThreadComplaint(
-            ComplaintCreateDto createDto, @Context int userId);
+    public abstract ThreadComplaint toThreadComplaint(ComplaintCreateDto createDto, @Context int userId);
 
-    @Mapping(target = "status", source = "status")
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "discriminatorValue", expression = "java(getDiscriminatorValue(complaint))")
     @Mapping(target = "associatedId", expression = "java(getAssociatedId(complaint))")

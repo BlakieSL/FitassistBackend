@@ -60,8 +60,7 @@ public class CategoryController {
             @PathVariable CategoryType categoryType,
             @PathVariable int id,
             @RequestBody JsonMergePatch patch)
-            throws JsonProcessingException, JsonPatchException
-    {
+            throws JsonProcessingException, JsonPatchException {
         CategoryService categoryService = categorySelectorService.getService(categoryType);
         categoryService.updateCategory(id, patch);
         return ResponseEntity.noContent().build();

@@ -18,47 +18,47 @@ public interface UserPlanRepository extends JpaRepository<UserPlan, Integer> {
     boolean existsByUserIdAndPlanIdAndType(int userId, int planId, TypeOfInteraction type);
 
     @Query("""
-        SELECT
-            p.id as entityId,
-            MAX(CASE WHEN up.user.id = :userId AND up.type = 'LIKE' THEN 1 ELSE 0 END) as isLiked,
-            MAX(CASE WHEN up.user.id = :userId AND up.type = 'DISLIKE' THEN 1 ELSE 0 END) as isDisliked,
-            MAX(CASE WHEN up.user.id = :userId AND up.type = 'SAVE' THEN 1 ELSE 0 END) as isSaved,
-            COALESCE(SUM(CASE WHEN up.type = 'LIKE' THEN 1 ELSE 0 END), 0) as likesCount,
-            COALESCE(SUM(CASE WHEN up.type = 'DISLIKE' THEN 1 ELSE 0 END), 0) as dislikesCount,
-            COALESCE(SUM(CASE WHEN up.type = 'SAVE' THEN 1 ELSE 0 END), 0) as savesCount
-        FROM Plan p
-        LEFT JOIN UserPlan up ON up.plan.id = p.id
-        WHERE p.id = :planId
-        GROUP BY p.id
-    """)
+                SELECT
+                    p.id as entityId,
+                    MAX(CASE WHEN up.user.id = :userId AND up.type = 'LIKE' THEN 1 ELSE 0 END) as isLiked,
+                    MAX(CASE WHEN up.user.id = :userId AND up.type = 'DISLIKE' THEN 1 ELSE 0 END) as isDisliked,
+                    MAX(CASE WHEN up.user.id = :userId AND up.type = 'SAVE' THEN 1 ELSE 0 END) as isSaved,
+                    COALESCE(SUM(CASE WHEN up.type = 'LIKE' THEN 1 ELSE 0 END), 0) as likesCount,
+                    COALESCE(SUM(CASE WHEN up.type = 'DISLIKE' THEN 1 ELSE 0 END), 0) as dislikesCount,
+                    COALESCE(SUM(CASE WHEN up.type = 'SAVE' THEN 1 ELSE 0 END), 0) as savesCount
+                FROM Plan p
+                LEFT JOIN UserPlan up ON up.plan.id = p.id
+                WHERE p.id = :planId
+                GROUP BY p.id
+            """)
     EntityCountsProjection findCountsAndInteractionsByPlanId(@Param("userId") int userId,
                                                              @Param("planId") int planId);
 
     @Query("""
-        SELECT
-            p.id as entityId,
-            MAX(CASE WHEN up.user.id = :userId AND up.type = 'LIKE' THEN 1 ELSE 0 END) as isLiked,
-            MAX(CASE WHEN up.user.id = :userId AND up.type = 'DISLIKE' THEN 1 ELSE 0 END) as isDisliked,
-            MAX(CASE WHEN up.user.id = :userId AND up.type = 'SAVE' THEN 1 ELSE 0 END) as isSaved,
-            COALESCE(SUM(CASE WHEN up.type = 'LIKE' THEN 1 ELSE 0 END), 0) as likesCount,
-            COALESCE(SUM(CASE WHEN up.type = 'DISLIKE' THEN 1 ELSE 0 END), 0) as dislikesCount,
-            COALESCE(SUM(CASE WHEN up.type = 'SAVE' THEN 1 ELSE 0 END), 0) as savesCount
-        FROM Plan p
-        LEFT JOIN UserPlan up ON up.plan.id = p.id
-        WHERE p.id IN :planIds
-        GROUP BY p.id
-    """)
+                SELECT
+                    p.id as entityId,
+                    MAX(CASE WHEN up.user.id = :userId AND up.type = 'LIKE' THEN 1 ELSE 0 END) as isLiked,
+                    MAX(CASE WHEN up.user.id = :userId AND up.type = 'DISLIKE' THEN 1 ELSE 0 END) as isDisliked,
+                    MAX(CASE WHEN up.user.id = :userId AND up.type = 'SAVE' THEN 1 ELSE 0 END) as isSaved,
+                    COALESCE(SUM(CASE WHEN up.type = 'LIKE' THEN 1 ELSE 0 END), 0) as likesCount,
+                    COALESCE(SUM(CASE WHEN up.type = 'DISLIKE' THEN 1 ELSE 0 END), 0) as dislikesCount,
+                    COALESCE(SUM(CASE WHEN up.type = 'SAVE' THEN 1 ELSE 0 END), 0) as savesCount
+                FROM Plan p
+                LEFT JOIN UserPlan up ON up.plan.id = p.id
+                WHERE p.id IN :planIds
+                GROUP BY p.id
+            """)
     List<EntityCountsProjection> findCountsAndInteractionsByPlanIds(@Param("userId") int userId,
                                                                     @Param("planIds") List<Integer> planIds);
 
     @Query(value = """
-        SELECT up
-        FROM UserPlan up
-        JOIN FETCH up.plan p
-        WHERE up.user.id = :userId
-        AND up.type = :type
-        AND p.isPublic = true
-    """)
+                SELECT up
+                FROM UserPlan up
+                JOIN FETCH up.plan p
+                WHERE up.user.id = :userId
+                AND up.type = :type
+                AND p.isPublic = true
+            """)
     Page<UserPlan> findAllByUserIdAndType(@Param("userId") int userId,
                                           @Param("type") TypeOfInteraction type,
                                           Pageable pageable);

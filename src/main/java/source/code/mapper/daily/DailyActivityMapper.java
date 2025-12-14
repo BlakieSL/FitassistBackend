@@ -22,8 +22,6 @@ public abstract class DailyActivityMapper {
     @Mapping(target = "met", source = "activity.met")
     @Mapping(target = "category", source = "activity.activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
     @Mapping(target = "caloriesBurned", ignore = true)
-    @Mapping(target = "time", source = "time")
-    @Mapping(target = "weight", source = "weight")
     public abstract ActivityCalculatedResponseDto toActivityCalculatedResponseDto(DailyCartActivity dailyCartActivity);
 
     @AfterMapping

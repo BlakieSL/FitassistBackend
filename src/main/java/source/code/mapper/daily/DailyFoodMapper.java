@@ -23,7 +23,6 @@ public abstract class DailyFoodMapper {
     @Mapping(target = "fat", ignore = true)
     @Mapping(target = "carbohydrates", ignore = true)
     @Mapping(target = "category", source = "food.foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
-    @Mapping(target = "quantity", source = "quantity")
     public abstract FoodCalculatedMacrosResponseDto toFoodCalculatedMacrosResponseDto(DailyCartFood dailyCartFood);
 
     @AfterMapping

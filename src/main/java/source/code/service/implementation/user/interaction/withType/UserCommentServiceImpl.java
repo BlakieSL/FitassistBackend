@@ -9,7 +9,7 @@ import source.code.dto.response.comment.CommentResponseDto;
 import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.helper.BaseUserEntity;
-import source.code.mapper.comment.CommentMapper;
+import source.code.mapper.CommentMapper;
 import source.code.model.thread.Comment;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.User;

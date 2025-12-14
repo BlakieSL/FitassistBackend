@@ -1,4 +1,4 @@
-package source.code.mapper.food;
+package source.code.mapper;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +10,10 @@ import source.code.dto.response.food.FoodResponseDto;
 import source.code.dto.response.food.FoodSummaryDto;
 import source.code.model.food.Food;
 import source.code.model.food.FoodCategory;
+import source.code.model.media.Media;
 import source.code.repository.FoodCategoryRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.RepositoryHelper;
-
-import source.code.model.media.Media;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

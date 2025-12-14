@@ -53,7 +53,7 @@ public class UserControllerRefreshTokenTest {
     @WithAnonymousUser
     @Test
     @DisplayName("POST - /refresh-token - Should return new access token with valid refresh token")
-     void refreshTokenSuccess() throws Exception {
+    void refreshTokenSuccess() throws Exception {
         String validRefreshToken = jwtService.createAccessToken("username", 1, List.of("ROLE_USER"));
 
         var request = new RefreshTokenRequestDto(validRefreshToken);
@@ -102,7 +102,7 @@ public class UserControllerRefreshTokenTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(status().isUnauthorized());
 
-        }
+    }
 
     @WithAnonymousUser
     @Test
@@ -125,27 +125,27 @@ public class UserControllerRefreshTokenTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(status().isUnauthorized());
-        }
+    }
 
     @WithAnonymousUser
     @Test
     @DisplayName("POST - /refresh-token - Should return 400 when missing claims")
     void refreshTokenMissingClaims() throws Exception {
 
-            JWTClaimsSet missingClaimsSet = new JWTClaimsSet.Builder()
-                    .expirationTime(Date.from(Instant.now().plusSeconds(60)))
-                    .build();
+        JWTClaimsSet missingClaimsSet = new JWTClaimsSet.Builder()
+                .expirationTime(Date.from(Instant.now().plusSeconds(60)))
+                .build();
 
-            JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS256).build();
-            SignedJWT tokenWithMissingClaims = new SignedJWT(header, missingClaimsSet);
-            tokenWithMissingClaims.sign(new MACSigner(sharedKey.getBytes()));
+        JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS256).build();
+        SignedJWT tokenWithMissingClaims = new SignedJWT(header, missingClaimsSet);
+        tokenWithMissingClaims.sign(new MACSigner(sharedKey.getBytes()));
 
-            var request = new RefreshTokenRequestDto(tokenWithMissingClaims.serialize());
+        var request = new RefreshTokenRequestDto(tokenWithMissingClaims.serialize());
 
-            mockMvc.perform(post("/api/users/refresh-token")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(request)))
-                    .andExpectAll(status().isBadRequest());
+        mockMvc.perform(post("/api/users/refresh-token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpectAll(status().isBadRequest());
 
     }
 }

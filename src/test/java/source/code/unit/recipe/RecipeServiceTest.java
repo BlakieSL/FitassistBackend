@@ -39,7 +39,6 @@ import source.code.service.declaration.recipe.RecipePopulationService;
 import source.code.service.implementation.recipe.RecipeServiceImpl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -169,8 +168,7 @@ public class RecipeServiceTest {
 
     @Test
     void updateRecipe_shouldThrowExceptionWhenPatchFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(recipeRepository, Recipe.class, recipeId)).thenReturn(recipe);
         when(jsonPatchService.createFromPatch(patch, RecipeUpdateDto.class))
                 .thenThrow(JsonPatchException.class);
@@ -183,8 +181,7 @@ public class RecipeServiceTest {
 
     @Test
     void updateRecipe_shouldThrowExceptionWhenValidationFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(recipeRepository, Recipe.class, recipeId)).thenReturn(recipe);
         when(jsonPatchService.createFromPatch(patch, RecipeUpdateDto.class))
                 .thenReturn(patchedDto);

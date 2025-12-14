@@ -10,13 +10,15 @@ import source.code.dto.request.forumThread.ForumThreadCreateDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 
-import java.util.List;
-
 public interface ForumThreadService {
     ForumThreadResponseDto createForumThread(ForumThreadCreateDto createDto);
+
     void updateForumThread(int forumThreadId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException;
+
     void deleteForumThread(int forumThreadId);
+
     ForumThreadResponseDto getForumThread(int forumThreadId);
+
     Page<ForumThreadSummaryDto> getFilteredForumThreads(FilterDto filter, Pageable pageable);
 }

@@ -4,7 +4,7 @@ import jakarta.persistence.criteria.*;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.exception.InvalidFilterOperationException;
 import source.code.exception.InvalidFilterValueException;
- import source.code.specification.PredicateContext;
+import source.code.specification.PredicateContext;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

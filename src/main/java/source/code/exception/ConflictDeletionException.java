@@ -7,6 +7,6 @@ public class ConflictDeletionException extends LocalizedException {
                 null,
                 entityClass.getSimpleName(),
                 id
-           );
+        );
     }
 }

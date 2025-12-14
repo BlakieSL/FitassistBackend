@@ -7,7 +7,7 @@ public enum LikesAndSaves {
     USER_PLANS("userPlans"),
     USER_ACTIVITIES("userActivities");
 
-    private String fieldName;
+    private final String fieldName;
 
     LikesAndSaves(String fieldName) {
         this.fieldName = fieldName;

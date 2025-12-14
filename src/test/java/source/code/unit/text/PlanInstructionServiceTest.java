@@ -18,7 +18,7 @@ import source.code.dto.response.text.PlanInstructionResponseDto;
 import source.code.event.events.Text.TextClearCacheEvent;
 import source.code.event.events.Text.TextCreateCacheEvent;
 import source.code.exception.RecordNotFoundException;
-import source.code.mapper.text.TextMapper;
+import source.code.mapper.TextMapper;
 import source.code.model.text.PlanInstruction;
 import source.code.repository.PlanInstructionRepository;
 import source.code.service.declaration.text.TextCacheKeyGenerator;

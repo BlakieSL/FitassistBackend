@@ -25,7 +25,7 @@ import java.util.Set;
  *     <li>{@code WINTER}</li>
  *     <li>{@code RELIGIOUS}</li>
  * </ul>
- *
+ * <p>
  * These values can be extended or modified via the application or admin interface.
  */
 @Entity

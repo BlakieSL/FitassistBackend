@@ -32,9 +32,11 @@ public class ExerciseSpecification extends AbstractSpecification<Exercise, Exerc
     @Override
     protected Predicate buildPredicateForField(PredicateContext<Exercise> context, ExerciseField field) {
         return switch (field) {
-            case EXPERTISE_LEVEL -> GenericSpecificationHelper.buildPredicateEntityProperty(context, EXPERTISE_LEVEL_FIELD);
+            case EXPERTISE_LEVEL ->
+                    GenericSpecificationHelper.buildPredicateEntityProperty(context, EXPERTISE_LEVEL_FIELD);
             case EQUIPMENT -> GenericSpecificationHelper.buildPredicateEntityProperty(context, EQUIPMENT_FIELD);
-            case MECHANICS_TYPE -> GenericSpecificationHelper.buildPredicateEntityProperty(context, MECHANICS_TYPE_FIELD);
+            case MECHANICS_TYPE ->
+                    GenericSpecificationHelper.buildPredicateEntityProperty(context, MECHANICS_TYPE_FIELD);
             case FORCE_TYPE -> GenericSpecificationHelper.buildPredicateEntityProperty(context, FORCE_TYPE_FIELD);
             case TARGET_MUSCLE -> buildTargetMusclePredicate(context);
             case SAVED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(

@@ -14,11 +14,11 @@ import java.util.List;
 
 /**
  * fetched with db (findByIdWithDetails) -> mapper -> populated in createExercise and getExercise
- *
+ * <p>
  * Mapper sets: id, name, description, expertiseLevel, equipment, mechanicsType, forceType, targetMuscles, instructions, tips
  * Population sets: imageUrls, savesCount, saved
  * plans - set manually in getExercise via planRepository.findByExerciseIdWithDetails -> planMapper -> planPopulationService
- *
+ * <p>
  * saved - when user not authenticated (userId=-1), always false since query matches on userId
  */
 @Getter

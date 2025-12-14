@@ -31,7 +31,7 @@ import source.code.event.events.Activity.ActivityDeleteEvent;
 import source.code.event.events.Activity.ActivityUpdateEvent;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
-import source.code.mapper.activity.ActivityMapper;
+import source.code.mapper.ActivityMapper;
 import source.code.model.activity.Activity;
 import source.code.model.user.User;
 import source.code.repository.ActivityRepository;
@@ -85,6 +85,7 @@ public class ActivityServiceTest {
     private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
     private FilterDto filter;
     private Pageable pageable;
+
     @BeforeEach
     void setUp() {
         activity = new Activity();
@@ -193,8 +194,7 @@ public class ActivityServiceTest {
 
     @Test
     void updateActivity_shouldThrowExceptionWhenPatchFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(activityRepository, Activity.class, activityId))
                 .thenReturn(activity);
         when(jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class))
@@ -210,8 +210,7 @@ public class ActivityServiceTest {
 
     @Test
     void updateActivity_shouldThrowExceptionWhenValidationFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(activityRepository, Activity.class, activityId))
                 .thenReturn(activity);
         when(jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class))

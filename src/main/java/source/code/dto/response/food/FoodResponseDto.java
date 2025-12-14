@@ -13,11 +13,11 @@ import java.util.List;
 
 /**
  * fetched with db (findByIdWithMedia) -> mapper -> populated in createFood and getFood
- *
+ * <p>
  * Mapper sets: id, name, calories, protein, fat, carbohydrates, category, imageUrls (via @AfterMapping)
  * Population sets: savesCount, saved
  * recipes - set manually only in getFood via recipeRepository.findAllWithDetailsByFoodId -> recipeMapper -> recipePopulationService
- *
+ * <p>
  * saved - when user not authenticated (userId=-1), always false since query matches on userId
  */
 @Getter

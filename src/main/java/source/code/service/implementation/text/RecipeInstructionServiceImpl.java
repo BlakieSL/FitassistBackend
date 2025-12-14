@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.text.RecipeInstructionUpdateDto;
 import source.code.dto.response.text.RecipeInstructionResponseDto;
-import source.code.mapper.text.TextMapper;
+import source.code.mapper.TextMapper;
 import source.code.model.text.RecipeInstruction;
 import source.code.repository.RecipeInstructionRepository;
 import source.code.service.declaration.helpers.JsonPatchService;

@@ -89,8 +89,8 @@ create table media
 (
     id         int auto_increment
         primary key,
-    image_name  varchar(255)                                                                                                                not null,
-    parent_id  int                                                                                                                         not null,
+    image_name varchar(255)                                                                                                                        not null,
+    parent_id  int                                                                                                                                 not null,
     parentType enum ('USER', 'ACTIVITY', 'COMMENT', 'COMMENT_COMPLAINT', 'EXERCISE', 'FOOD', 'FORUM_THREAD', 'PLAN', 'RECIPE', 'THREAD_COMPLAINT') not null
 );
 
@@ -198,13 +198,13 @@ create table plan
 (
     id             int auto_increment
         primary key,
-    description    varchar(255) not null,
-    name           varchar(100) not null,
-    views          bigint       not null default 0,
-    is_public      BOOLEAN      NOT NULL,
-    created_at     datetime(6)  not null,
+    description    varchar(255)                           not null,
+    name           varchar(100)                           not null,
+    views          bigint                                 not null default 0,
+    is_public      BOOLEAN                                NOT NULL,
+    created_at     datetime(6)                            not null,
     structure_type enum ('WEEKLY_SPLIT', 'FIXED_PROGRAM') not null,
-    user_id        int          not null,
+    user_id        int                                    not null,
     constraint FK271ok4ss5pcte25w6o3hvv60x
         foreign key (user_id) references user (id)
 );
@@ -266,7 +266,7 @@ create table text
     type        varchar(31)  not null,
     id          int auto_increment
         primary key,
-    order_index  smallint     not null,
+    order_index smallint     not null,
     text        varchar(255) not null,
     title       varchar(255) null,
     exercise_id int          null,
@@ -335,8 +335,8 @@ create table user_activity
 (
     id          int auto_increment
         primary key,
-    activity_id int not null,
-    user_id     int not null,
+    activity_id int         not null,
+    user_id     int         not null,
     created_at  datetime(6) not null,
     constraint FKlw9o1xb2ki2hnwq1o3kk5dlja
         foreign key (activity_id) references activity (id),
@@ -362,8 +362,8 @@ create table user_exercise
 (
     id          int auto_increment
         primary key,
-    exercise_id int not null,
-    user_id     int not null,
+    exercise_id int         not null,
+    user_id     int         not null,
     created_at  datetime(6) not null,
     constraint FK4dsfvd3ee924pwq4078equ1tu
         foreign key (exercise_id) references exercise (id),
@@ -375,8 +375,8 @@ create table user_food
 (
     id         int auto_increment
         primary key,
-    food_id    int not null,
-    user_id    int not null,
+    food_id    int         not null,
+    user_id    int         not null,
     created_at datetime(6) not null,
     constraint FK1g8eq16xsqum2d2ojkk3hx4x9
         foreign key (food_id) references food (id),
@@ -427,8 +427,8 @@ create table user_thread
 (
     id         int auto_increment
         primary key,
-    thread_id  int not null,
-    user_id    int not null,
+    thread_id  int         not null,
+    user_id    int         not null,
     created_at datetime(6) not null,
     constraint FK6to3x5x2bh7baqxdvohs3lg0p
         foreign key (user_id) references user (id),
@@ -440,11 +440,11 @@ create table workout
 (
     id              int auto_increment
         primary key,
-    duration        smallint       not null,
-    name            varchar(50)    not null,
-    plan_id         int            not null,
-    order_index     smallint       not null,
-    rest_days_after tinyint        not null,
+    duration        smallint    not null,
+    name            varchar(50) not null,
+    plan_id         int         not null,
+    order_index     smallint    not null,
+    rest_days_after tinyint     not null,
     constraint FK2ijomxprmdq73lr3kwu4mhh20
         foreign key (plan_id) references plan (id)
 );

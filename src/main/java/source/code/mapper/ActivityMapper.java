@@ -1,4 +1,4 @@
-package source.code.mapper.activity;
+package source.code.mapper;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +10,11 @@ import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.model.activity.Activity;
 import source.code.model.activity.ActivityCategory;
+import source.code.model.media.Media;
 import source.code.repository.ActivityCategoryRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.CalculationsService;
 import source.code.service.declaration.helpers.RepositoryHelper;
-
-import source.code.model.media.Media;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -23,7 +22,7 @@ import java.util.List;
 
 
 @Mapper(componentModel = "spring")
-public abstract class  ActivityMapper {
+public abstract class ActivityMapper {
     @Autowired
     private ActivityCategoryRepository activityCategoryRepository;
 

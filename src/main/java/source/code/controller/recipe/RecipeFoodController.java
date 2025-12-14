@@ -60,8 +60,7 @@ public class RecipeFoodController {
             @PathVariable int recipeId,
             @PathVariable int foodId,
             @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         recipeFoodService.updateFoodRecipe(recipeId, foodId, patch);
         return ResponseEntity.noContent().build();
     }
@@ -78,7 +77,7 @@ public class RecipeFoodController {
             @Valid @RequestBody FilterRecipesByFoodsDto filter,
             @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-       Page<RecipeSummaryDto> recipes = recipeFoodService.getRecipesByFoods(filter, pageable);
-       return ResponseEntity.ok(recipes);
+        Page<RecipeSummaryDto> recipes = recipeFoodService.getRecipesByFoods(filter, pageable);
+        return ResponseEntity.ok(recipes);
     }
 }

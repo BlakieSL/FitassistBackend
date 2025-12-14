@@ -70,8 +70,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void updateUser(int userId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         User user = find(userId);
         UserUpdateDto patchedUserUpdateDto = applyPatchToUser(patch, userId);
 
@@ -113,8 +112,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     private UserUpdateDto applyPatchToUser(JsonMergePatch patch, int userId)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         return jsonPatchService.createFromPatch(patch, UserUpdateDto.class);
     }
 

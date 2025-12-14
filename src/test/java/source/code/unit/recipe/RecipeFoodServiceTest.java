@@ -19,7 +19,7 @@ import source.code.dto.response.food.FoodSummaryDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
-import source.code.mapper.food.FoodMapper;
+import source.code.mapper.FoodMapper;
 import source.code.mapper.recipe.RecipeFoodMapper;
 import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.food.Food;

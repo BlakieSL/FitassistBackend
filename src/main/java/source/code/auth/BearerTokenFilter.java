@@ -31,8 +31,7 @@ public class BearerTokenFilter extends HttpFilter {
     @Override
     protected void doFilter(
             HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws IOException, ServletException
-    {
+            throws IOException, ServletException {
         Optional<String> bearerToken = getBearerToken(request);
 
         if (bearerToken.isEmpty()) {

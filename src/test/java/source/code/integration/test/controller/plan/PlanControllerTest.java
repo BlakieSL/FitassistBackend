@@ -47,8 +47,8 @@ public class PlanControllerTest {
         createDto.setPlanStructureType(PlanStructureType.WEEKLY_SPLIT);
 
         mockMvc.perform(post("/api/plans")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createDto)))
                 .andExpectAll(
                         status().isCreated(),
                         jsonPath("$.id").exists(),
@@ -66,12 +66,12 @@ public class PlanControllerTest {
         updateDto.setName("Updated Plan");
 
         mockMvc.perform(patch("/api/plans/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpectAll(status().isNoContent());
 
         mockMvc.perform(get("/api/plans/1")
-                .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.name").value("Updated Plan")
@@ -108,8 +108,8 @@ public class PlanControllerTest {
         updateDto.setName("Updated Plan");
 
         mockMvc.perform(patch("/api/plans/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpect(status().isForbidden());
     }
 
@@ -121,8 +121,8 @@ public class PlanControllerTest {
         updateDto.setName("Updated Plan");
 
         mockMvc.perform(patch("/api/plans/999")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpect(status().isNotFound());
     }
 
@@ -222,7 +222,7 @@ public class PlanControllerTest {
     @DisplayName("GET - /{id} - Should return 404 when plan not found")
     void getPlanNotFound() throws Exception {
         mockMvc.perform(get("/api/plans/999")
-                .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
@@ -232,7 +232,7 @@ public class PlanControllerTest {
     void getPrivatePlanForbidden() throws Exception {
         Utils.setUserContext(2);
         mockMvc.perform(get("/api/plans/5")
-                .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
     }
 

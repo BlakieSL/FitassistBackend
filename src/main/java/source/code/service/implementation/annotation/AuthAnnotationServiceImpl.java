@@ -72,7 +72,7 @@ public class AuthAnnotationServiceImpl {
         this.dailyCartFoodRepository = dailyCartFoodRepository;
     }
 
-    public boolean isCommentOwnerOrAdmin(int commentId)  {
+    public boolean isCommentOwnerOrAdmin(int commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RecordNotFoundException(Comment.class, commentId));
         return AuthorizationUtil.isOwnerOrAdmin(comment.getUser().getId());

@@ -12,7 +12,7 @@ import source.code.dto.request.complaint.ComplaintCreateDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.model.ComplaintSubClass;
 import source.code.helper.user.AuthorizationUtil;
-import source.code.mapper.complaint.ComplaintMapper;
+import source.code.mapper.ComplaintMapper;
 import source.code.model.complaint.CommentComplaint;
 import source.code.model.complaint.ComplaintStatus;
 import source.code.model.complaint.ThreadComplaint;

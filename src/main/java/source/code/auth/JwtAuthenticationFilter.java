@@ -20,7 +20,7 @@ import java.io.IOException;
 
 public class JwtAuthenticationFilter extends HttpFilter {
 
-    private static final RequestMatcher defaultRequestMatcher = (request) -> 
+    private static final RequestMatcher defaultRequestMatcher = (request) ->
             "/api/users/login".equals(request.getRequestURI()) && "POST".equals(request.getMethod());
     private final AuthenticationManager authenticationManager;
     private final AuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
@@ -37,8 +37,7 @@ public class JwtAuthenticationFilter extends HttpFilter {
     @Override
     protected void doFilter(
             HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws IOException, ServletException
-    {
+            throws IOException, ServletException {
         if (!defaultRequestMatcher.matches(request)) {
             chain.doFilter(request, response);
         } else {

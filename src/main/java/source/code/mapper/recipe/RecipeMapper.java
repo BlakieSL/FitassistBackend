@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.pojo.AuthorDto;
 import source.code.dto.pojo.RecipeFoodDto;
 import source.code.dto.request.recipe.RecipeCreateDto;
-import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.request.recipe.RecipeUpdateDto;
+import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.dto.response.text.RecipeInstructionResponseDto;
@@ -169,8 +169,8 @@ public abstract class RecipeMapper {
         List<RecipeFoodDto> foods = Objects.requireNonNullElse(dto.getFoods(), List.of());
 
         BigDecimal totalCalories = foods.stream()
-                    .map(food -> food.getQuantity().multiply(food.getFoodCalories()))
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(food -> food.getQuantity().multiply(food.getFoodCalories()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         dto.setTotalCalories(totalCalories);
     }

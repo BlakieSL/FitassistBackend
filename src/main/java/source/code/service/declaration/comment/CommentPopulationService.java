@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface CommentPopulationService {
     void populate(List<CommentSummaryDto> summaries);
+
     void populate(CommentResponseDto comment);
+
     void populateList(List<CommentResponseDto> comments);
 }

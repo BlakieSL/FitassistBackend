@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface PlanPopulationService {
     void populate(List<PlanSummaryDto> plans);
+
     void populate(PlanResponseDto dto);
 }

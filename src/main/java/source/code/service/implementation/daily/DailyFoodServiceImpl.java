@@ -80,8 +80,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
     @Override
     @Transactional
     public void updateDailyFoodItem(int dailyCartFoodId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         DailyCartFood dailyCartFood = findWithoutAssociations(dailyCartFoodId);
 
         DailyCartFoodUpdateDto patchedDto = applyPatchToDailyFoodItem(patch);

@@ -14,4 +14,5 @@ import java.lang.annotation.Target;
         @Sql(scripts = "classpath:media/data/insert-data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "classpath:media/data/remove-data.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 })
-public @interface MediaSql { }
+public @interface MediaSql {
+}

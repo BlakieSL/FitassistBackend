@@ -16,10 +16,10 @@ import java.util.List;
 
 /**
  * fetched with db (findByIdWithDetails) -> mapper -> populated in createRecipe and getRecipe
- *
+ * <p>
  * Mapper sets: id, name, description, isPublic, createdAt, minutesToPrepare, views, author (id, username), categories, instructions, foods, totalCalories
  * Population sets: imageUrls, author.imageName/imageUrl, likesCount, dislikesCount, savesCount, liked, disliked, saved
- *
+ * <p>
  * liked/disliked/saved - when user not authenticated (userId=-1), always false since query matches on userId
  */
 @Getter

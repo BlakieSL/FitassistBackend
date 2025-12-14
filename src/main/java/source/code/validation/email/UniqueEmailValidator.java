@@ -27,8 +27,7 @@ public class UniqueEmailValidator implements ConstraintValidator<UniqueEmailDoma
         try {
             entityManager.setFlushMode(FlushModeType.COMMIT);
 
-            if (value instanceof UserUpdateDto) {
-                UserUpdateDto dto = (UserUpdateDto) value;
+            if (value instanceof UserUpdateDto dto) {
                 if (dto.getEmail() == null) {
                     return true;
                 }
@@ -43,8 +42,7 @@ public class UniqueEmailValidator implements ConstraintValidator<UniqueEmailDoma
                 return existingUserId.equals(dto.getId());
             }
 
-            if (value instanceof String) {
-                String email = (String) value;
+            if (value instanceof String email) {
                 return !userRepository.existsByEmail(email);
             }
 

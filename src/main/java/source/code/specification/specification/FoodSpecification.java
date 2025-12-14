@@ -28,10 +28,14 @@ public class FoodSpecification extends AbstractSpecification<Food, FoodField> {
     @Override
     protected Predicate buildPredicateForField(PredicateContext<Food> context, FoodField field) {
         return switch (field) {
-            case CALORIES -> GenericSpecificationHelper.buildPredicateNumericProperty(context, context.root().get(CALORIES_FIELD));
-            case PROTEIN -> GenericSpecificationHelper.buildPredicateNumericProperty(context, context.root().get(PROTEIN_FIELD));
-            case FAT -> GenericSpecificationHelper.buildPredicateNumericProperty(context, context.root().get(FAT_FIELD));
-            case CARBOHYDRATES -> GenericSpecificationHelper.buildPredicateNumericProperty(context, context.root().get(CARBOHYDRATES_FIELD));
+            case CALORIES ->
+                    GenericSpecificationHelper.buildPredicateNumericProperty(context, context.root().get(CALORIES_FIELD));
+            case PROTEIN ->
+                    GenericSpecificationHelper.buildPredicateNumericProperty(context, context.root().get(PROTEIN_FIELD));
+            case FAT ->
+                    GenericSpecificationHelper.buildPredicateNumericProperty(context, context.root().get(FAT_FIELD));
+            case CARBOHYDRATES ->
+                    GenericSpecificationHelper.buildPredicateNumericProperty(context, context.root().get(CARBOHYDRATES_FIELD));
             case CATEGORY -> GenericSpecificationHelper.buildPredicateEntityProperty(context, FOOD_CATEGORY_FIELD);
             case SAVED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
                     context, LikesAndSaves.USER_FOODS.getFieldName());

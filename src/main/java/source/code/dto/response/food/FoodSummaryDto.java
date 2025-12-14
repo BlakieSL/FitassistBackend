@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
  * fetched with db (findAll) -> mapper -> populated in getFilteredFoods
  * fetched with db (findByRecipeId) -> mapper -> populated in RecipeFoodService.getFoodsByRecipe
  * fetched with db (findAllByUserIdWithMedia) -> mapper + set interactedWithAt -> populated in UserFoodService.getAllFromUser
- *
+ * <p>
  * Mapper sets: id, name, calories, protein, fat, carbohydrates, category, imageName (from mediaList)
  * Population sets: firstImageUrl, savesCount, saved
- *
+ * <p>
  * userFoodInteractionCreatedAt - only set in UserFoodService.getAllFromUser
  * saved - when user not authenticated (userId=-1), always false since query matches on userId
  */

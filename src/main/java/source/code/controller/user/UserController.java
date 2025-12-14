@@ -59,8 +59,7 @@ public class UserController {
     public ResponseEntity<Void> updateUser(
             @PathVariable int id,
             @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         userService.updateUser(id, patch);
         return ResponseEntity.noContent().build();
     }
@@ -69,8 +68,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateUserSimple(
             @PathVariable int id,
-            @Valid @RequestBody UserUpdateDto updateDto)
-    {
+            @Valid @RequestBody UserUpdateDto updateDto) {
         userService.updateUserSimple(id, updateDto);
         return ResponseEntity.noContent().build();
     }

@@ -39,9 +39,9 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     private String fromEmail;
 
     public PasswordResetServiceImpl(JwtService jwtService,
-                                   EmailService emailService,
-                                   UserRepository userRepository,
-                                   PasswordEncoder passwordEncoder) {
+                                    EmailService emailService,
+                                    UserRepository userRepository,
+                                    PasswordEncoder passwordEncoder) {
         this.jwtService = jwtService;
         this.emailService = emailService;
         this.userRepository = userRepository;

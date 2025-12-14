@@ -149,7 +149,7 @@ public class UserSavedControllerWithoutTypeTest {
     @DisplayName("GET - /item-type/{itemType}/user/{userId}?sort=DESC - Should return items sorted DESC")
     void getAllFromUserWithoutTypeSortDesc() throws Exception {
         mockMvc.perform(get("/api/user-saved/item-type/ACTIVITY/user/1")
-                .param("sort", "createdAt,DESC"))
+                        .param("sort", "createdAt,DESC"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content").value(hasSize(2)),
@@ -163,7 +163,7 @@ public class UserSavedControllerWithoutTypeTest {
     @DisplayName("GET - /item-type/{itemType}/user/{userId}?sort=ASC - Should return items sorted ASC")
     void getAllFromUserWithoutTypeSortAsc() throws Exception {
         mockMvc.perform(get("/api/user-saved/item-type/EXERCISE/user/1")
-                .param("sort", "createdAt,ASC"))
+                        .param("sort", "createdAt,ASC"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content").value(hasSize(2)),
@@ -191,7 +191,7 @@ public class UserSavedControllerWithoutTypeTest {
     @DisplayName("GET - /item-type/{itemType}/user/{userId}?sort=DESC - Should return threads sorted DESC")
     void getAllFromUserThreadsSortDesc() throws Exception {
         mockMvc.perform(get("/api/user-saved/item-type/FORUM_THREAD/user/1")
-                .param("sort", "createdAt,DESC"))
+                        .param("sort", "createdAt,DESC"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content").value(hasSize(1)),
@@ -205,7 +205,7 @@ public class UserSavedControllerWithoutTypeTest {
     @DisplayName("GET - /item-type/{itemType}/user/{userId}?sort=ASC - Should return threads sorted ASC")
     void getAllFromUserThreadsSortAsc() throws Exception {
         mockMvc.perform(get("/api/user-saved/item-type/FORUM_THREAD/user/1")
-                .param("sort", "createdAt,ASC"))
+                        .param("sort", "createdAt,ASC"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content").value(hasSize(1)),

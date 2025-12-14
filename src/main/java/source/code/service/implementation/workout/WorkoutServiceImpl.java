@@ -9,7 +9,7 @@ import source.code.dto.request.workout.WorkoutCreateDto;
 import source.code.dto.request.workout.WorkoutUpdateDto;
 import source.code.dto.response.workout.WorkoutResponseDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.mapper.workout.WorkoutMapper;
+import source.code.mapper.WorkoutMapper;
 import source.code.model.workout.Workout;
 import source.code.repository.WorkoutRepository;
 import source.code.service.declaration.helpers.JsonPatchService;

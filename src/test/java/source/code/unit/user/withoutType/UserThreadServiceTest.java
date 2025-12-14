@@ -15,7 +15,7 @@ import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
 import source.code.helper.user.AuthorizationUtil;
-import source.code.mapper.forumThread.ForumThreadMapper;
+import source.code.mapper.ForumThreadMapper;
 import source.code.model.thread.ForumThread;
 import source.code.model.user.User;
 import source.code.model.user.UserThread;

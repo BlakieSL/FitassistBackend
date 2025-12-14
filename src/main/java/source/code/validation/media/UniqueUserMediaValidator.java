@@ -31,7 +31,7 @@ public class UniqueUserMediaValidator implements ConstraintValidator<UniqueUserM
                 }
 
                 return mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(
-                        dto.getParentId(), 
+                        dto.getParentId(),
                         MediaConnectedEntity.USER
                 ).isEmpty();
             }

@@ -1,3 +1,6 @@
-DELETE FROM media;
-DELETE FROM recipe;
-DELETE FROM user;
+DELETE
+FROM media;
+DELETE
+FROM recipe;
+DELETE
+FROM user;

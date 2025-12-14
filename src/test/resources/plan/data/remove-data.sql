@@ -1,18 +1,36 @@
-delete from media;
-delete from workout_set_exercise;
-delete from workout_set;
-delete from workout;
-delete from exercise_target_muscle;
-delete from user_exercise;
-delete from exercise;
-delete from target_muscle;
-delete from mechanics_type;
-delete from force_type;
-delete from expertise_level;
-delete from equipment;
-delete from text;
-delete from plan_category_association;
-delete from plan_category;
-delete from user_plan;
-delete from plan;
-delete from user;
+delete
+from media;
+delete
+from workout_set_exercise;
+delete
+from workout_set;
+delete
+from workout;
+delete
+from exercise_target_muscle;
+delete
+from user_exercise;
+delete
+from exercise;
+delete
+from target_muscle;
+delete
+from mechanics_type;
+delete
+from force_type;
+delete
+from expertise_level;
+delete
+from equipment;
+delete
+from text;
+delete
+from plan_category_association;
+delete
+from plan_category;
+delete
+from user_plan;
+delete
+from plan;
+delete
+from user;

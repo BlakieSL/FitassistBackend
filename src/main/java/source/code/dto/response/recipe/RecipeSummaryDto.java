@@ -16,10 +16,10 @@ import java.util.List;
 /**
  * fetched with db (findAll) -> mapper -> populated in getFilteredRecipes
  * fetched with db (findByIdsWithDetails) -> mapper -> populated in UserRecipeService.getAllFromUser
- *
+ * <p>
  * Mapper sets: id, name, description, isPublic, createdAt, minutesToPrepare, views, categories, author (id, username), firstImageName (from mediaList)
  * Population sets: firstImageUrl, author.imageName/imageUrl, likesCount, dislikesCount, savesCount, liked, disliked, saved, ingredientsCount
- *
+ * <p>
  * interactedWithAt - only set in UserRecipeService.getAllFromUser
  * liked/disliked/saved - when user not authenticated (userId=-1), always false since query matches on userId
  */

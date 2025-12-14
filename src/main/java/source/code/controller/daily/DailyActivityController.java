@@ -44,8 +44,7 @@ public class DailyActivityController {
     public ResponseEntity<Void> updateDailyCartActivity(
             @PathVariable int dailyActivityItemId,
             @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         dailyActivityService.updateDailyActivityItem(dailyActivityItemId, patch);
         return ResponseEntity.noContent().build();
     }

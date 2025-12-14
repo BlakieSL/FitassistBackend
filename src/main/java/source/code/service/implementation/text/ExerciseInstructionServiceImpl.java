@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.text.ExerciseInstructionUpdateDto;
 import source.code.dto.response.text.ExerciseInstructionResponseDto;
-import source.code.mapper.text.TextMapper;
+import source.code.mapper.TextMapper;
 import source.code.model.text.ExerciseInstruction;
 import source.code.repository.ExerciseInstructionRepository;
 import source.code.service.declaration.helpers.JsonPatchService;

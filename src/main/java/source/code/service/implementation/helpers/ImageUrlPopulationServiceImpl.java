@@ -19,27 +19,27 @@ public class ImageUrlPopulationServiceImpl implements ImageUrlPopulationService 
 
     @Override
     public <T> void populateAuthorAndEntityImages(T dto,
-                                                   Function<T, String> authorImageNameGetter,
-                                                   BiConsumer<T, String> authorUrlSetter,
-                                                   Function<T, String> entityImageNameGetter,
-                                                   BiConsumer<T, String> entityUrlSetter) {
+                                                  Function<T, String> authorImageNameGetter,
+                                                  BiConsumer<T, String> authorUrlSetter,
+                                                  Function<T, String> entityImageNameGetter,
+                                                  BiConsumer<T, String> entityUrlSetter) {
         populateImageUrl(authorImageNameGetter.apply(dto), url -> authorUrlSetter.accept(dto, url));
         populateImageUrl(entityImageNameGetter.apply(dto), url -> entityUrlSetter.accept(dto, url));
     }
 
     @Override
     public <T> void populateAuthorImage(T dto,
-                                         Function<T, String> authorImageNameGetter,
-                                         BiConsumer<T, String> authorUrlSetter) {
+                                        Function<T, String> authorImageNameGetter,
+                                        BiConsumer<T, String> authorUrlSetter) {
         populateImageUrl(authorImageNameGetter.apply(dto), url -> authorUrlSetter.accept(dto, url));
     }
 
     @Override
     public <T, M> void populateFirstImageFromMediaList(T dto,
-                                                        List<M> mediaList,
-                                                        Function<M, String> imageNameExtractor,
-                                                        BiConsumer<T, String> imageNameSetter,
-                                                        BiConsumer<T, String> imageUrlSetter) {
+                                                       List<M> mediaList,
+                                                       Function<M, String> imageNameExtractor,
+                                                       BiConsumer<T, String> imageNameSetter,
+                                                       BiConsumer<T, String> imageUrlSetter) {
         if (mediaList != null && !mediaList.isEmpty()) {
             String imageName = imageNameExtractor.apply(mediaList.getFirst());
             if (imageName != null) {

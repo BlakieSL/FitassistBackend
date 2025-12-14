@@ -1,41 +1,80 @@
 SET FOREIGN_KEY_CHECKS = 0;
-DELETE FROM user_roles;
-DELETE FROM user_thread;
-DELETE FROM user_recipe;
-DELETE FROM user_plan;
-DELETE FROM user_food;
-DELETE FROM user_exercise;
-DELETE FROM user_comment;
-DELETE FROM user_activity;
-DELETE FROM complaint;
-DELETE FROM comment;
-DELETE FROM thread;
-DELETE FROM text;
-DELETE FROM recipe_food;
-DELETE FROM recipe_category_association;
-DELETE FROM recipe;
-DELETE FROM plan_category_association;
-DELETE FROM workout_set_exercise;
-DELETE FROM workout_set;
-DELETE FROM workout;
-DELETE FROM plan;
-DELETE FROM daily_cart_food;
-DELETE FROM daily_cart_activity;
-DELETE FROM daily_cart;
-DELETE FROM exercise_target_muscle;
-DELETE FROM exercise;
-DELETE FROM food;
-DELETE FROM activity;
-DELETE FROM user;
-DELETE FROM role;
-DELETE FROM target_muscle;
-DELETE FROM mechanics_type;
-DELETE FROM force_type;
-DELETE FROM expertise_level;
-DELETE FROM equipment;
-DELETE FROM food_category;
-DELETE FROM recipe_category;
-DELETE FROM plan_category;
-DELETE FROM thread_category;
-DELETE FROM activity_category;
+DELETE
+FROM user_roles;
+DELETE
+FROM user_thread;
+DELETE
+FROM user_recipe;
+DELETE
+FROM user_plan;
+DELETE
+FROM user_food;
+DELETE
+FROM user_exercise;
+DELETE
+FROM user_comment;
+DELETE
+FROM user_activity;
+DELETE
+FROM complaint;
+DELETE
+FROM comment;
+DELETE
+FROM thread;
+DELETE
+FROM text;
+DELETE
+FROM recipe_food;
+DELETE
+FROM recipe_category_association;
+DELETE
+FROM recipe;
+DELETE
+FROM plan_category_association;
+DELETE
+FROM workout_set_exercise;
+DELETE
+FROM workout_set;
+DELETE
+FROM workout;
+DELETE
+FROM plan;
+DELETE
+FROM daily_cart_food;
+DELETE
+FROM daily_cart_activity;
+DELETE
+FROM daily_cart;
+DELETE
+FROM exercise_target_muscle;
+DELETE
+FROM exercise;
+DELETE
+FROM food;
+DELETE
+FROM activity;
+DELETE
+FROM user;
+DELETE
+FROM role;
+DELETE
+FROM target_muscle;
+DELETE
+FROM mechanics_type;
+DELETE
+FROM force_type;
+DELETE
+FROM expertise_level;
+DELETE
+FROM equipment;
+DELETE
+FROM food_category;
+DELETE
+FROM recipe_category;
+DELETE
+FROM plan_category;
+DELETE
+FROM thread_category;
+DELETE
+FROM activity_category;
 SET FOREIGN_KEY_CHECKS = 1;

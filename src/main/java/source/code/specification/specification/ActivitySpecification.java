@@ -26,7 +26,8 @@ public class ActivitySpecification extends AbstractSpecification<Activity, Activ
     protected Predicate buildPredicateForField(PredicateContext<Activity> context, ActivityField field) {
         return switch (field) {
             case CATEGORY -> GenericSpecificationHelper.buildPredicateEntityProperty(context, ACTIVITY_CATEGORY_FIELD);
-            case MET -> GenericSpecificationHelper.buildPredicateNumericProperty(context, context.root().get(MET_FIELD));
+            case MET ->
+                    GenericSpecificationHelper.buildPredicateNumericProperty(context, context.root().get(MET_FIELD));
             case SAVED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(
                     context, LikesAndSaves.USER_ACTIVITIES.getFieldName());
             case SAVE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(

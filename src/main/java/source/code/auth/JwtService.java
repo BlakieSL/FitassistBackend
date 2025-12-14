@@ -30,8 +30,7 @@ public class JwtService {
     private final JWSVerifier verifier;
 
     public JwtService(@Value("${jws.sharedKey}") String sharedKey)
-            throws Exception
-    {
+            throws Exception {
         byte[] sharedKeyBytes = sharedKey.getBytes();
         this.signer = new MACSigner(sharedKeyBytes);
         this.verifier = new MACVerifier(sharedKeyBytes);
@@ -86,8 +85,7 @@ public class JwtService {
 
     public String createSignedJWT(
             String username, Integer userId, List<String> authorities,
-            long durationInMinutes, String tokenType)
-    {
+            long durationInMinutes, String tokenType) {
         try {
             JWTClaimsSet claimSet = buildClaims(
                     username,

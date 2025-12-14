@@ -19,7 +19,6 @@ import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
 import source.code.integration.utils.TestSetup;
-import source.code.integration.utils.Utils;
 
 import java.math.BigDecimal;
 import java.util.List;

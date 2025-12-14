@@ -10,7 +10,7 @@ import source.code.dto.response.food.FoodSummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
 import source.code.helper.Enum.cache.CacheNames;
-import source.code.mapper.food.FoodMapper;
+import source.code.mapper.FoodMapper;
 import source.code.model.food.Food;
 import source.code.model.user.User;
 import source.code.model.user.UserFood;

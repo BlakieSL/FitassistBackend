@@ -93,6 +93,7 @@ public class GlobalExceptionHandler {
     public String handleJsonPatchException(JsonPatchException e) {
         return e.getMessage();
     }
+
     @ExceptionHandler(JsonProcessingException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody

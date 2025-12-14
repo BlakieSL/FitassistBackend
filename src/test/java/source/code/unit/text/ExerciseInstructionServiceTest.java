@@ -18,7 +18,7 @@ import source.code.dto.response.text.ExerciseInstructionResponseDto;
 import source.code.event.events.Text.TextClearCacheEvent;
 import source.code.event.events.Text.TextCreateCacheEvent;
 import source.code.exception.RecordNotFoundException;
-import source.code.mapper.text.TextMapper;
+import source.code.mapper.TextMapper;
 import source.code.model.text.ExerciseInstruction;
 import source.code.repository.ExerciseInstructionRepository;
 import source.code.service.declaration.text.TextCacheKeyGenerator;

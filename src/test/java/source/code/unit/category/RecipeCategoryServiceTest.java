@@ -123,8 +123,7 @@ public class RecipeCategoryServiceTest {
 
     @Test
     void updateCategory_shouldPublishEvent()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         int categoryId = 1;
         ArgumentCaptor<CategoryClearCacheEvent> eventCaptor = ArgumentCaptor
                 .forClass(CategoryClearCacheEvent.class);
@@ -154,8 +153,7 @@ public class RecipeCategoryServiceTest {
 
     @Test
     void updateCategory_shouldThrowExceptionWhenPatchFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         int categoryId = 1;
         when(repository.findById(categoryId)).thenReturn(Optional.of(category));
         when(jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class))
@@ -170,8 +168,7 @@ public class RecipeCategoryServiceTest {
 
     @Test
     void updateCategory_shouldThrowExceptionWhenValidationFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         int categoryId = 1;
         when(repository.findById(categoryId)).thenReturn(Optional.of(category));
         when(jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class))
@@ -331,7 +328,8 @@ public class RecipeCategoryServiceTest {
         when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () ->
-                recipeCategoryService.getCategory(nonExistentCategoryId));;
+                recipeCategoryService.getCategory(nonExistentCategoryId));
+        ;
         verifyNoInteractions(mapper);
     }
 }

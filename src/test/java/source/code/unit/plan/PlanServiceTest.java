@@ -29,7 +29,7 @@ import source.code.event.events.Plan.PlanDeleteEvent;
 import source.code.event.events.Plan.PlanUpdateEvent;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
-import source.code.mapper.plan.PlanMapper;
+import source.code.mapper.PlanMapper;
 import source.code.model.plan.Plan;
 import source.code.repository.PlanCategoryAssociationRepository;
 import source.code.repository.PlanRepository;
@@ -83,6 +83,7 @@ public class PlanServiceTest {
     private FilterDto filter;
     private Pageable pageable;
     private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
+
     @BeforeEach
     void setUp() {
         plan = new Plan();
@@ -179,8 +180,7 @@ public class PlanServiceTest {
 
     @Test
     void updatePlan_shouldThrowExceptionWhenPatchFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
         when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class))
                 .thenThrow(JsonPatchException.class);
@@ -193,8 +193,7 @@ public class PlanServiceTest {
 
     @Test
     void updatePlan_shouldThrowExceptionWhenValidationFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
         when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class))
                 .thenReturn(patchedDto);

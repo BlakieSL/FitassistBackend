@@ -21,7 +21,7 @@ import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.cache.CacheNames;
 import source.code.helper.Enum.filter.FilterDataOption;
 import source.code.helper.Enum.filter.FilterOperation;
-import source.code.mapper.food.FoodMapper;
+import source.code.mapper.FoodMapper;
 import source.code.mapper.recipe.RecipeFoodMapper;
 import source.code.model.food.Food;
 import source.code.model.recipe.Recipe;
@@ -29,10 +29,10 @@ import source.code.model.recipe.RecipeFood;
 import source.code.repository.FoodRepository;
 import source.code.repository.RecipeFoodRepository;
 import source.code.repository.RecipeRepository;
+import source.code.service.declaration.food.FoodPopulationService;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
-import source.code.service.declaration.food.FoodPopulationService;
 import source.code.service.declaration.recipe.RecipeFoodService;
 import source.code.service.declaration.recipe.RecipeService;
 
@@ -79,7 +79,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
     @Transactional
     public void saveFoodToRecipe(int recipeId, int foodId, RecipeFoodCreateDto request) {
         if (isAlreadyAdded(recipeId, foodId)) {
-           throw new NotUniqueRecordException(RecipeFood.class, recipeId, foodId);
+            throw new NotUniqueRecordException(RecipeFood.class, recipeId, foodId);
         }
 
         Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, recipeId);

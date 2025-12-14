@@ -25,33 +25,33 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
     Page<Recipe> findAll(Specification<Recipe> spec, @NotNull Pageable pageable);
 
     @Query("""
-      SELECT r
-      FROM Recipe r
-      JOIN FETCH r.user
-      LEFT JOIN FETCH r.recipeCategoryAssociations rca
-      LEFT JOIN FETCH rca.recipeCategory
-      LEFT JOIN FETCH r.recipeFoods rf
-      LEFT JOIN FETCH rf.food f
-      LEFT JOIN FETCH f.foodCategory
-      LEFT JOIN FETCH r.recipeInstructions ri
-      WHERE r.id = :recipeId
-    """)
+              SELECT r
+              FROM Recipe r
+              JOIN FETCH r.user
+              LEFT JOIN FETCH r.recipeCategoryAssociations rca
+              LEFT JOIN FETCH rca.recipeCategory
+              LEFT JOIN FETCH r.recipeFoods rf
+              LEFT JOIN FETCH rf.food f
+              LEFT JOIN FETCH f.foodCategory
+              LEFT JOIN FETCH r.recipeInstructions ri
+              WHERE r.id = :recipeId
+            """)
     Optional<Recipe> findByIdWithDetails(@Param("recipeId") int recipeId);
 
     @EntityGraph(value = "Recipe.summary")
     @Query("""
-        SELECT r
-        FROM Recipe r
-        JOIN r.recipeFoods rf
-        WHERE rf.food.id = :foodId
-    """)
+                SELECT r
+                FROM Recipe r
+                JOIN r.recipeFoods rf
+                WHERE rf.food.id = :foodId
+            """)
     List<Recipe> findAllWithDetailsByFoodId(@Param("foodId") int foodId);
 
     @EntityGraph(value = "Recipe.summary")
     @Query("""
-        SELECT r
-        FROM Recipe r
-        WHERE r.id IN :recipeIds
-    """)
+                SELECT r
+                FROM Recipe r
+                WHERE r.id IN :recipeIds
+            """)
     List<Recipe> findByIdsWithDetails(@Param("recipeIds") List<Integer> recipeIds);
 }

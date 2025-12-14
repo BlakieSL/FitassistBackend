@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface FoodPopulationService {
     void populate(FoodResponseDto food);
+
     void populate(List<FoodSummaryDto> foods);
 }

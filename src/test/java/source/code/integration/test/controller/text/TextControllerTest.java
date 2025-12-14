@@ -66,7 +66,7 @@ public class TextControllerTest {
     @TextSql
     @Test
     @DisplayName("GET - /{parentId}/type/{type} - Should return all RECIPE_INSTRUCTION text when owner")
-    void getAllTextForRecipeInstruction() throws Exception  {
+    void getAllTextForRecipeInstruction() throws Exception {
         Utils.setUserContext(1);
 
         int parentId = 2;
@@ -145,9 +145,9 @@ public class TextControllerTest {
         updateDto.setText("Updated text");
 
         mockMvc.perform(patch("/api/text/{id}/type/{type}", id, type)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto))
-                ).andExpectAll(status().isNoContent());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateDto))
+        ).andExpectAll(status().isNoContent());
 
         mockMvc.perform(get("/api/text/{id}/type/{type}", id, type))
                 .andExpectAll(
@@ -187,9 +187,9 @@ public class TextControllerTest {
         updateDto.setText("Updated text");
 
         mockMvc.perform(patch("/api/text/{id}/type/{type}", id, type)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto))
-                ).andExpectAll(status().isForbidden());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateDto))
+        ).andExpectAll(status().isForbidden());
     }
 
     @TextSql
@@ -205,9 +205,9 @@ public class TextControllerTest {
         updateDto.setText("Updated text");
 
         mockMvc.perform(patch("/api/text/{id}/type/{type}", id, type)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto))
-                ).andExpectAll(status().isNotFound());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateDto))
+        ).andExpectAll(status().isNotFound());
     }
 
     @TextSql

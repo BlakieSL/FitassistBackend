@@ -218,8 +218,7 @@ public class DailyFoodServiceTest {
 
     @Test
     void updateDailyFoodItem_shouldThrowException_whenPatchFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         when(dailyCartFoodRepository.findByIdWithoutAssociations(FOOD_ID))
                 .thenReturn(Optional.of(dailyCartFood));
         doThrow(JsonPatchException.class).when(jsonPatchService).createFromPatch(
@@ -237,8 +236,7 @@ public class DailyFoodServiceTest {
 
     @Test
     void updateDailyFoodItem_shouldThrowException_whenPatchValidationFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         DailyCartFoodUpdateDto patchedDto = new DailyCartFoodUpdateDto();
         patchedDto.setQuantity(BigDecimal.valueOf(120));
 

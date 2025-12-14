@@ -1,10 +1,16 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
-DELETE FROM user_comment;
-DELETE FROM comment;
-DELETE FROM user_thread;
-DELETE FROM thread;
-DELETE FROM user;
-DELETE FROM thread_category;
+DELETE
+FROM user_comment;
+DELETE
+FROM comment;
+DELETE
+FROM user_thread;
+DELETE
+FROM thread;
+DELETE
+FROM user;
+DELETE
+FROM thread_category;
 
 SET FOREIGN_KEY_CHECKS = 1;

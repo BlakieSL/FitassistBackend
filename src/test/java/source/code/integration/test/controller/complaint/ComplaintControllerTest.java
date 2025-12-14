@@ -46,8 +46,8 @@ public class ComplaintControllerTest {
 
 
         mockMvc.perform(post("/api/complaint")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpectAll(
                         status().isCreated()
                 );
@@ -99,9 +99,9 @@ public class ComplaintControllerTest {
     public void getAllComplaints() throws Exception {
         Utils.setAdminContext(1);
         mockMvc.perform(get("/api/complaint/all")
-                .param("page", "0")
-                .param("size", "10")
-                .param("sort", "id,asc"))
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sort", "id,asc"))
                 .andExpectAll(
                         status().isOk()
                 );
@@ -112,9 +112,9 @@ public class ComplaintControllerTest {
     public void getAllComplaintsEmptyPage() throws Exception {
         Utils.setAdminContext(1);
         mockMvc.perform(get("/api/complaint/all")
-                .param("page", "0")
-                .param("size", "10")
-                .param("sort", "id,asc"))
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sort", "id,asc"))
                 .andExpectAll(
                         status().isOk()
                 );
@@ -125,9 +125,9 @@ public class ComplaintControllerTest {
     public void getAllComplaintsNotAdmin() throws Exception {
         Utils.setUserContext(1);
         mockMvc.perform(get("/api/complaint/all")
-                .param("page", "0")
-                .param("size", "10")
-                .param("sort", "id,asc"))
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sort", "id,asc"))
                 .andExpectAll(
                         status().isForbidden()
                 );

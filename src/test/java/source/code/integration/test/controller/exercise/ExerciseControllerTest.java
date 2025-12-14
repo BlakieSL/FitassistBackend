@@ -53,8 +53,8 @@ public class ExerciseControllerTest {
         request.setTips(Collections.emptyList());
 
         mockMvc.perform(post("/api/exercises")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(
                         status().isCreated(),
                         jsonPath("$.name").value("Test Exercise"),
@@ -79,8 +79,8 @@ public class ExerciseControllerTest {
         request.setTips(Collections.emptyList());
 
         mockMvc.perform(post("/api/exercises")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isForbidden());
     }
 
@@ -95,12 +95,12 @@ public class ExerciseControllerTest {
         updateDto.setEquipmentId(2);
 
         mockMvc.perform(patch("/api/exercises/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpect(status().isNoContent());
 
         mockMvc.perform(get("/api/exercises/1")
-        .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.name").value("Updated Exercise"),
@@ -188,7 +188,7 @@ public class ExerciseControllerTest {
         Utils.setUserContext(1);
 
         mockMvc.perform(get("/api/exercises/1")
-                .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.imageUrls").isArray(),
@@ -217,7 +217,7 @@ public class ExerciseControllerTest {
         Utils.setUserContext(1);
 
         mockMvc.perform(get("/api/exercises/999")
-                .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 

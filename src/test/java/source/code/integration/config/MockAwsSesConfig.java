@@ -13,7 +13,8 @@ public class MockAwsSesConfig {
     public EmailService emailServiceStub() {
         return new EmailService() {
             @Override
-            public void sendEmail(EmailRequestDto request) {}
+            public void sendEmail(EmailRequestDto request) {
+            }
         };
     }
 }

@@ -32,8 +32,8 @@ public interface ActivityRepository
     Page<Activity> findAllWithActivityCategory(Pageable pageable);
 
     @Query("SELECT a FROM Activity a " +
-           "LEFT JOIN FETCH a.activityCategory " +
-           "LEFT JOIN FETCH a.mediaList " +
-           "WHERE a.id = :id")
+            "LEFT JOIN FETCH a.activityCategory " +
+            "LEFT JOIN FETCH a.mediaList " +
+            "WHERE a.id = :id")
     Optional<Activity> findByIdWithMedia(int id);
 }

@@ -232,8 +232,8 @@ public class DailyFoodControllerTest {
         DailyCartFoodUpdateDto updateDto = new DailyCartFoodUpdateDto();
 
         mockMvc.perform(patch("/api/cart/update/999")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
                 .andExpect(status().isNotFound());
 
     }
