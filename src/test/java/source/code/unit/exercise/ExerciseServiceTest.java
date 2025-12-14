@@ -30,10 +30,9 @@ import source.code.event.events.Exercise.ExerciseDeleteEvent;
 import source.code.event.events.Exercise.ExerciseUpdateEvent;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
-import source.code.mapper.exercise.ExerciseMapper;
-import source.code.mapper.plan.PlanMapper;
+import source.code.mapper.ExerciseMapper;
+import source.code.mapper.PlanMapper;
 import source.code.model.exercise.Exercise;
-import source.code.model.exercise.ExerciseTargetMuscle;
 import source.code.model.plan.Plan;
 import source.code.repository.*;
 import source.code.service.declaration.exercise.ExercisePopulationService;
@@ -201,8 +200,7 @@ public class ExerciseServiceTest {
 
     @Test
     void updateExercise_shouldThrowExceptionWhenPatchFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         when(exerciseRepository.findByIdWithDetails(exerciseId))
                 .thenReturn(Optional.of(exercise));
         when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class))
@@ -218,8 +216,7 @@ public class ExerciseServiceTest {
 
     @Test
     void updateExercise_shouldThrowExceptionWhenValidationFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         when(exerciseRepository.findByIdWithDetails(exerciseId))
                 .thenReturn(Optional.of(exercise));
         when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class))

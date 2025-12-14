@@ -6,18 +6,18 @@ import java.util.function.Function;
 
 public interface ImageUrlPopulationService {
     <T> void populateAuthorAndEntityImages(T dto,
-                                            Function<T, String> authorImageNameGetter,
-                                            BiConsumer<T, String> authorUrlSetter,
-                                            Function<T, String> entityImageNameGetter,
-                                            BiConsumer<T, String> entityUrlSetter);
+                                           Function<T, String> authorImageNameGetter,
+                                           BiConsumer<T, String> authorUrlSetter,
+                                           Function<T, String> entityImageNameGetter,
+                                           BiConsumer<T, String> entityUrlSetter);
 
     <T> void populateAuthorImage(T dto,
-                                  Function<T, String> authorImageNameGetter,
-                                  BiConsumer<T, String> authorUrlSetter);
+                                 Function<T, String> authorImageNameGetter,
+                                 BiConsumer<T, String> authorUrlSetter);
 
     <T, M> void populateFirstImageFromMediaList(T dto,
-                                                 List<M> mediaList,
-                                                 Function<M, String> imageNameExtractor,
-                                                 BiConsumer<T, String> imageNameSetter,
-                                                 BiConsumer<T, String> imageUrlSetter);
+                                                List<M> mediaList,
+                                                Function<M, String> imageNameExtractor,
+                                                BiConsumer<T, String> imageNameSetter,
+                                                BiConsumer<T, String> imageUrlSetter);
 }

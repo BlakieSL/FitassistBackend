@@ -65,8 +65,7 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
 
     @Transactional
     public void updateText(int id, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         T entity = findById(id);
         U patched = applyPatch(patch);
 
@@ -103,8 +102,7 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
     }
 
     private U applyPatch(JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         return jsonPatchService.createFromPatch(patch, entityType);
     }
 

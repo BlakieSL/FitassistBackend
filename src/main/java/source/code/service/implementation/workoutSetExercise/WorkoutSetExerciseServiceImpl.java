@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import source.code.dto.request.workoutSetExercise.WorkoutSetExerciseCreateDto;
 import source.code.dto.request.workoutSetExercise.WorkoutSetExerciseUpdateDto;
 import source.code.dto.response.workoutSetExercise.WorkoutSetExerciseResponseDto;
-import source.code.mapper.workoutSetExercise.WorkoutSetExerciseMapper;
+import source.code.mapper.WorkoutSetExerciseMapper;
 import source.code.model.workout.WorkoutSetExercise;
 import source.code.repository.WorkoutSetExerciseRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
@@ -82,8 +82,7 @@ public class WorkoutSetExerciseServiceImpl implements WorkoutSetExerciseService 
     }
 
     private WorkoutSetExerciseUpdateDto applyPatchToWorkoutSetExercise(JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         return jsonPatchService.createFromPatch(patch, WorkoutSetExerciseUpdateDto.class);
     }
 }

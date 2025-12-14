@@ -25,7 +25,7 @@ import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.cache.CacheNames;
 import source.code.helper.Enum.model.PlanStructureType;
 import source.code.helper.user.AuthorizationUtil;
-import source.code.mapper.plan.PlanMapper;
+import source.code.mapper.PlanMapper;
 import source.code.model.plan.Plan;
 import source.code.repository.EquipmentRepository;
 import source.code.repository.PlanCategoryRepository;

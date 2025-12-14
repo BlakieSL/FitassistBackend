@@ -14,10 +14,10 @@ import java.time.LocalDateTime;
 /**
  * fetched with db (findAll) -> mapper -> populated in getFilteredActivities
  * fetched with db (UserActivityRepository.findAllByUserIdWithMedia) -> mapper + set interactedWithAt -> populated in UserActivityService.getAllFromUser
- *
+ * <p>
  * Mapper sets: id, name, met, category, imageName (from mediaList)
  * Population sets: firstImageUrl, savesCount, isSaved
- *
+ * <p>
  * userActivityInteractionCreatedAt - only set in UserActivityService.getAllFromUser
  * isSaved - when user not authenticated (userId=-1), always false since query matches on userId
  */

@@ -24,16 +24,16 @@ public interface ExerciseRepository
     List<Exercise> findAllWithoutAssociations();
 
     @Query("""
-           SELECT e FROM Exercise e
-           LEFT JOIN FETCH e.expertiseLevel
-           LEFT JOIN FETCH e.equipment
-           LEFT JOIN FETCH e.mechanicsType
-           LEFT JOIN FETCH e.forceType
-           LEFT JOIN FETCH e.exerciseTargetMuscles etm
-           LEFT JOIN FETCH etm.targetMuscle
-           LEFT JOIN FETCH e.exerciseInstructions
-           LEFT JOIN FETCH e.exerciseTips
-           WHERE e.id = :id
-           """)
+            SELECT e FROM Exercise e
+            LEFT JOIN FETCH e.expertiseLevel
+            LEFT JOIN FETCH e.equipment
+            LEFT JOIN FETCH e.mechanicsType
+            LEFT JOIN FETCH e.forceType
+            LEFT JOIN FETCH e.exerciseTargetMuscles etm
+            LEFT JOIN FETCH etm.targetMuscle
+            LEFT JOIN FETCH e.exerciseInstructions
+            LEFT JOIN FETCH e.exerciseTips
+            WHERE e.id = :id
+            """)
     Optional<Exercise> findByIdWithDetails(int id);
 }

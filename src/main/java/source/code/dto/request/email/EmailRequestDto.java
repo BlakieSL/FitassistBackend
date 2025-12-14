@@ -15,17 +15,17 @@ import java.util.List;
 @Getter
 @Setter
 public class EmailRequestDto {
-    
+
     @NotBlank
     @Email
     private String fromEmail;
-    
+
     @NotEmpty
     private List<@Email String> toEmails;
-    
+
     @NotBlank
     private String subject;
-    
+
     @NotBlank
     private String content;
 

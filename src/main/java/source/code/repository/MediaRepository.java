@@ -16,10 +16,10 @@ public interface MediaRepository extends JpaRepository<Media, Integer> {
             @Param("parentId") int parentId, @Param("parentType") MediaConnectedEntity parentType);
 
     @Query("""
-        SELECT m FROM Media m
-        WHERE m.parentId IN :parentIds AND m.parentType = :parentType
-        AND m.id = (SELECT MIN(m2.id) FROM Media m2 WHERE m2.parentId = m.parentId AND m2.parentType = :parentType)
-    """)
+                SELECT m FROM Media m
+                WHERE m.parentId IN :parentIds AND m.parentType = :parentType
+                AND m.id = (SELECT MIN(m2.id) FROM Media m2 WHERE m2.parentId = m.parentId AND m2.parentType = :parentType)
+            """)
     List<Media> findFirstMediaByParentIds(@Param("parentIds") List<Integer> parentIds,
                                           @Param("parentType") MediaConnectedEntity parentType);
 }

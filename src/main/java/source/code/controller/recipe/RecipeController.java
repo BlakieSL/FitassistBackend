@@ -41,8 +41,7 @@ public class RecipeController {
     public ResponseEntity<Void> updateRecipe(
             @PathVariable int recipeId,
             @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         recipeService.updateRecipe(recipeId, patch);
         return ResponseEntity.noContent().build();
     }

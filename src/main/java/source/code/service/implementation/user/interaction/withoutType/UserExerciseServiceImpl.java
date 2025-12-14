@@ -10,7 +10,7 @@ import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
 import source.code.helper.Enum.cache.CacheNames;
-import source.code.mapper.exercise.ExerciseMapper;
+import source.code.mapper.ExerciseMapper;
 import source.code.model.exercise.Exercise;
 import source.code.model.user.User;
 import source.code.model.user.UserExercise;

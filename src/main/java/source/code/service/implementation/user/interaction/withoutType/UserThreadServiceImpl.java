@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
-import source.code.mapper.forumThread.ForumThreadMapper;
+import source.code.mapper.ForumThreadMapper;
 import source.code.model.thread.ForumThread;
 import source.code.model.user.User;
 import source.code.model.user.UserThread;

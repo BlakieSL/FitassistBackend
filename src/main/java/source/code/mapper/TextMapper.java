@@ -1,4 +1,4 @@
-package source.code.mapper.text;
+package source.code.mapper;
 
 
 import org.mapstruct.*;

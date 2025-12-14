@@ -14,7 +14,7 @@ import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
 import source.code.helper.user.AuthorizationUtil;
-import source.code.mapper.food.FoodMapper;
+import source.code.mapper.FoodMapper;
 import source.code.model.food.Food;
 import source.code.model.media.Media;
 import source.code.model.user.User;

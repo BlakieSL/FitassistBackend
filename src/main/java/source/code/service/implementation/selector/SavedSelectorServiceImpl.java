@@ -16,6 +16,7 @@ public class SavedSelectorServiceImpl implements SavedSelectorService {
     private final SavedServiceWithoutType userFoodService;
     private final SavedServiceWithoutType userActivityService;
     private final SavedServiceWithoutType userThreadService;
+
     public SavedSelectorServiceImpl(@Qualifier("userPlanService")
                                     SavedService userPlanService,
                                     @Qualifier("userRecipeService")

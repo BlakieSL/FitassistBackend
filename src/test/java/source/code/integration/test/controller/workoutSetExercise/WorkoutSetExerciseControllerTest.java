@@ -247,6 +247,7 @@ public class WorkoutSetExerciseControllerTest {
                         jsonPath("$.exerciseName").exists()
                 );
     }
+
     @WorkoutSetExerciseSql
     @Test
     @DisplayName("GET - /{workoutSetExerciseId} - Should return an existing Workout Set Exercise when owner")

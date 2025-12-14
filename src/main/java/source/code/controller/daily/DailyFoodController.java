@@ -49,8 +49,7 @@ public class DailyFoodController {
     public ResponseEntity<Void> updateDailyCartFood(
             @PathVariable int dailyCartFoodId,
             @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         dailyFoodService.updateDailyFoodItem(dailyCartFoodId, patch);
         return ResponseEntity.noContent().build();
     }

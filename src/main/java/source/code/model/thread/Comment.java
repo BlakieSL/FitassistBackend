@@ -62,8 +62,8 @@ public class Comment {
     @JoinColumn(name = "parent_comment_id")
     private Comment parentComment;
 
-   @OneToMany(mappedBy = "parentComment")
-   private final Set<Comment> replies = new HashSet<>();
+    @OneToMany(mappedBy = "parentComment")
+    private final Set<Comment> replies = new HashSet<>();
 
     @OneToMany(mappedBy = "comment")
     private final Set<UserComment> userCommentLikes = new HashSet<>();

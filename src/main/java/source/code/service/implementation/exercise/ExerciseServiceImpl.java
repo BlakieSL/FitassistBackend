@@ -24,8 +24,8 @@ import source.code.event.events.Exercise.ExerciseDeleteEvent;
 import source.code.event.events.Exercise.ExerciseUpdateEvent;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.cache.CacheNames;
-import source.code.mapper.exercise.ExerciseMapper;
-import source.code.mapper.plan.PlanMapper;
+import source.code.mapper.ExerciseMapper;
+import source.code.mapper.PlanMapper;
 import source.code.model.exercise.Exercise;
 import source.code.repository.*;
 import source.code.service.declaration.exercise.ExercisePopulationService;
@@ -111,8 +111,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     @Transactional
     public void updateExercise(int exerciseId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         Exercise exercise = exerciseRepository.findByIdWithDetails(exerciseId)
                 .orElseThrow(() -> RecordNotFoundException.of(Exercise.class, exerciseId));
         ExerciseUpdateDto patchedExerciseUpdateDto = applyPatchToExercise(patch);

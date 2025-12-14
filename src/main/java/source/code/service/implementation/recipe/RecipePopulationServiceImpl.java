@@ -126,10 +126,10 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
 
     private void fetchAndPopulateAuthorImage(RecipeResponseDto recipe) {
         mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(recipe.getAuthor().getId(), MediaConnectedEntity.USER)
-            .ifPresent(media -> {
-                recipe.getAuthor().setImageName(media.getImageName());
-                recipe.getAuthor().setImageUrl(s3Service.getImage(media.getImageName()));
-            });
+                .ifPresent(media -> {
+                    recipe.getAuthor().setImageName(media.getImageName());
+                    recipe.getAuthor().setImageUrl(s3Service.getImage(media.getImageName()));
+                });
     }
 
     private void fetchAndPopulateImageUrls(RecipeResponseDto recipe) {

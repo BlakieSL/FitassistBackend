@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface ActivityPopulationService {
     void populate(ActivityResponseDto activity);
+
     void populate(List<ActivitySummaryDto> activities);
 }

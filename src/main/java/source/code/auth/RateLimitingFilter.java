@@ -114,8 +114,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     }
 
     private boolean writeErrorResponse(HttpServletResponse response, int statusCode, String message)
-            throws IOException
-    {
+            throws IOException {
         response.setStatus(statusCode);
         response.getWriter().write(message);
         return false;
@@ -140,8 +139,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     }
 
     private boolean handleRateLimitingForNonAuth(String identifier, String path, HttpServletResponse response)
-            throws IOException
-    {
+            throws IOException {
         String rateLimitKey = identifier + ":" + path;
         if (rateLimitingService.isAllowed(rateLimitKey)) {
             return true;

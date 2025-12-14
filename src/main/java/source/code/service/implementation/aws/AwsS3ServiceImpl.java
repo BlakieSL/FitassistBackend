@@ -57,10 +57,10 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 
     private String generatePresignedUrl(String keyName) {
         return s3Presigner.presignGetObject(builder -> builder
-                .signatureDuration(java.time.Duration.ofMinutes(10))
-                .getObjectRequest(getObjectRequestBuilder -> getObjectRequestBuilder
-                        .bucket(bucketName)
-                        .key(keyName)))
+                        .signatureDuration(java.time.Duration.ofMinutes(10))
+                        .getObjectRequest(getObjectRequestBuilder -> getObjectRequestBuilder
+                                .bucket(bucketName)
+                                .key(keyName)))
                 .url().toString();
     }
 }

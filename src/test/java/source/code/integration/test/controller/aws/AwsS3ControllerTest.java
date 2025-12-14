@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @SpringBootTest
 @Import({MockRedisConfig.class, MockAwsSesConfig.class})
-@ContextConfiguration(initializers = {MySqlContainerInitializer .class, AwsS3ContainerInitializer.class})
+@ContextConfiguration(initializers = {MySqlContainerInitializer.class, AwsS3ContainerInitializer.class})
 public class AwsS3ControllerTest {
 
     @Autowired

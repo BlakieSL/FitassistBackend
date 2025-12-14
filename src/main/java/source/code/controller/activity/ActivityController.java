@@ -35,8 +35,7 @@ public class ActivityController {
     @AdminOnly
     @PostMapping
     public ResponseEntity<ActivityResponseDto> createActivity(
-            @Valid @RequestBody ActivityCreateDto dto)
-    {
+            @Valid @RequestBody ActivityCreateDto dto) {
         ActivityResponseDto response = activityService.createActivity(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -46,8 +45,7 @@ public class ActivityController {
     public ResponseEntity<Void> updateActivity(
             @PathVariable int id,
             @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         activityService.updateActivity(id, patch);
         return ResponseEntity.noContent().build();
     }

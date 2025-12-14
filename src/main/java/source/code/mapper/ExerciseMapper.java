@@ -1,13 +1,13 @@
-package source.code.mapper.exercise;
+package source.code.mapper;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.response.category.CategoryResponseDto;
-import source.code.dto.response.exercise.TargetMuscleResponseDto;
 import source.code.dto.request.exercise.ExerciseCreateDto;
 import source.code.dto.request.exercise.ExerciseUpdateDto;
+import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
+import source.code.dto.response.exercise.TargetMuscleResponseDto;
 import source.code.dto.response.text.ExerciseInstructionResponseDto;
 import source.code.dto.response.text.ExerciseTipResponseDto;
 import source.code.model.exercise.*;
@@ -42,9 +42,6 @@ public abstract class ExerciseMapper {
 
     @Autowired
     private EquipmentRepository equipmentRepository;
-
-    @Autowired
-    private AwsS3Service awsS3Service;
 
     @Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseToCategoryResponseDto")
     @Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsToCategoryResponseDto")

@@ -42,8 +42,7 @@ public class ExerciseController {
     public ResponseEntity<Void> updateExercise(
             @PathVariable int id,
             @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         exerciseService.updateExercise(id, patch);
         return ResponseEntity.noContent().build();
     }

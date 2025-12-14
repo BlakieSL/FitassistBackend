@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @PreAuthorize("@authAnnotationServiceImpl.isTextOwnerOrAdmin(#id, #type)")
-public @interface TextOwnerOrAdmin {}
+public @interface TextOwnerOrAdmin {
+}

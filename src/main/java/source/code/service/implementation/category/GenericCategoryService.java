@@ -32,7 +32,9 @@ public abstract class GenericCategoryService<T> {
     protected final CacheManager cacheManager;
     protected final JpaRepository<T, Integer> repository;
     protected final BaseMapper<T> mapper;
+
     protected abstract boolean hasAssociatedEntities(int categoryId);
+
     protected abstract Class<T> getEntityClass();
 
     protected GenericCategoryService(ValidationService validationService,
@@ -65,8 +67,7 @@ public abstract class GenericCategoryService<T> {
 
     @Transactional
     public void updateCategory(int categoryId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         T category = find(categoryId);
         CategoryUpdateDto patchedCategory = applyPatchToCategory(patch);
 
@@ -136,7 +137,7 @@ public abstract class GenericCategoryService<T> {
         try {
             return Optional.ofNullable(cachedValue)
                     .map(value -> (List<CategoryResponseDto>) value.get());
-        } catch(ClassCastException exception) {
+        } catch (ClassCastException exception) {
             return Optional.empty();
         }
     }
