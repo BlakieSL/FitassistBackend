@@ -32,10 +32,10 @@ public abstract class UserMapper {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
+
     @Autowired
     private MediaRepository mediaRepository;
-    
+
     @Autowired
     private AwsS3Service s3Service;
 
@@ -124,9 +124,8 @@ public abstract class UserMapper {
     }
 
     BigDecimal calculatedCalories(User user) {
-        if (!hasRequiredData(user)) {
-            return null;
-        }
+        if (!hasRequiredData(user)) return null;
+
         int age = Period.between(user.getBirthday(), LocalDate.now()).getYears();
         return calculationsService.calculateCaloricNeeds(
                 user.getWeight(),

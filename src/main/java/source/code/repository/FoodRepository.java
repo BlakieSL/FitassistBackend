@@ -24,8 +24,8 @@ public interface FoodRepository extends JpaRepository<Food, Integer>, JpaSpecifi
     List<Food> findAllWithoutAssociations();
 
     @Query("SELECT f FROM Food f " +
-           "LEFT JOIN FETCH f.foodCategory " +
-           "LEFT JOIN FETCH f.mediaList " +
-           "WHERE f.id = :id")
+            "LEFT JOIN FETCH f.foodCategory " +
+            "LEFT JOIN FETCH f.mediaList " +
+            "WHERE f.id = :id")
     Optional<Food> findByIdWithMedia(@Param("id") int id);
 }

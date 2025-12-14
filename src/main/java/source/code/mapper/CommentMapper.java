@@ -1,4 +1,4 @@
-package source.code.mapper.comment;
+package source.code.mapper;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,6 @@ public abstract class CommentMapper {
     @Mapping(target = "interactionCreatedAt", ignore = true)
     public abstract CommentSummaryDto toSummaryDto(Comment comment);
 
-    @Mapping(target = "text", source = "text")
     @Mapping(target = "thread", source = "threadId", qualifiedByName = "threadIdToThread")
     @Mapping(target = "user", expression = "java(userIdToUser(userId))")
     @Mapping(target = "parentComment", source = "parentCommentId", qualifiedByName = "parentCommentIdToParentComment")
@@ -56,7 +55,6 @@ public abstract class CommentMapper {
     public abstract Comment toEntity(CommentCreateDto createDto, @Context int userId);
 
     @BeanMapping(nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "text", source = "text")
     @Mapping(target = "thread", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "parentComment", ignore = true)
@@ -69,11 +67,6 @@ public abstract class CommentMapper {
     @Named("threadToThreadId")
     protected Integer threadToThreadId(ForumThread forumThread) {
         return forumThread.getId();
-    }
-
-    @Named("userToUserId")
-    protected Integer userToUserId(User user) {
-        return user.getId();
     }
 
     @Named("parentCommentToParentCommentId")

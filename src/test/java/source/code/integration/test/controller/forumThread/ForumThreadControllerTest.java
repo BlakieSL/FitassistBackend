@@ -67,11 +67,11 @@ public class ForumThreadControllerTest {
         Utils.setUserContext(1);
 
         String patchJson = """
-            {
-                "title": "Updated Title",
-                "text": "Updated content"
-            }
-            """;
+                {
+                    "title": "Updated Title",
+                    "text": "Updated content"
+                }
+                """;
 
         mockMvc.perform(patch("/api/threads/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -86,11 +86,11 @@ public class ForumThreadControllerTest {
         Utils.setAdminContext(2);
 
         String patchJson = """
-            {
-                "title": "Admin Updated Title",
-                "text": "Admin updated content"
-            }
-            """;
+                {
+                    "title": "Admin Updated Title",
+                    "text": "Admin updated content"
+                }
+                """;
 
         mockMvc.perform(patch("/api/threads/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -105,11 +105,11 @@ public class ForumThreadControllerTest {
         Utils.setUserContext(3);
 
         String patchJson = """
-            {
-                "title": "Unauthorized Update",
-                "text": "Should not work"
-            }
-            """;
+                {
+                    "title": "Unauthorized Update",
+                    "text": "Should not work"
+                }
+                """;
 
         mockMvc.perform(patch("/api/threads/1")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -17,32 +17,32 @@ public interface UserActivityRepository extends JpaRepository<UserActivity, Inte
     Optional<UserActivity> findByUserIdAndActivityId(int userId, int activityId);
 
     @Query(value = """
-           SELECT ua FROM UserActivity ua
-           JOIN FETCH ua.activity a
-           JOIN FETCH a.activityCategory
-           LEFT JOIN FETCH a.mediaList
-           WHERE ua.user.id = :userId
-           """)
+            SELECT ua FROM UserActivity ua
+            JOIN FETCH ua.activity a
+            JOIN FETCH a.activityCategory
+            LEFT JOIN FETCH a.mediaList
+            WHERE ua.user.id = :userId
+            """)
     Page<UserActivity> findAllByUserIdWithMedia(@Param("userId") int userId, Pageable pageable);
 
     @Query("""
-        SELECT
-            ua.activity.id as entityId,
-            COUNT(ua) as savesCount,
-            SUM(CASE WHEN ua.user.id = :userId THEN 1 ELSE 0 END) as userSaved
-        FROM UserActivity ua
-        WHERE ua.activity.id = :activityId
-    """)
+                SELECT
+                    ua.activity.id as entityId,
+                    COUNT(ua) as savesCount,
+                    SUM(CASE WHEN ua.user.id = :userId THEN 1 ELSE 0 END) as userSaved
+                FROM UserActivity ua
+                WHERE ua.activity.id = :activityId
+            """)
     SavesProjection findSavesCountAndUserSaved(@Param("activityId") int activityId, @Param("userId") int userId);
 
     @Query("""
-        SELECT
-            ua.activity.id as entityId,
-            COUNT(ua) as savesCount,
-            SUM(CASE WHEN ua.user.id = :userId THEN 1 ELSE 0 END) as userSaved
-        FROM UserActivity ua
-        WHERE ua.activity.id IN :activityIds
-        GROUP BY ua.activity.id
-    """)
+                SELECT
+                    ua.activity.id as entityId,
+                    COUNT(ua) as savesCount,
+                    SUM(CASE WHEN ua.user.id = :userId THEN 1 ELSE 0 END) as userSaved
+                FROM UserActivity ua
+                WHERE ua.activity.id IN :activityIds
+                GROUP BY ua.activity.id
+            """)
     List<SavesProjection> findCountsAndInteractionsByActivityIds(@Param("userId") int userId, @Param("activityIds") List<Integer> activityIds);
 }

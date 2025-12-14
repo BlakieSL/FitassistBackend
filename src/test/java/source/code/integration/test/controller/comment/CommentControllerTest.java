@@ -46,8 +46,8 @@ public class CommentControllerTest {
         requestBody.setThreadId(1);
 
         mockMvc.perform(post("/api/comments")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpectAll(status().isCreated());
     }
 
@@ -203,7 +203,7 @@ public class CommentControllerTest {
         mockMvc.perform(get("/api/comments/replies/1"))
                 .andExpectAll(
                         status().isOk(),
-                         jsonPath("$").isNotEmpty(),
+                        jsonPath("$").isNotEmpty(),
                         jsonPath("$[0].replies", hasSize(1)),
                         jsonPath("$[0].replies.[0].replies", hasSize(1))
                 );

@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface LuceneSearchService {
     List<SearchResponseDto> search(String query);
+
     List<SearchResponseDto> searchFood(String query);
 }

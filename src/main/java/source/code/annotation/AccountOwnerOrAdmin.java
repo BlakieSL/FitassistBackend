@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @PreAuthorize("@authorizationUtil.isOwnerOrAdmin(#id)")
-public @interface AccountOwnerOrAdmin {}
+public @interface AccountOwnerOrAdmin {
+}

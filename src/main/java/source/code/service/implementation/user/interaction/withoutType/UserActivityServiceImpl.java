@@ -10,7 +10,7 @@ import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
 import source.code.helper.Enum.cache.CacheNames;
-import source.code.mapper.activity.ActivityMapper;
+import source.code.mapper.ActivityMapper;
 import source.code.model.activity.Activity;
 import source.code.model.user.User;
 import source.code.model.user.UserActivity;

@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @PreAuthorize("@authAnnotationServiceImpl.isForumThreadOwnerOrAdmin(#forumThreadId)")
-public @interface ThreadOwnerOrAdmin {}
+public @interface ThreadOwnerOrAdmin {
+}

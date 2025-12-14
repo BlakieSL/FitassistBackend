@@ -33,7 +33,7 @@ public class Media {
     @Column(name = "parent_id", nullable = false)
     private Integer parentId;
 
-    public static Media of (Integer id, MediaConnectedEntity parentType, Integer parentId) {
+    public static Media of(Integer id, MediaConnectedEntity parentType, Integer parentId) {
         Media media = new Media();
         media.setId(id);
         media.setParentType(parentType);

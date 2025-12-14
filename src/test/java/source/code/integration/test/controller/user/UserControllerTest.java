@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class, MockAwsSesConfig.class})
 @TestPropertySource(properties = "schema.name=general")
 @ContextConfiguration(initializers = {MySqlContainerInitializer.class})
-public class    UserControllerTest {
+public class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -207,10 +207,10 @@ public class    UserControllerTest {
 
         int id = 1;
         String patch = """
-            {
-                "invalidFieldName": "updatedUser1"
-            }
-            """;
+                {
+                    "invalidFieldName": "updatedUser1"
+                }
+                """;
 
         mockMvc.perform(patch("/api/users/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)

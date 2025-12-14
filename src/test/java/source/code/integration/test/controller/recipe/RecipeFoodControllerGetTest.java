@@ -95,8 +95,8 @@ public class RecipeFoodControllerGetTest {
 
         var filter = FilterRecipesByFoodsDto.of(List.of(1));
         mockMvc.perform(post("/api/recipe-food/filter/foods")
-                .content(objectMapper.writeValueAsString(filter))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(filter))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content", hasSize(1))

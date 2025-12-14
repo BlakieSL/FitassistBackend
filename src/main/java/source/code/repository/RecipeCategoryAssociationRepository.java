@@ -11,10 +11,10 @@ public interface RecipeCategoryAssociationRepository extends JpaRepository<Recip
     List<RecipeCategoryAssociation> findByRecipeCategoryId(int categoryId);
 
     @Query("""
-        SELECT rca.recipe.id, rc.id, rc.name
-        FROM RecipeCategoryAssociation rca
-        JOIN rca.recipeCategory rc
-        WHERE rca.recipe.id IN :recipeIds
-        """)
+            SELECT rca.recipe.id, rc.id, rc.name
+            FROM RecipeCategoryAssociation rca
+            JOIN rca.recipeCategory rc
+            WHERE rca.recipe.id IN :recipeIds
+            """)
     List<Object[]> findCategoryDataByRecipeIds(@Param("recipeIds") List<Integer> recipeIds);
 }

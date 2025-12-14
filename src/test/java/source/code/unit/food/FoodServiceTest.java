@@ -28,7 +28,7 @@ import source.code.event.events.Food.FoodCreateEvent;
 import source.code.event.events.Food.FoodDeleteEvent;
 import source.code.event.events.Food.FoodUpdateEvent;
 import source.code.exception.RecordNotFoundException;
-import source.code.mapper.food.FoodMapper;
+import source.code.mapper.FoodMapper;
 import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.food.Food;
 import source.code.model.recipe.Recipe;
@@ -174,8 +174,7 @@ public class FoodServiceTest {
 
     @Test
     void updateFood_shouldThrowExceptionWhenPatchFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(foodRepository, Food.class, foodId)).thenReturn(food);
         when(jsonPatchService.createFromPatch(patch, FoodUpdateDto.class))
                 .thenThrow(JsonPatchException.class);
@@ -188,8 +187,7 @@ public class FoodServiceTest {
 
     @Test
     void updateFood_shouldThrowExceptionWhenValidationFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(foodRepository, Food.class, foodId)).thenReturn(food);
         when(jsonPatchService.createFromPatch(patch, FoodUpdateDto.class))
                 .thenReturn(patchedDto);

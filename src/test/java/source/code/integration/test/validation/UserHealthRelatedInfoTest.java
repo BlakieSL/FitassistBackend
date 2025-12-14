@@ -81,7 +81,7 @@ public class UserHealthRelatedInfoTest extends MySqlRedisAwsContainers {
         user.setEmail("test@gmail.com");
         user.setPassword("$2a$10$N9qo8uLOickgx2ZMRZoMy.Mr/.6Bphm5Jx1h6HZ3L6f5zVtQ1/B2O");
         user.setGender(Gender.FEMALE);
-        user.setBirthday(LocalDate.of(1990, 1,1));
+        user.setBirthday(LocalDate.of(1990, 1, 1));
         return user;
     }
 }

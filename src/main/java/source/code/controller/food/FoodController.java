@@ -39,8 +39,7 @@ public class FoodController {
     @AdminOnly
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateFood(@PathVariable int id, @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         foodService.updateFood(id, patch);
         return ResponseEntity.noContent().build();
     }
@@ -51,6 +50,7 @@ public class FoodController {
         foodService.deleteFood(id);
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<FoodResponseDto> getFood(@PathVariable int id) {
         FoodResponseDto food = foodService.getFood(id);

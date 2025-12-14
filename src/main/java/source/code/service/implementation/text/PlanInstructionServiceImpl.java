@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.text.PlanInstructionUpdateDto;
 import source.code.dto.response.text.PlanInstructionResponseDto;
-import source.code.mapper.text.TextMapper;
+import source.code.mapper.TextMapper;
 import source.code.model.text.PlanInstruction;
 import source.code.repository.PlanInstructionRepository;
 import source.code.service.declaration.helpers.JsonPatchService;

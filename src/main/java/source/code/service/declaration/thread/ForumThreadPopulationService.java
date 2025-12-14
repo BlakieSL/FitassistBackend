@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface ForumThreadPopulationService {
     void populate(List<ForumThreadSummaryDto> threads);
+
     void populate(ForumThreadResponseDto thread);
 }

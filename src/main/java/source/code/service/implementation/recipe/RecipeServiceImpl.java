@@ -82,8 +82,7 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     @Transactional
     public void updateRecipe(int recipeId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         Recipe recipe = find(recipeId);
         RecipeUpdateDto patchedRecipeUpdateDto = applyPatchToRecipe(patch);
 
@@ -149,8 +148,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     private RecipeUpdateDto applyPatchToRecipe(JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         return jsonPatchService.createFromPatch(patch, RecipeUpdateDto.class);
     }
 }

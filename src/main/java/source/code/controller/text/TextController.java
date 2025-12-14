@@ -40,8 +40,7 @@ public class TextController {
             @PathVariable int id,
             @PathVariable TextType type,
             @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         TextService textService = textSelectorService.getService(type);
         textService.updateText(id, patch);
         return ResponseEntity.noContent().build();

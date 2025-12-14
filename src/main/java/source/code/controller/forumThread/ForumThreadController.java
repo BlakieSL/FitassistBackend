@@ -39,8 +39,7 @@ public class ForumThreadController {
     public ResponseEntity<Void> updateForumThread(
             @PathVariable int forumThreadId,
             @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         forumThreadService.updateForumThread(forumThreadId, patch);
         return ResponseEntity.ok().build();
     }

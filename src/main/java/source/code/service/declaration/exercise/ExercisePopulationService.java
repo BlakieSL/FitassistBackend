@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface ExercisePopulationService {
     void populate(ExerciseResponseDto exercise);
+
     void populate(List<ExerciseSummaryDto> exercises);
 }

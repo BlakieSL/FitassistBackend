@@ -1,16 +1,14 @@
-package source.code.mapper.plan;
+package source.code.mapper;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.pojo.AuthorDto;
-import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.request.plan.PlanUpdateDto;
+import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.helper.Enum.model.PlanStructureType;
-import source.code.mapper.workout.WorkoutMapper;
 import source.code.model.media.Media;
 import source.code.model.plan.Plan;
 import source.code.model.plan.PlanCategory;

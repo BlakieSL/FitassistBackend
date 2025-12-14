@@ -16,11 +16,11 @@ import java.util.List;
 
 /**
  * fetched with db (findByIdWithDetails) -> mapper -> populated in createPlan and getPlan
- *
+ * <p>
  * Mapper sets: id, name, description, isPublic, createdAt, views, author (id, username), totalWeeks (via @AfterMapping),
- *              planStructureType, workouts (with weekIndex/dayOfWeekIndex via @AfterMapping), instructions, categories
+ * planStructureType, workouts (with weekIndex/dayOfWeekIndex via @AfterMapping), instructions, categories
  * Population sets: author.imageName, author.imageUrl, imageUrls, likesCount, dislikesCount, savesCount, liked, disliked, saved
- *
+ * <p>
  * liked/disliked/saved - when user not authenticated (userId=-1), always false since query matches on userId
  */
 @Getter

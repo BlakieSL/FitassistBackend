@@ -17,7 +17,7 @@ import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
-import source.code.mapper.forumThread.ForumThreadMapper;
+import source.code.mapper.ForumThreadMapper;
 import source.code.model.thread.ForumThread;
 import source.code.repository.ForumThreadRepository;
 import source.code.service.declaration.helpers.JsonPatchService;
@@ -27,10 +27,8 @@ import source.code.service.declaration.thread.ForumThreadPopulationService;
 import source.code.service.implementation.forumThread.ForumThreadServiceImpl;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -127,8 +125,7 @@ public class ForumThreadServiceTest {
 
     @Test
     void updateForumThread_shouldThrowExceptionWhenValidationFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
                 .thenReturn(forumThread);
         when(jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class))

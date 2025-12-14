@@ -6,6 +6,8 @@ import source.code.helper.BaseUserEntity;
 
 public interface SavedServiceWithoutType {
     void saveToUser(int entityId);
+
     void deleteFromUser(int entityId);
+
     Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable);
 }

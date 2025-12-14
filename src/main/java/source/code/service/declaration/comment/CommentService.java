@@ -14,11 +14,17 @@ import java.util.List;
 
 public interface CommentService {
     CommentResponseDto createComment(CommentCreateDto createDto);
+
     void updateComment(int commentId, JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException;
+
     void deleteComment(int commentId);
+
     CommentResponseDto getComment(int commentId);
+
     List<CommentResponseDto> getTopCommentsForThread(int threadId);
+
     List<CommentResponseDto> getReplies(int commentId);
+
     Page<CommentSummaryDto> getFilteredComments(FilterDto filter, Pageable pageable);
 }

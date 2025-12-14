@@ -2,11 +2,17 @@ package source.code.dto.pojo.projection;
 
 public interface EntityCountsProjection {
     Integer getEntityId();
+
     Long getIsLiked();
+
     Long getIsDisliked();
+
     Long getIsSaved();
+
     Long getLikesCount();
+
     Long getDislikesCount();
+
     Long getSavesCount();
 
     default boolean isLiked() {

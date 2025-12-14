@@ -1,51 +1,65 @@
-INSERT INTO thread_category (name) VALUES
-('General Discussion'),
-('Fitness Tips'),
-('Nutrition'),
-('Workout Plans'),
-('Success Stories');
+INSERT INTO thread_category (name)
+VALUES ('General Discussion'),
+       ('Fitness Tips'),
+       ('Nutrition'),
+       ('Workout Plans'),
+       ('Success Stories');
 
-INSERT INTO user (activity_level, birthday, email, gender, goal, height, password, username, weight) VALUES
-('MODERATELY_ACTIVE', '1990-05-15', 'user1@example.com', 'MALE', 'BUILD_MUSCLE', 180.00, '$2a$10$exampleHash1', 'fitness_lover', 80.00),
-('VERY_ACTIVE', '1988-08-22', 'user2@example.com', 'FEMALE', 'LOSE_WEIGHT', 165.00, '$2a$10$exampleHash2', 'gym_queen', 65.00),
-('SEDENTARY', '1995-02-10', 'user3@example.com', 'MALE', 'MAINTAIN_WEIGHT', 175.00, '$2a$10$exampleHash3', 'office_worker', 75.00),
-('SUPER_ACTIVE', '1992-11-30', 'user4@example.com', 'FEMALE', 'BUILD_MUSCLE', 170.00, '$2a$10$exampleHash4', 'marathon_runner', 60.00),
-('LIGHTLY_ACTIVE', '1985-07-04', 'user5@example.com', 'MALE', 'LOSE_WEIGHT', 182.00, '$2a$10$exampleHash5', 'weekend_warrior', 90.00);
+INSERT INTO user (activity_level, birthday, email, gender, goal, height, password, username, weight)
+VALUES ('MODERATELY_ACTIVE', '1990-05-15', 'user1@example.com', 'MALE', 'BUILD_MUSCLE', 180.00, '$2a$10$exampleHash1',
+        'fitness_lover', 80.00),
+       ('VERY_ACTIVE', '1988-08-22', 'user2@example.com', 'FEMALE', 'LOSE_WEIGHT', 165.00, '$2a$10$exampleHash2',
+        'gym_queen', 65.00),
+       ('SEDENTARY', '1995-02-10', 'user3@example.com', 'MALE', 'MAINTAIN_WEIGHT', 175.00, '$2a$10$exampleHash3',
+        'office_worker', 75.00),
+       ('SUPER_ACTIVE', '1992-11-30', 'user4@example.com', 'FEMALE', 'BUILD_MUSCLE', 170.00, '$2a$10$exampleHash4',
+        'marathon_runner', 60.00),
+       ('LIGHTLY_ACTIVE', '1985-07-04', 'user5@example.com', 'MALE', 'LOSE_WEIGHT', 182.00, '$2a$10$exampleHash5',
+        'weekend_warrior', 90.00);
 
-INSERT INTO thread (created_at, text, title, views, thread_category_id, user_id) VALUES
-(NOW(), 'What are your favorite fitness apps?', 'Favorite Apps', 150, 1, 1),
-(NOW(), 'How to properly do deadlifts?', 'Deadlift Form', 320, 2, 2),
-(NOW(), 'Best protein sources for vegetarians', 'Vegetarian Protein', 210, 3, 3),
-(NOW(), 'My 12-week strength training program', 'Strength Program', 180, 4, 4),
-(NOW(), 'How I lost 20kg in 6 months', 'Weight Loss Journey', 450, 5, 5);
+INSERT INTO thread (created_at, text, title, views, thread_category_id, user_id)
+VALUES (NOW(), 'What are your favorite fitness apps?', 'Favorite Apps', 150, 1, 1),
+       (NOW(), 'How to properly do deadlifts?', 'Deadlift Form', 320, 2, 2),
+       (NOW(), 'Best protein sources for vegetarians', 'Vegetarian Protein', 210, 3, 3),
+       (NOW(), 'My 12-week strength training program', 'Strength Program', 180, 4, 4),
+       (NOW(), 'How I lost 20kg in 6 months', 'Weight Loss Journey', 450, 5, 5);
 
-INSERT INTO user_thread (thread_id, user_id, created_at) VALUES
-(1, 2, NOW()), (1, 3, NOW()),
-(2, 1, NOW()), (2, 4, NOW()),
-(3, 2, NOW()), (3, 5, NOW()),
-(4, 1, NOW()), (4, 3, NOW()),
-(5, 2, NOW()), (5, 4, NOW());
+INSERT INTO user_thread (thread_id, user_id, created_at)
+VALUES (1, 2, NOW()),
+       (1, 3, NOW()),
+       (2, 1, NOW()),
+       (2, 4, NOW()),
+       (3, 2, NOW()),
+       (3, 5, NOW()),
+       (4, 1, NOW()),
+       (4, 3, NOW()),
+       (5, 2, NOW()),
+       (5, 4, NOW());
 
-INSERT INTO comment (text, created_at, parent_comment_id, thread_id, user_id) VALUES
-('I really like MyFitnessPal for tracking', '2025-11-13 20:00:00.123456', NULL, 1, 2),
-('Keep your back straight and lift with legs', '2025-11-13 20:05:00.654321', NULL, 2, 1),
-('Lentils and quinoa are great options', '2025-11-13 20:10:00.987654', NULL, 3, 4),
-('How many days per week is this program?', '2025-11-13 20:15:00.456789', NULL, 4, 3),
-('Congrats on your achievement!', '2025-11-13 20:20:00.321654', NULL, 5, 5),
-('I prefer Cronometer for micronutrients', '2025-11-13 20:25:00.789123', 1, 1, 3),
-('Thanks for the tip!', '2025-11-13 20:30:00.101101', 2, 2, 2),
-('Don''t forget about tofu and tempeh', '2025-11-13 20:35:00.202202', 3, 3, 5),
-('It''s a 5-day split program', '2025-11-13 20:40:00.303303', 4, 4, 4),
-('Thank you! It was hard work', '2025-11-13 20:45:00.404404', 5, 5, 1);
+INSERT INTO comment (text, created_at, parent_comment_id, thread_id, user_id)
+VALUES ('I really like MyFitnessPal for tracking', '2025-11-13 20:00:00.123456', NULL, 1, 2),
+       ('Keep your back straight and lift with legs', '2025-11-13 20:05:00.654321', NULL, 2, 1),
+       ('Lentils and quinoa are great options', '2025-11-13 20:10:00.987654', NULL, 3, 4),
+       ('How many days per week is this program?', '2025-11-13 20:15:00.456789', NULL, 4, 3),
+       ('Congrats on your achievement!', '2025-11-13 20:20:00.321654', NULL, 5, 5),
+       ('I prefer Cronometer for micronutrients', '2025-11-13 20:25:00.789123', 1, 1, 3),
+       ('Thanks for the tip!', '2025-11-13 20:30:00.101101', 2, 2, 2),
+       ('Don''t forget about tofu and tempeh', '2025-11-13 20:35:00.202202', 3, 3, 5),
+       ('It''s a 5-day split program', '2025-11-13 20:40:00.303303', 4, 4, 4),
+       ('Thank you! It was hard work', '2025-11-13 20:45:00.404404', 5, 5, 1);
 
-INSERT INTO user_comment (type, comment_id, user_id, created_at) VALUES
-('LIKE', 1, 1, NOW()), ('LIKE', 1, 3, NOW()),
-('DISLIKE', 2, 4, NOW()),
-('SAVE', 3, 2, NOW()), ('SAVE', 3, 5, NOW()),
-('LIKE', 4, 1, NOW()), ('LIKE', 4, 2, NOW()),
-('DISLIKE', 5, 3, NOW()),
-('SAVE', 6, 4, NOW()),
-('LIKE', 7, 5, NOW()),
-('DISLIKE', 8, 1, NOW()),
-('SAVE', 9, 2, NOW()), ('SAVE', 9, 3, NOW()),
-('LIKE', 10, 4, NOW());
+INSERT INTO user_comment (type, comment_id, user_id, created_at)
+VALUES ('LIKE', 1, 1, NOW()),
+       ('LIKE', 1, 3, NOW()),
+       ('DISLIKE', 2, 4, NOW()),
+       ('SAVE', 3, 2, NOW()),
+       ('SAVE', 3, 5, NOW()),
+       ('LIKE', 4, 1, NOW()),
+       ('LIKE', 4, 2, NOW()),
+       ('DISLIKE', 5, 3, NOW()),
+       ('SAVE', 6, 4, NOW()),
+       ('LIKE', 7, 5, NOW()),
+       ('DISLIKE', 8, 1, NOW()),
+       ('SAVE', 9, 2, NOW()),
+       ('SAVE', 9, 3, NOW()),
+       ('LIKE', 10, 4, NOW());

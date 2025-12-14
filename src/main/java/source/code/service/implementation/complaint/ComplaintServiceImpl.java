@@ -8,7 +8,7 @@ import source.code.dto.request.complaint.ComplaintCreateDto;
 import source.code.dto.response.comment.ComplaintResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.user.AuthorizationUtil;
-import source.code.mapper.complaint.ComplaintMapper;
+import source.code.mapper.ComplaintMapper;
 import source.code.model.complaint.CommentComplaint;
 import source.code.model.complaint.ComplaintBase;
 import source.code.model.complaint.ComplaintStatus;
@@ -39,7 +39,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     @Override
     public void createComplaint(ComplaintCreateDto complaintCreateDto) {
         int userId = AuthorizationUtil.getUserId();
-        switch (complaintCreateDto.getSubClass()){
+        switch (complaintCreateDto.getSubClass()) {
             case COMMENT_COMPLAINT -> {
                 CommentComplaint complaint = complaintMapper.toCommentComplaint(
                         complaintCreateDto,

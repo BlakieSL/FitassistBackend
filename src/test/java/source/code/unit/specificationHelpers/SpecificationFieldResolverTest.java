@@ -52,7 +52,7 @@ public class SpecificationFieldResolverTest {
         criteria.setFilterKey("INVALID_KEY");
 
         assertThrows(InvalidFilterKeyException.class, () ->
-            fieldResolver.resolveField(criteria, TestEnum.class)
+                fieldResolver.resolveField(criteria, TestEnum.class)
         );
     }
 
@@ -62,7 +62,7 @@ public class SpecificationFieldResolverTest {
         criteria.setFilterKey("valid_key");
 
         assertThrows(InvalidFilterKeyException.class, () ->
-            fieldResolver.resolveField(criteria, TestEnum.class)
+                fieldResolver.resolveField(criteria, TestEnum.class)
         );
     }
 
@@ -72,7 +72,7 @@ public class SpecificationFieldResolverTest {
         criteria.setFilterKey(null);
 
         assertThrows(Exception.class, () ->
-            fieldResolver.resolveField(criteria, TestEnum.class)
+                fieldResolver.resolveField(criteria, TestEnum.class)
         );
     }
 
@@ -82,7 +82,7 @@ public class SpecificationFieldResolverTest {
         criteria.setFilterKey("");
 
         assertThrows(InvalidFilterKeyException.class, () ->
-            fieldResolver.resolveField(criteria, TestEnum.class)
+                fieldResolver.resolveField(criteria, TestEnum.class)
         );
     }
 }

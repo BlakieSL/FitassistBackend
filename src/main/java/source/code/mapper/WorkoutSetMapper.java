@@ -1,11 +1,10 @@
-package source.code.mapper.workoutSet;
+package source.code.mapper;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.workoutSet.WorkoutSetCreateDto;
 import source.code.dto.request.workoutSet.WorkoutSetUpdateDto;
 import source.code.dto.response.workoutSet.WorkoutSetResponseDto;
-import source.code.mapper.workoutSetExercise.WorkoutSetExerciseMapper;
 import source.code.model.workout.Workout;
 import source.code.model.workout.WorkoutSet;
 import source.code.repository.WorkoutRepository;
@@ -30,8 +29,7 @@ public abstract class WorkoutSetMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "workoutSetExercises", ignore = true)
     @Mapping(target = "workout", source = "workoutId", qualifiedByName = "mapWorkoutIdToWorkout")
-    public abstract void updateWorkoutSet(
-            @MappingTarget WorkoutSet workoutSet, WorkoutSetUpdateDto updateDto);
+    public abstract void updateWorkoutSet(@MappingTarget WorkoutSet workoutSet, WorkoutSetUpdateDto updateDto);
 
     @Named("mapWorkoutIdToWorkout")
     protected Workout mapWorkoutIdToWorkout(int workoutId) {

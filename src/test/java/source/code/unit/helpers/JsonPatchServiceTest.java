@@ -43,8 +43,7 @@ public class JsonPatchServiceTest {
 
     @Test
     void applyPatch_shouldApplyPatchAndReturnPatchedBean()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         when(objectMapper.valueToTree(targetBean)).thenReturn(targetNode);
         when(patch.apply(targetNode)).thenReturn(patchedNode);
         when(objectMapper.treeToValue(patchedNode, beanClass)).thenReturn(targetBean);
@@ -69,8 +68,7 @@ public class JsonPatchServiceTest {
 
     @Test
     void applyPatch_shouldThrowJsonProcessingException()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         when(objectMapper.valueToTree(targetBean)).thenReturn(targetNode);
         when(patch.apply(targetNode)).thenReturn(patchedNode);
         when(objectMapper.treeToValue(patchedNode, beanClass))

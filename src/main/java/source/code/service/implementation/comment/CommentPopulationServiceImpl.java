@@ -121,7 +121,7 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
         if (comment.getAuthor() == null) return;
 
         mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(
-                comment.getAuthor().getId(), MediaConnectedEntity.USER)
+                        comment.getAuthor().getId(), MediaConnectedEntity.USER)
                 .ifPresent(media -> {
                     comment.getAuthor().setImageName(media.getImageName());
                     comment.getAuthor().setImageUrl(s3Service.getImage(media.getImageName()));

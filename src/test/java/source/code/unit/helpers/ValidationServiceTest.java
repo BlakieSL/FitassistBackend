@@ -25,6 +25,7 @@ public class ValidationServiceTest {
     private ValidationServiceImpl validationService;
 
     private Object dto;
+
     @BeforeEach
     void setUp() {
         dto = new Object();

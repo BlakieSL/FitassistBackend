@@ -1,11 +1,10 @@
-package source.code.mapper.workout;
+package source.code.mapper;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.workout.WorkoutCreateDto;
 import source.code.dto.request.workout.WorkoutUpdateDto;
 import source.code.dto.response.workout.WorkoutResponseDto;
-import source.code.mapper.workoutSet.WorkoutSetMapper;
 import source.code.model.plan.Plan;
 import source.code.model.workout.Workout;
 import source.code.repository.PlanRepository;
@@ -15,6 +14,7 @@ import source.code.service.declaration.helpers.RepositoryHelper;
 public abstract class WorkoutMapper {
     @Autowired
     private PlanRepository planRepository;
+
     @Autowired
     private RepositoryHelper repositoryHelper;
 

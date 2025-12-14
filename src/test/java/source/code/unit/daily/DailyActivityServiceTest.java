@@ -222,7 +222,8 @@ public class DailyActivityServiceTest {
     @Test
     void updateDailyActivityItem_shouldThrowException_whenDailyActivityItemNotFound() {
         when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID))
-                .thenReturn(Optional.empty());;
+                .thenReturn(Optional.empty());
+        ;
 
         assertThrows(RecordNotFoundException.class, () ->
                 dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch));
@@ -233,8 +234,7 @@ public class DailyActivityServiceTest {
 
     @Test
     void updateDailyActivityItem_shouldThrowException_whenPatchFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID))
                 .thenReturn(Optional.of(dailyCartActivity));
         doThrow(JsonPatchException.class).when(jsonPatchService).createFromPatch(
@@ -252,8 +252,7 @@ public class DailyActivityServiceTest {
 
     @Test
     void updateDailyActivityItem_shouldThrowException_whenPatchValidationFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         DailyActivityItemUpdateDto patchedDto = new DailyActivityItemUpdateDto();
         patchedDto.setTime((short) 120);
 

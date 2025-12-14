@@ -222,7 +222,7 @@ public class UserSavedControllerWithTypeTest {
     @DisplayName("GET - /item-type/{itemType}/type/{type}/user/{userId}?sort=DESC - Should return items sorted DESC")
     void getAllFromUserSortDesc() throws Exception {
         mockMvc.perform(get("/api/user-saved/item-type/PLAN/type/SAVE/user/1")
-                .param("sort", "createdAt,DESC"))
+                        .param("sort", "createdAt,DESC"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content").value(hasSize(3)),
@@ -238,7 +238,7 @@ public class UserSavedControllerWithTypeTest {
     @DisplayName("GET - /item-type/{itemType}/type/{type}/user/{userId}?sort=ASC - Should return items sorted ASC")
     void getAllFromUserSortAsc() throws Exception {
         mockMvc.perform(get("/api/user-saved/item-type/PLAN/type/SAVE/user/1")
-                .param("sort", "createdAt,ASC"))
+                        .param("sort", "createdAt,ASC"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.content").value(hasSize(3)),

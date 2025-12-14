@@ -123,8 +123,7 @@ public class ActivityCategoryServiceTest {
 
     @Test
     void updateCategory_shouldPublishEvent()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         int categoryId = 1;
         ArgumentCaptor<CategoryClearCacheEvent> eventCaptor = ArgumentCaptor
                 .forClass(CategoryClearCacheEvent.class);
@@ -146,7 +145,7 @@ public class ActivityCategoryServiceTest {
         when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () ->
-            activityCategoryService.updateCategory(nonExistentCategoryId, patch));
+                activityCategoryService.updateCategory(nonExistentCategoryId, patch));
 
         verifyNoInteractions(validationService, mapper, applicationEventPublisher, cacheKeyGenerator);
         verify(repository, never()).save(category);
@@ -154,15 +153,14 @@ public class ActivityCategoryServiceTest {
 
     @Test
     void updateCategory_shouldThrowExceptionWhenPatchFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         int categoryId = 1;
         when(repository.findById(categoryId)).thenReturn(Optional.of(category));
         when(jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class))
                 .thenThrow(JsonPatchException.class);
 
         assertThrows(JsonPatchException.class, () ->
-            activityCategoryService.updateCategory(categoryId, patch));
+                activityCategoryService.updateCategory(categoryId, patch));
 
         verifyNoInteractions(validationService, applicationEventPublisher, cacheKeyGenerator);
         verify(repository, never()).save(category);
@@ -170,8 +168,7 @@ public class ActivityCategoryServiceTest {
 
     @Test
     void updateCategory_shouldThrowExceptionWhenValidationFails()
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         int categoryId = 1;
         when(repository.findById(categoryId)).thenReturn(Optional.of(category));
         when(jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class))
@@ -331,7 +328,7 @@ public class ActivityCategoryServiceTest {
         when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
 
         assertThrows(RecordNotFoundException.class, () ->
-                activityCategoryService.getCategory(nonExistentCategoryId));;
+                activityCategoryService.getCategory(nonExistentCategoryId));
         verifyNoInteractions(mapper);
     }
 }

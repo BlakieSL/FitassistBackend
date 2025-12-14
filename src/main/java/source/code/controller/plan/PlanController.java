@@ -38,8 +38,7 @@ public class PlanController {
     @PlanOwnerOrAdmin
     @PatchMapping("/{planId}")
     public ResponseEntity<Void> updatePlan(@PathVariable int planId, @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         planService.updatePlan(planId, patch);
         return ResponseEntity.noContent().build();
     }

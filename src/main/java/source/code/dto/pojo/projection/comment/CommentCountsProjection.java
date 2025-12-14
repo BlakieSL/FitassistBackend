@@ -2,10 +2,15 @@ package source.code.dto.pojo.projection.comment;
 
 public interface CommentCountsProjection {
     Integer getCommentId();
+
     Long getLikesCount();
+
     Long getDislikesCount();
+
     Long getIsLiked();
+
     Long getIsDisliked();
+
     Long getRepliesCount();
 
     default boolean isLiked() {

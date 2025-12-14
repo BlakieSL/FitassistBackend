@@ -23,7 +23,7 @@ import source.code.event.events.Food.FoodDeleteEvent;
 import source.code.event.events.Food.FoodUpdateEvent;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.cache.CacheNames;
-import source.code.mapper.food.FoodMapper;
+import source.code.mapper.FoodMapper;
 import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.food.Food;
 import source.code.repository.FoodRepository;
@@ -96,8 +96,7 @@ public class FoodServiceImpl implements FoodService {
     @Override
     @Transactional
     public void updateFood(int foodId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException
-    {
+            throws JsonPatchException, JsonProcessingException {
         Food food = find(foodId);
         FoodUpdateDto patchedFoodUpdateDto = applyPatchToFood(patch);
 

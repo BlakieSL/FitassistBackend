@@ -5,5 +5,6 @@ import source.code.dto.request.auth.PasswordResetRequestDto;
 
 public interface PasswordResetService {
     void requestPasswordReset(PasswordResetRequestDto request);
+
     void resetPassword(PasswordResetDto resetDto);
 }
