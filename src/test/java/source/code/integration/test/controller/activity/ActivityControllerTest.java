@@ -190,7 +190,7 @@ public class ActivityControllerTest {
                         jsonPath("$.met").value(3.5),
                         jsonPath("$.category.id").value(1),
                         jsonPath("$.category.name").value("Walking"),
-                        jsonPath("$.imageUrls").isArray(),
+                        jsonPath("$.images..imageUrls").isArray(),
                         jsonPath("$.savesCount").value(1),
                         jsonPath("$.saved").value(true)
                 );
