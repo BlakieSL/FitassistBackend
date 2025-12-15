@@ -1,4 +1,4 @@
-package source.code.controller.media;
+package source.code.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

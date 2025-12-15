@@ -17,6 +17,5 @@ public abstract class PlanCategoryMapper implements BaseMapper<PlanCategory> {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "planCategoryAssociations", ignore = true)
-    public abstract void updateEntityFromDto(
-            @MappingTarget PlanCategory category, CategoryUpdateDto request);
+    public abstract void updateEntityFromDto(@MappingTarget PlanCategory category, CategoryUpdateDto request);
 }

@@ -12,7 +12,7 @@ import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.dto.response.daily.DailyActivitiesResponseDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.exception.WeightRequiredException;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.mapper.daily.DailyActivityMapper;
 import source.code.model.activity.Activity;
 import source.code.model.daily.DailyCart;

@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
-import source.code.helper.search.IndexedEntity;
+import source.code.helper.IndexedEntity;
 import source.code.model.daily.DailyCartFood;
 import source.code.model.media.Media;
 import source.code.model.recipe.RecipeFood;

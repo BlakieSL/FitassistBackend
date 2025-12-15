@@ -13,10 +13,12 @@ import java.util.Optional;
 public interface ComplaintRepository extends JpaRepository<ComplaintBase, Integer> {
     @EntityGraph(value = "ComplaintBase.withoutAssociations")
     @NotNull
+    @Override
     Optional<ComplaintBase> findById(@NotNull Integer id);
 
     @EntityGraph(value = "ComplaintBase.withoutAssociations")
     @Query("SELECT cb FROM ComplaintBase cb")
     @NotNull
+    @Override
     Page<ComplaintBase> findAll(@NotNull Pageable pageable);
 }

@@ -9,20 +9,19 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DailyCartFoodRepository extends JpaRepository<DailyCartFood, Integer> {
-    List<DailyCartFood> findAllByDailyCartId(int dailyCartId);
-
     Optional<DailyCartFood> findByDailyCartIdAndFoodId(int dailyCartId, int foodId);
 
+
+    @EntityGraph(value = "DailyCartFood.withoutAssociations")
     @Query("""
                 SELECT dcf FROM DailyCartFood dcf
                 LEFT JOIN FETCH dcf.dailyCart dc
                 LEFT JOIN FETCH dc.user u
                 WHERE dcf.id = :id
             """)
-    @EntityGraph(value = "DailyCartFood.withoutAssociations")
     Optional<DailyCartFood> findByIdWithUser(int id);
 
-    @Query("SELECT dcf FROM DailyCartFood dcf WHERE dcf.id = :id")
     @EntityGraph(value = "DailyCartFood.withoutAssociations")
+    @Query("SELECT dcf FROM DailyCartFood dcf WHERE dcf.id = :id")
     Optional<DailyCartFood> findByIdWithoutAssociations(int id);
 }

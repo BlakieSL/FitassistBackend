@@ -2,20 +2,20 @@ package source.code.mapper;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.pojo.AuthorDto;
 import source.code.dto.request.forumThread.ForumThreadCreateDto;
 import source.code.dto.request.forumThread.ForumThreadUpdateDto;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.exception.RecordNotFoundException;
+import source.code.mapper.helper.CommonMappingHelper;
 import source.code.model.thread.ForumThread;
 import source.code.model.thread.ThreadCategory;
 import source.code.model.user.User;
 import source.code.repository.ThreadCategoryRepository;
 import source.code.repository.UserRepository;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {CommonMappingHelper.class})
 public abstract class ForumThreadMapper {
     @Autowired
     private UserRepository userRepository;
@@ -33,6 +33,7 @@ public abstract class ForumThreadMapper {
     @Mapping(target = "commentsCount", ignore = true)
     @Mapping(target = "category", source = "threadCategory", qualifiedByName = "threadCategoryToCategoryResponseDto")
     @Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
+    @Mapping(target = "saved", ignore = true)
     @Mapping(target = "interactionCreatedAt", ignore = true)
     public abstract ForumThreadSummaryDto toSummaryDto(ForumThread forumThread);
 
@@ -43,9 +44,10 @@ public abstract class ForumThreadMapper {
     @Mapping(target = "views", ignore = true)
     @Mapping(target = "comments", ignore = true)
     @Mapping(target = "userThreads", ignore = true)
+    @Mapping(target = "mediaList", ignore = true)
     public abstract ForumThread toEntity(ForumThreadCreateDto createDto, @Context int userId);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "threadCategory", ignore = true)
     @Mapping(target = "id", ignore = true)
@@ -53,6 +55,7 @@ public abstract class ForumThreadMapper {
     @Mapping(target = "views", ignore = true)
     @Mapping(target = "comments", ignore = true)
     @Mapping(target = "userThreads", ignore = true)
+    @Mapping(target = "mediaList", ignore = true)
     public abstract void update(@MappingTarget ForumThread forumThread, ForumThreadUpdateDto updateDto);
 
     @Named("threadCategoryToCategoryResponseDto")
@@ -70,13 +73,5 @@ public abstract class ForumThreadMapper {
     protected ThreadCategory threadCategoryIdToThreadCategory(Integer threadCategoryId) {
         return threadCategoryRepository.findById(threadCategoryId)
                 .orElseThrow(() -> RecordNotFoundException.of(ThreadCategory.class, threadCategoryId));
-    }
-
-    @Named("userToAuthorDto")
-    protected AuthorDto userToAuthorDto(User user) {
-        AuthorDto authorDto = new AuthorDto();
-        authorDto.setId(user.getId());
-        authorDto.setUsername(user.getUsername());
-        return authorDto;
     }
 }

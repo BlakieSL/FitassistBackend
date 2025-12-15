@@ -8,19 +8,17 @@ import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
 import source.code.dto.response.food.FoodResponseDto;
 import source.code.dto.response.food.FoodSummaryDto;
+import source.code.mapper.helper.CommonMappingHelper;
 import source.code.model.food.Food;
 import source.code.model.food.FoodCategory;
-import source.code.model.media.Media;
 import source.code.repository.FoodCategoryRepository;
-import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {CommonMappingHelper.class})
 public abstract class FoodMapper {
     @Autowired
     private RepositoryHelper repositoryHelper;
@@ -28,16 +26,17 @@ public abstract class FoodMapper {
     @Autowired
     private FoodCategoryRepository foodCategoryRepository;
 
-    @Autowired
-    private AwsS3Service awsS3Service;
-
     @Mapping(target = "category", source = "foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
     @Mapping(target = "imageName", source = "mediaList", qualifiedByName = "mapMediaToFirstImageName")
     @Mapping(target = "firstImageUrl", ignore = true)
+    @Mapping(target = "interactionCreatedAt", ignore = true)
+    @Mapping(target = "savesCount", ignore = true)
+    @Mapping(target = "saved", ignore = true)
     public abstract FoodSummaryDto toSummaryDto(Food food);
 
     @Mapping(target = "category", source = "foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
     @Mapping(target = "quantity", expression = "java(factor.multiply(new BigDecimal(100)))")
+    @Mapping(target = "dailyItemId", ignore = true)
     public abstract FoodCalculatedMacrosResponseDto toDtoWithFactor(Food food, @Context BigDecimal factor);
 
     @Mapping(target = "foodCategory", source = "categoryId", qualifiedByName = "categoryIdToFoodCategory")
@@ -45,6 +44,7 @@ public abstract class FoodMapper {
     @Mapping(target = "dailyCartFoods", ignore = true)
     @Mapping(target = "recipeFoods", ignore = true)
     @Mapping(target = "userFoods", ignore = true)
+    @Mapping(target = "mediaList", ignore = true)
     public abstract Food toEntity(FoodCreateDto dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -53,10 +53,11 @@ public abstract class FoodMapper {
     @Mapping(target = "dailyCartFoods", ignore = true)
     @Mapping(target = "recipeFoods", ignore = true)
     @Mapping(target = "userFoods", ignore = true)
+    @Mapping(target = "mediaList", ignore = true)
     public abstract void updateFood(@MappingTarget Food food, FoodUpdateDto request);
 
     @Mapping(target = "category", source = "foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
-    @Mapping(target = "imageUrls", ignore = true)
+    @Mapping(target = "images", source = "mediaList", qualifiedByName = "mapMediaListToImagesDto")
     @Mapping(target = "recipes", ignore = true)
     @Mapping(target = "savesCount", ignore = true)
     @Mapping(target = "saved", ignore = true)
@@ -77,14 +78,6 @@ public abstract class FoodMapper {
                 .setScale(1, RoundingMode.HALF_UP));
     }
 
-    @AfterMapping
-    protected void mapImageUrls(@MappingTarget FoodResponseDto dto, Food food) {
-        List<String> imageUrls = food.getMediaList().stream()
-                .map(media -> awsS3Service.getImage(media.getImageName()))
-                .toList();
-        dto.setImageUrls(imageUrls);
-    }
-
     @Named("categoryIdToFoodCategory")
     protected FoodCategory categoryIdToFoodCategory(int categoryId) {
         return repositoryHelper.find(foodCategoryRepository, FoodCategory.class, categoryId);
@@ -93,11 +86,5 @@ public abstract class FoodMapper {
     @Named("mapFoodCategoryToResponseDto")
     protected CategoryResponseDto mapFoodCategoryToResponseDto(FoodCategory category) {
         return new CategoryResponseDto(category.getId(), category.getName());
-    }
-
-    @Named("mapMediaToFirstImageName")
-    protected String mapMediaToFirstImageName(List<Media> mediaList) {
-        if (mediaList.isEmpty()) return null;
-        return mediaList.getFirst().getImageName();
     }
 }

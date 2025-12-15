@@ -1,6 +1,7 @@
 package source.code.service.implementation.helpers;
 
 import org.springframework.stereotype.Service;
+import source.code.dto.pojo.MediaImagesDto;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.ImageUrlPopulationService;
 
@@ -18,40 +19,12 @@ public class ImageUrlPopulationServiceImpl implements ImageUrlPopulationService 
     }
 
     @Override
-    public <T> void populateAuthorAndEntityImages(T dto,
-                                                  Function<T, String> authorImageNameGetter,
-                                                  BiConsumer<T, String> authorUrlSetter,
-                                                  Function<T, String> entityImageNameGetter,
-                                                  BiConsumer<T, String> entityUrlSetter) {
-        populateImageUrl(authorImageNameGetter.apply(dto), url -> authorUrlSetter.accept(dto, url));
-        populateImageUrl(entityImageNameGetter.apply(dto), url -> entityUrlSetter.accept(dto, url));
-    }
+    public void populateImageUrls(MediaImagesDto images) {
+        if (images == null || images.getImageNames() == null) return;
 
-    @Override
-    public <T> void populateAuthorImage(T dto,
-                                        Function<T, String> authorImageNameGetter,
-                                        BiConsumer<T, String> authorUrlSetter) {
-        populateImageUrl(authorImageNameGetter.apply(dto), url -> authorUrlSetter.accept(dto, url));
-    }
-
-    @Override
-    public <T, M> void populateFirstImageFromMediaList(T dto,
-                                                       List<M> mediaList,
-                                                       Function<M, String> imageNameExtractor,
-                                                       BiConsumer<T, String> imageNameSetter,
-                                                       BiConsumer<T, String> imageUrlSetter) {
-        if (mediaList != null && !mediaList.isEmpty()) {
-            String imageName = imageNameExtractor.apply(mediaList.getFirst());
-            if (imageName != null) {
-                imageNameSetter.accept(dto, imageName);
-                imageUrlSetter.accept(dto, s3Service.getImage(imageName));
-            }
-        }
-    }
-
-    private void populateImageUrl(String imageName, Consumer<String> urlSetter) {
-        if (imageName != null) {
-            urlSetter.accept(s3Service.getImage(imageName));
-        }
+        List<String> urls = images.getImageNames().stream()
+                .map(s3Service::getImage)
+                .toList();
+        images.setImageUrls(urls);
     }
 }

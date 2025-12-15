@@ -1,4 +1,4 @@
-package source.code.controller.complaint;
+package source.code.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;

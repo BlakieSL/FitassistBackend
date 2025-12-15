@@ -18,6 +18,8 @@ public abstract class WorkoutMapper {
     @Autowired
     private RepositoryHelper repositoryHelper;
 
+    @Mapping(target = "weekIndex", ignore = true)
+    @Mapping(target = "dayOfWeekIndex", ignore = true)
     public abstract WorkoutResponseDto toResponseDto(Workout workout);
 
     @Mapping(target = "plan", source = "planId", qualifiedByName = "mapPlanIdToPlan")

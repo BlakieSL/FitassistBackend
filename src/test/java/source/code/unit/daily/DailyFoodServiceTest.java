@@ -18,7 +18,7 @@ import source.code.dto.request.food.DailyCartFoodUpdateDto;
 import source.code.dto.response.daily.DailyFoodsResponseDto;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.mapper.daily.DailyFoodMapper;
 import source.code.model.daily.DailyCart;
 import source.code.model.daily.DailyCartFood;

@@ -34,6 +34,7 @@ public abstract class ComplaintMapper {
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "user", expression = "java(toUserFromUserId(userId))")
     @Mapping(target = "comment", source = "parentId", qualifiedByName = "toCommentFromParentId")
+    @Mapping(target = "mediaList", ignore = true)
     public abstract CommentComplaint toCommentComplaint(
             ComplaintCreateDto createDto, @Context int userId);
 
@@ -41,6 +42,7 @@ public abstract class ComplaintMapper {
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "user", expression = "java(toUserFromUserId(userId))")
     @Mapping(target = "thread", source = "parentId", qualifiedByName = "toThreadFromParentId")
+    @Mapping(target = "mediaList", ignore = true)
     public abstract ThreadComplaint toThreadComplaint(ComplaintCreateDto createDto, @Context int userId);
 
     @Mapping(target = "userId", source = "user.id")

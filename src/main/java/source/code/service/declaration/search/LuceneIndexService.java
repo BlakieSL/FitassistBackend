@@ -1,6 +1,6 @@
 package source.code.service.declaration.search;
 
-import source.code.helper.search.IndexedEntity;
+import source.code.helper.IndexedEntity;
 
 import java.util.List;
 

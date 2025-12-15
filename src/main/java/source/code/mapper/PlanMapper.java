@@ -2,20 +2,18 @@ package source.code.mapper;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.pojo.AuthorDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.request.plan.PlanUpdateDto;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.model.media.Media;
+import source.code.mapper.helper.CommonMappingHelper;
 import source.code.model.plan.Plan;
 import source.code.model.plan.PlanCategory;
 import source.code.model.plan.PlanCategoryAssociation;
 import source.code.model.text.PlanInstruction;
 import source.code.model.user.User;
-import source.code.repository.ExpertiseLevelRepository;
 import source.code.repository.PlanCategoryRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.RepositoryHelper;
@@ -25,7 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", uses = {WorkoutMapper.class})
+@Mapper(componentModel = "spring", uses = {WorkoutMapper.class, CommonMappingHelper.class})
 public abstract class PlanMapper {
     @Autowired
     private UserRepository userRepository;
@@ -33,8 +31,6 @@ public abstract class PlanMapper {
     private RepositoryHelper repositoryHelper;
     @Autowired
     private PlanCategoryRepository planCategoryRepository;
-    @Autowired
-    private ExpertiseLevelRepository expertiseLevelRepository;
 
     @Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
     @Mapping(target = "likesCount", ignore = true)
@@ -43,6 +39,7 @@ public abstract class PlanMapper {
     @Mapping(target = "liked", ignore = true)
     @Mapping(target = "disliked", ignore = true)
     @Mapping(target = "saved", ignore = true)
+    @Mapping(target = "totalWeeks", ignore = true)
     @Mapping(target = "categories", source = "planCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryResponseDto")
     @Mapping(target = "instructions", source = "planInstructions")
     @Mapping(target = "imageUrls", ignore = true)
@@ -53,7 +50,12 @@ public abstract class PlanMapper {
     @Mapping(target = "categories", source = "planCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryResponseDto")
     @Mapping(target = "firstImageUrl", ignore = true)
     @Mapping(target = "likesCount", ignore = true)
+    @Mapping(target = "dislikesCount", ignore = true)
     @Mapping(target = "savesCount", ignore = true)
+    @Mapping(target = "liked", ignore = true)
+    @Mapping(target = "disliked", ignore = true)
+    @Mapping(target = "saved", ignore = true)
+    @Mapping(target = "public", ignore = true)
     @Mapping(target = "interactionCreatedAt", ignore = true)
     public abstract PlanSummaryDto toSummaryDto(Plan plan);
 
@@ -63,6 +65,9 @@ public abstract class PlanMapper {
     @Mapping(target = "userPlans", ignore = true)
     @Mapping(target = "workouts", ignore = true)
     @Mapping(target = "planInstructions", ignore = true)
+    @Mapping(target = "views", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "mediaList", ignore = true)
     public abstract Plan toEntity(PlanCreateDto dto, @Context int userId);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -72,6 +77,9 @@ public abstract class PlanMapper {
     @Mapping(target = "userPlans", ignore = true)
     @Mapping(target = "workouts", ignore = true)
     @Mapping(target = "planInstructions", ignore = true)
+    @Mapping(target = "views", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "mediaList", ignore = true)
     public abstract void updatePlan(@MappingTarget Plan plan, PlanUpdateDto planUpdateDto);
 
     @AfterMapping
@@ -132,19 +140,5 @@ public abstract class PlanMapper {
                         association.getPlanCategory().getName()
                 ))
                 .toList();
-    }
-
-    @Named("mapMediaToFirstImageName")
-    protected String mapMediaToFirstImageName(List<Media> mediaList) {
-        if (mediaList.isEmpty()) return null;
-        return mediaList.getFirst().getImageName();
-    }
-
-    @Named("userToAuthorDto")
-    protected AuthorDto userToAuthorDto(User user) {
-        AuthorDto authorDto = new AuthorDto();
-        authorDto.setId(user.getId());
-        authorDto.setUsername(user.getUsername());
-        return authorDto;
     }
 }

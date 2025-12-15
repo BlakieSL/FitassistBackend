@@ -5,7 +5,7 @@ import source.code.dto.pojo.projection.SavesProjection;
 import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.helper.Enum.model.MediaConnectedEntity;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.repository.MediaRepository;
 import source.code.repository.UserExerciseRepository;
 import source.code.service.declaration.aws.AwsS3Service;
@@ -21,7 +21,9 @@ public class ExercisePopulationServiceImpl implements ExercisePopulationService 
     private final MediaRepository mediaRepository;
     private final AwsS3Service awsS3Service;
 
-    public ExercisePopulationServiceImpl(UserExerciseRepository userExerciseRepository, MediaRepository mediaRepository, AwsS3Service awsS3Service) {
+    public ExercisePopulationServiceImpl(UserExerciseRepository userExerciseRepository,
+                                         MediaRepository mediaRepository,
+                                         AwsS3Service awsS3Service) {
         this.userExerciseRepository = userExerciseRepository;
         this.mediaRepository = mediaRepository;
         this.awsS3Service = awsS3Service;

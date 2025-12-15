@@ -10,12 +10,11 @@ import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.dto.response.exercise.TargetMuscleResponseDto;
 import source.code.dto.response.text.ExerciseInstructionResponseDto;
 import source.code.dto.response.text.ExerciseTipResponseDto;
+import source.code.mapper.helper.CommonMappingHelper;
 import source.code.model.exercise.*;
-import source.code.model.media.Media;
 import source.code.model.text.ExerciseInstruction;
 import source.code.model.text.ExerciseTip;
 import source.code.repository.*;
-import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
 import java.util.List;
@@ -23,7 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {CommonMappingHelper.class})
 public abstract class ExerciseMapper {
     @Autowired
     private RepositoryHelper repositoryHelper;
@@ -49,6 +48,9 @@ public abstract class ExerciseMapper {
     @Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToCategoryResponseDto")
     @Mapping(target = "imageName", source = "mediaList", qualifiedByName = "mapMediaToFirstImageName")
     @Mapping(target = "firstImageUrl", ignore = true)
+    @Mapping(target = "interactionCreatedAt", ignore = true)
+    @Mapping(target = "savesCount", ignore = true)
+    @Mapping(target = "saved", ignore = true)
     public abstract ExerciseSummaryDto toSummaryDto(Exercise exercise);
 
     @Mapping(target = "targetMuscles", source = "exerciseTargetMuscles", qualifiedByName = "mapAssociationsToTargetMuscleResponseDto")
@@ -59,6 +61,9 @@ public abstract class ExerciseMapper {
     @Mapping(target = "instructions", source = "exerciseInstructions", qualifiedByName = "mapInstructionsToDto")
     @Mapping(target = "tips", source = "exerciseTips", qualifiedByName = "mapTipsToDto")
     @Mapping(target = "imageUrls", ignore = true)
+    @Mapping(target = "plans", ignore = true)
+    @Mapping(target = "savesCount", ignore = true)
+    @Mapping(target = "saved", ignore = true)
     public abstract ExerciseResponseDto toResponseDto(Exercise exercise);
 
     @Mapping(target = "exerciseTargetMuscles", source = "targetMusclesIds", qualifiedByName = "mapTargetMuscleIdsToAssociations")
@@ -71,6 +76,7 @@ public abstract class ExerciseMapper {
     @Mapping(target = "workoutSetExercises", ignore = true)
     @Mapping(target = "exerciseInstructions", ignore = true)
     @Mapping(target = "exerciseTips", ignore = true)
+    @Mapping(target = "mediaList", ignore = true)
     public abstract Exercise toEntity(ExerciseCreateDto dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -84,6 +90,7 @@ public abstract class ExerciseMapper {
     @Mapping(target = "workoutSetExercises", ignore = true)
     @Mapping(target = "exerciseInstructions", ignore = true)
     @Mapping(target = "exerciseTips", ignore = true)
+    @Mapping(target = "mediaList", ignore = true)
     public abstract void updateExerciseFromDto(@MappingTarget Exercise exercise, ExerciseUpdateDto request);
 
 
@@ -191,11 +198,5 @@ public abstract class ExerciseMapper {
         return tips.stream()
                 .map(tip -> new ExerciseTipResponseDto(tip.getId(), tip.getOrderIndex(), tip.getText()))
                 .toList();
-    }
-
-    @Named("mapMediaToFirstImageName")
-    protected String mapMediaToFirstImageName(List<Media> mediaList) {
-        if (mediaList.isEmpty()) return null;
-        return mediaList.getFirst().getImageName();
     }
 }

@@ -30,9 +30,7 @@ public abstract class DailyFoodMapper {
                                        DailyCartFood dailyCartFood) {
         Food food = dailyCartFood.getFood();
         BigDecimal quantity = dailyCartFood.getQuantity();
-
         BigDecimal divisor = new BigDecimal("100");
-
         BigDecimal factor = quantity.divide(divisor, 10, RoundingMode.HALF_UP);
 
         responseDto.setCalories(
@@ -51,17 +49,6 @@ public abstract class DailyFoodMapper {
                 food.getCarbohydrates().multiply(factor)
                         .setScale(1, RoundingMode.HALF_UP)
         );
-    }
-
-    public DailyFoodsResponseDto toDailyFoodsResponseDto(List<DailyCartFood> dailyCartFoods) {
-        return dailyCartFoods.stream()
-                .map(this::toFoodCalculatedMacrosResponseDto)
-                .collect(
-                        Collectors.collectingAndThen(
-                                Collectors.toList(),
-                                DailyFoodsResponseDto::create
-                        )
-                );
     }
 
     @Named("mapFoodCategoryToResponseDto")

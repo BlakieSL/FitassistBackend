@@ -16,7 +16,7 @@ import source.code.dto.request.filter.FilterDto;
 import source.code.dto.response.comment.CommentResponseDto;
 import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.mapper.CommentMapper;
 import source.code.model.thread.Comment;
 import source.code.repository.CommentRepository;

@@ -10,7 +10,7 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.helper.Enum.model.TextType;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.model.complaint.CommentComplaint;
 import source.code.model.complaint.ThreadComplaint;
 import source.code.model.media.Media;

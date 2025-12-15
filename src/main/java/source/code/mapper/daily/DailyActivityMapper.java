@@ -25,10 +25,8 @@ public abstract class DailyActivityMapper {
     public abstract ActivityCalculatedResponseDto toActivityCalculatedResponseDto(DailyCartActivity dailyCartActivity);
 
     @AfterMapping
-    protected void setCaloriesBurned(
-            @MappingTarget ActivityCalculatedResponseDto responseDto,
-            DailyCartActivity dailyCartActivity) {
-
+    protected void setCaloriesBurned(@MappingTarget ActivityCalculatedResponseDto responseDto,
+                                     DailyCartActivity dailyCartActivity) {
         BigDecimal caloriesBurned = calculationsService.calculateCaloriesBurned(
                 dailyCartActivity.getTime(),
                 dailyCartActivity.getWeight(),

@@ -4,17 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.pojo.MediaImagesDto;
 import source.code.dto.response.category.CategoryResponseDto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * fetched with db (findByIdWithMedia) -> mapper -> populated in createActivity and getActivity
  * <p>
- * Mapper sets: id, name, met, category, imageUrls (via @AfterMapping)
- * Population sets: savesCount, saved
+ * Mapper sets: id, name, met, category, images.imageNames
+ * Population sets: images.imageUrls, savesCount, saved
  * <p>
  * saved - when user not authenticated (userId=-1), always false since query matches on userId
  */
@@ -27,7 +27,7 @@ public class ActivityResponseDto implements Serializable {
     private String name;
     private BigDecimal met;
     private CategoryResponseDto category;
-    private List<String> imageUrls;
+    private MediaImagesDto images;
     private long savesCount;
     private boolean saved;
 }
