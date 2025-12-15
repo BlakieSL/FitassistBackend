@@ -11,7 +11,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.springframework.stereotype.Service;
-import source.code.helper.search.IndexedEntity;
+import source.code.helper.IndexedEntity;
 import source.code.service.declaration.search.LuceneIndexService;
 
 import java.io.IOException;

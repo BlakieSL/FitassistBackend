@@ -28,7 +28,7 @@ import source.code.event.events.Plan.PlanCreateEvent;
 import source.code.event.events.Plan.PlanDeleteEvent;
 import source.code.event.events.Plan.PlanUpdateEvent;
 import source.code.exception.RecordNotFoundException;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.mapper.PlanMapper;
 import source.code.model.plan.Plan;
 import source.code.repository.PlanCategoryAssociationRepository;

@@ -4,10 +4,11 @@ import org.springframework.stereotype.Service;
 import source.code.dto.pojo.projection.SavesProjection;
 import source.code.dto.response.food.FoodResponseDto;
 import source.code.dto.response.food.FoodSummaryDto;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.repository.UserFoodRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.food.FoodPopulationService;
+import source.code.service.declaration.helpers.ImageUrlPopulationService;
 
 import java.util.List;
 import java.util.Map;
@@ -17,10 +18,14 @@ import java.util.stream.Collectors;
 public class FoodPopulationServiceImpl implements FoodPopulationService {
     private final UserFoodRepository userFoodRepository;
     private final AwsS3Service s3Service;
+    private final ImageUrlPopulationService imageUrlPopulationService;
 
-    public FoodPopulationServiceImpl(UserFoodRepository userFoodRepository, AwsS3Service s3Service) {
+    public FoodPopulationServiceImpl(UserFoodRepository userFoodRepository,
+                                     AwsS3Service s3Service,
+                                     ImageUrlPopulationService imageUrlPopulationService) {
         this.userFoodRepository = userFoodRepository;
         this.s3Service = s3Service;
+        this.imageUrlPopulationService = imageUrlPopulationService;
     }
 
     @Override
@@ -29,6 +34,8 @@ public class FoodPopulationServiceImpl implements FoodPopulationService {
         SavesProjection savesData = userFoodRepository.findCountsAndInteractionsByFoodId(food.getId(), userId);
         food.setSavesCount(savesData.savesCount());
         food.setSaved(savesData.isSaved());
+
+        imageUrlPopulationService.populateImageUrls(food.getImages());
     }
 
     @Override

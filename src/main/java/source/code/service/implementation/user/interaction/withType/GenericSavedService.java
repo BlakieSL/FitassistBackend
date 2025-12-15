@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.User;
 import source.code.repository.UserRepository;

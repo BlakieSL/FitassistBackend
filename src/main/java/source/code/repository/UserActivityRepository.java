@@ -22,6 +22,7 @@ public interface UserActivityRepository extends JpaRepository<UserActivity, Inte
             JOIN FETCH a.activityCategory
             LEFT JOIN FETCH a.mediaList
             WHERE ua.user.id = :userId
+            
             """)
     Page<UserActivity> findAllByUserIdWithMedia(@Param("userId") int userId, Pageable pageable);
 

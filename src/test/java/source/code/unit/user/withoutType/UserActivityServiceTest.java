@@ -13,7 +13,7 @@ import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.mapper.ActivityMapper;
 import source.code.model.activity.Activity;
 import source.code.model.user.User;

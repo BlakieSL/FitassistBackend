@@ -14,7 +14,7 @@ import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.mapper.ForumThreadMapper;
 import source.code.model.thread.ForumThread;
 import source.code.model.user.User;

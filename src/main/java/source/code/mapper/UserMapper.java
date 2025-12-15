@@ -63,6 +63,7 @@ public abstract class UserMapper {
     @Mapping(target = "complaints", ignore = true)
     @Mapping(target = "recipes", ignore = true)
     @Mapping(target = "plans", ignore = true)
+    @Mapping(target = "mediaList", ignore = true)
     public abstract User toEntity(UserCreateDto dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -82,6 +83,7 @@ public abstract class UserMapper {
     @Mapping(target = "complaints", ignore = true)
     @Mapping(target = "recipes", ignore = true)
     @Mapping(target = "plans", ignore = true)
+    @Mapping(target = "mediaList", ignore = true)
     public abstract void updateUserFromDto(@MappingTarget User user, UserUpdateDto request);
 
     public void addDefaultRole(User user) {

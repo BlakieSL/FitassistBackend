@@ -12,8 +12,8 @@ import java.util.Optional;
 public interface MediaRepository extends JpaRepository<Media, Integer> {
     List<Media> findByParentIdAndParentType(int parentId, MediaConnectedEntity parentType);
 
-    Optional<Media> findFirstByParentIdAndParentTypeOrderByIdAsc(
-            @Param("parentId") int parentId, @Param("parentType") MediaConnectedEntity parentType);
+    Optional<Media> findFirstByParentIdAndParentTypeOrderByIdAsc(@Param("parentId") int parentId,
+                                                                 @Param("parentType") MediaConnectedEntity parentType);
 
     @Query("""
                 SELECT m FROM Media m

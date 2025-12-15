@@ -28,7 +28,7 @@ import source.code.event.events.Recipe.RecipeCreateEvent;
 import source.code.event.events.Recipe.RecipeDeleteEvent;
 import source.code.event.events.Recipe.RecipeUpdateEvent;
 import source.code.exception.RecordNotFoundException;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.mapper.recipe.RecipeMapper;
 import source.code.model.recipe.Recipe;
 import source.code.repository.RecipeRepository;

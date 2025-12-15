@@ -11,14 +11,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.request.complaint.ComplaintCreateDto;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.model.ComplaintSubClass;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.mapper.ComplaintMapper;
 import source.code.model.complaint.CommentComplaint;
 import source.code.model.complaint.ComplaintStatus;
 import source.code.model.complaint.ThreadComplaint;
-import source.code.repository.CommentComplaintRepository;
 import source.code.repository.ComplaintRepository;
-import source.code.repository.ThreadComplaintRepository;
 import source.code.service.implementation.complaint.ComplaintServiceImpl;
 
 import java.util.Optional;
@@ -37,10 +35,6 @@ public class ComplaintServiceTest {
     private ComplaintRepository complaintRepository;
     @Mock
     private ComplaintMapper complaintMapper;
-    @Mock
-    private CommentComplaintRepository commentComplaintRepository;
-    @Mock
-    private ThreadComplaintRepository threadComplaintRepository;
     @InjectMocks
     private ComplaintServiceImpl complaintService;
 
@@ -72,7 +66,7 @@ public class ComplaintServiceTest {
 
         complaintService.createComplaint(createDto);
 
-        verify(commentComplaintRepository).save(commentComplaint);
+        verify(complaintRepository).save(commentComplaint);
     }
 
     @Test
@@ -83,7 +77,7 @@ public class ComplaintServiceTest {
 
         complaintService.createComplaint(createDto);
 
-        verify(threadComplaintRepository).save(threadComplaint);
+        verify(complaintRepository).save(threadComplaint);
     }
 
     @Test
@@ -95,7 +89,7 @@ public class ComplaintServiceTest {
 
         assertEquals(ComplaintStatus.RESOLVED, commentComplaint.getStatus());
         verify(complaintRepository, times(1)).findById(any(Integer.class));
-        verify(commentComplaintRepository, times(1)).save(commentComplaint);
+        verify(complaintRepository, times(1)).save(commentComplaint);
     }
 
     @Test

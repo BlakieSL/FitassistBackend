@@ -17,6 +17,6 @@ public abstract class ActivityCategoryMapper implements BaseMapper<ActivityCateg
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "activities", ignore = true)
-    public abstract void updateEntityFromDto(
-            @MappingTarget ActivityCategory activityCategory, CategoryUpdateDto request);
+    public abstract void updateEntityFromDto(@MappingTarget ActivityCategory activityCategory,
+                                             CategoryUpdateDto request);
 }

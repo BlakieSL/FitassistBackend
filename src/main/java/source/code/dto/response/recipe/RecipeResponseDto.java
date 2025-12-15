@@ -51,5 +51,4 @@ public class RecipeResponseDto implements Serializable {
     private List<RecipeInstructionResponseDto> instructions;
     private List<CategoryResponseDto> categories;
     private List<String> imageUrls;
-
 }
