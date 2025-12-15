@@ -154,7 +154,7 @@ public class FoodControllerTest {
                         jsonPath("$.id").value(1),
                         jsonPath("$.name").value("Apple"),
                         jsonPath("$.calories").value(95),
-                        jsonPath("$.imageUrls").isArray(),
+                        jsonPath("$.images.imageUrls").isArray(),
                         jsonPath("$.savesCount").value(2),
                         jsonPath("$.saved").value(true),
                         jsonPath("$.recipes").isArray(),
