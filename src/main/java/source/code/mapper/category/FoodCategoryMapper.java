@@ -17,6 +17,5 @@ public abstract class FoodCategoryMapper implements BaseMapper<FoodCategory> {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "foods", ignore = true)
-    public abstract void updateEntityFromDto(
-            @MappingTarget FoodCategory category, CategoryUpdateDto request);
+    public abstract void updateEntityFromDto(@MappingTarget FoodCategory category, CategoryUpdateDto request);
 }

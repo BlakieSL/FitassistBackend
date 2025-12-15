@@ -13,10 +13,10 @@ import source.code.model.exercise.Exercise;
 import java.util.List;
 import java.util.Optional;
 
-public interface ExerciseRepository
-        extends JpaRepository<Exercise, Integer>, JpaSpecificationExecutor<Exercise> {
+public interface ExerciseRepository extends JpaRepository<Exercise, Integer>, JpaSpecificationExecutor<Exercise> {
     @EntityGraph(value = "Exercise.summary")
     @NotNull
+    @Override
     Page<Exercise> findAll(Specification<Exercise> spec, @NotNull Pageable pageable);
 
     @EntityGraph(value = "Exercise.withoutAssociations")
@@ -24,16 +24,16 @@ public interface ExerciseRepository
     List<Exercise> findAllWithoutAssociations();
 
     @Query("""
-            SELECT e FROM Exercise e
-            LEFT JOIN FETCH e.expertiseLevel
-            LEFT JOIN FETCH e.equipment
-            LEFT JOIN FETCH e.mechanicsType
-            LEFT JOIN FETCH e.forceType
-            LEFT JOIN FETCH e.exerciseTargetMuscles etm
-            LEFT JOIN FETCH etm.targetMuscle
-            LEFT JOIN FETCH e.exerciseInstructions
-            LEFT JOIN FETCH e.exerciseTips
-            WHERE e.id = :id
+                SELECT e FROM Exercise e
+                LEFT JOIN FETCH e.expertiseLevel
+                LEFT JOIN FETCH e.equipment
+                LEFT JOIN FETCH e.mechanicsType
+                LEFT JOIN FETCH e.forceType
+                LEFT JOIN FETCH e.exerciseTargetMuscles etm
+                LEFT JOIN FETCH etm.targetMuscle
+                LEFT JOIN FETCH e.exerciseInstructions
+                LEFT JOIN FETCH e.exerciseTips
+                WHERE e.id = :id
             """)
     Optional<Exercise> findByIdWithDetails(int id);
 }

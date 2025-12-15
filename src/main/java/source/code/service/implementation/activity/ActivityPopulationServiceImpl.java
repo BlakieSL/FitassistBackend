@@ -4,10 +4,11 @@ import org.springframework.stereotype.Service;
 import source.code.dto.pojo.projection.SavesProjection;
 import source.code.dto.response.activity.ActivityResponseDto;
 import source.code.dto.response.activity.ActivitySummaryDto;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.repository.UserActivityRepository;
 import source.code.service.declaration.activity.ActivityPopulationService;
 import source.code.service.declaration.aws.AwsS3Service;
+import source.code.service.declaration.helpers.ImageUrlPopulationService;
 
 import java.util.List;
 import java.util.Map;
@@ -17,10 +18,14 @@ import java.util.stream.Collectors;
 public class ActivityPopulationServiceImpl implements ActivityPopulationService {
     private final UserActivityRepository userActivityRepository;
     private final AwsS3Service s3Service;
+    private final ImageUrlPopulationService imageUrlPopulationService;
 
-    public ActivityPopulationServiceImpl(UserActivityRepository userActivityRepository, AwsS3Service s3Service) {
+    public ActivityPopulationServiceImpl(UserActivityRepository userActivityRepository,
+                                         AwsS3Service s3Service,
+                                         ImageUrlPopulationService imageUrlPopulationService) {
         this.userActivityRepository = userActivityRepository;
         this.s3Service = s3Service;
+        this.imageUrlPopulationService = imageUrlPopulationService;
     }
 
     @Override
@@ -30,6 +35,8 @@ public class ActivityPopulationServiceImpl implements ActivityPopulationService 
         SavesProjection savesData = userActivityRepository.findSavesCountAndUserSaved(activity.getId(), userId);
         activity.setSavesCount(savesData.savesCount());
         activity.setSaved(savesData.isSaved());
+
+        imageUrlPopulationService.populateImageUrls(activity.getImages());
     }
 
     @Override

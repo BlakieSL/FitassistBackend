@@ -2,12 +2,12 @@ package source.code.mapper;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.pojo.AuthorDto;
 import source.code.dto.request.comment.CommentCreateDto;
 import source.code.dto.request.comment.CommentUpdateDto;
 import source.code.dto.response.comment.CommentResponseDto;
 import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.exception.RecordNotFoundException;
+import source.code.mapper.helper.CommonMappingHelper;
 import source.code.model.thread.Comment;
 import source.code.model.thread.ForumThread;
 import source.code.model.user.User;
@@ -17,7 +17,7 @@ import source.code.repository.UserRepository;
 
 import java.util.Optional;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {CommonMappingHelper.class})
 public abstract class CommentMapper {
     @Autowired
     private UserRepository userRepository;
@@ -41,6 +41,8 @@ public abstract class CommentMapper {
     @Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
     @Mapping(target = "likesCount", ignore = true)
     @Mapping(target = "dislikesCount", ignore = true)
+    @Mapping(target = "liked", ignore = true)
+    @Mapping(target = "disliked", ignore = true)
     @Mapping(target = "repliesCount", ignore = true)
     @Mapping(target = "interactionCreatedAt", ignore = true)
     public abstract CommentSummaryDto toSummaryDto(Comment comment);
@@ -52,9 +54,10 @@ public abstract class CommentMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "replies", ignore = true)
     @Mapping(target = "userCommentLikes", ignore = true)
+    @Mapping(target = "mediaList", ignore = true)
     public abstract Comment toEntity(CommentCreateDto createDto, @Context int userId);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "thread", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "parentComment", ignore = true)
@@ -62,6 +65,7 @@ public abstract class CommentMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "replies", ignore = true)
     @Mapping(target = "userCommentLikes", ignore = true)
+    @Mapping(target = "mediaList", ignore = true)
     public abstract void update(@MappingTarget Comment comment, CommentUpdateDto updateDto);
 
     @Named("threadToThreadId")
@@ -94,13 +98,5 @@ public abstract class CommentMapper {
                 .map(id -> commentRepository.findById(id)
                         .orElseThrow(() -> RecordNotFoundException.of(Comment.class, id)))
                 .orElse(null);
-    }
-
-    @Named("userToAuthorDto")
-    protected AuthorDto userToAuthorDto(User user) {
-        AuthorDto authorDto = new AuthorDto();
-        authorDto.setId(user.getId());
-        authorDto.setUsername(user.getUsername());
-        return authorDto;
     }
 }

@@ -6,7 +6,7 @@ import source.code.dto.pojo.projection.recipe.RecipeIngredientCountProjection;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.helper.Enum.model.MediaConnectedEntity;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.model.media.Media;
 import source.code.repository.MediaRepository;
 import source.code.repository.RecipeFoodRepository;

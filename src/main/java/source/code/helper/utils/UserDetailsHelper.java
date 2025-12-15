@@ -1,4 +1,4 @@
-package source.code.helper.user;
+package source.code.helper.utils;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

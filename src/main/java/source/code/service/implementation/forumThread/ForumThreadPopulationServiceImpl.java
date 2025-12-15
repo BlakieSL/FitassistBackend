@@ -5,7 +5,7 @@ import source.code.dto.pojo.projection.thread.ForumThreadCountsProjection;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 import source.code.helper.Enum.model.MediaConnectedEntity;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.model.media.Media;
 import source.code.repository.MediaRepository;
 import source.code.repository.UserThreadRepository;

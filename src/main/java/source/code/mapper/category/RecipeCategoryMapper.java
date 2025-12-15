@@ -17,6 +17,5 @@ public abstract class RecipeCategoryMapper implements BaseMapper<RecipeCategory>
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "recipeCategoryAssociations", ignore = true)
-    public abstract void updateEntityFromDto(
-            @MappingTarget RecipeCategory category, CategoryUpdateDto request);
+    public abstract void updateEntityFromDto(@MappingTarget RecipeCategory category, CategoryUpdateDto request);
 }

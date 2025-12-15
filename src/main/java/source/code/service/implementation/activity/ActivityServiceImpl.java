@@ -24,7 +24,7 @@ import source.code.event.events.Activity.ActivityUpdateEvent;
 import source.code.exception.RecordNotFoundException;
 import source.code.exception.WeightRequiredException;
 import source.code.helper.Enum.cache.CacheNames;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.mapper.ActivityMapper;
 import source.code.model.activity.Activity;
 import source.code.model.user.User;

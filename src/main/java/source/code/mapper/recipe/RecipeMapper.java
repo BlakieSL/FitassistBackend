@@ -2,7 +2,6 @@ package source.code.mapper.recipe;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import source.code.dto.pojo.AuthorDto;
 import source.code.dto.pojo.RecipeFoodDto;
 import source.code.dto.request.recipe.RecipeCreateDto;
 import source.code.dto.request.recipe.RecipeUpdateDto;
@@ -11,7 +10,7 @@ import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.dto.response.text.RecipeInstructionResponseDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.model.media.Media;
+import source.code.mapper.helper.CommonMappingHelper;
 import source.code.model.recipe.Recipe;
 import source.code.model.recipe.RecipeCategory;
 import source.code.model.recipe.RecipeCategoryAssociation;
@@ -29,7 +28,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {CommonMappingHelper.class})
 public abstract class RecipeMapper {
     @Autowired
     private UserRepository userRepository;
@@ -58,6 +57,10 @@ public abstract class RecipeMapper {
     @Mapping(target = "likesCount", ignore = true)
     @Mapping(target = "dislikesCount", ignore = true)
     @Mapping(target = "savesCount", ignore = true)
+    @Mapping(target = "liked", ignore = true)
+    @Mapping(target = "disliked", ignore = true)
+    @Mapping(target = "saved", ignore = true)
+    @Mapping(target = "public", ignore = true)
     @Mapping(target = "ingredientsCount", ignore = true)
     @Mapping(target = "categories", source = "recipeCategoryAssociations", qualifiedByName = "mapAssociationsToCategoryResponseDto")
     @Mapping(target = "interactionCreatedAt", ignore = true)
@@ -69,6 +72,9 @@ public abstract class RecipeMapper {
     @Mapping(target = "userRecipes", ignore = true)
     @Mapping(target = "recipeFoods", ignore = true)
     @Mapping(target = "recipeInstructions", ignore = true)
+    @Mapping(target = "views", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "mediaList", ignore = true)
     public abstract Recipe toEntity(RecipeCreateDto dto, @Context int userId);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -78,6 +84,9 @@ public abstract class RecipeMapper {
     @Mapping(target = "userRecipes", ignore = true)
     @Mapping(target = "recipeFoods", ignore = true)
     @Mapping(target = "recipeInstructions", ignore = true)
+    @Mapping(target = "views", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "mediaList", ignore = true)
     public abstract void updateRecipe(@MappingTarget Recipe recipe, RecipeUpdateDto request);
 
     @AfterMapping
@@ -148,20 +157,6 @@ public abstract class RecipeMapper {
                         recipeFood.getFood().getCalories()
                 ))
                 .toList();
-    }
-
-    @Named("mapMediaToFirstImageName")
-    protected String mapMediaToFirstImageName(List<Media> mediaList) {
-        if (mediaList.isEmpty()) return null;
-        return mediaList.getFirst().getImageName();
-    }
-
-    @Named("userToAuthorDto")
-    protected AuthorDto userToAuthorDto(User user) {
-        AuthorDto authorDto = new AuthorDto();
-        authorDto.setId(user.getId());
-        authorDto.setUsername(user.getUsername());
-        return authorDto;
     }
 
     @AfterMapping

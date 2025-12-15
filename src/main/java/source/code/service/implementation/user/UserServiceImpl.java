@@ -14,7 +14,7 @@ import source.code.dto.request.user.UserCreateDto;
 import source.code.dto.request.user.UserUpdateDto;
 import source.code.dto.response.user.UserResponseDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.helper.user.UserDetailsHelper;
+import source.code.helper.utils.UserDetailsHelper;
 import source.code.mapper.UserMapper;
 import source.code.model.user.User;
 import source.code.repository.UserRepository;

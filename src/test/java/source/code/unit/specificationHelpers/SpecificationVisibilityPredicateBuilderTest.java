@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.pojo.FilterCriteria;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.service.implementation.specificationHelpers.SpecificationVisibilityPredicateBuilderImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

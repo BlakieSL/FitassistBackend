@@ -13,7 +13,7 @@ import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.mapper.ExerciseMapper;
 import source.code.model.exercise.Exercise;
 import source.code.model.media.Media;

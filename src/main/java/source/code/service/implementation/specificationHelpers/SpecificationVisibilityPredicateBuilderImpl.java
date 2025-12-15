@@ -5,7 +5,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Component;
 import source.code.dto.pojo.FilterCriteria;
-import source.code.helper.user.AuthorizationUtil;
+import source.code.helper.utils.AuthorizationUtil;
 import source.code.service.declaration.specificationHelpers.SpecificationVisibilityPredicateBuilder;
 
 @Component

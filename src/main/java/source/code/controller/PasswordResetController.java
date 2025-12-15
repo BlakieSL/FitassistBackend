@@ -1,4 +1,4 @@
-package source.code.controller.auth;
+package source.code.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
