@@ -30,9 +30,7 @@ public class CommentController {
     }
 
     @PostMapping
-    public ResponseEntity<CommentResponseDto> createComment(
-            @Valid @RequestBody CommentCreateDto createDto
-    ) {
+    public ResponseEntity<CommentResponseDto> createComment(@Valid @RequestBody CommentCreateDto createDto) {
         CommentResponseDto responseDto = commentService.createComment(createDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
@@ -59,10 +57,10 @@ public class CommentController {
     }
 
     @GetMapping("/top/{threadId}")
-    public ResponseEntity<List<CommentResponseDto>> getTopCommentsForThread(
-            @PathVariable int threadId
-    ) {
-        List<CommentResponseDto> responseDtos = commentService.getTopCommentsForThread(threadId);
+    public ResponseEntity<Page<CommentResponseDto>> getTopCommentsForThread(
+            @PathVariable int threadId,
+            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<CommentResponseDto> responseDtos = commentService.getTopCommentsForThread(threadId, pageable);
         return ResponseEntity.ok(responseDtos);
     }
 

@@ -25,6 +25,11 @@ import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.comment.CommentServiceImpl;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -173,15 +178,17 @@ public class CommentServiceTest {
     @Test
     void getTopCommentsForThread_shouldReturnTopComments() {
         int threadId = 1;
+        Pageable pageable = PageRequest.of(0, 100);
         List<Comment> comments = List.of(comment);
-        List<CommentResponseDto> responseDtos = List.of(responseDto);
-        when(commentRepository.findAllByThreadIdAndParentCommentNull(threadId))
-                .thenReturn(comments);
+        Page<Comment> commentPage = new PageImpl<>(comments, pageable, comments.size());
+        when(commentRepository.findAllByThreadIdAndParentCommentNull(threadId, pageable))
+                .thenReturn(commentPage);
         when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
 
-        List<CommentResponseDto> result = commentService.getTopCommentsForThread(threadId);
+        Page<CommentResponseDto> result = commentService.getTopCommentsForThread(threadId, pageable);
 
-        assertEquals(responseDtos, result);
-        verify(commentPopulationService).populateList(responseDtos);
+        assertEquals(1, result.getTotalElements());
+        assertEquals(responseDto, result.getContent().get(0));
+        verify(commentPopulationService).populateList(List.of(responseDto));
     }
 }

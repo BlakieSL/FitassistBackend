@@ -22,7 +22,7 @@ public interface CommentService {
 
     CommentResponseDto getComment(int commentId);
 
-    List<CommentResponseDto> getTopCommentsForThread(int threadId);
+    Page<CommentResponseDto> getTopCommentsForThread(int threadId, Pageable pageable);
 
     List<CommentResponseDto> getReplies(int commentId);
 

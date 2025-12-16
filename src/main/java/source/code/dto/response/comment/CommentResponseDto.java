@@ -39,6 +39,7 @@ public class CommentResponseDto implements Serializable {
 
     private long likesCount;
     private long dislikesCount;
+    private long repliesCount;
 
     private Boolean liked;
     private Boolean disliked;
