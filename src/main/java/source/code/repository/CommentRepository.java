@@ -22,7 +22,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaS
     Optional<Comment> findById(@NotNull Integer id);
 
     @EntityGraph(value = "Comment.summary")
-    List<Comment> findAllByThreadIdAndParentCommentNull(int threadId);
+    Page<Comment> findAllByThreadIdAndParentCommentNull(int threadId, Pageable pageable);
 
     @Query(value = """
             WITH RECURSIVE comment_tree AS (
