@@ -178,20 +178,20 @@ public class CommentControllerTest {
         mockMvc.perform(get("/api/comments/top/1"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$[0].id").value(1),
-                        jsonPath("$[0].text").value("I really like MyFitnessPal for tracking")
+                        jsonPath("$.content[0].id").value(1),
+                        jsonPath("$.content[0].text").value("I really like MyFitnessPal for tracking")
                 );
     }
 
     @WithMockUser
     @CommentSql
     @Test
-    @DisplayName("GET - /top/{threadId} - Should return empty list when thread does not exist")
+    @DisplayName("GET - /top/{threadId} - Should return empty page when thread does not exist")
     public void getTopCommentsForThreadNotFound() throws Exception {
         mockMvc.perform(get("/api/comments/top/999"))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$").isEmpty()
+                        jsonPath("$.content").isEmpty()
                 );
     }
 

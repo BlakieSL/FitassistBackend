@@ -110,12 +110,16 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentResponseDto> getTopCommentsForThread(int threadId) {
-        List<CommentResponseDto> dtos = commentRepository.findAllByThreadIdAndParentCommentNull(threadId).stream()
+    public Page<CommentResponseDto> getTopCommentsForThread(int threadId, Pageable pageable) {
+        Page<Comment> commentPage = commentRepository.findAllByThreadIdAndParentCommentNull(threadId, pageable);
+
+        List<CommentResponseDto> dtos = commentPage.getContent().stream()
                 .map(commentMapper::toResponseDto)
                 .toList();
+
         commentPopulationService.populateList(dtos);
-        return dtos;
+
+        return new PageImpl<>(dtos, pageable, commentPage.getTotalElements());
     }
 
     @Override

@@ -137,6 +137,7 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
             comment.setDislikesCount(0L);
             comment.setLiked(false);
             comment.setDisliked(false);
+            comment.setRepliesCount(0L);
             return;
         }
 
@@ -145,6 +146,7 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
         comment.setDislikesCount(counts.dislikesCount());
         comment.setLiked(counts.isLiked());
         comment.setDisliked(counts.isDisliked());
+        comment.setRepliesCount(counts.repliesCount());
     }
 
     private void populateAuthorImages(List<CommentResponseDto> comments) {
@@ -186,11 +188,13 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
                 comment.setDislikesCount(counts.dislikesCount());
                 comment.setLiked(counts.isLiked());
                 comment.setDisliked(counts.isDisliked());
+                comment.setRepliesCount(counts.repliesCount());
             } else {
                 comment.setLikesCount(0L);
                 comment.setDislikesCount(0L);
                 comment.setLiked(false);
                 comment.setDisliked(false);
+                comment.setRepliesCount(0L);
             }
         });
     }
