@@ -10,6 +10,7 @@ import source.code.service.implementation.category.ActivityCategoryServiceImpl;
 import source.code.service.implementation.category.FoodCategoryServiceImpl;
 import source.code.service.implementation.category.PlanCategoryServiceImpl;
 import source.code.service.implementation.category.RecipeCategoryServiceImpl;
+import source.code.service.implementation.category.ThreadCategoryServiceImpl;
 import source.code.service.implementation.selector.CategorySelectorServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -25,6 +26,8 @@ public class CategorySelectorServiceTest {
     private RecipeCategoryServiceImpl recipeCategoryService;
     @Mock
     private PlanCategoryServiceImpl planCategoryService;
+    @Mock
+    private ThreadCategoryServiceImpl threadCategoryService;
 
     private CategorySelectorServiceImpl categorySelectorService;
 
@@ -34,7 +37,8 @@ public class CategorySelectorServiceTest {
                 foodCategoryService,
                 activityCategoryService,
                 recipeCategoryService,
-                planCategoryService
+                planCategoryService,
+                threadCategoryService
         );
     }
 
@@ -56,5 +60,10 @@ public class CategorySelectorServiceTest {
     @Test
     void getService_shouldReturnPlanCategoryService() {
         assertSame(planCategoryService, categorySelectorService.getService(CategoryType.PLAN));
+    }
+
+    @Test
+    void getService_shouldReturnThreadCategoryService() {
+        assertSame(threadCategoryService, categorySelectorService.getService(CategoryType.FORUM_THREAD));
     }
 }
