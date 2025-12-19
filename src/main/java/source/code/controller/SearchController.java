@@ -2,8 +2,8 @@ package source.code.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import source.code.dto.response.search.SearchResponseDto;
 import source.code.service.declaration.search.LuceneSearchService;
@@ -19,15 +19,10 @@ public class SearchController {
         this.luceneSearchService = luceneSearchService;
     }
 
-    @GetMapping("/{query}")
-    public ResponseEntity<List<SearchResponseDto>> search(@PathVariable String query) {
-        List<SearchResponseDto> result = luceneSearchService.search(query);
+    @GetMapping
+    public ResponseEntity<List<SearchResponseDto>> search(@RequestParam String query,
+                                                          @RequestParam(required = false) String type) {
+        List<SearchResponseDto> result = luceneSearchService.search(query, type);
         return ResponseEntity.ok(result);
-    }
-
-    @GetMapping("/foods/{query}")
-    public ResponseEntity<List<SearchResponseDto>> searchFood(@PathVariable String query) {
-        List<SearchResponseDto> foods = luceneSearchService.searchFood(query);
-        return ResponseEntity.ok(foods);
     }
 }
