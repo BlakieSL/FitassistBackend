@@ -45,12 +45,11 @@ public class SearchControllerTest {
     @WithMockUser
     @SearchSql
     @Test
-    @DisplayName("GET - /{query} - Should search for all 5 entities")
+    @DisplayName("GET - ?query= - Should search for all 5 entities")
     void searchAllEntities() throws Exception {
         luceneInitialLoadService.indexAll();
 
-        String query = "text";
-        mockMvc.perform(get("/api/search/{query}", query))
+        mockMvc.perform(get("/api/search").param("query", "text"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$", hasSize(5))
@@ -60,12 +59,11 @@ public class SearchControllerTest {
     @WithMockUser
     @SearchSql
     @Test
-    @DisplayName("GET - /{query} - Should return empty list for non-existent query")
+    @DisplayName("GET - ?query= - Should return empty list for non-existent query")
     void searchNonExistentQuery() throws Exception {
         luceneInitialLoadService.indexAll();
 
-        String query = "nonexistent";
-        mockMvc.perform(get("/api/search/{query}", query))
+        mockMvc.perform(get("/api/search").param("query", "nonexistent"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$", hasSize(0))
@@ -75,12 +73,11 @@ public class SearchControllerTest {
     @WithMockUser
     @SearchSql
     @Test
-    @DisplayName("GET - /{query} - Should perform fuzzy search for 1 incorrect character")
+    @DisplayName("GET - ?query= - Should perform fuzzy search for 1 incorrect character")
     void searchWithFuzzyQuery() throws Exception {
         luceneInitialLoadService.indexAll();
 
-        String query = "testi";
-        mockMvc.perform(get("/api/search/{query}", query))
+        mockMvc.perform(get("/api/search").param("query", "testi"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$", hasSize(5))
@@ -90,12 +87,11 @@ public class SearchControllerTest {
     @WithMockUser
     @SearchSql
     @Test
-    @DisplayName("GET - /{query} - Should perform fuzzy search for 2 incorrect characters}")
+    @DisplayName("GET - ?query= - Should perform fuzzy search for 2 incorrect characters")
     void searchWithFuzzyQueryTwoChars() throws Exception {
         luceneInitialLoadService.indexAll();
 
-        String query = "tesit";
-        mockMvc.perform(get("/api/search/{query}", query))
+        mockMvc.perform(get("/api/search").param("query", "tesit"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$", hasSize(5))
@@ -105,12 +101,13 @@ public class SearchControllerTest {
     @WithMockUser
     @SearchSql
     @Test
-    @DisplayName("GET - /foods/{query} - Should search for food entities")
+    @DisplayName("GET - ?query=&type= - Should search for food entities")
     void searchFoodEntities() throws Exception {
         luceneInitialLoadService.indexAll();
 
-        String query = "Greek";
-        mockMvc.perform(get("/api/search/foods/{query}", query))
+        mockMvc.perform(get("/api/search")
+                        .param("query", "Greek")
+                        .param("type", "Food"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$", hasSize(1))
@@ -120,15 +117,29 @@ public class SearchControllerTest {
     @WithMockUser
     @SearchSql
     @Test
-    @DisplayName("GET - /foods/{query} - Should return empty list for activity name")
+    @DisplayName("GET - ?query=&type= - Should return empty list for activity name when filtering by Food")
     void searchNonExistentFoodQuery() throws Exception {
         luceneInitialLoadService.indexAll();
 
-        String query = "Running";
-        mockMvc.perform(get("/api/search/foods/{query}", query))
+        mockMvc.perform(get("/api/search")
+                        .param("query", "Running")
+                        .param("type", "Food"))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$", hasSize(0))
                 );
+    }
+
+    @WithMockUser
+    @SearchSql
+    @Test
+    @DisplayName("GET - ?query=&type= - Should return 400 for invalid type")
+    void searchWithInvalidType() throws Exception {
+        luceneInitialLoadService.indexAll();
+
+        mockMvc.perform(get("/api/search")
+                        .param("query", "text")
+                        .param("type", "InvalidType"))
+                .andExpect(status().isBadRequest());
     }
 }
