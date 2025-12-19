@@ -25,9 +25,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryType}")
-    public ResponseEntity<List<CategoryResponseDto>> getAllCategories(
-            @PathVariable CategoryType categoryType
-    ) {
+    public ResponseEntity<List<CategoryResponseDto>> getAllCategories(@PathVariable CategoryType categoryType) {
         CategoryService categoryService = categorySelectorService.getService(categoryType);
         List<CategoryResponseDto> dto = categoryService.getAllCategories();
         return ResponseEntity.ok(dto);

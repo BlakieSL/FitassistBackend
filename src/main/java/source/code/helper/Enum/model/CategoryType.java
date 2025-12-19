@@ -4,5 +4,6 @@ public enum CategoryType {
     FOOD,
     ACTIVITY,
     RECIPE,
-    PLAN
+    PLAN,
+    THREAD
 }
