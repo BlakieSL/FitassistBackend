@@ -65,4 +65,30 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaS
     @Modifying
     @Query(nativeQuery = true, value = "DELETE FROM comment WHERE id = :id")
     void deleteCommentDirectly(int id);
+
+    @Query(value = """
+            WITH RECURSIVE ancestor_tree AS (
+                SELECT
+                    c.id,
+                    c.thread_id,
+                    c.parent_comment_id
+                FROM comment c
+                WHERE c.id = :commentId
+
+                UNION ALL
+
+                SELECT
+                    c.id,
+                    c.thread_id,
+                    c.parent_comment_id
+                FROM comment c
+                INNER JOIN ancestor_tree at ON c.id = at.parent_comment_id
+            )
+            SELECT
+                at.id,
+                at.thread_id
+            FROM ancestor_tree at
+            ORDER BY at.id
+            """, nativeQuery = true)
+    List<Object[]> findCommentAncestry(Integer commentId);
 }

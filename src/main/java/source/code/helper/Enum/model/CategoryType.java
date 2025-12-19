@@ -5,5 +5,5 @@ public enum CategoryType {
     ACTIVITY,
     RECIPE,
     PLAN,
-    THREAD
+    FORUM_THREAD
 }
