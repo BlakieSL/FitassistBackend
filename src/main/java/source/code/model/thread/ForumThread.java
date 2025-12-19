@@ -35,7 +35,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ForumThread {
-    private static final int TITLE_MAX_LENGTH = 50;
+    private static final int TITLE_MAX_LENGTH = 255;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +43,7 @@ public class ForumThread {
 
     @NotBlank
     @Size(max = TITLE_MAX_LENGTH)
-    @Column(nullable = false, length = TITLE_MAX_LENGTH)
+    @Column(nullable = false)
     private String title;
 
     @NotNull

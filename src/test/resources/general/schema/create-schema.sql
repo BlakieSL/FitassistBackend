@@ -285,8 +285,8 @@ create table thread
     id                 int auto_increment
         primary key,
     created_at         datetime(6)  not null,
-    text               varchar(255) not null,
-    title              varchar(50)  not null,
+    text               TEXT not null,
+    title              varchar(255)  not null,
     views              bigint       not null default 0,
     thread_category_id int          not null,
     user_id            int          not null,
