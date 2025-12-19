@@ -12,6 +12,7 @@ public class CategorySelectorServiceImpl implements CategorySelectorService {
     private final CategoryService activityCategoryService;
     private final CategoryService recipeCategoryService;
     private final CategoryService planCategoryService;
+    private final CategoryService threadCategoryService;
 
     public CategorySelectorServiceImpl(@Qualifier("foodCategoryService")
                                        CategoryService foodCategoryService,
@@ -20,11 +21,14 @@ public class CategorySelectorServiceImpl implements CategorySelectorService {
                                        @Qualifier("recipeCategoryService")
                                        CategoryService recipeCategoryService,
                                        @Qualifier("planCategoryService")
-                                       CategoryService planCategoryService) {
+                                       CategoryService planCategoryService,
+                                       @Qualifier("threadCategoryService")
+                                       CategoryService threadCategoryService) {
         this.foodCategoryService = foodCategoryService;
         this.activityCategoryService = activityCategoryService;
         this.recipeCategoryService = recipeCategoryService;
         this.planCategoryService = planCategoryService;
+        this.threadCategoryService = threadCategoryService;
     }
 
     @Override
@@ -34,6 +38,7 @@ public class CategorySelectorServiceImpl implements CategorySelectorService {
             case ACTIVITY -> activityCategoryService;
             case RECIPE -> recipeCategoryService;
             case PLAN -> planCategoryService;
+            case THREAD -> threadCategoryService;
         };
     }
 }
