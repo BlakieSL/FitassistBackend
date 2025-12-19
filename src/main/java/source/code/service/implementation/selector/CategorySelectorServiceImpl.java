@@ -38,7 +38,7 @@ public class CategorySelectorServiceImpl implements CategorySelectorService {
             case ACTIVITY -> activityCategoryService;
             case RECIPE -> recipeCategoryService;
             case PLAN -> planCategoryService;
-            case THREAD -> threadCategoryService;
+            case FORUM_THREAD -> threadCategoryService;
         };
     }
 }

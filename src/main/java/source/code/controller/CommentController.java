@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import source.code.annotation.CommentOwnerOrAdmin;
 import source.code.dto.request.comment.CommentCreateDto;
 import source.code.dto.request.filter.FilterDto;
+import source.code.dto.response.comment.CommentAncestryDto;
 import source.code.dto.response.comment.CommentResponseDto;
 import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.service.declaration.comment.CommentService;
@@ -77,5 +78,11 @@ public class CommentController {
     ) {
         Page<CommentSummaryDto> comments = commentService.getFilteredComments(filterDto, pageable);
         return ResponseEntity.ok(comments);
+    }
+
+    @GetMapping("/ancestry/{commentId}")
+    public ResponseEntity<CommentAncestryDto> getCommentAncestry(@PathVariable int commentId) {
+        CommentAncestryDto ancestry = commentService.getCommentAncestry(commentId);
+        return ResponseEntity.ok(ancestry);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import source.code.dto.request.comment.CommentCreateDto;
 import source.code.dto.request.filter.FilterDto;
+import source.code.dto.response.comment.CommentAncestryDto;
 import source.code.dto.response.comment.CommentResponseDto;
 import source.code.dto.response.comment.CommentSummaryDto;
 
@@ -27,4 +28,6 @@ public interface CommentService {
     List<CommentResponseDto> getReplies(int commentId);
 
     Page<CommentSummaryDto> getFilteredComments(FilterDto filter, Pageable pageable);
+
+    CommentAncestryDto getCommentAncestry(int commentId);
 }
