@@ -52,7 +52,7 @@ public class ForumThread {
     private LocalDateTime createdAt;
 
     @NotBlank
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String text;
 
     @Column(nullable = false)

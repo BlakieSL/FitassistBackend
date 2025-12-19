@@ -13,6 +13,7 @@ import source.code.dto.pojo.AuthorDto;
 import source.code.dto.request.comment.CommentCreateDto;
 import source.code.dto.request.comment.CommentUpdateDto;
 import source.code.dto.request.filter.FilterDto;
+import source.code.dto.response.comment.CommentAncestryDto;
 import source.code.dto.response.comment.CommentResponseDto;
 import source.code.dto.response.comment.CommentSummaryDto;
 import source.code.exception.RecordNotFoundException;
@@ -164,6 +165,25 @@ public class CommentServiceImpl implements CommentService {
                 .filter(dto -> dto.getParentCommentId() != null && dto.getParentCommentId() == commentId)
                 .sorted(Comparator.comparing(CommentResponseDto::getId))
                 .toList();
+    }
+
+    @Override
+    public CommentAncestryDto getCommentAncestry(int commentId) {
+        List<Object[]> results = commentRepository.findCommentAncestry(commentId);
+
+        if (results.isEmpty()) {
+            throw new RecordNotFoundException(Comment.class, commentId);
+        }
+
+        Integer threadId = null;
+        List<Integer> ancestorIds = new ArrayList<>();
+
+        for (var row : results) {
+            ancestorIds.add((Integer) row[0]);
+            threadId = (Integer) row[1];
+        }
+
+        return new CommentAncestryDto(threadId, ancestorIds);
     }
 
     private CommentUpdateDto applyPatchToComment(JsonMergePatch patch)
