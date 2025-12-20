@@ -23,9 +23,7 @@ public class ComplaintController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createComplaint(
-            @Valid @RequestBody ComplaintCreateDto complaintCreateDto
-    ) {
+    public ResponseEntity<Void> createComplaint(@Valid @RequestBody ComplaintCreateDto complaintCreateDto) {
         complaintService.createComplaint(complaintCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -40,8 +38,7 @@ public class ComplaintController {
     @AdminOnly
     @GetMapping("/all")
     public ResponseEntity<Page<ComplaintResponseDto>> getAllComplaints(
-            @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
-    ) {
+            @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<ComplaintResponseDto> response = complaintService.getAllComplaints(pageable);
         return ResponseEntity.ok(response);
     }

@@ -29,6 +29,8 @@ public class CommentSummaryDto implements BaseUserEntity, Serializable {
     private Integer id;
     private String text;
 
+    private Integer threadId;
+
     private AuthorDto author;
 
     private LocalDateTime interactionCreatedAt;
