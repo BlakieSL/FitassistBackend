@@ -5,7 +5,8 @@ public enum LikesAndSaves {
     USER_FOODS("userFoods"),
     USER_RECIPES("userRecipes"),
     USER_PLANS("userPlans"),
-    USER_ACTIVITIES("userActivities");
+    USER_ACTIVITIES("userActivities"),
+    USER_THREADS("userThreads");
 
     private final String fieldName;
 

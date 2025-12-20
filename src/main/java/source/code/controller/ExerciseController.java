@@ -30,18 +30,14 @@ public class ExerciseController {
 
     @AdminOnly
     @PostMapping
-    public ResponseEntity<ExerciseResponseDto> createExercise(
-            @Valid @RequestBody ExerciseCreateDto dto
-    ) {
+    public ResponseEntity<ExerciseResponseDto> createExercise(@Valid @RequestBody ExerciseCreateDto dto) {
         ExerciseResponseDto savedExercise = exerciseService.createExercise(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedExercise);
     }
 
     @AdminOnly
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateExercise(
-            @PathVariable int id,
-            @RequestBody JsonMergePatch patch)
+    public ResponseEntity<Void> updateExercise(@PathVariable int id, @RequestBody JsonMergePatch patch)
             throws JsonPatchException, JsonProcessingException {
         exerciseService.updateExercise(id, patch);
         return ResponseEntity.noContent().build();
@@ -63,8 +59,7 @@ public class ExerciseController {
     @PostMapping("/filter")
     public ResponseEntity<Page<ExerciseSummaryDto>> getFilteredExercises(
             @Valid @RequestBody FilterDto filter,
-            @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
-    ) {
+            @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<ExerciseSummaryDto> filtered = exerciseService.getFilteredExercises(filter, pageable);
         return ResponseEntity.ok(filtered);
     }
