@@ -28,7 +28,7 @@ public abstract class CommentMapper {
     @Autowired
     private ForumThreadRepository forumThreadRepository;
 
-    @Mapping(target = "threadId", source = "thread", qualifiedByName = "threadToThreadId")
+    @Mapping(target = "threadId", source = "thread.id")
     @Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
     @Mapping(target = "parentCommentId", source = "parentComment", qualifiedByName = "parentCommentToParentCommentId")
     @Mapping(target = "replies", ignore = true)
@@ -39,6 +39,7 @@ public abstract class CommentMapper {
     public abstract CommentResponseDto toResponseDto(Comment comment);
 
     @Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
+    @Mapping(target = "threadId", source = "thread.id")
     @Mapping(target = "likesCount", ignore = true)
     @Mapping(target = "dislikesCount", ignore = true)
     @Mapping(target = "liked", ignore = true)
@@ -67,11 +68,6 @@ public abstract class CommentMapper {
     @Mapping(target = "userCommentLikes", ignore = true)
     @Mapping(target = "mediaList", ignore = true)
     public abstract void update(@MappingTarget Comment comment, CommentUpdateDto updateDto);
-
-    @Named("threadToThreadId")
-    protected Integer threadToThreadId(ForumThread forumThread) {
-        return forumThread.getId();
-    }
 
     @Named("parentCommentToParentCommentId")
     protected Integer parentCommentToParentCommentId(Comment parentComment) {
