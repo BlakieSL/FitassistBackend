@@ -154,7 +154,10 @@ public abstract class RecipeMapper {
                         recipeFood.getQuantity(),
                         recipeFood.getFood().getId(),
                         recipeFood.getFood().getName(),
-                        recipeFood.getFood().getCalories()
+                        recipeFood.getFood().getCalories(),
+                        recipeFood.getFood().getProtein(),
+                        recipeFood.getFood().getFat(),
+                        recipeFood.getFood().getCarbohydrates()
                 ))
                 .toList();
     }
