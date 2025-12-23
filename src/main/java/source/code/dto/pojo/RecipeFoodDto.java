@@ -17,4 +17,8 @@ public class RecipeFoodDto {
     private Integer foodId;
     private String foodName;
     private BigDecimal foodCalories;
+    private BigDecimal foodProtein;
+    private BigDecimal foodFat;
+    private BigDecimal foodCarbohydrates;
+
 }
