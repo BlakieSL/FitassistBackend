@@ -56,7 +56,7 @@ public class FoodControllerTest {
                         status().isCreated(),
                         jsonPath("$.id").exists(),
                         jsonPath("$.name").value("Apple"),
-                        jsonPath("$.calories").value(95)
+                        jsonPath("$.foodMacros.calories").value(95)
                 );
     }
 
@@ -153,7 +153,7 @@ public class FoodControllerTest {
                         status().isOk(),
                         jsonPath("$.id").value(1),
                         jsonPath("$.name").value("Apple"),
-                        jsonPath("$.calories").value(95),
+                        jsonPath("$.foodMacros.calories").value(95),
                         jsonPath("$.images.imageUrls").isArray(),
                         jsonPath("$.savesCount").value(2),
                         jsonPath("$.saved").value(true),
@@ -205,7 +205,7 @@ public class FoodControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.calories").value(95)
+                        jsonPath("$.foodMacros.calories").value(95)
                 );
     }
 
