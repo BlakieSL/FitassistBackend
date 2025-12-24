@@ -8,12 +8,14 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.springframework.stereotype.Service;
+import source.code.dto.pojo.FoodMacros;
 import source.code.dto.response.search.SearchResponseDto;
 import source.code.service.declaration.search.LuceneSearchService;
 
 import source.code.exception.InvalidFilterValueException;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +73,18 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
         int id = Integer.parseInt(doc.get("id"));
         String name = doc.get("name");
         String type = doc.get("type");
-        return SearchResponseDto.of(id, name, type);
+
+        FoodMacros foodMacros = null;
+        if ("Food".equals(type)) {
+            String calories = doc.get("calories");
+            String protein = doc.get("protein");
+            String fat = doc.get("fat");
+            String carbohydrates = doc.get("carbohydrates");
+
+            foodMacros = FoodMacros.of(new BigDecimal(calories), new BigDecimal(protein),
+                    new BigDecimal(fat), new BigDecimal(carbohydrates));
+        }
+
+        return SearchResponseDto.of(id, name, type, foodMacros);
     }
 }

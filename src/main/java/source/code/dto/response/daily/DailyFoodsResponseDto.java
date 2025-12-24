@@ -28,22 +28,22 @@ public class DailyFoodsResponseDto implements Serializable {
 
     public static DailyFoodsResponseDto create(List<FoodCalculatedMacrosResponseDto> foods) {
         BigDecimal totalCalories = foods.stream()
-                .map(FoodCalculatedMacrosResponseDto::getCalories)
+                .map(food -> food.getFoodMacros().getCalories())
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 .setScale(1, RoundingMode.HALF_UP);
 
         BigDecimal totalCarbohydrates = foods.stream()
-                .map(FoodCalculatedMacrosResponseDto::getCarbohydrates)
+                .map(food -> food.getFoodMacros().getCarbohydrates())
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 .setScale(1, RoundingMode.HALF_UP);
 
         BigDecimal totalProtein = foods.stream()
-                .map(FoodCalculatedMacrosResponseDto::getProtein)
+                .map(food -> food.getFoodMacros().getProtein())
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 .setScale(1, RoundingMode.HALF_UP);
 
         BigDecimal totalFat = foods.stream()
-                .map(FoodCalculatedMacrosResponseDto::getFat)
+                .map(food -> food.getFoodMacros().getFat())
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 .setScale(1, RoundingMode.HALF_UP);
 
