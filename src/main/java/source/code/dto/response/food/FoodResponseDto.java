@@ -4,18 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.pojo.FoodMacros;
 import source.code.dto.pojo.MediaImagesDto;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
  * fetched with db (findByIdWithMedia) -> mapper -> populated in createFood and getFood
  * <p>
- * Mapper sets: id, name, calories, protein, fat, carbohydrates, category, images.imageNames
+ * Mapper sets: id, name, foodMacros, category, images.imageNames
  * Population sets: images.imageUrls, savesCount, saved
  * recipes - set manually only in getFood via recipeRepository.findAllWithDetailsByFoodId -> recipeMapper -> recipePopulationService
  * <p>
@@ -28,10 +28,7 @@ import java.util.List;
 public class FoodResponseDto implements Serializable {
     private Integer id;
     private String name;
-    private BigDecimal calories;
-    private BigDecimal protein;
-    private BigDecimal fat;
-    private BigDecimal carbohydrates;
+    private FoodMacros foodMacros;
     private CategoryResponseDto category;
     private MediaImagesDto images;
     private List<RecipeSummaryDto> recipes;

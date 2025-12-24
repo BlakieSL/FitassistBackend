@@ -3,6 +3,7 @@ package source.code.service.implementation.search;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
@@ -12,6 +13,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.springframework.stereotype.Service;
 import source.code.helper.IndexedEntity;
+import source.code.model.food.Food;
 import source.code.service.declaration.search.LuceneIndexService;
 
 import java.io.IOException;
@@ -77,6 +79,14 @@ public class LuceneIndexServiceImpl implements LuceneIndexService {
         doc.add(new StringField("id", entity.getId().toString(), Field.Store.YES));
         doc.add(new TextField("name", entity.getName(), Field.Store.YES));
         doc.add(new StringField("type", entity.getClassName(), Field.Store.YES));
+
+        if (entity instanceof Food food) {
+            doc.add(new StoredField("calories", food.getCalories().toString()));
+            doc.add(new StoredField("protein", food.getProtein().toString()));
+            doc.add(new StoredField("fat", food.getFat().toString()));
+            doc.add(new StoredField("carbohydrates", food.getCarbohydrates().toString()));
+        }
+
         return doc;
     }
 

@@ -1,6 +1,7 @@
 package source.code.mapper.daily;
 
 import org.mapstruct.*;
+import source.code.dto.pojo.FoodMacros;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.daily.DailyFoodsResponseDto;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
@@ -18,10 +19,7 @@ public abstract class DailyFoodMapper {
     @Mapping(target = "dailyItemId", source = "id")
     @Mapping(target = "id", source = "food.id")
     @Mapping(target = "name", source = "food.name")
-    @Mapping(target = "calories", ignore = true)
-    @Mapping(target = "protein", ignore = true)
-    @Mapping(target = "fat", ignore = true)
-    @Mapping(target = "carbohydrates", ignore = true)
+    @Mapping(target = "foodMacros", ignore = true)
     @Mapping(target = "category", source = "food.foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
     public abstract FoodCalculatedMacrosResponseDto toFoodCalculatedMacrosResponseDto(DailyCartFood dailyCartFood);
 
@@ -33,22 +31,16 @@ public abstract class DailyFoodMapper {
         BigDecimal divisor = new BigDecimal("100");
         BigDecimal factor = quantity.divide(divisor, 10, RoundingMode.HALF_UP);
 
-        responseDto.setCalories(
-                food.getCalories().multiply(factor)
-                        .setScale(1, RoundingMode.HALF_UP)
-        );
-        responseDto.setProtein(
-                food.getProtein().multiply(factor)
-                        .setScale(1, RoundingMode.HALF_UP)
-        );
-        responseDto.setFat(
-                food.getFat().multiply(factor)
-                        .setScale(1, RoundingMode.HALF_UP)
-        );
-        responseDto.setCarbohydrates(
-                food.getCarbohydrates().multiply(factor)
-                        .setScale(1, RoundingMode.HALF_UP)
-        );
+        BigDecimal calories = food.getCalories().multiply(factor)
+                .setScale(1, RoundingMode.HALF_UP);
+        BigDecimal protein = food.getProtein().multiply(factor)
+                .setScale(1, RoundingMode.HALF_UP);
+        BigDecimal fat = food.getFat().multiply(factor)
+                .setScale(1, RoundingMode.HALF_UP);
+        BigDecimal carbohydrates = food.getCarbohydrates().multiply(factor)
+                .setScale(1, RoundingMode.HALF_UP);
+
+        responseDto.setFoodMacros(FoodMacros.of(calories, protein, fat, carbohydrates));
     }
 
     @Named("mapFoodCategoryToResponseDto")

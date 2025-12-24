@@ -1,11 +1,11 @@
 package source.code.dto.response.food;
 
 import lombok.*;
+import source.code.dto.pojo.FoodMacros;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.helper.BaseUserEntity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * fetched with db (findByRecipeId) -> mapper -> populated in RecipeFoodService.getFoodsByRecipe
  * fetched with db (findAllByUserIdWithMedia) -> mapper + set interactedWithAt -> populated in UserFoodService.getAllFromUser
  * <p>
- * Mapper sets: id, name, calories, protein, fat, carbohydrates, category, imageName (from mediaList)
+ * Mapper sets: id, name, foodMacros, category, imageName (from mediaList)
  * Population sets: firstImageUrl, savesCount, saved
  * <p>
  * userFoodInteractionCreatedAt - only set in UserFoodService.getAllFromUser
@@ -28,10 +28,7 @@ public class FoodSummaryDto implements BaseUserEntity, Serializable {
     private Integer id;
     @ToString.Include
     private String name;
-    private BigDecimal calories;
-    private BigDecimal protein;
-    private BigDecimal fat;
-    private BigDecimal carbohydrates;
+    private FoodMacros foodMacros;
     private CategoryResponseDto category;
     private String imageName;
     private String firstImageUrl;

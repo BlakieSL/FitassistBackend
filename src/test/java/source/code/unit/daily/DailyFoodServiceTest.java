@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import source.code.dto.pojo.FoodMacros;
 import source.code.dto.request.food.DailyCartFoodCreateDto;
 import source.code.dto.request.food.DailyCartFoodGetDto;
 import source.code.dto.request.food.DailyCartFoodUpdateDto;
@@ -267,10 +268,13 @@ public class DailyFoodServiceTest {
         dailyCart.getDailyCartFoods().add(dailyCartFood);
 
         FoodCalculatedMacrosResponseDto calculatedResponseDto = new FoodCalculatedMacrosResponseDto();
-        calculatedResponseDto.setCalories(BigDecimal.valueOf(100));
-        calculatedResponseDto.setCarbohydrates(BigDecimal.valueOf(20));
-        calculatedResponseDto.setProtein(BigDecimal.valueOf(10));
-        calculatedResponseDto.setFat(BigDecimal.valueOf(5));
+        FoodMacros foodMacros = FoodMacros.of(
+                BigDecimal.valueOf(100),
+                BigDecimal.valueOf(10),
+                BigDecimal.valueOf(5),
+                BigDecimal.valueOf(20)
+        );
+        calculatedResponseDto.setFoodMacros(foodMacros);
 
         mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
         when(dailyCartRepository.findByUserIdAndDateWithFoodAssociations(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyCart));
