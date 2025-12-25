@@ -112,15 +112,30 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Page<CommentResponseDto> getTopCommentsForThread(int threadId, Pageable pageable) {
-        Page<Comment> commentPage = commentRepository.findAllByThreadIdAndParentCommentNull(threadId, pageable);
+        var sortOrder = pageable.getSort().isSorted()
+            ? pageable.getSort().stream().toList().getFirst()
+            : null;
 
-        List<CommentResponseDto> dtos = commentPage.getContent().stream()
+        List<Comment> comments;
+        long total;
+
+        if (sortOrder != null && "likesCount".equals(sortOrder.getProperty())) {
+            comments = commentRepository.findTopCommentsSortedByLikesCount(threadId,
+                    sortOrder.getDirection().name(), pageable.getPageSize(), (int) pageable.getOffset());
+            total = commentRepository.countTopCommentsByThreadId(threadId);
+        } else {
+            Page<Comment> commentPage = commentRepository.findAllByThreadIdAndParentCommentNull(threadId, pageable);
+            comments = commentPage.getContent();
+            total = commentPage.getTotalElements();
+        }
+
+        List<CommentResponseDto> dtos = comments.stream()
                 .map(commentMapper::toResponseDto)
                 .toList();
 
         commentPopulationService.populateList(dtos);
 
-        return new PageImpl<>(dtos, pageable, commentPage.getTotalElements());
+        return new PageImpl<>(dtos, pageable, total);
     }
 
     @Override
