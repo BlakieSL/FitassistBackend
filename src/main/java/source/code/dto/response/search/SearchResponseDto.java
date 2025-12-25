@@ -17,4 +17,5 @@ public class SearchResponseDto implements Serializable {
     private String name;
     private String type;
     private FoodMacros foodMacros;
+    private String firstImageUrl;
 }
