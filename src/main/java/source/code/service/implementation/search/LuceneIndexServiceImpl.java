@@ -85,6 +85,11 @@ public class LuceneIndexServiceImpl implements LuceneIndexService {
             doc.add(new StoredField("protein", food.getProtein().toString()));
             doc.add(new StoredField("fat", food.getFat().toString()));
             doc.add(new StoredField("carbohydrates", food.getCarbohydrates().toString()));
+
+            if (!food.getMediaList().isEmpty()) {
+                String firstImageName = food.getMediaList().getFirst().getImageName();
+                doc.add(new StoredField("imageName", firstImageName));
+            }
         }
 
         return doc;

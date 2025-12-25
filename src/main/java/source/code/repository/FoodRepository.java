@@ -30,4 +30,8 @@ public interface FoodRepository extends JpaRepository<Food, Integer>, JpaSpecifi
                 WHERE f.id = :id
             """)
     Optional<Food> findByIdWithMedia(@Param("id") int id);
+
+    @EntityGraph(value = "Food.summary")
+    @NotNull
+    List<Food> findAll();
 }
