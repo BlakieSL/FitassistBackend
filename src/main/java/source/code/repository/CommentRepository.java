@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 import source.code.model.thread.Comment;
 
 import java.util.List;
@@ -91,4 +92,31 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaS
             ORDER BY at.id
             """, nativeQuery = true)
     List<Object[]> findCommentAncestry(Integer commentId);
+
+    @Query(value = """
+            SELECT c.*, u.*, t.*
+            FROM comment c
+            INNER JOIN user u ON c.user_id = u.id
+            INNER JOIN forum_thread t ON c.thread_id = t.id
+            LEFT JOIN user_comment uc ON uc.comment_id = c.id AND uc.type = 'LIKE'
+            WHERE c.thread_id = :threadId
+            AND c.parent_comment_id IS NULL
+            GROUP BY c.id, u.id, t.id
+            ORDER BY
+                CASE WHEN :direction = 'DESC' THEN COUNT(uc.id) END DESC,
+                CASE WHEN :direction = 'ASC' THEN COUNT(uc.id) END
+            LIMIT :limit OFFSET :offset
+            """, nativeQuery = true)
+    List<Comment> findTopCommentsSortedByLikesCount(@Param("threadId") int threadId,
+                                                     @Param("direction") String direction,
+                                                     @Param("limit") int limit,
+                                                     @Param("offset") int offset);
+
+    @Query(value = """
+            SELECT COUNT(DISTINCT c.id)
+            FROM comment c
+            WHERE c.thread_id = :threadId
+            AND c.parent_comment_id IS NULL
+            """, nativeQuery = true)
+    long countTopCommentsByThreadId(@Param("threadId") int threadId);
 }

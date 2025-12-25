@@ -134,10 +134,12 @@ public class FoodServiceTest {
 
     @Test
     void updateFood_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+        food.setId(foodId);
         when(repositoryHelper.find(foodRepository, Food.class, foodId)).thenReturn(food);
         when(jsonPatchService.createFromPatch(patch, FoodUpdateDto.class))
                 .thenReturn(patchedDto);
         when(foodRepository.save(food)).thenReturn(food);
+        when(foodRepository.findByIdWithMedia(foodId)).thenReturn(Optional.of(food));
 
         foodService.updateFood(foodId, patch);
 
@@ -150,10 +152,12 @@ public class FoodServiceTest {
     void updateFood_shouldPublishEvent() throws JsonPatchException, JsonProcessingException {
         ArgumentCaptor<FoodUpdateEvent> eventCaptor = ArgumentCaptor.forClass(FoodUpdateEvent.class);
 
+        food.setId(foodId);
         when(repositoryHelper.find(foodRepository, Food.class, foodId)).thenReturn(food);
         when(jsonPatchService.createFromPatch(patch, FoodUpdateDto.class))
                 .thenReturn(patchedDto);
         when(foodRepository.save(food)).thenReturn(food);
+        when(foodRepository.findByIdWithMedia(foodId)).thenReturn(Optional.of(food));
 
         foodService.updateFood(foodId, patch);
 
@@ -331,22 +335,22 @@ public class FoodServiceTest {
     @Test
     void getAllFoodEntities_shouldReturnAllFoodEntities() {
         List<Food> foods = List.of(food);
-        when(foodRepository.findAllWithoutAssociations()).thenReturn(foods);
+        when(foodRepository.findAll()).thenReturn(foods);
 
         List<Food> result = foodService.getAllFoodEntities();
 
         assertEquals(foods, result);
-        verify(foodRepository).findAllWithoutAssociations();
+        verify(foodRepository).findAll();
     }
 
     @Test
     void getAllFoodEntities_shouldReturnEmptyListWhenNoFoods() {
         List<Food> foods = List.of();
-        when(foodRepository.findAllWithoutAssociations()).thenReturn(foods);
+        when(foodRepository.findAll()).thenReturn(foods);
 
         List<Food> result = foodService.getAllFoodEntities();
 
         assertTrue(result.isEmpty());
-        verify(foodRepository).findAllWithoutAssociations();
+        verify(foodRepository).findAll();
     }
 }
