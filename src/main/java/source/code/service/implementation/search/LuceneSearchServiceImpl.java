@@ -13,6 +13,7 @@ import source.code.dto.response.search.SearchResponseDto;
 import source.code.service.declaration.search.LuceneSearchService;
 
 import source.code.exception.InvalidFilterValueException;
+import source.code.service.declaration.aws.AwsS3Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -23,6 +24,11 @@ import java.util.Set;
 
 @Service
 public class LuceneSearchServiceImpl implements LuceneSearchService {
+    private final AwsS3Service s3Service;
+
+    public LuceneSearchServiceImpl(AwsS3Service s3Service) {
+        this.s3Service = s3Service;
+    }
     private static final String PATH = "src/main/resources/lucene-index";
     private static final Set<String> VALID_TYPES = Set.of("Food", "Activity", "Recipe", "Plan", "Exercise");
 
@@ -75,6 +81,8 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
         String type = doc.get("type");
 
         FoodMacros foodMacros = null;
+        String firstImageUrl = null;
+
         if ("Food".equals(type)) {
             String calories = doc.get("calories");
             String protein = doc.get("protein");
@@ -83,8 +91,13 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
 
             foodMacros = FoodMacros.of(new BigDecimal(calories), new BigDecimal(protein),
                     new BigDecimal(fat), new BigDecimal(carbohydrates));
+
+            String imageName = doc.get("imageName");
+            if (imageName != null) {
+                firstImageUrl = s3Service.getImage(imageName);
+            }
         }
 
-        return SearchResponseDto.of(id, name, type, foodMacros);
+        return SearchResponseDto.of(id, name, type, foodMacros, firstImageUrl);
     }
 }

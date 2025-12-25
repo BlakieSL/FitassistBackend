@@ -85,12 +85,18 @@ public class FoodServiceImpl implements FoodService {
     @Override
     @Transactional
     public FoodResponseDto createFood(FoodCreateDto request) {
-        Food food = foodRepository.save(foodMapper.toEntity(request));
-        applicationEventPublisher.publishEvent(FoodCreateEvent.of(this, food));
+        Food saved = foodRepository.save(foodMapper.toEntity(request));
 
         foodRepository.flush();
 
-        return findAndMap(food.getId());
+        Food food = foodRepository.findByIdWithMedia(saved.getId())
+                .orElseThrow(() -> RecordNotFoundException.of(Food.class, saved.getId()));
+
+        applicationEventPublisher.publishEvent(FoodCreateEvent.of(this, food));
+
+        FoodResponseDto dto = foodMapper.toDetailedResponseDto(food);
+        foodPopulationService.populate(dto);
+        return dto;
     }
 
     @Override
@@ -102,9 +108,14 @@ public class FoodServiceImpl implements FoodService {
 
         validationService.validate(patchedFoodUpdateDto);
         foodMapper.updateFood(food, patchedFoodUpdateDto);
-        Food savedFood = foodRepository.save(food);
+        Food saved = foodRepository.save(food);
 
-        applicationEventPublisher.publishEvent(FoodUpdateEvent.of(this, savedFood));
+        foodRepository.flush();
+
+        Food refetchedFood = foodRepository.findByIdWithMedia(saved.getId())
+                .orElseThrow(() -> RecordNotFoundException.of(Food.class, saved.getId()));
+
+        applicationEventPublisher.publishEvent(FoodUpdateEvent.of(this, refetchedFood));
     }
 
     @Override
@@ -160,7 +171,7 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public List<Food> getAllFoodEntities() {
-        return foodRepository.findAllWithoutAssociations();
+        return foodRepository.findAll();
     }
 
 
