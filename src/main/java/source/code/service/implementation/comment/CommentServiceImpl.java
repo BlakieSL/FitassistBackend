@@ -120,8 +120,18 @@ public class CommentServiceImpl implements CommentService {
         long total;
 
         if (sortOrder != null && "likesCount".equals(sortOrder.getProperty())) {
-            comments = commentRepository.findTopCommentsSortedByLikesCount(threadId,
+            List<Integer> ids = commentRepository.findTopCommentIdsSortedByLikesCount(threadId,
                     sortOrder.getDirection().name(), pageable.getPageSize(), (int) pageable.getOffset());
+
+            comments = commentRepository.findAllByIds(ids);
+
+            Map<Integer, Integer> idToPosition = new HashMap<>();
+            for (int i = 0; i < ids.size(); i++) {
+                idToPosition.put(ids.get(i), i);
+            }
+
+            comments.sort(Comparator.comparingInt(c -> idToPosition.get(c.getId())));
+
             total = commentRepository.countTopCommentsByThreadId(threadId);
         } else {
             Page<Comment> commentPage = commentRepository.findAllByThreadIdAndParentCommentNull(threadId, pageable);

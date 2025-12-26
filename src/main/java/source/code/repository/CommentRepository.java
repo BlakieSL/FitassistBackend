@@ -94,23 +94,27 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaS
     List<Object[]> findCommentAncestry(Integer commentId);
 
     @Query(value = """
-            SELECT c.*, u.*, t.*
+            SELECT c.id
             FROM comment c
-            INNER JOIN user u ON c.user_id = u.id
-            INNER JOIN forum_thread t ON c.thread_id = t.id
             LEFT JOIN user_comment uc ON uc.comment_id = c.id AND uc.type = 'LIKE'
             WHERE c.thread_id = :threadId
             AND c.parent_comment_id IS NULL
-            GROUP BY c.id, u.id, t.id
+            GROUP BY c.id
             ORDER BY
-                CASE WHEN :direction = 'DESC' THEN COUNT(uc.id) END DESC,
-                CASE WHEN :direction = 'ASC' THEN COUNT(uc.id) END
+                CASE
+                    WHEN :direction = 'ASC' THEN COUNT(uc.id)
+                    ELSE -COUNT(uc.id)
+                END
             LIMIT :limit OFFSET :offset
             """, nativeQuery = true)
-    List<Comment> findTopCommentsSortedByLikesCount(@Param("threadId") int threadId,
-                                                     @Param("direction") String direction,
-                                                     @Param("limit") int limit,
-                                                     @Param("offset") int offset);
+    List<Integer> findTopCommentIdsSortedByLikesCount(@Param("threadId") int threadId,
+                                                       @Param("direction") String direction,
+                                                       @Param("limit") int limit,
+                                                       @Param("offset") int offset);
+
+    @EntityGraph(value = "Comment.summary")
+    @Query("SELECT c FROM Comment c WHERE c.id IN :ids")
+    List<Comment> findAllByIds(@Param("ids") List<Integer> ids);
 
     @Query(value = """
             SELECT COUNT(DISTINCT c.id)

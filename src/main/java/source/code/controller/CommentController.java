@@ -60,7 +60,7 @@ public class CommentController {
     @GetMapping("/top/{threadId}")
     public ResponseEntity<Page<CommentResponseDto>> getTopCommentsForThread(
             @PathVariable int threadId,
-            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size = Integer.MAX_VALUE, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<CommentResponseDto> responseDtos = commentService.getTopCommentsForThread(threadId, pageable);
         return ResponseEntity.ok(responseDtos);
     }
