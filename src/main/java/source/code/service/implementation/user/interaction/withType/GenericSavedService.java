@@ -16,20 +16,17 @@ public abstract class GenericSavedService<T, U, R> {
     protected final UserRepository userRepository;
     protected final JpaRepository<T, Integer> entityRepository;
     protected final JpaRepository<U, Integer> userEntityRepository;
-    protected final Function<T, R> map;
     protected final Class<T> entityType;
     protected final Class<U> userEntityType;
 
     public GenericSavedService(UserRepository userRepository,
                                JpaRepository<T, Integer> entityRepository,
                                JpaRepository<U, Integer> userEntityRepository,
-                               Function<T, R> map,
                                Class<T> entityType,
                                Class<U> userEntityType) {
         this.userRepository = userRepository;
         this.entityRepository = entityRepository;
         this.userEntityRepository = userEntityRepository;
-        this.map = map;
         this.entityType = entityType;
         this.userEntityType = userEntityType;
     }
