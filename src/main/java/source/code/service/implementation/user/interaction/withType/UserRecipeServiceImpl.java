@@ -42,7 +42,6 @@ public class UserRecipeServiceImpl
         super(userRepository,
                 recipeRepository,
                 userRecipeRepository,
-                recipeMapper::toResponseDto,
                 Recipe.class,
                 UserRecipe.class);
         this.recipeMapper = recipeMapper;

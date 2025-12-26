@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.response.category.CategoryResponseDto;
 
 import java.math.BigDecimal;
 
@@ -20,5 +21,6 @@ public class RecipeFoodDto {
     private BigDecimal foodProtein;
     private BigDecimal foodFat;
     private BigDecimal foodCarbohydrates;
+    private CategoryResponseDto foodCategory;
 
 }

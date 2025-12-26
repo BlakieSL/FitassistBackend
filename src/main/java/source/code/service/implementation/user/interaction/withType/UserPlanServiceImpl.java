@@ -42,7 +42,6 @@ public class UserPlanServiceImpl
         super(userRepository,
                 planRepository,
                 userPlanRepository,
-                planMapper::toResponseDto,
                 Plan.class,
                 UserPlan.class);
         this.planMapper = planMapper;
