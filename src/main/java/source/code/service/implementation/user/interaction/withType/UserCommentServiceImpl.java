@@ -35,7 +35,7 @@ public class UserCommentServiceImpl
                                   JpaRepository<UserComment, Integer> userEntityRepository,
                                   CommentMapper mapper,
                                   CommentPopulationService commentPopulationService) {
-        super(userRepository, entityRepository, userEntityRepository, mapper::toResponseDto, Comment.class, UserComment.class);
+        super(userRepository, entityRepository, userEntityRepository, Comment.class, UserComment.class);
         this.commentMapper = mapper;
         this.commentPopulationService = commentPopulationService;
     }

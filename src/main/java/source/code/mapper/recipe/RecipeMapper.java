@@ -149,16 +149,23 @@ public abstract class RecipeMapper {
     @Named("mapFoodsToDto")
     protected List<RecipeFoodDto> mapFoodsToDto(Set<RecipeFood> foods) {
         return foods.stream()
-                .map(recipeFood -> new RecipeFoodDto(
-                        recipeFood.getId(),
-                        recipeFood.getQuantity(),
-                        recipeFood.getFood().getId(),
-                        recipeFood.getFood().getName(),
-                        recipeFood.getFood().getCalories(),
-                        recipeFood.getFood().getProtein(),
-                        recipeFood.getFood().getFat(),
-                        recipeFood.getFood().getCarbohydrates()
-                ))
+                .map(recipeFood -> {
+                    CategoryResponseDto categoryDto = new CategoryResponseDto(
+                            recipeFood.getFood().getFoodCategory().getId(),
+                            recipeFood.getFood().getFoodCategory().getName()
+                    );
+                    return new RecipeFoodDto(
+                            recipeFood.getId(),
+                            recipeFood.getQuantity(),
+                            recipeFood.getFood().getId(),
+                            recipeFood.getFood().getName(),
+                            recipeFood.getFood().getCalories(),
+                            recipeFood.getFood().getProtein(),
+                            recipeFood.getFood().getFat(),
+                            recipeFood.getFood().getCarbohydrates(),
+                            categoryDto
+                    );
+                })
                 .toList();
     }
 
