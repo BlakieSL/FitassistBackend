@@ -13,10 +13,14 @@ import source.code.model.complaint.ComplaintReason;
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 public class ComplaintCreateDto {
-    @NotNull
-    private ComplaintReason reason;
-    @NotNull
-    private Integer parentId;
-    @NotNull
-    private ComplaintSubClass subClass;
+
+	@NotNull
+	private ComplaintReason reason;
+
+	@NotNull
+	private Integer parentId;
+
+	@NotNull
+	private ComplaintSubClass subClass;
+
 }

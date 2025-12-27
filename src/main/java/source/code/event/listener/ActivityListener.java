@@ -12,44 +12,47 @@ import source.code.service.declaration.search.LuceneIndexService;
 
 @Component
 public class ActivityListener {
-    private final CacheService cacheService;
-    private final LuceneIndexService luceneService;
 
-    public ActivityListener(CacheService cacheService, LuceneIndexService luceneService) {
-        this.cacheService = cacheService;
-        this.luceneService = luceneService;
-    }
+	private final CacheService cacheService;
 
-    @EventListener
-    public void handleActivityCreate(ActivityCreateEvent event) {
-        Activity activity = event.getActivity();
+	private final LuceneIndexService luceneService;
 
-        clearCommonCache();
-        luceneService.addEntity(activity);
-    }
+	public ActivityListener(CacheService cacheService, LuceneIndexService luceneService) {
+		this.cacheService = cacheService;
+		this.luceneService = luceneService;
+	}
 
-    @EventListener
-    public void handleActivityUpdate(ActivityUpdateEvent event) {
-        Activity activity = event.getActivity();
+	@EventListener
+	public void handleActivityCreate(ActivityCreateEvent event) {
+		Activity activity = event.getActivity();
 
-        clearCache(activity);
-        luceneService.updateEntity(activity);
-    }
+		clearCommonCache();
+		luceneService.addEntity(activity);
+	}
 
-    @EventListener
-    public void handleActivityDelete(ActivityDeleteEvent event) {
-        Activity activity = event.getActivity();
+	@EventListener
+	public void handleActivityUpdate(ActivityUpdateEvent event) {
+		Activity activity = event.getActivity();
 
-        clearCache(activity);
-        luceneService.deleteEntity(activity);
-    }
+		clearCache(activity);
+		luceneService.updateEntity(activity);
+	}
 
-    public void clearCache(Activity activity) {
-        cacheService.evictCache(CacheNames.ACTIVITIES, activity.getId());
-        clearCommonCache();
-    }
+	@EventListener
+	public void handleActivityDelete(ActivityDeleteEvent event) {
+		Activity activity = event.getActivity();
 
-    public void clearCommonCache() {
-        cacheService.clearCache(CacheNames.ALL_ACTIVITIES);
-    }
+		clearCache(activity);
+		luceneService.deleteEntity(activity);
+	}
+
+	public void clearCache(Activity activity) {
+		cacheService.evictCache(CacheNames.ACTIVITIES, activity.getId());
+		clearCommonCache();
+	}
+
+	public void clearCommonCache() {
+		cacheService.clearCache(CacheNames.ALL_ACTIVITIES);
+	}
+
 }

@@ -5,9 +5,11 @@ import org.springframework.data.domain.Pageable;
 import source.code.helper.BaseUserEntity;
 
 public interface SavedServiceWithoutType {
-    void saveToUser(int entityId);
 
-    void deleteFromUser(int entityId);
+	void saveToUser(int entityId);
 
-    Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable);
+	void deleteFromUser(int entityId);
+
+	Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable);
+
 }

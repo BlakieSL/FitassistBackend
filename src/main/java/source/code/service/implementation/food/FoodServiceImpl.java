@@ -4,6 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -39,155 +44,152 @@ import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.FoodSpecification;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
-
 @Service
 public class FoodServiceImpl implements FoodService {
-    private final ValidationService validationService;
-    private final JsonPatchService jsonPatchService;
-    private final ApplicationEventPublisher applicationEventPublisher;
-    private final FoodMapper foodMapper;
-    private final RecipeMapper recipeMapper;
-    private final RepositoryHelper repositoryHelper;
-    private final FoodRepository foodRepository;
-    private final RecipeRepository recipeRepository;
-    private final FoodPopulationService foodPopulationService;
-    private final RecipePopulationService recipePopulationService;
-    private final SpecificationDependencies dependencies;
 
-    public FoodServiceImpl(
-            ApplicationEventPublisher applicationEventPublisher,
-            ValidationService validationService,
-            JsonPatchService jsonPatchService,
-            FoodRepository foodRepository,
-            RecipeRepository recipeRepository,
-            FoodMapper foodMapper,
-            RecipeMapper recipeMapper,
-            RepositoryHelper repositoryHelper,
-            FoodPopulationService foodPopulationService,
-            RecipePopulationService recipePopulationService,
-            SpecificationDependencies dependencies) {
-        this.applicationEventPublisher = applicationEventPublisher;
-        this.validationService = validationService;
-        this.jsonPatchService = jsonPatchService;
-        this.foodRepository = foodRepository;
-        this.recipeRepository = recipeRepository;
-        this.foodMapper = foodMapper;
-        this.recipeMapper = recipeMapper;
-        this.repositoryHelper = repositoryHelper;
-        this.foodPopulationService = foodPopulationService;
-        this.recipePopulationService = recipePopulationService;
-        this.dependencies = dependencies;
-    }
+	private final ValidationService validationService;
 
-    @Override
-    @Transactional
-    public FoodResponseDto createFood(FoodCreateDto request) {
-        Food saved = foodRepository.save(foodMapper.toEntity(request));
+	private final JsonPatchService jsonPatchService;
 
-        foodRepository.flush();
+	private final ApplicationEventPublisher applicationEventPublisher;
 
-        Food food = foodRepository.findByIdWithMedia(saved.getId())
-                .orElseThrow(() -> RecordNotFoundException.of(Food.class, saved.getId()));
+	private final FoodMapper foodMapper;
 
-        applicationEventPublisher.publishEvent(FoodCreateEvent.of(this, food));
+	private final RecipeMapper recipeMapper;
 
-        FoodResponseDto dto = foodMapper.toDetailedResponseDto(food);
-        foodPopulationService.populate(dto);
-        return dto;
-    }
+	private final RepositoryHelper repositoryHelper;
 
-    @Override
-    @Transactional
-    public void updateFood(int foodId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        Food food = find(foodId);
-        FoodUpdateDto patchedFoodUpdateDto = applyPatchToFood(patch);
+	private final FoodRepository foodRepository;
 
-        validationService.validate(patchedFoodUpdateDto);
-        foodMapper.updateFood(food, patchedFoodUpdateDto);
-        Food saved = foodRepository.save(food);
+	private final RecipeRepository recipeRepository;
 
-        foodRepository.flush();
+	private final FoodPopulationService foodPopulationService;
 
-        Food refetchedFood = foodRepository.findByIdWithMedia(saved.getId())
-                .orElseThrow(() -> RecordNotFoundException.of(Food.class, saved.getId()));
+	private final RecipePopulationService recipePopulationService;
 
-        applicationEventPublisher.publishEvent(FoodUpdateEvent.of(this, refetchedFood));
-    }
+	private final SpecificationDependencies dependencies;
 
-    @Override
-    public void deleteFood(int foodId) {
-        Food food = find(foodId);
-        foodRepository.delete(food);
+	public FoodServiceImpl(ApplicationEventPublisher applicationEventPublisher, ValidationService validationService,
+						   JsonPatchService jsonPatchService, FoodRepository foodRepository, RecipeRepository recipeRepository,
+						   FoodMapper foodMapper, RecipeMapper recipeMapper, RepositoryHelper repositoryHelper,
+						   FoodPopulationService foodPopulationService, RecipePopulationService recipePopulationService,
+						   SpecificationDependencies dependencies) {
+		this.applicationEventPublisher = applicationEventPublisher;
+		this.validationService = validationService;
+		this.jsonPatchService = jsonPatchService;
+		this.foodRepository = foodRepository;
+		this.recipeRepository = recipeRepository;
+		this.foodMapper = foodMapper;
+		this.recipeMapper = recipeMapper;
+		this.repositoryHelper = repositoryHelper;
+		this.foodPopulationService = foodPopulationService;
+		this.recipePopulationService = recipePopulationService;
+		this.dependencies = dependencies;
+	}
 
-        applicationEventPublisher.publishEvent(FoodDeleteEvent.of(this, food));
-    }
+	@Override
+	@Transactional
+	public FoodResponseDto createFood(FoodCreateDto request) {
+		Food saved = foodRepository.save(foodMapper.toEntity(request));
 
-    @Override
-    public FoodCalculatedMacrosResponseDto calculateFoodMacros(int id, CalculateFoodMacrosRequestDto request) {
-        Food food = find(id);
-        BigDecimal quantity = request.getQuantity();
-        BigDecimal divisor = new BigDecimal("100");
+		foodRepository.flush();
 
-        BigDecimal factor = quantity.divide(divisor, 10, RoundingMode.HALF_UP);
+		Food food = foodRepository.findByIdWithMedia(saved.getId())
+			.orElseThrow(() -> RecordNotFoundException.of(Food.class, saved.getId()));
 
-        return foodMapper.toDtoWithFactor(food, factor);
-    }
+		applicationEventPublisher.publishEvent(FoodCreateEvent.of(this, food));
 
-    @Override
-    @Cacheable(value = CacheNames.FOODS, key = "#id")
-    public FoodResponseDto getFood(int id) {
-        FoodResponseDto dto = findAndMap(id);
+		FoodResponseDto dto = foodMapper.toDetailedResponseDto(food);
+		foodPopulationService.populate(dto);
+		return dto;
+	}
 
-        var summaries = recipeRepository.findAllWithDetailsByFoodId(id).stream()
-                .map(recipeMapper::toSummaryDto)
-                .toList();
-        recipePopulationService.populate(summaries);
-        dto.setRecipes(summaries);
+	@Override
+	@Transactional
+	public void updateFood(int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+		Food food = find(foodId);
+		FoodUpdateDto patchedFoodUpdateDto = applyPatchToFood(patch);
 
-        return dto;
-    }
+		validationService.validate(patchedFoodUpdateDto);
+		foodMapper.updateFood(food, patchedFoodUpdateDto);
+		Food saved = foodRepository.save(food);
 
-    @Override
-    public Page<FoodSummaryDto> getFilteredFoods(FilterDto filter, Pageable pageable) {
-        SpecificationFactory<Food> foodFactory = FoodSpecification::new;
-        SpecificationBuilder<Food> specificationBuilder = SpecificationBuilder.of(filter, foodFactory, dependencies);
-        Specification<Food> specification = specificationBuilder.build();
+		foodRepository.flush();
 
-        Page<Food> foodPage = foodRepository.findAll(specification, pageable);
+		Food refetchedFood = foodRepository.findByIdWithMedia(saved.getId())
+			.orElseThrow(() -> RecordNotFoundException.of(Food.class, saved.getId()));
 
-        List<FoodSummaryDto> summaries = foodPage.getContent().stream()
-                .map(foodMapper::toSummaryDto)
-                .toList();
+		applicationEventPublisher.publishEvent(FoodUpdateEvent.of(this, refetchedFood));
+	}
 
-        foodPopulationService.populate(summaries);
+	@Override
+	public void deleteFood(int foodId) {
+		Food food = find(foodId);
+		foodRepository.delete(food);
 
-        return new PageImpl<>(summaries, pageable, foodPage.getTotalElements());
-    }
+		applicationEventPublisher.publishEvent(FoodDeleteEvent.of(this, food));
+	}
 
+	@Override
+	public FoodCalculatedMacrosResponseDto calculateFoodMacros(int id, CalculateFoodMacrosRequestDto request) {
+		Food food = find(id);
+		BigDecimal quantity = request.getQuantity();
+		BigDecimal divisor = new BigDecimal("100");
 
-    @Override
-    public List<Food> getAllFoodEntities() {
-        return foodRepository.findAll();
-    }
+		BigDecimal factor = quantity.divide(divisor, 10, RoundingMode.HALF_UP);
 
+		return foodMapper.toDtoWithFactor(food, factor);
+	}
 
-    private Food find(int foodId) {
-        return repositoryHelper.find(foodRepository, Food.class, foodId);
-    }
+	@Override
+	@Cacheable(value = CacheNames.FOODS, key = "#id")
+	public FoodResponseDto getFood(int id) {
+		FoodResponseDto dto = findAndMap(id);
 
-    private FoodResponseDto findAndMap(int foodId) {
-        Food food = foodRepository.findByIdWithMedia(foodId)
-                .orElseThrow(() -> RecordNotFoundException.of(Food.class, foodId));
-        FoodResponseDto dto = foodMapper.toDetailedResponseDto(food);
-        foodPopulationService.populate(dto);
-        return dto;
-    }
+		var summaries = recipeRepository.findAllWithDetailsByFoodId(id)
+			.stream()
+			.map(recipeMapper::toSummaryDto)
+			.toList();
+		recipePopulationService.populate(summaries);
+		dto.setRecipes(summaries);
 
-    private FoodUpdateDto applyPatchToFood(JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
-        return jsonPatchService.createFromPatch(patch, FoodUpdateDto.class);
-    }
+		return dto;
+	}
+
+	@Override
+	public Page<FoodSummaryDto> getFilteredFoods(FilterDto filter, Pageable pageable) {
+		SpecificationFactory<Food> foodFactory = FoodSpecification::new;
+		SpecificationBuilder<Food> specificationBuilder = SpecificationBuilder.of(filter, foodFactory, dependencies);
+		Specification<Food> specification = specificationBuilder.build();
+
+		Page<Food> foodPage = foodRepository.findAll(specification, pageable);
+
+		List<FoodSummaryDto> summaries = foodPage.getContent().stream().map(foodMapper::toSummaryDto).toList();
+
+		foodPopulationService.populate(summaries);
+
+		return new PageImpl<>(summaries, pageable, foodPage.getTotalElements());
+	}
+
+	@Override
+	public List<Food> getAllFoodEntities() {
+		return foodRepository.findAll();
+	}
+
+	private Food find(int foodId) {
+		return repositoryHelper.find(foodRepository, Food.class, foodId);
+	}
+
+	private FoodResponseDto findAndMap(int foodId) {
+		Food food = foodRepository.findByIdWithMedia(foodId)
+			.orElseThrow(() -> RecordNotFoundException.of(Food.class, foodId));
+		FoodResponseDto dto = foodMapper.toDetailedResponseDto(food);
+		foodPopulationService.populate(dto);
+		return dto;
+	}
+
+	private FoodUpdateDto applyPatchToFood(JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+		return jsonPatchService.createFromPatch(patch, FoodUpdateDto.class);
+	}
+
 }

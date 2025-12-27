@@ -13,32 +13,26 @@ import source.code.service.declaration.helpers.ValidationService;
 
 @Service("planCategoryService")
 public class PlanCategoryServiceImpl extends GenericCategoryService<PlanCategory> implements CategoryService {
-    private final PlanCategoryRepository planCategoryRepository;
 
-    protected PlanCategoryServiceImpl(ValidationService validationService,
-                                      JsonPatchService jsonPatchService,
-                                      CategoryCacheKeyGenerator<PlanCategory> cacheKeyGenerator,
-                                      ApplicationEventPublisher applicationEventPublisher,
-                                      CacheManager cacheManager,
-                                      PlanCategoryRepository planCategoryRepository,
-                                      PlanCategoryMapper mapper) {
-        super(validationService,
-                jsonPatchService,
-                cacheKeyGenerator,
-                applicationEventPublisher,
-                cacheManager,
-                planCategoryRepository,
-                mapper);
-        this.planCategoryRepository = planCategoryRepository;
-    }
+	private final PlanCategoryRepository planCategoryRepository;
 
-    @Override
-    protected boolean hasAssociatedEntities(int categoryId) {
-        return planCategoryRepository.existsByIdAndPlanCategoryAssociationsIsNotEmpty(categoryId);
-    }
+	protected PlanCategoryServiceImpl(ValidationService validationService, JsonPatchService jsonPatchService,
+									  CategoryCacheKeyGenerator<PlanCategory> cacheKeyGenerator,
+									  ApplicationEventPublisher applicationEventPublisher, CacheManager cacheManager,
+									  PlanCategoryRepository planCategoryRepository, PlanCategoryMapper mapper) {
+		super(validationService, jsonPatchService, cacheKeyGenerator, applicationEventPublisher, cacheManager,
+			planCategoryRepository, mapper);
+		this.planCategoryRepository = planCategoryRepository;
+	}
 
-    @Override
-    protected Class<PlanCategory> getEntityClass() {
-        return PlanCategory.class;
-    }
+	@Override
+	protected boolean hasAssociatedEntities(int categoryId) {
+		return planCategoryRepository.existsByIdAndPlanCategoryAssociationsIsNotEmpty(categoryId);
+	}
+
+	@Override
+	protected Class<PlanCategory> getEntityClass() {
+		return PlanCategory.class;
+	}
+
 }

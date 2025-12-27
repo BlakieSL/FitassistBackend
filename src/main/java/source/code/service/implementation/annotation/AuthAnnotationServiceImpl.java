@@ -24,249 +24,228 @@ import source.code.service.declaration.helpers.RepositoryHelper;
 
 @Service
 public class AuthAnnotationServiceImpl {
-    private final CommentRepository commentRepository;
-    private final RepositoryHelper repositoryHelper;
-    private final ForumThreadRepository forumThreadRepository;
-    private final PlanRepository planRepository;
-    private final RecipeRepository recipeRepository;
-    private final MediaRepository mediaRepository;
-    private final RecipeInstructionRepository recipeInstructionRepository;
-    private final PlanInstructionRepository planInstructionRepository;
-    private final WorkoutRepository workoutRepository;
-    private final WorkoutSetRepository workoutSetRepository;
-    private final WorkoutSetExerciseRepository workoutSetExerciseRepository;
-    private final CommentComplaintRepository commentComplaintRepository;
-    private final ThreadComplaintRepository threadComplaintRepository;
-    private final DailyCartActivityRepository dailyCartActivityRepository;
-    private final DailyCartFoodRepository dailyCartFoodRepository;
 
-    public AuthAnnotationServiceImpl(CommentRepository commentRepository,
-                                     RepositoryHelper repositoryHelper,
-                                     ForumThreadRepository forumThreadRepository,
-                                     PlanRepository planRepository,
-                                     RecipeRepository recipeRepository,
-                                     MediaRepository mediaRepository,
-                                     RecipeInstructionRepository recipeInstructionRepository,
-                                     PlanInstructionRepository planInstructionRepository,
-                                     WorkoutRepository workoutRepository,
-                                     WorkoutSetRepository workoutSetRepository,
-                                     WorkoutSetExerciseRepository workoutSetExerciseRepository,
-                                     CommentComplaintRepository commentComplaintRepository,
-                                     ThreadComplaintRepository threadComplaintRepository,
-                                     DailyCartActivityRepository dailyCartActivityRepository,
-                                     DailyCartFoodRepository dailyCartFoodRepository) {
-        this.commentRepository = commentRepository;
-        this.repositoryHelper = repositoryHelper;
-        this.forumThreadRepository = forumThreadRepository;
-        this.planRepository = planRepository;
-        this.recipeRepository = recipeRepository;
-        this.mediaRepository = mediaRepository;
-        this.recipeInstructionRepository = recipeInstructionRepository;
-        this.planInstructionRepository = planInstructionRepository;
-        this.workoutRepository = workoutRepository;
-        this.workoutSetRepository = workoutSetRepository;
-        this.workoutSetExerciseRepository = workoutSetExerciseRepository;
-        this.commentComplaintRepository = commentComplaintRepository;
-        this.threadComplaintRepository = threadComplaintRepository;
-        this.dailyCartActivityRepository = dailyCartActivityRepository;
-        this.dailyCartFoodRepository = dailyCartFoodRepository;
-    }
+	private final CommentRepository commentRepository;
 
-    public boolean isCommentOwnerOrAdmin(int commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new RecordNotFoundException(Comment.class, commentId));
-        return AuthorizationUtil.isOwnerOrAdmin(comment.getUser().getId());
-    }
+	private final RepositoryHelper repositoryHelper;
 
-    public boolean isForumThreadOwnerOrAdmin(int forumThreadId) {
-        ForumThread forumThread = repositoryHelper.find(
-                forumThreadRepository,
-                ForumThread.class,
-                forumThreadId
-        );
-        return AuthorizationUtil.isOwnerOrAdmin(forumThread.getUser().getId());
-    }
+	private final ForumThreadRepository forumThreadRepository;
 
-    public boolean isPlanOwnerOrAdmin(int planId) {
-        Plan plan = repositoryHelper.find(planRepository, Plan.class, planId);
-        return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
-    }
+	private final PlanRepository planRepository;
 
-    public boolean isPublicPlanOrOwnerOrAdmin(int planId) {
-        Plan plan = repositoryHelper.find(planRepository, Plan.class, planId);
-        if (plan.getIsPublic()) {
-            return true;
-        }
-        return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
-    }
+	private final RecipeRepository recipeRepository;
 
-    public boolean isRecipeOwnerOrAdmin(int recipeId) {
-        Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
-        return AuthorizationUtil.isOwnerOrAdmin(recipe.getUser().getId());
-    }
+	private final MediaRepository mediaRepository;
 
-    public boolean isPublicRecipeOrOwnerOrAdmin(int recipeId) {
-        Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
-        if (recipe.getIsPublic()) {
-            return true;
-        }
-        return AuthorizationUtil.isOwnerOrAdmin(recipe.getUser().getId());
-    }
+	private final RecipeInstructionRepository recipeInstructionRepository;
 
-    public boolean isOwnerOrAdminForParentEntity(MediaConnectedEntity parentType, int parentId) {
-        Integer ownerId = findOwnerIdByParentTypeAndId(parentType, parentId);
-        return AuthorizationUtil.isOwnerOrAdmin(ownerId);
-    }
+	private final PlanInstructionRepository planInstructionRepository;
 
-    public boolean isMediaOwnerOrAdmin(int mediaId) {
-        Media media = repositoryHelper.find(mediaRepository, Media.class, mediaId);
-        Integer ownerId = findOwnerIdByParentTypeAndId(media.getParentType(), media.getParentId());
-        return AuthorizationUtil.isOwnerOrAdmin(ownerId);
-    }
+	private final WorkoutRepository workoutRepository;
 
-    public boolean isTextOwnerOrAdmin(int id, TextType type) {
-        Integer ownerId = switch (type) {
-            case RECIPE_INSTRUCTION -> repositoryHelper
-                    .find(recipeInstructionRepository, RecipeInstruction.class, id)
-                    .getRecipe().getUser().getId();
-            case PLAN_INSTRUCTION -> repositoryHelper
-                    .find(planInstructionRepository, PlanInstruction.class, id)
-                    .getPlan().getUser().getId();
-            default -> null;
-        };
-        return AuthorizationUtil.isOwnerOrAdmin(ownerId);
-    }
+	private final WorkoutSetRepository workoutSetRepository;
 
-    public boolean idPublicTextOrOwnerOrAdmin(int parentId, TextType type) {
-        boolean isPublic = false;
-        Integer ownerId = switch (type) {
-            case RECIPE_INSTRUCTION -> {
-                Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, parentId);
+	private final WorkoutSetExerciseRepository workoutSetExerciseRepository;
 
-                isPublic = recipe.getIsPublic();
-                yield recipe.getUser().getId();
-            }
-            case PLAN_INSTRUCTION -> {
-                Plan plan = repositoryHelper.find(planRepository, Plan.class, parentId);
+	private final CommentComplaintRepository commentComplaintRepository;
 
-                isPublic = plan.getIsPublic();
-                yield plan.getUser().getId();
-            }
-            default -> null;
-        };
+	private final ThreadComplaintRepository threadComplaintRepository;
 
-        if (isPublic) {
-            return true;
-        }
+	private final DailyCartActivityRepository dailyCartActivityRepository;
 
-        return AuthorizationUtil.isOwnerOrAdmin(ownerId);
-    }
+	private final DailyCartFoodRepository dailyCartFoodRepository;
 
-    public boolean isWorkoutOwnerOrAdmin(int workoutId) {
-        Workout workout = repositoryHelper.find(workoutRepository, Workout.class, workoutId);
-        return AuthorizationUtil.isOwnerOrAdmin(workout.getPlan().getUser().getId());
-    }
+	public AuthAnnotationServiceImpl(CommentRepository commentRepository, RepositoryHelper repositoryHelper,
+									 ForumThreadRepository forumThreadRepository, PlanRepository planRepository,
+									 RecipeRepository recipeRepository, MediaRepository mediaRepository,
+									 RecipeInstructionRepository recipeInstructionRepository,
+									 PlanInstructionRepository planInstructionRepository, WorkoutRepository workoutRepository,
+									 WorkoutSetRepository workoutSetRepository, WorkoutSetExerciseRepository workoutSetExerciseRepository,
+									 CommentComplaintRepository commentComplaintRepository, ThreadComplaintRepository threadComplaintRepository,
+									 DailyCartActivityRepository dailyCartActivityRepository, DailyCartFoodRepository dailyCartFoodRepository) {
+		this.commentRepository = commentRepository;
+		this.repositoryHelper = repositoryHelper;
+		this.forumThreadRepository = forumThreadRepository;
+		this.planRepository = planRepository;
+		this.recipeRepository = recipeRepository;
+		this.mediaRepository = mediaRepository;
+		this.recipeInstructionRepository = recipeInstructionRepository;
+		this.planInstructionRepository = planInstructionRepository;
+		this.workoutRepository = workoutRepository;
+		this.workoutSetRepository = workoutSetRepository;
+		this.workoutSetExerciseRepository = workoutSetExerciseRepository;
+		this.commentComplaintRepository = commentComplaintRepository;
+		this.threadComplaintRepository = threadComplaintRepository;
+		this.dailyCartActivityRepository = dailyCartActivityRepository;
+		this.dailyCartFoodRepository = dailyCartFoodRepository;
+	}
 
-    public boolean isPublicWorkoutOrOwnerOrAdmin(int workoutId) {
-        Workout workout = repositoryHelper.find(workoutRepository, Workout.class, workoutId);
-        var plan = workout.getPlan();
-        if (plan.getIsPublic()) {
-            return true;
-        }
-        return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
-    }
+	public boolean isCommentOwnerOrAdmin(int commentId) {
+		Comment comment = commentRepository.findById(commentId)
+			.orElseThrow(() -> new RecordNotFoundException(Comment.class, commentId));
+		return AuthorizationUtil.isOwnerOrAdmin(comment.getUser().getId());
+	}
 
-    public boolean isWorkoutSetExerciseOwnerOrAdmin(int workoutSetExerciseId) {
-        WorkoutSetExercise workoutSetExercise = repositoryHelper.find(
-                workoutSetExerciseRepository,
-                WorkoutSetExercise.class,
-                workoutSetExerciseId
-        );
-        return AuthorizationUtil.isOwnerOrAdmin(workoutSetExercise
-                .getWorkoutSet()
-                .getWorkout()
-                .getPlan()
-                .getUser()
-                .getId());
-    }
+	public boolean isForumThreadOwnerOrAdmin(int forumThreadId) {
+		ForumThread forumThread = repositoryHelper.find(forumThreadRepository, ForumThread.class, forumThreadId);
+		return AuthorizationUtil.isOwnerOrAdmin(forumThread.getUser().getId());
+	}
 
-    public boolean isPublicWorkoutSetExerciseOrOwnerOrAdmin(int workoutSetExerciseId) {
-        WorkoutSetExercise workoutSetExercise = repositoryHelper
-                .find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
-        var plan = workoutSetExercise.getWorkoutSet().getWorkout().getPlan();
-        if (plan.getIsPublic()) {
-            return true;
-        }
-        return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
-    }
+	public boolean isPlanOwnerOrAdmin(int planId) {
+		Plan plan = repositoryHelper.find(planRepository, Plan.class, planId);
+		return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
+	}
 
-    public boolean isWorkoutSetOwnerOrAdmin(int workoutSetId) {
-        WorkoutSet workoutSet = repositoryHelper.find(
-                workoutSetRepository,
-                WorkoutSet.class,
-                workoutSetId
-        );
-        return AuthorizationUtil.isOwnerOrAdmin(workoutSet
-                .getWorkout()
-                .getPlan()
-                .getUser()
-                .getId());
-    }
+	public boolean isPublicPlanOrOwnerOrAdmin(int planId) {
+		Plan plan = repositoryHelper.find(planRepository, Plan.class, planId);
+		if (plan.getIsPublic()) {
+			return true;
+		}
+		return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
+	}
 
-    public boolean isPublicWorkoutSetOrOwnerOrAdmin(int workoutSetId) {
-        WorkoutSet workoutSet = repositoryHelper
-                .find(workoutSetRepository, WorkoutSet.class, workoutSetId);
+	public boolean isRecipeOwnerOrAdmin(int recipeId) {
+		Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
+		return AuthorizationUtil.isOwnerOrAdmin(recipe.getUser().getId());
+	}
 
-        var plan = workoutSet.getWorkout().getPlan();
-        if (plan.getIsPublic()) {
-            return true;
-        }
-        return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
-    }
+	public boolean isPublicRecipeOrOwnerOrAdmin(int recipeId) {
+		Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
+		if (recipe.getIsPublic()) {
+			return true;
+		}
+		return AuthorizationUtil.isOwnerOrAdmin(recipe.getUser().getId());
+	}
 
+	public boolean isOwnerOrAdminForParentEntity(MediaConnectedEntity parentType, int parentId) {
+		Integer ownerId = findOwnerIdByParentTypeAndId(parentType, parentId);
+		return AuthorizationUtil.isOwnerOrAdmin(ownerId);
+	}
 
-    public boolean isDailyCartOwner(Integer dailyCartActivityId, Integer dailyCartFoodId) {
-        Integer userId = null;
+	public boolean isMediaOwnerOrAdmin(int mediaId) {
+		Media media = repositoryHelper.find(mediaRepository, Media.class, mediaId);
+		Integer ownerId = findOwnerIdByParentTypeAndId(media.getParentType(), media.getParentId());
+		return AuthorizationUtil.isOwnerOrAdmin(ownerId);
+	}
 
-        if (dailyCartActivityId != null) {
-            DailyCartActivity dailyCartActivity = dailyCartActivityRepository.findByIdWithUser(dailyCartActivityId)
-                    .orElseThrow(() -> new RecordNotFoundException(DailyCartActivity.class, dailyCartActivityId));
-            userId = dailyCartActivity.getDailyCart().getUser().getId();
-        } else if (dailyCartFoodId != null) {
-            DailyCartFood dailyCartFood = dailyCartFoodRepository.findByIdWithUser(dailyCartFoodId)
-                    .orElseThrow(() -> new RecordNotFoundException(DailyCartFood.class, dailyCartFoodId));
-            userId = dailyCartFood.getDailyCart().getUser().getId();
-        }
+	public boolean isTextOwnerOrAdmin(int id, TextType type) {
+		Integer ownerId = switch (type) {
+			case RECIPE_INSTRUCTION -> repositoryHelper.find(recipeInstructionRepository, RecipeInstruction.class, id)
+				.getRecipe()
+				.getUser()
+				.getId();
+			case PLAN_INSTRUCTION ->
+				repositoryHelper.find(planInstructionRepository, PlanInstruction.class, id).getPlan().getUser().getId();
+			default -> null;
+		};
+		return AuthorizationUtil.isOwnerOrAdmin(ownerId);
+	}
 
-        if (userId == null) {
-            return false;
-        }
+	public boolean idPublicTextOrOwnerOrAdmin(int parentId, TextType type) {
+		boolean isPublic = false;
+		Integer ownerId = switch (type) {
+			case RECIPE_INSTRUCTION -> {
+				Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, parentId);
 
-        return AuthorizationUtil.isOwnerOrAdmin(userId);
-    }
+				isPublic = recipe.getIsPublic();
+				yield recipe.getUser().getId();
+			}
+			case PLAN_INSTRUCTION -> {
+				Plan plan = repositoryHelper.find(planRepository, Plan.class, parentId);
 
-    private Integer findOwnerIdByParentTypeAndId(MediaConnectedEntity parentType, int parentId) {
-        return switch (parentType) {
-            case COMMENT_COMPLAINT -> repositoryHelper
-                    .find(commentComplaintRepository, CommentComplaint.class, parentId)
-                    .getUser().getId();
-            case THREAD_COMPLAINT -> repositoryHelper
-                    .find(threadComplaintRepository, ThreadComplaint.class, parentId)
-                    .getUser().getId();
-            case COMMENT -> repositoryHelper
-                    .find(commentRepository, Comment.class, parentId)
-                    .getUser().getId();
-            case FORUM_THREAD -> repositoryHelper.
-                    find(forumThreadRepository, ForumThread.class, parentId)
-                    .getUser().getId();
-            case PLAN -> repositoryHelper
-                    .find(planRepository, Plan.class, parentId)
-                    .getUser().getId();
-            case RECIPE -> repositoryHelper
-                    .find(recipeRepository, Recipe.class, parentId)
-                    .getUser().getId();
-            case USER -> parentId;
-            default -> null;
-        };
-    }
+				isPublic = plan.getIsPublic();
+				yield plan.getUser().getId();
+			}
+			default -> null;
+		};
+
+		if (isPublic) {
+			return true;
+		}
+
+		return AuthorizationUtil.isOwnerOrAdmin(ownerId);
+	}
+
+	public boolean isWorkoutOwnerOrAdmin(int workoutId) {
+		Workout workout = repositoryHelper.find(workoutRepository, Workout.class, workoutId);
+		return AuthorizationUtil.isOwnerOrAdmin(workout.getPlan().getUser().getId());
+	}
+
+	public boolean isPublicWorkoutOrOwnerOrAdmin(int workoutId) {
+		Workout workout = repositoryHelper.find(workoutRepository, Workout.class, workoutId);
+		var plan = workout.getPlan();
+		if (plan.getIsPublic()) {
+			return true;
+		}
+		return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
+	}
+
+	public boolean isWorkoutSetExerciseOwnerOrAdmin(int workoutSetExerciseId) {
+		WorkoutSetExercise workoutSetExercise = repositoryHelper.find(workoutSetExerciseRepository,
+			WorkoutSetExercise.class, workoutSetExerciseId);
+		return AuthorizationUtil
+			.isOwnerOrAdmin(workoutSetExercise.getWorkoutSet().getWorkout().getPlan().getUser().getId());
+	}
+
+	public boolean isPublicWorkoutSetExerciseOrOwnerOrAdmin(int workoutSetExerciseId) {
+		WorkoutSetExercise workoutSetExercise = repositoryHelper.find(workoutSetExerciseRepository,
+			WorkoutSetExercise.class, workoutSetExerciseId);
+		var plan = workoutSetExercise.getWorkoutSet().getWorkout().getPlan();
+		if (plan.getIsPublic()) {
+			return true;
+		}
+		return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
+	}
+
+	public boolean isWorkoutSetOwnerOrAdmin(int workoutSetId) {
+		WorkoutSet workoutSet = repositoryHelper.find(workoutSetRepository, WorkoutSet.class, workoutSetId);
+		return AuthorizationUtil.isOwnerOrAdmin(workoutSet.getWorkout().getPlan().getUser().getId());
+	}
+
+	public boolean isPublicWorkoutSetOrOwnerOrAdmin(int workoutSetId) {
+		WorkoutSet workoutSet = repositoryHelper.find(workoutSetRepository, WorkoutSet.class, workoutSetId);
+
+		var plan = workoutSet.getWorkout().getPlan();
+		if (plan.getIsPublic()) {
+			return true;
+		}
+		return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
+	}
+
+	public boolean isDailyCartOwner(Integer dailyCartActivityId, Integer dailyCartFoodId) {
+		Integer userId = null;
+
+		if (dailyCartActivityId != null) {
+			DailyCartActivity dailyCartActivity = dailyCartActivityRepository.findByIdWithUser(dailyCartActivityId)
+				.orElseThrow(() -> new RecordNotFoundException(DailyCartActivity.class, dailyCartActivityId));
+			userId = dailyCartActivity.getDailyCart().getUser().getId();
+		} else if (dailyCartFoodId != null) {
+			DailyCartFood dailyCartFood = dailyCartFoodRepository.findByIdWithUser(dailyCartFoodId)
+				.orElseThrow(() -> new RecordNotFoundException(DailyCartFood.class, dailyCartFoodId));
+			userId = dailyCartFood.getDailyCart().getUser().getId();
+		}
+
+		if (userId == null) {
+			return false;
+		}
+
+		return AuthorizationUtil.isOwnerOrAdmin(userId);
+	}
+
+	private Integer findOwnerIdByParentTypeAndId(MediaConnectedEntity parentType, int parentId) {
+		return switch (parentType) {
+			case COMMENT_COMPLAINT ->
+				repositoryHelper.find(commentComplaintRepository, CommentComplaint.class, parentId).getUser().getId();
+			case THREAD_COMPLAINT ->
+				repositoryHelper.find(threadComplaintRepository, ThreadComplaint.class, parentId).getUser().getId();
+			case COMMENT -> repositoryHelper.find(commentRepository, Comment.class, parentId).getUser().getId();
+			case FORUM_THREAD ->
+				repositoryHelper.find(forumThreadRepository, ForumThread.class, parentId).getUser().getId();
+			case PLAN -> repositoryHelper.find(planRepository, Plan.class, parentId).getUser().getId();
+			case RECIPE -> repositoryHelper.find(recipeRepository, Recipe.class, parentId).getUser().getId();
+			case USER -> parentId;
+			default -> null;
+		};
+	}
+
 }

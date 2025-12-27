@@ -22,51 +22,52 @@ import source.code.service.declaration.exercise.ExerciseService;
 @RestController
 @RequestMapping("/api/exercises")
 public class ExerciseController {
-    private final ExerciseService exerciseService;
 
-    public ExerciseController(ExerciseService exerciseService) {
-        this.exerciseService = exerciseService;
-    }
+	private final ExerciseService exerciseService;
 
-    @AdminOnly
-    @PostMapping
-    public ResponseEntity<ExerciseResponseDto> createExercise(@Valid @RequestBody ExerciseCreateDto dto) {
-        ExerciseResponseDto savedExercise = exerciseService.createExercise(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedExercise);
-    }
+	public ExerciseController(ExerciseService exerciseService) {
+		this.exerciseService = exerciseService;
+	}
 
-    @AdminOnly
-    @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateExercise(@PathVariable int id, @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        exerciseService.updateExercise(id, patch);
-        return ResponseEntity.noContent().build();
-    }
+	@AdminOnly
+	@PostMapping
+	public ResponseEntity<ExerciseResponseDto> createExercise(@Valid @RequestBody ExerciseCreateDto dto) {
+		ExerciseResponseDto savedExercise = exerciseService.createExercise(dto);
+		return ResponseEntity.status(HttpStatus.CREATED).body(savedExercise);
+	}
 
-    @AdminOnly
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteExercise(@PathVariable int id) {
-        exerciseService.deleteExercise(id);
-        return ResponseEntity.noContent().build();
-    }
+	@AdminOnly
+	@PatchMapping("/{id}")
+	public ResponseEntity<Void> updateExercise(@PathVariable int id, @RequestBody JsonMergePatch patch)
+		throws JsonPatchException, JsonProcessingException {
+		exerciseService.updateExercise(id, patch);
+		return ResponseEntity.noContent().build();
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ExerciseResponseDto> getExercise(@PathVariable int id) {
-        ExerciseResponseDto exercise = exerciseService.getExercise(id);
-        return ResponseEntity.ok(exercise);
-    }
+	@AdminOnly
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteExercise(@PathVariable int id) {
+		exerciseService.deleteExercise(id);
+		return ResponseEntity.noContent().build();
+	}
 
-    @PostMapping("/filter")
-    public ResponseEntity<Page<ExerciseSummaryDto>> getFilteredExercises(
-            @Valid @RequestBody FilterDto filter,
-            @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<ExerciseSummaryDto> filtered = exerciseService.getFilteredExercises(filter, pageable);
-        return ResponseEntity.ok(filtered);
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<ExerciseResponseDto> getExercise(@PathVariable int id) {
+		ExerciseResponseDto exercise = exerciseService.getExercise(id);
+		return ResponseEntity.ok(exercise);
+	}
 
-    @GetMapping("/categories")
-    public ResponseEntity<ExerciseCategoriesResponseDto> getAllExerciseCategories() {
-        ExerciseCategoriesResponseDto categories = exerciseService.getAllExerciseCategories();
-        return ResponseEntity.ok(categories);
-    }
+	@PostMapping("/filter")
+	public ResponseEntity<Page<ExerciseSummaryDto>> getFilteredExercises(@Valid @RequestBody FilterDto filter,
+																		 @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+		Page<ExerciseSummaryDto> filtered = exerciseService.getFilteredExercises(filter, pageable);
+		return ResponseEntity.ok(filtered);
+	}
+
+	@GetMapping("/categories")
+	public ResponseEntity<ExerciseCategoriesResponseDto> getAllExerciseCategories() {
+		ExerciseCategoriesResponseDto categories = exerciseService.getAllExerciseCategories();
+		return ResponseEntity.ok(categories);
+	}
+
 }

@@ -1,5 +1,14 @@
 package source.code.unit.user.withoutType;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,195 +33,176 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.activity.ActivityPopulationService;
 import source.code.service.implementation.user.interaction.withoutType.UserActivityServiceImpl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class UserActivityServiceTest {
-    @Mock
-    private UserActivityRepository userActivityRepository;
-    @Mock
-    private ActivityRepository activityRepository;
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private ActivityMapper activityMapper;
-    @Mock
-    private ActivityPopulationService activityPopulationService;
-    private UserActivityServiceImpl userActivityService;
 
-    private MockedStatic<AuthorizationUtil> mockedAuthUtil;
+	@Mock
+	private UserActivityRepository userActivityRepository;
 
-    @BeforeEach
-    void setUp() {
-        mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
-        userActivityService = new UserActivityServiceImpl(
-                userRepository,
-                activityRepository,
-                userActivityRepository,
-                activityMapper,
-                activityPopulationService
-        );
-    }
+	@Mock
+	private ActivityRepository activityRepository;
 
-    @AfterEach
-    void tearDown() {
-        if (mockedAuthUtil != null) {
-            mockedAuthUtil.close();
-        }
-    }
+	@Mock
+	private UserRepository userRepository;
 
-    @Test
-    public void saveToUser_ShouldSaveToUserWithType() {
-        int userId = 1;
-        int activityId = 100;
-        User user = new User();
-        Activity activity = new Activity();
+	@Mock
+	private ActivityMapper activityMapper;
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userActivityRepository.existsByUserIdAndActivityId(userId, activityId))
-                .thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(activityRepository.findById(activityId)).thenReturn(Optional.of(activity));
+	@Mock
+	private ActivityPopulationService activityPopulationService;
 
-        userActivityService.saveToUser(activityId);
+	private UserActivityServiceImpl userActivityService;
 
-        verify(userActivityRepository).save(any(UserActivity.class));
-    }
+	private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
-    @Test
-    public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
-        int userId = 1;
-        int activityId = 100;
+	@BeforeEach
+	void setUp() {
+		mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
+		userActivityService = new UserActivityServiceImpl(userRepository, activityRepository, userActivityRepository,
+			activityMapper, activityPopulationService);
+	}
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userActivityRepository.existsByUserIdAndActivityId(userId, activityId))
-                .thenReturn(true);
+	@AfterEach
+	void tearDown() {
+		if (mockedAuthUtil != null) {
+			mockedAuthUtil.close();
+		}
+	}
 
-        assertThrows(NotUniqueRecordException.class,
-                () -> userActivityService.saveToUser(activityId));
+	@Test
+	public void saveToUser_ShouldSaveToUserWithType() {
+		int userId = 1;
+		int activityId = 100;
+		User user = new User();
+		Activity activity = new Activity();
 
-        verify(userActivityRepository, never()).save(any());
-    }
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userActivityRepository.existsByUserIdAndActivityId(userId, activityId)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(activityRepository.findById(activityId)).thenReturn(Optional.of(activity));
 
-    @Test
-    public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
-        int userId = 1;
-        int activityId = 100;
+		userActivityService.saveToUser(activityId);
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userActivityRepository.existsByUserIdAndActivityId(userId, activityId))
-                .thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+		verify(userActivityRepository).save(any(UserActivity.class));
+	}
 
-        assertThrows(RecordNotFoundException.class,
-                () -> userActivityService.saveToUser(activityId));
+	@Test
+	public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
+		int userId = 1;
+		int activityId = 100;
 
-        verify(userActivityRepository, never()).save(any());
-    }
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userActivityRepository.existsByUserIdAndActivityId(userId, activityId)).thenReturn(true);
 
-    @Test
-    public void saveToUser_ShouldThrowRecordNotFoundExceptionIfActivityNotFound() {
-        int userId = 1;
-        int activityId = 100;
-        User user = new User();
+		assertThrows(NotUniqueRecordException.class, () -> userActivityService.saveToUser(activityId));
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userActivityRepository.existsByUserIdAndActivityId(userId, activityId))
-                .thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(activityRepository.findById(activityId)).thenReturn(Optional.empty());
+		verify(userActivityRepository, never()).save(any());
+	}
 
-        assertThrows(RecordNotFoundException.class,
-                () -> userActivityService.saveToUser(activityId));
+	@Test
+	public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
+		int userId = 1;
+		int activityId = 100;
 
-        verify(userActivityRepository, never()).save(any());
-    }
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userActivityRepository.existsByUserIdAndActivityId(userId, activityId)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-    @Test
-    public void deleteFromUser_ShouldDeleteFromUser() {
-        int userId = 1;
-        int activityId = 100;
-        UserActivity userActivity = UserActivity.of(new User(), new Activity());
+		assertThrows(RecordNotFoundException.class, () -> userActivityService.saveToUser(activityId));
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userActivityRepository.findByUserIdAndActivityId(userId, activityId))
-                .thenReturn(Optional.of(userActivity));
+		verify(userActivityRepository, never()).save(any());
+	}
 
-        userActivityService.deleteFromUser(activityId);
+	@Test
+	public void saveToUser_ShouldThrowRecordNotFoundExceptionIfActivityNotFound() {
+		int userId = 1;
+		int activityId = 100;
+		User user = new User();
 
-        verify(userActivityRepository).delete(userActivity);
-    }
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userActivityRepository.existsByUserIdAndActivityId(userId, activityId)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(activityRepository.findById(activityId)).thenReturn(Optional.empty());
 
-    @Test
-    public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserActivityNotFound() {
-        int userId = 1;
-        int activityId = 100;
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userActivityRepository.findByUserIdAndActivityId(userId, activityId))
-                .thenReturn(Optional.empty());
+		assertThrows(RecordNotFoundException.class, () -> userActivityService.saveToUser(activityId));
 
-        assertThrows(RecordNotFoundException.class,
-                () -> userActivityService.deleteFromUser(activityId));
+		verify(userActivityRepository, never()).save(any());
+	}
 
-        verify(userActivityRepository, never()).delete(any());
-    }
+	@Test
+	public void deleteFromUser_ShouldDeleteFromUser() {
+		int userId = 1;
+		int activityId = 100;
+		UserActivity userActivity = UserActivity.of(new User(), new Activity());
 
-    @Test
-    public void getAllFromUser_ShouldReturnPagedActivities() {
-        int userId = 1;
-        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userActivityRepository.findByUserIdAndActivityId(userId, activityId))
+			.thenReturn(Optional.of(userActivity));
 
-        Activity activity1 = new Activity();
-        activity1.setId(1);
-        activity1.setMediaList(new ArrayList<>());
+		userActivityService.deleteFromUser(activityId);
 
-        Activity activity2 = new Activity();
-        activity2.setId(2);
-        activity2.setMediaList(new ArrayList<>());
+		verify(userActivityRepository).delete(userActivity);
+	}
 
-        UserActivity ua1 = UserActivity.of(new User(), activity1);
-        UserActivity ua2 = UserActivity.of(new User(), activity2);
+	@Test
+	public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserActivityNotFound() {
+		int userId = 1;
+		int activityId = 100;
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userActivityRepository.findByUserIdAndActivityId(userId, activityId)).thenReturn(Optional.empty());
 
-        ActivitySummaryDto dto1 = new ActivitySummaryDto();
-        dto1.setId(1);
-        ActivitySummaryDto dto2 = new ActivitySummaryDto();
-        dto2.setId(2);
+		assertThrows(RecordNotFoundException.class, () -> userActivityService.deleteFromUser(activityId));
 
-        Page<UserActivity> userActivityPage = new PageImpl<>(List.of(ua1, ua2), pageable, 2);
+		verify(userActivityRepository, never()).delete(any());
+	}
 
-        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), eq(pageable)))
-                .thenReturn(userActivityPage);
-        when(activityMapper.toSummaryDto(activity1)).thenReturn(dto1);
-        when(activityMapper.toSummaryDto(activity2)).thenReturn(dto2);
+	@Test
+	public void getAllFromUser_ShouldReturnPagedActivities() {
+		int userId = 1;
+		Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Page<BaseUserEntity> result = userActivityService.getAllFromUser(userId, pageable);
+		Activity activity1 = new Activity();
+		activity1.setId(1);
+		activity1.setMediaList(new ArrayList<>());
 
-        assertEquals(2, result.getTotalElements());
-        assertEquals(2, result.getContent().size());
-        verify(activityMapper, times(2)).toSummaryDto(any(Activity.class));
-        verify(activityPopulationService).populate(anyList());
-    }
+		Activity activity2 = new Activity();
+		activity2.setId(2);
+		activity2.setMediaList(new ArrayList<>());
 
-    @Test
-    public void getAllFromUser_ShouldReturnEmptyPageIfNoActivities() {
-        int userId = 1;
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<UserActivity> emptyPage = new PageImpl<>(List.of(), pageable, 0);
+		UserActivity ua1 = UserActivity.of(new User(), activity1);
+		UserActivity ua2 = UserActivity.of(new User(), activity2);
 
-        when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), eq(pageable)))
-                .thenReturn(emptyPage);
+		ActivitySummaryDto dto1 = new ActivitySummaryDto();
+		dto1.setId(1);
+		ActivitySummaryDto dto2 = new ActivitySummaryDto();
+		dto2.setId(2);
 
-        Page<BaseUserEntity> result = userActivityService.getAllFromUser(userId, pageable);
+		Page<UserActivity> userActivityPage = new PageImpl<>(List.of(ua1, ua2), pageable, 2);
 
-        assertTrue(result.isEmpty());
-        assertEquals(0, result.getTotalElements());
-    }
+		when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), eq(pageable))).thenReturn(userActivityPage);
+		when(activityMapper.toSummaryDto(activity1)).thenReturn(dto1);
+		when(activityMapper.toSummaryDto(activity2)).thenReturn(dto2);
+
+		Page<BaseUserEntity> result = userActivityService.getAllFromUser(userId, pageable);
+
+		assertEquals(2, result.getTotalElements());
+		assertEquals(2, result.getContent().size());
+		verify(activityMapper, times(2)).toSummaryDto(any(Activity.class));
+		verify(activityPopulationService).populate(anyList());
+	}
+
+	@Test
+	public void getAllFromUser_ShouldReturnEmptyPageIfNoActivities() {
+		int userId = 1;
+		Pageable pageable = PageRequest.of(0, 10);
+		Page<UserActivity> emptyPage = new PageImpl<>(List.of(), pageable, 0);
+
+		when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), eq(pageable))).thenReturn(emptyPage);
+
+		Page<BaseUserEntity> result = userActivityService.getAllFromUser(userId, pageable);
+
+		assertTrue(result.isEmpty());
+		assertEquals(0, result.getTotalElements());
+	}
 
 }

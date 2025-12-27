@@ -12,31 +12,30 @@ import source.code.model.user.User;
 @Table(name = "complaint")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-@NamedEntityGraph(
-        name = "ComplaintBase.withoutAssociations",
-        attributeNodes = {}
-)
+@NamedEntityGraph(name = "ComplaintBase.withoutAssociations", attributeNodes = {})
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public abstract class ComplaintBase {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ComplaintReason reason;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ComplaintStatus status = ComplaintStatus.PENDING;
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private ComplaintReason reason;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private ComplaintStatus status = ComplaintStatus.PENDING;
+
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
+
 }

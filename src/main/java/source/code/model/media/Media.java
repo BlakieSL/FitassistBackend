@@ -17,27 +17,29 @@ import source.code.validation.media.UniqueUserMedia;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Media {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
-    @NotNull
-    @Column(name = "image_name", nullable = false)
-    private String imageName;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private MediaConnectedEntity parentType;
+	@NotNull
+	@Column(name = "image_name", nullable = false)
+	private String imageName;
 
-    @NotNull
-    @Column(name = "parent_id", nullable = false)
-    private Integer parentId;
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	private MediaConnectedEntity parentType;
 
-    public static Media of(Integer id, MediaConnectedEntity parentType, Integer parentId) {
-        Media media = new Media();
-        media.setId(id);
-        media.setParentType(parentType);
-        media.setParentId(parentId);
-        return media;
-    }
+	@NotNull
+	@Column(name = "parent_id", nullable = false)
+	private Integer parentId;
+
+	public static Media of(Integer id, MediaConnectedEntity parentType, Integer parentId) {
+		Media media = new Media();
+		media.setId(id);
+		media.setParentType(parentType);
+		media.setParentId(parentId);
+		return media;
+	}
+
 }

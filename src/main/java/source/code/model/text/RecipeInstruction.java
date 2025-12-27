@@ -15,25 +15,27 @@ import source.code.model.recipe.Recipe;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class RecipeInstruction extends TextBase {
-    private String title;
 
-    @ManyToOne
-    @JoinColumn(name = "recipe_id")
-    private Recipe recipe;
+	private String title;
 
-    public static RecipeInstruction of(short number, String title, String text, Recipe recipe) {
-        RecipeInstruction instruction = new RecipeInstruction();
-        instruction.setOrderIndex(number);
-        instruction.setTitle(title);
-        instruction.setText(text);
-        instruction.setRecipe(recipe);
-        return instruction;
-    }
+	@ManyToOne
+	@JoinColumn(name = "recipe_id")
+	private Recipe recipe;
 
-    public static RecipeInstruction of(Integer id, Recipe recipe) {
-        RecipeInstruction instruction = new RecipeInstruction();
-        instruction.setId(id);
-        instruction.setRecipe(recipe);
-        return instruction;
-    }
+	public static RecipeInstruction of(short number, String title, String text, Recipe recipe) {
+		RecipeInstruction instruction = new RecipeInstruction();
+		instruction.setOrderIndex(number);
+		instruction.setTitle(title);
+		instruction.setText(text);
+		instruction.setRecipe(recipe);
+		return instruction;
+	}
+
+	public static RecipeInstruction of(Integer id, Recipe recipe) {
+		RecipeInstruction instruction = new RecipeInstruction();
+		instruction.setId(id);
+		instruction.setRecipe(recipe);
+		return instruction;
+	}
+
 }

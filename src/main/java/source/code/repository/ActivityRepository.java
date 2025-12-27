@@ -1,5 +1,8 @@
 package source.code.repository;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,30 +13,28 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import source.code.model.activity.Activity;
 
-import java.util.List;
-import java.util.Optional;
+public interface ActivityRepository extends JpaRepository<Activity, Integer>, JpaSpecificationExecutor<Activity> {
 
-public interface ActivityRepository
-        extends JpaRepository<Activity, Integer>, JpaSpecificationExecutor<Activity> {
-    @EntityGraph(value = "Activity.summary")
-    @NotNull
-    Page<Activity> findAll(Specification<Activity> spec, @NotNull Pageable pageable);
+	@EntityGraph(value = "Activity.summary")
+	@NotNull
+	@Override
+	Page<Activity> findAll(Specification<Activity> spec, @NotNull Pageable pageable);
 
-    @EntityGraph(value = "Activity.withoutAssociations")
-    @Query("SELECT a FROM Activity a")
-    List<Activity> findAllWithoutAssociations();
+	@EntityGraph(value = "Activity.summary")
+	@NotNull
+	@Override
+	List<Activity> findAll();
 
-    @EntityGraph(value = "Activity.withAssociations")
-    @Query("SELECT a FROM Activity a WHERE a.id = :id")
-    Optional<Activity> findByIdWithAssociations(int id);
+	@EntityGraph(value = "Activity.withoutAssociations")
+	@Query("SELECT a FROM Activity a")
+	List<Activity> findAllWithoutAssociations();
 
-    @EntityGraph(attributePaths = {"activityCategory"})
-    @Query("SELECT a FROM Activity a")
-    Page<Activity> findAllWithActivityCategory(Pageable pageable);
+	@EntityGraph(value = "Activity.withAssociations")
+	@Query("SELECT a FROM Activity a WHERE a.id = :id")
+	Optional<Activity> findByIdWithAssociations(int id);
 
-    @Query("SELECT a FROM Activity a " +
-            "LEFT JOIN FETCH a.activityCategory " +
-            "LEFT JOIN FETCH a.mediaList " +
-            "WHERE a.id = :id")
-    Optional<Activity> findByIdWithMedia(int id);
+	@Query("SELECT a FROM Activity a " + "LEFT JOIN FETCH a.activityCategory " + "LEFT JOIN FETCH a.mediaList "
+		+ "WHERE a.id = :id")
+	Optional<Activity> findByIdWithMedia(int id);
+
 }

@@ -1,6 +1,12 @@
 package source.code.integration.test.controller.daily;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,275 +26,246 @@ import source.code.integration.test.controller.activity.ActivitySql;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @TestSetup
-@Import({MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class})
+@Import({ MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class })
 @TestPropertySource(properties = "schema.name=general")
-@ContextConfiguration(initializers = {MySqlContainerInitializer.class})
+@ContextConfiguration(initializers = { MySqlContainerInitializer.class })
 public class DailyActivityTest {
-    @Autowired
-    private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+	@Autowired
+	private MockMvc mockMvc;
 
-    @ActivitySql
-    @Test
-    @DisplayName("POST - / - Should return all daily activities for the user")
-    void getAllDailyActivitiesByUser() throws Exception {
-        Utils.setUserContext(1);
+	@Autowired
+	private ObjectMapper objectMapper;
 
-        DailyActivitiesGetDto request = new DailyActivitiesGetDto();
-        request.setDate(LocalDate.of(2023, 10, 5));
+	@ActivitySql
+	@Test
+	@DisplayName("POST - / - Should return all daily activities for the user")
+	void getAllDailyActivitiesByUser() throws Exception {
+		Utils.setUserContext(1);
 
-        mockMvc.perform(post("/api/daily-activities")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.activities").isArray(),
-                        jsonPath("$.activities.length()").value(2),
-                        jsonPath("$.totalCaloriesBurned").isNumber()
-                );
-    }
+		DailyActivitiesGetDto request = new DailyActivitiesGetDto();
+		request.setDate(LocalDate.of(2023, 10, 5));
 
-    @ActivitySql
-    @Test
-    @DisplayName("POST - / - Should return empty list when no daily activity items exist in existing daily cart")
-    void getAllDailyActivitiesByUserEmpty() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(post("/api/daily-activities").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpectAll(status().isOk(), jsonPath("$.activities").isArray(),
+					jsonPath("$.activities.length()").value(2), jsonPath("$.totalCaloriesBurned").isNumber());
+	}
 
-        DailyActivitiesGetDto request = new DailyActivitiesGetDto();
-        request.setDate(LocalDate.of(2023, 10, 6));
+	@ActivitySql
+	@Test
+	@DisplayName("POST - / - Should return empty list when no daily activity items exist in existing daily cart")
+	void getAllDailyActivitiesByUserEmpty() throws Exception {
+		Utils.setUserContext(1);
 
-        mockMvc.perform(post("/api/daily-activities")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.activities").isArray(),
-                        jsonPath("$.activities.length()").value(0),
-                        jsonPath("$.totalCaloriesBurned").value(0)
-                );
-    }
+		DailyActivitiesGetDto request = new DailyActivitiesGetDto();
+		request.setDate(LocalDate.of(2023, 10, 6));
 
-    @ActivitySql
-    @Test
-    @DisplayName("POST - / - Should return empty list when daily cart didn't exist for the date")
-    void getAllDailyActivitiesByUserNotFound() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(post("/api/daily-activities").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpectAll(status().isOk(), jsonPath("$.activities").isArray(),
+					jsonPath("$.activities.length()").value(0), jsonPath("$.totalCaloriesBurned").value(0));
+	}
 
-        DailyActivitiesGetDto request = new DailyActivitiesGetDto();
-        request.setDate(LocalDate.of(2023, 10, 2));
+	@ActivitySql
+	@Test
+	@DisplayName("POST - / - Should return empty list when daily cart didn't exist for the date")
+	void getAllDailyActivitiesByUserNotFound() throws Exception {
+		Utils.setUserContext(1);
 
-        mockMvc.perform(post("/api/daily-activities")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.activities").isArray(),
-                        jsonPath("$.activities.length()").value(0),
-                        jsonPath("$.totalCaloriesBurned").value(0)
-                );
-    }
+		DailyActivitiesGetDto request = new DailyActivitiesGetDto();
+		request.setDate(LocalDate.of(2023, 10, 2));
 
-    @ActivitySql
-    @Test
-    @DisplayName("POST - /add/{activityId} - Should add a daily activity to the user's cart")
-    void addDailyActivityToUser() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(post("/api/daily-activities").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpectAll(status().isOk(), jsonPath("$.activities").isArray(),
+					jsonPath("$.activities.length()").value(0), jsonPath("$.totalCaloriesBurned").value(0));
+	}
 
-        DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
-        request.setTime((short) 30);
-        request.setWeight(new BigDecimal("75.50"));
-        request.setDate(LocalDate.of(2023, 10, 6));
+	@ActivitySql
+	@Test
+	@DisplayName("POST - /add/{activityId} - Should add a daily activity to the user's cart")
+	void addDailyActivityToUser() throws Exception {
+		Utils.setUserContext(1);
 
-        mockMvc.perform(post("/api/daily-activities/add/3")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated());
-    }
+		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
+		request.setTime((short) 30);
+		request.setWeight(new BigDecimal("75.50"));
+		request.setDate(LocalDate.of(2023, 10, 6));
 
-    @ActivitySql
-    @Test
-    @DisplayName("POST - /add/{activityId} - Should increase time if activity already exists")
-    void addDailyActivityToUserAlreadyExists() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(post("/api/daily-activities/add/3").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpect(status().isCreated());
+	}
 
-        DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
-        request.setTime((short) 20);
-        request.setWeight(new BigDecimal("72.00"));
-        request.setDate(LocalDate.of(2023, 10, 5));
+	@ActivitySql
+	@Test
+	@DisplayName("POST - /add/{activityId} - Should increase time if activity already exists")
+	void addDailyActivityToUserAlreadyExists() throws Exception {
+		Utils.setUserContext(1);
 
-        mockMvc.perform(post("/api/daily-activities/add/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated());
+		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
+		request.setTime((short) 20);
+		request.setWeight(new BigDecimal("72.00"));
+		request.setDate(LocalDate.of(2023, 10, 5));
 
-        DailyActivitiesGetDto verifyRequest = new DailyActivitiesGetDto();
-        verifyRequest.setDate(LocalDate.of(2023, 10, 5));
+		mockMvc
+			.perform(post("/api/daily-activities/add/1").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpect(status().isCreated());
 
-        mockMvc.perform(post("/api/daily-activities")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(verifyRequest)))
-                .andExpectAll(
-                        jsonPath("$.activities[?(@.id == 1)].time").value(50),
-                        jsonPath("$.activities[?(@.id == 2)].time").value(45),
-                        jsonPath("$.activities[?(@.id == 1)].weight").value(72.00)
-                );
-    }
+		DailyActivitiesGetDto verifyRequest = new DailyActivitiesGetDto();
+		verifyRequest.setDate(LocalDate.of(2023, 10, 5));
 
-    @ActivitySql
-    @Test
-    @DisplayName("POST - /add/{activityId} - Should return 404 when activity does not exist")
-    void addDailyActivityToUserNotFound() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(post("/api/daily-activities").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(verifyRequest)))
+			.andExpectAll(jsonPath("$.activities[?(@.id == 1)].time").value(50),
+					jsonPath("$.activities[?(@.id == 2)].time").value(45),
+					jsonPath("$.activities[?(@.id == 1)].weight").value(72.00));
+	}
 
-        DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
-        request.setTime((short) 30);
-        request.setWeight(new BigDecimal("75.00"));
-        request.setDate(LocalDate.of(2023, 10, 6));
+	@ActivitySql
+	@Test
+	@DisplayName("POST - /add/{activityId} - Should return 404 when activity does not exist")
+	void addDailyActivityToUserNotFound() throws Exception {
+		Utils.setUserContext(1);
 
-        mockMvc.perform(post("/api/daily-activities/add/999")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isNotFound());
-    }
+		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
+		request.setTime((short) 30);
+		request.setWeight(new BigDecimal("75.00"));
+		request.setDate(LocalDate.of(2023, 10, 6));
 
-    @ActivitySql
-    @Test
-    @DisplayName("PATCH - /modify-activity/{activityId} - Should update daily activity item")
-    void updateDailyCartActivity() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(post("/api/daily-activities/add/999").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpect(status().isNotFound());
+	}
 
-        DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
-        updateDto.setTime((short) 40);
-        updateDto.setWeight(new BigDecimal("80.00"));
+	@ActivitySql
+	@Test
+	@DisplayName("PATCH - /modify-activity/{activityId} - Should update daily activity item")
+	void updateDailyCartActivity() throws Exception {
+		Utils.setUserContext(1);
 
-        mockMvc.perform(patch("/api/daily-activities/modify-activity/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto)))
-                .andExpect(status().isNoContent());
+		DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
+		updateDto.setTime((short) 40);
+		updateDto.setWeight(new BigDecimal("80.00"));
 
-        DailyActivitiesGetDto verifyRequest = new DailyActivitiesGetDto();
-        verifyRequest.setDate(LocalDate.of(2023, 10, 5));
+		mockMvc
+			.perform(patch("/api/daily-activities/modify-activity/1").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(updateDto)))
+			.andExpect(status().isNoContent());
 
-        mockMvc.perform(post("/api/daily-activities")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(verifyRequest)))
-                .andExpectAll(
-                        jsonPath("$.activities[?(@.id == 1)].time").value(40),
-                        jsonPath("$.activities[?(@.id == 1)].weight").value(80.00),
-                        jsonPath("$.activities[?(@.id == 2)].time").value(45)
-                );
-    }
+		DailyActivitiesGetDto verifyRequest = new DailyActivitiesGetDto();
+		verifyRequest.setDate(LocalDate.of(2023, 10, 5));
 
-    @ActivitySql
-    @Test
-    @DisplayName("PATCH - /modify-activity/{activityId} - Should return 404 when daily activity item does not exist")
-    void updateDailyCartActivityNotFound() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(post("/api/daily-activities").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(verifyRequest)))
+			.andExpectAll(jsonPath("$.activities[?(@.id == 1)].time").value(40),
+					jsonPath("$.activities[?(@.id == 1)].weight").value(80.00),
+					jsonPath("$.activities[?(@.id == 2)].time").value(45));
+	}
 
-        DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
+	@ActivitySql
+	@Test
+	@DisplayName("PATCH - /modify-activity/{activityId} - Should return 404 when daily activity item does not exist")
+	void updateDailyCartActivityNotFound() throws Exception {
+		Utils.setUserContext(1);
 
-        mockMvc.perform(patch("/api/daily-activities/modify-activity/999")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto)))
-                .andExpect(status().isNotFound());
-    }
+		DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
 
-    @ActivitySql
-    @Test
-    @DisplayName("PATCH - /modify-activity/{activityId} - Should return 400 when patch is invalid")
-    void updateDailyCartActivityInvalidPatch() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(patch("/api/daily-activities/modify-activity/999").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(updateDto)))
+			.andExpect(status().isNotFound());
+	}
 
-        DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
-        updateDto.setTime((short) -10);
+	@ActivitySql
+	@Test
+	@DisplayName("PATCH - /modify-activity/{activityId} - Should return 400 when patch is invalid")
+	void updateDailyCartActivityInvalidPatch() throws Exception {
+		Utils.setUserContext(1);
 
-        mockMvc.perform(patch("/api/daily-activities/modify-activity/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto)))
-                .andExpect(status().isBadRequest());
-    }
+		DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
+		updateDto.setTime((short) -10);
 
-    @ActivitySql
-    @Test
-    @DisplayName("PATCH - /modify-activity/{activityId} - Should return 403 when user is not owner")
-    void updateNotOwnerAdmin() throws Exception {
-        Utils.setUserContext(2);
+		mockMvc
+			.perform(patch("/api/daily-activities/modify-activity/1").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(updateDto)))
+			.andExpect(status().isBadRequest());
+	}
 
-        DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
-        updateDto.setTime((short) 40);
+	@ActivitySql
+	@Test
+	@DisplayName("PATCH - /modify-activity/{activityId} - Should return 403 when user is not owner")
+	void updateNotOwnerAdmin() throws Exception {
+		Utils.setUserContext(2);
 
-        mockMvc.perform(patch("/api/daily-activities/modify-activity/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto)))
-                .andExpect(status().isForbidden());
-    }
+		DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
+		updateDto.setTime((short) 40);
 
-    @ActivitySql
-    @Test
-    @DisplayName("DELETE - /remove/{dailyActivityItemId} - Should delete")
-    void removeActivityFromDailyCartActivity() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(patch("/api/daily-activities/modify-activity/1").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(updateDto)))
+			.andExpect(status().isForbidden());
+	}
 
-        mockMvc.perform(delete("/api/daily-activities/remove/1"))
-                .andExpect(status().isNoContent());
+	@ActivitySql
+	@Test
+	@DisplayName("DELETE - /remove/{dailyActivityItemId} - Should delete")
+	void removeActivityFromDailyCartActivity() throws Exception {
+		Utils.setUserContext(1);
 
-        DailyActivitiesGetDto verifyRequest = new DailyActivitiesGetDto();
-        verifyRequest.setDate(LocalDate.of(2023, 10, 5));
+		mockMvc.perform(delete("/api/daily-activities/remove/1")).andExpect(status().isNoContent());
 
-        mockMvc.perform(post("/api/daily-activities")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(verifyRequest)))
-                .andExpectAll(
-                        jsonPath("$.activities.length()").value(1),
-                        jsonPath("$.activities[0].id").value(2)
-                );
-    }
+		DailyActivitiesGetDto verifyRequest = new DailyActivitiesGetDto();
+		verifyRequest.setDate(LocalDate.of(2023, 10, 5));
 
-    @ActivitySql
-    @Test
-    @DisplayName("DELETE - /remove/{dailyActivityItemId} - Should return 404 when daily activity item does not exist")
-    void removeActivityFromDailyCartActivityNotFound() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(post("/api/daily-activities").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(verifyRequest)))
+			.andExpectAll(jsonPath("$.activities.length()").value(1), jsonPath("$.activities[0].id").value(2));
+	}
 
-        mockMvc.perform(delete("/api/daily-activities/remove/999"))
-                .andExpect(status().isNotFound());
-    }
+	@ActivitySql
+	@Test
+	@DisplayName("DELETE - /remove/{dailyActivityItemId} - Should return 404 when daily activity item does not exist")
+	void removeActivityFromDailyCartActivityNotFound() throws Exception {
+		Utils.setUserContext(1);
 
-    @ActivitySql
-    @Test
-    @DisplayName("DELETE - /remove/{dailyActivityItemId} - Should return 403 when user is not owner")
-    void removeNotOwnerAdmin() throws Exception {
-        Utils.setUserContext(2);
+		mockMvc.perform(delete("/api/daily-activities/remove/999")).andExpect(status().isNotFound());
+	}
 
-        mockMvc.perform(delete("/api/daily-activities/remove/1"))
-                .andExpect(status().isForbidden());
-    }
+	@ActivitySql
+	@Test
+	@DisplayName("DELETE - /remove/{dailyActivityItemId} - Should return 403 when user is not owner")
+	void removeNotOwnerAdmin() throws Exception {
+		Utils.setUserContext(2);
 
-    @ActivitySql
-    @Test
-    @DisplayName("POST - /add/{activityId} - Should return 400 when weight is not provided and user has no weight")
-    void addDailyActivityNoWeightAvailable() throws Exception {
-        Utils.setUserContext(2);
+		mockMvc.perform(delete("/api/daily-activities/remove/1")).andExpect(status().isForbidden());
+	}
 
-        DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
-        request.setTime((short) 30);
-        request.setDate(LocalDate.of(2023, 10, 6));
+	@ActivitySql
+	@Test
+	@DisplayName("POST - /add/{activityId} - Should return 400 when weight is not provided and user has no weight")
+	void addDailyActivityNoWeightAvailable() throws Exception {
+		Utils.setUserContext(2);
 
-        mockMvc.perform(post("/api/daily-activities/add/3")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpectAll(
-                        status().isBadRequest()
-                );
-    }
+		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
+		request.setTime((short) 30);
+		request.setDate(LocalDate.of(2023, 10, 6));
+
+		mockMvc
+			.perform(post("/api/daily-activities/add/3").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpectAll(status().isBadRequest());
+	}
+
 }

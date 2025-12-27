@@ -8,13 +8,15 @@ import source.code.service.declaration.email.EmailService;
 
 @TestConfiguration
 public class MockAwsSesConfig {
-    @ConditionalOnProperty(name = "spring.cloud.aws.ses.enabled", havingValue = "false", matchIfMissing = true)
-    @Bean
-    public EmailService emailServiceStub() {
-        return new EmailService() {
-            @Override
-            public void sendEmail(EmailRequestDto request) {
-            }
-        };
-    }
+
+	@ConditionalOnProperty(name = "spring.cloud.aws.ses.enabled", havingValue = "false", matchIfMissing = true)
+	@Bean
+	public EmailService emailServiceStub() {
+		return new EmailService() {
+			@Override
+			public void sendEmail(EmailRequestDto request) {
+			}
+		};
+	}
+
 }

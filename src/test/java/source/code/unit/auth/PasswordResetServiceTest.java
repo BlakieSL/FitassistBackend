@@ -1,5 +1,13 @@
 package source.code.unit.auth;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+
+import java.util.Collections;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,199 +28,199 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.email.EmailService;
 import source.code.service.implementation.auth.PasswordResetServiceImpl;
 
-import java.util.Collections;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class PasswordResetServiceTest {
 
-    @Mock
-    private JwtService jwtService;
-    @Mock
-    private EmailService emailService;
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private PasswordEncoder passwordEncoder;
-    @InjectMocks
-    private PasswordResetServiceImpl passwordResetService;
+	@Mock
+	private JwtService jwtService;
 
-    private User user;
-    private String email;
-    private Integer userId;
-    private String resetToken;
+	@Mock
+	private EmailService emailService;
 
-    @BeforeEach
-    void setUp() {
-        email = "test@example.com";
-        userId = 1;
-        resetToken = "valid.reset.token";
+	@Mock
+	private UserRepository userRepository;
 
-        user = new User();
-        user.setId(userId);
-        user.setEmail(email);
-        user.setUsername("testuser");
-        user.setPassword("oldPassword");
+	@Mock
+	private PasswordEncoder passwordEncoder;
 
-        ReflectionTestUtils.setField(passwordResetService, "frontendUrl", "http://localhost:3000");
-        ReflectionTestUtils.setField(passwordResetService, "fromEmail", "noreply@fitassist.com");
-    }
+	@InjectMocks
+	private PasswordResetServiceImpl passwordResetService;
 
-    @Test
-    void requestPasswordReset_shouldSendEmailForValidUser() {
-        PasswordResetRequestDto request = new PasswordResetRequestDto();
-        request.setEmail(email);
+	private User user;
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-        when(jwtService.createSignedJWT(eq(email), eq(userId), eq(Collections.emptyList()), eq(20L), eq("PASSWORD_RESET")))
-                .thenReturn(resetToken);
+	private String email;
 
-        passwordResetService.requestPasswordReset(request);
+	private Integer userId;
 
-        ArgumentCaptor<EmailRequestDto> emailCaptor = ArgumentCaptor.forClass(EmailRequestDto.class);
-        verify(emailService).sendEmail(emailCaptor.capture());
+	private String resetToken;
 
-        EmailRequestDto sentEmail = emailCaptor.getValue();
-        assertEquals("noreply@fitassist.com", sentEmail.getFromEmail());
-        assertTrue(sentEmail.getToEmails().contains(email));
-        assertEquals("Password Reset Request", sentEmail.getSubject());
-        assertTrue(sentEmail.getContent().contains(resetToken));
-        assertTrue(sentEmail.isHtml());
-    }
+	@BeforeEach
+	void setUp() {
+		email = "test@example.com";
+		userId = 1;
+		resetToken = "valid.reset.token";
 
-    @Test
-    void requestPasswordReset_shouldThrowWhenUserNotFound() {
-        PasswordResetRequestDto request = new PasswordResetRequestDto();
-        request.setEmail("nonexistent@example.com");
+		user = new User();
+		user.setId(userId);
+		user.setEmail(email);
+		user.setUsername("testuser");
+		user.setPassword("oldPassword");
 
-        when(userRepository.findByEmail("nonexistent@example.com")).thenReturn(Optional.empty());
+		ReflectionTestUtils.setField(passwordResetService, "frontendUrl", "http://localhost:3000");
+		ReflectionTestUtils.setField(passwordResetService, "fromEmail", "noreply@fitassist.com");
+	}
 
-        assertThrows(RecordNotFoundException.class, () -> passwordResetService.requestPasswordReset(request));
+	@Test
+	void requestPasswordReset_shouldSendEmailForValidUser() {
+		PasswordResetRequestDto request = new PasswordResetRequestDto();
+		request.setEmail(email);
 
-        verifyNoInteractions(emailService);
-        verifyNoInteractions(jwtService);
-    }
+		when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+		when(jwtService.createSignedJWT(eq(email), eq(userId), eq(Collections.emptyList()), eq(20L),
+			eq("PASSWORD_RESET")))
+			.thenReturn(resetToken);
 
-    @Test
-    void resetPassword_shouldUpdatePasswordForValidToken() throws Exception {
-        String sharedKey = "thisIsASecretKeyForTestingPurposesThatIsLongEnough";
-        JwtService realJwtService = new JwtService(sharedKey);
-        String validToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), 20, "PASSWORD_RESET");
+		passwordResetService.requestPasswordReset(request);
 
-        PasswordResetDto resetDto = new PasswordResetDto();
-        resetDto.setToken(validToken);
-        resetDto.setNewPassword("newPassword123");
+		ArgumentCaptor<EmailRequestDto> emailCaptor = ArgumentCaptor.forClass(EmailRequestDto.class);
+		verify(emailService).sendEmail(emailCaptor.capture());
 
-        PasswordResetServiceImpl serviceWithRealJwt = new PasswordResetServiceImpl(
-                realJwtService, emailService, userRepository, passwordEncoder
-        );
+		EmailRequestDto sentEmail = emailCaptor.getValue();
+		assertEquals("noreply@fitassist.com", sentEmail.getFromEmail());
+		assertTrue(sentEmail.getToEmails().contains(email));
+		assertEquals("Password Reset Request", sentEmail.getSubject());
+		assertTrue(sentEmail.getContent().contains(resetToken));
+		assertTrue(sentEmail.isHtml());
+	}
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-        when(passwordEncoder.encode("newPassword123")).thenReturn("encodedNewPassword");
+	@Test
+	void requestPasswordReset_shouldThrowWhenUserNotFound() {
+		PasswordResetRequestDto request = new PasswordResetRequestDto();
+		request.setEmail("nonexistent@example.com");
 
-        serviceWithRealJwt.resetPassword(resetDto);
+		when(userRepository.findByEmail("nonexistent@example.com")).thenReturn(Optional.empty());
 
-        verify(userRepository).save(user);
-        assertEquals("encodedNewPassword", user.getPassword());
-    }
+		assertThrows(RecordNotFoundException.class, () -> passwordResetService.requestPasswordReset(request));
 
-    @Test
-    void resetPassword_shouldThrowForExpiredToken() throws Exception {
-        String sharedKey = "thisIsASecretKeyForTestingPurposesThatIsLongEnough";
-        JwtService realJwtService = new JwtService(sharedKey);
-        String expiredToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), -1, "PASSWORD_RESET");
+		verifyNoInteractions(emailService);
+		verifyNoInteractions(jwtService);
+	}
 
-        PasswordResetDto resetDto = new PasswordResetDto();
-        resetDto.setToken(expiredToken);
-        resetDto.setNewPassword("newPassword123");
+	@Test
+	void resetPassword_shouldUpdatePasswordForValidToken() throws Exception {
+		String sharedKey = "thisIsASecretKeyForTestingPurposesThatIsLongEnough";
+		JwtService realJwtService = new JwtService(sharedKey);
+		String validToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), 20,
+			"PASSWORD_RESET");
 
-        PasswordResetServiceImpl serviceWithRealJwt = new PasswordResetServiceImpl(
-                realJwtService, emailService, userRepository, passwordEncoder
-        );
+		PasswordResetDto resetDto = new PasswordResetDto();
+		resetDto.setToken(validToken);
+		resetDto.setNewPassword("newPassword123");
 
-        assertThrows(JwtAuthenticationException.class, () -> serviceWithRealJwt.resetPassword(resetDto));
+		PasswordResetServiceImpl serviceWithRealJwt = new PasswordResetServiceImpl(realJwtService, emailService,
+			userRepository, passwordEncoder);
 
-        verify(userRepository, never()).save(any());
-    }
+		when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+		when(passwordEncoder.encode("newPassword123")).thenReturn("encodedNewPassword");
 
-    @Test
-    void resetPassword_shouldThrowForInvalidTokenType() throws Exception {
-        String sharedKey = "thisIsASecretKeyForTestingPurposesThatIsLongEnough";
-        JwtService realJwtService = new JwtService(sharedKey);
-        String accessToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), 20, "ACCESS");
+		serviceWithRealJwt.resetPassword(resetDto);
 
-        PasswordResetDto resetDto = new PasswordResetDto();
-        resetDto.setToken(accessToken);
-        resetDto.setNewPassword("newPassword123");
+		verify(userRepository).save(user);
+		assertEquals("encodedNewPassword", user.getPassword());
+	}
 
-        PasswordResetServiceImpl serviceWithRealJwt = new PasswordResetServiceImpl(
-                realJwtService, emailService, userRepository, passwordEncoder
-        );
+	@Test
+	void resetPassword_shouldThrowForExpiredToken() throws Exception {
+		String sharedKey = "thisIsASecretKeyForTestingPurposesThatIsLongEnough";
+		JwtService realJwtService = new JwtService(sharedKey);
+		String expiredToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), -1,
+			"PASSWORD_RESET");
 
-        assertThrows(JwtAuthenticationException.class, () -> serviceWithRealJwt.resetPassword(resetDto));
+		PasswordResetDto resetDto = new PasswordResetDto();
+		resetDto.setToken(expiredToken);
+		resetDto.setNewPassword("newPassword123");
 
-        verify(userRepository, never()).save(any());
-    }
+		PasswordResetServiceImpl serviceWithRealJwt = new PasswordResetServiceImpl(realJwtService, emailService,
+			userRepository, passwordEncoder);
 
-    @Test
-    void resetPassword_shouldThrowForInvalidToken() {
-        PasswordResetDto resetDto = new PasswordResetDto();
-        resetDto.setToken("invalid.token.format");
-        resetDto.setNewPassword("newPassword123");
+		assertThrows(JwtAuthenticationException.class, () -> serviceWithRealJwt.resetPassword(resetDto));
 
-        assertThrows(JwtAuthenticationException.class, () -> passwordResetService.resetPassword(resetDto));
+		verify(userRepository, never()).save(any());
+	}
 
-        verify(userRepository, never()).save(any());
-    }
+	@Test
+	void resetPassword_shouldThrowForInvalidTokenType() throws Exception {
+		String sharedKey = "thisIsASecretKeyForTestingPurposesThatIsLongEnough";
+		JwtService realJwtService = new JwtService(sharedKey);
+		String accessToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), 20, "ACCESS");
 
-    @Test
-    void resetPassword_shouldThrowWhenUserNotFound() throws Exception {
-        String sharedKey = "thisIsASecretKeyForTestingPurposesThatIsLongEnough";
-        JwtService realJwtService = new JwtService(sharedKey);
-        String validToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), 20, "PASSWORD_RESET");
+		PasswordResetDto resetDto = new PasswordResetDto();
+		resetDto.setToken(accessToken);
+		resetDto.setNewPassword("newPassword123");
 
-        PasswordResetDto resetDto = new PasswordResetDto();
-        resetDto.setToken(validToken);
-        resetDto.setNewPassword("newPassword123");
+		PasswordResetServiceImpl serviceWithRealJwt = new PasswordResetServiceImpl(realJwtService, emailService,
+			userRepository, passwordEncoder);
 
-        PasswordResetServiceImpl serviceWithRealJwt = new PasswordResetServiceImpl(
-                realJwtService, emailService, userRepository, passwordEncoder
-        );
+		assertThrows(JwtAuthenticationException.class, () -> serviceWithRealJwt.resetPassword(resetDto));
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+		verify(userRepository, never()).save(any());
+	}
 
-        assertThrows(RecordNotFoundException.class, () -> serviceWithRealJwt.resetPassword(resetDto));
+	@Test
+	void resetPassword_shouldThrowForInvalidToken() {
+		PasswordResetDto resetDto = new PasswordResetDto();
+		resetDto.setToken("invalid.token.format");
+		resetDto.setNewPassword("newPassword123");
 
-        verify(userRepository, never()).save(any());
-    }
+		assertThrows(JwtAuthenticationException.class, () -> passwordResetService.resetPassword(resetDto));
 
-    @Test
-    void resetPassword_shouldThrowWhenUserIdMismatch() throws Exception {
-        String sharedKey = "thisIsASecretKeyForTestingPurposesThatIsLongEnough";
-        JwtService realJwtService = new JwtService(sharedKey);
-        String validToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), 20, "PASSWORD_RESET");
+		verify(userRepository, never()).save(any());
+	}
 
-        PasswordResetDto resetDto = new PasswordResetDto();
-        resetDto.setToken(validToken);
-        resetDto.setNewPassword("newPassword123");
+	@Test
+	void resetPassword_shouldThrowWhenUserNotFound() throws Exception {
+		String sharedKey = "thisIsASecretKeyForTestingPurposesThatIsLongEnough";
+		JwtService realJwtService = new JwtService(sharedKey);
+		String validToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), 20,
+			"PASSWORD_RESET");
 
-        User differentUser = new User();
-        differentUser.setId(999);
-        differentUser.setEmail(email);
+		PasswordResetDto resetDto = new PasswordResetDto();
+		resetDto.setToken(validToken);
+		resetDto.setNewPassword("newPassword123");
 
-        PasswordResetServiceImpl serviceWithRealJwt = new PasswordResetServiceImpl(
-                realJwtService, emailService, userRepository, passwordEncoder
-        );
+		PasswordResetServiceImpl serviceWithRealJwt = new PasswordResetServiceImpl(realJwtService, emailService,
+			userRepository, passwordEncoder);
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(differentUser));
+		when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
-        assertThrows(JwtAuthenticationException.class, () -> serviceWithRealJwt.resetPassword(resetDto));
+		assertThrows(RecordNotFoundException.class, () -> serviceWithRealJwt.resetPassword(resetDto));
 
-        verify(userRepository, never()).save(any());
-    }
+		verify(userRepository, never()).save(any());
+	}
+
+	@Test
+	void resetPassword_shouldThrowWhenUserIdMismatch() throws Exception {
+		String sharedKey = "thisIsASecretKeyForTestingPurposesThatIsLongEnough";
+		JwtService realJwtService = new JwtService(sharedKey);
+		String validToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), 20,
+			"PASSWORD_RESET");
+
+		PasswordResetDto resetDto = new PasswordResetDto();
+		resetDto.setToken(validToken);
+		resetDto.setNewPassword("newPassword123");
+
+		User differentUser = new User();
+		differentUser.setId(999);
+		differentUser.setEmail(email);
+
+		PasswordResetServiceImpl serviceWithRealJwt = new PasswordResetServiceImpl(realJwtService, emailService,
+			userRepository, passwordEncoder);
+
+		when(userRepository.findByEmail(email)).thenReturn(Optional.of(differentUser));
+
+		assertThrows(JwtAuthenticationException.class, () -> serviceWithRealJwt.resetPassword(resetDto));
+
+		verify(userRepository, never()).save(any());
+	}
+
 }

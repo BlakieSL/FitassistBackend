@@ -3,6 +3,9 @@ package source.code.service.declaration.activity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import source.code.dto.request.activity.ActivityCreateDto;
@@ -13,21 +16,20 @@ import source.code.dto.response.activity.ActivityResponseDto;
 import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.model.activity.Activity;
 
-import java.util.List;
-
-
 public interface ActivityService {
-    ActivityResponseDto createActivity(ActivityCreateDto dto);
 
-    void updateActivity(int activityId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+	ActivityResponseDto createActivity(ActivityCreateDto dto);
 
-    void deleteActivity(int activityId);
+	void updateActivity(int activityId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-    ActivityResponseDto getActivity(int id);
+	void deleteActivity(int activityId);
 
-    Page<ActivitySummaryDto> getFilteredActivities(FilterDto filter, Pageable pageable);
+	ActivityResponseDto getActivity(int id);
 
-    List<Activity> getAllActivityEntities();
+	Page<ActivitySummaryDto> getFilteredActivities(FilterDto filter, Pageable pageable);
 
-    ActivityCalculatedResponseDto calculateCaloriesBurned(int id, CalculateActivityCaloriesRequestDto request);
+	List<Activity> getAllActivityEntities();
+
+	ActivityCalculatedResponseDto calculateCaloriesBurned(int id, CalculateActivityCaloriesRequestDto request);
+
 }

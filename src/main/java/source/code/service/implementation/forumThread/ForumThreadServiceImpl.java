@@ -3,6 +3,9 @@ package source.code.service.implementation.forumThread;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,100 +31,105 @@ import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.ForumThreadSpecification;
 
-import java.util.List;
-
 @Service
 public class ForumThreadServiceImpl implements ForumThreadService {
-    private final JsonPatchService jsonPatchService;
-    private final ValidationService validationService;
-    private final ForumThreadMapper forumThreadMapper;
-    private final RepositoryHelper repositoryHelper;
-    private final ForumThreadRepository forumThreadRepository;
-    private final SpecificationDependencies dependencies;
-    private final ForumThreadPopulationService forumThreadPopulationService;
 
-    public ForumThreadServiceImpl(JsonPatchService jsonPatchService,
-                                  ValidationService validationService,
-                                  ForumThreadMapper forumThreadMapper,
-                                  RepositoryHelper repositoryHelper,
-                                  ForumThreadRepository forumThreadRepository,
-                                  SpecificationDependencies dependencies,
-                                  ForumThreadPopulationService forumThreadPopulationService) {
-        this.jsonPatchService = jsonPatchService;
-        this.validationService = validationService;
-        this.forumThreadMapper = forumThreadMapper;
-        this.repositoryHelper = repositoryHelper;
-        this.forumThreadRepository = forumThreadRepository;
-        this.dependencies = dependencies;
-        this.forumThreadPopulationService = forumThreadPopulationService;
-    }
+	private final JsonPatchService jsonPatchService;
 
-    @Override
-    @Transactional
-    public ForumThreadResponseDto createForumThread(ForumThreadCreateDto createDto) {
-        int userId = AuthorizationUtil.getUserId();
-        ForumThread mapped = forumThreadMapper.toEntity(createDto, userId);
-        ForumThread saved = forumThreadRepository.save(mapped);
+	private final ValidationService validationService;
 
-        forumThreadRepository.flush();
+	private final ForumThreadMapper forumThreadMapper;
 
-        return findAndMap(saved.getId());
-    }
+	private final RepositoryHelper repositoryHelper;
 
-    @Override
-    @Transactional
-    public void updateForumThread(int threadId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        ForumThread thread = find(threadId);
-        ForumThreadUpdateDto patched = applyPatchToForumThread(patch);
+	private final ForumThreadRepository forumThreadRepository;
 
-        validationService.validate(patched);
-        forumThreadMapper.update(thread, patched);
-        forumThreadRepository.save(thread);
-    }
+	private final SpecificationDependencies dependencies;
 
-    @Override
-    @Transactional
-    public void deleteForumThread(int threadId) {
-        ForumThread thread = find(threadId);
-        forumThreadRepository.delete(thread);
-    }
+	private final ForumThreadPopulationService forumThreadPopulationService;
 
-    @Override
-    public ForumThreadResponseDto getForumThread(int threadId) {
-        return findAndMap(threadId);
-    }
+	public ForumThreadServiceImpl(JsonPatchService jsonPatchService, ValidationService validationService,
+								  ForumThreadMapper forumThreadMapper, RepositoryHelper repositoryHelper,
+								  ForumThreadRepository forumThreadRepository, SpecificationDependencies dependencies,
+								  ForumThreadPopulationService forumThreadPopulationService) {
+		this.jsonPatchService = jsonPatchService;
+		this.validationService = validationService;
+		this.forumThreadMapper = forumThreadMapper;
+		this.repositoryHelper = repositoryHelper;
+		this.forumThreadRepository = forumThreadRepository;
+		this.dependencies = dependencies;
+		this.forumThreadPopulationService = forumThreadPopulationService;
+	}
 
-    private ForumThreadUpdateDto applyPatchToForumThread(JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        return jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class);
-    }
+	@Override
+	@Transactional
+	public ForumThreadResponseDto createForumThread(ForumThreadCreateDto createDto) {
+		int userId = AuthorizationUtil.getUserId();
+		ForumThread mapped = forumThreadMapper.toEntity(createDto, userId);
+		ForumThread saved = forumThreadRepository.save(mapped);
 
-    private ForumThread find(int threadId) {
-        return repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId);
-    }
+		forumThreadRepository.flush();
 
-    private ForumThreadResponseDto findAndMap(int threadId) {
-        ForumThread thread = find(threadId);
-        ForumThreadResponseDto responseDto = forumThreadMapper.toResponseDto(thread);
-        forumThreadPopulationService.populate(responseDto);
-        return responseDto;
-    }
+		return findAndMap(saved.getId());
+	}
 
-    @Override
-    public Page<ForumThreadSummaryDto> getFilteredForumThreads(FilterDto filter, Pageable pageable) {
-        SpecificationFactory<ForumThread> threadFactory = ForumThreadSpecification::new;
-        SpecificationBuilder<ForumThread> specificationBuilder = SpecificationBuilder.of(filter, threadFactory, dependencies);
-        Specification<ForumThread> specification = specificationBuilder.build();
+	@Override
+	@Transactional
+	public void updateForumThread(int threadId, JsonMergePatch patch)
+		throws JsonPatchException, JsonProcessingException {
+		ForumThread thread = find(threadId);
+		ForumThreadUpdateDto patched = applyPatchToForumThread(patch);
 
-        Page<ForumThread> threadPage = forumThreadRepository.findAll(specification, pageable);
+		validationService.validate(patched);
+		forumThreadMapper.update(thread, patched);
+		forumThreadRepository.save(thread);
+	}
 
-        List<ForumThreadSummaryDto> summaries = threadPage.getContent().stream()
-                .map(forumThreadMapper::toSummaryDto)
-                .toList();
+	@Override
+	@Transactional
+	public void deleteForumThread(int threadId) {
+		ForumThread thread = find(threadId);
+		forumThreadRepository.delete(thread);
+	}
 
-        forumThreadPopulationService.populate(summaries);
+	@Override
+	public ForumThreadResponseDto getForumThread(int threadId) {
+		return findAndMap(threadId);
+	}
 
-        return new PageImpl<>(summaries, pageable, threadPage.getTotalElements());
-    }
+	private ForumThreadUpdateDto applyPatchToForumThread(JsonMergePatch patch)
+		throws JsonPatchException, JsonProcessingException {
+		return jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class);
+	}
+
+	private ForumThread find(int threadId) {
+		return repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId);
+	}
+
+	private ForumThreadResponseDto findAndMap(int threadId) {
+		ForumThread thread = find(threadId);
+		ForumThreadResponseDto responseDto = forumThreadMapper.toResponseDto(thread);
+		forumThreadPopulationService.populate(responseDto);
+		return responseDto;
+	}
+
+	@Override
+	public Page<ForumThreadSummaryDto> getFilteredForumThreads(FilterDto filter, Pageable pageable) {
+		SpecificationFactory<ForumThread> threadFactory = ForumThreadSpecification::new;
+		SpecificationBuilder<ForumThread> specificationBuilder = SpecificationBuilder.of(filter, threadFactory,
+			dependencies);
+		Specification<ForumThread> specification = specificationBuilder.build();
+
+		Page<ForumThread> threadPage = forumThreadRepository.findAll(specification, pageable);
+
+		List<ForumThreadSummaryDto> summaries = threadPage.getContent()
+			.stream()
+			.map(forumThreadMapper::toSummaryDto)
+			.toList();
+
+		forumThreadPopulationService.populate(summaries);
+
+		return new PageImpl<>(summaries, pageable, threadPage.getTotalElements());
+	}
+
 }

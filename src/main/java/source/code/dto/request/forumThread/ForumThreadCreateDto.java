@@ -12,12 +12,14 @@ import lombok.Setter;
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 public class ForumThreadCreateDto {
-    @NotBlank
-    private String title;
 
-    @NotBlank
-    private String text;
+	@NotBlank
+	private String title;
 
-    @NotNull
-    private Integer threadCategoryId;
+	@NotBlank
+	private String text;
+
+	@NotNull
+	private Integer threadCategoryId;
+
 }

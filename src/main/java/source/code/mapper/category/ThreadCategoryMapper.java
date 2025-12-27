@@ -8,14 +8,16 @@ import source.code.model.thread.ThreadCategory;
 
 @Mapper(componentModel = "spring")
 public abstract class ThreadCategoryMapper implements BaseMapper<ThreadCategory> {
-    public abstract CategoryResponseDto toResponseDto(ThreadCategory category);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "threads", ignore = true)
-    public abstract ThreadCategory toEntity(CategoryCreateDto request);
+	public abstract CategoryResponseDto toResponseDto(ThreadCategory category);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "threads", ignore = true)
-    public abstract void updateEntityFromDto(@MappingTarget ThreadCategory category, CategoryUpdateDto request);
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "threads", ignore = true)
+	public abstract ThreadCategory toEntity(CategoryCreateDto request);
+
+	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "threads", ignore = true)
+	public abstract void updateEntityFromDto(@MappingTarget ThreadCategory category, CategoryUpdateDto request);
+
 }

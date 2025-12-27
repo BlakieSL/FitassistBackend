@@ -1,5 +1,8 @@
 package source.code.unit.specificationHelpers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,81 +11,72 @@ import source.code.dto.pojo.FilterCriteria;
 import source.code.exception.InvalidFilterKeyException;
 import source.code.service.implementation.specificationHelpers.SpecificationFieldResolverImpl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 @ExtendWith(MockitoExtension.class)
 public class SpecificationFieldResolverTest {
 
-    private SpecificationFieldResolverImpl fieldResolver;
+	private SpecificationFieldResolverImpl fieldResolver;
 
-    private enum TestEnum {
-        VALID_KEY,
-        ANOTHER_KEY
-    }
+	private enum TestEnum {
 
-    @BeforeEach
-    void setUp() {
-        fieldResolver = new SpecificationFieldResolverImpl();
-    }
+		VALID_KEY, ANOTHER_KEY
 
-    @Test
-    void resolveField_shouldReturnEnumValueForValidKey() {
-        FilterCriteria criteria = new FilterCriteria();
-        criteria.setFilterKey("VALID_KEY");
+	}
 
-        TestEnum result = fieldResolver.resolveField(criteria, TestEnum.class);
+	@BeforeEach
+	void setUp() {
+		fieldResolver = new SpecificationFieldResolverImpl();
+	}
 
-        assertEquals(TestEnum.VALID_KEY, result);
-    }
+	@Test
+	void resolveField_shouldReturnEnumValueForValidKey() {
+		FilterCriteria criteria = new FilterCriteria();
+		criteria.setFilterKey("VALID_KEY");
 
-    @Test
-    void resolveField_shouldReturnCorrectEnumForAnotherValidKey() {
-        FilterCriteria criteria = new FilterCriteria();
-        criteria.setFilterKey("ANOTHER_KEY");
+		TestEnum result = fieldResolver.resolveField(criteria, TestEnum.class);
 
-        TestEnum result = fieldResolver.resolveField(criteria, TestEnum.class);
+		assertEquals(TestEnum.VALID_KEY, result);
+	}
 
-        assertEquals(TestEnum.ANOTHER_KEY, result);
-    }
+	@Test
+	void resolveField_shouldReturnCorrectEnumForAnotherValidKey() {
+		FilterCriteria criteria = new FilterCriteria();
+		criteria.setFilterKey("ANOTHER_KEY");
 
-    @Test
-    void resolveField_shouldThrowInvalidFilterKeyExceptionForInvalidKey() {
-        FilterCriteria criteria = new FilterCriteria();
-        criteria.setFilterKey("INVALID_KEY");
+		TestEnum result = fieldResolver.resolveField(criteria, TestEnum.class);
 
-        assertThrows(InvalidFilterKeyException.class, () ->
-                fieldResolver.resolveField(criteria, TestEnum.class)
-        );
-    }
+		assertEquals(TestEnum.ANOTHER_KEY, result);
+	}
 
-    @Test
-    void resolveField_shouldThrowForCaseMismatch() {
-        FilterCriteria criteria = new FilterCriteria();
-        criteria.setFilterKey("valid_key");
+	@Test
+	void resolveField_shouldThrowInvalidFilterKeyExceptionForInvalidKey() {
+		FilterCriteria criteria = new FilterCriteria();
+		criteria.setFilterKey("INVALID_KEY");
 
-        assertThrows(InvalidFilterKeyException.class, () ->
-                fieldResolver.resolveField(criteria, TestEnum.class)
-        );
-    }
+		assertThrows(InvalidFilterKeyException.class, () -> fieldResolver.resolveField(criteria, TestEnum.class));
+	}
 
-    @Test
-    void resolveField_shouldThrowForNullKey() {
-        FilterCriteria criteria = new FilterCriteria();
-        criteria.setFilterKey(null);
+	@Test
+	void resolveField_shouldThrowForCaseMismatch() {
+		FilterCriteria criteria = new FilterCriteria();
+		criteria.setFilterKey("valid_key");
 
-        assertThrows(Exception.class, () ->
-                fieldResolver.resolveField(criteria, TestEnum.class)
-        );
-    }
+		assertThrows(InvalidFilterKeyException.class, () -> fieldResolver.resolveField(criteria, TestEnum.class));
+	}
 
-    @Test
-    void resolveField_shouldThrowForEmptyKey() {
-        FilterCriteria criteria = new FilterCriteria();
-        criteria.setFilterKey("");
+	@Test
+	void resolveField_shouldThrowForNullKey() {
+		FilterCriteria criteria = new FilterCriteria();
+		criteria.setFilterKey(null);
 
-        assertThrows(InvalidFilterKeyException.class, () ->
-                fieldResolver.resolveField(criteria, TestEnum.class)
-        );
-    }
+		assertThrows(Exception.class, () -> fieldResolver.resolveField(criteria, TestEnum.class));
+	}
+
+	@Test
+	void resolveField_shouldThrowForEmptyKey() {
+		FilterCriteria criteria = new FilterCriteria();
+		criteria.setFilterKey("");
+
+		assertThrows(InvalidFilterKeyException.class, () -> fieldResolver.resolveField(criteria, TestEnum.class));
+	}
+
 }

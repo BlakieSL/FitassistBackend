@@ -1,6 +1,5 @@
 package source.code.mapper;
 
-
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,70 +20,70 @@ import source.code.repository.UserRepository;
 
 @Mapper(componentModel = "spring")
 public abstract class ComplaintMapper {
-    @Autowired
-    private UserRepository userRepository;
 
-    @Autowired
-    private CommentRepository commentRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    @Autowired
-    private ForumThreadRepository threadRepository;
+	@Autowired
+	private CommentRepository commentRepository;
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "status", ignore = true)
-    @Mapping(target = "user", expression = "java(toUserFromUserId(userId))")
-    @Mapping(target = "comment", source = "parentId", qualifiedByName = "toCommentFromParentId")
-    @Mapping(target = "mediaList", ignore = true)
-    public abstract CommentComplaint toCommentComplaint(
-            ComplaintCreateDto createDto, @Context int userId);
+	@Autowired
+	private ForumThreadRepository threadRepository;
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "status", ignore = true)
-    @Mapping(target = "user", expression = "java(toUserFromUserId(userId))")
-    @Mapping(target = "thread", source = "parentId", qualifiedByName = "toThreadFromParentId")
-    @Mapping(target = "mediaList", ignore = true)
-    public abstract ThreadComplaint toThreadComplaint(ComplaintCreateDto createDto, @Context int userId);
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "status", ignore = true)
+	@Mapping(target = "user", expression = "java(toUserFromUserId(userId))")
+	@Mapping(target = "comment", source = "parentId", qualifiedByName = "toCommentFromParentId")
+	@Mapping(target = "mediaList", ignore = true)
+	public abstract CommentComplaint toCommentComplaint(ComplaintCreateDto createDto, @Context int userId);
 
-    @Mapping(target = "userId", source = "user.id")
-    @Mapping(target = "discriminatorValue", expression = "java(getDiscriminatorValue(complaint))")
-    @Mapping(target = "associatedId", expression = "java(getAssociatedId(complaint))")
-    public abstract ComplaintResponseDto toResponseDto(ComplaintBase complaint);
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "status", ignore = true)
+	@Mapping(target = "user", expression = "java(toUserFromUserId(userId))")
+	@Mapping(target = "thread", source = "parentId", qualifiedByName = "toThreadFromParentId")
+	@Mapping(target = "mediaList", ignore = true)
+	public abstract ThreadComplaint toThreadComplaint(ComplaintCreateDto createDto, @Context int userId);
 
-    protected String getDiscriminatorValue(ComplaintBase complaint) {
-        if (complaint instanceof CommentComplaint) {
-            return "COMMENT_COMPLAINT";
-        } else if (complaint instanceof ThreadComplaint) {
-            return "THREAD_COMPLAINT";
-        }
-        return null;
-    }
+	@Mapping(target = "userId", source = "user.id")
+	@Mapping(target = "discriminatorValue", expression = "java(getDiscriminatorValue(complaint))")
+	@Mapping(target = "associatedId", expression = "java(getAssociatedId(complaint))")
+	public abstract ComplaintResponseDto toResponseDto(ComplaintBase complaint);
 
-    protected Integer getAssociatedId(ComplaintBase complaint) {
-        if (complaint instanceof CommentComplaint) {
-            return ((CommentComplaint) complaint).getComment() != null ?
-                    ((CommentComplaint) complaint).getComment().getId() : null;
-        } else if (complaint instanceof ThreadComplaint) {
-            return ((ThreadComplaint) complaint).getThread() != null ?
-                    ((ThreadComplaint) complaint).getThread().getId() : null;
-        }
-        return null;
-    }
+	protected String getDiscriminatorValue(ComplaintBase complaint) {
+		if (complaint instanceof CommentComplaint) {
+			return "COMMENT_COMPLAINT";
+		} else if (complaint instanceof ThreadComplaint) {
+			return "THREAD_COMPLAINT";
+		}
+		return null;
+	}
 
-    @Named("toUserFromUserId")
-    protected User toUserFromUserId(Integer userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
-    }
+	protected Integer getAssociatedId(ComplaintBase complaint) {
+		if (complaint instanceof CommentComplaint) {
+			return ((CommentComplaint) complaint).getComment() != null
+				? ((CommentComplaint) complaint).getComment().getId() : null;
+		} else if (complaint instanceof ThreadComplaint) {
+			return ((ThreadComplaint) complaint).getThread() != null ? ((ThreadComplaint) complaint).getThread().getId()
+				: null;
+		}
+		return null;
+	}
 
-    @Named("toCommentFromParentId")
-    protected Comment toCommentFromParentId(Integer parentId) {
-        return commentRepository.findById(parentId)
-                .orElseThrow(() -> RecordNotFoundException.of(Comment.class, parentId));
-    }
+	@Named("toUserFromUserId")
+	protected User toUserFromUserId(Integer userId) {
+		return userRepository.findById(userId).orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
+	}
 
-    @Named("toThreadFromParentId")
-    protected ForumThread toThreadFromParentId(Integer parentId) {
-        return threadRepository.findById(parentId)
-                .orElseThrow(() -> RecordNotFoundException.of(ForumThread.class, parentId));
-    }
+	@Named("toCommentFromParentId")
+	protected Comment toCommentFromParentId(Integer parentId) {
+		return commentRepository.findById(parentId)
+			.orElseThrow(() -> RecordNotFoundException.of(Comment.class, parentId));
+	}
+
+	@Named("toThreadFromParentId")
+	protected ForumThread toThreadFromParentId(Integer parentId) {
+		return threadRepository.findById(parentId)
+			.orElseThrow(() -> RecordNotFoundException.of(ForumThread.class, parentId));
+	}
+
 }

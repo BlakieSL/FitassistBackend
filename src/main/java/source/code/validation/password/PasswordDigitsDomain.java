@@ -12,9 +12,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PasswordDigitsDomain {
-    String message() default "{PasswordDigitsDomain.message}";
 
-    Class<?>[] groups() default {};
+	String message() default "{PasswordDigitsDomain.message}";
 
-    Class<? extends Payload>[] payload() default {};
+	Class<?>[] groups() default {};
+
+	Class<? extends Payload>[] payload() default {};
+
 }

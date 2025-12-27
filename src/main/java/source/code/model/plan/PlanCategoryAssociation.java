@@ -14,25 +14,27 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlanCategoryAssociation {
-    public static final String PLAN_CATEGORY = "planCategory";
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	public static final String PLAN_CATEGORY = "planCategory";
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "plan_id", nullable = false)
-    private Plan plan;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "plan_category_id", nullable = false)
-    private PlanCategory planCategory;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "plan_id", nullable = false)
+	private Plan plan;
 
-    public static PlanCategoryAssociation createWithPlanCategory(PlanCategory category) {
-        PlanCategoryAssociation association = new PlanCategoryAssociation();
-        association.setPlanCategory(category);
-        return association;
-    }
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "plan_category_id", nullable = false)
+	private PlanCategory planCategory;
+
+	public static PlanCategoryAssociation createWithPlanCategory(PlanCategory category) {
+		PlanCategoryAssociation association = new PlanCategoryAssociation();
+		association.setPlanCategory(category);
+		return association;
+	}
+
 }

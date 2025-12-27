@@ -1,5 +1,8 @@
 package source.code.mapper;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.activity.ActivityCreateDto;
@@ -15,79 +18,75 @@ import source.code.repository.ActivityCategoryRepository;
 import source.code.service.declaration.helpers.CalculationsService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 @Mapper(componentModel = "spring", uses = {CommonMappingHelper.class})
 public abstract class ActivityMapper {
-    @Autowired
-    private ActivityCategoryRepository activityCategoryRepository;
 
-    @Autowired
-    private RepositoryHelper repositoryHelper;
+	@Autowired
+	private ActivityCategoryRepository activityCategoryRepository;
 
-    @Autowired
-    private CalculationsService calculationsService;
+	@Autowired
+	private RepositoryHelper repositoryHelper;
 
-    @Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
-    @Mapping(target = "images", source = "mediaList", qualifiedByName = "mapMediaListToImagesDto")
-    @Mapping(target = "savesCount", ignore = true)
-    @Mapping(target = "saved", ignore = true)
-    public abstract ActivityResponseDto toDetailedResponseDto(Activity activity);
+	@Autowired
+	private CalculationsService calculationsService;
 
-    @Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
-    @Mapping(target = "imageName", source = "mediaList", qualifiedByName = "mapMediaToFirstImageName")
-    @Mapping(target = "firstImageUrl", ignore = true)
-    @Mapping(target = "interactionCreatedAt", ignore = true)
-    @Mapping(target = "savesCount", ignore = true)
-    @Mapping(target = "saved", ignore = true)
-    public abstract ActivitySummaryDto toSummaryDto(Activity activity);
+	@Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
+	@Mapping(target = "images", source = "mediaList", qualifiedByName = "mapMediaListToImagesDto")
+	@Mapping(target = "savesCount", ignore = true)
+	@Mapping(target = "saved", ignore = true)
+	public abstract ActivityResponseDto toDetailedResponseDto(Activity activity);
 
-    @Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
-    @Mapping(target = "caloriesBurned", ignore = true)
-    @Mapping(target = "time", ignore = true)
-    @Mapping(target = "dailyItemId", ignore = true)
-    @Mapping(target = "weight", ignore = true)
-    public abstract ActivityCalculatedResponseDto toCalculatedDto(Activity activity,
-                                                                  @Context BigDecimal weight,
-                                                                  @Context int time);
+	@Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
+	@Mapping(target = "imageName", source = "mediaList", qualifiedByName = "mapMediaToFirstImageName")
+	@Mapping(target = "firstImageUrl", ignore = true)
+	@Mapping(target = "interactionCreatedAt", ignore = true)
+	@Mapping(target = "savesCount", ignore = true)
+	@Mapping(target = "saved", ignore = true)
+	public abstract ActivitySummaryDto toSummaryDto(Activity activity);
 
-    @Mapping(target = "activityCategory", source = "categoryId", qualifiedByName = "categoryIdToActivityCategory")
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "dailyCartActivities", ignore = true)
-    @Mapping(target = "userActivities", ignore = true)
-    @Mapping(target = "mediaList", ignore = true)
-    public abstract Activity toEntity(ActivityCreateDto dto);
+	@Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
+	@Mapping(target = "caloriesBurned", ignore = true)
+	@Mapping(target = "time", ignore = true)
+	@Mapping(target = "dailyItemId", ignore = true)
+	@Mapping(target = "weight", ignore = true)
+	public abstract ActivityCalculatedResponseDto toCalculatedDto(Activity activity, @Context BigDecimal weight,
+																  @Context int time);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "activityCategory", source = "categoryId", qualifiedByName = "categoryIdToActivityCategory")
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "dailyCartActivities", ignore = true)
-    @Mapping(target = "userActivities", ignore = true)
-    @Mapping(target = "mediaList", ignore = true)
-    public abstract void updateActivityFromDto(@MappingTarget Activity activity, ActivityUpdateDto request);
+	@Mapping(target = "activityCategory", source = "categoryId", qualifiedByName = "categoryIdToActivityCategory")
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "dailyCartActivities", ignore = true)
+	@Mapping(target = "userActivities", ignore = true)
+	@Mapping(target = "mediaList", ignore = true)
+	public abstract Activity toEntity(ActivityCreateDto dto);
 
-    @AfterMapping
-    protected void setCaloriesBurned(@MappingTarget ActivityCalculatedResponseDto dto,
-                                     Activity activity,
-                                     @Context BigDecimal weight,
-                                     @Context int time) {
-        BigDecimal caloriesBurned = calculationsService.calculateCaloriesBurned(time, weight, activity.getMet());
+	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "activityCategory", source = "categoryId", qualifiedByName = "categoryIdToActivityCategory")
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "dailyCartActivities", ignore = true)
+	@Mapping(target = "userActivities", ignore = true)
+	@Mapping(target = "mediaList", ignore = true)
+	public abstract void updateActivityFromDto(@MappingTarget Activity activity, ActivityUpdateDto request);
 
-        int calories = caloriesBurned.setScale(0, RoundingMode.HALF_UP).intValue();
+	@AfterMapping
+	protected void setCaloriesBurned(@MappingTarget ActivityCalculatedResponseDto dto, Activity activity,
+									 @Context BigDecimal weight, @Context int time) {
+		BigDecimal caloriesBurned = calculationsService.calculateCaloriesBurned(time, weight, activity.getMet());
 
-        dto.setCaloriesBurned(calories);
-        dto.setTime(time);
-        dto.setWeight(weight);
-    }
+		int calories = caloriesBurned.setScale(0, RoundingMode.HALF_UP).intValue();
 
-    @Named("categoryIdToActivityCategory")
-    protected ActivityCategory categoryIdToActivityCategory(int categoryId) {
-        return repositoryHelper.find(activityCategoryRepository, ActivityCategory.class, categoryId);
-    }
+		dto.setCaloriesBurned(calories);
+		dto.setTime(time);
+		dto.setWeight(weight);
+	}
 
-    @Named("mapActivityCategoryToResponseDto")
-    protected CategoryResponseDto mapActivityCategoryToResponseDto(ActivityCategory category) {
-        return new CategoryResponseDto(category.getId(), category.getName());
-    }
+	@Named("categoryIdToActivityCategory")
+	protected ActivityCategory categoryIdToActivityCategory(int categoryId) {
+		return repositoryHelper.find(activityCategoryRepository, ActivityCategory.class, categoryId);
+	}
+
+	@Named("mapActivityCategoryToResponseDto")
+	protected CategoryResponseDto mapActivityCategoryToResponseDto(ActivityCategory category) {
+		return new CategoryResponseDto(category.getId(), category.getName());
+	}
+
 }

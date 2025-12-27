@@ -1,5 +1,12 @@
 package source.code.service.implementation.search;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -9,95 +16,114 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.springframework.stereotype.Service;
 import source.code.dto.pojo.FoodMacros;
+import source.code.dto.response.category.CategoryResponseDto;
+import source.code.dto.response.search.ActivitySearchResponseDto;
+import source.code.dto.response.search.FoodSearchResponseDto;
 import source.code.dto.response.search.SearchResponseDto;
-import source.code.service.declaration.search.LuceneSearchService;
-
 import source.code.exception.InvalidFilterValueException;
 import source.code.service.declaration.aws.AwsS3Service;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import source.code.service.declaration.search.LuceneSearchService;
 
 @Service
 public class LuceneSearchServiceImpl implements LuceneSearchService {
-    private final AwsS3Service s3Service;
 
-    public LuceneSearchServiceImpl(AwsS3Service s3Service) {
-        this.s3Service = s3Service;
-    }
-    private static final String PATH = "src/main/resources/lucene-index";
-    private static final Set<String> VALID_TYPES = Set.of("Food", "Activity", "Recipe", "Plan", "Exercise");
+	private final AwsS3Service s3Service;
 
-    @Override
-    public List<SearchResponseDto> search(String query, String type) {
-        if (type != null && !VALID_TYPES.contains(type)) {
-            throw new InvalidFilterValueException(type);
-        }
-        return searchWithFilter(query, type);
-    }
+	public LuceneSearchServiceImpl(AwsS3Service s3Service) {
+		this.s3Service = s3Service;
+	}
 
-    private List<SearchResponseDto> searchWithFilter(String query, String filterValue) {
-        List<SearchResponseDto> results = new ArrayList<>();
-        String normalizedQuery = query.toLowerCase();
-        try (Directory directory = FSDirectory.open(Paths.get(PATH));
-             IndexReader reader = DirectoryReader.open(directory)) {
+	private static final String PATH = "src/main/resources/lucene-index";
 
-            IndexSearcher searcher = new IndexSearcher(reader);
-            BooleanQuery.Builder nameQuery = new BooleanQuery.Builder();
+	private static final Set<String> VALID_TYPES = Set.of("Food", "Activity", "Recipe", "Plan", "Exercise");
 
-            Query fuzzyQuery = new FuzzyQuery(new Term("name", normalizedQuery));
-            nameQuery.add(fuzzyQuery, BooleanClause.Occur.SHOULD);
+	@Override
+	public List<SearchResponseDto> search(String query, String type) {
+		if (type != null && !VALID_TYPES.contains(type)) {
+			throw new InvalidFilterValueException(type);
+		}
+		return searchWithFilter(query, type);
+	}
 
-            Query prefixQuery = new PrefixQuery(new Term("name", normalizedQuery));
-            nameQuery.add(prefixQuery, BooleanClause.Occur.SHOULD);
+	private List<SearchResponseDto> searchWithFilter(String query, String filterValue) {
+		List<SearchResponseDto> results = new ArrayList<>();
+		String normalizedQuery = query.toLowerCase();
+		try (Directory directory = FSDirectory.open(Paths.get(PATH));
+			 IndexReader reader = DirectoryReader.open(directory)) {
 
-            BooleanQuery.Builder mainQuery = new BooleanQuery.Builder();
-            mainQuery.add(nameQuery.build(), BooleanClause.Occur.MUST);
+			IndexSearcher searcher = new IndexSearcher(reader);
+			BooleanQuery.Builder nameQuery = new BooleanQuery.Builder();
 
-            if (filterValue != null) {
-                Query filterQuery = new TermQuery(new Term("type", filterValue));
-                mainQuery.add(filterQuery, BooleanClause.Occur.MUST);
-            }
+			Query fuzzyQuery = new FuzzyQuery(new Term("name", normalizedQuery));
+			nameQuery.add(fuzzyQuery, BooleanClause.Occur.SHOULD);
 
-            TopDocs topDocs = searcher.search(mainQuery.build(), 10);
+			Query prefixQuery = new PrefixQuery(new Term("name", normalizedQuery));
+			nameQuery.add(prefixQuery, BooleanClause.Occur.SHOULD);
 
-            for (var scoreDoc : topDocs.scoreDocs) {
-                Document doc = searcher.storedFields().document(scoreDoc.doc);
-                results.add(convertDocumentToEntity(doc));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return results;
-    }
+			BooleanQuery.Builder mainQuery = new BooleanQuery.Builder();
+			mainQuery.add(nameQuery.build(), BooleanClause.Occur.MUST);
 
-    private SearchResponseDto convertDocumentToEntity(Document doc) {
-        int id = Integer.parseInt(doc.get("id"));
-        String name = doc.get("name");
-        String type = doc.get("type");
+			if (filterValue != null) {
+				Query filterQuery = new TermQuery(new Term("type", filterValue));
+				mainQuery.add(filterQuery, BooleanClause.Occur.MUST);
+			}
 
-        FoodMacros foodMacros = null;
-        String firstImageUrl = null;
+			TopDocs topDocs = searcher.search(mainQuery.build(), 10);
 
-        if ("Food".equals(type)) {
-            String calories = doc.get("calories");
-            String protein = doc.get("protein");
-            String fat = doc.get("fat");
-            String carbohydrates = doc.get("carbohydrates");
+			for (var scoreDoc : topDocs.scoreDocs) {
+				Document doc = searcher.storedFields().document(scoreDoc.doc);
+				results.add(convertDocumentToEntity(doc));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return results;
+	}
 
-            foodMacros = FoodMacros.of(new BigDecimal(calories), new BigDecimal(protein),
-                    new BigDecimal(fat), new BigDecimal(carbohydrates));
+	private SearchResponseDto convertDocumentToEntity(Document doc) {
+		String type = doc.get("type");
 
-            String imageName = doc.get("imageName");
-            if (imageName != null) {
-                firstImageUrl = s3Service.getImage(imageName);
-            }
-        }
+		return switch (type) {
+			case "Food" -> convertToFoodSearchDto(doc);
+			case "Activity" -> convertToActivitySearchDto(doc);
+			default -> throw new InvalidFilterValueException(type);
+		};
+	}
 
-        return SearchResponseDto.of(id, name, type, foodMacros, firstImageUrl);
-    }
+	private FoodSearchResponseDto convertToFoodSearchDto(Document doc) {
+		int id = Integer.parseInt(doc.get("id"));
+		String name = doc.get("name");
+
+		FoodMacros macros = FoodMacros.of(new BigDecimal(doc.get("calories")), new BigDecimal(doc.get("protein")),
+			new BigDecimal(doc.get("fat")), new BigDecimal(doc.get("carbohydrates")));
+
+		String firstImageUrl = null;
+		String imageName = doc.get("imageName");
+		if (imageName != null) {
+			firstImageUrl = s3Service.getImage(imageName);
+		}
+
+		CategoryResponseDto category = new CategoryResponseDto(Integer.parseInt(doc.get("categoryId")),
+			doc.get("categoryName"));
+
+		return new FoodSearchResponseDto(id, name, macros, firstImageUrl, category);
+	}
+
+	private ActivitySearchResponseDto convertToActivitySearchDto(Document doc) {
+		int id = Integer.parseInt(doc.get("id"));
+		String name = doc.get("name");
+		BigDecimal met = new BigDecimal(doc.get("met"));
+
+		String firstImageUrl = null;
+		String imageName = doc.get("imageName");
+		if (imageName != null) {
+			firstImageUrl = s3Service.getImage(imageName);
+		}
+
+		CategoryResponseDto category = new CategoryResponseDto(Integer.parseInt(doc.get("categoryId")),
+			doc.get("categoryName"));
+
+		return new ActivitySearchResponseDto(id, name, met, firstImageUrl, category);
+	}
+
 }

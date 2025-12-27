@@ -10,35 +10,37 @@ import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.repository.MediaRepository;
 
 public class UniqueUserMediaValidator implements ConstraintValidator<UniqueUserMedia, Object> {
-    private MediaRepository mediaRepository;
-    private EntityManager entityManager;
 
-    @Override
-    public void initialize(UniqueUserMedia constraintAnnotation) {
-        entityManager = ContextProvider.getBean(EntityManager.class);
-        this.mediaRepository = ContextProvider.getBean(MediaRepository.class);
-        ConstraintValidator.super.initialize(constraintAnnotation);
-    }
+	private MediaRepository mediaRepository;
 
-    @Override
-    public boolean isValid(Object value, ConstraintValidatorContext context) {
-        try {
-            entityManager.setFlushMode(FlushModeType.COMMIT);
+	private EntityManager entityManager;
 
-            if (value instanceof MediaCreateDto dto) {
-                if (dto.getParentType() != MediaConnectedEntity.USER) {
-                    return true;
-                }
+	@Override
+	public void initialize(UniqueUserMedia constraintAnnotation) {
+		entityManager = ContextProvider.getBean(EntityManager.class);
+		this.mediaRepository = ContextProvider.getBean(MediaRepository.class);
+		ConstraintValidator.super.initialize(constraintAnnotation);
+	}
 
-                return mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(
-                        dto.getParentId(),
-                        MediaConnectedEntity.USER
-                ).isEmpty();
-            }
+	@Override
+	public boolean isValid(Object value, ConstraintValidatorContext context) {
+		try {
+			entityManager.setFlushMode(FlushModeType.COMMIT);
 
-            return true;
-        } finally {
-            entityManager.setFlushMode(FlushModeType.AUTO);
-        }
-    }
+			if (value instanceof MediaCreateDto dto) {
+				if (dto.getParentType() != MediaConnectedEntity.USER) {
+					return true;
+				}
+
+				return mediaRepository
+					.findFirstByParentIdAndParentTypeOrderByIdAsc(dto.getParentId(), MediaConnectedEntity.USER)
+					.isEmpty();
+			}
+
+			return true;
+		} finally {
+			entityManager.setFlushMode(FlushModeType.AUTO);
+		}
+	}
+
 }

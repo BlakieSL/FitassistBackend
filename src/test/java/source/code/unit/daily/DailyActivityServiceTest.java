@@ -1,8 +1,16 @@
 package source.code.unit.daily;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,287 +41,267 @@ import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.daily.DailyActivityServiceImpl;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class DailyActivityServiceTest {
-    private static final int USER_ID = 1;
-    private static final int ACTIVITY_ID = 1;
-    private static final int INVALID_ACTIVITY_ID = 999;
 
-    @Mock
-    private JsonPatchService jsonPatchService;
-    @Mock
-    private ValidationService validationService;
-    @Mock
-    private DailyActivityMapper dailyActivityMapper;
-    @Mock
-    private RepositoryHelper repositoryHelper;
-    @Mock
-    private DailyCartRepository dailyCartRepository;
-    @Mock
-    private DailyCartActivityRepository dailyCartActivityRepository;
-    @Mock
-    private ActivityRepository activityRepository;
-    @Mock
-    private UserRepository userRepository;
-    @InjectMocks
-    private DailyActivityServiceImpl dailyActivityService;
+	private static final int USER_ID = 1;
 
-    private Activity activity;
-    private DailyCart dailyCart;
-    private DailyCartActivity dailyCartActivity;
-    private DailyActivityItemCreateDto createDto;
-    private JsonMergePatch patch;
-    private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
+	private static final int ACTIVITY_ID = 1;
 
-    @BeforeEach
-    void setUp() {
-        activity = new Activity();
-        dailyCart = new DailyCart();
-        dailyCartActivity = new DailyCartActivity();
-        createDto = new DailyActivityItemCreateDto();
-        patch = mock(JsonMergePatch.class);
-        mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
+	private static final int INVALID_ACTIVITY_ID = 999;
 
-        activity.setId(1);
-        dailyCart.setId(1);
-        dailyCartActivity.setId(1);
-        dailyCartActivity.setTime((short) 30);
-        createDto.setTime((short) 60);
-        createDto.setWeight(new BigDecimal("75.00"));
-        createDto.setDate(LocalDate.now());
+	@Mock
+	private JsonPatchService jsonPatchService;
 
-        User user = new User();
-        user.setId(USER_ID);
-        user.setWeight(new BigDecimal("70.00"));
-        dailyCart.setUser(user);
-    }
+	@Mock
+	private ValidationService validationService;
 
-    @AfterEach
-    void tearDown() {
-        if (mockedAuthorizationUtil != null) {
-            mockedAuthorizationUtil.close();
-        }
-    }
+	@Mock
+	private DailyActivityMapper dailyActivityMapper;
 
-    @Test
-    void addActivityToDailyActivityItem_shouldUpdateExistingDailyActivity() {
-        dailyCart.getDailyCartActivities().add(dailyCartActivity);
+	@Mock
+	private RepositoryHelper repositoryHelper;
 
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyCartRepository.findByUserIdAndDate(eq(USER_ID), any())).thenReturn(Optional.of(dailyCart));
-        when(repositoryHelper.find(activityRepository, Activity.class, ACTIVITY_ID))
-                .thenReturn(activity);
+	@Mock
+	private DailyCartRepository dailyCartRepository;
 
-        when(dailyCartActivityRepository.findByDailyCartIdAndActivityId(
-                dailyCart.getId(),
-                ACTIVITY_ID)
-        ).thenReturn(Optional.of(dailyCartActivity));
+	@Mock
+	private DailyCartActivityRepository dailyCartActivityRepository;
 
-        dailyActivityService.addActivityToDailyCart(ACTIVITY_ID, createDto);
+	@Mock
+	private ActivityRepository activityRepository;
 
-        verify(dailyCartRepository).save(dailyCart);
-        assertEquals((short) 90, dailyCart.getDailyCartActivities().get(0).getTime());
-        assertEquals(dailyCart.getDailyCartActivities().get(0).getWeight(), createDto.getWeight());
-    }
+	@Mock
+	private UserRepository userRepository;
 
-    @Test
-    void addActivityToDailyActivityItem_shouldAddNewDailyActivity_whenNotFound() {
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyCartRepository.findByUserIdAndDate(eq(USER_ID), any())).thenReturn(Optional.of(dailyCart));
-        when(repositoryHelper.find(activityRepository, Activity.class, ACTIVITY_ID))
-                .thenReturn(activity);
-        when(dailyCartActivityRepository.findByDailyCartIdAndActivityId(
-                dailyCart.getId(),
-                ACTIVITY_ID)
-        ).thenReturn(Optional.empty());
+	@InjectMocks
+	private DailyActivityServiceImpl dailyActivityService;
 
-        dailyActivityService.addActivityToDailyCart(ACTIVITY_ID, createDto);
+	private Activity activity;
 
-        verify(dailyCartRepository).save(dailyCart);
-        assertEquals(dailyCart.getDailyCartActivities().get(0).getTime(), createDto.getTime());
-    }
+	private DailyCart dailyCart;
 
-    @Test
-    void addActivityToDailyActivityItem_shouldCreateNewDailyCart_whenNotFound() {
-        User user = new User();
-        user.setId(USER_ID);
-        DailyCart newDailyActivity = DailyCart.createDate(user);
-        newDailyActivity.setId(1);
-        newDailyActivity.setUser(user);
+	private DailyCartActivity dailyCartActivity;
 
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyCartRepository.findByUserIdAndDate(eq(USER_ID), any())).thenReturn(Optional.empty());
-        when(repositoryHelper.find(userRepository, User.class, USER_ID)).thenReturn(user);
-        when(dailyCartRepository.save(any(DailyCart.class)))
-                .thenReturn(newDailyActivity);
-        when(repositoryHelper.find(activityRepository, Activity.class, ACTIVITY_ID))
-                .thenReturn(activity);
-        when(dailyCartActivityRepository.findByDailyCartIdAndActivityId(
-                anyInt(),
-                eq(ACTIVITY_ID))
-        ).thenReturn(Optional.empty());
+	private DailyActivityItemCreateDto createDto;
 
-        dailyActivityService.addActivityToDailyCart(ACTIVITY_ID, createDto);
+	private JsonMergePatch patch;
 
-        ArgumentCaptor<DailyCart> dailyActivityCaptor = ArgumentCaptor
-                .forClass(DailyCart.class);
-        verify(dailyCartRepository, times(2))
-                .save(dailyActivityCaptor.capture());
-        DailyCart savedDailyActivity = dailyActivityCaptor.getValue();
-        assertEquals(USER_ID, savedDailyActivity.getUser().getId());
-        assertEquals(
-                createDto.getTime(),
-                savedDailyActivity.getDailyCartActivities().get(0).getTime()
-        );
-    }
+	private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
 
-    @Test
-    void removeActivityFromDailyCart_shouldRemoveExistingDailyActivityFromDailyCart() {
-        when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID))
-                .thenReturn(Optional.of(dailyCartActivity));
-        doNothing().when(dailyCartActivityRepository).delete(dailyCartActivity);
+	@BeforeEach
+	void setUp() {
+		activity = new Activity();
+		dailyCart = new DailyCart();
+		dailyCartActivity = new DailyCartActivity();
+		createDto = new DailyActivityItemCreateDto();
+		patch = mock(JsonMergePatch.class);
+		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
 
+		activity.setId(1);
+		dailyCart.setId(1);
+		dailyCartActivity.setId(1);
+		dailyCartActivity.setTime((short) 30);
+		createDto.setTime((short) 60);
+		createDto.setWeight(new BigDecimal("75.00"));
+		createDto.setDate(LocalDate.now());
 
-        dailyActivityService.removeActivityFromDailyCart(ACTIVITY_ID);
+		User user = new User();
+		user.setId(USER_ID);
+		user.setWeight(new BigDecimal("70.00"));
+		dailyCart.setUser(user);
+	}
 
-        verify(dailyCartActivityRepository).delete(dailyCartActivity);
-    }
+	@AfterEach
+	void tearDown() {
+		if (mockedAuthorizationUtil != null) {
+			mockedAuthorizationUtil.close();
+		}
+	}
 
-    @Test
-    void removeActivityFromDailyCart_shouldThrowException_whenDailyActivityNotFound() {
-        when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID))
-                .thenReturn(Optional.empty());
+	@Test
+	void addActivityToDailyActivityItem_shouldUpdateExistingDailyActivity() {
+		dailyCart.getDailyCartActivities().add(dailyCartActivity);
 
-        assertThrows(RecordNotFoundException.class, () ->
-                dailyActivityService.removeActivityFromDailyCart(ACTIVITY_ID)
-        );
-    }
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+		when(dailyCartRepository.findByUserIdAndDate(eq(USER_ID), any())).thenReturn(Optional.of(dailyCart));
+		when(repositoryHelper.find(activityRepository, Activity.class, ACTIVITY_ID)).thenReturn(activity);
 
-    @Test
-    void updateDailyActivityItem_shouldUpdate() throws JsonPatchException, JsonProcessingException {
-        DailyActivityItemUpdateDto patchedDto = new DailyActivityItemUpdateDto();
-        patchedDto.setTime((short) 120);
-        patchedDto.setWeight(new BigDecimal("80.00"));
+		when(dailyCartActivityRepository.findByDailyCartIdAndActivityId(dailyCart.getId(), ACTIVITY_ID))
+			.thenReturn(Optional.of(dailyCartActivity));
 
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID))
-                .thenReturn(Optional.of(dailyCartActivity));
+		dailyActivityService.addActivityToDailyCart(ACTIVITY_ID, createDto);
 
-        doReturn(patchedDto).when(jsonPatchService).createFromPatch(
-                any(JsonMergePatch.class),
-                eq(DailyActivityItemUpdateDto.class)
-        );
+		verify(dailyCartRepository).save(dailyCart);
+		assertEquals((short) 90, dailyCart.getDailyCartActivities().get(0).getTime());
+		assertEquals(dailyCart.getDailyCartActivities().get(0).getWeight(), createDto.getWeight());
+	}
 
-        dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch);
+	@Test
+	void addActivityToDailyActivityItem_shouldAddNewDailyActivity_whenNotFound() {
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+		when(dailyCartRepository.findByUserIdAndDate(eq(USER_ID), any())).thenReturn(Optional.of(dailyCart));
+		when(repositoryHelper.find(activityRepository, Activity.class, ACTIVITY_ID)).thenReturn(activity);
+		when(dailyCartActivityRepository.findByDailyCartIdAndActivityId(dailyCart.getId(), ACTIVITY_ID))
+			.thenReturn(Optional.empty());
 
-        verify(validationService).validate(patchedDto);
-        assertEquals(patchedDto.getTime(), dailyCartActivity.getTime());
-        assertEquals(patchedDto.getWeight(), dailyCartActivity.getWeight());
-        verify(dailyCartActivityRepository).save(dailyCartActivity);
-    }
+		dailyActivityService.addActivityToDailyCart(ACTIVITY_ID, createDto);
 
-    @Test
-    void updateDailyActivityItem_shouldThrowException_whenDailyActivityItemNotFound() {
-        when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID))
-                .thenReturn(Optional.empty());
-        ;
+		verify(dailyCartRepository).save(dailyCart);
+		assertEquals(dailyCart.getDailyCartActivities().get(0).getTime(), createDto.getTime());
+	}
 
-        assertThrows(RecordNotFoundException.class, () ->
-                dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch));
+	@Test
+	void addActivityToDailyActivityItem_shouldCreateNewDailyCart_whenNotFound() {
+		User user = new User();
+		user.setId(USER_ID);
+		DailyCart newDailyActivity = DailyCart.createDate(user);
+		newDailyActivity.setId(1);
+		newDailyActivity.setUser(user);
 
-        verifyNoInteractions(validationService);
-        verify(dailyCartActivityRepository, never()).save(any());
-    }
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+		when(dailyCartRepository.findByUserIdAndDate(eq(USER_ID), any())).thenReturn(Optional.empty());
+		when(repositoryHelper.find(userRepository, User.class, USER_ID)).thenReturn(user);
+		when(dailyCartRepository.save(any(DailyCart.class))).thenReturn(newDailyActivity);
+		when(repositoryHelper.find(activityRepository, Activity.class, ACTIVITY_ID)).thenReturn(activity);
+		when(dailyCartActivityRepository.findByDailyCartIdAndActivityId(anyInt(), eq(ACTIVITY_ID)))
+			.thenReturn(Optional.empty());
 
-    @Test
-    void updateDailyActivityItem_shouldThrowException_whenPatchFails()
-            throws JsonPatchException, JsonProcessingException {
-        when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID))
-                .thenReturn(Optional.of(dailyCartActivity));
-        doThrow(JsonPatchException.class).when(jsonPatchService).createFromPatch(
-                any(JsonMergePatch.class),
-                eq(DailyActivityItemUpdateDto.class)
-        );
+		dailyActivityService.addActivityToDailyCart(ACTIVITY_ID, createDto);
 
-        assertThrows(JsonPatchException.class, () ->
-                dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch)
-        );
+		ArgumentCaptor<DailyCart> dailyActivityCaptor = ArgumentCaptor.forClass(DailyCart.class);
+		verify(dailyCartRepository, times(2)).save(dailyActivityCaptor.capture());
+		DailyCart savedDailyActivity = dailyActivityCaptor.getValue();
+		assertEquals(USER_ID, savedDailyActivity.getUser().getId());
+		assertEquals(createDto.getTime(), savedDailyActivity.getDailyCartActivities().get(0).getTime());
+	}
 
-        verifyNoInteractions(validationService);
-        verify(dailyCartActivityRepository, never()).save(any());
-    }
+	@Test
+	void removeActivityFromDailyCart_shouldRemoveExistingDailyActivityFromDailyCart() {
+		when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID))
+			.thenReturn(Optional.of(dailyCartActivity));
+		doNothing().when(dailyCartActivityRepository).delete(dailyCartActivity);
 
-    @Test
-    void updateDailyActivityItem_shouldThrowException_whenPatchValidationFails()
-            throws JsonPatchException, JsonProcessingException {
-        DailyActivityItemUpdateDto patchedDto = new DailyActivityItemUpdateDto();
-        patchedDto.setTime((short) 120);
+		dailyActivityService.removeActivityFromDailyCart(ACTIVITY_ID);
 
-        when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID))
-                .thenReturn(Optional.of(dailyCartActivity));
-        doReturn(patchedDto).when(jsonPatchService).createFromPatch(
-                any(JsonMergePatch.class),
-                eq(DailyActivityItemUpdateDto.class)
-        );
+		verify(dailyCartActivityRepository).delete(dailyCartActivity);
+	}
 
-        doThrow(new IllegalArgumentException("Validation failed")).when(validationService)
-                .validate(patchedDto);
+	@Test
+	void removeActivityFromDailyCart_shouldThrowException_whenDailyActivityNotFound() {
+		when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID)).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () ->
-                dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch)
-        );
+		assertThrows(RecordNotFoundException.class,
+			() -> dailyActivityService.removeActivityFromDailyCart(ACTIVITY_ID));
+	}
 
-        verify(validationService).validate(patchedDto);
-        verify(dailyCartActivityRepository, never()).save(any());
-    }
+	@Test
+	void updateDailyActivityItem_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+		DailyActivityItemUpdateDto patchedDto = new DailyActivityItemUpdateDto();
+		patchedDto.setTime((short) 120);
+		patchedDto.setWeight(new BigDecimal("80.00"));
 
-    @Test
-    void getActivitiesFromDailyCart_shouldReturnActivities() {
-        User user = new User();
-        user.setId(USER_ID);
-        user.setWeight(BigDecimal.valueOf(70));
-        dailyCart.setUser(user);
-        dailyCartActivity.setWeight(new BigDecimal("75.00"));
-        dailyCart.getDailyCartActivities().add(dailyCartActivity);
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+		when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID))
+			.thenReturn(Optional.of(dailyCartActivity));
 
-        ActivityCalculatedResponseDto calculatedResponseDto = new ActivityCalculatedResponseDto();
-        calculatedResponseDto.setCaloriesBurned(100);
+		doReturn(patchedDto).when(jsonPatchService)
+			.createFromPatch(any(JsonMergePatch.class), eq(DailyActivityItemUpdateDto.class));
 
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyCartRepository.findByUserIdAndDateWithActivityAssociations(USER_ID, LocalDate.now())).thenReturn(Optional.of(dailyCart));
-        when(dailyActivityMapper.toActivityCalculatedResponseDto(dailyCartActivity))
-                .thenReturn(calculatedResponseDto);
+		dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch);
 
-        DailyActivitiesResponseDto result = dailyActivityService
-                .getActivitiesFromDailyCart(new DailyActivitiesGetDto(LocalDate.now()));
+		verify(validationService).validate(patchedDto);
+		assertEquals(patchedDto.getTime(), dailyCartActivity.getTime());
+		assertEquals(patchedDto.getWeight(), dailyCartActivity.getWeight());
+		verify(dailyCartActivityRepository).save(dailyCartActivity);
+	}
 
-        assertEquals(1, result.getActivities().size());
-        assertEquals(100, result.getTotalCaloriesBurned());
-    }
+	@Test
+	void updateDailyActivityItem_shouldThrowException_whenDailyActivityItemNotFound() {
+		when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID)).thenReturn(Optional.empty());
 
-    @Test
-    void getActivitiesFromDailyCart_shouldReturnEmptyActivities_whenDailyCartNotFound() {
-        User user = new User();
-        user.setId(USER_ID);
-        user.setWeight(BigDecimal.valueOf(70));
-        DailyCart newDailyActivity = DailyCart.createDate(user);
-        newDailyActivity.setUser(user);
+		assertThrows(RecordNotFoundException.class,
+			() -> dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch));
 
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(dailyCartRepository.findByUserIdAndDateWithActivityAssociations(eq(USER_ID), any())).thenReturn(Optional.empty());
+		verifyNoInteractions(validationService);
+		verify(dailyCartActivityRepository, never()).save(any());
+	}
 
-        DailyActivitiesResponseDto result = dailyActivityService
-                .getActivitiesFromDailyCart(new DailyActivitiesGetDto(LocalDate.now()));
+	@Test
+	void updateDailyActivityItem_shouldThrowException_whenPatchFails()
+		throws JsonPatchException, JsonProcessingException {
+		when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID))
+			.thenReturn(Optional.of(dailyCartActivity));
+		doThrow(JsonPatchException.class).when(jsonPatchService)
+			.createFromPatch(any(JsonMergePatch.class), eq(DailyActivityItemUpdateDto.class));
 
-        assertTrue(result.getActivities().isEmpty());
-        assertEquals(0, result.getTotalCaloriesBurned());
-        verify(dailyActivityMapper, never()).toActivityCalculatedResponseDto(any());
-    }
+		assertThrows(JsonPatchException.class, () -> dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch));
+
+		verifyNoInteractions(validationService);
+		verify(dailyCartActivityRepository, never()).save(any());
+	}
+
+	@Test
+	void updateDailyActivityItem_shouldThrowException_whenPatchValidationFails()
+		throws JsonPatchException, JsonProcessingException {
+		DailyActivityItemUpdateDto patchedDto = new DailyActivityItemUpdateDto();
+		patchedDto.setTime((short) 120);
+
+		when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID))
+			.thenReturn(Optional.of(dailyCartActivity));
+		doReturn(patchedDto).when(jsonPatchService)
+			.createFromPatch(any(JsonMergePatch.class), eq(DailyActivityItemUpdateDto.class));
+
+		doThrow(new IllegalArgumentException("Validation failed")).when(validationService).validate(patchedDto);
+
+		assertThrows(RuntimeException.class, () -> dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch));
+
+		verify(validationService).validate(patchedDto);
+		verify(dailyCartActivityRepository, never()).save(any());
+	}
+
+	@Test
+	void getActivitiesFromDailyCart_shouldReturnActivities() {
+		User user = new User();
+		user.setId(USER_ID);
+		user.setWeight(BigDecimal.valueOf(70));
+		dailyCart.setUser(user);
+		dailyCartActivity.setWeight(new BigDecimal("75.00"));
+		dailyCart.getDailyCartActivities().add(dailyCartActivity);
+
+		ActivityCalculatedResponseDto calculatedResponseDto = new ActivityCalculatedResponseDto();
+		calculatedResponseDto.setCaloriesBurned(100);
+
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+		when(dailyCartRepository.findByUserIdAndDateWithActivityAssociations(USER_ID, LocalDate.now()))
+			.thenReturn(Optional.of(dailyCart));
+		when(dailyActivityMapper.toActivityCalculatedResponseDto(dailyCartActivity)).thenReturn(calculatedResponseDto);
+
+		DailyActivitiesResponseDto result = dailyActivityService
+			.getActivitiesFromDailyCart(new DailyActivitiesGetDto(LocalDate.now()));
+
+		assertEquals(1, result.getActivities().size());
+		assertEquals(100, result.getTotalCaloriesBurned());
+	}
+
+	@Test
+	void getActivitiesFromDailyCart_shouldReturnEmptyActivities_whenDailyCartNotFound() {
+		User user = new User();
+		user.setId(USER_ID);
+		user.setWeight(BigDecimal.valueOf(70));
+		DailyCart newDailyActivity = DailyCart.createDate(user);
+		newDailyActivity.setUser(user);
+
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+		when(dailyCartRepository.findByUserIdAndDateWithActivityAssociations(eq(USER_ID), any()))
+			.thenReturn(Optional.empty());
+
+		DailyActivitiesResponseDto result = dailyActivityService
+			.getActivitiesFromDailyCart(new DailyActivitiesGetDto(LocalDate.now()));
+
+		assertTrue(result.getActivities().isEmpty());
+		assertEquals(0, result.getTotalCaloriesBurned());
+		verify(dailyActivityMapper, never()).toActivityCalculatedResponseDto(any());
+	}
+
 }

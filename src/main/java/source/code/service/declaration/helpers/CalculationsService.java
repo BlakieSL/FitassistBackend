@@ -1,24 +1,20 @@
 package source.code.service.declaration.helpers;
 
+import java.math.BigDecimal;
+
 import source.code.helper.Enum.model.user.ActivityLevel;
 import source.code.helper.Enum.model.user.Gender;
 import source.code.helper.Enum.model.user.Goal;
 
-import java.math.BigDecimal;
-
 public interface CalculationsService {
-    BigDecimal calculateBMR(BigDecimal weight, BigDecimal height, int age, Gender gender);
 
-    BigDecimal calculateTDEE(BigDecimal bmr, ActivityLevel activityLevel);
+	BigDecimal calculateBMR(BigDecimal weight, BigDecimal height, int age, Gender gender);
 
-    BigDecimal calculateCaloricNeeds(
-            BigDecimal weight,
-            BigDecimal height,
-            int age,
-            Gender gender,
-            ActivityLevel activityLevel,
-            Goal goal
-    );
+	BigDecimal calculateTDEE(BigDecimal bmr, ActivityLevel activityLevel);
 
-    BigDecimal calculateCaloriesBurned(int time, BigDecimal weight, BigDecimal met);
+	BigDecimal calculateCaloricNeeds(BigDecimal weight, BigDecimal height, int age, Gender gender,
+									 ActivityLevel activityLevel, Goal goal);
+
+	BigDecimal calculateCaloriesBurned(int time, BigDecimal weight, BigDecimal met);
+
 }

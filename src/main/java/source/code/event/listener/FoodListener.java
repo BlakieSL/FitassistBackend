@@ -12,44 +12,47 @@ import source.code.service.declaration.search.LuceneIndexService;
 
 @Component
 public class FoodListener {
-    private final CacheService cacheService;
-    private final LuceneIndexService luceneService;
 
-    public FoodListener(CacheService cacheService, LuceneIndexService luceneService) {
-        this.cacheService = cacheService;
-        this.luceneService = luceneService;
-    }
+	private final CacheService cacheService;
 
-    @EventListener
-    public void handleFoodCreate(FoodCreateEvent event) {
-        Food food = event.getFood();
+	private final LuceneIndexService luceneService;
 
-        clearCommonCache(food);
-        luceneService.addEntity(food);
-    }
+	public FoodListener(CacheService cacheService, LuceneIndexService luceneService) {
+		this.cacheService = cacheService;
+		this.luceneService = luceneService;
+	}
 
-    @EventListener
-    public void handleFoodUpdate(FoodUpdateEvent event) {
-        Food food = event.getFood();
+	@EventListener
+	public void handleFoodCreate(FoodCreateEvent event) {
+		Food food = event.getFood();
 
-        clearCache(food);
-        luceneService.updateEntity(food);
-    }
+		clearCommonCache(food);
+		luceneService.addEntity(food);
+	}
 
-    @EventListener
-    public void handleFoodDelete(FoodDeleteEvent event) {
-        Food food = event.getFood();
+	@EventListener
+	public void handleFoodUpdate(FoodUpdateEvent event) {
+		Food food = event.getFood();
 
-        clearCache(food);
-        luceneService.deleteEntity(food);
-    }
+		clearCache(food);
+		luceneService.updateEntity(food);
+	}
 
-    private void clearCache(Food food) {
-        cacheService.evictCache(CacheNames.FOODS, food.getId());
-        clearCommonCache(food);
-    }
+	@EventListener
+	public void handleFoodDelete(FoodDeleteEvent event) {
+		Food food = event.getFood();
 
-    private void clearCommonCache(Food food) {
-        cacheService.clearCache(CacheNames.ALL_FOODS);
-    }
+		clearCache(food);
+		luceneService.deleteEntity(food);
+	}
+
+	private void clearCache(Food food) {
+		cacheService.evictCache(CacheNames.FOODS, food.getId());
+		clearCommonCache(food);
+	}
+
+	private void clearCommonCache(Food food) {
+		cacheService.clearCache(CacheNames.ALL_FOODS);
+	}
+
 }

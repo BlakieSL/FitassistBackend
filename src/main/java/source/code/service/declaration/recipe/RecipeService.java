@@ -3,6 +3,9 @@ package source.code.service.declaration.recipe;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import source.code.dto.request.filter.FilterDto;
@@ -11,20 +14,20 @@ import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.model.recipe.Recipe;
 
-import java.util.List;
-
 public interface RecipeService {
-    RecipeResponseDto createRecipe(RecipeCreateDto dto);
 
-    void updateRecipe(int recipeId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+	RecipeResponseDto createRecipe(RecipeCreateDto dto);
 
-    void deleteRecipe(int recipeId);
+	void updateRecipe(int recipeId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-    RecipeResponseDto getRecipe(int id);
+	void deleteRecipe(int recipeId);
 
-    Page<RecipeSummaryDto> getFilteredRecipes(FilterDto filter, Pageable pageable);
+	RecipeResponseDto getRecipe(int id);
 
-    List<Recipe> getAllRecipeEntities();
+	Page<RecipeSummaryDto> getFilteredRecipes(FilterDto filter, Pageable pageable);
 
-    void incrementViews(int recipeId);
+	List<Recipe> getAllRecipeEntities();
+
+	void incrementViews(int recipeId);
+
 }

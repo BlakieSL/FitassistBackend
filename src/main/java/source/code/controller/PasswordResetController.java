@@ -13,21 +13,23 @@ import source.code.service.declaration.auth.PasswordResetService;
 @RestController
 @RequestMapping(path = "/api/password-reset")
 public class PasswordResetController {
-    private final PasswordResetService passwordResetService;
 
-    public PasswordResetController(PasswordResetService passwordResetService) {
-        this.passwordResetService = passwordResetService;
-    }
+	private final PasswordResetService passwordResetService;
 
-    @PostMapping("/request")
-    public ResponseEntity<Void> requestPasswordReset(@Valid @RequestBody PasswordResetRequestDto request) {
-        passwordResetService.requestPasswordReset(request);
-        return ResponseEntity.ok().build();
-    }
+	public PasswordResetController(PasswordResetService passwordResetService) {
+		this.passwordResetService = passwordResetService;
+	}
 
-    @PostMapping("/reset")
-    public ResponseEntity<Void> resetPassword(@Valid @RequestBody PasswordResetDto resetDto) {
-        passwordResetService.resetPassword(resetDto);
-        return ResponseEntity.ok().build();
-    }
+	@PostMapping("/request")
+	public ResponseEntity<Void> requestPasswordReset(@Valid @RequestBody PasswordResetRequestDto request) {
+		passwordResetService.requestPasswordReset(request);
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/reset")
+	public ResponseEntity<Void> resetPassword(@Valid @RequestBody PasswordResetDto resetDto) {
+		passwordResetService.resetPassword(resetDto);
+		return ResponseEntity.ok().build();
+	}
+
 }

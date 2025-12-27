@@ -1,5 +1,13 @@
 package source.code.unit.user.withType;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,219 +35,207 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.recipe.RecipePopulationService;
 import source.code.service.implementation.user.interaction.withType.UserRecipeServiceImpl;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class UserRecipeServiceTest {
-    @Mock
-    private UserRecipeRepository userRecipeRepository;
-    @Mock
-    private RecipeRepository recipeRepository;
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private RecipeMapper recipeMapper;
-    @Mock
-    private RecipePopulationService recipePopulationService;
-    @InjectMocks
-    private UserRecipeServiceImpl userRecipeService;
-    private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
-    @BeforeEach
-    void setUp() {
-        mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
-    }
+	@Mock
+	private UserRecipeRepository userRecipeRepository;
 
-    @AfterEach
-    void tearDown() {
-        if (mockedAuthUtil != null) {
-            mockedAuthUtil.close();
-        }
-    }
+	@Mock
+	private RecipeRepository recipeRepository;
 
-    @Test
-    public void saveToUser_ShouldSaveToUserWithType() {
-        int userId = 1;
-        int recipeId = 100;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
-        User user = new User();
-        Recipe recipe = new Recipe();
-        recipe.setIsPublic(true);
+	@Mock
+	private UserRepository userRepository;
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type))
-                .thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(recipeRepository.findById(recipeId)).thenReturn(Optional.of(recipe));
+	@Mock
+	private RecipeMapper recipeMapper;
 
-        userRecipeService.saveToUser(recipeId, type);
+	@Mock
+	private RecipePopulationService recipePopulationService;
 
-        verify(userRecipeRepository).save(any(UserRecipe.class));
-    }
+	@InjectMocks
+	private UserRecipeServiceImpl userRecipeService;
 
-    @Test
-    public void saveToUser_ShouldThrowNotSupportedInteractionTypeExceptionIfRecipeIsPrivate() {
-        int userId = 1;
-        int recipeId = 100;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
-        User user = new User();
-        Recipe recipe = new Recipe();
-        recipe.setIsPublic(false);
+	private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type))
-                .thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(recipeRepository.findById(recipeId)).thenReturn(Optional.of(recipe));
+	@BeforeEach
+	void setUp() {
+		mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
+	}
 
-        assertThrows(NotSupportedInteractionTypeException.class,
-                () -> userRecipeService.saveToUser(recipeId, type));
+	@AfterEach
+	void tearDown() {
+		if (mockedAuthUtil != null) {
+			mockedAuthUtil.close();
+		}
+	}
 
-        verify(userRecipeRepository, never()).save(any());
-    }
+	@Test
+	public void saveToUser_ShouldSaveToUserWithType() {
+		int userId = 1;
+		int recipeId = 100;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
+		User user = new User();
+		Recipe recipe = new Recipe();
+		recipe.setIsPublic(true);
 
-    @Test
-    public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
-        int userId = 1;
-        int recipeId = 100;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(recipeRepository.findById(recipeId)).thenReturn(Optional.of(recipe));
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type))
-                .thenReturn(true);
+		userRecipeService.saveToUser(recipeId, type);
 
-        assertThrows(NotUniqueRecordException.class,
-                () -> userRecipeService.saveToUser(recipeId, type));
+		verify(userRecipeRepository).save(any(UserRecipe.class));
+	}
 
-        verify(userRecipeRepository, never()).save(any());
-    }
+	@Test
+	public void saveToUser_ShouldThrowNotSupportedInteractionTypeExceptionIfRecipeIsPrivate() {
+		int userId = 1;
+		int recipeId = 100;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
+		User user = new User();
+		Recipe recipe = new Recipe();
+		recipe.setIsPublic(false);
 
-    @Test
-    public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
-        int userId = 1;
-        int recipeId = 100;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type))
-                .thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(recipeRepository.findById(recipeId)).thenReturn(Optional.of(recipe));
 
-        assertThrows(RecordNotFoundException.class,
-                () -> userRecipeService.saveToUser(recipeId, type));
+		assertThrows(NotSupportedInteractionTypeException.class, () -> userRecipeService.saveToUser(recipeId, type));
 
-        verify(userRecipeRepository, never()).save(any());
-    }
+		verify(userRecipeRepository, never()).save(any());
+	}
 
-    @Test
-    public void saveToUser_ShouldThrowRecordNotFoundExceptionIfRecipeNotFound() {
-        int userId = 1;
-        int recipeId = 100;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
-        User user = new User();
+	@Test
+	public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
+		int userId = 1;
+		int recipeId = 100;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type))
-                .thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(recipeRepository.findById(recipeId)).thenReturn(Optional.empty());
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type)).thenReturn(true);
 
-        assertThrows(RecordNotFoundException.class,
-                () -> userRecipeService.saveToUser(recipeId, type));
+		assertThrows(NotUniqueRecordException.class, () -> userRecipeService.saveToUser(recipeId, type));
 
-        verify(userRecipeRepository, never()).save(any());
-    }
+		verify(userRecipeRepository, never()).save(any());
+	}
 
-    @Test
-    public void deleteFromUser_ShouldDeleteFromUser() {
-        int userId = 1;
-        int recipeId = 100;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
-        UserRecipe userRecipe = UserRecipe.createWithUserRecipeType(new User(), new Recipe(), type);
+	@Test
+	public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
+		int userId = 1;
+		int recipeId = 100;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userRecipeRepository.findByUserIdAndRecipeIdAndType(userId, recipeId, type))
-                .thenReturn(Optional.of(userRecipe));
+		assertThrows(RecordNotFoundException.class, () -> userRecipeService.saveToUser(recipeId, type));
 
-        userRecipeService.deleteFromUser(recipeId, type);
+		verify(userRecipeRepository, never()).save(any());
+	}
 
-        verify(userRecipeRepository).delete(userRecipe);
-    }
+	@Test
+	public void saveToUser_ShouldThrowRecordNotFoundExceptionIfRecipeNotFound() {
+		int userId = 1;
+		int recipeId = 100;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
+		User user = new User();
 
-    @Test
-    public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserRecipeNotFound() {
-        int userId = 1;
-        int recipeId = 100;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userRecipeRepository.existsByUserIdAndRecipeIdAndType(userId, recipeId, type)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(recipeRepository.findById(recipeId)).thenReturn(Optional.empty());
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userRecipeRepository.findByUserIdAndRecipeIdAndType(userId, recipeId, type))
-                .thenReturn(Optional.empty());
+		assertThrows(RecordNotFoundException.class, () -> userRecipeService.saveToUser(recipeId, type));
 
-        assertThrows(RecordNotFoundException.class,
-                () -> userRecipeService.deleteFromUser(recipeId, type));
+		verify(userRecipeRepository, never()).save(any());
+	}
 
-        verify(userRecipeRepository, never()).delete(any());
-    }
+	@Test
+	public void deleteFromUser_ShouldDeleteFromUser() {
+		int userId = 1;
+		int recipeId = 100;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
+		UserRecipe userRecipe = UserRecipe.createWithUserRecipeType(new User(), new Recipe(), type);
 
-    @Test
-    public void getAllFromUser_ShouldReturnAllRecipesByType() {
-        int userId = 1;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
-        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userRecipeRepository.findByUserIdAndRecipeIdAndType(userId, recipeId, type))
+			.thenReturn(Optional.of(userRecipe));
 
-        Recipe recipe1 = new Recipe();
-        recipe1.setId(1);
-        Recipe recipe2 = new Recipe();
-        recipe2.setId(2);
+		userRecipeService.deleteFromUser(recipeId, type);
 
-        User user = new User();
-        user.setId(userId);
+		verify(userRecipeRepository).delete(userRecipe);
+	}
 
-        UserRecipe userRecipe1 = UserRecipe.createWithUserRecipeType(user, recipe1, type);
-        UserRecipe userRecipe2 = UserRecipe.createWithUserRecipeType(user, recipe2, type);
+	@Test
+	public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserRecipeNotFound() {
+		int userId = 1;
+		int recipeId = 100;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
 
-        RecipeSummaryDto dto1 = new RecipeSummaryDto();
-        dto1.setId(1);
-        RecipeSummaryDto dto2 = new RecipeSummaryDto();
-        dto2.setId(2);
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userRecipeRepository.findByUserIdAndRecipeIdAndType(userId, recipeId, type)).thenReturn(Optional.empty());
 
-        Page<UserRecipe> userRecipePage = new PageImpl<>(List.of(userRecipe1, userRecipe2), pageable, 2);
+		assertThrows(RecordNotFoundException.class, () -> userRecipeService.deleteFromUser(recipeId, type));
 
-        when(userRecipeRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
-                .thenReturn(userRecipePage);
-        when(recipeRepository.findByIdsWithDetails(any())).thenReturn(List.of(recipe1, recipe2));
-        when(recipeMapper.toSummaryDto(recipe1)).thenReturn(dto1);
-        when(recipeMapper.toSummaryDto(recipe2)).thenReturn(dto2);
+		verify(userRecipeRepository, never()).delete(any());
+	}
 
-        Page<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, pageable);
+	@Test
+	public void getAllFromUser_ShouldReturnAllRecipesByType() {
+		int userId = 1;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
+		Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        assertEquals(2, result.getContent().size());
-        assertEquals(2, result.getTotalElements());
-        verify(userRecipeRepository).findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class));
-        verify(recipePopulationService).populate(any(List.class));
-    }
+		Recipe recipe1 = new Recipe();
+		recipe1.setId(1);
+		Recipe recipe2 = new Recipe();
+		recipe2.setId(2);
 
-    @Test
-    public void getAllFromUser_ShouldReturnEmptyListIfNoRecipes() {
-        int userId = 1;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
-        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+		User user = new User();
+		user.setId(userId);
 
-        Page<UserRecipe> emptyPage = new PageImpl<>(List.of(), pageable, 0);
+		UserRecipe userRecipe1 = UserRecipe.createWithUserRecipeType(user, recipe1, type);
+		UserRecipe userRecipe2 = UserRecipe.createWithUserRecipeType(user, recipe2, type);
 
-        when(userRecipeRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
-                .thenReturn(emptyPage);
+		RecipeSummaryDto dto1 = new RecipeSummaryDto();
+		dto1.setId(1);
+		RecipeSummaryDto dto2 = new RecipeSummaryDto();
+		dto2.setId(2);
 
-        Page<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, pageable);
+		Page<UserRecipe> userRecipePage = new PageImpl<>(List.of(userRecipe1, userRecipe2), pageable, 2);
 
-        assertTrue(result.getContent().isEmpty());
-        assertEquals(0, result.getTotalElements());
-    }
+		when(userRecipeRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
+			.thenReturn(userRecipePage);
+		when(recipeRepository.findByIdsWithDetails(any())).thenReturn(List.of(recipe1, recipe2));
+		when(recipeMapper.toSummaryDto(recipe1)).thenReturn(dto1);
+		when(recipeMapper.toSummaryDto(recipe2)).thenReturn(dto2);
+
+		Page<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, pageable);
+
+		assertEquals(2, result.getContent().size());
+		assertEquals(2, result.getTotalElements());
+		verify(userRecipeRepository).findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class));
+		verify(recipePopulationService).populate(any(List.class));
+	}
+
+	@Test
+	public void getAllFromUser_ShouldReturnEmptyListIfNoRecipes() {
+		int userId = 1;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
+		Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+		Page<UserRecipe> emptyPage = new PageImpl<>(List.of(), pageable, 0);
+
+		when(userRecipeRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
+			.thenReturn(emptyPage);
+
+		Page<BaseUserEntity> result = userRecipeService.getAllFromUser(userId, type, pageable);
+
+		assertTrue(result.getContent().isEmpty());
+		assertEquals(0, result.getTotalElements());
+	}
 
 }

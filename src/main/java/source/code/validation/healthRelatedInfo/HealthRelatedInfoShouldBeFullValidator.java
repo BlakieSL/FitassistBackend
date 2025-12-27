@@ -5,26 +5,24 @@ import jakarta.validation.ConstraintValidatorContext;
 import source.code.model.user.User;
 
 public class HealthRelatedInfoShouldBeFullValidator implements ConstraintValidator<HealthInfoShouldBeFullDomain, User> {
-    @Override
-    public boolean isValid(User user, ConstraintValidatorContext context) {
-        if (allFieldsNull(user)) {
-            return true;
-        }
 
-        return !anyFieldNull(user);
-    }
+	@Override
+	public boolean isValid(User user, ConstraintValidatorContext context) {
+		if (allFieldsNull(user)) {
+			return true;
+		}
 
-    private boolean allFieldsNull(User user) {
-        return user.getHeight() == null &&
-                user.getWeight() == null &&
-                user.getGoal() == null &&
-                user.getActivityLevel() == null;
-    }
+		return !anyFieldNull(user);
+	}
 
-    private boolean anyFieldNull(User user) {
-        return user.getHeight() == null ||
-                user.getWeight() == null ||
-                user.getGoal() == null ||
-                user.getActivityLevel() == null;
-    }
+	private boolean allFieldsNull(User user) {
+		return user.getHeight() == null && user.getWeight() == null && user.getGoal() == null
+			&& user.getActivityLevel() == null;
+	}
+
+	private boolean anyFieldNull(User user) {
+		return user.getHeight() == null || user.getWeight() == null || user.getGoal() == null
+			|| user.getActivityLevel() == null;
+	}
+
 }

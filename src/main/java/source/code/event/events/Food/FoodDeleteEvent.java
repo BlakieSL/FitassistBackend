@@ -6,14 +6,16 @@ import source.code.model.food.Food;
 
 @Getter
 public class FoodDeleteEvent extends ApplicationEvent {
-    private final Food food;
 
-    public FoodDeleteEvent(Object source, Food food) {
-        super(source);
-        this.food = food;
-    }
+	private final Food food;
 
-    public static FoodDeleteEvent of(Object source, Food food) {
-        return new FoodDeleteEvent(source, food);
-    }
+	public FoodDeleteEvent(Object source, Food food) {
+		super(source);
+		this.food = food;
+	}
+
+	public static FoodDeleteEvent of(Object source, Food food) {
+		return new FoodDeleteEvent(source, food);
+	}
+
 }

@@ -11,12 +11,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutSetCreateDto {
-    @NotNull
-    private Short orderIndex;
 
-    @NotNull
-    private Short restSeconds;
+	@NotNull
+	private Short orderIndex;
 
-    @NotNull
-    private Integer workoutId;
+	@NotNull
+	private Short restSeconds;
+
+	@NotNull
+	private Integer workoutId;
+
 }

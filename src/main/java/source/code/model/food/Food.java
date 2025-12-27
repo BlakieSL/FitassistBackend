@@ -2,6 +2,13 @@ package source.code.model.food;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,79 +20,71 @@ import source.code.model.media.Media;
 import source.code.model.recipe.RecipeFood;
 import source.code.model.user.UserFood;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 @Entity
 @Table(name = "food")
 @NamedEntityGraph(name = "Food.withoutAssociations", attributeNodes = {})
-@NamedEntityGraph(
-        name = "Food.summary",
-        attributeNodes = {
-                @NamedAttributeNode("foodCategory"),
-                @NamedAttributeNode("mediaList")
-        }
-)
+@NamedEntityGraph(name = "Food.summary",
+	attributeNodes = {@NamedAttributeNode("foodCategory"), @NamedAttributeNode("mediaList")})
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Food implements IndexedEntity {
-    private static final int MAX_NAME_LENGTH = 50;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	private static final int MAX_NAME_LENGTH = 50;
 
-    @NotBlank
-    @Size(max = MAX_NAME_LENGTH)
-    @Column(nullable = false, length = MAX_NAME_LENGTH)
-    private String name;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @NotNull
-    @Positive
-    @Column(nullable = false)
-    private BigDecimal calories;
+	@NotBlank
+	@Size(max = MAX_NAME_LENGTH)
+	@Column(nullable = false, length = MAX_NAME_LENGTH)
+	private String name;
 
-    @NotNull
-    @PositiveOrZero
-    @Column(nullable = false)
-    private BigDecimal protein;
+	@NotNull
+	@Positive
+	@Column(nullable = false)
+	private BigDecimal calories;
 
-    @NotNull
-    @PositiveOrZero
-    @Column(nullable = false)
-    private BigDecimal fat;
+	@NotNull
+	@PositiveOrZero
+	@Column(nullable = false)
+	private BigDecimal protein;
 
-    @NotNull
-    @PositiveOrZero
-    @Column(nullable = false)
-    private BigDecimal carbohydrates;
+	@NotNull
+	@PositiveOrZero
+	@Column(nullable = false)
+	private BigDecimal fat;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "food_category_id", nullable = false)
-    private FoodCategory foodCategory;
+	@NotNull
+	@PositiveOrZero
+	@Column(nullable = false)
+	private BigDecimal carbohydrates;
 
-    @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
-    private final Set<DailyCartFood> dailyCartFoods = new HashSet<>();
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "food_category_id", nullable = false)
+	private FoodCategory foodCategory;
 
-    @OneToMany(mappedBy = "food")
-    private final Set<RecipeFood> recipeFoods = new HashSet<>();
+	@OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
+	private final Set<DailyCartFood> dailyCartFoods = new HashSet<>();
 
-    @OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
-    private final Set<UserFood> userFoods = new HashSet<>();
+	@OneToMany(mappedBy = "food")
+	private final Set<RecipeFood> recipeFoods = new HashSet<>();
 
-    @OneToMany
-    @JoinColumn(name = "parent_id", insertable = false, updatable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    @SQLRestriction("parentType = 'FOOD'")
-    private List<Media> mediaList = new ArrayList<>();
+	@OneToMany(mappedBy = "food", cascade = CascadeType.REMOVE)
+	private final Set<UserFood> userFoods = new HashSet<>();
 
-    @Override
-    public String getClassName() {
-        return this.getClass().getSimpleName();
-    }
+	@OneToMany
+	@JoinColumn(name = "parent_id", insertable = false, updatable = false,
+		foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@SQLRestriction("parentType = 'FOOD'")
+	private List<Media> mediaList = new ArrayList<>();
+
+	@Override
+	public String getClassName() {
+		return this.getClass().getSimpleName();
+	}
+
 }

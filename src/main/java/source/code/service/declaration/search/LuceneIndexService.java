@@ -1,15 +1,17 @@
 package source.code.service.declaration.search;
 
-import source.code.helper.IndexedEntity;
-
 import java.util.List;
 
+import source.code.helper.IndexedEntity;
+
 public interface LuceneIndexService {
-    void indexEntities(List<IndexedEntity> entities);
 
-    void addEntity(IndexedEntity entity);
+	void indexEntities(List<IndexedEntity> entities);
 
-    void updateEntity(IndexedEntity entity);
+	void addEntity(IndexedEntity entity);
 
-    void deleteEntity(IndexedEntity entity);
+	void updateEntity(IndexedEntity entity);
+
+	void deleteEntity(IndexedEntity entity);
+
 }

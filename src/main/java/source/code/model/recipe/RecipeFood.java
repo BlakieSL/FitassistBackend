@@ -3,10 +3,11 @@ package source.code.model.recipe;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.*;
-import source.code.model.food.Food;
 
 import java.math.BigDecimal;
+
+import lombok.*;
+import source.code.model.food.Food;
 
 @Entity
 @Table(name = "recipe_food")
@@ -16,36 +17,37 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class RecipeFood {
-    public static final String FOOD = "food";
 
-    @EqualsAndHashCode.Include
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	public static final String FOOD = "food";
 
-    @NotNull
-    @Positive
-    @Column(nullable = false)
-    private BigDecimal quantity;
+	@EqualsAndHashCode.Include
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "recipe_id", nullable = false)
-    private Recipe recipe;
+	@NotNull
+	@Positive
+	@Column(nullable = false)
+	private BigDecimal quantity;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "food_id", nullable = false)
-    private Food food;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "recipe_id", nullable = false)
+	private Recipe recipe;
 
-    public static RecipeFood of(
-            BigDecimal quantity, Recipe recipe, Food food) {
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "food_id", nullable = false)
+	private Food food;
 
-        RecipeFood recipeFood = new RecipeFood();
-        recipeFood.setQuantity(quantity);
-        recipeFood.setRecipe(recipe);
-        recipeFood.setFood(food);
+	public static RecipeFood of(BigDecimal quantity, Recipe recipe, Food food) {
 
-        return recipeFood;
-    }
+		RecipeFood recipeFood = new RecipeFood();
+		recipeFood.setQuantity(quantity);
+		recipeFood.setRecipe(recipe);
+		recipeFood.setFood(food);
+
+		return recipeFood;
+	}
+
 }

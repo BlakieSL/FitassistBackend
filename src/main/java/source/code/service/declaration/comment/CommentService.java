@@ -3,6 +3,9 @@ package source.code.service.declaration.comment;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import source.code.dto.request.comment.CommentCreateDto;
@@ -11,23 +14,22 @@ import source.code.dto.response.comment.CommentAncestryDto;
 import source.code.dto.response.comment.CommentResponseDto;
 import source.code.dto.response.comment.CommentSummaryDto;
 
-import java.util.List;
-
 public interface CommentService {
-    CommentResponseDto createComment(CommentCreateDto createDto);
 
-    void updateComment(int commentId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException;
+	CommentResponseDto createComment(CommentCreateDto createDto);
 
-    void deleteComment(int commentId);
+	void updateComment(int commentId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-    CommentResponseDto getComment(int commentId);
+	void deleteComment(int commentId);
 
-    Page<CommentResponseDto> getTopCommentsForThread(int threadId, Pageable pageable);
+	CommentResponseDto getComment(int commentId);
 
-    List<CommentResponseDto> getReplies(int commentId);
+	Page<CommentResponseDto> getTopCommentsForThread(int threadId, Pageable pageable);
 
-    Page<CommentSummaryDto> getFilteredComments(FilterDto filter, Pageable pageable);
+	List<CommentResponseDto> getReplies(int commentId);
 
-    CommentAncestryDto getCommentAncestry(int commentId);
+	Page<CommentSummaryDto> getFilteredComments(FilterDto filter, Pageable pageable);
+
+	CommentAncestryDto getCommentAncestry(int commentId);
+
 }

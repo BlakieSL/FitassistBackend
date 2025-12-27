@@ -15,16 +15,18 @@ import lombok.*;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public abstract class TextBase {
-    @EqualsAndHashCode.Include
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
-    @NotNull
-    @Column(name = "order_index", nullable = false)
-    private short orderIndex;
+	@EqualsAndHashCode.Include
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String text;
+	@NotNull
+	@Column(name = "order_index", nullable = false)
+	private short orderIndex;
+
+	@NotBlank
+	@Column(nullable = false)
+	private String text;
+
 }

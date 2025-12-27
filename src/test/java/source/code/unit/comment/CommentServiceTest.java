@@ -1,8 +1,16 @@
 package source.code.unit.comment;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +19,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import source.code.dto.request.comment.CommentCreateDto;
 import source.code.dto.request.comment.CommentUpdateDto;
 import source.code.dto.response.comment.CommentResponseDto;
@@ -25,170 +37,167 @@ import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.comment.CommentServiceImpl;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class CommentServiceTest {
-    @Mock
-    private JsonPatchService jsonPatchService;
-    @Mock
-    private ValidationService validationService;
-    @Mock
-    private CommentMapper commentMapper;
-    @Mock
-    private RepositoryHelper repositoryHelper;
-    @Mock
-    private CommentRepository commentRepository;
-    @Mock
-    private CommentPopulationService commentPopulationService;
-    @InjectMocks
-    private CommentServiceImpl commentService;
 
-    private Comment comment;
-    private CommentCreateDto createDto;
-    private CommentResponseDto responseDto;
-    private JsonMergePatch patch;
-    private CommentUpdateDto patchedDto;
-    private int commentId;
-    private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
+	@Mock
+	private JsonPatchService jsonPatchService;
 
-    @BeforeEach
-    void setUp() {
-        comment = new Comment();
-        createDto = new CommentCreateDto();
-        responseDto = new CommentResponseDto();
-        patchedDto = new CommentUpdateDto();
-        commentId = 1;
-        patch = mock(JsonMergePatch.class);
-        mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
-    }
+	@Mock
+	private ValidationService validationService;
 
-    @AfterEach
-    void tearDown() {
-        if (mockedAuthorizationUtil != null) {
-            mockedAuthorizationUtil.close();
-        }
-    }
+	@Mock
+	private CommentMapper commentMapper;
 
-    @Test
-    void createComment_shouldCreateComment() {
-        int userId = 1;
-        comment.setId(commentId);
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(commentMapper.toEntity(createDto, userId)).thenReturn(comment);
-        when(commentRepository.save(comment)).thenReturn(comment);
-        when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
-        when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
+	@Mock
+	private RepositoryHelper repositoryHelper;
 
-        CommentResponseDto result = commentService.createComment(createDto);
+	@Mock
+	private CommentRepository commentRepository;
 
-        assertEquals(responseDto, result);
-        verify(commentPopulationService).populate(responseDto);
-    }
+	@Mock
+	private CommentPopulationService commentPopulationService;
 
-    @Test
-    void updateComment_shouldUpdate() throws JsonPatchException, JsonProcessingException {
-        when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
-        when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class))
-                .thenReturn(patchedDto);
+	@InjectMocks
+	private CommentServiceImpl commentService;
 
-        commentService.updateComment(commentId, patch);
+	private Comment comment;
 
-        verify(validationService).validate(patchedDto);
-        verify(commentMapper).update(comment, patchedDto);
-        verify(commentRepository).save(comment);
-    }
+	private CommentCreateDto createDto;
 
-    @Test
-    void updateComment_shouldThrowExceptionWhenCommentNotFound() {
-        when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
+	private CommentResponseDto responseDto;
 
-        assertThrows(RecordNotFoundException.class, () -> commentService.updateComment(commentId, patch));
+	private JsonMergePatch patch;
 
-        verifyNoInteractions(commentMapper, jsonPatchService, validationService);
-        verify(commentRepository, times(1)).findById(commentId);
-    }
+	private CommentUpdateDto patchedDto;
 
-    @Test
-    void updateComment_shouldThrowExceptionWhenPatchFails()
-            throws JsonPatchException, JsonProcessingException {
-        when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
-        when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class))
-                .thenThrow(JsonPatchException.class);
+	private int commentId;
 
-        assertThrows(JsonPatchException.class, () -> commentService.updateComment(commentId, patch));
+	private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
 
-        verifyNoInteractions(validationService);
-        verify(commentRepository, never()).save(comment);
-    }
+	@BeforeEach
+	void setUp() {
+		comment = new Comment();
+		createDto = new CommentCreateDto();
+		responseDto = new CommentResponseDto();
+		patchedDto = new CommentUpdateDto();
+		commentId = 1;
+		patch = mock(JsonMergePatch.class);
+		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
+	}
 
-    @Test
-    void updateComment_shouldThrowExceptionWhenValidationFails()
-            throws JsonPatchException, JsonProcessingException {
-        when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
-        when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class)).thenReturn(patchedDto);
+	@AfterEach
+	void tearDown() {
+		if (mockedAuthorizationUtil != null) {
+			mockedAuthorizationUtil.close();
+		}
+	}
 
-        doThrow(new RuntimeException("Validation failed")).when(validationService).validate(patchedDto);
+	@Test
+	void createComment_shouldCreateComment() {
+		int userId = 1;
+		comment.setId(commentId);
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(commentMapper.toEntity(createDto, userId)).thenReturn(comment);
+		when(commentRepository.save(comment)).thenReturn(comment);
+		when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
+		when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
 
-        assertThrows(RuntimeException.class, () -> commentService.updateComment(commentId, patch));
+		CommentResponseDto result = commentService.createComment(createDto);
 
-        verify(validationService).validate(patchedDto);
-        verify(commentRepository, never()).save(any(Comment.class));
-    }
+		assertEquals(responseDto, result);
+		verify(commentPopulationService).populate(responseDto);
+	}
 
-    @Test
-    void deleteComment_shouldDelete() {
-        doNothing().when(commentRepository).deleteCommentDirectly(commentId);
+	@Test
+	void updateComment_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+		when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
+		when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class)).thenReturn(patchedDto);
 
-        commentService.deleteComment(commentId);
+		commentService.updateComment(commentId, patch);
 
-        verify(commentRepository).deleteCommentDirectly(commentId);
-    }
+		verify(validationService).validate(patchedDto);
+		verify(commentMapper).update(comment, patchedDto);
+		verify(commentRepository).save(comment);
+	}
 
-    @Test
-    void getComment_shouldReturnCommentWhenFound() {
-        when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
-        when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
+	@Test
+	void updateComment_shouldThrowExceptionWhenCommentNotFound() {
+		when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
 
-        CommentResponseDto result = commentService.getComment(commentId);
+		assertThrows(RecordNotFoundException.class, () -> commentService.updateComment(commentId, patch));
 
-        assertEquals(responseDto, result);
-        verify(commentPopulationService).populate(responseDto);
-    }
+		verifyNoInteractions(commentMapper, jsonPatchService, validationService);
+		verify(commentRepository, times(1)).findById(commentId);
+	}
 
-    @Test
-    void getComment_shouldThrowExceptionWhenCommentNotFound() {
-        when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
+	@Test
+	void updateComment_shouldThrowExceptionWhenPatchFails() throws JsonPatchException, JsonProcessingException {
+		when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
+		when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class)).thenThrow(JsonPatchException.class);
 
-        assertThrows(RecordNotFoundException.class, () -> commentService.getComment(commentId));
+		assertThrows(JsonPatchException.class, () -> commentService.updateComment(commentId, patch));
 
-        verifyNoInteractions(commentMapper);
-    }
+		verifyNoInteractions(validationService);
+		verify(commentRepository, never()).save(comment);
+	}
 
-    @Test
-    void getTopCommentsForThread_shouldReturnTopComments() {
-        int threadId = 1;
-        Pageable pageable = PageRequest.of(0, 100);
-        List<Comment> comments = List.of(comment);
-        Page<Comment> commentPage = new PageImpl<>(comments, pageable, comments.size());
-        when(commentRepository.findAllByThreadIdAndParentCommentNull(threadId, pageable))
-                .thenReturn(commentPage);
-        when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
+	@Test
+	void updateComment_shouldThrowExceptionWhenValidationFails() throws JsonPatchException, JsonProcessingException {
+		when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
+		when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class)).thenReturn(patchedDto);
 
-        Page<CommentResponseDto> result = commentService.getTopCommentsForThread(threadId, pageable);
+		doThrow(new RuntimeException("Validation failed")).when(validationService).validate(patchedDto);
 
-        assertEquals(1, result.getTotalElements());
-        assertEquals(responseDto, result.getContent().get(0));
-        verify(commentPopulationService).populateList(List.of(responseDto));
-    }
+		assertThrows(RuntimeException.class, () -> commentService.updateComment(commentId, patch));
+
+		verify(validationService).validate(patchedDto);
+		verify(commentRepository, never()).save(any(Comment.class));
+	}
+
+	@Test
+	void deleteComment_shouldDelete() {
+		doNothing().when(commentRepository).deleteCommentDirectly(commentId);
+
+		commentService.deleteComment(commentId);
+
+		verify(commentRepository).deleteCommentDirectly(commentId);
+	}
+
+	@Test
+	void getComment_shouldReturnCommentWhenFound() {
+		when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
+		when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
+
+		CommentResponseDto result = commentService.getComment(commentId);
+
+		assertEquals(responseDto, result);
+		verify(commentPopulationService).populate(responseDto);
+	}
+
+	@Test
+	void getComment_shouldThrowExceptionWhenCommentNotFound() {
+		when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> commentService.getComment(commentId));
+
+		verifyNoInteractions(commentMapper);
+	}
+
+	@Test
+	void getTopCommentsForThread_shouldReturnTopComments() {
+		int threadId = 1;
+		Pageable pageable = PageRequest.of(0, 100);
+		List<Comment> comments = List.of(comment);
+		Page<Comment> commentPage = new PageImpl<>(comments, pageable, comments.size());
+		when(commentRepository.findAllByThreadIdAndParentCommentNull(threadId, pageable)).thenReturn(commentPage);
+		when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
+
+		Page<CommentResponseDto> result = commentService.getTopCommentsForThread(threadId, pageable);
+
+		assertEquals(1, result.getTotalElements());
+		assertEquals(responseDto, result.getContent().get(0));
+		verify(commentPopulationService).populateList(List.of(responseDto));
+	}
+
 }

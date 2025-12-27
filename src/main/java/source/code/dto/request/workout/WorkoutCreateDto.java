@@ -11,24 +11,26 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutCreateDto {
-    private static final int NAME_MAX_LENGTH = 50;
 
-    @NotBlank
-    @Size(max = NAME_MAX_LENGTH)
-    private String name;
+	private static final int NAME_MAX_LENGTH = 50;
 
-    @NotNull
-    @PositiveOrZero
-    private Short duration;
+	@NotBlank
+	@Size(max = NAME_MAX_LENGTH)
+	private String name;
 
-    @NotNull
-    private Integer planId;
+	@NotNull
+	@PositiveOrZero
+	private Short duration;
 
-    @NotNull
-    @Positive
-    private Short orderIndex;
+	@NotNull
+	private Integer planId;
 
-    @NotNull
-    @PositiveOrZero
-    private Byte restDaysAfter;
+	@NotNull
+	@Positive
+	private Short orderIndex;
+
+	@NotNull
+	@PositiveOrZero
+	private Byte restDaysAfter;
+
 }

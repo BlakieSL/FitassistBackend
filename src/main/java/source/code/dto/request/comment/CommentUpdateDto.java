@@ -10,5 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 public class CommentUpdateDto {
-    private String text;
+
+	private String text;
+
 }
