@@ -25,7 +25,7 @@ import source.code.model.user.UserComment;
 @NamedEntityGraph(name = "Comment.withoutAssociations", attributeNodes = {})
 @NamedEntityGraph(name = "Comment.withAssociations", includeAllAttributes = true)
 @NamedEntityGraph(name = "Comment.summary",
-	attributeNodes = {@NamedAttributeNode("user"), @NamedAttributeNode("thread")})
+		attributeNodes = { @NamedAttributeNode("user"), @NamedAttributeNode("thread") })
 @Getter
 @Setter
 @AllArgsConstructor
@@ -67,7 +67,7 @@ public class Comment {
 
 	@OneToMany
 	@JoinColumn(name = "parent_id", insertable = false, updatable = false,
-		foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+			foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	@SQLRestriction("parentType = 'COMMENT'")
 	private List<Media> mediaList = new ArrayList<>();
 

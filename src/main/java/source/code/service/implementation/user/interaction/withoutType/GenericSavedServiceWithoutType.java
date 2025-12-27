@@ -25,7 +25,7 @@ public abstract class GenericSavedServiceWithoutType<T, U, R> implements SavedSe
 	protected final Class<T> entityType;
 
 	public GenericSavedServiceWithoutType(UserRepository userRepository, JpaRepository<T, Integer> entityRepository,
-										  JpaRepository<U, Integer> userEntityRepository, Function<T, R> map, Class<T> entityType) {
+			JpaRepository<U, Integer> userEntityRepository, Function<T, R> map, Class<T> entityType) {
 		this.userRepository = userRepository;
 		this.entityRepository = entityRepository;
 		this.userEntityRepository = userEntityRepository;

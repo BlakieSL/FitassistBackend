@@ -23,15 +23,15 @@ import source.code.service.declaration.user.SavedServiceWithoutType;
 
 @Service("userFoodService")
 public class UserFoodServiceImpl extends GenericSavedServiceWithoutType<Food, UserFood, FoodSummaryDto>
-	implements SavedServiceWithoutType {
+		implements SavedServiceWithoutType {
 
 	private final FoodMapper foodMapper;
 
 	private final FoodPopulationService foodPopulationService;
 
 	public UserFoodServiceImpl(UserRepository userRepository, JpaRepository<Food, Integer> entityRepository,
-							   JpaRepository<UserFood, Integer> userEntityRepository, FoodMapper mapper,
-							   FoodPopulationService foodPopulationService) {
+			JpaRepository<UserFood, Integer> userEntityRepository, FoodMapper mapper,
+			FoodPopulationService foodPopulationService) {
 		super(userRepository, entityRepository, userEntityRepository, mapper::toSummaryDto, Food.class);
 		this.foodMapper = mapper;
 		this.foodPopulationService = foodPopulationService;
@@ -52,7 +52,7 @@ public class UserFoodServiceImpl extends GenericSavedServiceWithoutType<Food, Us
 	@Override
 	public Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable) {
 		Page<UserFood> userFoodPage = ((UserFoodRepository) userEntityRepository).findAllByUserIdWithMedia(userId,
-			pageable);
+				pageable);
 
 		List<FoodSummaryDto> summaries = userFoodPage.getContent().stream().map(uf -> {
 			FoodSummaryDto dto = foodMapper.toSummaryDto(uf.getFood());
@@ -63,7 +63,7 @@ public class UserFoodServiceImpl extends GenericSavedServiceWithoutType<Food, Us
 		foodPopulationService.populate(summaries);
 
 		return new PageImpl<>(summaries.stream().map(dto -> (BaseUserEntity) dto).toList(), pageable,
-			userFoodPage.getTotalElements());
+				userFoodPage.getTotalElements());
 	}
 
 	@Override

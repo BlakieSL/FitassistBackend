@@ -28,14 +28,14 @@ import source.code.service.declaration.user.SavedService;
 
 @Service("userRecipeService")
 public class UserRecipeServiceImpl extends GenericSavedService<Recipe, UserRecipe, RecipeResponseDto>
-	implements SavedService {
+		implements SavedService {
 
 	private final RecipeMapper recipeMapper;
 
 	private final RecipePopulationService recipePopulationService;
 
 	public UserRecipeServiceImpl(UserRecipeRepository userRecipeRepository, RecipeRepository recipeRepository,
-								 UserRepository userRepository, RecipeMapper recipeMapper, RecipePopulationService recipePopulationService) {
+			UserRepository userRepository, RecipeMapper recipeMapper, RecipePopulationService recipePopulationService) {
 		super(userRepository, recipeRepository, userRecipeRepository, Recipe.class, UserRecipe.class);
 		this.recipeMapper = recipeMapper;
 		this.recipePopulationService = recipePopulationService;
@@ -56,7 +56,7 @@ public class UserRecipeServiceImpl extends GenericSavedService<Recipe, UserRecip
 	@Override
 	public Page<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Pageable pageable) {
 		Page<UserRecipe> userRecipePage = ((UserRecipeRepository) userEntityRepository).findAllByUserIdAndType(userId,
-			type, pageable);
+				type, pageable);
 
 		List<Integer> recipeIds = userRecipePage.getContent().stream().map(ur -> ur.getRecipe().getId()).toList();
 
@@ -74,7 +74,7 @@ public class UserRecipeServiceImpl extends GenericSavedService<Recipe, UserRecip
 		recipePopulationService.populate(summaries);
 
 		return new PageImpl<>(summaries.stream().map(dto -> (BaseUserEntity) dto).toList(), pageable,
-			userRecipePage.getTotalElements());
+				userRecipePage.getTotalElements());
 	}
 
 	@Override

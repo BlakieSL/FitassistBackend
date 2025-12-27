@@ -24,7 +24,7 @@ public class FoodPopulationServiceImpl implements FoodPopulationService {
 	private final ImageUrlPopulationService imageUrlPopulationService;
 
 	public FoodPopulationServiceImpl(UserFoodRepository userFoodRepository, AwsS3Service s3Service,
-									 ImageUrlPopulationService imageUrlPopulationService) {
+			ImageUrlPopulationService imageUrlPopulationService) {
 		this.userFoodRepository = userFoodRepository;
 		this.s3Service = s3Service;
 		this.imageUrlPopulationService = imageUrlPopulationService;

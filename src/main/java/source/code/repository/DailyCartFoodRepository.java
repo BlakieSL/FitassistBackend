@@ -13,11 +13,11 @@ public interface DailyCartFoodRepository extends JpaRepository<DailyCartFood, In
 
 	@EntityGraph(value = "DailyCartFood.withoutAssociations")
 	@Query("""
-		    SELECT dcf FROM DailyCartFood dcf
-		    LEFT JOIN FETCH dcf.dailyCart dc
-		    LEFT JOIN FETCH dc.user u
-		    WHERE dcf.id = :id
-		""")
+			    SELECT dcf FROM DailyCartFood dcf
+			    LEFT JOIN FETCH dcf.dailyCart dc
+			    LEFT JOIN FETCH dc.user u
+			    WHERE dcf.id = :id
+			""")
 	Optional<DailyCartFood> findByIdWithUser(int id);
 
 	@EntityGraph(value = "DailyCartFood.withoutAssociations")

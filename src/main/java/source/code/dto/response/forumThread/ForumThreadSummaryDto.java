@@ -30,26 +30,26 @@ import source.code.helper.BaseUserEntity;
 @NoArgsConstructor
 public class ForumThreadSummaryDto implements BaseUserEntity, Serializable {
 
-    private LocalDateTime createdAt;
+	private LocalDateTime createdAt;
 
-    private Integer id;
+	private Integer id;
 
-    private String title;
+	private String title;
 
-    private String text;
+	private String text;
 
-    private CategoryResponseDto category;
+	private CategoryResponseDto category;
 
-    private AuthorDto author;
+	private AuthorDto author;
 
-    private LocalDateTime interactionCreatedAt;
+	private LocalDateTime interactionCreatedAt;
 
-    private long views;
+	private long views;
 
-    private long savesCount;
+	private long savesCount;
 
-    private long commentsCount;
+	private long commentsCount;
 
-    private Boolean saved;
+	private Boolean saved;
 
 }

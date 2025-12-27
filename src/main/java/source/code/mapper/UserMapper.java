@@ -128,12 +128,12 @@ public abstract class UserMapper {
 
 		int age = Period.between(user.getBirthday(), LocalDate.now()).getYears();
 		return calculationsService.calculateCaloricNeeds(user.getWeight(), user.getHeight(), age, user.getGender(),
-			user.getActivityLevel(), user.getGoal());
+				user.getActivityLevel(), user.getGoal());
 	}
 
 	private boolean hasRequiredData(User user) {
 		return user.getWeight() != null && user.getHeight() != null && user.getActivityLevel() != null
-			&& user.getGoal() != null && user.getBirthday() != null && user.getGender() != null;
+				&& user.getGoal() != null && user.getBirthday() != null && user.getGender() != null;
 	}
 
 }

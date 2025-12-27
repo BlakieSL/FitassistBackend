@@ -24,7 +24,7 @@ public abstract class GenericSavedService<T, U, R> {
 	protected final Class<U> userEntityType;
 
 	public GenericSavedService(UserRepository userRepository, JpaRepository<T, Integer> entityRepository,
-							   JpaRepository<U, Integer> userEntityRepository, Class<T> entityType, Class<U> userEntityType) {
+			JpaRepository<U, Integer> userEntityRepository, Class<T> entityType, Class<U> userEntityType) {
 		this.userRepository = userRepository;
 		this.entityRepository = entityRepository;
 		this.userEntityRepository = userEntityRepository;

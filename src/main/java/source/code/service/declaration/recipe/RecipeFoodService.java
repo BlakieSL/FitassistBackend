@@ -18,7 +18,7 @@ public interface RecipeFoodService {
 	void saveFoodToRecipe(int recipeId, int foodId, RecipeFoodCreateDto request);
 
 	void updateFoodRecipe(int recipeId, int foodId, JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException;
+			throws JsonPatchException, JsonProcessingException;
 
 	void deleteFoodFromRecipe(int foodId, int recipeId);
 

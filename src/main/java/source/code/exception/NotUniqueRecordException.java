@@ -6,7 +6,7 @@ public class NotUniqueRecordException extends LocalizedException {
 
 	public <T> NotUniqueRecordException(Class<T> entityClass, Object... identifiers) {
 		super("NotUniqueRecordException.message", null, entityClass.getSimpleName(),
-			String.join(", ", toStringArray(identifiers)));
+				String.join(", ", toStringArray(identifiers)));
 	}
 
 }

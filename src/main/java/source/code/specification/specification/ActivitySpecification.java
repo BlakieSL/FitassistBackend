@@ -30,9 +30,9 @@ public class ActivitySpecification extends AbstractSpecification<Activity, Activ
 			case MET ->
 				GenericSpecificationHelper.buildPredicateNumericProperty(context, context.root().get(MET_FIELD));
 			case SAVED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(context,
-				LikesAndSaves.USER_ACTIVITIES.getFieldName());
+					LikesAndSaves.USER_ACTIVITIES.getFieldName());
 			case SAVE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(context,
-				LikesAndSaves.USER_ACTIVITIES.getFieldName(), null, null);
+					LikesAndSaves.USER_ACTIVITIES.getFieldName(), null, null);
 		};
 	}
 

@@ -31,7 +31,7 @@ public class TextSelectorServiceTest {
 	@BeforeEach
 	void setUp() {
 		textSelectorService = new TextSelectorServiceImpl(exerciseInstructionService, exerciseTipService,
-			recipeInstructionService, planInstructionService);
+				recipeInstructionService, planInstructionService);
 	}
 
 	@Test

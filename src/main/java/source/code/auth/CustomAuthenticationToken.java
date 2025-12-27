@@ -10,7 +10,7 @@ public class CustomAuthenticationToken extends UsernamePasswordAuthenticationTok
 	private final Integer userId;
 
 	public CustomAuthenticationToken(Object principal, Integer userId, Object credentials,
-									 Collection<? extends GrantedAuthority> authorities) {
+			Collection<? extends GrantedAuthority> authorities) {
 		super(principal, credentials, authorities);
 		this.userId = userId;
 	}

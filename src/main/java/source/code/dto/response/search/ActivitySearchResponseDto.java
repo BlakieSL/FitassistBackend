@@ -19,7 +19,7 @@ public class ActivitySearchResponseDto extends SearchResponseDto {
 	private CategoryResponseDto category;
 
 	public ActivitySearchResponseDto(Integer id, String name, BigDecimal met, String firstImageUrl,
-									 CategoryResponseDto category) {
+			CategoryResponseDto category) {
 		super(id, name, "Activity");
 		this.met = met;
 		this.firstImageUrl = firstImageUrl;

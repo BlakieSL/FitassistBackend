@@ -70,10 +70,10 @@ public class PlanServiceImpl implements PlanService {
 	private final EquipmentRepository equipmentRepository;
 
 	public PlanServiceImpl(PlanMapper planMapper, JsonPatchService jsonPatchService,
-						   ValidationService validationService, ApplicationEventPublisher applicationEventPublisher,
-						   RepositoryHelper repositoryHelper, PlanRepository planRepository, TextRepository textRepository,
-						   SpecificationDependencies dependencies, PlanPopulationService planPopulationService,
-						   PlanCategoryRepository planCategoryRepository, EquipmentRepository equipmentRepository) {
+			ValidationService validationService, ApplicationEventPublisher applicationEventPublisher,
+			RepositoryHelper repositoryHelper, PlanRepository planRepository, TextRepository textRepository,
+			SpecificationDependencies dependencies, PlanPopulationService planPopulationService,
+			PlanCategoryRepository planCategoryRepository, EquipmentRepository equipmentRepository) {
 		this.planMapper = planMapper;
 		this.jsonPatchService = jsonPatchService;
 		this.validationService = validationService;

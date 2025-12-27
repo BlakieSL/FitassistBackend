@@ -149,7 +149,7 @@ public class RecipeCategoryServiceTest {
 		when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
 
 		assertThrows(RecordNotFoundException.class,
-			() -> recipeCategoryService.updateCategory(nonExistentCategoryId, patch));
+				() -> recipeCategoryService.updateCategory(nonExistentCategoryId, patch));
 
 		verifyNoInteractions(validationService, mapper, applicationEventPublisher, cacheKeyGenerator);
 		verify(repository, never()).save(category);

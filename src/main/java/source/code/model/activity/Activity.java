@@ -26,9 +26,9 @@ import source.code.model.user.UserActivity;
 @Table(name = "activity")
 @NamedEntityGraph(name = "Activity.withoutAssociations", attributeNodes = {})
 @NamedEntityGraph(name = "Activity.withAssociations",
-	attributeNodes = {@NamedAttributeNode("dailyCartActivities"), @NamedAttributeNode("userActivities")})
+		attributeNodes = { @NamedAttributeNode("dailyCartActivities"), @NamedAttributeNode("userActivities") })
 @NamedEntityGraph(name = "Activity.summary",
-	attributeNodes = {@NamedAttributeNode("activityCategory"), @NamedAttributeNode("mediaList")})
+		attributeNodes = { @NamedAttributeNode("activityCategory"), @NamedAttributeNode("mediaList") })
 @Getter
 @Setter
 @AllArgsConstructor
@@ -64,7 +64,7 @@ public class Activity implements IndexedEntity {
 
 	@OneToMany
 	@JoinColumn(name = "parent_id", insertable = false, updatable = false,
-		foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+			foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	@SQLRestriction("parentType = 'ACTIVITY'")
 	private List<Media> mediaList = new ArrayList<>();
 

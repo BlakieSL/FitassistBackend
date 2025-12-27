@@ -30,7 +30,7 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
 	private final AwsS3Service s3Service;
 
 	public RecipePopulationServiceImpl(UserRecipeRepository userRecipeRepository,
-									   RecipeFoodRepository recipeFoodRepository, MediaRepository mediaRepository, AwsS3Service s3Service) {
+			RecipeFoodRepository recipeFoodRepository, MediaRepository mediaRepository, AwsS3Service s3Service) {
 		this.userRecipeRepository = userRecipeRepository;
 		this.recipeFoodRepository = recipeFoodRepository;
 		this.mediaRepository = mediaRepository;
@@ -112,7 +112,7 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
 		Map<Integer, Long> ingredientsMap = recipeFoodRepository.countByRecipeIds(recipeIds)
 			.stream()
 			.collect(Collectors.toMap(RecipeIngredientCountProjection::getRecipeId,
-				RecipeIngredientCountProjection::getIngredientCount));
+					RecipeIngredientCountProjection::getIngredientCount));
 
 		recipes.forEach(recipe -> recipe.setIngredientsCount(ingredientsMap.getOrDefault(recipe.getId(), 0L)));
 	}
@@ -137,7 +137,7 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
 
 	private void fetchAndPopulateUserInteractionsAndCounts(RecipeResponseDto recipe, int requestingUserId) {
 		EntityCountsProjection result = userRecipeRepository.findCountsAndInteractionsByRecipeId(requestingUserId,
-			recipe.getId());
+				recipe.getId());
 
 		if (result == null)
 			return;

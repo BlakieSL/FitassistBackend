@@ -23,9 +23,9 @@ import source.code.model.user.UserRecipe;
 @Table(name = "recipe")
 @NamedEntityGraph(name = "Recipe.withoutAssociations", attributeNodes = {})
 @NamedEntityGraph(name = "Recipe.summary",
-	attributeNodes = {@NamedAttributeNode("user"), @NamedAttributeNode("mediaList"),
-		@NamedAttributeNode(value = "recipeCategoryAssociations", subgraph = "rca-subgraph")},
-	subgraphs = {@NamedSubgraph(name = "rca-subgraph", attributeNodes = @NamedAttributeNode("recipeCategory"))})
+		attributeNodes = { @NamedAttributeNode("user"), @NamedAttributeNode("mediaList"),
+				@NamedAttributeNode(value = "recipeCategoryAssociations", subgraph = "rca-subgraph") },
+		subgraphs = { @NamedSubgraph(name = "rca-subgraph", attributeNodes = @NamedAttributeNode("recipeCategory")) })
 @Getter
 @Setter
 @AllArgsConstructor
@@ -74,7 +74,7 @@ public class Recipe implements IndexedEntity {
 		createdAt = LocalDateTime.now();
 	}
 
-	@OneToMany(mappedBy = "recipe", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
+	@OneToMany(mappedBy = "recipe", cascade = { CascadeType.PERSIST }, orphanRemoval = true)
 	@OrderBy("orderIndex ASC")
 	private final Set<RecipeInstruction> recipeInstructions = new LinkedHashSet<>();
 
@@ -91,7 +91,7 @@ public class Recipe implements IndexedEntity {
 
 	@OneToMany
 	@JoinColumn(name = "parent_id", insertable = false, updatable = false,
-		foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+			foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	@SQLRestriction("parentType = 'RECIPE'")
 	private List<Media> mediaList = new ArrayList<>();
 

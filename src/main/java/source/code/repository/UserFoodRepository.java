@@ -18,31 +18,31 @@ public interface UserFoodRepository extends JpaRepository<UserFood, Integer> {
 	Optional<UserFood> findByUserIdAndFoodId(int userId, int foodId);
 
 	@Query("""
-		    SELECT COUNT(uf) as savesCount,
-		           SUM(CASE WHEN uf.user.id = :userId THEN 1 ELSE 0 END) as userSaved
-		    FROM UserFood uf
-		    WHERE uf.food.id = :foodId
-		""")
+			    SELECT COUNT(uf) as savesCount,
+			           SUM(CASE WHEN uf.user.id = :userId THEN 1 ELSE 0 END) as userSaved
+			    FROM UserFood uf
+			    WHERE uf.food.id = :foodId
+			""")
 	SavesProjection findCountsAndInteractionsByFoodId(@Param("foodId") int foodId, @Param("userId") int userId);
 
 	@Query("""
-		    SELECT uf.food.id as entityId,
-		           COUNT(uf) as savesCount,
-		           SUM(CASE WHEN uf.user.id = :userId THEN 1 ELSE 0 END) as userSaved
-		    FROM UserFood uf
-		    WHERE uf.food.id IN :foodIds
-		    GROUP BY uf.food.id
-		""")
+			    SELECT uf.food.id as entityId,
+			           COUNT(uf) as savesCount,
+			           SUM(CASE WHEN uf.user.id = :userId THEN 1 ELSE 0 END) as userSaved
+			    FROM UserFood uf
+			    WHERE uf.food.id IN :foodIds
+			    GROUP BY uf.food.id
+			""")
 	List<SavesProjection> findCountsAndInteractionsByFoodIds(@Param("userId") int userId,
-															 @Param("foodIds") List<Integer> foodIds);
+			@Param("foodIds") List<Integer> foodIds);
 
 	@Query(value = """
-		SELECT uf FROM UserFood uf
-		JOIN FETCH uf.food f
-		JOIN FETCH f.foodCategory
-		LEFT JOIN FETCH f.mediaList
-		WHERE uf.user.id = :userId
-		""")
+			SELECT uf FROM UserFood uf
+			JOIN FETCH uf.food f
+			JOIN FETCH f.foodCategory
+			LEFT JOIN FETCH f.mediaList
+			WHERE uf.user.id = :userId
+			""")
 	Page<UserFood> findAllByUserIdWithMedia(@Param("userId") int userId, Pageable pageable);
 
 }

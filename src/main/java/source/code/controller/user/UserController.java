@@ -58,8 +58,8 @@ public class UserController {
 	@AccountOwnerOrAdmin
 	@PatchMapping("/{id}")
 	public ResponseEntity<Void> updateUser(@PathVariable int id,
-										   @Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			@Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch)
+			throws JsonPatchException, JsonProcessingException {
 		userService.updateUser(id, patch);
 		return ResponseEntity.noContent().build();
 	}

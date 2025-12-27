@@ -23,7 +23,7 @@ public abstract class DailyFoodMapper {
 
 	@AfterMapping
 	protected void setCalculatedMacros(@MappingTarget FoodCalculatedMacrosResponseDto responseDto,
-									   DailyCartFood dailyCartFood) {
+			DailyCartFood dailyCartFood) {
 		Food food = dailyCartFood.getFood();
 		BigDecimal quantity = dailyCartFood.getQuantity();
 		BigDecimal divisor = new BigDecimal("100");

@@ -34,7 +34,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 	private final WorkoutRepository workoutRepository;
 
 	public WorkoutServiceImpl(JsonPatchService jsonPatchService, ValidationService validationService,
-							  WorkoutMapper workoutMapper, RepositoryHelper repositoryHelper, WorkoutRepository workoutRepository) {
+			WorkoutMapper workoutMapper, RepositoryHelper repositoryHelper, WorkoutRepository workoutRepository) {
 		this.jsonPatchService = jsonPatchService;
 		this.validationService = validationService;
 		this.workoutMapper = workoutMapper;
@@ -91,7 +91,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 	}
 
 	private WorkoutUpdateDto applyPatchToWorkout(JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		return jsonPatchService.createFromPatch(patch, WorkoutUpdateDto.class);
 	}
 

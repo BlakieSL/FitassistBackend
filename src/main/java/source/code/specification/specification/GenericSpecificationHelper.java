@@ -22,11 +22,11 @@ public class GenericSpecificationHelper {
 	public static <T> Predicate buildPredicateEntityProperty(PredicateContext<T> context, String joinProperty) {
 		var value = validateAndGetId(context.criteria());
 		return buildIdBasedPredicate(context.builder(), context.criteria(),
-			context.root().get(joinProperty).get(ID_FIELD), value);
+				context.root().get(joinProperty).get(ID_FIELD), value);
 	}
 
 	public static <T, J> Predicate buildPredicateJoinProperty(PredicateContext<T> context, Join<T, J> join,
-															  String subJoinProperty) {
+			String subJoinProperty) {
 		var value = validateAndGetId(context.criteria());
 		return buildCollectionIdBasedPredicate(context.builder(), context.criteria(), join, subJoinProperty, value);
 	}
@@ -41,7 +41,7 @@ public class GenericSpecificationHelper {
 	}
 
 	public static <T> Predicate buildSavedByUserPredicate(PredicateContext<T> context, String userEntityJoinField,
-														  String typeFieldName, Object typeValue) {
+			String typeFieldName, Object typeValue) {
 		var userId = validateAndGetId(context.criteria());
 		var userEntityJoin = context.root().join(userEntityJoinField, JoinType.INNER);
 		var userPredicate = context.builder().equal(userEntityJoin.get(USER_FIELD).get(ID_FIELD), userId);
@@ -54,7 +54,7 @@ public class GenericSpecificationHelper {
 	}
 
 	public static <T> Predicate buildPredicateUserEntityInteractionRange(PredicateContext<T> context,
-																		 String joinProperty, String targetTypeFieldName, Object typeValue) {
+			String joinProperty, String targetTypeFieldName, Object typeValue) {
 		var subquery = context.builder().createQuery(Long.class).subquery(Long.class);
 		var subRoot = subquery.from(context.root().getModel().getJavaType());
 		var subJoin = subRoot.join(joinProperty, JoinType.LEFT);
@@ -65,7 +65,8 @@ public class GenericSpecificationHelper {
 		if (typeValue != null && targetTypeFieldName != null) {
 			if (typeValue instanceof Enum<?>) {
 				subqueryPredicates.add(context.builder().equal(subJoin.get(targetTypeFieldName), typeValue));
-			} else {
+			}
+			else {
 				subqueryPredicates.add(context.builder().equal(subJoin.get(targetTypeFieldName), typeValue.toString()));
 			}
 		}
@@ -77,7 +78,7 @@ public class GenericSpecificationHelper {
 	}
 
 	private static Predicate createRangePredicate(Expression<Long> countExpression, CriteriaBuilder builder,
-												  FilterCriteria criteria) {
+			FilterCriteria criteria) {
 		var value = validateAndGetLong(criteria);
 		return switch (criteria.getOperation()) {
 			case GREATER_THAN -> builder.greaterThan(countExpression, value);
@@ -92,7 +93,8 @@ public class GenericSpecificationHelper {
 		var value = criteria.getValue();
 		try {
 			return ((Number) value).intValue();
-		} catch (ClassCastException | NullPointerException e) {
+		}
+		catch (ClassCastException | NullPointerException e) {
 			throw new InvalidFilterValueException(criteria.getValue().toString());
 		}
 	}
@@ -109,13 +111,14 @@ public class GenericSpecificationHelper {
 		var value = criteria.getValue();
 		try {
 			return ((Number) value).longValue();
-		} catch (ClassCastException e) {
+		}
+		catch (ClassCastException e) {
 			throw new InvalidFilterValueException(criteria.getValue().toString());
 		}
 	}
 
 	private static Predicate buildNumericBasedPredicate(CriteriaBuilder builder, FilterCriteria criteria,
-														Path<BigDecimal> path, BigDecimal value) {
+			Path<BigDecimal> path, BigDecimal value) {
 		return switch (criteria.getOperation()) {
 			case GREATER_THAN -> builder.greaterThan(path, value);
 			case GREATER_THAN_EQUAL -> builder.greaterThanOrEqualTo(path, value);
@@ -126,7 +129,7 @@ public class GenericSpecificationHelper {
 	}
 
 	private static Predicate buildIdBasedPredicate(CriteriaBuilder builder, FilterCriteria criteria,
-												   Path<Integer> idPath, Object value) {
+			Path<Integer> idPath, Object value) {
 		return switch (criteria.getOperation()) {
 			case EQUAL -> builder.equal(idPath, value);
 			case NOT_EQUAL -> builder.notEqual(idPath, value);
@@ -135,7 +138,7 @@ public class GenericSpecificationHelper {
 	}
 
 	private static <T, J> Predicate buildCollectionIdBasedPredicate(CriteriaBuilder builder, FilterCriteria criteria,
-																	Join<T, J> join, String subJoinProperty, Object value) {
+			Join<T, J> join, String subJoinProperty, Object value) {
 		return switch (criteria.getOperation()) {
 			case EQUAL -> builder.equal(join.get(subJoinProperty).get(ID_FIELD), value);
 			case NOT_EQUAL -> {

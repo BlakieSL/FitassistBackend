@@ -56,13 +56,13 @@ public class AuthAnnotationServiceImpl {
 	private final DailyCartFoodRepository dailyCartFoodRepository;
 
 	public AuthAnnotationServiceImpl(CommentRepository commentRepository, RepositoryHelper repositoryHelper,
-									 ForumThreadRepository forumThreadRepository, PlanRepository planRepository,
-									 RecipeRepository recipeRepository, MediaRepository mediaRepository,
-									 RecipeInstructionRepository recipeInstructionRepository,
-									 PlanInstructionRepository planInstructionRepository, WorkoutRepository workoutRepository,
-									 WorkoutSetRepository workoutSetRepository, WorkoutSetExerciseRepository workoutSetExerciseRepository,
-									 CommentComplaintRepository commentComplaintRepository, ThreadComplaintRepository threadComplaintRepository,
-									 DailyCartActivityRepository dailyCartActivityRepository, DailyCartFoodRepository dailyCartFoodRepository) {
+			ForumThreadRepository forumThreadRepository, PlanRepository planRepository,
+			RecipeRepository recipeRepository, MediaRepository mediaRepository,
+			RecipeInstructionRepository recipeInstructionRepository,
+			PlanInstructionRepository planInstructionRepository, WorkoutRepository workoutRepository,
+			WorkoutSetRepository workoutSetRepository, WorkoutSetExerciseRepository workoutSetExerciseRepository,
+			CommentComplaintRepository commentComplaintRepository, ThreadComplaintRepository threadComplaintRepository,
+			DailyCartActivityRepository dailyCartActivityRepository, DailyCartFoodRepository dailyCartFoodRepository) {
 		this.commentRepository = commentRepository;
 		this.repositoryHelper = repositoryHelper;
 		this.forumThreadRepository = forumThreadRepository;
@@ -182,14 +182,14 @@ public class AuthAnnotationServiceImpl {
 
 	public boolean isWorkoutSetExerciseOwnerOrAdmin(int workoutSetExerciseId) {
 		WorkoutSetExercise workoutSetExercise = repositoryHelper.find(workoutSetExerciseRepository,
-			WorkoutSetExercise.class, workoutSetExerciseId);
+				WorkoutSetExercise.class, workoutSetExerciseId);
 		return AuthorizationUtil
 			.isOwnerOrAdmin(workoutSetExercise.getWorkoutSet().getWorkout().getPlan().getUser().getId());
 	}
 
 	public boolean isPublicWorkoutSetExerciseOrOwnerOrAdmin(int workoutSetExerciseId) {
 		WorkoutSetExercise workoutSetExercise = repositoryHelper.find(workoutSetExerciseRepository,
-			WorkoutSetExercise.class, workoutSetExerciseId);
+				WorkoutSetExercise.class, workoutSetExerciseId);
 		var plan = workoutSetExercise.getWorkoutSet().getWorkout().getPlan();
 		if (plan.getIsPublic()) {
 			return true;
@@ -219,7 +219,8 @@ public class AuthAnnotationServiceImpl {
 			DailyCartActivity dailyCartActivity = dailyCartActivityRepository.findByIdWithUser(dailyCartActivityId)
 				.orElseThrow(() -> new RecordNotFoundException(DailyCartActivity.class, dailyCartActivityId));
 			userId = dailyCartActivity.getDailyCart().getUser().getId();
-		} else if (dailyCartFoodId != null) {
+		}
+		else if (dailyCartFoodId != null) {
 			DailyCartFood dailyCartFood = dailyCartFoodRepository.findByIdWithUser(dailyCartFoodId)
 				.orElseThrow(() -> new RecordNotFoundException(DailyCartFood.class, dailyCartFoodId));
 			userId = dailyCartFood.getDailyCart().getUser().getId();

@@ -58,9 +58,9 @@ public class RecipeServiceImpl implements RecipeService {
 	private final SpecificationDependencies dependencies;
 
 	public RecipeServiceImpl(RecipeMapper recipeMapper, JsonPatchService jsonPatchService,
-							 ValidationService validationService, ApplicationEventPublisher applicationEventPublisher,
-							 RepositoryHelper repositoryHelper, RecipeRepository recipeRepository,
-							 RecipePopulationService recipePopulationService, SpecificationDependencies dependencies) {
+			ValidationService validationService, ApplicationEventPublisher applicationEventPublisher,
+			RepositoryHelper repositoryHelper, RecipeRepository recipeRepository,
+			RecipePopulationService recipePopulationService, SpecificationDependencies dependencies) {
 		this.recipeMapper = recipeMapper;
 		this.jsonPatchService = jsonPatchService;
 		this.validationService = validationService;
@@ -116,7 +116,7 @@ public class RecipeServiceImpl implements RecipeService {
 	public Page<RecipeSummaryDto> getFilteredRecipes(FilterDto filter, Pageable pageable) {
 		SpecificationFactory<Recipe> recipeFactory = RecipeSpecification::new;
 		SpecificationBuilder<Recipe> specificationBuilder = SpecificationBuilder.of(filter, recipeFactory,
-			dependencies);
+				dependencies);
 		Specification<Recipe> specification = specificationBuilder.build();
 
 		Page<Recipe> recipePage = recipeRepository.findAll(specification, pageable);
@@ -151,7 +151,7 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	private RecipeUpdateDto applyPatchToRecipe(JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		return jsonPatchService.createFromPatch(patch, RecipeUpdateDto.class);
 	}
 

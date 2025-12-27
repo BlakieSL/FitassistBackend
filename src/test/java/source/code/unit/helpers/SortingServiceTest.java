@@ -37,7 +37,7 @@ public class SortingServiceTest {
 		dto3.setCreatedAt(LocalDateTime.of(2024, 1, 2, 10, 0));
 
 		Comparator<PlanSummaryDto> comparator = sortingService.comparator(PlanSummaryDto::getCreatedAt,
-			Sort.Direction.DESC);
+				Sort.Direction.DESC);
 
 		List<PlanSummaryDto> sorted = Stream.of(dto1, dto2, dto3).sorted(comparator).toList();
 
@@ -61,7 +61,7 @@ public class SortingServiceTest {
 		dto3.setCreatedAt(LocalDateTime.of(2024, 1, 2, 10, 0));
 
 		Comparator<RecipeSummaryDto> comparator = sortingService.comparator(RecipeSummaryDto::getCreatedAt,
-			Sort.Direction.ASC);
+				Sort.Direction.ASC);
 
 		List<RecipeSummaryDto> sorted = Stream.of(dto1, dto2, dto3).sorted(comparator).toList();
 
@@ -89,7 +89,7 @@ public class SortingServiceTest {
 		dto4.setCreatedAt(null);
 
 		Comparator<PlanSummaryDto> comparator = sortingService.comparator(PlanSummaryDto::getCreatedAt,
-			Sort.Direction.DESC);
+				Sort.Direction.DESC);
 
 		List<PlanSummaryDto> sorted = Stream.of(dto1, dto2, dto3, dto4).sorted(comparator).toList();
 
@@ -118,7 +118,7 @@ public class SortingServiceTest {
 		dto4.setCreatedAt(null);
 
 		Comparator<RecipeSummaryDto> comparator = sortingService.comparator(RecipeSummaryDto::getCreatedAt,
-			Sort.Direction.ASC);
+				Sort.Direction.ASC);
 
 		List<RecipeSummaryDto> sorted = Stream.of(dto1, dto2, dto3, dto4).sorted(comparator).toList();
 
@@ -131,7 +131,7 @@ public class SortingServiceTest {
 	@Test
 	void comparator_ShouldHandleEmptyStream() {
 		Comparator<PlanSummaryDto> comparator = sortingService.comparator(PlanSummaryDto::getCreatedAt,
-			Sort.Direction.DESC);
+				Sort.Direction.DESC);
 
 		List<PlanSummaryDto> sorted = Stream.<PlanSummaryDto>empty().sorted(comparator).toList();
 
@@ -145,7 +145,7 @@ public class SortingServiceTest {
 		dto1.setCreatedAt(LocalDateTime.of(2024, 1, 1, 10, 0));
 
 		Comparator<PlanSummaryDto> comparator = sortingService.comparator(PlanSummaryDto::getCreatedAt,
-			Sort.Direction.DESC);
+				Sort.Direction.DESC);
 
 		List<PlanSummaryDto> sorted = Stream.of(dto1).sorted(comparator).toList();
 
@@ -168,7 +168,7 @@ public class SortingServiceTest {
 		dto3.setCreatedAt(null);
 
 		Comparator<RecipeSummaryDto> comparator = sortingService.comparator(RecipeSummaryDto::getCreatedAt,
-			Sort.Direction.DESC);
+				Sort.Direction.DESC);
 
 		List<RecipeSummaryDto> sorted = Stream.of(dto1, dto2, dto3).sorted(comparator).toList();
 
@@ -193,7 +193,7 @@ public class SortingServiceTest {
 		dto3.setCreatedAt(sameTime);
 
 		Comparator<PlanSummaryDto> comparator = sortingService.comparator(PlanSummaryDto::getCreatedAt,
-			Sort.Direction.DESC);
+				Sort.Direction.DESC);
 
 		List<PlanSummaryDto> sorted = Stream.of(dto1, dto2, dto3).sorted(comparator).toList();
 

@@ -14,7 +14,7 @@ public interface DailyFoodService {
 	void removeFoodFromDailyCart(int dailyCartFoodId);
 
 	void updateDailyFoodItem(int dailyCartFoodId, JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException;
+			throws JsonPatchException, JsonProcessingException;
 
 	DailyFoodsResponseDto getFoodFromDailyCart(DailyCartFoodGetDto request);
 

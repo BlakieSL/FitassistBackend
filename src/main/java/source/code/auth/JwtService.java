@@ -74,20 +74,22 @@ public class JwtService {
 			}
 
 			return createAccessToken(subject, userId, authorities);
-		} catch (ParseException e) {
+		}
+		catch (ParseException e) {
 			throw new InvalidRefreshTokenException("Invalid refresh token");
 		}
 	}
 
 	public String createSignedJWT(String username, Integer userId, List<String> authorities, long durationInMinutes,
-								  String tokenType) {
+			String tokenType) {
 		try {
 			JWTClaimsSet claimSet = buildClaims(username, userId, authorities, durationInMinutes, tokenType);
 			SignedJWT signedJWT = new SignedJWT(new JWSHeader(algorithm), claimSet);
 			signedJWT.sign(signer);
 
 			return signedJWT.serialize();
-		} catch (JOSEException e) {
+		}
+		catch (JOSEException e) {
 			throw new JwtAuthenticationException("Failed to sign JWT" + e);
 		}
 	}
@@ -96,7 +98,8 @@ public class JwtService {
 		try {
 			if (!signedJWT.verify(verifier))
 				throw new JwtAuthenticationException("JWT not verified - token: " + signedJWT.serialize());
-		} catch (JOSEException ex) {
+		}
+		catch (JOSEException ex) {
 			throw new JwtAuthenticationException("JWT not verified - token: " + signedJWT.serialize());
 		}
 	}
@@ -107,7 +110,8 @@ public class JwtService {
 			if (expiration.before(Date.from(Instant.now()))) {
 				throw new JwtAuthenticationException("JWT expired");
 			}
-		} catch (ParseException e) {
+		}
+		catch (ParseException e) {
 			throw new JwtAuthenticationException("JWT expiration time is invalid");
 		}
 	}
@@ -118,13 +122,14 @@ public class JwtService {
 			Integer userId = signedJWT.getJWTClaimsSet().getIntegerClaim("userId");
 			List<SimpleGrantedAuthority> authorities = getAuthorities(signedJWT);
 			return new CustomAuthenticationToken(subject, userId, null, authorities);
-		} catch (ParseException e) {
+		}
+		catch (ParseException e) {
 			throw new JwtAuthenticationException("Missing or invalid claims in JWT");
 		}
 	}
 
 	private JWTClaimsSet buildClaims(String username, Integer userId, List<String> authorities, long durationMinutes,
-									 String tokenType) {
+			String tokenType) {
 		return new JWTClaimsSet.Builder().subject(username)
 			.issueTime(currentDate())
 			.expirationTime(expirationDate(durationMinutes))

@@ -39,7 +39,7 @@ public class PlanController {
 	@PlanOwnerOrAdmin
 	@PatchMapping("/{planId}")
 	public ResponseEntity<Void> updatePlan(@PathVariable int planId, @RequestBody JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		planService.updatePlan(planId, patch);
 		return ResponseEntity.noContent().build();
 	}
@@ -60,7 +60,7 @@ public class PlanController {
 
 	@PostMapping("/filter")
 	public ResponseEntity<Page<PlanSummaryDto>> getFilteredPlans(@Valid @RequestBody FilterDto filterDto,
-																 @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+			@PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 		Page<PlanSummaryDto> filtered = planService.getFilteredPlans(filterDto, pageable);
 		return ResponseEntity.ok(filtered);
 	}

@@ -24,7 +24,7 @@ public class ActivityPopulationServiceImpl implements ActivityPopulationService 
 	private final ImageUrlPopulationService imageUrlPopulationService;
 
 	public ActivityPopulationServiceImpl(UserActivityRepository userActivityRepository, AwsS3Service s3Service,
-										 ImageUrlPopulationService imageUrlPopulationService) {
+			ImageUrlPopulationService imageUrlPopulationService) {
 		this.userActivityRepository = userActivityRepository;
 		this.s3Service = s3Service;
 		this.imageUrlPopulationService = imageUrlPopulationService;
@@ -61,7 +61,7 @@ public class ActivityPopulationServiceImpl implements ActivityPopulationService 
 	}
 
 	private void fetchAndPopulateUserInteractionsAndCounts(List<ActivitySummaryDto> activities,
-														   List<Integer> activityIds) {
+			List<Integer> activityIds) {
 		int userId = AuthorizationUtil.getUserId();
 
 		Map<Integer, SavesProjection> countsMap = userActivityRepository

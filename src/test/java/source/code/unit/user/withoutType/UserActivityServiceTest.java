@@ -59,7 +59,7 @@ public class UserActivityServiceTest {
 	void setUp() {
 		mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
 		userActivityService = new UserActivityServiceImpl(userRepository, activityRepository, userActivityRepository,
-			activityMapper, activityPopulationService);
+				activityMapper, activityPopulationService);
 	}
 
 	@AfterEach

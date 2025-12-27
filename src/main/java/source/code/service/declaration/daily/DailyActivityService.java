@@ -14,7 +14,7 @@ public interface DailyActivityService {
 	void removeActivityFromDailyCart(int dailyActivityItemId);
 
 	void updateDailyActivityItem(int dailyActivityItemId, JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException;
+			throws JsonPatchException, JsonProcessingException;
 
 	DailyActivitiesResponseDto getActivitiesFromDailyCart(DailyActivitiesGetDto request);
 

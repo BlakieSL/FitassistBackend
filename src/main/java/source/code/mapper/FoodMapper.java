@@ -19,7 +19,7 @@ import source.code.model.food.FoodCategory;
 import source.code.repository.FoodCategoryRepository;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
-@Mapper(componentModel = "spring", uses = {CommonMappingHelper.class})
+@Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class FoodMapper {
 
 	@Autowired
@@ -70,7 +70,7 @@ public abstract class FoodMapper {
 
 	@AfterMapping
 	protected void calculateMacros(@MappingTarget FoodCalculatedMacrosResponseDto dto, Food food,
-								   @Context BigDecimal factor) {
+			@Context BigDecimal factor) {
 		MathContext mathContext = new MathContext(10, RoundingMode.HALF_UP);
 
 		BigDecimal calories = food.getCalories().multiply(factor, mathContext).setScale(1, RoundingMode.HALF_UP);

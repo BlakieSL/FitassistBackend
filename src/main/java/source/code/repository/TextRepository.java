@@ -10,9 +10,9 @@ public interface TextRepository extends JpaRepository<TextBase, Integer> {
 
 	@Modifying
 	@Query(value = """
-		    DELETE FROM text
-		    WHERE plan_id = :planId
-		""", nativeQuery = true)
+			    DELETE FROM text
+			    WHERE plan_id = :planId
+			""", nativeQuery = true)
 	void deleteByPlanId(@Param("planId") int planId);
 
 }

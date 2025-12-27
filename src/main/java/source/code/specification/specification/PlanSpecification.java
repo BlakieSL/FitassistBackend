@@ -65,15 +65,15 @@ public class PlanSpecification extends AbstractSpecification<Plan, PlanField> {
 			case EQUIPMENT -> buildEquipmentPredicate(context);
 			case CREATED_BY_USER -> GenericSpecificationHelper.buildPredicateEntityProperty(context, USER_FIELD);
 			case SAVED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(context,
-				LikesAndSaves.USER_PLANS.getFieldName(), TYPE_FIELD, TypeOfInteraction.SAVE);
+					LikesAndSaves.USER_PLANS.getFieldName(), TYPE_FIELD, TypeOfInteraction.SAVE);
 			case LIKED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(context,
-				LikesAndSaves.USER_PLANS.getFieldName(), TYPE_FIELD, TypeOfInteraction.LIKE);
+					LikesAndSaves.USER_PLANS.getFieldName(), TYPE_FIELD, TypeOfInteraction.LIKE);
 			case DISLIKED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(context,
-				LikesAndSaves.USER_PLANS.getFieldName(), TYPE_FIELD, TypeOfInteraction.DISLIKE);
+					LikesAndSaves.USER_PLANS.getFieldName(), TYPE_FIELD, TypeOfInteraction.DISLIKE);
 			case SAVE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(context,
-				LikesAndSaves.USER_PLANS.getFieldName(), TYPE_FIELD, TypeOfInteraction.SAVE);
+					LikesAndSaves.USER_PLANS.getFieldName(), TYPE_FIELD, TypeOfInteraction.SAVE);
 			case LIKE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(context,
-				LikesAndSaves.USER_PLANS.getFieldName(), TYPE_FIELD, TypeOfInteraction.LIKE);
+					LikesAndSaves.USER_PLANS.getFieldName(), TYPE_FIELD, TypeOfInteraction.LIKE);
 		};
 	}
 
@@ -82,7 +82,7 @@ public class PlanSpecification extends AbstractSpecification<Plan, PlanField> {
 			.join(PLAN_CATEGORY_ASSOCIATIONS_FIELD, JoinType.LEFT);
 
 		return GenericSpecificationHelper.buildPredicateJoinProperty(context, categoryAssociationJoin,
-			PlanCategoryAssociation.PLAN_CATEGORY);
+				PlanCategoryAssociation.PLAN_CATEGORY);
 	}
 
 	private Predicate buildEquipmentPredicate(PredicateContext<Plan> context) {
@@ -98,7 +98,7 @@ public class PlanSpecification extends AbstractSpecification<Plan, PlanField> {
 		subquery.select(subRoot.get(ID_FIELD))
 			.where(context.builder()
 				.and(context.builder().equal(subRoot.get(ID_FIELD), context.root().get(ID_FIELD)),
-					context.builder().equal(exerciseJoin.get(EQUIPMENT_FIELD).get(ID_FIELD), equipmentId)));
+						context.builder().equal(exerciseJoin.get(EQUIPMENT_FIELD).get(ID_FIELD), equipmentId)));
 
 		return switch (context.criteria().getOperation()) {
 			case EQUAL -> context.builder().exists(subquery);
@@ -121,7 +121,8 @@ public class PlanSpecification extends AbstractSpecification<Plan, PlanField> {
 	private PlanStructureType parseStructureType(Object value) {
 		try {
 			return PlanStructureType.valueOf(value.toString());
-		} catch (IllegalArgumentException e) {
+		}
+		catch (IllegalArgumentException e) {
 			throw new InvalidFilterValueException(value.toString());
 		}
 	}

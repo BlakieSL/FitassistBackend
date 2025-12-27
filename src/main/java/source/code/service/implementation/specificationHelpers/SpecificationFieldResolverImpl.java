@@ -12,7 +12,8 @@ public class SpecificationFieldResolverImpl implements SpecificationFieldResolve
 	public <F extends Enum<F>> F resolveField(FilterCriteria criteria, Class<F> enumClass) {
 		try {
 			return Enum.valueOf(enumClass, criteria.getFilterKey());
-		} catch (IllegalArgumentException e) {
+		}
+		catch (IllegalArgumentException e) {
 			throw new InvalidFilterKeyException(criteria.getFilterKey());
 		}
 	}

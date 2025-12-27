@@ -14,8 +14,8 @@ public class SortingServiceImpl implements SortingService {
 	@Override
 	public <T> Comparator<T> comparator(Function<T, LocalDateTime> timeStampGetter, Sort.Direction sortDirection) {
 		return sortDirection == Sort.Direction.ASC
-			? Comparator.comparing(timeStampGetter, Comparator.nullsLast(Comparator.naturalOrder()))
-			: Comparator.comparing(timeStampGetter, Comparator.nullsLast(Comparator.reverseOrder()));
+				? Comparator.comparing(timeStampGetter, Comparator.nullsLast(Comparator.naturalOrder()))
+				: Comparator.comparing(timeStampGetter, Comparator.nullsLast(Comparator.reverseOrder()));
 	}
 
 }

@@ -32,7 +32,8 @@ public class LuceneIndexServiceImpl implements LuceneIndexService {
 			for (IndexedEntity entity : entities) {
 				indexEntity(entity, writer);
 			}
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -41,7 +42,8 @@ public class LuceneIndexServiceImpl implements LuceneIndexService {
 	public void addEntity(IndexedEntity entity) {
 		try (IndexWriter writer = getWriter()) {
 			indexEntity(entity, writer);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -51,7 +53,8 @@ public class LuceneIndexServiceImpl implements LuceneIndexService {
 		try (IndexWriter writer = getWriter()) {
 			deleteDocument(entity, writer);
 			indexEntity(entity, writer);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -60,7 +63,8 @@ public class LuceneIndexServiceImpl implements LuceneIndexService {
 	public void deleteEntity(IndexedEntity entity) {
 		try (IndexWriter writer = getWriter()) {
 			deleteDocument(entity, writer);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -95,7 +99,8 @@ public class LuceneIndexServiceImpl implements LuceneIndexService {
 
 			doc.add(new StoredField("categoryId", food.getFoodCategory().getId().toString()));
 			doc.add(new StoredField("categoryName", food.getFoodCategory().getName()));
-		} else if (entity instanceof Activity activity) {
+		}
+		else if (entity instanceof Activity activity) {
 			doc.add(new StoredField("met", activity.getMet().toString()));
 
 			if (!activity.getMediaList().isEmpty()) {

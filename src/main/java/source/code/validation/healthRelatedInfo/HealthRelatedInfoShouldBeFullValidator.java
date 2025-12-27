@@ -17,12 +17,12 @@ public class HealthRelatedInfoShouldBeFullValidator implements ConstraintValidat
 
 	private boolean allFieldsNull(User user) {
 		return user.getHeight() == null && user.getWeight() == null && user.getGoal() == null
-			&& user.getActivityLevel() == null;
+				&& user.getActivityLevel() == null;
 	}
 
 	private boolean anyFieldNull(User user) {
 		return user.getHeight() == null || user.getWeight() == null || user.getGoal() == null
-			|| user.getActivityLevel() == null;
+				|| user.getActivityLevel() == null;
 	}
 
 }

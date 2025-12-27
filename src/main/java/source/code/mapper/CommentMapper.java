@@ -17,7 +17,7 @@ import source.code.repository.CommentRepository;
 import source.code.repository.ForumThreadRepository;
 import source.code.repository.UserRepository;
 
-@Mapper(componentModel = "spring", uses = {CommonMappingHelper.class})
+@Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class CommentMapper {
 
 	@Autowired

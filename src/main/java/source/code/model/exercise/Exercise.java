@@ -23,11 +23,11 @@ import source.code.model.workout.WorkoutSetExercise;
 @Table(name = "exercise")
 @NamedEntityGraph(name = "Exercise.withoutAssociations", attributeNodes = {})
 @NamedEntityGraph(name = "Exercise.summary",
-	attributeNodes = {@NamedAttributeNode("equipment"), @NamedAttributeNode("expertiseLevel"),
-		@NamedAttributeNode("forceType"), @NamedAttributeNode("mechanicsType"),
-		@NamedAttributeNode(value = "exerciseTargetMuscles", subgraph = "etm-subgraph"),
-		@NamedAttributeNode("mediaList")},
-	subgraphs = {@NamedSubgraph(name = "etm-subgraph", attributeNodes = @NamedAttributeNode("targetMuscle"))})
+		attributeNodes = { @NamedAttributeNode("equipment"), @NamedAttributeNode("expertiseLevel"),
+				@NamedAttributeNode("forceType"), @NamedAttributeNode("mechanicsType"),
+				@NamedAttributeNode(value = "exerciseTargetMuscles", subgraph = "etm-subgraph"),
+				@NamedAttributeNode("mediaList") },
+		subgraphs = { @NamedSubgraph(name = "etm-subgraph", attributeNodes = @NamedAttributeNode("targetMuscle")) })
 @Getter
 @Setter
 @AllArgsConstructor
@@ -72,15 +72,15 @@ public class Exercise implements IndexedEntity {
 	@JoinColumn(name = "force_type_id", nullable = false)
 	private ForceType forceType;
 
-	@OneToMany(mappedBy = "exercise", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+	@OneToMany(mappedBy = "exercise", cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, orphanRemoval = true)
 	@OrderBy("orderIndex ASC")
 	private final Set<ExerciseInstruction> exerciseInstructions = new LinkedHashSet<>();
 
-	@OneToMany(mappedBy = "exercise", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+	@OneToMany(mappedBy = "exercise", cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, orphanRemoval = true)
 	@OrderBy("orderIndex ASC")
 	private final Set<ExerciseTip> exerciseTips = new LinkedHashSet<>();
 
-	@OneToMany(mappedBy = "exercise", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+	@OneToMany(mappedBy = "exercise", cascade = { CascadeType.REMOVE }, orphanRemoval = true)
 	@OrderBy("priority DESC")
 	private final Set<ExerciseTargetMuscle> exerciseTargetMuscles = new LinkedHashSet<>();
 
@@ -92,7 +92,7 @@ public class Exercise implements IndexedEntity {
 
 	@OneToMany
 	@JoinColumn(name = "parent_id", insertable = false, updatable = false,
-		foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+			foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	@SQLRestriction("parentType = 'EXERCISE'")
 	private List<Media> mediaList = new ArrayList<>();
 

@@ -305,7 +305,7 @@ public class ActivityServiceTest {
 			.thenThrow(RecordNotFoundException.of(Activity.class, activityId));
 
 		assertThrows(RecordNotFoundException.class,
-			() -> activityService.calculateCaloriesBurned(activityId, calculateRequestDto));
+				() -> activityService.calculateCaloriesBurned(activityId, calculateRequestDto));
 
 		verifyNoInteractions(activityMapper);
 	}

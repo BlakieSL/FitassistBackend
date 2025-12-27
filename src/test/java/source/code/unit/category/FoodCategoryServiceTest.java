@@ -149,7 +149,7 @@ public class FoodCategoryServiceTest {
 		when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
 
 		assertThrows(RecordNotFoundException.class,
-			() -> foodCategoryService.updateCategory(nonExistentCategoryId, patch));
+				() -> foodCategoryService.updateCategory(nonExistentCategoryId, patch));
 
 		verifyNoInteractions(validationService, mapper, applicationEventPublisher, cacheKeyGenerator);
 		verify(repository, never()).save(category);

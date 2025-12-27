@@ -48,8 +48,8 @@ public class LuceneInitialLoadServiceImpl implements LuceneInitialLoadService {
 	private Boolean luceneEnabled;
 
 	public LuceneInitialLoadServiceImpl(LuceneIndexService luceneIndexService, FoodService foodService,
-										ActivityService activityService, ExerciseService exerciseService, RecipeService recipeService,
-										PlanService planService) {
+			ActivityService activityService, ExerciseService exerciseService, RecipeService recipeService,
+			PlanService planService) {
 		this.luceneIndexService = luceneIndexService;
 		this.foodService = foodService;
 		this.activityService = activityService;
@@ -74,14 +74,15 @@ public class LuceneInitialLoadServiceImpl implements LuceneInitialLoadService {
 
 				List<IndexedEntity> allEntities = Stream
 					.of(foodService.getAllFoodEntities(), activityService.getAllActivityEntities(),
-						exerciseService.getAllExerciseEntities(), recipeService.getAllRecipeEntities(),
-						planService.getAllPlanEntities())
+							exerciseService.getAllExerciseEntities(), recipeService.getAllRecipeEntities(),
+							planService.getAllPlanEntities())
 					.flatMap(List::stream)
 					.map(entity -> (IndexedEntity) entity)
 					.toList();
 
 				luceneIndexService.indexEntities(allEntities);
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -93,7 +94,8 @@ public class LuceneInitialLoadServiceImpl implements LuceneInitialLoadService {
 		if (Files.exists(indexPath)) {
 			try (Stream<Path> files = Files.walk(indexPath)) {
 				files.sorted(Comparator.reverseOrder()).forEach(this::deleteFile);
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -102,7 +104,8 @@ public class LuceneInitialLoadServiceImpl implements LuceneInitialLoadService {
 	private void deleteFile(Path path) {
 		try {
 			Files.delete(path);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

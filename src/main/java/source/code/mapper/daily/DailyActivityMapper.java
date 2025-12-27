@@ -22,15 +22,15 @@ public abstract class DailyActivityMapper {
 	@Mapping(target = "name", source = "activity.name")
 	@Mapping(target = "met", source = "activity.met")
 	@Mapping(target = "category", source = "activity.activityCategory",
-		qualifiedByName = "mapActivityCategoryToResponseDto")
+			qualifiedByName = "mapActivityCategoryToResponseDto")
 	@Mapping(target = "caloriesBurned", ignore = true)
 	public abstract ActivityCalculatedResponseDto toActivityCalculatedResponseDto(DailyCartActivity dailyCartActivity);
 
 	@AfterMapping
 	protected void setCaloriesBurned(@MappingTarget ActivityCalculatedResponseDto responseDto,
-									 DailyCartActivity dailyCartActivity) {
+			DailyCartActivity dailyCartActivity) {
 		BigDecimal caloriesBurned = calculationsService.calculateCaloriesBurned(dailyCartActivity.getTime(),
-			dailyCartActivity.getWeight(), dailyCartActivity.getActivity().getMet());
+				dailyCartActivity.getWeight(), dailyCartActivity.getActivity().getMet());
 
 		responseDto.setCaloriesBurned(caloriesBurned.setScale(0, RoundingMode.HALF_UP).intValue());
 	}

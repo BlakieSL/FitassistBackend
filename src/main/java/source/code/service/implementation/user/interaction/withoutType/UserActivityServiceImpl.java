@@ -23,15 +23,15 @@ import source.code.service.declaration.user.SavedServiceWithoutType;
 
 @Service("userActivityService")
 public class UserActivityServiceImpl extends GenericSavedServiceWithoutType<Activity, UserActivity, ActivitySummaryDto>
-	implements SavedServiceWithoutType {
+		implements SavedServiceWithoutType {
 
 	private final ActivityMapper activityMapper;
 
 	private final ActivityPopulationService activityPopulationService;
 
 	public UserActivityServiceImpl(UserRepository userRepository, JpaRepository<Activity, Integer> entityRepository,
-								   JpaRepository<UserActivity, Integer> userEntityRepository, ActivityMapper mapper,
-								   ActivityPopulationService activityPopulationService) {
+			JpaRepository<UserActivity, Integer> userEntityRepository, ActivityMapper mapper,
+			ActivityPopulationService activityPopulationService) {
 		super(userRepository, entityRepository, userEntityRepository, mapper::toSummaryDto, Activity.class);
 		this.activityMapper = mapper;
 		this.activityPopulationService = activityPopulationService;
@@ -63,7 +63,7 @@ public class UserActivityServiceImpl extends GenericSavedServiceWithoutType<Acti
 		activityPopulationService.populate(summaries);
 
 		return new PageImpl<>(summaries.stream().map(dto -> (BaseUserEntity) dto).toList(), pageable,
-			userActivityPage.getTotalElements());
+				userActivityPage.getTotalElements());
 	}
 
 	@Override

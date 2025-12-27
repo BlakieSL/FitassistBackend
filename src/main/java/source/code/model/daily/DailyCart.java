@@ -35,12 +35,12 @@ public class DailyCart {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	@OneToMany(mappedBy = "dailyCart", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
-		orphanRemoval = true)
+	@OneToMany(mappedBy = "dailyCart", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE },
+			orphanRemoval = true)
 	private final List<DailyCartActivity> dailyCartActivities = new ArrayList<>();
 
-	@OneToMany(mappedBy = "dailyCart", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
-		orphanRemoval = true)
+	@OneToMany(mappedBy = "dailyCart", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE },
+			orphanRemoval = true)
 	private final List<DailyCartFood> dailyCartFoods = new ArrayList<>();
 
 	public static DailyCart createDate(User user) {

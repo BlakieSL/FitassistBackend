@@ -41,7 +41,7 @@ public class CommentController {
 	@CommentOwnerOrAdmin
 	@PatchMapping("/{commentId}")
 	public ResponseEntity<Void> updateComment(@PathVariable int commentId, @RequestBody JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		commentService.updateComment(commentId, patch);
 		return ResponseEntity.noContent().build();
 	}
@@ -61,8 +61,8 @@ public class CommentController {
 
 	@GetMapping("/top/{threadId}")
 	public ResponseEntity<Page<CommentResponseDto>> getTopCommentsForThread(@PathVariable int threadId,
-																			@PageableDefault(size = Integer.MAX_VALUE, sort = "createdAt",
-																				direction = Sort.Direction.DESC) Pageable pageable) {
+			@PageableDefault(size = Integer.MAX_VALUE, sort = "createdAt",
+					direction = Sort.Direction.DESC) Pageable pageable) {
 		Page<CommentResponseDto> responseDtos = commentService.getTopCommentsForThread(threadId, pageable);
 		return ResponseEntity.ok(responseDtos);
 	}
@@ -75,7 +75,7 @@ public class CommentController {
 
 	@PostMapping("/filter")
 	public ResponseEntity<Page<CommentSummaryDto>> getFilteredComments(@Valid @RequestBody FilterDto filterDto,
-																	   @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+			@PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 		Page<CommentSummaryDto> comments = commentService.getFilteredComments(filterDto, pageable);
 		return ResponseEntity.ok(comments);
 	}

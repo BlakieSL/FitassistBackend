@@ -38,7 +38,7 @@ public class RecipeFoodController {
 	@RecipeOwnerOrAdmin
 	@PostMapping("/{recipeId}/add/{foodId}")
 	public ResponseEntity<Void> addFoodToRecipe(@PathVariable int recipeId, @PathVariable int foodId,
-												@Valid @RequestBody RecipeFoodCreateDto request) {
+			@Valid @RequestBody RecipeFoodCreateDto request) {
 		recipeFoodService.saveFoodToRecipe(recipeId, foodId, request);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
@@ -53,7 +53,7 @@ public class RecipeFoodController {
 	@RecipeOwnerOrAdmin
 	@PatchMapping("/{recipeId}/modify/{foodId}")
 	public ResponseEntity<Void> updateFoodRecipe(@PathVariable int recipeId, @PathVariable int foodId,
-												 @RequestBody JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+			@RequestBody JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
 		recipeFoodService.updateFoodRecipe(recipeId, foodId, patch);
 		return ResponseEntity.noContent().build();
 	}
@@ -67,7 +67,7 @@ public class RecipeFoodController {
 
 	@PostMapping("/filter/foods")
 	public ResponseEntity<Page<RecipeSummaryDto>> getRecipesByFoods(@Valid @RequestBody FilterRecipesByFoodsDto filter,
-																	@PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+			@PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 		Page<RecipeSummaryDto> recipes = recipeFoodService.getRecipesByFoods(filter, pageable);
 		return ResponseEntity.ok(recipes);
 	}

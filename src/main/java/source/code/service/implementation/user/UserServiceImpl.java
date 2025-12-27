@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	private final UserRepository userRepository;
 
 	public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, ValidationService validationService,
-						   JsonPatchServiceImpl jsonPatchService, PasswordEncoder passwordEncoder, RepositoryHelper repositoryHelper) {
+			JsonPatchServiceImpl jsonPatchService, PasswordEncoder passwordEncoder, RepositoryHelper repositoryHelper) {
 		this.userRepository = userRepository;
 		this.userMapper = userMapper;
 		this.validationService = validationService;
@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	private UserUpdateDto applyPatchToUser(JsonMergePatch patch, int userId)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		return jsonPatchService.createFromPatch(patch, UserUpdateDto.class);
 	}
 

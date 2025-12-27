@@ -38,7 +38,7 @@ public class SecurityConfig {
 	private final RateLimitingFilter rateLimitingFilter;
 
 	public SecurityConfig(JwtService jwtService, @Lazy UserServiceImpl userServiceImpl,
-						  @Lazy RateLimitingFilter rateLimitingFilter) {
+			@Lazy RateLimitingFilter rateLimitingFilter) {
 		this.jwtService = jwtService;
 		this.userServiceImpl = userServiceImpl;
 		this.rateLimitingFilter = rateLimitingFilter;
@@ -46,10 +46,10 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManagerBuilder authenticationManagerBuilder,
-										   RequestMatcher requestMatcher) throws Exception {
+			RequestMatcher requestMatcher) throws Exception {
 		AuthenticationManager authenticationManager = authenticationManagerBuilder.getOrBuild();
 		JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtService,
-			userServiceImpl);
+				userServiceImpl);
 
 		BearerTokenFilter bearerTokenFilter = new BearerTokenFilter(jwtService);
 
@@ -87,18 +87,18 @@ public class SecurityConfig {
 	@Bean
 	public RequestMatcher publicEndpointsMatcher() {
 		return new OrRequestMatcher(
-			(request) -> "/api/users/register".equals(request.getRequestURI())
-				&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
-			(request) -> "/api/users/login".equals(request.getRequestURI())
-				&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
-			(request) -> "/api/users/refresh-token".equals(request.getRequestURI())
-				&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
-			(request) -> "/api/password-reset/request".equals(request.getRequestURI())
-				&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
-			(request) -> "/api/password-reset/reset".equals(request.getRequestURI())
-				&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
-			(request) -> "/api/virtual-threads/thread-info".equals(request.getRequestURI())
-				&& "GET".equals(request.getMethod()));
+				(request) -> "/api/users/register".equals(request.getRequestURI())
+						&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
+				(request) -> "/api/users/login".equals(request.getRequestURI())
+						&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
+				(request) -> "/api/users/refresh-token".equals(request.getRequestURI())
+						&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
+				(request) -> "/api/password-reset/request".equals(request.getRequestURI())
+						&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
+				(request) -> "/api/password-reset/reset".equals(request.getRequestURI())
+						&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
+				(request) -> "/api/virtual-threads/thread-info".equals(request.getRequestURI())
+						&& "GET".equals(request.getMethod()));
 	}
 
 }

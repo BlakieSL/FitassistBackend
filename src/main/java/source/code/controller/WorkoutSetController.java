@@ -37,7 +37,7 @@ public class WorkoutSetController {
 	@WorkoutSetOwnerOrAdmin
 	@PatchMapping("/{id}")
 	public ResponseEntity<Void> updateWorkoutSet(@PathVariable int id, @RequestBody JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		workoutSetService.updateWorkoutSet(id, patch);
 		return ResponseEntity.noContent().build();
 	}

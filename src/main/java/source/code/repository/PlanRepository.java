@@ -15,18 +15,18 @@ import source.code.model.plan.Plan;
 public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecificationExecutor<Plan> {
 
 	@Query("""
-		    SELECT p
-		    FROM Plan p
-		    JOIN FETCH p.user
-		    LEFT JOIN FETCH p.planCategoryAssociations pca
-		    LEFT JOIN FETCH pca.planCategory
-		    LEFT JOIN FETCH p.planInstructions
-		    LEFT JOIN FETCH p.workouts w
-		    LEFT JOIN FETCH w.workoutSets ws
-		    LEFT JOIN FETCH ws.workoutSetExercises wse
-		    LEFT JOIN FETCH wse.exercise e
-		    WHERE p.id = :planId
-		""")
+			    SELECT p
+			    FROM Plan p
+			    JOIN FETCH p.user
+			    LEFT JOIN FETCH p.planCategoryAssociations pca
+			    LEFT JOIN FETCH pca.planCategory
+			    LEFT JOIN FETCH p.planInstructions
+			    LEFT JOIN FETCH p.workouts w
+			    LEFT JOIN FETCH w.workoutSets ws
+			    LEFT JOIN FETCH ws.workoutSetExercises wse
+			    LEFT JOIN FETCH wse.exercise e
+			    WHERE p.id = :planId
+			""")
 	Optional<Plan> findByIdWithDetails(@Param("planId") int planId);
 
 	@Override
@@ -44,23 +44,23 @@ public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecifi
 
 	@EntityGraph(value = "Plan.summary")
 	@Query("""
-		    SELECT p
-		    FROM Plan p
-		    JOIN p.workouts w
-		    JOIN w.workoutSets ws
-		    JOIN ws.workoutSetExercises wse
-		    WHERE wse.exercise.id = :exerciseId
-		      AND p.isPublic = true
-		    ORDER BY p.createdAt DESC
-		""")
+			    SELECT p
+			    FROM Plan p
+			    JOIN p.workouts w
+			    JOIN w.workoutSets ws
+			    JOIN ws.workoutSetExercises wse
+			    WHERE wse.exercise.id = :exerciseId
+			      AND p.isPublic = true
+			    ORDER BY p.createdAt DESC
+			""")
 	List<Plan> findByExerciseIdWithDetails(@Param("exerciseId") int exerciseId);
 
 	@EntityGraph(value = "Plan.summary")
 	@Query("""
-		    SELECT p
-		    FROM Plan p
-		    WHERE p.id IN :planIds
-		""")
+			    SELECT p
+			    FROM Plan p
+			    WHERE p.id IN :planIds
+			""")
 	List<Plan> findByIdsWithDetails(@Param("planIds") List<Integer> planIds);
 
 }

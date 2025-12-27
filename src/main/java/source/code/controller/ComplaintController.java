@@ -39,7 +39,7 @@ public class ComplaintController {
 	@AdminOnly
 	@GetMapping("/all")
 	public ResponseEntity<Page<ComplaintResponseDto>> getAllComplaints(
-		@PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+			@PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 		Page<ComplaintResponseDto> response = complaintService.getAllComplaints(pageable);
 		return ResponseEntity.ok(response);
 	}

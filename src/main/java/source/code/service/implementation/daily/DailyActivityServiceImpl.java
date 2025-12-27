@@ -53,9 +53,9 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 	private final UserRepository userRepository;
 
 	public DailyActivityServiceImpl(DailyCartRepository dailyCartRepository, UserRepository userRepository,
-									ActivityRepository activityRepository, JsonPatchService jsonPatchService,
-									ValidationService validationService, DailyActivityMapper dailyActivityMapper,
-									RepositoryHelper repositoryHelper, DailyCartActivityRepository dailyCartActivityRepository) {
+			ActivityRepository activityRepository, JsonPatchService jsonPatchService,
+			ValidationService validationService, DailyActivityMapper dailyActivityMapper,
+			RepositoryHelper repositoryHelper, DailyCartActivityRepository dailyCartActivityRepository) {
 		this.dailyCartRepository = dailyCartRepository;
 		this.userRepository = userRepository;
 		this.activityRepository = activityRepository;
@@ -88,7 +88,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 	@Override
 	@Transactional
 	public void updateDailyActivityItem(int dailyActivityItemId, JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		DailyCartActivity dailyCartActivity = findWithoutAssociations(dailyActivityItemId);
 		DailyActivityItemUpdateDto patchedDto = applyPatchToDailyActivityItem(patch);
 		validationService.validate(patchedDto);
@@ -108,8 +108,8 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 				.stream()
 				.map(dailyActivityMapper::toActivityCalculatedResponseDto)
 				.collect(Collectors.teeing(Collectors.toList(),
-					Collectors.summingInt(ActivityCalculatedResponseDto::getCaloriesBurned),
-					DailyActivitiesResponseDto::of)))
+						Collectors.summingInt(ActivityCalculatedResponseDto::getCaloriesBurned),
+						DailyActivitiesResponseDto::of)))
 			.orElse(DailyActivitiesResponseDto.of(Collections.emptyList(), 0));
 	}
 
@@ -142,7 +142,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 	}
 
 	private DailyActivityItemUpdateDto applyPatchToDailyActivityItem(JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		return jsonPatchService.createFromPatch(patch, DailyActivityItemUpdateDto.class);
 	}
 
@@ -167,7 +167,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 		}
 
 		throw new WeightRequiredException("Weight is required for logging activities. "
-			+ "Please provide it in the request or set it in your profile.");
+				+ "Please provide it in the request or set it in your profile.");
 	}
 
 }

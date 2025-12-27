@@ -80,14 +80,14 @@ public class ExerciseServiceImpl implements ExerciseService {
 	private final SpecificationDependencies dependencies;
 
 	public ExerciseServiceImpl(ExerciseMapper exerciseMapper, PlanMapper planMapper,
-							   ValidationService validationService, JsonPatchService jsonPatchService,
-							   ApplicationEventPublisher applicationEventPublisher, RepositoryHelper repositoryHelper,
-							   ExerciseRepository exerciseRepository, ExerciseTargetMuscleRepository exerciseTargetMuscleRepository,
-							   PlanRepository planRepository, EquipmentRepository equipmentRepository,
-							   ExpertiseLevelRepository expertiseLevelRepository, ForceTypeRepository forceTypeRepository,
-							   MechanicsTypeRepository mechanicsTypeRepository, TargetMuscleRepository targetMuscleRepository,
-							   ExercisePopulationService exercisePopulationService, PlanPopulationService planPopulationService,
-							   SpecificationDependencies dependencies) {
+			ValidationService validationService, JsonPatchService jsonPatchService,
+			ApplicationEventPublisher applicationEventPublisher, RepositoryHelper repositoryHelper,
+			ExerciseRepository exerciseRepository, ExerciseTargetMuscleRepository exerciseTargetMuscleRepository,
+			PlanRepository planRepository, EquipmentRepository equipmentRepository,
+			ExpertiseLevelRepository expertiseLevelRepository, ForceTypeRepository forceTypeRepository,
+			MechanicsTypeRepository mechanicsTypeRepository, TargetMuscleRepository targetMuscleRepository,
+			ExercisePopulationService exercisePopulationService, PlanPopulationService planPopulationService,
+			SpecificationDependencies dependencies) {
 		this.exerciseMapper = exerciseMapper;
 		this.planMapper = planMapper;
 		this.validationService = validationService;
@@ -121,7 +121,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 	@Override
 	@Transactional
 	public void updateExercise(int exerciseId, JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		Exercise exercise = exerciseRepository.findByIdWithDetails(exerciseId)
 			.orElseThrow(() -> RecordNotFoundException.of(Exercise.class, exerciseId));
 		ExerciseUpdateDto patchedExerciseUpdateDto = applyPatchToExercise(patch);
@@ -161,7 +161,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 	public Page<ExerciseSummaryDto> getFilteredExercises(FilterDto filter, Pageable pageable) {
 		SpecificationFactory<Exercise> exerciseFactory = ExerciseSpecification::new;
 		SpecificationBuilder<Exercise> specificationBuilder = SpecificationBuilder.of(filter, exerciseFactory,
-			dependencies);
+				dependencies);
 		Specification<Exercise> specification = specificationBuilder.build();
 
 		Page<Exercise> exercisePage = exerciseRepository.findAll(specification, pageable);
@@ -210,7 +210,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 			.toList();
 
 		return new ExerciseCategoriesResponseDto(equipments, expertiseLevels, forceTypes, mechanicsTypes,
-			targetMuscles);
+				targetMuscles);
 	}
 
 	private Exercise find(int exerciseId) {
@@ -227,7 +227,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 	}
 
 	private ExerciseUpdateDto applyPatchToExercise(JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		return jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class);
 	}
 

@@ -122,7 +122,7 @@ public class WorkoutSetServiceTest {
 
 	@Test
 	public void updateWorkoutSet_ShouldThrowExceptionWhenValidationFails()
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		when(repositoryHelper.find(workoutSetRepository, WorkoutSet.class, workoutSetId)).thenReturn(workoutSet);
 		when(jsonPatchService.createFromPatch(eq(patch), eq(WorkoutSetUpdateDto.class))).thenReturn(updateDto);
 		doThrow(IllegalArgumentException.class).when(validationService).validate(updateDto);
@@ -138,7 +138,7 @@ public class WorkoutSetServiceTest {
 
 	@Test
 	public void updateWorkoutSet_ShouldThrowExceptionWhenPatchFails()
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		when(repositoryHelper.find(workoutSetRepository, WorkoutSet.class, workoutSetId)).thenReturn(workoutSet);
 		when(jsonPatchService.createFromPatch(eq(patch), eq(WorkoutSetUpdateDto.class)))
 			.thenThrow(JsonPatchException.class);

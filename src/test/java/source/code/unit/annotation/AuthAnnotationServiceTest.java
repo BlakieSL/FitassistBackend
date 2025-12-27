@@ -167,7 +167,7 @@ public class AuthAnnotationServiceTest {
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId)).thenReturn(true);
 
 		boolean result = authAnnotationService.isOwnerOrAdminForParentEntity(MediaConnectedEntity.FORUM_THREAD,
-			forumThreadId);
+				forumThreadId);
 
 		assertTrue(result);
 	}
@@ -181,7 +181,7 @@ public class AuthAnnotationServiceTest {
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId)).thenReturn(true);
 
 		boolean result = authAnnotationService.isOwnerOrAdminForParentEntity(MediaConnectedEntity.COMMENT_COMPLAINT,
-			commentComplaintId);
+				commentComplaintId);
 
 		assertTrue(result);
 	}
@@ -195,7 +195,7 @@ public class AuthAnnotationServiceTest {
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId)).thenReturn(true);
 
 		boolean result = authAnnotationService.isOwnerOrAdminForParentEntity(MediaConnectedEntity.THREAD_COMPLAINT,
-			threadComplaintId);
+				threadComplaintId);
 
 		assertTrue(result);
 	}

@@ -26,14 +26,14 @@ public class MediaController {
 
 	@GetMapping("/all/{parentId}/{parentType}")
 	public ResponseEntity<List<MediaResponseDto>> getAllMediaForParent(@PathVariable int parentId,
-																	   @PathVariable MediaConnectedEntity parentType) {
+			@PathVariable MediaConnectedEntity parentType) {
 		List<MediaResponseDto> mediaList = mediaService.getAllMediaForParent(parentId, parentType);
 		return ResponseEntity.ok(mediaList);
 	}
 
 	@GetMapping("/first/{parentId}/{parentType}")
 	public ResponseEntity<MediaResponseDto> getFirstMediaForParent(@PathVariable int parentId,
-																   @PathVariable MediaConnectedEntity parentType) {
+			@PathVariable MediaConnectedEntity parentType) {
 		MediaResponseDto media = mediaService.getFirstMediaForParent(parentId, parentType);
 		return ResponseEntity.ok(media);
 	}

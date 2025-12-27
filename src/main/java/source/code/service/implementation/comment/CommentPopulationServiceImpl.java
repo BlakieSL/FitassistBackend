@@ -26,7 +26,7 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
 	private final AwsS3Service s3Service;
 
 	public CommentPopulationServiceImpl(UserCommentRepository userCommentRepository, MediaRepository mediaRepository,
-										AwsS3Service s3Service) {
+			AwsS3Service s3Service) {
 		this.userCommentRepository = userCommentRepository;
 		this.mediaRepository = mediaRepository;
 		this.s3Service = s3Service;
@@ -90,7 +90,7 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
 	}
 
 	private void populateCountsAndInteractionsForSummaries(List<CommentSummaryDto> comments, List<Integer> commentIds,
-														   int userId) {
+			int userId) {
 		Map<Integer, CommentCountsProjection> countsMap = userCommentRepository
 			.findCountsAndInteractionsByCommentIds(userId, commentIds)
 			.stream()
@@ -104,7 +104,8 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
 				comment.setLiked(counts.isLiked());
 				comment.setDisliked(counts.isDisliked());
 				comment.setRepliesCount(counts.repliesCount());
-			} else {
+			}
+			else {
 				comment.setLikesCount(0L);
 				comment.setDislikesCount(0L);
 				comment.setLiked(false);
@@ -128,7 +129,7 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
 
 	private void populateCountsAndInteractions(CommentResponseDto comment, int userId) {
 		List<CommentCountsProjection> results = userCommentRepository.findCountsAndInteractionsByCommentIds(userId,
-			List.of(comment.getId()));
+				List.of(comment.getId()));
 
 		if (results.isEmpty()) {
 			comment.setLikesCount(0L);
@@ -173,7 +174,7 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
 	}
 
 	private void populateCountsAndInteractions(List<CommentResponseDto> comments, List<Integer> commentIds,
-											   int userId) {
+			int userId) {
 		Map<Integer, CommentCountsProjection> countsMap = userCommentRepository
 			.findCountsAndInteractionsByCommentIds(userId, commentIds)
 			.stream()
@@ -187,7 +188,8 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
 				comment.setLiked(counts.isLiked());
 				comment.setDisliked(counts.isDisliked());
 				comment.setRepliesCount(counts.repliesCount());
-			} else {
+			}
+			else {
 				comment.setLikesCount(0L);
 				comment.setDislikesCount(0L);
 				comment.setLiked(false);

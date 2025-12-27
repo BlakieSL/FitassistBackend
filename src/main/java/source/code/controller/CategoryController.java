@@ -35,7 +35,7 @@ public class CategoryController {
 
 	@GetMapping("/{categoryType}/{id}")
 	public ResponseEntity<CategoryResponseDto> getCategory(@PathVariable CategoryType categoryType,
-														   @PathVariable int id) {
+			@PathVariable int id) {
 		CategoryService categoryService = categorySelectorService.getService(categoryType);
 		CategoryResponseDto dto = categoryService.getCategory(id);
 		return ResponseEntity.ok(dto);
@@ -44,7 +44,7 @@ public class CategoryController {
 	@AdminOnly
 	@PostMapping("/{categoryType}")
 	public ResponseEntity<CategoryResponseDto> createCategory(@PathVariable CategoryType categoryType,
-															  @RequestBody CategoryCreateDto request) {
+			@RequestBody CategoryCreateDto request) {
 		CategoryService categoryService = categorySelectorService.getService(categoryType);
 		CategoryResponseDto dto = categoryService.createCategory(request);
 		return ResponseEntity.status(HttpStatus.CREATED).body(dto);
@@ -53,7 +53,7 @@ public class CategoryController {
 	@AdminOnly
 	@PatchMapping("/{categoryType}/{id}")
 	public ResponseEntity<Void> updateCategory(@PathVariable CategoryType categoryType, @PathVariable int id,
-											   @RequestBody JsonMergePatch patch) throws JsonProcessingException, JsonPatchException {
+			@RequestBody JsonMergePatch patch) throws JsonProcessingException, JsonPatchException {
 		CategoryService categoryService = categorySelectorService.getService(categoryType);
 		categoryService.updateCategory(id, patch);
 		return ResponseEntity.noContent().build();

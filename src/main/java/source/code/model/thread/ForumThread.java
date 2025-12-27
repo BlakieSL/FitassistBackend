@@ -25,7 +25,7 @@ import source.code.model.user.UserThread;
 @Table(name = "thread")
 @NamedEntityGraph(name = "Thread.withoutAssociations", attributeNodes = {})
 @NamedEntityGraph(name = "ForumThread.summary",
-	attributeNodes = {@NamedAttributeNode("user"), @NamedAttributeNode("threadCategory")})
+		attributeNodes = { @NamedAttributeNode("user"), @NamedAttributeNode("threadCategory") })
 @Getter
 @Setter
 @AllArgsConstructor
@@ -73,7 +73,7 @@ public class ForumThread {
 
 	@OneToMany
 	@JoinColumn(name = "parent_id", insertable = false, updatable = false,
-		foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+			foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	@SQLRestriction("parentType = 'FORUM_THREAD'")
 	private List<Media> mediaList = new ArrayList<>();
 

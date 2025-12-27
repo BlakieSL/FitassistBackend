@@ -17,11 +17,11 @@ public class FoodCategoryServiceImpl extends GenericCategoryService<FoodCategory
 	private final FoodCategoryRepository foodCategoryRepository;
 
 	protected FoodCategoryServiceImpl(ValidationService validationService, JsonPatchService jsonPatchService,
-									  CategoryCacheKeyGenerator<FoodCategory> cacheKeyGenerator,
-									  ApplicationEventPublisher applicationEventPublisher, CacheManager cacheManager,
-									  FoodCategoryRepository foodCategoryRepository, FoodCategoryMapper mapper) {
+			CategoryCacheKeyGenerator<FoodCategory> cacheKeyGenerator,
+			ApplicationEventPublisher applicationEventPublisher, CacheManager cacheManager,
+			FoodCategoryRepository foodCategoryRepository, FoodCategoryMapper mapper) {
 		super(validationService, jsonPatchService, cacheKeyGenerator, applicationEventPublisher, cacheManager,
-			foodCategoryRepository, mapper);
+				foodCategoryRepository, mapper);
 		this.foodCategoryRepository = foodCategoryRepository;
 	}
 

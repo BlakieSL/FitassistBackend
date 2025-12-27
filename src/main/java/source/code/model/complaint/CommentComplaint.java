@@ -28,7 +28,7 @@ public class CommentComplaint extends ComplaintBase {
 
 	@OneToMany
 	@JoinColumn(name = "parent_id", insertable = false, updatable = false,
-		foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+			foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	@SQLRestriction("parentType = 'COMMENT_COMPLAINT'")
 	private List<Media> mediaList = new ArrayList<>();
 

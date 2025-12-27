@@ -25,9 +25,9 @@ import source.code.model.workout.Workout;
 @Table(name = "plan")
 @NamedEntityGraph(name = "Plan.withoutAssociations", attributeNodes = {})
 @NamedEntityGraph(name = "Plan.summary",
-	attributeNodes = {@NamedAttributeNode("user"), @NamedAttributeNode("mediaList"),
-		@NamedAttributeNode(value = "planCategoryAssociations", subgraph = "pca-subgraph")},
-	subgraphs = {@NamedSubgraph(name = "pca-subgraph", attributeNodes = @NamedAttributeNode("planCategory"))})
+		attributeNodes = { @NamedAttributeNode("user"), @NamedAttributeNode("mediaList"),
+				@NamedAttributeNode(value = "planCategoryAssociations", subgraph = "pca-subgraph") },
+		subgraphs = { @NamedSubgraph(name = "pca-subgraph", attributeNodes = @NamedAttributeNode("planCategory")) })
 @Getter
 @Setter
 @AllArgsConstructor
@@ -72,7 +72,7 @@ public class Plan implements IndexedEntity {
 	@Column(name = "structure_type", nullable = false)
 	private PlanStructureType planStructureType;
 
-	@OneToMany(mappedBy = "plan", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
+	@OneToMany(mappedBy = "plan", cascade = { CascadeType.PERSIST }, orphanRemoval = true)
 	@OrderBy("orderIndex ASC")
 	private final Set<PlanInstruction> planInstructions = new LinkedHashSet<>();
 
@@ -89,7 +89,7 @@ public class Plan implements IndexedEntity {
 
 	@OneToMany
 	@JoinColumn(name = "parent_id", insertable = false, updatable = false,
-		foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+			foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	@SQLRestriction("parentType = 'PLAN'")
 	private List<Media> mediaList = new ArrayList<>();
 

@@ -50,7 +50,8 @@ public class UniqueEmailValidator implements ConstraintValidator<UniqueEmailDoma
 			}
 
 			return true;
-		} finally {
+		}
+		finally {
 			entityManager.setFlushMode(FlushModeType.AUTO);
 		}
 	}

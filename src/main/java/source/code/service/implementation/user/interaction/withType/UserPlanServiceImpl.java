@@ -34,7 +34,7 @@ public class UserPlanServiceImpl extends GenericSavedService<Plan, UserPlan, Pla
 	private final PlanPopulationService planPopulationService;
 
 	public UserPlanServiceImpl(UserPlanRepository userPlanRepository, PlanRepository planRepository,
-							   UserRepository userRepository, PlanMapper planMapper, PlanPopulationService planPopulationService) {
+			UserRepository userRepository, PlanMapper planMapper, PlanPopulationService planPopulationService) {
 		super(userRepository, planRepository, userPlanRepository, Plan.class, UserPlan.class);
 		this.planMapper = planMapper;
 		this.planPopulationService = planPopulationService;
@@ -55,7 +55,7 @@ public class UserPlanServiceImpl extends GenericSavedService<Plan, UserPlan, Pla
 	@Override
 	public Page<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Pageable pageable) {
 		Page<UserPlan> userPlanPage = ((UserPlanRepository) userEntityRepository).findAllByUserIdAndType(userId, type,
-			pageable);
+				pageable);
 
 		List<Integer> planIds = userPlanPage.getContent().stream().map(up -> up.getPlan().getId()).toList();
 
@@ -73,7 +73,7 @@ public class UserPlanServiceImpl extends GenericSavedService<Plan, UserPlan, Pla
 		planPopulationService.populate(summaries);
 
 		return new PageImpl<>(summaries.stream().map(dto -> (BaseUserEntity) dto).toList(), pageable,
-			userPlanPage.getTotalElements());
+				userPlanPage.getTotalElements());
 	}
 
 	@Override

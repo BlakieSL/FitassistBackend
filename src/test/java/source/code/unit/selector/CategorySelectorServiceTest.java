@@ -38,7 +38,7 @@ public class CategorySelectorServiceTest {
 	@BeforeEach
 	void setUp() {
 		categorySelectorService = new CategorySelectorServiceImpl(foodCategoryService, activityCategoryService,
-			recipeCategoryService, planCategoryService, threadCategoryService);
+				recipeCategoryService, planCategoryService, threadCategoryService);
 	}
 
 	@Test

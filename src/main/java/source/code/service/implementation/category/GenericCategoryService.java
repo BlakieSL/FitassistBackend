@@ -46,8 +46,8 @@ public abstract class GenericCategoryService<T> {
 	protected abstract Class<T> getEntityClass();
 
 	protected GenericCategoryService(ValidationService validationService, JsonPatchService jsonPatchService,
-									 CategoryCacheKeyGenerator<T> cacheKeyGenerator, ApplicationEventPublisher applicationEventPublisher,
-									 CacheManager cacheManager, JpaRepository<T, Integer> repository, BaseMapper<T> mapper) {
+			CategoryCacheKeyGenerator<T> cacheKeyGenerator, ApplicationEventPublisher applicationEventPublisher,
+			CacheManager cacheManager, JpaRepository<T, Integer> repository, BaseMapper<T> mapper) {
 		this.validationService = validationService;
 		this.jsonPatchService = jsonPatchService;
 		this.cacheKeyGenerator = cacheKeyGenerator;
@@ -68,7 +68,7 @@ public abstract class GenericCategoryService<T> {
 
 	@Transactional
 	public void updateCategory(int categoryId, JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		T category = find(categoryId);
 		CategoryUpdateDto patchedCategory = applyPatchToCategory(patch);
 
@@ -117,7 +117,7 @@ public abstract class GenericCategoryService<T> {
 	}
 
 	private CategoryUpdateDto applyPatchToCategory(JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		return jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class);
 	}
 
@@ -127,7 +127,8 @@ public abstract class GenericCategoryService<T> {
 
 		try {
 			return Optional.ofNullable(cachedValue).map(value -> (List<CategoryResponseDto>) value.get());
-		} catch (ClassCastException exception) {
+		}
+		catch (ClassCastException exception) {
 			return Optional.empty();
 		}
 	}

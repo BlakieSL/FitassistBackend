@@ -50,8 +50,8 @@ public class CommentServiceImpl implements CommentService {
 	private final CommentPopulationService commentPopulationService;
 
 	public CommentServiceImpl(JsonPatchService jsonPatchService, ValidationService validationService,
-							  CommentMapper commentMapper, CommentRepository commentRepository, SpecificationDependencies dependencies,
-							  CommentPopulationService commentPopulationService) {
+			CommentMapper commentMapper, CommentRepository commentRepository, SpecificationDependencies dependencies,
+			CommentPopulationService commentPopulationService) {
 		this.jsonPatchService = jsonPatchService;
 		this.validationService = validationService;
 		this.commentMapper = commentMapper;
@@ -100,7 +100,7 @@ public class CommentServiceImpl implements CommentService {
 	public Page<CommentSummaryDto> getFilteredComments(FilterDto filter, Pageable pageable) {
 		SpecificationFactory<Comment> commentFactory = CommentSpecification::new;
 		SpecificationBuilder<Comment> specificationBuilder = SpecificationBuilder.of(filter, commentFactory,
-			dependencies);
+				dependencies);
 		Specification<Comment> specification = specificationBuilder.build();
 
 		Page<Comment> commentPage = commentRepository.findAll(specification, pageable);
@@ -121,7 +121,7 @@ public class CommentServiceImpl implements CommentService {
 
 		if (sortOrder != null && "likesCount".equals(sortOrder.getProperty())) {
 			List<Integer> ids = commentRepository.findTopCommentIdsSortedByLikesCount(threadId,
-				sortOrder.getDirection().name(), pageable.getPageSize(), (int) pageable.getOffset());
+					sortOrder.getDirection().name(), pageable.getPageSize(), (int) pageable.getOffset());
 
 			comments = commentRepository.findAllByIds(ids);
 
@@ -133,7 +133,8 @@ public class CommentServiceImpl implements CommentService {
 			comments.sort(Comparator.comparingInt(c -> idToPosition.get(c.getId())));
 
 			total = commentRepository.countTopCommentsByThreadId(threadId);
-		} else {
+		}
+		else {
 			Page<Comment> commentPage = commentRepository.findAllByThreadIdAndParentCommentNull(threadId, pageable);
 			comments = commentPage.getContent();
 			total = commentPage.getTotalElements();
@@ -211,7 +212,7 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	private CommentUpdateDto applyPatchToComment(JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		return jsonPatchService.createFromPatch(patch, CommentUpdateDto.class);
 	}
 

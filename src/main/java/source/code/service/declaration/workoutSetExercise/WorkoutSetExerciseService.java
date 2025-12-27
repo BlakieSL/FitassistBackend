@@ -14,7 +14,7 @@ public interface WorkoutSetExerciseService {
 	WorkoutSetExerciseResponseDto createWorkoutSetExercise(WorkoutSetExerciseCreateDto createDto);
 
 	void updateWorkoutSetExercise(int workoutSetExerciseId, JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException;
+			throws JsonPatchException, JsonProcessingException;
 
 	void deleteWorkoutSetExercise(int workoutSetExerciseId);
 

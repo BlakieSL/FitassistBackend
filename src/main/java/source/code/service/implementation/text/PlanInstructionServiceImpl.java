@@ -17,16 +17,16 @@ import source.code.service.declaration.text.TextService;
 
 @Service("planInstructionService")
 public class PlanInstructionServiceImpl extends
-	GenericTextService<PlanInstruction, PlanInstructionResponseDto, PlanInstructionUpdateDto, PlanInstructionRepository>
-	implements TextService {
+		GenericTextService<PlanInstruction, PlanInstructionResponseDto, PlanInstructionUpdateDto, PlanInstructionRepository>
+		implements TextService {
 
 	protected PlanInstructionServiceImpl(ValidationService validationService, JsonPatchService jsonPatchService,
-										 TextCacheKeyGenerator<PlanInstruction> textCacheKeyGenerator, CacheManager cacheManager,
-										 ApplicationEventPublisher applicationEventPublisher, PlanInstructionRepository repository,
-										 TextMapper mapper) {
+			TextCacheKeyGenerator<PlanInstruction> textCacheKeyGenerator, CacheManager cacheManager,
+			ApplicationEventPublisher applicationEventPublisher, PlanInstructionRepository repository,
+			TextMapper mapper) {
 		super(validationService, jsonPatchService, textCacheKeyGenerator, cacheManager, applicationEventPublisher,
-			repository, mapper::toPlanInstructionResponseDto, mapper::updatePlanInstruction,
-			PlanInstructionUpdateDto.class);
+				repository, mapper::toPlanInstructionResponseDto, mapper::updatePlanInstruction,
+				PlanInstructionUpdateDto.class);
 	}
 
 	@Override

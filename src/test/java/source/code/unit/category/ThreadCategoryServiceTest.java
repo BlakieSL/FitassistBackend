@@ -149,7 +149,7 @@ public class ThreadCategoryServiceTest {
 		when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
 
 		assertThrows(RecordNotFoundException.class,
-			() -> threadCategoryService.updateCategory(nonExistentCategoryId, patch));
+				() -> threadCategoryService.updateCategory(nonExistentCategoryId, patch));
 
 		verifyNoInteractions(validationService, mapper, applicationEventPublisher, cacheKeyGenerator);
 		verify(repository, never()).save(category);

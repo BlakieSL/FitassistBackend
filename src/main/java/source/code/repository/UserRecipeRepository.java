@@ -19,48 +19,48 @@ public interface UserRecipeRepository extends JpaRepository<UserRecipe, Integer>
 	boolean existsByUserIdAndRecipeIdAndType(int userId, int recipeId, TypeOfInteraction type);
 
 	@Query("""
-		    SELECT
-		        r.id as entityId,
-		        MAX(CASE WHEN ur.user.id = :userId AND ur.type = 'LIKE' THEN 1 ELSE 0 END) as isLiked,
-		        MAX(CASE WHEN ur.user.id = :userId AND ur.type = 'DISLIKE' THEN 1 ELSE 0 END) as isDisliked,
-		        MAX(CASE WHEN ur.user.id = :userId AND ur.type = 'SAVE' THEN 1 ELSE 0 END) as isSaved,
-		        COALESCE(SUM(CASE WHEN ur.type = 'LIKE' THEN 1 ELSE 0 END), 0) as likesCount,
-		        COALESCE(SUM(CASE WHEN ur.type = 'DISLIKE' THEN 1 ELSE 0 END), 0) as dislikesCount,
-		        COALESCE(SUM(CASE WHEN ur.type = 'SAVE' THEN 1 ELSE 0 END), 0) as savesCount
-		    FROM Recipe r
-		    LEFT JOIN UserRecipe ur ON ur.recipe.id = r.id
-		    WHERE r.id = :recipeId
-		    GROUP BY r.id
-		""")
+			    SELECT
+			        r.id as entityId,
+			        MAX(CASE WHEN ur.user.id = :userId AND ur.type = 'LIKE' THEN 1 ELSE 0 END) as isLiked,
+			        MAX(CASE WHEN ur.user.id = :userId AND ur.type = 'DISLIKE' THEN 1 ELSE 0 END) as isDisliked,
+			        MAX(CASE WHEN ur.user.id = :userId AND ur.type = 'SAVE' THEN 1 ELSE 0 END) as isSaved,
+			        COALESCE(SUM(CASE WHEN ur.type = 'LIKE' THEN 1 ELSE 0 END), 0) as likesCount,
+			        COALESCE(SUM(CASE WHEN ur.type = 'DISLIKE' THEN 1 ELSE 0 END), 0) as dislikesCount,
+			        COALESCE(SUM(CASE WHEN ur.type = 'SAVE' THEN 1 ELSE 0 END), 0) as savesCount
+			    FROM Recipe r
+			    LEFT JOIN UserRecipe ur ON ur.recipe.id = r.id
+			    WHERE r.id = :recipeId
+			    GROUP BY r.id
+			""")
 	EntityCountsProjection findCountsAndInteractionsByRecipeId(@Param("userId") int userId,
-															   @Param("recipeId") int recipeId);
+			@Param("recipeId") int recipeId);
 
 	@Query("""
-		    SELECT
-		        r.id as entityId,
-		        MAX(CASE WHEN ur.user.id = :userId AND ur.type = 'LIKE' THEN 1 ELSE 0 END) as isLiked,
-		        MAX(CASE WHEN ur.user.id = :userId AND ur.type = 'DISLIKE' THEN 1 ELSE 0 END) as isDisliked,
-		        MAX(CASE WHEN ur.user.id = :userId AND ur.type = 'SAVE' THEN 1 ELSE 0 END) as isSaved,
-		        COALESCE(SUM(CASE WHEN ur.type = 'LIKE' THEN 1 ELSE 0 END), 0) as likesCount,
-		        COALESCE(SUM(CASE WHEN ur.type = 'DISLIKE' THEN 1 ELSE 0 END), 0) as dislikesCount,
-		        COALESCE(SUM(CASE WHEN ur.type = 'SAVE' THEN 1 ELSE 0 END), 0) as savesCount
-		    FROM Recipe r
-		    LEFT JOIN UserRecipe ur ON ur.recipe.id = r.id
-		    WHERE r.id IN :recipeIds
-		    GROUP BY r.id
-		""")
+			    SELECT
+			        r.id as entityId,
+			        MAX(CASE WHEN ur.user.id = :userId AND ur.type = 'LIKE' THEN 1 ELSE 0 END) as isLiked,
+			        MAX(CASE WHEN ur.user.id = :userId AND ur.type = 'DISLIKE' THEN 1 ELSE 0 END) as isDisliked,
+			        MAX(CASE WHEN ur.user.id = :userId AND ur.type = 'SAVE' THEN 1 ELSE 0 END) as isSaved,
+			        COALESCE(SUM(CASE WHEN ur.type = 'LIKE' THEN 1 ELSE 0 END), 0) as likesCount,
+			        COALESCE(SUM(CASE WHEN ur.type = 'DISLIKE' THEN 1 ELSE 0 END), 0) as dislikesCount,
+			        COALESCE(SUM(CASE WHEN ur.type = 'SAVE' THEN 1 ELSE 0 END), 0) as savesCount
+			    FROM Recipe r
+			    LEFT JOIN UserRecipe ur ON ur.recipe.id = r.id
+			    WHERE r.id IN :recipeIds
+			    GROUP BY r.id
+			""")
 	List<EntityCountsProjection> findCountsAndInteractionsByRecipeIds(@Param("userId") int userId,
-																	  @Param("recipeIds") List<Integer> recipeIds);
+			@Param("recipeIds") List<Integer> recipeIds);
 
 	@Query(value = """
-		    SELECT ur
-		    FROM UserRecipe ur
-		    JOIN FETCH ur.recipe r
-		    WHERE ur.user.id = :userId
-		    AND ur.type = :type
-		    AND r.isPublic = true
-		""")
+			    SELECT ur
+			    FROM UserRecipe ur
+			    JOIN FETCH ur.recipe r
+			    WHERE ur.user.id = :userId
+			    AND ur.type = :type
+			    AND r.isPublic = true
+			""")
 	Page<UserRecipe> findAllByUserIdAndType(@Param("userId") int userId, @Param("type") TypeOfInteraction type,
-											Pageable pageable);
+			Pageable pageable);
 
 }

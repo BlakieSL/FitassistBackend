@@ -31,7 +31,7 @@ public class MediaServiceImpl implements MediaService {
 	private final AwsS3Service s3Service;
 
 	public MediaServiceImpl(MediaRepository mediaRepository, MediaMapper mediaMapper, RepositoryHelper repositoryHelper,
-							AwsS3Service s3Service) {
+			AwsS3Service s3Service) {
 		this.mediaRepository = mediaRepository;
 		this.mediaMapper = mediaMapper;
 		this.repositoryHelper = repositoryHelper;
@@ -97,7 +97,8 @@ public class MediaServiceImpl implements MediaService {
 	private byte[] multipartFileToBytes(MultipartFile file) {
 		try {
 			return file.getBytes();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw new FileProcessingException("Failed to process the image file", e);
 		}
 	}

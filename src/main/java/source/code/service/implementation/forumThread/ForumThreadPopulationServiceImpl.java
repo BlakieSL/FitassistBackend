@@ -26,7 +26,7 @@ public class ForumThreadPopulationServiceImpl implements ForumThreadPopulationSe
 	private final AwsS3Service s3Service;
 
 	public ForumThreadPopulationServiceImpl(UserThreadRepository userThreadRepository, MediaRepository mediaRepository,
-											AwsS3Service s3Service) {
+			AwsS3Service s3Service) {
 		this.userThreadRepository = userThreadRepository;
 		this.mediaRepository = mediaRepository;
 		this.s3Service = s3Service;
@@ -62,7 +62,7 @@ public class ForumThreadPopulationServiceImpl implements ForumThreadPopulationSe
 
 	private void fetchAndPopulateUserInteractionAndCounts(ForumThreadResponseDto thread, int userId) {
 		ForumThreadCountsProjection result = userThreadRepository.findCountsAndInteractionsByThreadId(userId,
-			thread.getId());
+				thread.getId());
 
 		if (result == null)
 			return;
@@ -93,7 +93,7 @@ public class ForumThreadPopulationServiceImpl implements ForumThreadPopulationSe
 	}
 
 	private void fetchAndPopulateUserInteractionAndCounts(List<ForumThreadSummaryDto> threads,
-														  List<Integer> threadIds) {
+			List<Integer> threadIds) {
 		int userId = AuthorizationUtil.getUserId();
 
 		Map<Integer, ForumThreadCountsProjection> countsMap = userThreadRepository

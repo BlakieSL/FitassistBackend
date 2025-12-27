@@ -25,7 +25,7 @@ public class ExercisePopulationServiceImpl implements ExercisePopulationService 
 	private final AwsS3Service awsS3Service;
 
 	public ExercisePopulationServiceImpl(UserExerciseRepository userExerciseRepository, MediaRepository mediaRepository,
-										 AwsS3Service awsS3Service) {
+			AwsS3Service awsS3Service) {
 		this.userExerciseRepository = userExerciseRepository;
 		this.mediaRepository = mediaRepository;
 		this.awsS3Service = awsS3Service;
@@ -59,7 +59,7 @@ public class ExercisePopulationServiceImpl implements ExercisePopulationService 
 	}
 
 	private void fetchAndPopulateUserInteractionsAndCounts(List<ExerciseSummaryDto> exercises,
-														   List<Integer> exerciseIds) {
+			List<Integer> exerciseIds) {
 		int userId = AuthorizationUtil.getUserId();
 
 		Map<Integer, SavesProjection> countsMap = userExerciseRepository

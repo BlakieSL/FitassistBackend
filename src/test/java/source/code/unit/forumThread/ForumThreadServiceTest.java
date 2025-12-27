@@ -135,7 +135,7 @@ public class ForumThreadServiceTest {
 
 	@Test
 	void updateForumThread_shouldThrowExceptionWhenValidationFails()
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId)).thenReturn(forumThread);
 		when(jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class)).thenReturn(patchedDto);
 

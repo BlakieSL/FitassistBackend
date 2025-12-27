@@ -59,7 +59,7 @@ public class UserExerciseServiceTest {
 	void setUp() {
 		mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
 		userExerciseService = new UserExerciseServiceImpl(userRepository, exerciseRepository, userExerciseRepository,
-			exerciseMapper, exercisePopulationService);
+				exerciseMapper, exercisePopulationService);
 	}
 
 	@AfterEach
