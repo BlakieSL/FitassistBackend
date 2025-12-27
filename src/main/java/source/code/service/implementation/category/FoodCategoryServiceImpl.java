@@ -14,32 +14,25 @@ import source.code.service.declaration.helpers.ValidationService;
 @Service("foodCategoryService")
 public class FoodCategoryServiceImpl extends GenericCategoryService<FoodCategory> implements CategoryService {
 
-    private final FoodCategoryRepository foodCategoryRepository;
+	private final FoodCategoryRepository foodCategoryRepository;
 
-    protected FoodCategoryServiceImpl(ValidationService validationService,
-                                      JsonPatchService jsonPatchService,
-                                      CategoryCacheKeyGenerator<FoodCategory> cacheKeyGenerator,
-                                      ApplicationEventPublisher applicationEventPublisher,
-                                      CacheManager cacheManager,
-                                      FoodCategoryRepository foodCategoryRepository,
-                                      FoodCategoryMapper mapper) {
-        super(validationService,
-                jsonPatchService,
-                cacheKeyGenerator,
-                applicationEventPublisher,
-                cacheManager,
-                foodCategoryRepository,
-                mapper);
-        this.foodCategoryRepository = foodCategoryRepository;
-    }
+	protected FoodCategoryServiceImpl(ValidationService validationService, JsonPatchService jsonPatchService,
+									  CategoryCacheKeyGenerator<FoodCategory> cacheKeyGenerator,
+									  ApplicationEventPublisher applicationEventPublisher, CacheManager cacheManager,
+									  FoodCategoryRepository foodCategoryRepository, FoodCategoryMapper mapper) {
+		super(validationService, jsonPatchService, cacheKeyGenerator, applicationEventPublisher, cacheManager,
+			foodCategoryRepository, mapper);
+		this.foodCategoryRepository = foodCategoryRepository;
+	}
 
-    @Override
-    protected boolean hasAssociatedEntities(int categoryId) {
-        return foodCategoryRepository.existsByIdAndFoodsIsNotEmpty(categoryId);
-    }
+	@Override
+	protected boolean hasAssociatedEntities(int categoryId) {
+		return foodCategoryRepository.existsByIdAndFoodsIsNotEmpty(categoryId);
+	}
 
-    @Override
-    protected Class<FoodCategory> getEntityClass() {
-        return FoodCategory.class;
-    }
+	@Override
+	protected Class<FoodCategory> getEntityClass() {
+		return FoodCategory.class;
+	}
+
 }

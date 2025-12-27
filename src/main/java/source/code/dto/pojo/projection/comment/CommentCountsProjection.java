@@ -1,35 +1,37 @@
 package source.code.dto.pojo.projection.comment;
 
 public interface CommentCountsProjection {
-    Integer getCommentId();
 
-    Long getLikesCount();
+	Integer getCommentId();
 
-    Long getDislikesCount();
+	Long getLikesCount();
 
-    Long getIsLiked();
+	Long getDislikesCount();
 
-    Long getIsDisliked();
+	Long getIsLiked();
 
-    Long getRepliesCount();
+	Long getIsDisliked();
 
-    default boolean isLiked() {
-        return getIsLiked() != null && getIsLiked() == 1;
-    }
+	Long getRepliesCount();
 
-    default boolean isDisliked() {
-        return getIsDisliked() != null && getIsDisliked() == 1;
-    }
+	default boolean isLiked() {
+		return getIsLiked() != null && getIsLiked() == 1;
+	}
 
-    default long likesCount() {
-        return getLikesCount() != null ? getLikesCount() : 0L;
-    }
+	default boolean isDisliked() {
+		return getIsDisliked() != null && getIsDisliked() == 1;
+	}
 
-    default long dislikesCount() {
-        return getDislikesCount() != null ? getDislikesCount() : 0L;
-    }
+	default long likesCount() {
+		return getLikesCount() != null ? getLikesCount() : 0L;
+	}
 
-    default long repliesCount() {
-        return getRepliesCount() != null ? getRepliesCount() : 0L;
-    }
+	default long dislikesCount() {
+		return getDislikesCount() != null ? getDislikesCount() : 0L;
+	}
+
+	default long repliesCount() {
+		return getRepliesCount() != null ? getRepliesCount() : 0L;
+	}
+
 }

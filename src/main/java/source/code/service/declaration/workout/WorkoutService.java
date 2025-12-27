@@ -3,20 +3,22 @@ package source.code.service.declaration.workout;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import source.code.dto.request.workout.WorkoutCreateDto;
-import source.code.dto.response.workout.WorkoutResponseDto;
 
 import java.util.List;
 
+import source.code.dto.request.workout.WorkoutCreateDto;
+import source.code.dto.response.workout.WorkoutResponseDto;
+
 public interface WorkoutService {
-    WorkoutResponseDto createWorkout(WorkoutCreateDto workoutDto);
 
-    void updateWorkout(int workoutId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException;
+	WorkoutResponseDto createWorkout(WorkoutCreateDto workoutDto);
 
-    void deleteWorkout(int workoutId);
+	void updateWorkout(int workoutId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-    WorkoutResponseDto getWorkout(int id);
+	void deleteWorkout(int workoutId);
 
-    List<WorkoutResponseDto> getAllWorkoutsForPlan(int planId);
+	WorkoutResponseDto getWorkout(int id);
+
+	List<WorkoutResponseDto> getAllWorkoutsForPlan(int planId);
+
 }

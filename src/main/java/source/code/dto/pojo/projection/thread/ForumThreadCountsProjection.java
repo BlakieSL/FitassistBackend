@@ -1,23 +1,25 @@
 package source.code.dto.pojo.projection.thread;
 
 public interface ForumThreadCountsProjection {
-    Integer getThreadId();
 
-    Long getIsSaved();
+	Integer getThreadId();
 
-    Long getSavesCount();
+	Long getIsSaved();
 
-    Long getCommentsCount();
+	Long getSavesCount();
 
-    default boolean isSaved() {
-        return getIsSaved() != null && getIsSaved() == 1;
-    }
+	Long getCommentsCount();
 
-    default long savesCount() {
-        return getSavesCount() != null ? getSavesCount() : 0L;
-    }
+	default boolean isSaved() {
+		return getIsSaved() != null && getIsSaved() == 1;
+	}
 
-    default long commentsCount() {
-        return getCommentsCount() != null ? getCommentsCount() : 0L;
-    }
+	default long savesCount() {
+		return getSavesCount() != null ? getSavesCount() : 0L;
+	}
+
+	default long commentsCount() {
+		return getCommentsCount() != null ? getCommentsCount() : 0L;
+	}
+
 }

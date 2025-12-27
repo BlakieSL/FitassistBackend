@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
+
+import java.util.List;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -36,110 +39,113 @@ import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.declaration.recipe.RecipeFoodService;
 import source.code.service.declaration.recipe.RecipeService;
 
-import java.util.List;
-
 @Service
 public class RecipeFoodServiceImpl implements RecipeFoodService {
-    private final RecipeService recipeService;
-    private final ValidationService validationService;
-    private final JsonPatchService jsonPatchService;
-    private final FoodMapper foodMapper;
-    private final RecipeFoodMapper recipeFoodMapper;
-    private final RepositoryHelper repositoryHelper;
-    private final RecipeFoodRepository recipeFoodRepository;
-    private final FoodRepository foodRepository;
-    private final RecipeRepository recipeRepository;
-    private final FoodPopulationService foodPopulationService;
 
-    public RecipeFoodServiceImpl(
-            RecipeService recipeService,
-            ValidationService validationService,
-            RecipeFoodMapper recipeFoodMapper,
-            RecipeFoodRepository recipeFoodRepository,
-            FoodRepository foodRepository,
-            RecipeRepository recipeRepository,
-            JsonPatchService jsonPatchService,
-            FoodMapper foodMapper,
-            RepositoryHelper repositoryHelper,
-            FoodPopulationService foodPopulationService) {
-        this.recipeService = recipeService;
-        this.validationService = validationService;
-        this.recipeFoodMapper = recipeFoodMapper;
-        this.recipeFoodRepository = recipeFoodRepository;
-        this.foodRepository = foodRepository;
-        this.recipeRepository = recipeRepository;
-        this.jsonPatchService = jsonPatchService;
-        this.foodMapper = foodMapper;
-        this.repositoryHelper = repositoryHelper;
-        this.foodPopulationService = foodPopulationService;
-    }
+	private final RecipeService recipeService;
 
-    @Override
-    @CacheEvict(value = {CacheNames.FOODS_BY_RECIPE}, allEntries = true)
-    @Transactional
-    public void saveFoodToRecipe(int recipeId, int foodId, RecipeFoodCreateDto request) {
-        if (isAlreadyAdded(recipeId, foodId)) {
-            throw new NotUniqueRecordException(RecipeFood.class, recipeId, foodId);
-        }
+	private final ValidationService validationService;
 
-        Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
-        Food food = repositoryHelper.find(foodRepository, Food.class, foodId);
-        RecipeFood recipeFood = RecipeFood.of(request.getQuantity(), recipe, food);
+	private final JsonPatchService jsonPatchService;
 
-        recipeFoodRepository.save(recipeFood);
-    }
+	private final FoodMapper foodMapper;
 
-    @Override
-    @CachePut(value = {CacheNames.FOODS_BY_RECIPE}, key = "#recipeId")
-    @Transactional
-    public void updateFoodRecipe(int recipeId, int foodId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
+	private final RecipeFoodMapper recipeFoodMapper;
 
-        RecipeFood recipeFood = find(recipeId, foodId);
-        RecipeFoodCreateDto patchedDto = jsonPatchService.createFromPatch(patch, RecipeFoodCreateDto.class);
+	private final RepositoryHelper repositoryHelper;
 
-        validationService.validate(patchedDto);
-        recipeFoodMapper.update(recipeFood, patchedDto);
-        recipeFoodRepository.save(recipeFood);
-    }
+	private final RecipeFoodRepository recipeFoodRepository;
 
-    @Override
-    @CacheEvict(value = {CacheNames.FOODS_BY_RECIPE}, key = "#recipeId")
-    @Transactional
-    public void deleteFoodFromRecipe(int foodId, int recipeId) {
-        RecipeFood recipeFood = find(recipeId, foodId);
-        recipeFoodRepository.delete(recipeFood);
-    }
+	private final FoodRepository foodRepository;
 
-    @Override
-    @Cacheable(value = CacheNames.FOODS_BY_RECIPE, key = "#recipeId")
-    public List<FoodSummaryDto> getFoodsByRecipe(int recipeId) {
-        List<FoodSummaryDto> summaries = recipeFoodRepository.findByRecipeId(recipeId).stream()
-                .map(RecipeFood::getFood)
-                .map(foodMapper::toSummaryDto)
-                .toList();
+	private final RecipeRepository recipeRepository;
 
-        foodPopulationService.populate(summaries);
+	private final FoodPopulationService foodPopulationService;
 
-        return summaries;
-    }
+	public RecipeFoodServiceImpl(RecipeService recipeService, ValidationService validationService,
+								 RecipeFoodMapper recipeFoodMapper, RecipeFoodRepository recipeFoodRepository, FoodRepository foodRepository,
+								 RecipeRepository recipeRepository, JsonPatchService jsonPatchService, FoodMapper foodMapper,
+								 RepositoryHelper repositoryHelper, FoodPopulationService foodPopulationService) {
+		this.recipeService = recipeService;
+		this.validationService = validationService;
+		this.recipeFoodMapper = recipeFoodMapper;
+		this.recipeFoodRepository = recipeFoodRepository;
+		this.foodRepository = foodRepository;
+		this.recipeRepository = recipeRepository;
+		this.jsonPatchService = jsonPatchService;
+		this.foodMapper = foodMapper;
+		this.repositoryHelper = repositoryHelper;
+		this.foodPopulationService = foodPopulationService;
+	}
 
-    @Override
-    public Page<RecipeSummaryDto> getRecipesByFoods(FilterRecipesByFoodsDto filter, Pageable pageable) {
-        List<FilterCriteria> foodCriteriaList = filter.getFoodIds().stream()
-                .map(foodId -> FilterCriteria.of("FOODS", foodId, FilterOperation.EQUAL))
-                .toList();
+	@Override
+	@CacheEvict(value = {CacheNames.FOODS_BY_RECIPE}, allEntries = true)
+	@Transactional
+	public void saveFoodToRecipe(int recipeId, int foodId, RecipeFoodCreateDto request) {
+		if (isAlreadyAdded(recipeId, foodId)) {
+			throw new NotUniqueRecordException(RecipeFood.class, recipeId, foodId);
+		}
 
-        return recipeService.getFilteredRecipes(FilterDto.of(foodCriteriaList, FilterDataOption.AND), pageable);
-    }
+		Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
+		Food food = repositoryHelper.find(foodRepository, Food.class, foodId);
+		RecipeFood recipeFood = RecipeFood.of(request.getQuantity(), recipe, food);
 
-    private RecipeFood find(int recipeId, int foodId) {
-        return recipeFoodRepository
-                .findByRecipeIdAndFoodId(recipeId, foodId)
-                .orElseThrow(() -> RecordNotFoundException.of(RecipeFood.class, foodId, recipeId));
-    }
+		recipeFoodRepository.save(recipeFood);
+	}
 
-    private boolean isAlreadyAdded(int recipeId, int foodId) {
-        return recipeFoodRepository.existsByRecipeIdAndFoodId(recipeId, foodId);
-    }
+	@Override
+	@CachePut(value = {CacheNames.FOODS_BY_RECIPE}, key = "#recipeId")
+	@Transactional
+	public void updateFoodRecipe(int recipeId, int foodId, JsonMergePatch patch)
+		throws JsonPatchException, JsonProcessingException {
+
+		RecipeFood recipeFood = find(recipeId, foodId);
+		RecipeFoodCreateDto patchedDto = jsonPatchService.createFromPatch(patch, RecipeFoodCreateDto.class);
+
+		validationService.validate(patchedDto);
+		recipeFoodMapper.update(recipeFood, patchedDto);
+		recipeFoodRepository.save(recipeFood);
+	}
+
+	@Override
+	@CacheEvict(value = {CacheNames.FOODS_BY_RECIPE}, key = "#recipeId")
+	@Transactional
+	public void deleteFoodFromRecipe(int foodId, int recipeId) {
+		RecipeFood recipeFood = find(recipeId, foodId);
+		recipeFoodRepository.delete(recipeFood);
+	}
+
+	@Override
+	@Cacheable(value = CacheNames.FOODS_BY_RECIPE, key = "#recipeId")
+	public List<FoodSummaryDto> getFoodsByRecipe(int recipeId) {
+		List<FoodSummaryDto> summaries = recipeFoodRepository.findByRecipeId(recipeId)
+			.stream()
+			.map(RecipeFood::getFood)
+			.map(foodMapper::toSummaryDto)
+			.toList();
+
+		foodPopulationService.populate(summaries);
+
+		return summaries;
+	}
+
+	@Override
+	public Page<RecipeSummaryDto> getRecipesByFoods(FilterRecipesByFoodsDto filter, Pageable pageable) {
+		List<FilterCriteria> foodCriteriaList = filter.getFoodIds()
+			.stream()
+			.map(foodId -> FilterCriteria.of("FOODS", foodId, FilterOperation.EQUAL))
+			.toList();
+
+		return recipeService.getFilteredRecipes(FilterDto.of(foodCriteriaList, FilterDataOption.AND), pageable);
+	}
+
+	private RecipeFood find(int recipeId, int foodId) {
+		return recipeFoodRepository.findByRecipeIdAndFoodId(recipeId, foodId)
+			.orElseThrow(() -> RecordNotFoundException.of(RecipeFood.class, foodId, recipeId));
+	}
+
+	private boolean isAlreadyAdded(int recipeId, int foodId) {
+		return recipeFoodRepository.existsByRecipeIdAndFoodId(recipeId, foodId);
+	}
+
 }

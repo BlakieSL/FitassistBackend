@@ -3,6 +3,10 @@ package source.code.service.implementation.comment;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+
+import java.sql.Timestamp;
+import java.util.*;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -30,198 +34,194 @@ import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.CommentSpecification;
 
-import java.sql.Timestamp;
-import java.util.*;
-
 @Service
 public class CommentServiceImpl implements CommentService {
-    private final JsonPatchService jsonPatchService;
-    private final ValidationService validationService;
-    private final CommentMapper commentMapper;
-    private final CommentRepository commentRepository;
-    private final SpecificationDependencies dependencies;
-    private final CommentPopulationService commentPopulationService;
 
-    public CommentServiceImpl(JsonPatchService jsonPatchService,
-                              ValidationService validationService,
-                              CommentMapper commentMapper,
-                              CommentRepository commentRepository,
-                              SpecificationDependencies dependencies,
-                              CommentPopulationService commentPopulationService) {
-        this.jsonPatchService = jsonPatchService;
-        this.validationService = validationService;
-        this.commentMapper = commentMapper;
-        this.commentRepository = commentRepository;
-        this.dependencies = dependencies;
-        this.commentPopulationService = commentPopulationService;
-    }
+	private final JsonPatchService jsonPatchService;
 
-    @Override
-    @Transactional
-    public CommentResponseDto createComment(CommentCreateDto createDto) {
-        int userId = AuthorizationUtil.getUserId();
-        Comment mapped = commentMapper.toEntity(createDto, userId);
-        Comment saved = commentRepository.save(mapped);
+	private final ValidationService validationService;
 
-        commentRepository.flush();
+	private final CommentMapper commentMapper;
 
-        return findAndMap(saved.getId());
-    }
+	private final CommentRepository commentRepository;
 
-    @Override
-    @Transactional
-    public void updateComment(int commentId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new RecordNotFoundException(Comment.class, commentId));
+	private final SpecificationDependencies dependencies;
 
-        CommentUpdateDto patched = applyPatchToComment(patch);
+	private final CommentPopulationService commentPopulationService;
 
-        validationService.validate(patched);
-        commentMapper.update(comment, patched);
-        commentRepository.save(comment);
-    }
+	public CommentServiceImpl(JsonPatchService jsonPatchService, ValidationService validationService,
+							  CommentMapper commentMapper, CommentRepository commentRepository, SpecificationDependencies dependencies,
+							  CommentPopulationService commentPopulationService) {
+		this.jsonPatchService = jsonPatchService;
+		this.validationService = validationService;
+		this.commentMapper = commentMapper;
+		this.commentRepository = commentRepository;
+		this.dependencies = dependencies;
+		this.commentPopulationService = commentPopulationService;
+	}
 
-    @Override
-    @Transactional
-    public void deleteComment(int commentId) {
-        commentRepository.deleteCommentDirectly(commentId);
-    }
+	@Override
+	@Transactional
+	public CommentResponseDto createComment(CommentCreateDto createDto) {
+		int userId = AuthorizationUtil.getUserId();
+		Comment mapped = commentMapper.toEntity(createDto, userId);
+		Comment saved = commentRepository.save(mapped);
 
-    @Override
-    public CommentResponseDto getComment(int commentId) {
-        return findAndMap(commentId);
-    }
+		commentRepository.flush();
 
-    @Override
-    public Page<CommentSummaryDto> getFilteredComments(FilterDto filter, Pageable pageable) {
-        SpecificationFactory<Comment> commentFactory = CommentSpecification::new;
-        SpecificationBuilder<Comment> specificationBuilder = SpecificationBuilder.of(filter, commentFactory, dependencies);
-        Specification<Comment> specification = specificationBuilder.build();
+		return findAndMap(saved.getId());
+	}
 
-        Page<Comment> commentPage = commentRepository.findAll(specification, pageable);
+	@Override
+	@Transactional
+	public void updateComment(int commentId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+		Comment comment = commentRepository.findById(commentId)
+			.orElseThrow(() -> new RecordNotFoundException(Comment.class, commentId));
 
-        List<CommentSummaryDto> summaries = commentPage.getContent().stream()
-                .map(commentMapper::toSummaryDto)
-                .toList();
+		CommentUpdateDto patched = applyPatchToComment(patch);
 
-        commentPopulationService.populate(summaries);
+		validationService.validate(patched);
+		commentMapper.update(comment, patched);
+		commentRepository.save(comment);
+	}
 
-        return new PageImpl<>(summaries, pageable, commentPage.getTotalElements());
-    }
+	@Override
+	@Transactional
+	public void deleteComment(int commentId) {
+		commentRepository.deleteCommentDirectly(commentId);
+	}
 
-    @Override
-    public Page<CommentResponseDto> getTopCommentsForThread(int threadId, Pageable pageable) {
-        var sortOrder = pageable.getSort().isSorted()
-            ? pageable.getSort().stream().toList().getFirst()
-            : null;
+	@Override
+	public CommentResponseDto getComment(int commentId) {
+		return findAndMap(commentId);
+	}
 
-        List<Comment> comments;
-        long total;
+	@Override
+	public Page<CommentSummaryDto> getFilteredComments(FilterDto filter, Pageable pageable) {
+		SpecificationFactory<Comment> commentFactory = CommentSpecification::new;
+		SpecificationBuilder<Comment> specificationBuilder = SpecificationBuilder.of(filter, commentFactory,
+			dependencies);
+		Specification<Comment> specification = specificationBuilder.build();
 
-        if (sortOrder != null && "likesCount".equals(sortOrder.getProperty())) {
-            List<Integer> ids = commentRepository.findTopCommentIdsSortedByLikesCount(threadId,
-                    sortOrder.getDirection().name(), pageable.getPageSize(), (int) pageable.getOffset());
+		Page<Comment> commentPage = commentRepository.findAll(specification, pageable);
 
-            comments = commentRepository.findAllByIds(ids);
+		List<CommentSummaryDto> summaries = commentPage.getContent().stream().map(commentMapper::toSummaryDto).toList();
 
-            Map<Integer, Integer> idToPosition = new HashMap<>();
-            for (int i = 0; i < ids.size(); i++) {
-                idToPosition.put(ids.get(i), i);
-            }
+		commentPopulationService.populate(summaries);
 
-            comments.sort(Comparator.comparingInt(c -> idToPosition.get(c.getId())));
+		return new PageImpl<>(summaries, pageable, commentPage.getTotalElements());
+	}
 
-            total = commentRepository.countTopCommentsByThreadId(threadId);
-        } else {
-            Page<Comment> commentPage = commentRepository.findAllByThreadIdAndParentCommentNull(threadId, pageable);
-            comments = commentPage.getContent();
-            total = commentPage.getTotalElements();
-        }
+	@Override
+	public Page<CommentResponseDto> getTopCommentsForThread(int threadId, Pageable pageable) {
+		var sortOrder = pageable.getSort().isSorted() ? pageable.getSort().stream().toList().getFirst() : null;
 
-        List<CommentResponseDto> dtos = comments.stream()
-                .map(commentMapper::toResponseDto)
-                .toList();
+		List<Comment> comments;
+		long total;
 
-        commentPopulationService.populateList(dtos);
+		if (sortOrder != null && "likesCount".equals(sortOrder.getProperty())) {
+			List<Integer> ids = commentRepository.findTopCommentIdsSortedByLikesCount(threadId,
+				sortOrder.getDirection().name(), pageable.getPageSize(), (int) pageable.getOffset());
 
-        return new PageImpl<>(dtos, pageable, total);
-    }
+			comments = commentRepository.findAllByIds(ids);
 
-    @Override
-    public List<CommentResponseDto> getReplies(int commentId) {
-        List<Object[]> results = commentRepository.findCommentHierarchy(commentId);
+			Map<Integer, Integer> idToPosition = new HashMap<>();
+			for (int i = 0; i < ids.size(); i++) {
+				idToPosition.put(ids.get(i), i);
+			}
 
-        if (results.isEmpty()) {
-            return Collections.emptyList();
-        }
+			comments.sort(Comparator.comparingInt(c -> idToPosition.get(c.getId())));
 
-        Map<Integer, CommentResponseDto> dtoMap = new HashMap<>();
-        List<CommentResponseDto> flatList = new ArrayList<>();
+			total = commentRepository.countTopCommentsByThreadId(threadId);
+		} else {
+			Page<Comment> commentPage = commentRepository.findAllByThreadIdAndParentCommentNull(threadId, pageable);
+			comments = commentPage.getContent();
+			total = commentPage.getTotalElements();
+		}
 
-        for (var row : results) {
-            CommentResponseDto dto = new CommentResponseDto();
-            dto.setId((Integer) row[0]);
-            dto.setText((String) row[1]);
-            dto.setThreadId((Integer) row[2]);
-            dto.setParentCommentId((Integer) row[4]);
-            dto.setCreatedAt(((Timestamp) row[5]).toLocalDateTime());
-            dto.setReplies(new ArrayList<>());
+		List<CommentResponseDto> dtos = comments.stream().map(commentMapper::toResponseDto).toList();
 
-            AuthorDto author = new AuthorDto();
-            author.setId((Integer) row[3]);
-            author.setUsername((String) row[6]);
-            dto.setAuthor(author);
+		commentPopulationService.populateList(dtos);
 
-            dtoMap.put(dto.getId(), dto);
-            flatList.add(dto);
-        }
+		return new PageImpl<>(dtos, pageable, total);
+	}
 
-        commentPopulationService.populateList(flatList);
+	@Override
+	public List<CommentResponseDto> getReplies(int commentId) {
+		List<Object[]> results = commentRepository.findCommentHierarchy(commentId);
 
-        for (var dto : dtoMap.values()) {
-            Integer parentId = dto.getParentCommentId();
-            if (parentId != null && dtoMap.containsKey(parentId)) {
-                dtoMap.get(parentId).getReplies().add(dto);
-            }
-        }
+		if (results.isEmpty()) {
+			return Collections.emptyList();
+		}
 
-        return dtoMap.values().stream()
-                .filter(dto -> dto.getParentCommentId() != null && dto.getParentCommentId() == commentId)
-                .sorted(Comparator.comparing(CommentResponseDto::getId))
-                .toList();
-    }
+		Map<Integer, CommentResponseDto> dtoMap = new HashMap<>();
+		List<CommentResponseDto> flatList = new ArrayList<>();
 
-    @Override
-    public CommentAncestryDto getCommentAncestry(int commentId) {
-        List<Object[]> results = commentRepository.findCommentAncestry(commentId);
+		for (var row : results) {
+			CommentResponseDto dto = new CommentResponseDto();
+			dto.setId((Integer) row[0]);
+			dto.setText((String) row[1]);
+			dto.setThreadId((Integer) row[2]);
+			dto.setParentCommentId((Integer) row[4]);
+			dto.setCreatedAt(((Timestamp) row[5]).toLocalDateTime());
+			dto.setReplies(new ArrayList<>());
 
-        if (results.isEmpty()) {
-            throw new RecordNotFoundException(Comment.class, commentId);
-        }
+			AuthorDto author = new AuthorDto();
+			author.setId((Integer) row[3]);
+			author.setUsername((String) row[6]);
+			dto.setAuthor(author);
 
-        Integer threadId = null;
-        List<Integer> ancestorIds = new ArrayList<>();
+			dtoMap.put(dto.getId(), dto);
+			flatList.add(dto);
+		}
 
-        for (var row : results) {
-            ancestorIds.add((Integer) row[0]);
-            threadId = (Integer) row[1];
-        }
+		commentPopulationService.populateList(flatList);
 
-        return new CommentAncestryDto(threadId, ancestorIds);
-    }
+		for (var dto : dtoMap.values()) {
+			Integer parentId = dto.getParentCommentId();
+			if (parentId != null && dtoMap.containsKey(parentId)) {
+				dtoMap.get(parentId).getReplies().add(dto);
+			}
+		}
 
-    private CommentUpdateDto applyPatchToComment(JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        return jsonPatchService.createFromPatch(patch, CommentUpdateDto.class);
-    }
+		return dtoMap.values()
+			.stream()
+			.filter(dto -> dto.getParentCommentId() != null && dto.getParentCommentId() == commentId)
+			.sorted(Comparator.comparing(CommentResponseDto::getId))
+			.toList();
+	}
 
-    private CommentResponseDto findAndMap(int commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new RecordNotFoundException(Comment.class, commentId));
-        CommentResponseDto dto = commentMapper.toResponseDto(comment);
-        commentPopulationService.populate(dto);
+	@Override
+	public CommentAncestryDto getCommentAncestry(int commentId) {
+		List<Object[]> results = commentRepository.findCommentAncestry(commentId);
 
-        return dto;
-    }
+		if (results.isEmpty()) {
+			throw new RecordNotFoundException(Comment.class, commentId);
+		}
+
+		Integer threadId = null;
+		List<Integer> ancestorIds = new ArrayList<>();
+
+		for (var row : results) {
+			ancestorIds.add((Integer) row[0]);
+			threadId = (Integer) row[1];
+		}
+
+		return new CommentAncestryDto(threadId, ancestorIds);
+	}
+
+	private CommentUpdateDto applyPatchToComment(JsonMergePatch patch)
+		throws JsonPatchException, JsonProcessingException {
+		return jsonPatchService.createFromPatch(patch, CommentUpdateDto.class);
+	}
+
+	private CommentResponseDto findAndMap(int commentId) {
+		Comment comment = commentRepository.findById(commentId)
+			.orElseThrow(() -> new RecordNotFoundException(Comment.class, commentId));
+		CommentResponseDto dto = commentMapper.toResponseDto(comment);
+		commentPopulationService.populate(dto);
+
+		return dto;
+	}
+
 }

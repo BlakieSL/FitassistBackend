@@ -2,32 +2,37 @@ package source.code.model.exercise;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Represents a type of fitness equipment used during exercise.
  *
- * <p><strong>Known predefined values:</strong></p>
+ * <p>
+ * <strong>Known predefined values:</strong>
+ *
  * <ul>
- *     <li>{@code DUMBBELL}</li>
- *     <li>{@code BARBELL}</li>
- *     <li>{@code KETTLEBELL}</li>
- *     <li>{@code RESISTANCE_BAND}</li>
- *     <li>{@code CABLE_MACHINE}</li>
- *     <li>{@code SMITH_MACHINE}</li>
- *     <li>{@code BODYWEIGHT}</li>
- *     <li>{@code BENCH}</li>
- *     <li>{@code PULL_UP_BAR}</li>
- *     <li>{@code SQUAT_RACK}</li>
+ * <li>{@code DUMBBELL}
+ * <li>{@code BARBELL}
+ * <li>{@code KETTLEBELL}
+ * <li>{@code RESISTANCE_BAND}
+ * <li>{@code CABLE_MACHINE}
+ * <li>{@code SMITH_MACHINE}
+ * <li>{@code BODYWEIGHT}
+ * <li>{@code BENCH}
+ * <li>{@code PULL_UP_BAR}
+ * <li>{@code SQUAT_RACK}
  * </ul>
  *
- * <p>Note: These values are not hardcoded and may be extended or modified through the application.</p>
+ * <p>
+ * Note: These values are not hardcoded and may be extended or modified through the
+ * application.
  */
 @Entity
 @Table(name = "equipment")
@@ -36,14 +41,16 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Equipment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String name;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @OneToMany(mappedBy = "equipment", cascade = CascadeType.REMOVE)
-    private final Set<Exercise> exercises = new HashSet<>();
+	@NotBlank
+	@Column(nullable = false)
+	private String name;
+
+	@OneToMany(mappedBy = "equipment", cascade = CascadeType.REMOVE)
+	private final Set<Exercise> exercises = new HashSet<>();
+
 }

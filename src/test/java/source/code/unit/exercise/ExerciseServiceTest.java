@@ -1,8 +1,16 @@
 package source.code.unit.exercise;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,332 +51,325 @@ import source.code.service.declaration.plan.PlanPopulationService;
 import source.code.service.implementation.exercise.ExerciseServiceImpl;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class ExerciseServiceTest {
-    @Mock
-    private RepositoryHelper repositoryHelper;
-    @Mock
-    private ExerciseMapper exerciseMapper;
-    @Mock
-    private PlanMapper planMapper;
-    @Mock
-    private ValidationService validationService;
-    @Mock
-    private JsonPatchService jsonPatchService;
-    @Mock
-    private ApplicationEventPublisher eventPublisher;
-    @Mock
-    private ExerciseRepository exerciseRepository;
-    @Mock
-    private ExerciseTargetMuscleRepository exerciseTargetMuscleRepository;
-    @Mock
-    private PlanRepository planRepository;
-    @Mock
-    private EquipmentRepository equipmentRepository;
-    @Mock
-    private ExpertiseLevelRepository expertiseLevelRepository;
-    @Mock
-    private ForceTypeRepository forceTypeRepository;
-    @Mock
-    private MechanicsTypeRepository mechanicsTypeRepository;
-    @Mock
-    private TargetMuscleRepository targetMuscleRepository;
-    @Mock
-    private ExercisePopulationService exercisePopulationService;
-    @Mock
-    private PlanPopulationService planPopulationService;
-    @Mock
-    private SpecificationDependencies dependencies;
-    @InjectMocks
-    private ExerciseServiceImpl exerciseService;
 
-    private Exercise exercise;
-    private ExerciseCreateDto createDto;
-    private ExerciseResponseDto responseDto;
-    private ExerciseSummaryDto summaryDto;
-    private JsonMergePatch patch;
-    private ExerciseUpdateDto patchedDto;
-    private int exerciseId;
-    private FilterDto filter;
-    private Pageable pageable;
-    private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
+	@Mock
+	private RepositoryHelper repositoryHelper;
 
-    @BeforeEach
-    void setUp() {
-        exercise = new Exercise();
-        createDto = new ExerciseCreateDto();
-        responseDto = new ExerciseResponseDto();
-        summaryDto = new ExerciseSummaryDto();
-        patchedDto = new ExerciseUpdateDto();
-        exerciseId = 1;
-        filter = new FilterDto();
-        pageable = PageRequest.of(0, 100);
-        patch = mock(JsonMergePatch.class);
-        mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
-    }
+	@Mock
+	private ExerciseMapper exerciseMapper;
 
-    @AfterEach
-    void tearDown() {
-        if (mockedAuthorizationUtil != null) {
-            mockedAuthorizationUtil.close();
-        }
-    }
+	@Mock
+	private PlanMapper planMapper;
 
-    @Test
-    void createExercise_shouldCreateExerciseAndPublish() {
-        exercise.setId(exerciseId);
-        when(exerciseMapper.toEntity(createDto)).thenReturn(exercise);
-        when(exerciseRepository.save(exercise)).thenReturn(exercise);
-        when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(java.util.Optional.of(exercise));
-        when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
+	@Mock
+	private ValidationService validationService;
 
-        ExerciseResponseDto result = exerciseService.createExercise(createDto);
+	@Mock
+	private JsonPatchService jsonPatchService;
 
-        assertEquals(responseDto, result);
-        verify(exerciseRepository).flush();
-        verify(exercisePopulationService).populate(responseDto);
-    }
+	@Mock
+	private ApplicationEventPublisher eventPublisher;
 
-    @Test
-    void createExercise_shouldPublishEvent() {
-        ArgumentCaptor<ExerciseCreateEvent> eventCaptor = ArgumentCaptor
-                .forClass(ExerciseCreateEvent.class);
+	@Mock
+	private ExerciseRepository exerciseRepository;
 
-        exercise.setId(exerciseId);
-        when(exerciseMapper.toEntity(createDto)).thenReturn(exercise);
-        when(exerciseRepository.save(exercise)).thenReturn(exercise);
-        when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(java.util.Optional.of(exercise));
-        when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
+	@Mock
+	private ExerciseTargetMuscleRepository exerciseTargetMuscleRepository;
 
-        exerciseService.createExercise(createDto);
+	@Mock
+	private PlanRepository planRepository;
 
-        verify(eventPublisher).publishEvent(eventCaptor.capture());
-        assertEquals(exercise, eventCaptor.getValue().getExercise());
-    }
+	@Mock
+	private EquipmentRepository equipmentRepository;
 
-    @Test
-    void updateExercise_shouldUpdate() throws JsonPatchException, JsonProcessingException {
-        when(exerciseRepository.findByIdWithDetails(exerciseId))
-                .thenReturn(Optional.of(exercise));
-        when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class))
-                .thenReturn(patchedDto);
-        when(exerciseRepository.save(exercise)).thenReturn(exercise);
+	@Mock
+	private ExpertiseLevelRepository expertiseLevelRepository;
 
-        exerciseService.updateExercise(exerciseId, patch);
+	@Mock
+	private ForceTypeRepository forceTypeRepository;
 
-        verify(validationService).validate(patchedDto);
-        verify(exerciseMapper).updateExerciseFromDto(exercise, patchedDto);
-        verify(exerciseRepository).save(exercise);
-    }
+	@Mock
+	private MechanicsTypeRepository mechanicsTypeRepository;
 
-    @Test
-    void updateExercise_shouldPublishEvent() throws JsonPatchException, JsonProcessingException {
-        ArgumentCaptor<ExerciseUpdateEvent> eventCaptor = ArgumentCaptor
-                .forClass(ExerciseUpdateEvent.class);
+	@Mock
+	private TargetMuscleRepository targetMuscleRepository;
 
-        when(exerciseRepository.findByIdWithDetails(exerciseId))
-                .thenReturn(Optional.of(exercise));
-        when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class))
-                .thenReturn(patchedDto);
-        when(exerciseRepository.save(exercise)).thenReturn(exercise);
+	@Mock
+	private ExercisePopulationService exercisePopulationService;
 
-        exerciseService.updateExercise(exerciseId, patch);
+	@Mock
+	private PlanPopulationService planPopulationService;
 
-        verify(eventPublisher).publishEvent(eventCaptor.capture());
-        assertEquals(exercise, eventCaptor.getValue().getExercise());
-    }
+	@Mock
+	private SpecificationDependencies dependencies;
 
-    @Test
-    void updateExercise_shouldThrowExceptionWhenExerciseNotFound() {
-        when(exerciseRepository.findByIdWithDetails(exerciseId))
-                .thenReturn(Optional.empty());
+	@InjectMocks
+	private ExerciseServiceImpl exerciseService;
 
-        assertThrows(RecordNotFoundException.class,
-                () -> exerciseService.updateExercise(exerciseId, patch)
-        );
+	private Exercise exercise;
 
-        verifyNoInteractions(exerciseMapper, jsonPatchService, validationService, eventPublisher);
-        verify(exerciseRepository, never()).save(exercise);
-    }
+	private ExerciseCreateDto createDto;
 
-    @Test
-    void updateExercise_shouldThrowExceptionWhenPatchFails()
-            throws JsonPatchException, JsonProcessingException {
-        when(exerciseRepository.findByIdWithDetails(exerciseId))
-                .thenReturn(Optional.of(exercise));
-        when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class))
-                .thenThrow(JsonPatchException.class);
+	private ExerciseResponseDto responseDto;
 
-        assertThrows(JsonPatchException.class,
-                () -> exerciseService.updateExercise(exerciseId, patch)
-        );
+	private ExerciseSummaryDto summaryDto;
 
-        verifyNoInteractions(validationService, eventPublisher);
-        verify(exerciseRepository, never()).save(exercise);
-    }
+	private JsonMergePatch patch;
 
-    @Test
-    void updateExercise_shouldThrowExceptionWhenValidationFails()
-            throws JsonPatchException, JsonProcessingException {
-        when(exerciseRepository.findByIdWithDetails(exerciseId))
-                .thenReturn(Optional.of(exercise));
-        when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class))
-                .thenReturn(patchedDto);
+	private ExerciseUpdateDto patchedDto;
 
-        doThrow(new IllegalArgumentException("Validation failed")).when(validationService)
-                .validate(patchedDto);
+	private int exerciseId;
 
-        assertThrows(RuntimeException.class,
-                () -> exerciseService.updateExercise(exerciseId, patch)
-        );
+	private FilterDto filter;
 
-        verify(validationService).validate(patchedDto);
-        verifyNoInteractions(eventPublisher);
-        verify(exerciseRepository, never()).save(exercise);
-    }
+	private Pageable pageable;
 
-    @Test
-    void deleteExercise_shouldDelete() {
-        when(repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId))
-                .thenReturn(exercise);
+	private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
 
-        exerciseService.deleteExercise(exerciseId);
+	@BeforeEach
+	void setUp() {
+		exercise = new Exercise();
+		createDto = new ExerciseCreateDto();
+		responseDto = new ExerciseResponseDto();
+		summaryDto = new ExerciseSummaryDto();
+		patchedDto = new ExerciseUpdateDto();
+		exerciseId = 1;
+		filter = new FilterDto();
+		pageable = PageRequest.of(0, 100);
+		patch = mock(JsonMergePatch.class);
+		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
+	}
 
-        verify(exerciseRepository).delete(exercise);
-    }
+	@AfterEach
+	void tearDown() {
+		if (mockedAuthorizationUtil != null) {
+			mockedAuthorizationUtil.close();
+		}
+	}
 
-    @Test
-    void deleteExercise_shouldPublishEvent() {
-        ArgumentCaptor<ExerciseDeleteEvent> eventCaptor = ArgumentCaptor
-                .forClass(ExerciseDeleteEvent.class);
+	@Test
+	void createExercise_shouldCreateExerciseAndPublish() {
+		exercise.setId(exerciseId);
+		when(exerciseMapper.toEntity(createDto)).thenReturn(exercise);
+		when(exerciseRepository.save(exercise)).thenReturn(exercise);
+		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(java.util.Optional.of(exercise));
+		when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
 
-        when(repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId))
-                .thenReturn(exercise);
+		ExerciseResponseDto result = exerciseService.createExercise(createDto);
 
-        exerciseService.deleteExercise(exerciseId);
+		assertEquals(responseDto, result);
+		verify(exerciseRepository).flush();
+		verify(exercisePopulationService).populate(responseDto);
+	}
 
-        verify(eventPublisher).publishEvent(eventCaptor.capture());
-        assertEquals(exercise, eventCaptor.getValue().getExercise());
-    }
+	@Test
+	void createExercise_shouldPublishEvent() {
+		ArgumentCaptor<ExerciseCreateEvent> eventCaptor = ArgumentCaptor.forClass(ExerciseCreateEvent.class);
 
-    @Test
-    void deleteExercise_shouldThrowExceptionWhenExerciseNotFound() {
-        when(repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId))
-                .thenThrow(RecordNotFoundException.of(Exercise.class, exerciseId));
+		exercise.setId(exerciseId);
+		when(exerciseMapper.toEntity(createDto)).thenReturn(exercise);
+		when(exerciseRepository.save(exercise)).thenReturn(exercise);
+		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(java.util.Optional.of(exercise));
+		when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
 
-        assertThrows(RecordNotFoundException.class,
-                () -> exerciseService.deleteExercise(exerciseId)
-        );
+		exerciseService.createExercise(createDto);
 
-        verify(exerciseRepository, never()).delete(exercise);
-        verify(eventPublisher, never()).publishEvent(any());
-    }
+		verify(eventPublisher).publishEvent(eventCaptor.capture());
+		assertEquals(exercise, eventCaptor.getValue().getExercise());
+	}
 
-    @Test
-    void getExercise_shouldReturnExerciseWhenFound() {
-        Plan plan = new Plan();
-        plan.setId(1);
-        PlanSummaryDto planSummaryDto = new PlanSummaryDto();
-        planSummaryDto.setId(1);
+	@Test
+	void updateExercise_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
+		when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class)).thenReturn(patchedDto);
+		when(exerciseRepository.save(exercise)).thenReturn(exercise);
 
-        when(exerciseRepository.findByIdWithDetails(exerciseId))
-                .thenReturn(java.util.Optional.of(exercise));
-        when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
-        when(planRepository.findByExerciseIdWithDetails(exerciseId)).thenReturn(List.of(plan));
-        when(planMapper.toSummaryDto(plan)).thenReturn(planSummaryDto);
+		exerciseService.updateExercise(exerciseId, patch);
 
-        ExerciseResponseDto result = exerciseService.getExercise(exerciseId);
+		verify(validationService).validate(patchedDto);
+		verify(exerciseMapper).updateExerciseFromDto(exercise, patchedDto);
+		verify(exerciseRepository).save(exercise);
+	}
 
-        assertEquals(responseDto, result);
-        verify(exerciseRepository).findByIdWithDetails(exerciseId);
-        verify(exerciseMapper).toResponseDto(exercise);
-        verify(exercisePopulationService).populate(responseDto);
-        verify(planRepository).findByExerciseIdWithDetails(exerciseId);
-        verify(planMapper).toSummaryDto(plan);
-        verify(planPopulationService).populate(any(List.class));
-    }
+	@Test
+	void updateExercise_shouldPublishEvent() throws JsonPatchException, JsonProcessingException {
+		ArgumentCaptor<ExerciseUpdateEvent> eventCaptor = ArgumentCaptor.forClass(ExerciseUpdateEvent.class);
 
-    @Test
-    void getExercise_shouldThrowExceptionWhenExerciseNotFound() {
-        when(exerciseRepository.findByIdWithDetails(exerciseId))
-                .thenReturn(java.util.Optional.empty());
+		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
+		when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class)).thenReturn(patchedDto);
+		when(exerciseRepository.save(exercise)).thenReturn(exercise);
 
-        assertThrows(RecordNotFoundException.class, () -> exerciseService.getExercise(exerciseId));
+		exerciseService.updateExercise(exerciseId, patch);
 
-        verify(exerciseRepository).findByIdWithDetails(exerciseId);
-        verifyNoInteractions(exerciseMapper);
-    }
+		verify(eventPublisher).publishEvent(eventCaptor.capture());
+		assertEquals(exercise, eventCaptor.getValue().getExercise());
+	}
 
-    @Test
-    void getFilteredExercises_shouldReturnFilteredExercises() {
-        Page<Exercise> exercisePage = new PageImpl<>(List.of(exercise), pageable, 1);
+	@Test
+	void updateExercise_shouldThrowExceptionWhenExerciseNotFound() {
+		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.empty());
 
-        when(exerciseRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(exercisePage);
-        when(exerciseMapper.toSummaryDto(exercise)).thenReturn(summaryDto);
+		assertThrows(RecordNotFoundException.class, () -> exerciseService.updateExercise(exerciseId, patch));
 
-        Page<ExerciseSummaryDto> result = exerciseService.getFilteredExercises(filter, pageable);
+		verifyNoInteractions(exerciseMapper, jsonPatchService, validationService, eventPublisher);
+		verify(exerciseRepository, never()).save(exercise);
+	}
 
-        assertEquals(1, result.getTotalElements());
-        assertSame(summaryDto, result.getContent().get(0));
-        verify(exerciseRepository).findAll(any(Specification.class), eq(pageable));
-        verify(exerciseMapper).toSummaryDto(exercise);
-    }
+	@Test
+	void updateExercise_shouldThrowExceptionWhenPatchFails() throws JsonPatchException, JsonProcessingException {
+		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
+		when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class)).thenThrow(JsonPatchException.class);
 
-    @Test
-    void getFilteredExercises_shouldReturnEmptyPageWhenFilterHasNoCriteria() {
-        filter.setFilterCriteria(new ArrayList<>());
-        Page<Exercise> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
+		assertThrows(JsonPatchException.class, () -> exerciseService.updateExercise(exerciseId, patch));
 
-        when(exerciseRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
+		verifyNoInteractions(validationService, eventPublisher);
+		verify(exerciseRepository, never()).save(exercise);
+	}
 
-        Page<ExerciseSummaryDto> result = exerciseService.getFilteredExercises(filter, pageable);
+	@Test
+	void updateExercise_shouldThrowExceptionWhenValidationFails() throws JsonPatchException, JsonProcessingException {
+		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
+		when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class)).thenReturn(patchedDto);
 
-        assertTrue(result.isEmpty());
-        verify(exerciseRepository).findAll(any(Specification.class), eq(pageable));
-    }
+		doThrow(new IllegalArgumentException("Validation failed")).when(validationService).validate(patchedDto);
 
-    @Test
-    void getFilteredExercises_shouldReturnEmptyPageWhenNoExercisesMatchFilter() {
-        FilterCriteria criteria = new FilterCriteria();
-        criteria.setFilterKey("nonexistentKey");
-        filter.setFilterCriteria(List.of(criteria));
-        Page<Exercise> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
+		assertThrows(RuntimeException.class, () -> exerciseService.updateExercise(exerciseId, patch));
 
-        when(exerciseRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
+		verify(validationService).validate(patchedDto);
+		verifyNoInteractions(eventPublisher);
+		verify(exerciseRepository, never()).save(exercise);
+	}
 
-        Page<ExerciseSummaryDto> result = exerciseService.getFilteredExercises(filter, pageable);
+	@Test
+	void deleteExercise_shouldDelete() {
+		when(repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId)).thenReturn(exercise);
 
-        assertTrue(result.isEmpty());
-        verify(exerciseRepository).findAll(any(Specification.class), eq(pageable));
-    }
+		exerciseService.deleteExercise(exerciseId);
 
-    @Test
-    void getAllExerciseEntities_shouldReturnAllExerciseEntities() {
-        List<Exercise> exercises = List.of(exercise);
-        when(exerciseRepository.findAllWithoutAssociations()).thenReturn(exercises);
+		verify(exerciseRepository).delete(exercise);
+	}
 
-        List<Exercise> result = exerciseService.getAllExerciseEntities();
+	@Test
+	void deleteExercise_shouldPublishEvent() {
+		ArgumentCaptor<ExerciseDeleteEvent> eventCaptor = ArgumentCaptor.forClass(ExerciseDeleteEvent.class);
 
-        assertEquals(exercises, result);
-        verify(exerciseRepository).findAllWithoutAssociations();
-    }
+		when(repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId)).thenReturn(exercise);
 
-    @Test
-    void getAllExerciseEntities_shouldReturnEmptyListWhenNoExercises() {
-        List<Exercise> exercises = List.of();
-        when(exerciseRepository.findAllWithoutAssociations()).thenReturn(exercises);
+		exerciseService.deleteExercise(exerciseId);
 
-        List<Exercise> result = exerciseService.getAllExerciseEntities();
+		verify(eventPublisher).publishEvent(eventCaptor.capture());
+		assertEquals(exercise, eventCaptor.getValue().getExercise());
+	}
 
-        assertTrue(result.isEmpty());
-        verify(exerciseRepository).findAllWithoutAssociations();
-    }
+	@Test
+	void deleteExercise_shouldThrowExceptionWhenExerciseNotFound() {
+		when(repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId))
+			.thenThrow(RecordNotFoundException.of(Exercise.class, exerciseId));
+
+		assertThrows(RecordNotFoundException.class, () -> exerciseService.deleteExercise(exerciseId));
+
+		verify(exerciseRepository, never()).delete(exercise);
+		verify(eventPublisher, never()).publishEvent(any());
+	}
+
+	@Test
+	void getExercise_shouldReturnExerciseWhenFound() {
+		Plan plan = new Plan();
+		plan.setId(1);
+		PlanSummaryDto planSummaryDto = new PlanSummaryDto();
+		planSummaryDto.setId(1);
+
+		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(java.util.Optional.of(exercise));
+		when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
+		when(planRepository.findByExerciseIdWithDetails(exerciseId)).thenReturn(List.of(plan));
+		when(planMapper.toSummaryDto(plan)).thenReturn(planSummaryDto);
+
+		ExerciseResponseDto result = exerciseService.getExercise(exerciseId);
+
+		assertEquals(responseDto, result);
+		verify(exerciseRepository).findByIdWithDetails(exerciseId);
+		verify(exerciseMapper).toResponseDto(exercise);
+		verify(exercisePopulationService).populate(responseDto);
+		verify(planRepository).findByExerciseIdWithDetails(exerciseId);
+		verify(planMapper).toSummaryDto(plan);
+		verify(planPopulationService).populate(any(List.class));
+	}
+
+	@Test
+	void getExercise_shouldThrowExceptionWhenExerciseNotFound() {
+		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(java.util.Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> exerciseService.getExercise(exerciseId));
+
+		verify(exerciseRepository).findByIdWithDetails(exerciseId);
+		verifyNoInteractions(exerciseMapper);
+	}
+
+	@Test
+	void getFilteredExercises_shouldReturnFilteredExercises() {
+		Page<Exercise> exercisePage = new PageImpl<>(List.of(exercise), pageable, 1);
+
+		when(exerciseRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(exercisePage);
+		when(exerciseMapper.toSummaryDto(exercise)).thenReturn(summaryDto);
+
+		Page<ExerciseSummaryDto> result = exerciseService.getFilteredExercises(filter, pageable);
+
+		assertEquals(1, result.getTotalElements());
+		assertSame(summaryDto, result.getContent().get(0));
+		verify(exerciseRepository).findAll(any(Specification.class), eq(pageable));
+		verify(exerciseMapper).toSummaryDto(exercise);
+	}
+
+	@Test
+	void getFilteredExercises_shouldReturnEmptyPageWhenFilterHasNoCriteria() {
+		filter.setFilterCriteria(new ArrayList<>());
+		Page<Exercise> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
+
+		when(exerciseRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
+
+		Page<ExerciseSummaryDto> result = exerciseService.getFilteredExercises(filter, pageable);
+
+		assertTrue(result.isEmpty());
+		verify(exerciseRepository).findAll(any(Specification.class), eq(pageable));
+	}
+
+	@Test
+	void getFilteredExercises_shouldReturnEmptyPageWhenNoExercisesMatchFilter() {
+		FilterCriteria criteria = new FilterCriteria();
+		criteria.setFilterKey("nonexistentKey");
+		filter.setFilterCriteria(List.of(criteria));
+		Page<Exercise> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
+
+		when(exerciseRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
+
+		Page<ExerciseSummaryDto> result = exerciseService.getFilteredExercises(filter, pageable);
+
+		assertTrue(result.isEmpty());
+		verify(exerciseRepository).findAll(any(Specification.class), eq(pageable));
+	}
+
+	@Test
+	void getAllExerciseEntities_shouldReturnAllExerciseEntities() {
+		List<Exercise> exercises = List.of(exercise);
+		when(exerciseRepository.findAllWithoutAssociations()).thenReturn(exercises);
+
+		List<Exercise> result = exerciseService.getAllExerciseEntities();
+
+		assertEquals(exercises, result);
+		verify(exerciseRepository).findAllWithoutAssociations();
+	}
+
+	@Test
+	void getAllExerciseEntities_shouldReturnEmptyListWhenNoExercises() {
+		List<Exercise> exercises = List.of();
+		when(exerciseRepository.findAllWithoutAssociations()).thenReturn(exercises);
+
+		List<Exercise> result = exerciseService.getAllExerciseEntities();
+
+		assertTrue(result.isEmpty());
+		verify(exerciseRepository).findAllWithoutAssociations();
+	}
 
 }

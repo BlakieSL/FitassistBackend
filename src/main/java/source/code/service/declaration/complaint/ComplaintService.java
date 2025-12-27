@@ -6,11 +6,13 @@ import source.code.dto.request.complaint.ComplaintCreateDto;
 import source.code.dto.response.comment.ComplaintResponseDto;
 
 public interface ComplaintService {
-    void createComplaint(ComplaintCreateDto complaintCreateDto);
 
-    void resolveComplaint(int complaintId);
+	void createComplaint(ComplaintCreateDto complaintCreateDto);
 
-    Page<ComplaintResponseDto> getAllComplaints(Pageable pageable);
+	void resolveComplaint(int complaintId);
 
-    ComplaintResponseDto getComplaintById(int complaintId);
+	Page<ComplaintResponseDto> getAllComplaints(Pageable pageable);
+
+	ComplaintResponseDto getComplaintById(int complaintId);
+
 }

@@ -8,12 +8,15 @@ import source.code.service.declaration.specificationHelpers.SpecificationVisibil
 @Component
 @Getter
 public class SpecificationDependencies {
-    private final SpecificationFieldResolver fieldResolver;
-    private final SpecificationVisibilityPredicateBuilder visibilityPredicateBuilder;
 
-    public SpecificationDependencies(SpecificationFieldResolver fieldResolver,
-                                     SpecificationVisibilityPredicateBuilder visibilityPredicateBuilder) {
-        this.fieldResolver = fieldResolver;
-        this.visibilityPredicateBuilder = visibilityPredicateBuilder;
-    }
+	private final SpecificationFieldResolver fieldResolver;
+
+	private final SpecificationVisibilityPredicateBuilder visibilityPredicateBuilder;
+
+	public SpecificationDependencies(SpecificationFieldResolver fieldResolver,
+									 SpecificationVisibilityPredicateBuilder visibilityPredicateBuilder) {
+		this.fieldResolver = fieldResolver;
+		this.visibilityPredicateBuilder = visibilityPredicateBuilder;
+	}
+
 }

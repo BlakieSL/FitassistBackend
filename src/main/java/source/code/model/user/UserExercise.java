@@ -2,13 +2,14 @@ package source.code.model.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.exercise.Exercise;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_exercise")
@@ -17,33 +18,35 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserExercise {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "exercise_id", nullable = false)
-    private Exercise exercise;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "exercise_id", nullable = false)
+	private Exercise exercise;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+	@Column(name = "created_at", nullable = false, updatable = false)
+	private LocalDateTime createdAt;
 
-    public static UserExercise of(User user, Exercise exercise) {
-        UserExercise userExercise = new UserExercise();
-        userExercise.setUser(user);
-        userExercise.setExercise(exercise);
+	@PrePersist
+	protected void onCreate() {
+		createdAt = LocalDateTime.now();
+	}
 
-        return userExercise;
-    }
+	public static UserExercise of(User user, Exercise exercise) {
+		UserExercise userExercise = new UserExercise();
+		userExercise.setUser(user);
+		userExercise.setExercise(exercise);
+
+		return userExercise;
+	}
+
 }

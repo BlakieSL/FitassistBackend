@@ -1,5 +1,8 @@
 package source.code.unit.specificationHelpers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
@@ -15,110 +18,110 @@ import source.code.dto.pojo.FilterCriteria;
 import source.code.helper.utils.AuthorizationUtil;
 import source.code.service.implementation.specificationHelpers.SpecificationVisibilityPredicateBuilderImpl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class SpecificationVisibilityPredicateBuilderTest {
 
-    private SpecificationVisibilityPredicateBuilderImpl predicateBuilder;
+	private SpecificationVisibilityPredicateBuilderImpl predicateBuilder;
 
-    @Mock
-    private CriteriaBuilder criteriaBuilder;
-    @Mock
-    private Root<Object> root;
-    @Mock
-    private Path<Object> userPath;
-    @Mock
-    private Path<Object> idPath;
-    @Mock
-    private Path<Boolean> publicPath;
-    @Mock
-    private Predicate predicate;
+	@Mock
+	private CriteriaBuilder criteriaBuilder;
 
-    private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
-    private FilterCriteria criteria;
+	@Mock
+	private Root<Object> root;
 
-    @BeforeEach
-    void setUp() {
-        predicateBuilder = new SpecificationVisibilityPredicateBuilderImpl();
-        criteria = new FilterCriteria();
-        mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
-    }
+	@Mock
+	private Path<Object> userPath;
 
-    @AfterEach
-    void tearDown() {
-        if (mockedAuthorizationUtil != null) {
-            mockedAuthorizationUtil.close();
-        }
-    }
+	@Mock
+	private Path<Object> idPath;
 
-    @Test
-    void buildVisibilityPredicate_shouldReturnUserIdPredicateWhenIsPublicFalse() {
-        int userId = 1;
-        criteria.setIsPublic(false);
+	@Mock
+	private Path<Boolean> publicPath;
 
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(root.get("user")).thenReturn(userPath);
-        when(userPath.get("id")).thenReturn(idPath);
-        when(criteriaBuilder.equal(idPath, userId)).thenReturn(predicate);
+	@Mock
+	private Predicate predicate;
 
-        Predicate result = predicateBuilder.buildVisibilityPredicate(
-                criteriaBuilder, root, criteria, "user", "id", "isPublic"
-        );
+	private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
 
-        assertEquals(predicate, result);
-        verify(criteriaBuilder).equal(idPath, userId);
-        verify(criteriaBuilder, never()).isTrue(any());
-    }
+	private FilterCriteria criteria;
 
-    @Test
-    void buildVisibilityPredicate_shouldReturnPublicPredicateWhenIsPublicTrue() {
-        criteria.setIsPublic(true);
+	@BeforeEach
+	void setUp() {
+		predicateBuilder = new SpecificationVisibilityPredicateBuilderImpl();
+		criteria = new FilterCriteria();
+		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
+	}
 
-        when(root.get("isPublic")).thenReturn((Path) publicPath);
-        when(criteriaBuilder.isTrue(publicPath)).thenReturn(predicate);
+	@AfterEach
+	void tearDown() {
+		if (mockedAuthorizationUtil != null) {
+			mockedAuthorizationUtil.close();
+		}
+	}
 
-        Predicate result = predicateBuilder.buildVisibilityPredicate(
-                criteriaBuilder, root, criteria, "user", "id", "isPublic"
-        );
+	@Test
+	void buildVisibilityPredicate_shouldReturnUserIdPredicateWhenIsPublicFalse() {
+		int userId = 1;
+		criteria.setIsPublic(false);
 
-        assertEquals(predicate, result);
-        verify(criteriaBuilder).isTrue(publicPath);
-        verify(criteriaBuilder, never()).equal(any(), anyInt());
-    }
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(root.get("user")).thenReturn(userPath);
+		when(userPath.get("id")).thenReturn(idPath);
+		when(criteriaBuilder.equal(idPath, userId)).thenReturn(predicate);
 
-    @Test
-    void buildVisibilityPredicate_shouldReturnPublicPredicateWhenIsPublicNull() {
-        criteria.setIsPublic(null);
+		Predicate result = predicateBuilder.buildVisibilityPredicate(criteriaBuilder, root, criteria, "user", "id",
+				"isPublic");
 
-        when(root.get("isPublic")).thenReturn((Path) publicPath);
-        when(criteriaBuilder.isTrue(publicPath)).thenReturn(predicate);
+		assertEquals(predicate, result);
+		verify(criteriaBuilder).equal(idPath, userId);
+		verify(criteriaBuilder, never()).isTrue(any());
+	}
 
-        Predicate result = predicateBuilder.buildVisibilityPredicate(
-                criteriaBuilder, root, criteria, "user", "id", "isPublic"
-        );
+	@Test
+	void buildVisibilityPredicate_shouldReturnPublicPredicateWhenIsPublicTrue() {
+		criteria.setIsPublic(true);
 
-        assertEquals(predicate, result);
-        verify(criteriaBuilder).isTrue(publicPath);
-    }
+		when(root.get("isPublic")).thenReturn((Path) publicPath);
+		when(criteriaBuilder.isTrue(publicPath)).thenReturn(predicate);
 
-    @Test
-    void buildVisibilityPredicate_shouldUseCorrectFieldNames() {
-        int userId = 5;
-        criteria.setIsPublic(false);
+		Predicate result = predicateBuilder.buildVisibilityPredicate(criteriaBuilder, root, criteria, "user", "id",
+				"isPublic");
 
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(root.get("author")).thenReturn(userPath);
-        when(userPath.get("userId")).thenReturn(idPath);
-        when(criteriaBuilder.equal(idPath, userId)).thenReturn(predicate);
+		assertEquals(predicate, result);
+		verify(criteriaBuilder).isTrue(publicPath);
+		verify(criteriaBuilder, never()).equal(any(), anyInt());
+	}
 
-        Predicate result = predicateBuilder.buildVisibilityPredicate(
-                criteriaBuilder, root, criteria, "author", "userId", "visible"
-        );
+	@Test
+	void buildVisibilityPredicate_shouldReturnPublicPredicateWhenIsPublicNull() {
+		criteria.setIsPublic(null);
 
-        assertEquals(predicate, result);
-        verify(root).get("author");
-        verify(userPath).get("userId");
-    }
+		when(root.get("isPublic")).thenReturn((Path) publicPath);
+		when(criteriaBuilder.isTrue(publicPath)).thenReturn(predicate);
+
+		Predicate result = predicateBuilder.buildVisibilityPredicate(criteriaBuilder, root, criteria, "user", "id",
+				"isPublic");
+
+		assertEquals(predicate, result);
+		verify(criteriaBuilder).isTrue(publicPath);
+	}
+
+	@Test
+	void buildVisibilityPredicate_shouldUseCorrectFieldNames() {
+		int userId = 5;
+		criteria.setIsPublic(false);
+
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(root.get("author")).thenReturn(userPath);
+		when(userPath.get("userId")).thenReturn(idPath);
+		when(criteriaBuilder.equal(idPath, userId)).thenReturn(predicate);
+
+		Predicate result = predicateBuilder.buildVisibilityPredicate(criteriaBuilder, root, criteria, "author",
+				"userId", "visible");
+
+		assertEquals(predicate, result);
+		verify(root).get("author");
+		verify(userPath).get("userId");
+	}
+
 }

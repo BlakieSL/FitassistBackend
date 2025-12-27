@@ -1,6 +1,5 @@
 package source.code.dto.request.workout;
 
-
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -14,17 +13,19 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutUpdateDto {
-    private static final int NAME_MAX_LENGTH = 50;
 
-    @Size(max = NAME_MAX_LENGTH)
-    private String name;
+	private static final int NAME_MAX_LENGTH = 50;
 
-    @PositiveOrZero
-    private Short duration;
+	@Size(max = NAME_MAX_LENGTH)
+	private String name;
 
-    @Positive
-    private Short orderIndex;
+	@PositiveOrZero
+	private Short duration;
 
-    @PositiveOrZero
-    private Byte restDaysAfter;
+	@Positive
+	private Short orderIndex;
+
+	@PositiveOrZero
+	private Byte restDaysAfter;
+
 }

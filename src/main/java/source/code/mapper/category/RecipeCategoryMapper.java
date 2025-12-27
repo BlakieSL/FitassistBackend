@@ -8,14 +8,16 @@ import source.code.model.recipe.RecipeCategory;
 
 @Mapper(componentModel = "spring")
 public abstract class RecipeCategoryMapper implements BaseMapper<RecipeCategory> {
-    public abstract CategoryResponseDto toResponseDto(RecipeCategory category);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "recipeCategoryAssociations", ignore = true)
-    public abstract RecipeCategory toEntity(CategoryCreateDto request);
+	public abstract CategoryResponseDto toResponseDto(RecipeCategory category);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "recipeCategoryAssociations", ignore = true)
-    public abstract void updateEntityFromDto(@MappingTarget RecipeCategory category, CategoryUpdateDto request);
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "recipeCategoryAssociations", ignore = true)
+	public abstract RecipeCategory toEntity(CategoryCreateDto request);
+
+	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "recipeCategoryAssociations", ignore = true)
+	public abstract void updateEntityFromDto(@MappingTarget RecipeCategory category, CategoryUpdateDto request);
+
 }

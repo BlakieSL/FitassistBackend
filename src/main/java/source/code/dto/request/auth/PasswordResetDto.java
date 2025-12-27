@@ -16,14 +16,16 @@ import source.code.validation.password.PasswordUppercaseDomain;
 @Getter
 @Setter
 public class PasswordResetDto {
-    @NotBlank
-    private String token;
 
-    @Size(min = 8, max = 255)
-    @NotBlank
-    @PasswordDigitsDomain
-    @PasswordUppercaseDomain
-    @PasswordSpecialDomain
-    @PasswordLowercaseDomain
-    private String newPassword;
+	@NotBlank
+	private String token;
+
+	@Size(min = 8, max = 255)
+	@NotBlank
+	@PasswordDigitsDomain
+	@PasswordUppercaseDomain
+	@PasswordSpecialDomain
+	@PasswordLowercaseDomain
+	private String newPassword;
+
 }

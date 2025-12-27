@@ -3,6 +3,9 @@ package source.code.service.declaration.exercise;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import source.code.dto.request.exercise.ExerciseCreateDto;
@@ -12,21 +15,20 @@ import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.model.exercise.Exercise;
 
-import java.util.List;
-
 public interface ExerciseService {
-    ExerciseResponseDto createExercise(ExerciseCreateDto dto);
 
-    void updateExercise(int exerciseId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+	ExerciseResponseDto createExercise(ExerciseCreateDto dto);
 
-    void deleteExercise(int exerciseId);
+	void updateExercise(int exerciseId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-    ExerciseResponseDto getExercise(int id);
+	void deleteExercise(int exerciseId);
 
-    Page<ExerciseSummaryDto> getFilteredExercises(FilterDto filter, Pageable pageable);
+	ExerciseResponseDto getExercise(int id);
 
-    List<Exercise> getAllExerciseEntities();
+	Page<ExerciseSummaryDto> getFilteredExercises(FilterDto filter, Pageable pageable);
 
-    ExerciseCategoriesResponseDto getAllExerciseCategories();
+	List<Exercise> getAllExerciseEntities();
+
+	ExerciseCategoriesResponseDto getAllExerciseCategories();
+
 }
-

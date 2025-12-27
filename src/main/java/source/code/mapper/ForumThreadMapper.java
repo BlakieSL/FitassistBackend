@@ -17,61 +17,64 @@ import source.code.repository.UserRepository;
 
 @Mapper(componentModel = "spring", uses = {CommonMappingHelper.class})
 public abstract class ForumThreadMapper {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ThreadCategoryRepository threadCategoryRepository;
 
-    @Mapping(target = "savesCount", ignore = true)
-    @Mapping(target = "commentsCount", ignore = true)
-    @Mapping(target = "category", source = "threadCategory", qualifiedByName = "threadCategoryToCategoryResponseDto")
-    @Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
-    @Mapping(target = "saved", ignore = true)
-    public abstract ForumThreadResponseDto toResponseDto(ForumThread forumThread);
+	@Autowired
+	private UserRepository userRepository;
 
-    @Mapping(target = "savesCount", ignore = true)
-    @Mapping(target = "commentsCount", ignore = true)
-    @Mapping(target = "category", source = "threadCategory", qualifiedByName = "threadCategoryToCategoryResponseDto")
-    @Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
-    @Mapping(target = "saved", ignore = true)
-    @Mapping(target = "interactionCreatedAt", ignore = true)
-    public abstract ForumThreadSummaryDto toSummaryDto(ForumThread forumThread);
+	@Autowired
+	private ThreadCategoryRepository threadCategoryRepository;
 
-    @Mapping(target = "user", expression = "java(userIdToUser(userId))")
-    @Mapping(target = "threadCategory", source = "threadCategoryId", qualifiedByName = "threadCategoryIdToThreadCategory")
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "views", ignore = true)
-    @Mapping(target = "comments", ignore = true)
-    @Mapping(target = "userThreads", ignore = true)
-    @Mapping(target = "mediaList", ignore = true)
-    public abstract ForumThread toEntity(ForumThreadCreateDto createDto, @Context int userId);
+	@Mapping(target = "savesCount", ignore = true)
+	@Mapping(target = "commentsCount", ignore = true)
+	@Mapping(target = "category", source = "threadCategory", qualifiedByName = "threadCategoryToCategoryResponseDto")
+	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
+	@Mapping(target = "saved", ignore = true)
+	public abstract ForumThreadResponseDto toResponseDto(ForumThread forumThread);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "user", ignore = true)
-    @Mapping(target = "threadCategory", ignore = true)
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "views", ignore = true)
-    @Mapping(target = "comments", ignore = true)
-    @Mapping(target = "userThreads", ignore = true)
-    @Mapping(target = "mediaList", ignore = true)
-    public abstract void update(@MappingTarget ForumThread forumThread, ForumThreadUpdateDto updateDto);
+	@Mapping(target = "savesCount", ignore = true)
+	@Mapping(target = "commentsCount", ignore = true)
+	@Mapping(target = "category", source = "threadCategory", qualifiedByName = "threadCategoryToCategoryResponseDto")
+	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
+	@Mapping(target = "saved", ignore = true)
+	@Mapping(target = "interactionCreatedAt", ignore = true)
+	public abstract ForumThreadSummaryDto toSummaryDto(ForumThread forumThread);
 
-    @Named("threadCategoryToCategoryResponseDto")
-    protected CategoryResponseDto threadCategoryToCategoryResponseDto(ThreadCategory threadCategory) {
-        return new CategoryResponseDto(threadCategory.getId(), threadCategory.getName());
-    }
+	@Mapping(target = "user", expression = "java(userIdToUser(userId))")
+	@Mapping(target = "threadCategory", source = "threadCategoryId",
+		qualifiedByName = "threadCategoryIdToThreadCategory")
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "views", ignore = true)
+	@Mapping(target = "comments", ignore = true)
+	@Mapping(target = "userThreads", ignore = true)
+	@Mapping(target = "mediaList", ignore = true)
+	public abstract ForumThread toEntity(ForumThreadCreateDto createDto, @Context int userId);
 
-    @Named("userIdToUser")
-    protected User userIdToUser(Integer userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
-    }
+	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "user", ignore = true)
+	@Mapping(target = "threadCategory", ignore = true)
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "views", ignore = true)
+	@Mapping(target = "comments", ignore = true)
+	@Mapping(target = "userThreads", ignore = true)
+	@Mapping(target = "mediaList", ignore = true)
+	public abstract void update(@MappingTarget ForumThread forumThread, ForumThreadUpdateDto updateDto);
 
-    @Named("threadCategoryIdToThreadCategory")
-    protected ThreadCategory threadCategoryIdToThreadCategory(Integer threadCategoryId) {
-        return threadCategoryRepository.findById(threadCategoryId)
-                .orElseThrow(() -> RecordNotFoundException.of(ThreadCategory.class, threadCategoryId));
-    }
+	@Named("threadCategoryToCategoryResponseDto")
+	protected CategoryResponseDto threadCategoryToCategoryResponseDto(ThreadCategory threadCategory) {
+		return new CategoryResponseDto(threadCategory.getId(), threadCategory.getName());
+	}
+
+	@Named("userIdToUser")
+	protected User userIdToUser(Integer userId) {
+		return userRepository.findById(userId).orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
+	}
+
+	@Named("threadCategoryIdToThreadCategory")
+	protected ThreadCategory threadCategoryIdToThreadCategory(Integer threadCategoryId) {
+		return threadCategoryRepository.findById(threadCategoryId)
+			.orElseThrow(() -> RecordNotFoundException.of(ThreadCategory.class, threadCategoryId));
+	}
+
 }

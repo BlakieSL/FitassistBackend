@@ -8,8 +8,10 @@ import source.code.model.media.Media;
 
 @Mapper(componentModel = "spring")
 public interface MediaMapper {
-    MediaResponseDto toDto(Media media, String imageUrl);
 
-    @Mapping(target = "id", ignore = true)
-    Media toEntity(MediaCreateDto dto, String imageName);
+	MediaResponseDto toDto(Media media, String imageUrl);
+
+	@Mapping(target = "id", ignore = true)
+	Media toEntity(MediaCreateDto dto, String imageName);
+
 }

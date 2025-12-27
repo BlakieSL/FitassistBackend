@@ -1,5 +1,13 @@
 package source.code.unit.user.withoutType;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,202 +33,184 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.exercise.ExercisePopulationService;
 import source.code.service.implementation.user.interaction.withoutType.UserExerciseServiceImpl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class UserExerciseServiceTest {
-    @Mock
-    private UserExerciseRepository userExerciseRepository;
-    @Mock
-    private ExerciseRepository exerciseRepository;
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private ExerciseMapper exerciseMapper;
-    @Mock
-    private ExercisePopulationService exercisePopulationService;
-    private UserExerciseServiceImpl userExerciseService;
 
-    private MockedStatic<AuthorizationUtil> mockedAuthUtil;
+	@Mock
+	private UserExerciseRepository userExerciseRepository;
 
-    @BeforeEach
-    void setUp() {
-        mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
-        userExerciseService = new UserExerciseServiceImpl(
-                userRepository,
-                exerciseRepository,
-                userExerciseRepository,
-                exerciseMapper,
-                exercisePopulationService
-        );
-    }
+	@Mock
+	private ExerciseRepository exerciseRepository;
 
-    @AfterEach
-    void tearDown() {
-        if (mockedAuthUtil != null) {
-            mockedAuthUtil.close();
-        }
-    }
+	@Mock
+	private UserRepository userRepository;
 
-    @Test
-    public void saveToUser_ShouldSaveToUserWithType() {
-        int userId = 1;
-        int exerciseId = 100;
-        User user = new User();
-        Exercise exercise = new Exercise();
+	@Mock
+	private ExerciseMapper exerciseMapper;
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userExerciseRepository.existsByUserIdAndExerciseId(userId, exerciseId))
-                .thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(exerciseRepository.findById(exerciseId)).thenReturn(Optional.of(exercise));
+	@Mock
+	private ExercisePopulationService exercisePopulationService;
 
-        userExerciseService.saveToUser(exerciseId);
+	private UserExerciseServiceImpl userExerciseService;
 
-        verify(userExerciseRepository).save(any(UserExercise.class));
-    }
+	private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
-    @Test
-    public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
-        int userId = 1;
-        int exerciseId = 100;
+	@BeforeEach
+	void setUp() {
+		mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
+		userExerciseService = new UserExerciseServiceImpl(userRepository, exerciseRepository, userExerciseRepository,
+			exerciseMapper, exercisePopulationService);
+	}
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userExerciseRepository.existsByUserIdAndExerciseId(userId, exerciseId))
-                .thenReturn(true);
+	@AfterEach
+	void tearDown() {
+		if (mockedAuthUtil != null) {
+			mockedAuthUtil.close();
+		}
+	}
 
-        assertThrows(NotUniqueRecordException.class,
-                () -> userExerciseService.saveToUser(exerciseId));
+	@Test
+	public void saveToUser_ShouldSaveToUserWithType() {
+		int userId = 1;
+		int exerciseId = 100;
+		User user = new User();
+		Exercise exercise = new Exercise();
 
-        verify(userExerciseRepository, never()).save(any());
-    }
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userExerciseRepository.existsByUserIdAndExerciseId(userId, exerciseId)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(exerciseRepository.findById(exerciseId)).thenReturn(Optional.of(exercise));
 
-    @Test
-    public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
-        int userId = 1;
-        int exerciseId = 100;
+		userExerciseService.saveToUser(exerciseId);
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userExerciseRepository.existsByUserIdAndExerciseId(userId, exerciseId))
-                .thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+		verify(userExerciseRepository).save(any(UserExercise.class));
+	}
 
-        assertThrows(RecordNotFoundException.class,
-                () -> userExerciseService.saveToUser(exerciseId));
+	@Test
+	public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
+		int userId = 1;
+		int exerciseId = 100;
 
-        verify(userExerciseRepository, never()).save(any());
-    }
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userExerciseRepository.existsByUserIdAndExerciseId(userId, exerciseId)).thenReturn(true);
 
-    @Test
-    public void saveToUser_ShouldThrowRecordNotFoundExceptionIfExerciseNotFound() {
-        int userId = 1;
-        int exerciseId = 100;
-        User user = new User();
+		assertThrows(NotUniqueRecordException.class, () -> userExerciseService.saveToUser(exerciseId));
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userExerciseRepository.existsByUserIdAndExerciseId(userId, exerciseId))
-                .thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(exerciseRepository.findById(exerciseId)).thenReturn(Optional.empty());
+		verify(userExerciseRepository, never()).save(any());
+	}
 
-        assertThrows(RecordNotFoundException.class,
-                () -> userExerciseService.saveToUser(exerciseId));
+	@Test
+	public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
+		int userId = 1;
+		int exerciseId = 100;
 
-        verify(userExerciseRepository, never()).save(any());
-    }
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userExerciseRepository.existsByUserIdAndExerciseId(userId, exerciseId)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-    @Test
-    public void deleteFromUser_ShouldDeleteFromUser() {
-        int userId = 1;
-        int exerciseId = 100;
-        UserExercise userExercise = UserExercise.of(new User(), new Exercise());
+		assertThrows(RecordNotFoundException.class, () -> userExerciseService.saveToUser(exerciseId));
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userExerciseRepository.findByUserIdAndExerciseId(userId, exerciseId))
-                .thenReturn(Optional.of(userExercise));
+		verify(userExerciseRepository, never()).save(any());
+	}
 
-        userExerciseService.deleteFromUser(exerciseId);
+	@Test
+	public void saveToUser_ShouldThrowRecordNotFoundExceptionIfExerciseNotFound() {
+		int userId = 1;
+		int exerciseId = 100;
+		User user = new User();
 
-        verify(userExerciseRepository).delete(userExercise);
-    }
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userExerciseRepository.existsByUserIdAndExerciseId(userId, exerciseId)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(exerciseRepository.findById(exerciseId)).thenReturn(Optional.empty());
 
-    @Test
-    public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserExerciseNotFound() {
-        int userId = 1;
-        int exerciseId = 100;
+		assertThrows(RecordNotFoundException.class, () -> userExerciseService.saveToUser(exerciseId));
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userExerciseRepository.findByUserIdAndExerciseId(userId, exerciseId))
-                .thenReturn(Optional.empty());
+		verify(userExerciseRepository, never()).save(any());
+	}
 
-        assertThrows(RecordNotFoundException.class,
-                () -> userExerciseService.deleteFromUser(exerciseId));
+	@Test
+	public void deleteFromUser_ShouldDeleteFromUser() {
+		int userId = 1;
+		int exerciseId = 100;
+		UserExercise userExercise = UserExercise.of(new User(), new Exercise());
 
-        verify(userExerciseRepository, never()).delete(any());
-    }
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userExerciseRepository.findByUserIdAndExerciseId(userId, exerciseId))
+			.thenReturn(Optional.of(userExercise));
 
-    @Test
-    public void getAllFromUser_ShouldReturnAllExercisesByType() {
-        int userId = 1;
-        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+		userExerciseService.deleteFromUser(exerciseId);
 
-        Exercise exercise1 = new Exercise();
-        exercise1.setId(1);
-        exercise1.setMediaList(new ArrayList<>());
-        Media media1 = new Media();
-        media1.setImageName("exercise1.jpg");
-        exercise1.getMediaList().add(media1);
+		verify(userExerciseRepository).delete(userExercise);
+	}
 
-        Exercise exercise2 = new Exercise();
-        exercise2.setId(2);
-        exercise2.setMediaList(new ArrayList<>());
-        Media media2 = new Media();
-        media2.setImageName("exercise2.jpg");
-        exercise2.getMediaList().add(media2);
+	@Test
+	public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserExerciseNotFound() {
+		int userId = 1;
+		int exerciseId = 100;
 
-        UserExercise ue1 = UserExercise.of(new User(), exercise1);
-        UserExercise ue2 = UserExercise.of(new User(), exercise2);
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userExerciseRepository.findByUserIdAndExerciseId(userId, exerciseId)).thenReturn(Optional.empty());
 
-        ExerciseSummaryDto dto1 = new ExerciseSummaryDto();
-        dto1.setId(1);
-        dto1.setImageName("exercise1.jpg");
-        ExerciseSummaryDto dto2 = new ExerciseSummaryDto();
-        dto2.setId(2);
-        dto2.setImageName("exercise2.jpg");
+		assertThrows(RecordNotFoundException.class, () -> userExerciseService.deleteFromUser(exerciseId));
 
-        Page<UserExercise> page = new PageImpl<>(List.of(ue1, ue2));
-        when(userExerciseRepository.findAllByUserIdWithMedia(eq(userId), any(Pageable.class)))
-                .thenReturn(page);
-        when(exerciseMapper.toSummaryDto(exercise1)).thenReturn(dto1);
-        when(exerciseMapper.toSummaryDto(exercise2)).thenReturn(dto2);
+		verify(userExerciseRepository, never()).delete(any());
+	}
 
-        Page<BaseUserEntity> result = userExerciseService.getAllFromUser(userId, pageable);
+	@Test
+	public void getAllFromUser_ShouldReturnAllExercisesByType() {
+		int userId = 1;
+		Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        assertEquals(2, result.getContent().size());
-        assertEquals(2, result.getTotalElements());
-        verify(exerciseMapper, times(2)).toSummaryDto(any(Exercise.class));
-        verify(exercisePopulationService).populate(anyList());
-    }
+		Exercise exercise1 = new Exercise();
+		exercise1.setId(1);
+		exercise1.setMediaList(new ArrayList<>());
+		Media media1 = new Media();
+		media1.setImageName("exercise1.jpg");
+		exercise1.getMediaList().add(media1);
 
-    @Test
-    public void getAllFromUser_ShouldReturnEmptyListIfNoExercises() {
-        int userId = 1;
-        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+		Exercise exercise2 = new Exercise();
+		exercise2.setId(2);
+		exercise2.setMediaList(new ArrayList<>());
+		Media media2 = new Media();
+		media2.setImageName("exercise2.jpg");
+		exercise2.getMediaList().add(media2);
 
-        Page<UserExercise> page = new PageImpl<>(List.of());
-        when(userExerciseRepository.findAllByUserIdWithMedia(eq(userId), any(Pageable.class)))
-                .thenReturn(page);
+		UserExercise ue1 = UserExercise.of(new User(), exercise1);
+		UserExercise ue2 = UserExercise.of(new User(), exercise2);
 
-        Page<BaseUserEntity> result = userExerciseService.getAllFromUser(userId, pageable);
+		ExerciseSummaryDto dto1 = new ExerciseSummaryDto();
+		dto1.setId(1);
+		dto1.setImageName("exercise1.jpg");
+		ExerciseSummaryDto dto2 = new ExerciseSummaryDto();
+		dto2.setId(2);
+		dto2.setImageName("exercise2.jpg");
 
-        assertTrue(result.getContent().isEmpty());
-        assertEquals(0, result.getTotalElements());
-    }
+		Page<UserExercise> page = new PageImpl<>(List.of(ue1, ue2));
+		when(userExerciseRepository.findAllByUserIdWithMedia(eq(userId), any(Pageable.class))).thenReturn(page);
+		when(exerciseMapper.toSummaryDto(exercise1)).thenReturn(dto1);
+		when(exerciseMapper.toSummaryDto(exercise2)).thenReturn(dto2);
+
+		Page<BaseUserEntity> result = userExerciseService.getAllFromUser(userId, pageable);
+
+		assertEquals(2, result.getContent().size());
+		assertEquals(2, result.getTotalElements());
+		verify(exerciseMapper, times(2)).toSummaryDto(any(Exercise.class));
+		verify(exercisePopulationService).populate(anyList());
+	}
+
+	@Test
+	public void getAllFromUser_ShouldReturnEmptyListIfNoExercises() {
+		int userId = 1;
+		Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+		Page<UserExercise> page = new PageImpl<>(List.of());
+		when(userExerciseRepository.findAllByUserIdWithMedia(eq(userId), any(Pageable.class))).thenReturn(page);
+
+		Page<BaseUserEntity> result = userExerciseService.getAllFromUser(userId, pageable);
+
+		assertTrue(result.getContent().isEmpty());
+		assertEquals(0, result.getTotalElements());
+	}
 
 }

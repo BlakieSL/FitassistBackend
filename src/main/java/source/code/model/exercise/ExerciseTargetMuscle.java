@@ -2,12 +2,13 @@ package source.code.model.exercise;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "exercise_target_muscle")
@@ -16,31 +17,32 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor(staticName = "of")
 public class ExerciseTargetMuscle {
-    public static final String TARGET_MUSCLE = "targetMuscle";
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	public static final String TARGET_MUSCLE = "targetMuscle";
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "exercise_id", nullable = false)
-    private Exercise exercise;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "target_muscle_id", nullable = false)
-    private TargetMuscle targetMuscle;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "exercise_id", nullable = false)
+	private Exercise exercise;
 
-    @NotNull
-    @Column(nullable = false)
-    private BigDecimal priority;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "target_muscle_id", nullable = false)
+	private TargetMuscle targetMuscle;
 
-    public static ExerciseTargetMuscle createWithTargetMuscle(
-            TargetMuscle targetMuscle) {
-        ExerciseTargetMuscle exerciseTargetMuscle = new ExerciseTargetMuscle();
-        exerciseTargetMuscle.setTargetMuscle(targetMuscle);
+	@NotNull
+	@Column(nullable = false)
+	private BigDecimal priority;
 
-        return exerciseTargetMuscle;
-    }
+	public static ExerciseTargetMuscle createWithTargetMuscle(TargetMuscle targetMuscle) {
+		ExerciseTargetMuscle exerciseTargetMuscle = new ExerciseTargetMuscle();
+		exerciseTargetMuscle.setTargetMuscle(targetMuscle);
+
+		return exerciseTargetMuscle;
+	}
+
 }

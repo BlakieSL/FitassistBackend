@@ -2,13 +2,14 @@ package source.code.model.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.recipe.Recipe;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_recipe")
@@ -17,41 +18,42 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRecipe {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "recipie_id", nullable = false)
-    private Recipe recipe;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TypeOfInteraction type;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "recipie_id", nullable = false)
+	private Recipe recipe;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private TypeOfInteraction type;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+	@Column(name = "created_at", nullable = false, updatable = false)
+	private LocalDateTime createdAt;
 
-    public static UserRecipe createWithUserRecipeType(
-            User user, Recipe recipe, TypeOfInteraction type) {
+	@PrePersist
+	protected void onCreate() {
+		createdAt = LocalDateTime.now();
+	}
 
-        UserRecipe userRecipe = new UserRecipe();
-        userRecipe.setUser(user);
-        userRecipe.setRecipe(recipe);
-        userRecipe.setType(type);
+	public static UserRecipe createWithUserRecipeType(User user, Recipe recipe, TypeOfInteraction type) {
 
-        return userRecipe;
-    }
+		UserRecipe userRecipe = new UserRecipe();
+		userRecipe.setUser(user);
+		userRecipe.setRecipe(recipe);
+		userRecipe.setType(type);
+
+		return userRecipe;
+	}
+
 }

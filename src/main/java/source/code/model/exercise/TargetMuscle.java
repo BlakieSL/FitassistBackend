@@ -3,13 +3,14 @@ package source.code.model.exercise;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "target_muscle")
@@ -18,16 +19,18 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TargetMuscle {
-    private static final int NAME_MAX_LENGTH = 50;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	private static final int NAME_MAX_LENGTH = 50;
 
-    @NotBlank
-    @Size(max = NAME_MAX_LENGTH)
-    private String name;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @OneToMany(mappedBy = "targetMuscle")
-    private final Set<ExerciseTargetMuscle> exerciseTargetMuscles = new HashSet<>();
+	@NotBlank
+	@Size(max = NAME_MAX_LENGTH)
+	private String name;
+
+	@OneToMany(mappedBy = "targetMuscle")
+	private final Set<ExerciseTargetMuscle> exerciseTargetMuscles = new HashSet<>();
+
 }

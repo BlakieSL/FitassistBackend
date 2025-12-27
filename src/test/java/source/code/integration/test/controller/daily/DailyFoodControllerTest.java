@@ -1,7 +1,12 @@
 package source.code.integration.test.controller.daily;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,234 +26,205 @@ import source.code.integration.test.controller.food.FoodSql;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @TestSetup
-@Import({MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class})
+@Import({ MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class })
 @TestPropertySource(properties = "schema.name=general")
-@ContextConfiguration(initializers = {MySqlContainerInitializer.class})
+@ContextConfiguration(initializers = { MySqlContainerInitializer.class })
 public class DailyFoodControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+	@Autowired
+	private MockMvc mockMvc;
 
-    @FoodSql
-    @Test
-    @DisplayName("POST - / - Should return all daily foods for the user")
-    void getAllDailyFoodsByUser() throws Exception {
-        Utils.setUserContext(1);
+	@Autowired
+	private ObjectMapper objectMapper;
 
-        DailyCartFoodGetDto request = new DailyCartFoodGetDto();
-        request.setDate(LocalDate.of(2025, 4, 1));
+	@FoodSql
+	@Test
+	@DisplayName("POST - / - Should return all daily foods for the user")
+	void getAllDailyFoodsByUser() throws Exception {
+		Utils.setUserContext(1);
 
-        mockMvc.perform(post("/api/cart")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.foods").isArray(),
-                        jsonPath("$.foods.length()").value(3),
-                        jsonPath("$.totalCalories").isNumber()
-                );
-    }
+		DailyCartFoodGetDto request = new DailyCartFoodGetDto();
+		request.setDate(LocalDate.of(2025, 4, 1));
 
-    @Test
-    @DisplayName("POST - / - Should return empty list when no daily food items exist in existing daily cart")
-    void getAllDailyFoodsByUserEmpty() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(post("/api/cart").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpectAll(status().isOk(), jsonPath("$.foods").isArray(), jsonPath("$.foods.length()").value(3),
+					jsonPath("$.totalCalories").isNumber());
+	}
 
-        DailyCartFoodGetDto request = new DailyCartFoodGetDto();
-        request.setDate(LocalDate.of(2025, 4, 4));
+	@Test
+	@DisplayName("POST - / - Should return empty list when no daily food items exist in existing daily cart")
+	void getAllDailyFoodsByUserEmpty() throws Exception {
+		Utils.setUserContext(1);
 
-        mockMvc.perform(post("/api/cart")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.foods").isArray(),
-                        jsonPath("$.foods.length()").value(0),
-                        jsonPath("$.totalCalories").value(0)
-                );
-    }
+		DailyCartFoodGetDto request = new DailyCartFoodGetDto();
+		request.setDate(LocalDate.of(2025, 4, 4));
 
-    @Test
-    @DisplayName("POST - / - Should return empty list when daily cart didn't exist for the date")
-    void getAllDailyFoodsByUserNotFound() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(post("/api/cart").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpectAll(status().isOk(), jsonPath("$.foods").isArray(), jsonPath("$.foods.length()").value(0),
+					jsonPath("$.totalCalories").value(0));
+	}
 
-        DailyCartFoodGetDto request = new DailyCartFoodGetDto();
-        request.setDate(LocalDate.of(2023, 10, 2));
+	@Test
+	@DisplayName("POST - / - Should return empty list when daily cart didn't exist for the date")
+	void getAllDailyFoodsByUserNotFound() throws Exception {
+		Utils.setUserContext(1);
 
-        mockMvc.perform(post("/api/cart")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.foods").isArray(),
-                        jsonPath("$.foods.length()").value(0),
-                        jsonPath("$.totalCalories").value(0)
-                );
-    }
+		DailyCartFoodGetDto request = new DailyCartFoodGetDto();
+		request.setDate(LocalDate.of(2023, 10, 2));
 
-    @FoodSql
-    @Test
-    @DisplayName("POST - /add/{foodId} - Should add a daily food to the user's cart")
-    void addDailyFoodToUser() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(post("/api/cart").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpectAll(status().isOk(), jsonPath("$.foods").isArray(), jsonPath("$.foods.length()").value(0),
+					jsonPath("$.totalCalories").value(0));
+	}
 
-        DailyCartFoodCreateDto request = new DailyCartFoodCreateDto();
-        request.setQuantity(BigDecimal.valueOf(2.5));
-        request.setDate(LocalDate.of(2025, 4, 4));
+	@FoodSql
+	@Test
+	@DisplayName("POST - /add/{foodId} - Should add a daily food to the user's cart")
+	void addDailyFoodToUser() throws Exception {
+		Utils.setUserContext(1);
 
-        mockMvc.perform(post("/api/cart/add/4")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated());
+		DailyCartFoodCreateDto request = new DailyCartFoodCreateDto();
+		request.setQuantity(BigDecimal.valueOf(2.5));
+		request.setDate(LocalDate.of(2025, 4, 4));
 
-        DailyCartFoodGetDto verifyRequest = new DailyCartFoodGetDto();
-        verifyRequest.setDate(LocalDate.of(2025, 4, 4));
+		mockMvc
+			.perform(post("/api/cart/add/4").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpect(status().isCreated());
 
-        mockMvc.perform(post("/api/cart")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(verifyRequest)))
-                .andExpectAll(
-                        jsonPath("$.foods.length()").value(1),
-                        jsonPath("$.foods[0].id").value(4),
-                        jsonPath("$.foods[0].quantity").value(2.5)
-                );
-    }
+		DailyCartFoodGetDto verifyRequest = new DailyCartFoodGetDto();
+		verifyRequest.setDate(LocalDate.of(2025, 4, 4));
 
-    @FoodSql
-    @Test
-    @DisplayName("POST - /add/{foodId} - Should increase quantity if food already exists")
-    void addDailyFoodToUserAlreadyExists() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(post("/api/cart").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(verifyRequest)))
+			.andExpectAll(jsonPath("$.foods.length()").value(1), jsonPath("$.foods[0].id").value(4),
+					jsonPath("$.foods[0].quantity").value(2.5));
+	}
 
-        DailyCartFoodCreateDto request = new DailyCartFoodCreateDto();
-        request.setQuantity(BigDecimal.valueOf(1.0));
-        request.setDate(LocalDate.of(2025, 4, 1));
+	@FoodSql
+	@Test
+	@DisplayName("POST - /add/{foodId} - Should increase quantity if food already exists")
+	void addDailyFoodToUserAlreadyExists() throws Exception {
+		Utils.setUserContext(1);
 
-        mockMvc.perform(post("/api/cart/add/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated());
+		DailyCartFoodCreateDto request = new DailyCartFoodCreateDto();
+		request.setQuantity(BigDecimal.valueOf(1.0));
+		request.setDate(LocalDate.of(2025, 4, 1));
 
-        DailyCartFoodGetDto verifyRequest = new DailyCartFoodGetDto();
-        verifyRequest.setDate(LocalDate.of(2025, 4, 1));
+		mockMvc
+			.perform(post("/api/cart/add/1").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpect(status().isCreated());
 
-        mockMvc.perform(post("/api/cart")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(verifyRequest)))
-                .andExpectAll(
-                        jsonPath("$.foods[?(@.id == 1)].quantity").value(3.0),
-                        jsonPath("$.foods[?(@.id == 3)].quantity").value(1.0),
-                        jsonPath("$.foods[?(@.id == 5)].quantity").value(1.5)
-                );
-    }
+		DailyCartFoodGetDto verifyRequest = new DailyCartFoodGetDto();
+		verifyRequest.setDate(LocalDate.of(2025, 4, 1));
 
-    @Test
-    @DisplayName("POST - /add/{foodId} - Should return 404 when food does not exist")
-    void addDailyFoodToUserNotFound() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(post("/api/cart").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(verifyRequest)))
+			.andExpectAll(jsonPath("$.foods[?(@.id == 1)].quantity").value(3.0),
+					jsonPath("$.foods[?(@.id == 3)].quantity").value(1.0),
+					jsonPath("$.foods[?(@.id == 5)].quantity").value(1.5));
+	}
 
-        DailyCartFoodCreateDto request = new DailyCartFoodCreateDto();
-        request.setQuantity(BigDecimal.valueOf(1.0));
-        request.setDate(LocalDate.of(2025, 4, 4));
+	@Test
+	@DisplayName("POST - /add/{foodId} - Should return 404 when food does not exist")
+	void addDailyFoodToUserNotFound() throws Exception {
+		Utils.setUserContext(1);
 
-        mockMvc.perform(post("/api/cart/add/999")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isNotFound());
-    }
+		DailyCartFoodCreateDto request = new DailyCartFoodCreateDto();
+		request.setQuantity(BigDecimal.valueOf(1.0));
+		request.setDate(LocalDate.of(2025, 4, 4));
 
-    @FoodSql
-    @Test
-    @DisplayName("DELETE - /remove/{dailyCartFoodId} - Should remove a food item from the daily cart")
-    void removeFoodFromDailyCart() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(post("/api/cart/add/999").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpect(status().isNotFound());
+	}
 
-        mockMvc.perform(delete("/api/cart/remove/1"))
-                .andExpect(status().isNoContent());
+	@FoodSql
+	@Test
+	@DisplayName("DELETE - /remove/{dailyCartFoodId} - Should remove a food item from the daily cart")
+	void removeFoodFromDailyCart() throws Exception {
+		Utils.setUserContext(1);
 
-        DailyCartFoodGetDto request = new DailyCartFoodGetDto();
-        request.setDate(LocalDate.of(2025, 4, 1));
+		mockMvc.perform(delete("/api/cart/remove/1")).andExpect(status().isNoContent());
 
-        mockMvc.perform(post("/api/cart")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpectAll(
-                        jsonPath("$.foods").isArray(),
-                        jsonPath("$.foods.length()").value(2),
-                        jsonPath("$.foods[?(@.id == 3)].quantity").value(1.0),
-                        jsonPath("$.foods[?(@.id == 5)].quantity").value(1.5)
-                );
-    }
+		DailyCartFoodGetDto request = new DailyCartFoodGetDto();
+		request.setDate(LocalDate.of(2025, 4, 1));
 
-    @Test
-    @DisplayName("DELETE - /remove/{dailyCartFoodId} - Should return 404 when food item does not exist")
-    void removeFoodFromDailyCartNotFound() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(post("/api/cart").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpectAll(jsonPath("$.foods").isArray(), jsonPath("$.foods.length()").value(2),
+					jsonPath("$.foods[?(@.id == 3)].quantity").value(1.0),
+					jsonPath("$.foods[?(@.id == 5)].quantity").value(1.5));
+	}
 
-        mockMvc.perform(delete("/api/cart/remove/999"))
-                .andExpect(status().isNotFound());
-    }
+	@Test
+	@DisplayName("DELETE - /remove/{dailyCartFoodId} - Should return 404 when food item does not exist")
+	void removeFoodFromDailyCartNotFound() throws Exception {
+		Utils.setUserContext(1);
 
-    @FoodSql
-    @Test
-    @DisplayName("DELETE - /remove/{dailyCartFoodId} - Should return 403 when not owner")
-    void removeFoodFromDailyCartForbidden() throws Exception {
-        Utils.setUserContext(2);
+		mockMvc.perform(delete("/api/cart/remove/999")).andExpect(status().isNotFound());
+	}
 
-        mockMvc.perform(delete("/api/cart/remove/1"))
-                .andExpect(status().isForbidden());
-    }
+	@FoodSql
+	@Test
+	@DisplayName("DELETE - /remove/{dailyCartFoodId} - Should return 403 when not owner")
+	void removeFoodFromDailyCartForbidden() throws Exception {
+		Utils.setUserContext(2);
 
-    @FoodSql
-    @Test
-    @DisplayName("PATCH - /update/{dailyCartFoodId} - Should update a food item in the daily cart")
-    void updateDailyCartFood() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc.perform(delete("/api/cart/remove/1")).andExpect(status().isForbidden());
+	}
 
-        DailyCartFoodUpdateDto updateDto = DailyCartFoodUpdateDto.of(BigDecimal.valueOf(3.0));
+	@FoodSql
+	@Test
+	@DisplayName("PATCH - /update/{dailyCartFoodId} - Should update a food item in the daily cart")
+	void updateDailyCartFood() throws Exception {
+		Utils.setUserContext(1);
 
-        mockMvc.perform(patch("/api/cart/update/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto)))
-                .andExpect(status().isNoContent());
-    }
+		DailyCartFoodUpdateDto updateDto = DailyCartFoodUpdateDto.of(BigDecimal.valueOf(3.0));
 
-    @Test
-    @DisplayName("PATCH - /update/{dailyCartFoodId} - Should return 404 when food item does not exist")
-    void updateDailyCartFoodNotFound() throws Exception {
-        Utils.setUserContext(1);
+		mockMvc
+			.perform(patch("/api/cart/update/1").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(updateDto)))
+			.andExpect(status().isNoContent());
+	}
 
-        DailyCartFoodUpdateDto updateDto = new DailyCartFoodUpdateDto();
+	@Test
+	@DisplayName("PATCH - /update/{dailyCartFoodId} - Should return 404 when food item does not exist")
+	void updateDailyCartFoodNotFound() throws Exception {
+		Utils.setUserContext(1);
 
-        mockMvc.perform(patch("/api/cart/update/999")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto)))
-                .andExpect(status().isNotFound());
+		DailyCartFoodUpdateDto updateDto = new DailyCartFoodUpdateDto();
 
-    }
+		mockMvc
+			.perform(patch("/api/cart/update/999").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(updateDto)))
+			.andExpect(status().isNotFound());
+	}
 
-    @FoodSql
-    @Test
-    @DisplayName("PATCH - /update/{dailyCartFoodId} - Should return 403 when not owner")
-    void updateDailyCartFoodForbidden() throws Exception {
-        Utils.setUserContext(2);
+	@FoodSql
+	@Test
+	@DisplayName("PATCH - /update/{dailyCartFoodId} - Should return 403 when not owner")
+	void updateDailyCartFoodForbidden() throws Exception {
+		Utils.setUserContext(2);
 
-        DailyCartFoodUpdateDto updateDto = DailyCartFoodUpdateDto.of(BigDecimal.valueOf(3.0));
+		DailyCartFoodUpdateDto updateDto = DailyCartFoodUpdateDto.of(BigDecimal.valueOf(3.0));
 
-        mockMvc.perform(patch("/api/cart/update/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDto)))
-                .andExpect(status().isForbidden());
-    }
+		mockMvc
+			.perform(patch("/api/cart/update/1").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(updateDto)))
+			.andExpect(status().isForbidden());
+	}
+
 }

@@ -15,25 +15,27 @@ import source.code.model.plan.Plan;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class PlanInstruction extends TextBase {
-    private String title;
 
-    @ManyToOne
-    @JoinColumn(name = "plan_id")
-    private Plan plan;
+	private String title;
 
-    public static PlanInstruction of(short number, String title, String text, Plan plan) {
-        PlanInstruction instruction = new PlanInstruction();
-        instruction.setOrderIndex(number);
-        instruction.setTitle(title);
-        instruction.setText(text);
-        instruction.setPlan(plan);
-        return instruction;
-    }
+	@ManyToOne
+	@JoinColumn(name = "plan_id")
+	private Plan plan;
 
-    public static PlanInstruction of(Integer id, Plan plan) {
-        PlanInstruction instruction = new PlanInstruction();
-        instruction.setId(id);
-        instruction.setPlan(plan);
-        return instruction;
-    }
+	public static PlanInstruction of(short number, String title, String text, Plan plan) {
+		PlanInstruction instruction = new PlanInstruction();
+		instruction.setOrderIndex(number);
+		instruction.setTitle(title);
+		instruction.setText(text);
+		instruction.setPlan(plan);
+		return instruction;
+	}
+
+	public static PlanInstruction of(Integer id, Plan plan) {
+		PlanInstruction instruction = new PlanInstruction();
+		instruction.setId(id);
+		instruction.setPlan(plan);
+		return instruction;
+	}
+
 }

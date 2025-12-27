@@ -13,32 +13,26 @@ import source.code.service.declaration.helpers.ValidationService;
 
 @Service("recipeCategoryService")
 public class RecipeCategoryServiceImpl extends GenericCategoryService<RecipeCategory> implements CategoryService {
-    private final RecipeCategoryRepository recipeCategoryRepository;
 
-    protected RecipeCategoryServiceImpl(ValidationService validationService,
-                                        JsonPatchService jsonPatchService,
-                                        CategoryCacheKeyGenerator<RecipeCategory> cacheKeyGenerator,
-                                        ApplicationEventPublisher applicationEventPublisher,
-                                        CacheManager cacheManager,
-                                        RecipeCategoryRepository recipeCategoryRepository,
-                                        RecipeCategoryMapper mapper) {
-        super(validationService,
-                jsonPatchService,
-                cacheKeyGenerator,
-                applicationEventPublisher,
-                cacheManager,
-                recipeCategoryRepository,
-                mapper);
-        this.recipeCategoryRepository = recipeCategoryRepository;
-    }
+	private final RecipeCategoryRepository recipeCategoryRepository;
 
-    @Override
-    protected boolean hasAssociatedEntities(int categoryId) {
-        return recipeCategoryRepository.existsByIdAndRecipeCategoryAssociationsIsNotEmpty(categoryId);
-    }
+	protected RecipeCategoryServiceImpl(ValidationService validationService, JsonPatchService jsonPatchService,
+										CategoryCacheKeyGenerator<RecipeCategory> cacheKeyGenerator,
+										ApplicationEventPublisher applicationEventPublisher, CacheManager cacheManager,
+										RecipeCategoryRepository recipeCategoryRepository, RecipeCategoryMapper mapper) {
+		super(validationService, jsonPatchService, cacheKeyGenerator, applicationEventPublisher, cacheManager,
+			recipeCategoryRepository, mapper);
+		this.recipeCategoryRepository = recipeCategoryRepository;
+	}
 
-    @Override
-    protected Class<RecipeCategory> getEntityClass() {
-        return RecipeCategory.class;
-    }
+	@Override
+	protected boolean hasAssociatedEntities(int categoryId) {
+		return recipeCategoryRepository.existsByIdAndRecipeCategoryAssociationsIsNotEmpty(categoryId);
+	}
+
+	@Override
+	protected Class<RecipeCategory> getEntityClass() {
+		return RecipeCategory.class;
+	}
+
 }

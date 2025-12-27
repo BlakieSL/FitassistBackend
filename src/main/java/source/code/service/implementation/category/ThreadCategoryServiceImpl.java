@@ -14,32 +14,25 @@ import source.code.service.declaration.helpers.ValidationService;
 @Service("threadCategoryService")
 public class ThreadCategoryServiceImpl extends GenericCategoryService<ThreadCategory> implements CategoryService {
 
-    private final ThreadCategoryRepository threadCategoryRepository;
+	private final ThreadCategoryRepository threadCategoryRepository;
 
-    protected ThreadCategoryServiceImpl(ValidationService validationService,
-                                        JsonPatchService jsonPatchService,
-                                        CategoryCacheKeyGenerator<ThreadCategory> cacheKeyGenerator,
-                                        ApplicationEventPublisher applicationEventPublisher,
-                                        CacheManager cacheManager,
-                                        ThreadCategoryRepository threadCategoryRepository,
-                                        ThreadCategoryMapper mapper) {
-        super(validationService,
-                jsonPatchService,
-                cacheKeyGenerator,
-                applicationEventPublisher,
-                cacheManager,
-                threadCategoryRepository,
-                mapper);
-        this.threadCategoryRepository = threadCategoryRepository;
-    }
+	protected ThreadCategoryServiceImpl(ValidationService validationService, JsonPatchService jsonPatchService,
+										CategoryCacheKeyGenerator<ThreadCategory> cacheKeyGenerator,
+										ApplicationEventPublisher applicationEventPublisher, CacheManager cacheManager,
+										ThreadCategoryRepository threadCategoryRepository, ThreadCategoryMapper mapper) {
+		super(validationService, jsonPatchService, cacheKeyGenerator, applicationEventPublisher, cacheManager,
+			threadCategoryRepository, mapper);
+		this.threadCategoryRepository = threadCategoryRepository;
+	}
 
-    @Override
-    protected boolean hasAssociatedEntities(int categoryId) {
-        return threadCategoryRepository.existsByIdAndThreadsIsNotEmpty(categoryId);
-    }
+	@Override
+	protected boolean hasAssociatedEntities(int categoryId) {
+		return threadCategoryRepository.existsByIdAndThreadsIsNotEmpty(categoryId);
+	}
 
-    @Override
-    protected Class<ThreadCategory> getEntityClass() {
-        return ThreadCategory.class;
-    }
+	@Override
+	protected Class<ThreadCategory> getEntityClass() {
+		return ThreadCategory.class;
+	}
+
 }

@@ -16,41 +16,40 @@ import source.code.service.declaration.daily.DailyFoodService;
 @RestController
 @RequestMapping(path = "/api/cart")
 public class DailyFoodController {
-    private final DailyFoodService dailyFoodService;
 
-    public DailyFoodController(DailyFoodService dailyFoodService) {
-        this.dailyFoodService = dailyFoodService;
-    }
+	private final DailyFoodService dailyFoodService;
 
-    @PostMapping
-    public ResponseEntity<DailyFoodsResponseDto> getAllFoodsInCartByUser(@Valid @RequestBody DailyCartFoodGetDto request) {
-        DailyFoodsResponseDto cart = dailyFoodService.getFoodFromDailyCart(request);
-        return ResponseEntity.ok(cart);
-    }
+	public DailyFoodController(DailyFoodService dailyFoodService) {
+		this.dailyFoodService = dailyFoodService;
+	}
 
-    @PostMapping("/add/{foodId}")
-    public ResponseEntity<Void> addDailyFoodToUser(
-            @PathVariable int foodId,
-            @Valid @RequestBody DailyCartFoodCreateDto request
-    ) {
-        dailyFoodService.addFoodToDailyCart(foodId, request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+	@PostMapping
+	public ResponseEntity<DailyFoodsResponseDto> getAllFoodsInCartByUser(
+		@Valid @RequestBody DailyCartFoodGetDto request) {
+		DailyFoodsResponseDto cart = dailyFoodService.getFoodFromDailyCart(request);
+		return ResponseEntity.ok(cart);
+	}
 
-    @DailyCartOwner
-    @DeleteMapping("/remove/{dailyCartFoodId}")
-    public ResponseEntity<Void> removeFoodFromDailyCartFood(@PathVariable int dailyCartFoodId) {
-        dailyFoodService.removeFoodFromDailyCart(dailyCartFoodId);
-        return ResponseEntity.noContent().build();
-    }
+	@PostMapping("/add/{foodId}")
+	public ResponseEntity<Void> addDailyFoodToUser(@PathVariable int foodId,
+												   @Valid @RequestBody DailyCartFoodCreateDto request) {
+		dailyFoodService.addFoodToDailyCart(foodId, request);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
 
-    @DailyCartOwner
-    @PatchMapping("/update/{dailyCartFoodId}")
-    public ResponseEntity<Void> updateDailyCartFood(
-            @PathVariable int dailyCartFoodId,
-            @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        dailyFoodService.updateDailyFoodItem(dailyCartFoodId, patch);
-        return ResponseEntity.noContent().build();
-    }
+	@DailyCartOwner
+	@DeleteMapping("/remove/{dailyCartFoodId}")
+	public ResponseEntity<Void> removeFoodFromDailyCartFood(@PathVariable int dailyCartFoodId) {
+		dailyFoodService.removeFoodFromDailyCart(dailyCartFoodId);
+		return ResponseEntity.noContent().build();
+	}
+
+	@DailyCartOwner
+	@PatchMapping("/update/{dailyCartFoodId}")
+	public ResponseEntity<Void> updateDailyCartFood(@PathVariable int dailyCartFoodId,
+													@RequestBody JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+		dailyFoodService.updateDailyFoodItem(dailyCartFoodId, patch);
+		return ResponseEntity.noContent().build();
+	}
+
 }

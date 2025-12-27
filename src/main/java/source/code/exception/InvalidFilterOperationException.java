@@ -1,7 +1,9 @@
 package source.code.exception;
 
 public class InvalidFilterOperationException extends RuntimeException {
-    public InvalidFilterOperationException(String message) {
-        super("Invalid filter operation: " + message);
-    }
+
+	public InvalidFilterOperationException(String message) {
+		super("Invalid filter operation: " + message);
+	}
+
 }

@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
+
+import java.util.List;
+
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -41,149 +44,151 @@ import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.PlanSpecification;
 
-import java.util.List;
-
 @Service
 public class PlanServiceImpl implements PlanService {
-    private final JsonPatchService jsonPatchService;
-    private final ValidationService validationService;
-    private final ApplicationEventPublisher applicationEventPublisher;
-    private final PlanMapper planMapper;
-    private final RepositoryHelper repositoryHelper;
-    private final PlanRepository planRepository;
-    private final TextRepository textRepository;
-    private final SpecificationDependencies dependencies;
-    private final PlanPopulationService planPopulationService;
-    private final PlanCategoryRepository planCategoryRepository;
-    private final EquipmentRepository equipmentRepository;
 
-    public PlanServiceImpl(PlanMapper planMapper,
-                           JsonPatchService jsonPatchService,
-                           ValidationService validationService,
-                           ApplicationEventPublisher applicationEventPublisher,
-                           RepositoryHelper repositoryHelper,
-                           PlanRepository planRepository,
-                           TextRepository textRepository,
-                           SpecificationDependencies dependencies,
-                           PlanPopulationService planPopulationService,
-                           PlanCategoryRepository planCategoryRepository,
-                           EquipmentRepository equipmentRepository) {
-        this.planMapper = planMapper;
-        this.jsonPatchService = jsonPatchService;
-        this.validationService = validationService;
-        this.applicationEventPublisher = applicationEventPublisher;
-        this.repositoryHelper = repositoryHelper;
-        this.planRepository = planRepository;
-        this.textRepository = textRepository;
-        this.dependencies = dependencies;
-        this.planPopulationService = planPopulationService;
-        this.planCategoryRepository = planCategoryRepository;
-        this.equipmentRepository = equipmentRepository;
-    }
+	private final JsonPatchService jsonPatchService;
 
-    @Override
-    @Transactional
-    public PlanResponseDto createPlan(PlanCreateDto request) {
-        int userId = AuthorizationUtil.getUserId();
-        Plan mapped = planMapper.toEntity(request, userId);
-        Plan saved = planRepository.save(mapped);
-        applicationEventPublisher.publishEvent(PlanCreateEvent.of(this, saved));
+	private final ValidationService validationService;
 
-        planRepository.flush();
+	private final ApplicationEventPublisher applicationEventPublisher;
 
-        return findAndMap(saved.getId());
-    }
+	private final PlanMapper planMapper;
 
-    @Override
-    @Transactional
-    public void updatePlan(int planId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        Plan plan = find(planId);
-        PlanUpdateDto patchedPlanUpdateDto = applyPatchToPlan(patch);
+	private final RepositoryHelper repositoryHelper;
 
-        validationService.validate(patchedPlanUpdateDto);
-        planMapper.updatePlan(plan, patchedPlanUpdateDto);
-        Plan savedPlan = planRepository.save(plan);
+	private final PlanRepository planRepository;
 
-        applicationEventPublisher.publishEvent(PlanUpdateEvent.of(this, savedPlan));
-    }
+	private final TextRepository textRepository;
 
-    @Override
-    @Transactional
-    public void deletePlan(int planId) {
-        Plan plan = find(planId);
+	private final SpecificationDependencies dependencies;
 
-        textRepository.deleteByPlanId(planId);
-        planRepository.delete(plan);
+	private final PlanPopulationService planPopulationService;
 
-        applicationEventPublisher.publishEvent(PlanDeleteEvent.of(this, plan));
-    }
+	private final PlanCategoryRepository planCategoryRepository;
 
-    @Override
-    @Cacheable(value = CacheNames.PLANS, key = "#id")
-    public PlanResponseDto getPlan(int id) {
-        return findAndMap(id);
-    }
+	private final EquipmentRepository equipmentRepository;
 
-    @Override
-    public Page<PlanSummaryDto> getFilteredPlans(FilterDto filter, Pageable pageable) {
-        SpecificationFactory<Plan> planFactory = PlanSpecification::new;
-        SpecificationBuilder<Plan> specificationBuilder = SpecificationBuilder.of(filter, planFactory, dependencies);
-        Specification<Plan> specification = specificationBuilder.build();
+	public PlanServiceImpl(PlanMapper planMapper, JsonPatchService jsonPatchService,
+						   ValidationService validationService, ApplicationEventPublisher applicationEventPublisher,
+						   RepositoryHelper repositoryHelper, PlanRepository planRepository, TextRepository textRepository,
+						   SpecificationDependencies dependencies, PlanPopulationService planPopulationService,
+						   PlanCategoryRepository planCategoryRepository, EquipmentRepository equipmentRepository) {
+		this.planMapper = planMapper;
+		this.jsonPatchService = jsonPatchService;
+		this.validationService = validationService;
+		this.applicationEventPublisher = applicationEventPublisher;
+		this.repositoryHelper = repositoryHelper;
+		this.planRepository = planRepository;
+		this.textRepository = textRepository;
+		this.dependencies = dependencies;
+		this.planPopulationService = planPopulationService;
+		this.planCategoryRepository = planCategoryRepository;
+		this.equipmentRepository = equipmentRepository;
+	}
 
-        Page<Plan> planPage = planRepository.findAll(specification, pageable);
+	@Override
+	@Transactional
+	public PlanResponseDto createPlan(PlanCreateDto request) {
+		int userId = AuthorizationUtil.getUserId();
+		Plan mapped = planMapper.toEntity(request, userId);
+		Plan saved = planRepository.save(mapped);
+		applicationEventPublisher.publishEvent(PlanCreateEvent.of(this, saved));
 
-        List<PlanSummaryDto> summaries = planPage.getContent().stream()
-                .map(planMapper::toSummaryDto)
-                .toList();
+		planRepository.flush();
 
-        planPopulationService.populate(summaries);
+		return findAndMap(saved.getId());
+	}
 
-        return new PageImpl<>(summaries, pageable, planPage.getTotalElements());
-    }
+	@Override
+	@Transactional
+	public void updatePlan(int planId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+		Plan plan = find(planId);
+		PlanUpdateDto patchedPlanUpdateDto = applyPatchToPlan(patch);
 
-    @Override
-    public List<Plan> getAllPlanEntities() {
-        return planRepository.findAllWithoutAssociations();
-    }
+		validationService.validate(patchedPlanUpdateDto);
+		planMapper.updatePlan(plan, patchedPlanUpdateDto);
+		Plan savedPlan = planRepository.save(plan);
 
-    @Override
-    @Transactional
-    public void incrementViews(int planId) {
-        planRepository.incrementViews(planId);
-    }
+		applicationEventPublisher.publishEvent(PlanUpdateEvent.of(this, savedPlan));
+	}
 
-    @Override
-    @Cacheable(value = CacheNames.PLAN_CATEGORIES)
-    public PlanCategoriesResponseDto getAllPlanCategories() {
-        var structureTypes = List.of(PlanStructureType.values());
+	@Override
+	@Transactional
+	public void deletePlan(int planId) {
+		Plan plan = find(planId);
 
-        var categories = planCategoryRepository.findAll().stream()
-                .map(category -> new CategoryResponseDto(category.getId(), category.getName()))
-                .toList();
+		textRepository.deleteByPlanId(planId);
+		planRepository.delete(plan);
 
-        var equipments = equipmentRepository.findAll().stream()
-                .map(equipment -> new CategoryResponseDto(equipment.getId(), equipment.getName()))
-                .toList();
+		applicationEventPublisher.publishEvent(PlanDeleteEvent.of(this, plan));
+	}
 
-        return new PlanCategoriesResponseDto(structureTypes, categories, equipments);
-    }
+	@Override
+	@Cacheable(value = CacheNames.PLANS, key = "#id")
+	public PlanResponseDto getPlan(int id) {
+		return findAndMap(id);
+	}
 
-    private Plan find(int planId) {
-        return repositoryHelper.find(planRepository, Plan.class, planId);
-    }
+	@Override
+	public Page<PlanSummaryDto> getFilteredPlans(FilterDto filter, Pageable pageable) {
+		SpecificationFactory<Plan> planFactory = PlanSpecification::new;
+		SpecificationBuilder<Plan> specificationBuilder = SpecificationBuilder.of(filter, planFactory, dependencies);
+		Specification<Plan> specification = specificationBuilder.build();
 
-    private PlanResponseDto findAndMap(int planId) {
-        Plan plan = planRepository.findByIdWithDetails(planId)
-                .orElseThrow(() -> RecordNotFoundException.of(Plan.class, planId));
-        PlanResponseDto dto = planMapper.toResponseDto(plan);
-        planPopulationService.populate(dto);
+		Page<Plan> planPage = planRepository.findAll(specification, pageable);
 
-        return dto;
-    }
+		List<PlanSummaryDto> summaries = planPage.getContent().stream().map(planMapper::toSummaryDto).toList();
 
-    private PlanUpdateDto applyPatchToPlan(JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        return jsonPatchService.createFromPatch(patch, PlanUpdateDto.class);
-    }
+		planPopulationService.populate(summaries);
+
+		return new PageImpl<>(summaries, pageable, planPage.getTotalElements());
+	}
+
+	@Override
+	public List<Plan> getAllPlanEntities() {
+		return planRepository.findAllWithoutAssociations();
+	}
+
+	@Override
+	@Transactional
+	public void incrementViews(int planId) {
+		planRepository.incrementViews(planId);
+	}
+
+	@Override
+	@Cacheable(value = CacheNames.PLAN_CATEGORIES)
+	public PlanCategoriesResponseDto getAllPlanCategories() {
+		var structureTypes = List.of(PlanStructureType.values());
+
+		var categories = planCategoryRepository.findAll()
+			.stream()
+			.map(category -> new CategoryResponseDto(category.getId(), category.getName()))
+			.toList();
+
+		var equipments = equipmentRepository.findAll()
+			.stream()
+			.map(equipment -> new CategoryResponseDto(equipment.getId(), equipment.getName()))
+			.toList();
+
+		return new PlanCategoriesResponseDto(structureTypes, categories, equipments);
+	}
+
+	private Plan find(int planId) {
+		return repositoryHelper.find(planRepository, Plan.class, planId);
+	}
+
+	private PlanResponseDto findAndMap(int planId) {
+		Plan plan = planRepository.findByIdWithDetails(planId)
+			.orElseThrow(() -> RecordNotFoundException.of(Plan.class, planId));
+		PlanResponseDto dto = planMapper.toResponseDto(plan);
+		planPopulationService.populate(dto);
+
+		return dto;
+	}
+
+	private PlanUpdateDto applyPatchToPlan(JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+		return jsonPatchService.createFromPatch(patch, PlanUpdateDto.class);
+	}
+
 }

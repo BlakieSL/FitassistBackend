@@ -4,51 +4,55 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.FlushModeType;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+
+import java.util.Optional;
+
 import source.code.config.ContextProvider;
 import source.code.dto.request.user.UserUpdateDto;
 import source.code.model.user.User;
 import source.code.repository.UserRepository;
 
-import java.util.Optional;
-
 public class UniqueEmailValidator implements ConstraintValidator<UniqueEmailDomain, Object> {
-    UserRepository userRepository;
-    private EntityManager entityManager;
 
-    @Override
-    public void initialize(UniqueEmailDomain constraintAnnotation) {
-        entityManager = ContextProvider.getBean(EntityManager.class);
-        this.userRepository = ContextProvider.getBean(UserRepository.class);
-        ConstraintValidator.super.initialize(constraintAnnotation);
-    }
+	UserRepository userRepository;
 
-    @Override
-    public boolean isValid(Object value, ConstraintValidatorContext context) {
-        try {
-            entityManager.setFlushMode(FlushModeType.COMMIT);
+	private EntityManager entityManager;
 
-            if (value instanceof UserUpdateDto dto) {
-                if (dto.getEmail() == null) {
-                    return true;
-                }
+	@Override
+	public void initialize(UniqueEmailDomain constraintAnnotation) {
+		entityManager = ContextProvider.getBean(EntityManager.class);
+		this.userRepository = ContextProvider.getBean(UserRepository.class);
+		ConstraintValidator.super.initialize(constraintAnnotation);
+	}
 
-                Optional<User> existingUser = userRepository.findByEmail(dto.getEmail());
+	@Override
+	public boolean isValid(Object value, ConstraintValidatorContext context) {
+		try {
+			entityManager.setFlushMode(FlushModeType.COMMIT);
 
-                if (existingUser.isEmpty()) {
-                    return true;
-                }
+			if (value instanceof UserUpdateDto dto) {
+				if (dto.getEmail() == null) {
+					return true;
+				}
 
-                Integer existingUserId = existingUser.get().getId();
-                return existingUserId.equals(dto.getId());
-            }
+				Optional<User> existingUser = userRepository.findByEmail(dto.getEmail());
 
-            if (value instanceof String email) {
-                return !userRepository.existsByEmail(email);
-            }
+				if (existingUser.isEmpty()) {
+					return true;
+				}
 
-            return true;
-        } finally {
-            entityManager.setFlushMode(FlushModeType.AUTO);
-        }
-    }
+				Integer existingUserId = existingUser.get().getId();
+				return existingUserId.equals(dto.getId());
+			}
+
+			if (value instanceof String email) {
+				return !userRepository.existsByEmail(email);
+			}
+
+			return true;
+		} finally {
+			entityManager.setFlushMode(FlushModeType.AUTO);
+		}
+	}
+
 }

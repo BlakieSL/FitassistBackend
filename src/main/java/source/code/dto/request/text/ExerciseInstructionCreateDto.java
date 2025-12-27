@@ -12,8 +12,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExerciseInstructionCreateDto {
-    @NotNull
-    private short orderIndex;
-    @NotBlank
-    private String text;
+
+	@NotNull
+	private short orderIndex;
+
+	@NotBlank
+	private String text;
+
 }

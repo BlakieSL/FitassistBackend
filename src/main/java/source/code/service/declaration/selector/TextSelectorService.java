@@ -4,6 +4,7 @@ import source.code.helper.Enum.model.TextType;
 import source.code.service.declaration.text.TextService;
 
 public interface TextSelectorService {
-    TextService getService(TextType textType);
-}
 
+	TextService getService(TextType textType);
+
+}

@@ -1,5 +1,7 @@
 package source.code.unit.text;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,34 +11,34 @@ import source.code.model.plan.Plan;
 import source.code.model.text.PlanInstruction;
 import source.code.service.implementation.text.PlanInstructionTextCacheKeyGeneratorImpl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @ExtendWith(MockitoExtension.class)
 public class PlanInstructionTextCacheKeyGeneratorTest {
-    @InjectMocks
-    private PlanInstructionTextCacheKeyGeneratorImpl keyGenerator;
 
-    @Test
-    public void generateCacheKey() {
-        int planId = 123;
-        PlanInstruction planInstruction = new PlanInstruction();
-        Plan plan = new Plan();
-        plan.setId(planId);
-        planInstruction.setPlan(plan);
+	@InjectMocks
+	private PlanInstructionTextCacheKeyGeneratorImpl keyGenerator;
 
-        String result = keyGenerator.generateCacheKey(planInstruction);
+	@Test
+	public void generateCacheKey() {
+		int planId = 123;
+		PlanInstruction planInstruction = new PlanInstruction();
+		Plan plan = new Plan();
+		plan.setId(planId);
+		planInstruction.setPlan(plan);
 
-        String expected = CacheKeys.PLAN_INSTRUCTION.toString() + planId;
-        assertEquals(expected, result);
-    }
+		String result = keyGenerator.generateCacheKey(planInstruction);
 
-    @Test
-    public void generateCacheKeyForParent() {
-        int planId = 123;
+		String expected = CacheKeys.PLAN_INSTRUCTION.toString() + planId;
+		assertEquals(expected, result);
+	}
 
-        String result = keyGenerator.generateCacheKeyForParent(planId);
+	@Test
+	public void generateCacheKeyForParent() {
+		int planId = 123;
 
-        String expected = CacheKeys.PLAN_INSTRUCTION.toString() + planId;
-        assertEquals(expected, result);
-    }
+		String result = keyGenerator.generateCacheKeyForParent(planId);
+
+		String expected = CacheKeys.PLAN_INSTRUCTION.toString() + planId;
+		assertEquals(expected, result);
+	}
+
 }

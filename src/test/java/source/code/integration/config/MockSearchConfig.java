@@ -7,11 +7,12 @@ import org.springframework.context.annotation.Primary;
 
 @TestConfiguration
 public class MockSearchConfig {
-    @Primary
-    @Bean
-    public ApplicationRunner disableLuceneAutoIndex() {
-        return args -> {
 
-        };
-    }
+	@Primary
+	@Bean
+	public ApplicationRunner disableLuceneAutoIndex() {
+		return args -> {
+		};
+	}
+
 }

@@ -1,8 +1,17 @@
 package source.code.unit.text;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -26,222 +35,213 @@ import source.code.service.implementation.helpers.JsonPatchServiceImpl;
 import source.code.service.implementation.helpers.ValidationServiceImpl;
 import source.code.service.implementation.text.ExerciseInstructionServiceImpl;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
-
 @ExtendWith(MockitoExtension.class)
 public class ExerciseInstructionServiceTest {
-    @Mock
-    private ValidationServiceImpl validationService;
 
-    @Mock
-    private JsonPatchServiceImpl jsonPatchService;
+	@Mock
+	private ValidationServiceImpl validationService;
 
-    @Mock
-    private TextCacheKeyGenerator<ExerciseInstruction> textCacheKeyGenerator;
+	@Mock
+	private JsonPatchServiceImpl jsonPatchService;
 
-    @Mock
-    private CacheManager cacheManager;
+	@Mock
+	private TextCacheKeyGenerator<ExerciseInstruction> textCacheKeyGenerator;
 
-    @Mock
-    private ApplicationEventPublisher applicationEventPublisher;
+	@Mock
+	private CacheManager cacheManager;
 
-    @Mock
-    private ExerciseInstructionRepository repository;
+	@Mock
+	private ApplicationEventPublisher applicationEventPublisher;
 
-    @Mock
-    private TextMapper mapper;
+	@Mock
+	private ExerciseInstructionRepository repository;
 
-    @InjectMocks
-    private ExerciseInstructionServiceImpl service;
+	@Mock
+	private TextMapper mapper;
 
-    @Test
-    public void deleteText() {
-        int id = 1;
+	@InjectMocks
+	private ExerciseInstructionServiceImpl service;
 
-        when(repository.findById(id)).thenReturn(Optional.of(new ExerciseInstruction()));
-        doNothing().when(repository).delete(any(ExerciseInstruction.class));
-        doNothing().when(applicationEventPublisher).publishEvent(any(TextClearCacheEvent.class));
+	@Test
+	public void deleteText() {
+		int id = 1;
 
-        service.deleteText(id);
+		when(repository.findById(id)).thenReturn(Optional.of(new ExerciseInstruction()));
+		doNothing().when(repository).delete(any(ExerciseInstruction.class));
+		doNothing().when(applicationEventPublisher).publishEvent(any(TextClearCacheEvent.class));
 
-        verify(repository).findById(id);
-        verify(repository).delete(any(ExerciseInstruction.class));
-        verify(applicationEventPublisher).publishEvent(any(TextClearCacheEvent.class));
-    }
+		service.deleteText(id);
 
-    @Test
-    public void deleteTextNotFound() {
-        when(repository.findById(1)).thenReturn(Optional.empty());
+		verify(repository).findById(id);
+		verify(repository).delete(any(ExerciseInstruction.class));
+		verify(applicationEventPublisher).publishEvent(any(TextClearCacheEvent.class));
+	}
 
-        assertThrows(RecordNotFoundException.class, () -> service.deleteText(1));
+	@Test
+	public void deleteTextNotFound() {
+		when(repository.findById(1)).thenReturn(Optional.empty());
 
-        verify(repository).findById(1);
-        verify(repository, never()).delete(any(ExerciseInstruction.class));
-        verify(applicationEventPublisher, never()).publishEvent(any(TextClearCacheEvent.class));
-    }
+		assertThrows(RecordNotFoundException.class, () -> service.deleteText(1));
 
-    @Test
-    public void updateText() throws JsonPatchException, JsonProcessingException {
-        int id = 1;
-        var updateDto = new ExerciseInstructionUpdateDto();
-        var entity = new ExerciseInstruction();
-        var responseDto = new ExerciseInstructionResponseDto();
+		verify(repository).findById(1);
+		verify(repository, never()).delete(any(ExerciseInstruction.class));
+		verify(applicationEventPublisher, never()).publishEvent(any(TextClearCacheEvent.class));
+	}
 
-        when(repository.findById(id)).thenReturn(Optional.of(entity));
-        when(jsonPatchService.createFromPatch(any(JsonMergePatch.class), eq(ExerciseInstructionUpdateDto.class)))
-                .thenReturn(updateDto);
-        doNothing().when(validationService).validate(updateDto);
-        doNothing().when(mapper).updateExerciseInstruction(entity, updateDto);
-        when(repository.save(entity)).thenReturn(entity);
-        doNothing().when(applicationEventPublisher).publishEvent(any(TextClearCacheEvent.class));
+	@Test
+	public void updateText() throws JsonPatchException, JsonProcessingException {
+		int id = 1;
+		var updateDto = new ExerciseInstructionUpdateDto();
+		var entity = new ExerciseInstruction();
+		var responseDto = new ExerciseInstructionResponseDto();
 
-        service.updateText(id, mock(JsonMergePatch.class));
+		when(repository.findById(id)).thenReturn(Optional.of(entity));
+		when(jsonPatchService.createFromPatch(any(JsonMergePatch.class), eq(ExerciseInstructionUpdateDto.class)))
+			.thenReturn(updateDto);
+		doNothing().when(validationService).validate(updateDto);
+		doNothing().when(mapper).updateExerciseInstruction(entity, updateDto);
+		when(repository.save(entity)).thenReturn(entity);
+		doNothing().when(applicationEventPublisher).publishEvent(any(TextClearCacheEvent.class));
 
-        verify(repository).findById(id);
-        verify(jsonPatchService).createFromPatch(any(JsonMergePatch.class), eq(ExerciseInstructionUpdateDto.class));
-        verify(validationService).validate(updateDto);
-        verify(mapper).updateExerciseInstruction(entity, updateDto);
-        verify(repository).save(entity);
-        verify(applicationEventPublisher).publishEvent(any(TextClearCacheEvent.class));
-    }
+		service.updateText(id, mock(JsonMergePatch.class));
 
-    @Test
-    public void updateTextNotFound() throws JsonPatchException, JsonProcessingException {
-        int id = 1;
+		verify(repository).findById(id);
+		verify(jsonPatchService).createFromPatch(any(JsonMergePatch.class), eq(ExerciseInstructionUpdateDto.class));
+		verify(validationService).validate(updateDto);
+		verify(mapper).updateExerciseInstruction(entity, updateDto);
+		verify(repository).save(entity);
+		verify(applicationEventPublisher).publishEvent(any(TextClearCacheEvent.class));
+	}
 
-        when(repository.findById(id)).thenReturn(Optional.empty());
+	@Test
+	public void updateTextNotFound() throws JsonPatchException, JsonProcessingException {
+		int id = 1;
 
-        assertThrows(RecordNotFoundException.class, () -> service.updateText(id, mock(JsonMergePatch.class)));
+		when(repository.findById(id)).thenReturn(Optional.empty());
 
-        verify(repository).findById(id);
-        verify(jsonPatchService, never()).createFromPatch(any(), any());
-        verify(validationService, never()).validate(any());
-        verify(mapper, never()).updateExerciseInstruction(any(), any());
-        verify(repository, never()).save(any());
-        verify(applicationEventPublisher, never()).publishEvent(any());
-    }
+		assertThrows(RecordNotFoundException.class, () -> service.updateText(id, mock(JsonMergePatch.class)));
 
-    @Test
-    public void updateTextPatchFailed() throws JsonPatchException, JsonProcessingException {
-        int id = 1;
-        var entity = new ExerciseInstruction();
-        var responseDto = new ExerciseInstructionResponseDto();
+		verify(repository).findById(id);
+		verify(jsonPatchService, never()).createFromPatch(any(), any());
+		verify(validationService, never()).validate(any());
+		verify(mapper, never()).updateExerciseInstruction(any(), any());
+		verify(repository, never()).save(any());
+		verify(applicationEventPublisher, never()).publishEvent(any());
+	}
 
-        when(repository.findById(id)).thenReturn(Optional.of(entity));
-        when(jsonPatchService.createFromPatch(any(), any()))
-                .thenThrow(JsonPatchException.class);
+	@Test
+	public void updateTextPatchFailed() throws JsonPatchException, JsonProcessingException {
+		int id = 1;
+		var entity = new ExerciseInstruction();
+		var responseDto = new ExerciseInstructionResponseDto();
 
-        assertThrows(JsonPatchException.class, () -> service.updateText(id, mock(JsonMergePatch.class)));
+		when(repository.findById(id)).thenReturn(Optional.of(entity));
+		when(jsonPatchService.createFromPatch(any(), any())).thenThrow(JsonPatchException.class);
 
-        verify(validationService, never()).validate(any());
-        verify(mapper, never()).updateExerciseInstruction(any(), any());
-        verify(repository, never()).save(any());
-    }
+		assertThrows(JsonPatchException.class, () -> service.updateText(id, mock(JsonMergePatch.class)));
 
-    @Test
-    public void updateTextValidationFailed() throws JsonPatchException, JsonProcessingException {
-        int id = 1;
-        var updateDto = new ExerciseInstructionUpdateDto();
-        var entity = new ExerciseInstruction();
-        var responseDto = new ExerciseInstructionResponseDto();
+		verify(validationService, never()).validate(any());
+		verify(mapper, never()).updateExerciseInstruction(any(), any());
+		verify(repository, never()).save(any());
+	}
 
-        when(repository.findById(id)).thenReturn(Optional.of(entity));
-        when(jsonPatchService.createFromPatch(any(), any()))
-                .thenReturn(updateDto);
-        doThrow(IllegalArgumentException.class).when(validationService).validate(updateDto);
+	@Test
+	public void updateTextValidationFailed() throws JsonPatchException, JsonProcessingException {
+		int id = 1;
+		var updateDto = new ExerciseInstructionUpdateDto();
+		var entity = new ExerciseInstruction();
+		var responseDto = new ExerciseInstructionResponseDto();
 
-        assertThrows(IllegalArgumentException.class, () -> service.updateText(id, mock(JsonMergePatch.class)));
+		when(repository.findById(id)).thenReturn(Optional.of(entity));
+		when(jsonPatchService.createFromPatch(any(), any())).thenReturn(updateDto);
+		doThrow(IllegalArgumentException.class).when(validationService).validate(updateDto);
 
-        verify(repository).findById(id);
-        verify(jsonPatchService).createFromPatch(any(), any());
-        verify(validationService).validate(updateDto);
-        verify(mapper, never()).updateExerciseInstruction(any(), any());
-        verify(repository, never()).save(any());
-        verify(applicationEventPublisher, never()).publishEvent(any());
-    }
+		assertThrows(IllegalArgumentException.class, () -> service.updateText(id, mock(JsonMergePatch.class)));
 
-    @Test
-    public void getAllByParent() {
-        int exerciseId = 1;
-        String cacheKey = "someCacheKey";
-        List<BaseTextResponseDto> cachedResponse = List.of(new ExerciseInstructionResponseDto());
-        Cache.ValueWrapper cachedValue = mock(Cache.ValueWrapper.class);
-        Cache cache = mock(Cache.class);
+		verify(repository).findById(id);
+		verify(jsonPatchService).createFromPatch(any(), any());
+		verify(validationService).validate(updateDto);
+		verify(mapper, never()).updateExerciseInstruction(any(), any());
+		verify(repository, never()).save(any());
+		verify(applicationEventPublisher, never()).publishEvent(any());
+	}
 
-        when(textCacheKeyGenerator.generateCacheKeyForParent(exerciseId)).thenReturn(cacheKey);
-        when(cacheManager.getCache("allTextByParent")).thenReturn(cache);
-        when(cache.get(cacheKey)).thenReturn(cachedValue);
-        when(cachedValue.get()).thenReturn(cachedResponse);
+	@Test
+	public void getAllByParent() {
+		int exerciseId = 1;
+		String cacheKey = "someCacheKey";
+		List<BaseTextResponseDto> cachedResponse = List.of(new ExerciseInstructionResponseDto());
+		Cache.ValueWrapper cachedValue = mock(Cache.ValueWrapper.class);
+		Cache cache = mock(Cache.class);
 
-        List<BaseTextResponseDto> result = service.getAllByParent(exerciseId);
+		when(textCacheKeyGenerator.generateCacheKeyForParent(exerciseId)).thenReturn(cacheKey);
+		when(cacheManager.getCache("allTextByParent")).thenReturn(cache);
+		when(cache.get(cacheKey)).thenReturn(cachedValue);
+		when(cachedValue.get()).thenReturn(cachedResponse);
 
-        assertEquals(cachedResponse, result);
-        verify(repository, never()).getAllByExerciseId(anyInt());
-        verify(applicationEventPublisher, never()).publishEvent(any(TextCreateCacheEvent.class));
-    }
+		List<BaseTextResponseDto> result = service.getAllByParent(exerciseId);
 
-    @Test
-    public void getAllByParentCacheMiss() {
-        int exerciseId = 1;
-        String cacheKey = "someCacheKey";
+		assertEquals(cachedResponse, result);
+		verify(repository, never()).getAllByExerciseId(anyInt());
+		verify(applicationEventPublisher, never()).publishEvent(any(TextCreateCacheEvent.class));
+	}
 
-        ExerciseInstruction entity = new ExerciseInstruction();
-        ExerciseInstructionResponseDto responseDto = new ExerciseInstructionResponseDto();
-        List<ExerciseInstruction> entities = List.of(entity);
-        List<BaseTextResponseDto> expectedResponse = List.of(responseDto);
-        Cache cache = mock(Cache.class);
+	@Test
+	public void getAllByParentCacheMiss() {
+		int exerciseId = 1;
+		String cacheKey = "someCacheKey";
 
-        when(textCacheKeyGenerator.generateCacheKeyForParent(exerciseId)).thenReturn(cacheKey);
-        when(cacheManager.getCache("allTextByParent")).thenReturn(cache);
-        when(cache.get(cacheKey)).thenReturn(null);
-        when(repository.getAllByExerciseId(exerciseId)).thenReturn(entities);
-        when(mapper.toExerciseInstructionResponseDto(entity)).thenReturn(responseDto);
+		ExerciseInstruction entity = new ExerciseInstruction();
+		ExerciseInstructionResponseDto responseDto = new ExerciseInstructionResponseDto();
+		List<ExerciseInstruction> entities = List.of(entity);
+		List<BaseTextResponseDto> expectedResponse = List.of(responseDto);
+		Cache cache = mock(Cache.class);
 
-        ArgumentCaptor<TextCreateCacheEvent> eventCaptor = ArgumentCaptor.forClass(TextCreateCacheEvent.class);
+		when(textCacheKeyGenerator.generateCacheKeyForParent(exerciseId)).thenReturn(cacheKey);
+		when(cacheManager.getCache("allTextByParent")).thenReturn(cache);
+		when(cache.get(cacheKey)).thenReturn(null);
+		when(repository.getAllByExerciseId(exerciseId)).thenReturn(entities);
+		when(mapper.toExerciseInstructionResponseDto(entity)).thenReturn(responseDto);
 
-        List<BaseTextResponseDto> result = service.getAllByParent(exerciseId);
+		ArgumentCaptor<TextCreateCacheEvent> eventCaptor = ArgumentCaptor.forClass(TextCreateCacheEvent.class);
 
-        assertEquals(1, result.size());
-        assertEquals(responseDto, result.get(0));
-        verify(repository).getAllByExerciseId(exerciseId);
-        verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
+		List<BaseTextResponseDto> result = service.getAllByParent(exerciseId);
 
-        TextCreateCacheEvent event = eventCaptor.getValue();
-        assertEquals(cacheKey, event.getCacheKey());
-        assertEquals(expectedResponse, event.getCachedData());
-    }
+		assertEquals(1, result.size());
+		assertEquals(responseDto, result.get(0));
+		verify(repository).getAllByExerciseId(exerciseId);
+		verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
 
-    @Test
-    public void getAllByParentEmpty() {
-        int exerciseId = 1;
-        String cacheKey = "someCacheKey";
-        Cache cache = mock(Cache.class);
+		TextCreateCacheEvent event = eventCaptor.getValue();
+		assertEquals(cacheKey, event.getCacheKey());
+		assertEquals(expectedResponse, event.getCachedData());
+	}
 
-        when(textCacheKeyGenerator.generateCacheKeyForParent(exerciseId)).thenReturn(cacheKey);
-        when(cacheManager.getCache("allTextByParent")).thenReturn(cache);
-        when(cache.get(cacheKey)).thenReturn(null);
-        when(repository.getAllByExerciseId(exerciseId)).thenReturn(Collections.emptyList());
+	@Test
+	public void getAllByParentEmpty() {
+		int exerciseId = 1;
+		String cacheKey = "someCacheKey";
+		Cache cache = mock(Cache.class);
 
-        ArgumentCaptor<TextCreateCacheEvent> eventCaptor = ArgumentCaptor.forClass(TextCreateCacheEvent.class);
+		when(textCacheKeyGenerator.generateCacheKeyForParent(exerciseId)).thenReturn(cacheKey);
+		when(cacheManager.getCache("allTextByParent")).thenReturn(cache);
+		when(cache.get(cacheKey)).thenReturn(null);
+		when(repository.getAllByExerciseId(exerciseId)).thenReturn(Collections.emptyList());
 
-        List<BaseTextResponseDto> result = service.getAllByParent(exerciseId);
+		ArgumentCaptor<TextCreateCacheEvent> eventCaptor = ArgumentCaptor.forClass(TextCreateCacheEvent.class);
 
-        assertTrue(result.isEmpty());
-        verify(repository).getAllByExerciseId(exerciseId);
-        verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
+		List<BaseTextResponseDto> result = service.getAllByParent(exerciseId);
 
-        TextCreateCacheEvent event = eventCaptor.getValue();
-        assertEquals(cacheKey, event.getCacheKey());
+		assertTrue(result.isEmpty());
+		verify(repository).getAllByExerciseId(exerciseId);
+		verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
 
-        assertInstanceOf(List.class, event.getCachedData());
-        List<?> cachedData = (List<?>) event.getCachedData();
-        assertTrue(cachedData.isEmpty());
-    }
+		TextCreateCacheEvent event = eventCaptor.getValue();
+		assertEquals(cacheKey, event.getCacheKey());
+
+		assertInstanceOf(List.class, event.getCachedData());
+		List<?> cachedData = (List<?>) event.getCachedData();
+		assertTrue(cachedData.isEmpty());
+	}
+
 }

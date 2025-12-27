@@ -1,5 +1,7 @@
 package source.code.integration.test.controller;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,40 +17,38 @@ import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-
-@Import({MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class})
+@Import({ MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class })
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ContextConfiguration(initializers = {MySqlContainerInitializer.class})
+@ContextConfiguration(initializers = { MySqlContainerInitializer.class })
 public class ThreadControllerTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ThreadControllerTest.class);
 
-    @LocalServerPort
-    private int port;
+	private static final Logger LOGGER = LoggerFactory.getLogger(ThreadControllerTest.class);
 
-    private final String baseUrl = "http://localhost:";
+	@LocalServerPort
+	private int port;
 
-    @Test
-    void shouldRunOnVirtualThread() {
-        RestTemplate restTemplate = new RestTemplate();
+	private final String baseUrl = "http://localhost:";
 
-        try {
-            ResponseEntity<String> response = restTemplate.getForEntity(
-                    baseUrl + port + "/api/virtual-threads/thread-info",
-                    String.class
-            );
+	@Test
+	void shouldRunOnVirtualThread() {
+		RestTemplate restTemplate = new RestTemplate();
 
-            LOGGER.info("RESPONSE STATUS: {}", response.getStatusCode());
-            LOGGER.info("RESPONSE BODY: {}", response.getBody());
+		try {
+			ResponseEntity<String> response = restTemplate
+				.getForEntity(baseUrl + port + "/api/virtual-threads/thread-info", String.class);
 
-            assertTrue(response.getStatusCode().is2xxSuccessful());
-            assertTrue(response.getBody().contains("\"isVirtual\":true"));
+			LOGGER.info("RESPONSE STATUS: {}", response.getStatusCode());
+			LOGGER.info("RESPONSE BODY: {}", response.getBody());
 
-        } catch (Exception e) {
-            LOGGER.error("Test failed with exception", e);
-            throw e;
-        }
-    }
+			assertTrue(response.getStatusCode().is2xxSuccessful());
+			assertTrue(response.getBody().contains("\"isVirtual\":true"));
+
+		}
+		catch (Exception e) {
+			LOGGER.error("Test failed with exception", e);
+			throw e;
+		}
+	}
+
 }

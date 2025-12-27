@@ -2,32 +2,35 @@ package source.code.dto.request.workoutSetExercise;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.math.BigDecimal;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutSetExerciseCreateDto {
-    @NotNull
-    private BigDecimal weight;
 
-    @NotNull
-    @Positive
-    private Short repetitions;
+	@NotNull
+	private BigDecimal weight;
 
-    @NotNull
-    private Integer workoutSetId;
+	@NotNull
+	@Positive
+	private Short repetitions;
 
-    @NotNull
-    private Integer exerciseId;
+	@NotNull
+	private Integer workoutSetId;
 
-    @NotNull
-    @Positive
-    private Short orderIndex;
+	@NotNull
+	private Integer exerciseId;
+
+	@NotNull
+	@Positive
+	private Short orderIndex;
+
 }

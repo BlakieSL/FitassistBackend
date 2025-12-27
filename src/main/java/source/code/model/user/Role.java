@@ -3,13 +3,14 @@ package source.code.model.user;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "role")
@@ -18,18 +19,21 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Role {
-    private static final int MIN_ROLE_NAME_LENGTH = 4;
-    private static final int MAX_ROLE_NAME_LENGTH = 5;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	private static final int MIN_ROLE_NAME_LENGTH = 4;
 
-    @NotBlank
-    @Size(min = MIN_ROLE_NAME_LENGTH, max = MAX_ROLE_NAME_LENGTH)
-    @Column(nullable = false, length = MAX_ROLE_NAME_LENGTH)
-    private String name;
+	private static final int MAX_ROLE_NAME_LENGTH = 5;
 
-    @ManyToMany(mappedBy = "roles")
-    private final Set<User> users = new HashSet<>();
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+
+	@NotBlank
+	@Size(min = MIN_ROLE_NAME_LENGTH, max = MAX_ROLE_NAME_LENGTH)
+	@Column(nullable = false, length = MAX_ROLE_NAME_LENGTH)
+	private String name;
+
+	@ManyToMany(mappedBy = "roles")
+	private final Set<User> users = new HashSet<>();
+
 }

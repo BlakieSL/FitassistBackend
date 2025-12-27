@@ -1,9 +1,11 @@
 package source.code.helper;
 
 public interface IndexedEntity {
-    Integer getId();
 
-    String getName();
+	Integer getId();
 
-    String getClassName();
+	String getName();
+
+	String getClassName();
+
 }

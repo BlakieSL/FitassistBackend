@@ -3,30 +3,36 @@ package source.code.model.recipe;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
- * Represents a category used to classify recipes based on when or how they are typically consumed.
+ * Represents a category used to classify recipes based on when or how they are typically
+ * consumed.
  *
- * <p><strong>Known predefined values:</strong></p>
+ * <p>
+ * <strong>Known predefined values:</strong>
+ *
  * <ul>
- *     <li>{@code BREAKFAST}</li>
- *     <li>{@code LUNCH}</li>
- *     <li>{@code DINNER}</li>
- *     <li>{@code SNACK}</li>
- *     <li>{@code DESSERT}</li>
- *     <li>{@code APPETIZER}</li>
- *     <li>{@code SIDE_DISH}</li>
- *     <li>{@code MAIN_COURSE}</li>
+ * <li>{@code BREAKFAST}
+ * <li>{@code LUNCH}
+ * <li>{@code DINNER}
+ * <li>{@code SNACK}
+ * <li>{@code DESSERT}
+ * <li>{@code APPETIZER}
+ * <li>{@code SIDE_DISH}
+ * <li>{@code MAIN_COURSE}
  * </ul>
  *
- * <p>Note: These values are not hardcoded and may be extended or modified through the application.</p>
+ * <p>
+ * Note: These values are not hardcoded and may be extended or modified through the
+ * application.
  */
 @Entity
 @Table(name = "recipe_category")
@@ -35,15 +41,18 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecipeCategory {
-    private static final int NAME_MAX_LENGTH = 50;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
-    @NotBlank
-    @Size(max = NAME_MAX_LENGTH)
-    private String name;
+	private static final int NAME_MAX_LENGTH = 50;
 
-    @OneToMany(mappedBy = "recipeCategory")
-    private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+
+	@NotBlank
+	@Size(max = NAME_MAX_LENGTH)
+	private String name;
+
+	@OneToMany(mappedBy = "recipeCategory")
+	private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new HashSet<>();
+
 }

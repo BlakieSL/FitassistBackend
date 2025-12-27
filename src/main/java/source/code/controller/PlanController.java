@@ -23,57 +23,58 @@ import source.code.service.declaration.plan.PlanService;
 @RestController
 @RequestMapping("/api/plans")
 public class PlanController {
-    private final PlanService planService;
 
-    public PlanController(PlanService planService) {
-        this.planService = planService;
-    }
+	private final PlanService planService;
 
-    @PostMapping
-    public ResponseEntity<PlanResponseDto> createPlan(@Valid @RequestBody PlanCreateDto planDto) {
-        PlanResponseDto response = planService.createPlan(planDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+	public PlanController(PlanService planService) {
+		this.planService = planService;
+	}
 
-    @PlanOwnerOrAdmin
-    @PatchMapping("/{planId}")
-    public ResponseEntity<Void> updatePlan(@PathVariable int planId, @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        planService.updatePlan(planId, patch);
-        return ResponseEntity.noContent().build();
-    }
+	@PostMapping
+	public ResponseEntity<PlanResponseDto> createPlan(@Valid @RequestBody PlanCreateDto planDto) {
+		PlanResponseDto response = planService.createPlan(planDto);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
 
-    @PlanOwnerOrAdmin
-    @DeleteMapping("/{planId}")
-    public ResponseEntity<Void> deletePlan(@PathVariable int planId) {
-        planService.deletePlan(planId);
-        return ResponseEntity.noContent().build();
-    }
+	@PlanOwnerOrAdmin
+	@PatchMapping("/{planId}")
+	public ResponseEntity<Void> updatePlan(@PathVariable int planId, @RequestBody JsonMergePatch patch)
+		throws JsonPatchException, JsonProcessingException {
+		planService.updatePlan(planId, patch);
+		return ResponseEntity.noContent().build();
+	}
 
-    @PublicPlanOrOwnerOrAdmin
-    @GetMapping("/{planId}")
-    public ResponseEntity<PlanResponseDto> getPlan(@PathVariable int planId) {
-        PlanResponseDto plan = planService.getPlan(planId);
-        return ResponseEntity.ok(plan);
-    }
+	@PlanOwnerOrAdmin
+	@DeleteMapping("/{planId}")
+	public ResponseEntity<Void> deletePlan(@PathVariable int planId) {
+		planService.deletePlan(planId);
+		return ResponseEntity.noContent().build();
+	}
 
-    @PostMapping("/filter")
-    public ResponseEntity<Page<PlanSummaryDto>> getFilteredPlans(
-            @Valid @RequestBody FilterDto filterDto,
-            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<PlanSummaryDto> filtered = planService.getFilteredPlans(filterDto, pageable);
-        return ResponseEntity.ok(filtered);
-    }
+	@PublicPlanOrOwnerOrAdmin
+	@GetMapping("/{planId}")
+	public ResponseEntity<PlanResponseDto> getPlan(@PathVariable int planId) {
+		PlanResponseDto plan = planService.getPlan(planId);
+		return ResponseEntity.ok(plan);
+	}
 
-    @PatchMapping("/{planId}/view")
-    public ResponseEntity<Void> incrementViews(@PathVariable int planId) {
-        planService.incrementViews(planId);
-        return ResponseEntity.noContent().build();
-    }
+	@PostMapping("/filter")
+	public ResponseEntity<Page<PlanSummaryDto>> getFilteredPlans(@Valid @RequestBody FilterDto filterDto,
+																 @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+		Page<PlanSummaryDto> filtered = planService.getFilteredPlans(filterDto, pageable);
+		return ResponseEntity.ok(filtered);
+	}
 
-    @GetMapping("/categories")
-    public ResponseEntity<PlanCategoriesResponseDto> getAllPlanCategories() {
-        PlanCategoriesResponseDto categories = planService.getAllPlanCategories();
-        return ResponseEntity.ok(categories);
-    }
+	@PatchMapping("/{planId}/view")
+	public ResponseEntity<Void> incrementViews(@PathVariable int planId) {
+		planService.incrementViews(planId);
+		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping("/categories")
+	public ResponseEntity<PlanCategoriesResponseDto> getAllPlanCategories() {
+		PlanCategoriesResponseDto categories = planService.getAllPlanCategories();
+		return ResponseEntity.ok(categories);
+	}
+
 }
