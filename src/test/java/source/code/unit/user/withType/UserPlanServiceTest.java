@@ -1,5 +1,13 @@
 package source.code.unit.user.withType;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,219 +35,207 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.plan.PlanPopulationService;
 import source.code.service.implementation.user.interaction.withType.UserPlanServiceImpl;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class UserPlanServiceTest {
-    @Mock
-    private UserPlanRepository userPlanRepository;
-    @Mock
-    private PlanRepository planRepository;
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private PlanMapper planMapper;
-    @Mock
-    private PlanPopulationService planPopulationService;
-    @InjectMocks
-    private UserPlanServiceImpl userPlanService;
-    private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
-    @BeforeEach
-    void setUp() {
-        mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
-    }
+	@Mock
+	private UserPlanRepository userPlanRepository;
 
-    @AfterEach
-    void tearDown() {
-        if (mockedAuthUtil != null) {
-            mockedAuthUtil.close();
-        }
-    }
+	@Mock
+	private PlanRepository planRepository;
 
-    @Test
-    public void saveToUser_ShouldSaveToUserWithType() {
-        int userId = 1;
-        int planId = 100;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
-        User user = new User();
-        Plan plan = new Plan();
-        plan.setIsPublic(true);
+	@Mock
+	private UserRepository userRepository;
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type))
-                .thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(planRepository.findById(planId)).thenReturn(Optional.of(plan));
+	@Mock
+	private PlanMapper planMapper;
 
-        userPlanService.saveToUser(planId, type);
+	@Mock
+	private PlanPopulationService planPopulationService;
 
-        verify(userPlanRepository).save(any(UserPlan.class));
-    }
+	@InjectMocks
+	private UserPlanServiceImpl userPlanService;
 
-    @Test
-    public void saveToUser_ShouldThrowNotSupportedInteractionTypeExceptionIfPlanIsPrivate() {
-        int userId = 1;
-        int planId = 100;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
-        User user = new User();
-        Plan plan = new Plan();
-        plan.setIsPublic(false);
+	private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type))
-                .thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(planRepository.findById(planId)).thenReturn(Optional.of(plan));
+	@BeforeEach
+	void setUp() {
+		mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
+	}
 
-        assertThrows(NotSupportedInteractionTypeException.class,
-                () -> userPlanService.saveToUser(planId, type));
+	@AfterEach
+	void tearDown() {
+		if (mockedAuthUtil != null) {
+			mockedAuthUtil.close();
+		}
+	}
 
-        verify(userPlanRepository, never()).save(any());
-    }
+	@Test
+	public void saveToUser_ShouldSaveToUserWithType() {
+		int userId = 1;
+		int planId = 100;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
+		User user = new User();
+		Plan plan = new Plan();
+		plan.setIsPublic(true);
 
-    @Test
-    public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
-        int userId = 1;
-        int planId = 100;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(planRepository.findById(planId)).thenReturn(Optional.of(plan));
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type))
-                .thenReturn(true);
+		userPlanService.saveToUser(planId, type);
 
-        assertThrows(NotUniqueRecordException.class,
-                () -> userPlanService.saveToUser(planId, type));
+		verify(userPlanRepository).save(any(UserPlan.class));
+	}
 
-        verify(userPlanRepository, never()).save(any());
-    }
+	@Test
+	public void saveToUser_ShouldThrowNotSupportedInteractionTypeExceptionIfPlanIsPrivate() {
+		int userId = 1;
+		int planId = 100;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
+		User user = new User();
+		Plan plan = new Plan();
+		plan.setIsPublic(false);
 
-    @Test
-    public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
-        int userId = 1;
-        int planId = 100;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(planRepository.findById(planId)).thenReturn(Optional.of(plan));
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type))
-                .thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+		assertThrows(NotSupportedInteractionTypeException.class, () -> userPlanService.saveToUser(planId, type));
 
-        assertThrows(RecordNotFoundException.class,
-                () -> userPlanService.saveToUser(planId, type));
+		verify(userPlanRepository, never()).save(any());
+	}
 
-        verify(userPlanRepository, never()).save(any());
-    }
+	@Test
+	public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
+		int userId = 1;
+		int planId = 100;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
 
-    @Test
-    public void saveToUser_ShouldThrowRecordNotFoundExceptionIfPlanNotFound() {
-        int userId = 1;
-        int planId = 100;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
-        User user = new User();
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type)).thenReturn(true);
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type))
-                .thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(planRepository.findById(planId)).thenReturn(Optional.empty());
+		assertThrows(NotUniqueRecordException.class, () -> userPlanService.saveToUser(planId, type));
 
-        assertThrows(RecordNotFoundException.class,
-                () -> userPlanService.saveToUser(planId, type));
+		verify(userPlanRepository, never()).save(any());
+	}
 
-        verify(userPlanRepository, never()).save(any());
-    }
+	@Test
+	public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
+		int userId = 1;
+		int planId = 100;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
 
-    @Test
-    public void deleteFromUser_ShouldDeleteFromUser() {
-        int userId = 1;
-        int planId = 100;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
-        UserPlan userPlan = UserPlan.createWithUserPlanType(new User(), new Plan(), type);
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userPlanRepository.findByUserIdAndPlanIdAndType(userId, planId, type))
-                .thenReturn(Optional.of(userPlan));
+		assertThrows(RecordNotFoundException.class, () -> userPlanService.saveToUser(planId, type));
 
-        userPlanService.deleteFromUser(planId, type);
+		verify(userPlanRepository, never()).save(any());
+	}
 
-        verify(userPlanRepository).delete(userPlan);
-    }
+	@Test
+	public void saveToUser_ShouldThrowRecordNotFoundExceptionIfPlanNotFound() {
+		int userId = 1;
+		int planId = 100;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
+		User user = new User();
 
-    @Test
-    public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserPlanNotFound() {
-        int userId = 1;
-        int planId = 100;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userPlanRepository.existsByUserIdAndPlanIdAndType(userId, planId, type)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(planRepository.findById(planId)).thenReturn(Optional.empty());
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userPlanRepository.findByUserIdAndPlanIdAndType(userId, planId, type))
-                .thenReturn(Optional.empty());
+		assertThrows(RecordNotFoundException.class, () -> userPlanService.saveToUser(planId, type));
 
-        assertThrows(RecordNotFoundException.class,
-                () -> userPlanService.deleteFromUser(planId, type));
+		verify(userPlanRepository, never()).save(any());
+	}
 
-        verify(userPlanRepository, never()).delete(any());
-    }
+	@Test
+	public void deleteFromUser_ShouldDeleteFromUser() {
+		int userId = 1;
+		int planId = 100;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
+		UserPlan userPlan = UserPlan.createWithUserPlanType(new User(), new Plan(), type);
 
-    @Test
-    public void getAllFromUser_ShouldReturnAllPlansByType() {
-        int userId = 1;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
-        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userPlanRepository.findByUserIdAndPlanIdAndType(userId, planId, type)).thenReturn(Optional.of(userPlan));
 
-        Plan plan1 = new Plan();
-        plan1.setId(1);
-        Plan plan2 = new Plan();
-        plan2.setId(2);
+		userPlanService.deleteFromUser(planId, type);
 
-        User user = new User();
-        user.setId(userId);
+		verify(userPlanRepository).delete(userPlan);
+	}
 
-        UserPlan userPlan1 = UserPlan.createWithUserPlanType(user, plan1, type);
-        UserPlan userPlan2 = UserPlan.createWithUserPlanType(user, plan2, type);
+	@Test
+	public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserPlanNotFound() {
+		int userId = 1;
+		int planId = 100;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
 
-        PlanSummaryDto dto1 = new PlanSummaryDto();
-        dto1.setId(1);
-        PlanSummaryDto dto2 = new PlanSummaryDto();
-        dto2.setId(2);
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userPlanRepository.findByUserIdAndPlanIdAndType(userId, planId, type)).thenReturn(Optional.empty());
 
-        Page<UserPlan> userPlanPage = new PageImpl<>(List.of(userPlan1, userPlan2), pageable, 2);
+		assertThrows(RecordNotFoundException.class, () -> userPlanService.deleteFromUser(planId, type));
 
-        when(userPlanRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
-                .thenReturn(userPlanPage);
-        when(planRepository.findByIdsWithDetails(any())).thenReturn(List.of(plan1, plan2));
-        when(planMapper.toSummaryDto(plan1)).thenReturn(dto1);
-        when(planMapper.toSummaryDto(plan2)).thenReturn(dto2);
+		verify(userPlanRepository, never()).delete(any());
+	}
 
-        Page<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, pageable);
+	@Test
+	public void getAllFromUser_ShouldReturnAllPlansByType() {
+		int userId = 1;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
+		Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        assertEquals(2, result.getContent().size());
-        assertEquals(2, result.getTotalElements());
-        verify(userPlanRepository).findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class));
-        verify(planPopulationService).populate(any(List.class));
-    }
+		Plan plan1 = new Plan();
+		plan1.setId(1);
+		Plan plan2 = new Plan();
+		plan2.setId(2);
 
-    @Test
-    public void getAllFromUser_ShouldReturnEmptyListIfNoPlans() {
-        int userId = 1;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
-        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+		User user = new User();
+		user.setId(userId);
 
-        Page<UserPlan> emptyPage = new PageImpl<>(List.of(), pageable, 0);
+		UserPlan userPlan1 = UserPlan.createWithUserPlanType(user, plan1, type);
+		UserPlan userPlan2 = UserPlan.createWithUserPlanType(user, plan2, type);
 
-        when(userPlanRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
-                .thenReturn(emptyPage);
+		PlanSummaryDto dto1 = new PlanSummaryDto();
+		dto1.setId(1);
+		PlanSummaryDto dto2 = new PlanSummaryDto();
+		dto2.setId(2);
 
-        Page<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, pageable);
+		Page<UserPlan> userPlanPage = new PageImpl<>(List.of(userPlan1, userPlan2), pageable, 2);
 
-        assertTrue(result.getContent().isEmpty());
-        assertEquals(0, result.getTotalElements());
-    }
+		when(userPlanRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
+			.thenReturn(userPlanPage);
+		when(planRepository.findByIdsWithDetails(any())).thenReturn(List.of(plan1, plan2));
+		when(planMapper.toSummaryDto(plan1)).thenReturn(dto1);
+		when(planMapper.toSummaryDto(plan2)).thenReturn(dto2);
+
+		Page<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, pageable);
+
+		assertEquals(2, result.getContent().size());
+		assertEquals(2, result.getTotalElements());
+		verify(userPlanRepository).findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class));
+		verify(planPopulationService).populate(any(List.class));
+	}
+
+	@Test
+	public void getAllFromUser_ShouldReturnEmptyListIfNoPlans() {
+		int userId = 1;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
+		Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+		Page<UserPlan> emptyPage = new PageImpl<>(List.of(), pageable, 0);
+
+		when(userPlanRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
+			.thenReturn(emptyPage);
+
+		Page<BaseUserEntity> result = userPlanService.getAllFromUser(userId, type, pageable);
+
+		assertTrue(result.getContent().isEmpty());
+		assertEquals(0, result.getTotalElements());
+	}
+
 }

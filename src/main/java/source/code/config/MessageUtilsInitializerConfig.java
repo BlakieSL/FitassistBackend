@@ -7,14 +7,16 @@ import source.code.helper.utils.MessageUtils;
 
 @Configuration
 public class MessageUtilsInitializerConfig {
-    private final MessageSource messageSource;
 
-    public MessageUtilsInitializerConfig(MessageSource messageSource) {
-        this.messageSource = messageSource;
-    }
+	private final MessageSource messageSource;
 
-    @PostConstruct
-    public void init() {
-        MessageUtils.setMessageSource(messageSource);
-    }
+	public MessageUtilsInitializerConfig(MessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
+	@PostConstruct
+	public void init() {
+		MessageUtils.setMessageSource(messageSource);
+	}
+
 }

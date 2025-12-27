@@ -1,5 +1,7 @@
 package source.code.unit.selector;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,55 +11,47 @@ import source.code.helper.Enum.model.TextType;
 import source.code.service.declaration.text.TextService;
 import source.code.service.implementation.selector.TextSelectorServiceImpl;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-
 @ExtendWith(MockitoExtension.class)
 public class TextSelectorServiceTest {
 
-    @Mock
-    private TextService exerciseInstructionService;
-    @Mock
-    private TextService exerciseTipService;
-    @Mock
-    private TextService recipeInstructionService;
-    @Mock
-    private TextService planInstructionService;
+	@Mock
+	private TextService exerciseInstructionService;
 
-    private TextSelectorServiceImpl textSelectorService;
+	@Mock
+	private TextService exerciseTipService;
 
-    @BeforeEach
-    void setUp() {
-        textSelectorService = new TextSelectorServiceImpl(
-                exerciseInstructionService,
-                exerciseTipService,
-                recipeInstructionService,
-                planInstructionService
-        );
-    }
+	@Mock
+	private TextService recipeInstructionService;
 
-    @Test
-    void getService_shouldReturnExerciseInstructionService() {
-        assertSame(
-                exerciseInstructionService,
-                textSelectorService.getService(TextType.EXERCISE_INSTRUCTION)
-        );
-    }
+	@Mock
+	private TextService planInstructionService;
 
-    @Test
-    void getService_shouldReturnExerciseTipService() {
-        assertSame(exerciseTipService, textSelectorService.getService(TextType.EXERCISE_TIP));
-    }
+	private TextSelectorServiceImpl textSelectorService;
 
-    @Test
-    void getService_shouldReturnRecipeInstructionService() {
-        assertSame(
-                recipeInstructionService,
-                textSelectorService.getService(TextType.RECIPE_INSTRUCTION)
-        );
-    }
+	@BeforeEach
+	void setUp() {
+		textSelectorService = new TextSelectorServiceImpl(exerciseInstructionService, exerciseTipService,
+			recipeInstructionService, planInstructionService);
+	}
 
-    @Test
-    void getService_shouldReturnPlanInstructionService() {
-        assertSame(planInstructionService, textSelectorService.getService(TextType.PLAN_INSTRUCTION));
-    }
+	@Test
+	void getService_shouldReturnExerciseInstructionService() {
+		assertSame(exerciseInstructionService, textSelectorService.getService(TextType.EXERCISE_INSTRUCTION));
+	}
+
+	@Test
+	void getService_shouldReturnExerciseTipService() {
+		assertSame(exerciseTipService, textSelectorService.getService(TextType.EXERCISE_TIP));
+	}
+
+	@Test
+	void getService_shouldReturnRecipeInstructionService() {
+		assertSame(recipeInstructionService, textSelectorService.getService(TextType.RECIPE_INSTRUCTION));
+	}
+
+	@Test
+	void getService_shouldReturnPlanInstructionService() {
+		assertSame(planInstructionService, textSelectorService.getService(TextType.PLAN_INSTRUCTION));
+	}
+
 }

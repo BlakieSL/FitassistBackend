@@ -10,14 +10,15 @@ import source.code.service.declaration.specificationHelpers.SpecificationVisibil
 
 @Component
 public class SpecificationVisibilityPredicateBuilderImpl implements SpecificationVisibilityPredicateBuilder {
-    @Override
-    public <T> Predicate buildVisibilityPredicate(
-            CriteriaBuilder builder, Root<T> root,
-            FilterCriteria criteria, String userField, String idField, String publicField) {
 
-        if (criteria.getIsPublic() != null && !criteria.getIsPublic()) {
-            return builder.equal(root.get(userField).get(idField), AuthorizationUtil.getUserId());
-        }
-        return builder.isTrue(root.get(publicField));
-    }
+	@Override
+	public <T> Predicate buildVisibilityPredicate(CriteriaBuilder builder, Root<T> root, FilterCriteria criteria,
+												  String userField, String idField, String publicField) {
+
+		if (criteria.getIsPublic() != null && !criteria.getIsPublic()) {
+			return builder.equal(root.get(userField).get(idField), AuthorizationUtil.getUserId());
+		}
+		return builder.isTrue(root.get(publicField));
+	}
+
 }

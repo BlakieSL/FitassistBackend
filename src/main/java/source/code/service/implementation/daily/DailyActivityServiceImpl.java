@@ -4,6 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import source.code.dto.request.activity.DailyActivitiesGetDto;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
@@ -27,150 +33,141 @@ import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.stream.Collectors;
-
 @Service
 public class DailyActivityServiceImpl implements DailyActivityService {
-    private final JsonPatchService jsonPatchService;
-    private final ValidationService validationService;
-    private final DailyActivityMapper dailyActivityMapper;
-    private final RepositoryHelper repositoryHelper;
-    private final DailyCartRepository dailyCartRepository;
-    private final DailyCartActivityRepository dailyCartActivityRepository;
-    private final ActivityRepository activityRepository;
-    private final UserRepository userRepository;
 
-    public DailyActivityServiceImpl(
-            DailyCartRepository dailyCartRepository,
-            UserRepository userRepository,
-            ActivityRepository activityRepository,
-            JsonPatchService jsonPatchService,
-            ValidationService validationService,
-            DailyActivityMapper dailyActivityMapper,
-            RepositoryHelper repositoryHelper,
-            DailyCartActivityRepository dailyCartActivityRepository) {
-        this.dailyCartRepository = dailyCartRepository;
-        this.userRepository = userRepository;
-        this.activityRepository = activityRepository;
-        this.jsonPatchService = jsonPatchService;
-        this.validationService = validationService;
-        this.dailyActivityMapper = dailyActivityMapper;
-        this.repositoryHelper = repositoryHelper;
-        this.dailyCartActivityRepository = dailyCartActivityRepository;
-    }
+	private final JsonPatchService jsonPatchService;
 
-    @Override
-    @Transactional
-    public void addActivityToDailyCart(int activityId, DailyActivityItemCreateDto dto) {
-        int userId = AuthorizationUtil.getUserId();
-        DailyCart dailyCart = getOrCreateDailyCartForUser(userId, dto.getDate());
-        Activity activity = repositoryHelper.find(activityRepository, Activity.class, activityId);
+	private final ValidationService validationService;
 
-        BigDecimal weight = resolveWeightForLogging(dto.getWeight(), userId);
-        updateOrAddDailyActivityItem(dailyCart, activity, dto.getTime(), weight);
-        dailyCartRepository.save(dailyCart);
-    }
+	private final DailyActivityMapper dailyActivityMapper;
 
-    @Override
-    @Transactional
-    public void removeActivityFromDailyCart(int dailyActivityItemId) {
-        DailyCartActivity dailyCartActivity = findWithoutAssociations(dailyActivityItemId);
-        dailyCartActivityRepository.delete(dailyCartActivity);
-    }
+	private final RepositoryHelper repositoryHelper;
 
-    @Override
-    @Transactional
-    public void updateDailyActivityItem(int dailyActivityItemId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        DailyCartActivity dailyCartActivity = findWithoutAssociations(dailyActivityItemId);
-        DailyActivityItemUpdateDto patchedDto = applyPatchToDailyActivityItem(patch);
-        validationService.validate(patchedDto);
+	private final DailyCartRepository dailyCartRepository;
 
-        updateTime(dailyCartActivity, patchedDto.getTime());
-        updateWeight(dailyCartActivity, patchedDto.getWeight());
+	private final DailyCartActivityRepository dailyCartActivityRepository;
 
-        dailyCartActivityRepository.save(dailyCartActivity);
-    }
+	private final ActivityRepository activityRepository;
 
-    @Override
-    public DailyActivitiesResponseDto getActivitiesFromDailyCart(DailyActivitiesGetDto request) {
-        int userId = AuthorizationUtil.getUserId();
+	private final UserRepository userRepository;
 
-        return dailyCartRepository
-                .findByUserIdAndDateWithActivityAssociations(userId, request.getDate())
-                .map(dailyCart -> dailyCart.getDailyCartActivities().stream()
-                        .map(dailyActivityMapper::toActivityCalculatedResponseDto)
-                        .collect(Collectors.teeing(
-                                Collectors.toList(),
-                                Collectors.summingInt(ActivityCalculatedResponseDto::getCaloriesBurned),
-                                DailyActivitiesResponseDto::of)))
-                .orElse(DailyActivitiesResponseDto.of(Collections.emptyList(), 0));
-    }
+	public DailyActivityServiceImpl(DailyCartRepository dailyCartRepository, UserRepository userRepository,
+									ActivityRepository activityRepository, JsonPatchService jsonPatchService,
+									ValidationService validationService, DailyActivityMapper dailyActivityMapper,
+									RepositoryHelper repositoryHelper, DailyCartActivityRepository dailyCartActivityRepository) {
+		this.dailyCartRepository = dailyCartRepository;
+		this.userRepository = userRepository;
+		this.activityRepository = activityRepository;
+		this.jsonPatchService = jsonPatchService;
+		this.validationService = validationService;
+		this.dailyActivityMapper = dailyActivityMapper;
+		this.repositoryHelper = repositoryHelper;
+		this.dailyCartActivityRepository = dailyCartActivityRepository;
+	}
 
-    private void updateOrAddDailyActivityItem(DailyCart dailyCart, Activity activity, Short time, BigDecimal weight) {
-        dailyCartActivityRepository
-                .findByDailyCartIdAndActivityId(dailyCart.getId(), activity.getId())
-                .ifPresentOrElse(
-                        foundItem -> {
-                            foundItem.setTime((short) (foundItem.getTime() + time));
-                            foundItem.setWeight(weight);
-                        },
-                        () -> {
-                            DailyCartActivity newItem = DailyCartActivity.of(activity, dailyCart, time, weight);
-                            dailyCart.getDailyCartActivities().add(newItem);
-                        }
-                );
-    }
+	@Override
+	@Transactional
+	public void addActivityToDailyCart(int activityId, DailyActivityItemCreateDto dto) {
+		int userId = AuthorizationUtil.getUserId();
+		DailyCart dailyCart = getOrCreateDailyCartForUser(userId, dto.getDate());
+		Activity activity = repositoryHelper.find(activityRepository, Activity.class, activityId);
 
-    private void updateTime(DailyCartActivity dailyCartActivity, Short time) {
-        dailyCartActivity.setTime(time);
-    }
+		BigDecimal weight = resolveWeightForLogging(dto.getWeight(), userId);
+		updateOrAddDailyActivityItem(dailyCart, activity, dto.getTime(), weight);
+		dailyCartRepository.save(dailyCart);
+	}
 
-    private void updateWeight(DailyCartActivity dailyCartActivity, BigDecimal weight) {
-        if (weight != null) {
-            int userId = AuthorizationUtil.getUserId();
-            BigDecimal resolvedWeight = resolveWeightForLogging(weight, userId);
-            dailyCartActivity.setWeight(resolvedWeight);
-        }
-    }
+	@Override
+	@Transactional
+	public void removeActivityFromDailyCart(int dailyActivityItemId) {
+		DailyCartActivity dailyCartActivity = findWithoutAssociations(dailyActivityItemId);
+		dailyCartActivityRepository.delete(dailyCartActivity);
+	}
 
-    private DailyCart createDailyCart(int userId, LocalDate date) {
-        User user = repositoryHelper.find(userRepository, User.class, userId);
-        return dailyCartRepository.save(DailyCart.of(user, date));
-    }
+	@Override
+	@Transactional
+	public void updateDailyActivityItem(int dailyActivityItemId, JsonMergePatch patch)
+		throws JsonPatchException, JsonProcessingException {
+		DailyCartActivity dailyCartActivity = findWithoutAssociations(dailyActivityItemId);
+		DailyActivityItemUpdateDto patchedDto = applyPatchToDailyActivityItem(patch);
+		validationService.validate(patchedDto);
 
-    private DailyActivityItemUpdateDto applyPatchToDailyActivityItem(JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        return jsonPatchService.createFromPatch(patch, DailyActivityItemUpdateDto.class);
-    }
+		updateTime(dailyCartActivity, patchedDto.getTime());
+		updateWeight(dailyCartActivity, patchedDto.getWeight());
 
-    private DailyCart getOrCreateDailyCartForUser(int userId, LocalDate date) {
-        return dailyCartRepository.findByUserIdAndDate(userId, date)
-                .orElseGet(() -> createDailyCart(userId, date));
-    }
+		dailyCartActivityRepository.save(dailyCartActivity);
+	}
 
-    private DailyCartActivity findWithoutAssociations(int dailyCartActivityId) {
-        return dailyCartActivityRepository.findByIdWithoutAssociations(dailyCartActivityId)
-                .orElseThrow(() -> new RecordNotFoundException(DailyCartActivity.class, dailyCartActivityId));
-    }
+	@Override
+	public DailyActivitiesResponseDto getActivitiesFromDailyCart(DailyActivitiesGetDto request) {
+		int userId = AuthorizationUtil.getUserId();
 
-    private BigDecimal resolveWeightForLogging(BigDecimal requestWeight, int userId) {
-        if (requestWeight != null) {
-            return requestWeight;
-        }
+		return dailyCartRepository.findByUserIdAndDateWithActivityAssociations(userId, request.getDate())
+			.map(dailyCart -> dailyCart.getDailyCartActivities()
+				.stream()
+				.map(dailyActivityMapper::toActivityCalculatedResponseDto)
+				.collect(Collectors.teeing(Collectors.toList(),
+					Collectors.summingInt(ActivityCalculatedResponseDto::getCaloriesBurned),
+					DailyActivitiesResponseDto::of)))
+			.orElse(DailyActivitiesResponseDto.of(Collections.emptyList(), 0));
+	}
 
-        User user = repositoryHelper.find(userRepository, User.class, userId);
+	private void updateOrAddDailyActivityItem(DailyCart dailyCart, Activity activity, Short time, BigDecimal weight) {
+		dailyCartActivityRepository.findByDailyCartIdAndActivityId(dailyCart.getId(), activity.getId())
+			.ifPresentOrElse(foundItem -> {
+				foundItem.setTime((short) (foundItem.getTime() + time));
+				foundItem.setWeight(weight);
+			}, () -> {
+				DailyCartActivity newItem = DailyCartActivity.of(activity, dailyCart, time, weight);
+				dailyCart.getDailyCartActivities().add(newItem);
+			});
+	}
 
-        if (user.getWeight() != null) {
-            return user.getWeight();
-        }
+	private void updateTime(DailyCartActivity dailyCartActivity, Short time) {
+		dailyCartActivity.setTime(time);
+	}
 
-        throw new WeightRequiredException(
-                "Weight is required for logging activities. " +
-                        "Please provide it in the request or set it in your profile."
-        );
-    }
+	private void updateWeight(DailyCartActivity dailyCartActivity, BigDecimal weight) {
+		if (weight != null) {
+			int userId = AuthorizationUtil.getUserId();
+			BigDecimal resolvedWeight = resolveWeightForLogging(weight, userId);
+			dailyCartActivity.setWeight(resolvedWeight);
+		}
+	}
+
+	private DailyCart createDailyCart(int userId, LocalDate date) {
+		User user = repositoryHelper.find(userRepository, User.class, userId);
+		return dailyCartRepository.save(DailyCart.of(user, date));
+	}
+
+	private DailyActivityItemUpdateDto applyPatchToDailyActivityItem(JsonMergePatch patch)
+		throws JsonPatchException, JsonProcessingException {
+		return jsonPatchService.createFromPatch(patch, DailyActivityItemUpdateDto.class);
+	}
+
+	private DailyCart getOrCreateDailyCartForUser(int userId, LocalDate date) {
+		return dailyCartRepository.findByUserIdAndDate(userId, date).orElseGet(() -> createDailyCart(userId, date));
+	}
+
+	private DailyCartActivity findWithoutAssociations(int dailyCartActivityId) {
+		return dailyCartActivityRepository.findByIdWithoutAssociations(dailyCartActivityId)
+			.orElseThrow(() -> new RecordNotFoundException(DailyCartActivity.class, dailyCartActivityId));
+	}
+
+	private BigDecimal resolveWeightForLogging(BigDecimal requestWeight, int userId) {
+		if (requestWeight != null) {
+			return requestWeight;
+		}
+
+		User user = repositoryHelper.find(userRepository, User.class, userId);
+
+		if (user.getWeight() != null) {
+			return user.getWeight();
+		}
+
+		throw new WeightRequiredException("Weight is required for logging activities. "
+			+ "Please provide it in the request or set it in your profile.");
+	}
+
 }

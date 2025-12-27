@@ -20,49 +20,46 @@ import source.code.service.declaration.forumThread.ForumThreadService;
 @RestController
 @RequestMapping("/api/threads")
 public class ForumThreadController {
-    private final ForumThreadService forumThreadService;
 
-    public ForumThreadController(ForumThreadService forumThreadService) {
-        this.forumThreadService = forumThreadService;
-    }
+	private final ForumThreadService forumThreadService;
 
-    @PostMapping
-    public ResponseEntity<ForumThreadResponseDto> createForumThread(
-            @Valid @RequestBody ForumThreadCreateDto createDto
-    ) {
-        ForumThreadResponseDto responseDto = forumThreadService.createForumThread(createDto);
-        return ResponseEntity.ok(responseDto);
-    }
+	public ForumThreadController(ForumThreadService forumThreadService) {
+		this.forumThreadService = forumThreadService;
+	}
 
-    @ThreadOwnerOrAdmin
-    @PatchMapping("/{forumThreadId}")
-    public ResponseEntity<Void> updateForumThread(
-            @PathVariable int forumThreadId,
-            @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        forumThreadService.updateForumThread(forumThreadId, patch);
-        return ResponseEntity.ok().build();
-    }
+	@PostMapping
+	public ResponseEntity<ForumThreadResponseDto> createForumThread(
+		@Valid @RequestBody ForumThreadCreateDto createDto) {
+		ForumThreadResponseDto responseDto = forumThreadService.createForumThread(createDto);
+		return ResponseEntity.ok(responseDto);
+	}
 
-    @ThreadOwnerOrAdmin
-    @DeleteMapping("/{forumThreadId}")
-    public ResponseEntity<Void> deleteForumThread(@PathVariable int forumThreadId) {
-        forumThreadService.deleteForumThread(forumThreadId);
-        return ResponseEntity.ok().build();
-    }
+	@ThreadOwnerOrAdmin
+	@PatchMapping("/{forumThreadId}")
+	public ResponseEntity<Void> updateForumThread(@PathVariable int forumThreadId, @RequestBody JsonMergePatch patch)
+		throws JsonPatchException, JsonProcessingException {
+		forumThreadService.updateForumThread(forumThreadId, patch);
+		return ResponseEntity.ok().build();
+	}
 
-    @GetMapping("/{forumThreadId}")
-    public ResponseEntity<ForumThreadResponseDto> getForumThread(@PathVariable int forumThreadId) {
-        ForumThreadResponseDto responseDto = forumThreadService.getForumThread(forumThreadId);
-        return ResponseEntity.ok(responseDto);
-    }
+	@ThreadOwnerOrAdmin
+	@DeleteMapping("/{forumThreadId}")
+	public ResponseEntity<Void> deleteForumThread(@PathVariable int forumThreadId) {
+		forumThreadService.deleteForumThread(forumThreadId);
+		return ResponseEntity.ok().build();
+	}
 
-    @PostMapping("/filter")
-    public ResponseEntity<Page<ForumThreadSummaryDto>> getFilteredForumThreads(
-            @Valid @RequestBody FilterDto filterDto,
-            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
-        Page<ForumThreadSummaryDto> threads = forumThreadService.getFilteredForumThreads(filterDto, pageable);
-        return ResponseEntity.ok(threads);
-    }
+	@GetMapping("/{forumThreadId}")
+	public ResponseEntity<ForumThreadResponseDto> getForumThread(@PathVariable int forumThreadId) {
+		ForumThreadResponseDto responseDto = forumThreadService.getForumThread(forumThreadId);
+		return ResponseEntity.ok(responseDto);
+	}
+
+	@PostMapping("/filter")
+	public ResponseEntity<Page<ForumThreadSummaryDto>> getFilteredForumThreads(@Valid @RequestBody FilterDto filterDto,
+																			   @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+		Page<ForumThreadSummaryDto> threads = forumThreadService.getFilteredForumThreads(filterDto, pageable);
+		return ResponseEntity.ok(threads);
+	}
+
 }

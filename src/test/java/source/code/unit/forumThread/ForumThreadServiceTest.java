@@ -1,5 +1,9 @@
 package source.code.unit.forumThread;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
@@ -27,164 +31,159 @@ import source.code.service.declaration.thread.ForumThreadPopulationService;
 import source.code.service.implementation.forumThread.ForumThreadServiceImpl;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class ForumThreadServiceTest {
-    @Mock
-    private RepositoryHelper repositoryHelper;
-    @Mock
-    private ForumThreadMapper forumThreadMapper;
-    @Mock
-    private ValidationService validationService;
-    @Mock
-    private JsonPatchService jsonPatchService;
-    @Mock
-    private ForumThreadRepository forumThreadRepository;
-    @Mock
-    private SpecificationDependencies dependencies;
-    @Mock
-    private ForumThreadPopulationService forumThreadPopulationService;
-    @InjectMocks
-    private ForumThreadServiceImpl forumThreadService;
 
-    private ForumThread forumThread;
-    private ForumThreadCreateDto createDto;
-    private ForumThreadResponseDto responseDto;
-    private ForumThreadSummaryDto summaryDto;
-    private JsonMergePatch patch;
-    private ForumThreadUpdateDto patchedDto;
-    private int threadId;
-    private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
+	@Mock
+	private RepositoryHelper repositoryHelper;
 
-    @BeforeEach
-    void setUp() {
-        forumThread = new ForumThread();
-        createDto = new ForumThreadCreateDto();
-        responseDto = new ForumThreadResponseDto();
-        summaryDto = new ForumThreadSummaryDto();
-        patchedDto = new ForumThreadUpdateDto();
-        threadId = 1;
-        patch = mock(JsonMergePatch.class);
-        mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
-    }
+	@Mock
+	private ForumThreadMapper forumThreadMapper;
 
-    @AfterEach
-    void tearDown() {
-        if (mockedAuthorizationUtil != null) {
-            mockedAuthorizationUtil.close();
-        }
-    }
+	@Mock
+	private ValidationService validationService;
 
-    @Test
-    void createForumThread_shouldCreateForumThread() {
-        int userId = 1;
-        forumThread.setId(threadId);
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(forumThreadMapper.toEntity(createDto, userId)).thenReturn(forumThread);
-        when(forumThreadRepository.save(forumThread)).thenReturn(forumThread);
-        when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
-                .thenReturn(forumThread);
-        when(forumThreadMapper.toResponseDto(forumThread)).thenReturn(responseDto);
+	@Mock
+	private JsonPatchService jsonPatchService;
 
-        ForumThreadResponseDto result = forumThreadService.createForumThread(createDto);
+	@Mock
+	private ForumThreadRepository forumThreadRepository;
 
-        assertEquals(responseDto, result);
-        verify(forumThreadPopulationService).populate(responseDto);
-    }
+	@Mock
+	private SpecificationDependencies dependencies;
 
-    @Test
-    void updateForumThread_shouldUpdate() throws JsonPatchException, JsonProcessingException {
-        when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
-                .thenReturn(forumThread);
-        when(jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class))
-                .thenReturn(patchedDto);
-        when(forumThreadRepository.save(forumThread)).thenReturn(forumThread);
+	@Mock
+	private ForumThreadPopulationService forumThreadPopulationService;
 
-        forumThreadService.updateForumThread(threadId, patch);
+	@InjectMocks
+	private ForumThreadServiceImpl forumThreadService;
 
-        verify(validationService).validate(patchedDto);
-        verify(forumThreadMapper).update(forumThread, patchedDto);
-        verify(forumThreadRepository).save(forumThread);
-    }
+	private ForumThread forumThread;
 
-    @Test
-    void updateForumThread_shouldThrowExceptionWhenThreadNotFound() {
-        when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
-                .thenThrow(RecordNotFoundException.of(ForumThread.class, threadId));
+	private ForumThreadCreateDto createDto;
 
-        assertThrows(RecordNotFoundException.class,
-                () -> forumThreadService.updateForumThread(threadId, patch)
-        );
+	private ForumThreadResponseDto responseDto;
 
-        verifyNoInteractions(forumThreadMapper, jsonPatchService, validationService);
-        verify(forumThreadRepository, never()).save(forumThread);
-    }
+	private ForumThreadSummaryDto summaryDto;
 
-    @Test
-    void updateForumThread_shouldThrowExceptionWhenValidationFails()
-            throws JsonPatchException, JsonProcessingException {
-        when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
-                .thenReturn(forumThread);
-        when(jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class))
-                .thenReturn(patchedDto);
+	private JsonMergePatch patch;
 
-        doThrow(new IllegalArgumentException("Validation failed")).when(validationService)
-                .validate(patchedDto);
+	private ForumThreadUpdateDto patchedDto;
 
-        assertThrows(RuntimeException.class, () ->
-                forumThreadService.updateForumThread(threadId, patch)
-        );
-        verify(validationService).validate(patchedDto);
-        verify(forumThreadRepository, never()).save(forumThread);
-    }
+	private int threadId;
 
-    @Test
-    void deleteForumThread_shouldDelete() {
-        when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
-                .thenReturn(forumThread);
+	private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
 
-        forumThreadService.deleteForumThread(threadId);
+	@BeforeEach
+	void setUp() {
+		forumThread = new ForumThread();
+		createDto = new ForumThreadCreateDto();
+		responseDto = new ForumThreadResponseDto();
+		summaryDto = new ForumThreadSummaryDto();
+		patchedDto = new ForumThreadUpdateDto();
+		threadId = 1;
+		patch = mock(JsonMergePatch.class);
+		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
+	}
 
-        verify(forumThreadRepository).delete(forumThread);
-    }
+	@AfterEach
+	void tearDown() {
+		if (mockedAuthorizationUtil != null) {
+			mockedAuthorizationUtil.close();
+		}
+	}
 
-    @Test
-    void deleteForumThread_shouldThrowExceptionWhenThreadNotFound() {
-        when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
-                .thenThrow(RecordNotFoundException.of(ForumThread.class, threadId));
+	@Test
+	void createForumThread_shouldCreateForumThread() {
+		int userId = 1;
+		forumThread.setId(threadId);
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(forumThreadMapper.toEntity(createDto, userId)).thenReturn(forumThread);
+		when(forumThreadRepository.save(forumThread)).thenReturn(forumThread);
+		when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId)).thenReturn(forumThread);
+		when(forumThreadMapper.toResponseDto(forumThread)).thenReturn(responseDto);
 
-        assertThrows(RecordNotFoundException.class,
-                () -> forumThreadService.deleteForumThread(threadId)
-        );
+		ForumThreadResponseDto result = forumThreadService.createForumThread(createDto);
 
-        verify(forumThreadRepository, never()).delete(forumThread);
-    }
+		assertEquals(responseDto, result);
+		verify(forumThreadPopulationService).populate(responseDto);
+	}
 
-    @Test
-    void getForumThread_shouldReturnForumThreadWhenFound() {
-        when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
-                .thenReturn(forumThread);
-        when(forumThreadMapper.toResponseDto(forumThread)).thenReturn(responseDto);
+	@Test
+	void updateForumThread_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+		when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId)).thenReturn(forumThread);
+		when(jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class)).thenReturn(patchedDto);
+		when(forumThreadRepository.save(forumThread)).thenReturn(forumThread);
 
-        ForumThreadResponseDto result = forumThreadService.getForumThread(threadId);
+		forumThreadService.updateForumThread(threadId, patch);
 
-        assertEquals(responseDto, result);
-        verify(forumThreadPopulationService).populate(responseDto);
-    }
+		verify(validationService).validate(patchedDto);
+		verify(forumThreadMapper).update(forumThread, patchedDto);
+		verify(forumThreadRepository).save(forumThread);
+	}
 
-    @Test
-    void getForumThread_shouldThrowExceptionWhenThreadNotFound() {
-        when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
-                .thenThrow(RecordNotFoundException.of(ForumThread.class, threadId));
+	@Test
+	void updateForumThread_shouldThrowExceptionWhenThreadNotFound() {
+		when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
+			.thenThrow(RecordNotFoundException.of(ForumThread.class, threadId));
 
-        assertThrows(RecordNotFoundException.class,
-                () -> forumThreadService.getForumThread(threadId)
-        );
+		assertThrows(RecordNotFoundException.class, () -> forumThreadService.updateForumThread(threadId, patch));
 
-        verifyNoInteractions(forumThreadMapper);
-    }
+		verifyNoInteractions(forumThreadMapper, jsonPatchService, validationService);
+		verify(forumThreadRepository, never()).save(forumThread);
+	}
+
+	@Test
+	void updateForumThread_shouldThrowExceptionWhenValidationFails()
+		throws JsonPatchException, JsonProcessingException {
+		when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId)).thenReturn(forumThread);
+		when(jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class)).thenReturn(patchedDto);
+
+		doThrow(new IllegalArgumentException("Validation failed")).when(validationService).validate(patchedDto);
+
+		assertThrows(RuntimeException.class, () -> forumThreadService.updateForumThread(threadId, patch));
+		verify(validationService).validate(patchedDto);
+		verify(forumThreadRepository, never()).save(forumThread);
+	}
+
+	@Test
+	void deleteForumThread_shouldDelete() {
+		when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId)).thenReturn(forumThread);
+
+		forumThreadService.deleteForumThread(threadId);
+
+		verify(forumThreadRepository).delete(forumThread);
+	}
+
+	@Test
+	void deleteForumThread_shouldThrowExceptionWhenThreadNotFound() {
+		when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
+			.thenThrow(RecordNotFoundException.of(ForumThread.class, threadId));
+
+		assertThrows(RecordNotFoundException.class, () -> forumThreadService.deleteForumThread(threadId));
+
+		verify(forumThreadRepository, never()).delete(forumThread);
+	}
+
+	@Test
+	void getForumThread_shouldReturnForumThreadWhenFound() {
+		when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId)).thenReturn(forumThread);
+		when(forumThreadMapper.toResponseDto(forumThread)).thenReturn(responseDto);
+
+		ForumThreadResponseDto result = forumThreadService.getForumThread(threadId);
+
+		assertEquals(responseDto, result);
+		verify(forumThreadPopulationService).populate(responseDto);
+	}
+
+	@Test
+	void getForumThread_shouldThrowExceptionWhenThreadNotFound() {
+		when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId))
+			.thenThrow(RecordNotFoundException.of(ForumThread.class, threadId));
+
+		assertThrows(RecordNotFoundException.class, () -> forumThreadService.getForumThread(threadId));
+
+		verifyNoInteractions(forumThreadMapper);
+	}
 
 }

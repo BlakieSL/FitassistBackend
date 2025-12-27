@@ -18,57 +18,53 @@ import source.code.service.declaration.complaint.ComplaintService;
 
 @Service
 public class ComplaintServiceImpl implements ComplaintService {
-    private final ComplaintMapper complaintMapper;
-    private final ComplaintRepository complaintRepository;
 
-    public ComplaintServiceImpl(ComplaintMapper complaintMapper,
-                                ComplaintRepository complaintRepository) {
-        this.complaintMapper = complaintMapper;
-        this.complaintRepository = complaintRepository;
-    }
+	private final ComplaintMapper complaintMapper;
 
-    @Transactional
-    @Override
-    public void createComplaint(ComplaintCreateDto complaintCreateDto) {
-        int userId = AuthorizationUtil.getUserId();
-        switch (complaintCreateDto.getSubClass()) {
-            case COMMENT_COMPLAINT -> {
-                CommentComplaint complaint = complaintMapper.toCommentComplaint(
-                        complaintCreateDto,
-                        userId
-                );
-                complaintRepository.save(complaint);
-            }
-            case THREAD_COMPLAINT -> {
-                ThreadComplaint complaint = complaintMapper.toThreadComplaint(
-                        complaintCreateDto,
-                        userId
-                );
-                complaintRepository.save(complaint);
-            }
-        }
-    }
+	private final ComplaintRepository complaintRepository;
 
-    @Transactional
-    @Override
-    public void resolveComplaint(int complaintId) {
-        ComplaintBase complaint = complaintRepository.findById(complaintId)
-                .orElseThrow(() -> RecordNotFoundException.of(ComplaintBase.class, complaintId));
+	public ComplaintServiceImpl(ComplaintMapper complaintMapper, ComplaintRepository complaintRepository) {
+		this.complaintMapper = complaintMapper;
+		this.complaintRepository = complaintRepository;
+	}
 
-        complaint.setStatus(ComplaintStatus.RESOLVED);
-        complaintRepository.save(complaint);
-    }
+	@Transactional
+	@Override
+	public void createComplaint(ComplaintCreateDto complaintCreateDto) {
+		int userId = AuthorizationUtil.getUserId();
+		switch (complaintCreateDto.getSubClass()) {
+			case COMMENT_COMPLAINT -> {
+				CommentComplaint complaint = complaintMapper.toCommentComplaint(complaintCreateDto, userId);
+				complaintRepository.save(complaint);
+			}
+			case THREAD_COMPLAINT -> {
+				ThreadComplaint complaint = complaintMapper.toThreadComplaint(complaintCreateDto, userId);
+				complaintRepository.save(complaint);
+			}
+		}
+	}
 
-    @Override
-    public Page<ComplaintResponseDto> getAllComplaints(Pageable pageable) {
-        Page<ComplaintBase> complaints = complaintRepository.findAll(pageable);
-        return complaints.map(complaintMapper::toResponseDto);
-    }
+	@Transactional
+	@Override
+	public void resolveComplaint(int complaintId) {
+		ComplaintBase complaint = complaintRepository.findById(complaintId)
+			.orElseThrow(() -> RecordNotFoundException.of(ComplaintBase.class, complaintId));
 
-    @Override
-    public ComplaintResponseDto getComplaintById(int complaintId) {
-        ComplaintBase complaint = complaintRepository.findById(complaintId)
-                .orElseThrow(() -> RecordNotFoundException.of(ComplaintBase.class, complaintId));
-        return complaintMapper.toResponseDto(complaint);
-    }
+		complaint.setStatus(ComplaintStatus.RESOLVED);
+		complaintRepository.save(complaint);
+	}
+
+	@Override
+	public Page<ComplaintResponseDto> getAllComplaints(Pageable pageable) {
+		Page<ComplaintBase> complaints = complaintRepository.findAll(pageable);
+		return complaints.map(complaintMapper::toResponseDto);
+	}
+
+	@Override
+	public ComplaintResponseDto getComplaintById(int complaintId) {
+		ComplaintBase complaint = complaintRepository.findById(complaintId)
+			.orElseThrow(() -> RecordNotFoundException.of(ComplaintBase.class, complaintId));
+		return complaintMapper.toResponseDto(complaint);
+	}
+
 }

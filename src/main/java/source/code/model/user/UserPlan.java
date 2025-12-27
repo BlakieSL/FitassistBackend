@@ -2,13 +2,14 @@ package source.code.model.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.plan.Plan;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_plan")
@@ -17,40 +18,42 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserPlan {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "plan_id", nullable = false)
-    private Plan plan;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TypeOfInteraction type;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "plan_id", nullable = false)
+	private Plan plan;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private TypeOfInteraction type;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+	@Column(name = "created_at", nullable = false, updatable = false)
+	private LocalDateTime createdAt;
 
-    public static UserPlan createWithUserPlanType(User user, Plan plan, TypeOfInteraction type) {
+	@PrePersist
+	protected void onCreate() {
+		createdAt = LocalDateTime.now();
+	}
 
-        UserPlan userPlan = new UserPlan();
-        userPlan.setUser(user);
-        userPlan.setPlan(plan);
-        userPlan.setType(type);
+	public static UserPlan createWithUserPlanType(User user, Plan plan, TypeOfInteraction type) {
 
-        return userPlan;
-    }
+		UserPlan userPlan = new UserPlan();
+		userPlan.setUser(user);
+		userPlan.setPlan(plan);
+		userPlan.setType(type);
+
+		return userPlan;
+	}
+
 }

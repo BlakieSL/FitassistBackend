@@ -12,44 +12,47 @@ import source.code.service.declaration.search.LuceneIndexService;
 
 @Component
 public class RecipeListener {
-    private final CacheService cacheService;
-    private final LuceneIndexService luceneService;
 
-    public RecipeListener(CacheService cacheService, LuceneIndexService luceneService) {
-        this.cacheService = cacheService;
-        this.luceneService = luceneService;
-    }
+	private final CacheService cacheService;
 
-    @EventListener
-    public void handleRecipeCreate(RecipeCreateEvent event) {
-        Recipe recipe = event.getRecipe();
+	private final LuceneIndexService luceneService;
 
-        clearCommonCache(recipe);
-        luceneService.addEntity(recipe);
-    }
+	public RecipeListener(CacheService cacheService, LuceneIndexService luceneService) {
+		this.cacheService = cacheService;
+		this.luceneService = luceneService;
+	}
 
-    @EventListener
-    public void handleRecipeUpdate(RecipeUpdateEvent event) {
-        Recipe recipe = event.getRecipe();
+	@EventListener
+	public void handleRecipeCreate(RecipeCreateEvent event) {
+		Recipe recipe = event.getRecipe();
 
-        clearCache(recipe);
-        luceneService.updateEntity(recipe);
-    }
+		clearCommonCache(recipe);
+		luceneService.addEntity(recipe);
+	}
 
-    @EventListener
-    public void handleRecipeDelete(RecipeDeleteEvent event) {
-        Recipe recipe = event.getRecipe();
+	@EventListener
+	public void handleRecipeUpdate(RecipeUpdateEvent event) {
+		Recipe recipe = event.getRecipe();
 
-        clearCache(recipe);
-        luceneService.deleteEntity(recipe);
-    }
+		clearCache(recipe);
+		luceneService.updateEntity(recipe);
+	}
 
-    private void clearCache(Recipe recipe) {
-        cacheService.evictCache(CacheNames.RECIPES, recipe.getId());
-        clearCommonCache(recipe);
-    }
+	@EventListener
+	public void handleRecipeDelete(RecipeDeleteEvent event) {
+		Recipe recipe = event.getRecipe();
 
-    private void clearCommonCache(Recipe recipe) {
-        cacheService.clearCache(CacheNames.ALL_RECIPES);
-    }
+		clearCache(recipe);
+		luceneService.deleteEntity(recipe);
+	}
+
+	private void clearCache(Recipe recipe) {
+		cacheService.evictCache(CacheNames.RECIPES, recipe.getId());
+		clearCommonCache(recipe);
+	}
+
+	private void clearCommonCache(Recipe recipe) {
+		cacheService.clearCache(CacheNames.ALL_RECIPES);
+	}
+
 }

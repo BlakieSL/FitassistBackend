@@ -12,10 +12,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecipeInstructionCreateDto {
-    @NotNull
-    private short orderIndex;
-    @NotBlank
-    private short title;
-    @NotBlank
-    private String text;
+
+	@NotNull
+	private short orderIndex;
+
+	@NotBlank
+	private short title;
+
+	@NotBlank
+	private String text;
+
 }

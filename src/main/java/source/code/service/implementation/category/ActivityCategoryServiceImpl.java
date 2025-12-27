@@ -14,32 +14,25 @@ import source.code.service.declaration.helpers.ValidationService;
 @Service("activityCategoryService")
 public class ActivityCategoryServiceImpl extends GenericCategoryService<ActivityCategory> implements CategoryService {
 
-    private final ActivityCategoryRepository activityCategoryRepository;
+	private final ActivityCategoryRepository activityCategoryRepository;
 
-    protected ActivityCategoryServiceImpl(ValidationService validationService,
-                                          JsonPatchService jsonPatchService,
-                                          CategoryCacheKeyGenerator<ActivityCategory> cacheKeyGenerator,
-                                          ApplicationEventPublisher applicationEventPublisher,
-                                          CacheManager cacheManager,
-                                          ActivityCategoryRepository activityCategoryRepository,
-                                          ActivityCategoryMapper mapper) {
-        super(validationService,
-                jsonPatchService,
-                cacheKeyGenerator,
-                applicationEventPublisher,
-                cacheManager,
-                activityCategoryRepository,
-                mapper);
-        this.activityCategoryRepository = activityCategoryRepository;
-    }
+	protected ActivityCategoryServiceImpl(ValidationService validationService, JsonPatchService jsonPatchService,
+										  CategoryCacheKeyGenerator<ActivityCategory> cacheKeyGenerator,
+										  ApplicationEventPublisher applicationEventPublisher, CacheManager cacheManager,
+										  ActivityCategoryRepository activityCategoryRepository, ActivityCategoryMapper mapper) {
+		super(validationService, jsonPatchService, cacheKeyGenerator, applicationEventPublisher, cacheManager,
+			activityCategoryRepository, mapper);
+		this.activityCategoryRepository = activityCategoryRepository;
+	}
 
-    @Override
-    protected boolean hasAssociatedEntities(int categoryId) {
-        return activityCategoryRepository.existsByIdAndActivitiesIsNotEmpty(categoryId);
-    }
+	@Override
+	protected boolean hasAssociatedEntities(int categoryId) {
+		return activityCategoryRepository.existsByIdAndActivitiesIsNotEmpty(categoryId);
+	}
 
-    @Override
-    protected Class<ActivityCategory> getEntityClass() {
-        return ActivityCategory.class;
-    }
+	@Override
+	protected Class<ActivityCategory> getEntityClass() {
+		return ActivityCategory.class;
+	}
+
 }

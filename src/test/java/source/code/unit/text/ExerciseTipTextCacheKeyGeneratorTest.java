@@ -1,5 +1,7 @@
 package source.code.unit.text;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,34 +11,34 @@ import source.code.model.exercise.Exercise;
 import source.code.model.text.ExerciseTip;
 import source.code.service.implementation.text.ExerciseTipTextCacheKeyGeneratorImpl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @ExtendWith(MockitoExtension.class)
 public class ExerciseTipTextCacheKeyGeneratorTest {
-    @InjectMocks
-    private ExerciseTipTextCacheKeyGeneratorImpl keyGenerator;
 
-    @Test
-    public void generateCacheKey() {
-        int exerciseId = 123;
-        ExerciseTip exerciseTip = new ExerciseTip();
-        Exercise exercise = new Exercise();
-        exercise.setId(exerciseId);
-        exerciseTip.setExercise(exercise);
+	@InjectMocks
+	private ExerciseTipTextCacheKeyGeneratorImpl keyGenerator;
 
-        String result = keyGenerator.generateCacheKey(exerciseTip);
+	@Test
+	public void generateCacheKey() {
+		int exerciseId = 123;
+		ExerciseTip exerciseTip = new ExerciseTip();
+		Exercise exercise = new Exercise();
+		exercise.setId(exerciseId);
+		exerciseTip.setExercise(exercise);
 
-        String expected = CacheKeys.EXERCISE_TIP.toString() + exerciseId;
-        assertEquals(expected, result);
-    }
+		String result = keyGenerator.generateCacheKey(exerciseTip);
 
-    @Test
-    public void generateCacheKeyForParent() {
-        int exerciseId = 123;
+		String expected = CacheKeys.EXERCISE_TIP.toString() + exerciseId;
+		assertEquals(expected, result);
+	}
 
-        String result = keyGenerator.generateCacheKeyForParent(exerciseId);
+	@Test
+	public void generateCacheKeyForParent() {
+		int exerciseId = 123;
 
-        String expected = CacheKeys.EXERCISE_TIP.toString() + exerciseId;
-        assertEquals(expected, result);
-    }
+		String result = keyGenerator.generateCacheKeyForParent(exerciseId);
+
+		String expected = CacheKeys.EXERCISE_TIP.toString() + exerciseId;
+		assertEquals(expected, result);
+	}
+
 }

@@ -12,45 +12,47 @@ import source.code.service.declaration.search.LuceneIndexService;
 
 @Component
 public class ExerciseListener {
-    private final CacheService cacheService;
-    private final LuceneIndexService luceneService;
 
-    public ExerciseListener(CacheService cacheService, LuceneIndexService luceneService) {
-        this.cacheService = cacheService;
-        this.luceneService = luceneService;
-    }
+	private final CacheService cacheService;
 
-    @EventListener
-    public void handleExerciseCreate(ExerciseCreateEvent event) {
-        Exercise exercise = event.getExercise();
+	private final LuceneIndexService luceneService;
 
-        clearCommonCache(exercise);
-        luceneService.addEntity(exercise);
-    }
+	public ExerciseListener(CacheService cacheService, LuceneIndexService luceneService) {
+		this.cacheService = cacheService;
+		this.luceneService = luceneService;
+	}
 
-    @EventListener
-    public void handleExerciseUpdate(ExerciseUpdateEvent event) {
-        Exercise exercise = event.getExercise();
+	@EventListener
+	public void handleExerciseCreate(ExerciseCreateEvent event) {
+		Exercise exercise = event.getExercise();
 
-        clearCache(exercise);
-        luceneService.updateEntity(exercise);
-    }
+		clearCommonCache(exercise);
+		luceneService.addEntity(exercise);
+	}
 
-    @EventListener
-    public void handleExerciseDelete(ExerciseDeleteEvent event) {
-        Exercise exercise = event.getExercise();
+	@EventListener
+	public void handleExerciseUpdate(ExerciseUpdateEvent event) {
+		Exercise exercise = event.getExercise();
 
-        clearCache(exercise);
-        luceneService.deleteEntity(exercise);
-    }
+		clearCache(exercise);
+		luceneService.updateEntity(exercise);
+	}
 
+	@EventListener
+	public void handleExerciseDelete(ExerciseDeleteEvent event) {
+		Exercise exercise = event.getExercise();
 
-    private void clearCache(Exercise exercise) {
-        cacheService.evictCache(CacheNames.EXERCISES, exercise.getId());
-        clearCommonCache(exercise);
-    }
+		clearCache(exercise);
+		luceneService.deleteEntity(exercise);
+	}
 
-    private void clearCommonCache(Exercise exercise) {
-        cacheService.clearCache(CacheNames.ALL_EXERCISES);
-    }
+	private void clearCache(Exercise exercise) {
+		cacheService.evictCache(CacheNames.EXERCISES, exercise.getId());
+		clearCommonCache(exercise);
+	}
+
+	private void clearCommonCache(Exercise exercise) {
+		cacheService.clearCache(CacheNames.ALL_EXERCISES);
+	}
+
 }

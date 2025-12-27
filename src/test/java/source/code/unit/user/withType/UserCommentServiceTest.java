@@ -1,5 +1,14 @@
 package source.code.unit.user.withType;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,224 +35,212 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.comment.CommentPopulationService;
 import source.code.service.implementation.user.interaction.withType.UserCommentServiceImpl;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class UserCommentServiceTest {
-    @Mock
-    private UserCommentRepository userCommentRepository;
 
-    @Mock
-    private CommentRepository commentRepository;
+	@Mock
+	private UserCommentRepository userCommentRepository;
 
-    @Mock
-    private UserRepository userRepository;
+	@Mock
+	private CommentRepository commentRepository;
 
-    @Mock
-    private CommentMapper commentMapper;
+	@Mock
+	private UserRepository userRepository;
 
-    @Mock
-    private CommentPopulationService commentPopulationService;
+	@Mock
+	private CommentMapper commentMapper;
 
-    private UserCommentServiceImpl userCommentService;
+	@Mock
+	private CommentPopulationService commentPopulationService;
 
-    private MockedStatic<AuthorizationUtil> mockedAuthUtil;
+	private UserCommentServiceImpl userCommentService;
 
-    @BeforeEach
-    void setUp() {
-        mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
-        userCommentService = new UserCommentServiceImpl(
-                userRepository,
-                commentRepository,
-                userCommentRepository,
-                commentMapper,
-                commentPopulationService
-        );
-    }
+	private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
-    @AfterEach
-    void tearDown() {
-        if (mockedAuthUtil != null) {
-            mockedAuthUtil.close();
-        }
-    }
+	@BeforeEach
+	void setUp() {
+		mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
+		userCommentService = new UserCommentServiceImpl(userRepository, commentRepository, userCommentRepository,
+			commentMapper, commentPopulationService);
+	}
 
-    @Test
-    public void saveToUser_ShouldSaveToUser() {
-        int userId = 1;
-        int commentId = 100;
-        TypeOfInteraction type = TypeOfInteraction.LIKE;
-        User user = new User();
-        Comment comment = new Comment();
+	@AfterEach
+	void tearDown() {
+		if (mockedAuthUtil != null) {
+			mockedAuthUtil.close();
+		}
+	}
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userCommentRepository.existsByUserIdAndCommentIdAndType(userId, commentId, type)).thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
+	@Test
+	public void saveToUser_ShouldSaveToUser() {
+		int userId = 1;
+		int commentId = 100;
+		TypeOfInteraction type = TypeOfInteraction.LIKE;
+		User user = new User();
+		Comment comment = new Comment();
 
-        userCommentService.saveToUser(commentId, type);
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userCommentRepository.existsByUserIdAndCommentIdAndType(userId, commentId, type)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
 
-        verify(userCommentRepository).save(any(UserComment.class));
-    }
+		userCommentService.saveToUser(commentId, type);
 
-    @Test
-    public void saveToUser_ShouldThrowNotSupportedInteractionTypeExceptionIfTypeIsSave() {
-        int userId = 1;
-        int commentId = 100;
-        TypeOfInteraction type = TypeOfInteraction.SAVE;
+		verify(userCommentRepository).save(any(UserComment.class));
+	}
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userCommentRepository.existsByUserIdAndCommentIdAndType(userId, commentId, type)).thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(new User()));
-        when(commentRepository.findById(commentId)).thenReturn(Optional.of(new Comment()));
+	@Test
+	public void saveToUser_ShouldThrowNotSupportedInteractionTypeExceptionIfTypeIsSave() {
+		int userId = 1;
+		int commentId = 100;
+		TypeOfInteraction type = TypeOfInteraction.SAVE;
 
-        assertThrows(NotSupportedInteractionTypeException.class, () -> userCommentService.saveToUser(commentId, type));
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userCommentRepository.existsByUserIdAndCommentIdAndType(userId, commentId, type)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(new User()));
+		when(commentRepository.findById(commentId)).thenReturn(Optional.of(new Comment()));
 
-        verify(userCommentRepository, never()).save(any());
-    }
+		assertThrows(NotSupportedInteractionTypeException.class, () -> userCommentService.saveToUser(commentId, type));
 
-    @Test
-    public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
-        int userId = 1;
-        int commentId = 100;
-        TypeOfInteraction type = TypeOfInteraction.LIKE;
+		verify(userCommentRepository, never()).save(any());
+	}
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userCommentRepository.existsByUserIdAndCommentIdAndType(userId, commentId, type)).thenReturn(true);
+	@Test
+	public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
+		int userId = 1;
+		int commentId = 100;
+		TypeOfInteraction type = TypeOfInteraction.LIKE;
 
-        assertThrows(NotUniqueRecordException.class, () -> userCommentService.saveToUser(commentId, type));
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userCommentRepository.existsByUserIdAndCommentIdAndType(userId, commentId, type)).thenReturn(true);
 
-        verify(userCommentRepository, never()).save(any());
-    }
+		assertThrows(NotUniqueRecordException.class, () -> userCommentService.saveToUser(commentId, type));
 
-    @Test
-    public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
-        int userId = 1;
-        int commentId = 100;
-        TypeOfInteraction type = TypeOfInteraction.LIKE;
+		verify(userCommentRepository, never()).save(any());
+	}
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userCommentRepository.existsByUserIdAndCommentIdAndType(userId, commentId, type)).thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+	@Test
+	public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
+		int userId = 1;
+		int commentId = 100;
+		TypeOfInteraction type = TypeOfInteraction.LIKE;
 
-        assertThrows(RecordNotFoundException.class, () -> userCommentService.saveToUser(commentId, type));
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userCommentRepository.existsByUserIdAndCommentIdAndType(userId, commentId, type)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        verify(userCommentRepository, never()).save(any());
-    }
+		assertThrows(RecordNotFoundException.class, () -> userCommentService.saveToUser(commentId, type));
 
-    @Test
-    public void saveToUser_ShouldThrowRecordNotFoundExceptionIfCommentNotFound() {
-        int userId = 1;
-        int commentId = 100;
-        User user = new User();
-        TypeOfInteraction type = TypeOfInteraction.LIKE;
+		verify(userCommentRepository, never()).save(any());
+	}
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userCommentRepository.existsByUserIdAndCommentIdAndType(userId, commentId, type)).thenReturn(false);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
+	@Test
+	public void saveToUser_ShouldThrowRecordNotFoundExceptionIfCommentNotFound() {
+		int userId = 1;
+		int commentId = 100;
+		User user = new User();
+		TypeOfInteraction type = TypeOfInteraction.LIKE;
 
-        assertThrows(RecordNotFoundException.class, () -> userCommentService.saveToUser(commentId, type));
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userCommentRepository.existsByUserIdAndCommentIdAndType(userId, commentId, type)).thenReturn(false);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
 
-        verify(userCommentRepository, never()).save(any());
-    }
+		assertThrows(RecordNotFoundException.class, () -> userCommentService.saveToUser(commentId, type));
 
-    @Test
-    public void deleteFromUser_ShouldDeleteFromUser() {
-        int userId = 1;
-        int commentId = 100;
-        UserComment userCommentLike = new UserComment();
-        TypeOfInteraction type = TypeOfInteraction.LIKE;
+		verify(userCommentRepository, never()).save(any());
+	}
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userCommentRepository.findByUserIdAndCommentIdAndType(userId, commentId, type))
-                .thenReturn(Optional.of(userCommentLike));
+	@Test
+	public void deleteFromUser_ShouldDeleteFromUser() {
+		int userId = 1;
+		int commentId = 100;
+		UserComment userCommentLike = new UserComment();
+		TypeOfInteraction type = TypeOfInteraction.LIKE;
 
-        userCommentService.deleteFromUser(commentId, type);
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userCommentRepository.findByUserIdAndCommentIdAndType(userId, commentId, type))
+			.thenReturn(Optional.of(userCommentLike));
 
-        verify(userCommentRepository).delete(userCommentLike);
-    }
+		userCommentService.deleteFromUser(commentId, type);
 
-    @Test
-    public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserCommentLikeNotFound() {
-        int userId = 1;
-        int commentId = 100;
-        TypeOfInteraction type = TypeOfInteraction.LIKE;
+		verify(userCommentRepository).delete(userCommentLike);
+	}
 
-        mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(userCommentRepository.findByUserIdAndCommentIdAndType(userId, commentId, type))
-                .thenReturn(Optional.empty());
+	@Test
+	public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserCommentLikeNotFound() {
+		int userId = 1;
+		int commentId = 100;
+		TypeOfInteraction type = TypeOfInteraction.LIKE;
 
-        assertThrows(RecordNotFoundException.class, () -> userCommentService.deleteFromUser(commentId, type));
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userCommentRepository.findByUserIdAndCommentIdAndType(userId, commentId, type))
+			.thenReturn(Optional.empty());
 
-        verify(userCommentRepository, never()).delete(any());
-    }
+		assertThrows(RecordNotFoundException.class, () -> userCommentService.deleteFromUser(commentId, type));
 
-    @Test
-    public void getAllFromUser_ShouldReturnAllLikedCommentsFromUser() {
-        TypeOfInteraction type = TypeOfInteraction.LIKE;
-        int userId = 1;
-        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+		verify(userCommentRepository, never()).delete(any());
+	}
 
-        User user = new User();
-        user.setId(1);
+	@Test
+	public void getAllFromUser_ShouldReturnAllLikedCommentsFromUser() {
+		TypeOfInteraction type = TypeOfInteraction.LIKE;
+		int userId = 1;
+		Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Comment comment1 = new Comment();
-        comment1.setId(1);
-        comment1.setUser(user);
-        Comment comment2 = new Comment();
-        comment2.setId(2);
-        comment2.setUser(user);
+		User user = new User();
+		user.setId(1);
 
-        UserComment uc1 = new UserComment();
-        uc1.setComment(comment1);
-        uc1.setCreatedAt(LocalDateTime.now());
-        UserComment uc2 = new UserComment();
-        uc2.setComment(comment2);
-        uc2.setCreatedAt(LocalDateTime.now());
+		Comment comment1 = new Comment();
+		comment1.setId(1);
+		comment1.setUser(user);
+		Comment comment2 = new Comment();
+		comment2.setId(2);
+		comment2.setUser(user);
 
-        CommentSummaryDto dto1 = new CommentSummaryDto();
-        dto1.setId(1);
-        CommentSummaryDto dto2 = new CommentSummaryDto();
-        dto2.setId(2);
+		UserComment uc1 = new UserComment();
+		uc1.setComment(comment1);
+		uc1.setCreatedAt(LocalDateTime.now());
+		UserComment uc2 = new UserComment();
+		uc2.setComment(comment2);
+		uc2.setCreatedAt(LocalDateTime.now());
 
-        Page<UserComment> userCommentPage = new PageImpl<>(List.of(uc1, uc2), pageable, 2);
-        when(userCommentRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
-                .thenReturn(userCommentPage);
-        when(commentMapper.toSummaryDto(comment1)).thenReturn(dto1);
-        when(commentMapper.toSummaryDto(comment2)).thenReturn(dto2);
+		CommentSummaryDto dto1 = new CommentSummaryDto();
+		dto1.setId(1);
+		CommentSummaryDto dto2 = new CommentSummaryDto();
+		dto2.setId(2);
 
-        Page<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, pageable);
+		Page<UserComment> userCommentPage = new PageImpl<>(List.of(uc1, uc2), pageable, 2);
+		when(userCommentRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
+			.thenReturn(userCommentPage);
+		when(commentMapper.toSummaryDto(comment1)).thenReturn(dto1);
+		when(commentMapper.toSummaryDto(comment2)).thenReturn(dto2);
 
-        assertEquals(2, result.getContent().size());
-        assertEquals(2, result.getTotalElements());
-        verify(userCommentRepository).findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class));
-        verify(commentMapper).toSummaryDto(comment1);
-        verify(commentMapper).toSummaryDto(comment2);
-        verify(commentPopulationService).populate(any(List.class));
-    }
+		Page<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, pageable);
 
-    @Test
-    public void getAllFromUser_ShouldReturnEmptyListIfNoLikedComments() {
-        int userId = 1;
-        TypeOfInteraction type = TypeOfInteraction.LIKE;
-        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+		assertEquals(2, result.getContent().size());
+		assertEquals(2, result.getTotalElements());
+		verify(userCommentRepository).findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class));
+		verify(commentMapper).toSummaryDto(comment1);
+		verify(commentMapper).toSummaryDto(comment2);
+		verify(commentPopulationService).populate(any(List.class));
+	}
 
-        Page<UserComment> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-        when(userCommentRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
-                .thenReturn(emptyPage);
+	@Test
+	public void getAllFromUser_ShouldReturnEmptyListIfNoLikedComments() {
+		int userId = 1;
+		TypeOfInteraction type = TypeOfInteraction.LIKE;
+		Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Page<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, pageable);
+		Page<UserComment> emptyPage = new PageImpl<>(List.of(), pageable, 0);
+		when(userCommentRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
+			.thenReturn(emptyPage);
 
-        assertTrue(result.getContent().isEmpty());
-        assertEquals(0, result.getTotalElements());
-        verify(userCommentRepository).findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class));
-    }
+		Page<BaseUserEntity> result = userCommentService.getAllFromUser(userId, type, pageable);
+
+		assertTrue(result.getContent().isEmpty());
+		assertEquals(0, result.getTotalElements());
+		verify(userCommentRepository).findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class));
+	}
+
 }

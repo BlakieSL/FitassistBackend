@@ -6,5 +6,7 @@ import source.code.service.implementation.specificationHelpers.SpecificationDepe
 
 @FunctionalInterface
 public interface SpecificationFactory<T> {
-    Specification<T> createSpecification(FilterCriteria criteria, SpecificationDependencies dependencies);
+
+	Specification<T> createSpecification(FilterCriteria criteria, SpecificationDependencies dependencies);
+
 }

@@ -10,6 +10,9 @@ import lombok.Setter;
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 public class ForumThreadUpdateDto {
-    private String title;
-    private String text;
+
+	private String title;
+
+	private String text;
+
 }

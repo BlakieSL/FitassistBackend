@@ -11,14 +11,15 @@ import source.code.dto.response.forumThread.ForumThreadResponseDto;
 import source.code.dto.response.forumThread.ForumThreadSummaryDto;
 
 public interface ForumThreadService {
-    ForumThreadResponseDto createForumThread(ForumThreadCreateDto createDto);
 
-    void updateForumThread(int forumThreadId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException;
+	ForumThreadResponseDto createForumThread(ForumThreadCreateDto createDto);
 
-    void deleteForumThread(int forumThreadId);
+	void updateForumThread(int forumThreadId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-    ForumThreadResponseDto getForumThread(int forumThreadId);
+	void deleteForumThread(int forumThreadId);
 
-    Page<ForumThreadSummaryDto> getFilteredForumThreads(FilterDto filter, Pageable pageable);
+	ForumThreadResponseDto getForumThread(int forumThreadId);
+
+	Page<ForumThreadSummaryDto> getFilteredForumThreads(FilterDto filter, Pageable pageable);
+
 }

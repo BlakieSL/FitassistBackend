@@ -1,5 +1,10 @@
 package source.code.service.implementation.user.interaction.withType;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,94 +26,73 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.recipe.RecipePopulationService;
 import source.code.service.declaration.user.SavedService;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @Service("userRecipeService")
-public class UserRecipeServiceImpl
-        extends GenericSavedService<Recipe, UserRecipe, RecipeResponseDto>
-        implements SavedService {
+public class UserRecipeServiceImpl extends GenericSavedService<Recipe, UserRecipe, RecipeResponseDto>
+	implements SavedService {
 
-    private final RecipeMapper recipeMapper;
-    private final RecipePopulationService recipePopulationService;
+	private final RecipeMapper recipeMapper;
 
-    public UserRecipeServiceImpl(UserRecipeRepository userRecipeRepository,
-                                 RecipeRepository recipeRepository,
-                                 UserRepository userRepository,
-                                 RecipeMapper recipeMapper,
-                                 RecipePopulationService recipePopulationService) {
-        super(userRepository,
-                recipeRepository,
-                userRecipeRepository,
-                Recipe.class,
-                UserRecipe.class);
-        this.recipeMapper = recipeMapper;
-        this.recipePopulationService = recipePopulationService;
-    }
+	private final RecipePopulationService recipePopulationService;
 
-    @Override
-    @CacheEvict(value = CacheNames.RECIPES, key = "#entityId")
-    public void saveToUser(int entityId, TypeOfInteraction type) {
-        super.saveToUser(entityId, type);
-    }
+	public UserRecipeServiceImpl(UserRecipeRepository userRecipeRepository, RecipeRepository recipeRepository,
+								 UserRepository userRepository, RecipeMapper recipeMapper, RecipePopulationService recipePopulationService) {
+		super(userRepository, recipeRepository, userRecipeRepository, Recipe.class, UserRecipe.class);
+		this.recipeMapper = recipeMapper;
+		this.recipePopulationService = recipePopulationService;
+	}
 
-    @Override
-    @CacheEvict(value = CacheNames.RECIPES, key = "#entityId")
-    public void deleteFromUser(int entityId, TypeOfInteraction type) {
-        super.deleteFromUser(entityId, type);
-    }
+	@Override
+	@CacheEvict(value = CacheNames.RECIPES, key = "#entityId")
+	public void saveToUser(int entityId, TypeOfInteraction type) {
+		super.saveToUser(entityId, type);
+	}
 
-    @Override
-    public Page<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Pageable pageable) {
-        Page<UserRecipe> userRecipePage = ((UserRecipeRepository) userEntityRepository)
-                .findAllByUserIdAndType(userId, type, pageable);
+	@Override
+	@CacheEvict(value = CacheNames.RECIPES, key = "#entityId")
+	public void deleteFromUser(int entityId, TypeOfInteraction type) {
+		super.deleteFromUser(entityId, type);
+	}
 
-        List<Integer> recipeIds = userRecipePage.getContent().stream()
-                .map(ur -> ur.getRecipe().getId())
-                .toList();
+	@Override
+	public Page<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Pageable pageable) {
+		Page<UserRecipe> userRecipePage = ((UserRecipeRepository) userEntityRepository).findAllByUserIdAndType(userId,
+			type, pageable);
 
-        List<Recipe> recipesWithDetails = ((RecipeRepository) entityRepository).findByIdsWithDetails(recipeIds);
+		List<Integer> recipeIds = userRecipePage.getContent().stream().map(ur -> ur.getRecipe().getId()).toList();
 
-        Map<Integer, Recipe> recipeMap = recipesWithDetails.stream()
-                .collect(Collectors.toMap(Recipe::getId, r -> r));
+		List<Recipe> recipesWithDetails = ((RecipeRepository) entityRepository).findByIdsWithDetails(recipeIds);
 
-        List<RecipeSummaryDto> summaries = userRecipePage.getContent().stream()
-                .map(ur -> {
-                    Recipe recipe = recipeMap.get(ur.getRecipe().getId());
-                    RecipeSummaryDto dto = recipeMapper.toSummaryDto(recipe);
-                    dto.setInteractionCreatedAt(ur.getCreatedAt());
-                    return dto;
-                })
-                .toList();
+		Map<Integer, Recipe> recipeMap = recipesWithDetails.stream().collect(Collectors.toMap(Recipe::getId, r -> r));
 
-        recipePopulationService.populate(summaries);
+		List<RecipeSummaryDto> summaries = userRecipePage.getContent().stream().map(ur -> {
+			Recipe recipe = recipeMap.get(ur.getRecipe().getId());
+			RecipeSummaryDto dto = recipeMapper.toSummaryDto(recipe);
+			dto.setInteractionCreatedAt(ur.getCreatedAt());
+			return dto;
+		}).toList();
 
-        return new PageImpl<>(
-                summaries.stream().map(dto -> (BaseUserEntity) dto).toList(),
-                pageable,
-                userRecipePage.getTotalElements()
-        );
-    }
+		recipePopulationService.populate(summaries);
 
-    @Override
-    protected boolean isAlreadySaved(int userId, int entityId, TypeOfInteraction type) {
-        return ((UserRecipeRepository) userEntityRepository)
-                .existsByUserIdAndRecipeIdAndType(userId, entityId, type);
-    }
+		return new PageImpl<>(summaries.stream().map(dto -> (BaseUserEntity) dto).toList(), pageable,
+			userRecipePage.getTotalElements());
+	}
 
-    @Override
-    protected UserRecipe createUserEntity(User user, Recipe entity, TypeOfInteraction type) {
-        if (!entity.getIsPublic()) {
-            throw new NotSupportedInteractionTypeException("Cannot save private recipe");
-        }
-        return UserRecipe.createWithUserRecipeType(user, entity, type);
-    }
+	@Override
+	protected boolean isAlreadySaved(int userId, int entityId, TypeOfInteraction type) {
+		return ((UserRecipeRepository) userEntityRepository).existsByUserIdAndRecipeIdAndType(userId, entityId, type);
+	}
 
-    @Override
-    protected Optional<UserRecipe> findUserEntityOptional(int userId, int entityId, TypeOfInteraction type) {
-        return ((UserRecipeRepository) userEntityRepository)
-                .findByUserIdAndRecipeIdAndType(userId, entityId, type);
-    }
+	@Override
+	protected UserRecipe createUserEntity(User user, Recipe entity, TypeOfInteraction type) {
+		if (!entity.getIsPublic()) {
+			throw new NotSupportedInteractionTypeException("Cannot save private recipe");
+		}
+		return UserRecipe.createWithUserRecipeType(user, entity, type);
+	}
+
+	@Override
+	protected Optional<UserRecipe> findUserEntityOptional(int userId, int entityId, TypeOfInteraction type) {
+		return ((UserRecipeRepository) userEntityRepository).findByUserIdAndRecipeIdAndType(userId, entityId, type);
+	}
+
 }

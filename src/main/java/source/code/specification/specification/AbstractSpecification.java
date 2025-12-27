@@ -12,22 +12,24 @@ import source.code.specification.PredicateContext;
 
 public abstract class AbstractSpecification<T, F extends Enum<F>> implements Specification<T> {
 
-    protected final FilterCriteria criteria;
-    protected final SpecificationDependencies dependencies;
+	protected final FilterCriteria criteria;
 
-    protected AbstractSpecification(FilterCriteria criteria, SpecificationDependencies dependencies) {
-        this.criteria = criteria;
-        this.dependencies = dependencies;
-    }
+	protected final SpecificationDependencies dependencies;
 
-    @Override
-    public Predicate toPredicate(@NonNull Root<T> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
-        F field = dependencies.getFieldResolver().resolveField(criteria, getFieldClass());
-        PredicateContext<T> context = new PredicateContext<>(builder, root, query, criteria);
-        return buildPredicateForField(context, field);
-    }
+	protected AbstractSpecification(FilterCriteria criteria, SpecificationDependencies dependencies) {
+		this.criteria = criteria;
+		this.dependencies = dependencies;
+	}
 
-    protected abstract Class<F> getFieldClass();
+	@Override
+	public Predicate toPredicate(@NonNull Root<T> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
+		F field = dependencies.getFieldResolver().resolveField(criteria, getFieldClass());
+		PredicateContext<T> context = new PredicateContext<>(builder, root, query, criteria);
+		return buildPredicateForField(context, field);
+	}
 
-    protected abstract Predicate buildPredicateForField(PredicateContext<T> context, F field);
+	protected abstract Class<F> getFieldClass();
+
+	protected abstract Predicate buildPredicateForField(PredicateContext<T> context, F field);
+
 }

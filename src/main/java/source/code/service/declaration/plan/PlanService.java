@@ -3,6 +3,9 @@ package source.code.service.declaration.plan;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import source.code.dto.request.filter.FilterDto;
@@ -12,22 +15,22 @@ import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.model.plan.Plan;
 
-import java.util.List;
-
 public interface PlanService {
-    PlanResponseDto createPlan(PlanCreateDto planDto);
 
-    void updatePlan(int planId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+	PlanResponseDto createPlan(PlanCreateDto planDto);
 
-    void deletePlan(int planId);
+	void updatePlan(int planId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-    PlanResponseDto getPlan(int id);
+	void deletePlan(int planId);
 
-    Page<PlanSummaryDto> getFilteredPlans(FilterDto filter, Pageable pageable);
+	PlanResponseDto getPlan(int id);
 
-    List<Plan> getAllPlanEntities();
+	Page<PlanSummaryDto> getFilteredPlans(FilterDto filter, Pageable pageable);
 
-    void incrementViews(int planId);
+	List<Plan> getAllPlanEntities();
 
-    PlanCategoriesResponseDto getAllPlanCategories();
+	void incrementViews(int planId);
+
+	PlanCategoriesResponseDto getAllPlanCategories();
+
 }

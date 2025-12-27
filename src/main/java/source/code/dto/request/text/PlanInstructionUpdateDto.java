@@ -10,7 +10,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlanInstructionUpdateDto {
-    private short orderIndex;
-    private String title;
-    private String text;
+
+	private short orderIndex;
+
+	private String title;
+
+	private String text;
+
 }

@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import java.time.LocalDateTime;
+import java.util.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,107 +19,98 @@ import source.code.model.text.RecipeInstruction;
 import source.code.model.user.User;
 import source.code.model.user.UserRecipe;
 
-import java.time.LocalDateTime;
-import java.util.*;
-
 @Entity
 @Table(name = "recipe")
 @NamedEntityGraph(name = "Recipe.withoutAssociations", attributeNodes = {})
-@NamedEntityGraph(
-        name = "Recipe.summary",
-        attributeNodes = {
-                @NamedAttributeNode("user"),
-                @NamedAttributeNode("mediaList"),
-                @NamedAttributeNode(value = "recipeCategoryAssociations", subgraph = "rca-subgraph")
-        },
-        subgraphs = {
-                @NamedSubgraph(
-                        name = "rca-subgraph",
-                        attributeNodes = @NamedAttributeNode("recipeCategory")
-                )
-        }
-)
+@NamedEntityGraph(name = "Recipe.summary",
+	attributeNodes = {@NamedAttributeNode("user"), @NamedAttributeNode("mediaList"),
+		@NamedAttributeNode(value = "recipeCategoryAssociations", subgraph = "rca-subgraph")},
+	subgraphs = {@NamedSubgraph(name = "rca-subgraph", attributeNodes = @NamedAttributeNode("recipeCategory"))})
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Recipe implements IndexedEntity {
-    private static final int NAME_MAX_LENGTH = 100;
-    private static final int DESCRIPTION_MAX_LENGTH = 255;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	private static final int NAME_MAX_LENGTH = 100;
 
-    @NotBlank
-    @Size(max = NAME_MAX_LENGTH)
-    @Column(nullable = false, length = NAME_MAX_LENGTH)
-    private String name;
+	private static final int DESCRIPTION_MAX_LENGTH = 255;
 
-    @NotBlank
-    @Size(max = DESCRIPTION_MAX_LENGTH)
-    @Column(nullable = false)
-    private String description;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @NotNull
-    @Column(name = "minutes_to_prepare", nullable = false)
-    private Short minutesToPrepare;
+	@NotBlank
+	@Size(max = NAME_MAX_LENGTH)
+	@Column(nullable = false, length = NAME_MAX_LENGTH)
+	private String name;
 
-    @NotNull
-    @Column(nullable = false, name = "is_public")
-    private Boolean isPublic = false;
+	@NotBlank
+	@Size(max = DESCRIPTION_MAX_LENGTH)
+	@Column(nullable = false)
+	private String description;
 
-    @Column(nullable = false)
-    private long views = 0L;
+	@NotNull
+	@Column(name = "minutes_to_prepare", nullable = false)
+	private Short minutesToPrepare;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+	@NotNull
+	@Column(nullable = false, name = "is_public")
+	private Boolean isPublic = false;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+	@Column(nullable = false)
+	private long views = 0L;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+	@Column(name = "created_at", nullable = false, updatable = false)
+	private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "recipe", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
-    @OrderBy("orderIndex ASC")
-    private final Set<RecipeInstruction> recipeInstructions = new LinkedHashSet<>();
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @OrderBy("id ASC")
-    private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new LinkedHashSet<>();
+	@PrePersist
+	protected void onCreate() {
+		createdAt = LocalDateTime.now();
+	}
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @OrderBy("id ASC")
-    private final Set<RecipeFood> recipeFoods = new LinkedHashSet<>();
+	@OneToMany(mappedBy = "recipe", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
+	@OrderBy("orderIndex ASC")
+	private final Set<RecipeInstruction> recipeInstructions = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE)
-    private final Set<UserRecipe> userRecipes = new HashSet<>();
+	@OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OrderBy("id ASC")
+	private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new LinkedHashSet<>();
 
-    @OneToMany
-    @JoinColumn(name = "parent_id", insertable = false, updatable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    @SQLRestriction("parentType = 'RECIPE'")
-    private List<Media> mediaList = new ArrayList<>();
+	@OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OrderBy("id ASC")
+	private final Set<RecipeFood> recipeFoods = new LinkedHashSet<>();
 
-    @Override
-    public String getClassName() {
-        return this.getClass().getSimpleName();
-    }
+	@OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE)
+	private final Set<UserRecipe> userRecipes = new HashSet<>();
 
-    public static Recipe of(Integer id, User user) {
-        Recipe recipe = new Recipe();
-        recipe.setId(id);
-        recipe.setUser(user);
-        return recipe;
-    }
+	@OneToMany
+	@JoinColumn(name = "parent_id", insertable = false, updatable = false,
+		foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@SQLRestriction("parentType = 'RECIPE'")
+	private List<Media> mediaList = new ArrayList<>();
 
-    public static Recipe of(User user) {
-        Recipe recipe = new Recipe();
-        recipe.setUser(user);
-        return recipe;
-    }
+	@Override
+	public String getClassName() {
+		return this.getClass().getSimpleName();
+	}
+
+	public static Recipe of(Integer id, User user) {
+		Recipe recipe = new Recipe();
+		recipe.setId(id);
+		recipe.setUser(user);
+		return recipe;
+	}
+
+	public static Recipe of(User user) {
+		Recipe recipe = new Recipe();
+		recipe.setUser(user);
+		return recipe;
+	}
+
 }

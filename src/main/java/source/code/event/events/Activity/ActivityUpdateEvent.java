@@ -6,6 +6,7 @@ import source.code.model.activity.Activity;
 
 @Getter
 public class ActivityUpdateEvent extends ApplicationEvent {
+
     private final Activity activity;
 
     public ActivityUpdateEvent(Object source, Activity activity) {
@@ -16,4 +17,5 @@ public class ActivityUpdateEvent extends ApplicationEvent {
     public static ActivityUpdateEvent of(Object source, Activity activity) {
         return new ActivityUpdateEvent(source, activity);
     }
+
 }

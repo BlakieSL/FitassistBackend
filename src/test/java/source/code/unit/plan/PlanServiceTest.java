@@ -1,8 +1,16 @@
 package source.code.unit.plan;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,275 +48,278 @@ import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.declaration.plan.PlanPopulationService;
 import source.code.service.implementation.plan.PlanServiceImpl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class PlanServiceTest {
 
-    @Mock
-    private PlanMapper planMapper;
-    @Mock
-    private RepositoryHelper repositoryHelper;
-    @Mock
-    private PlanRepository planRepository;
-    @Mock
-    private PlanCategoryAssociationRepository planCategoryAssociationRepository;
-    @Mock
-    private JsonPatchService jsonPatchService;
-    @Mock
-    private ValidationService validationService;
-    @Mock
-    private ApplicationEventPublisher eventPublisher;
-    @Mock
-    private TextRepository textRepository;
-    @Mock
-    private PlanPopulationService planPopulationService;
+	@Mock
+	private PlanMapper planMapper;
 
-    @InjectMocks
-    private PlanServiceImpl planService;
+	@Mock
+	private RepositoryHelper repositoryHelper;
 
-    private Plan plan;
-    private PlanCreateDto createDto;
-    private PlanResponseDto responseDto;
-    private PlanSummaryDto summaryDto;
-    private JsonMergePatch patch;
-    private PlanUpdateDto patchedDto;
-    private int planId;
-    private int userId;
-    private FilterDto filter;
-    private Pageable pageable;
-    private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
+	@Mock
+	private PlanRepository planRepository;
 
-    @BeforeEach
-    void setUp() {
-        plan = new Plan();
-        createDto = new PlanCreateDto();
-        responseDto = new PlanResponseDto();
-        summaryDto = new PlanSummaryDto();
-        patchedDto = new PlanUpdateDto();
-        planId = 1;
-        userId = 1;
-        filter = new FilterDto();
-        pageable = PageRequest.of(0, 100);
-        patch = mock(JsonMergePatch.class);
-        mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
-    }
+	@Mock
+	private PlanCategoryAssociationRepository planCategoryAssociationRepository;
 
-    @AfterEach
-    void tearDown() {
-        if (mockedAuthorizationUtil != null) {
-            mockedAuthorizationUtil.close();
-        }
-    }
+	@Mock
+	private JsonPatchService jsonPatchService;
 
-    @Test
-    void createPlan_shouldCreatePlan() {
-        plan.setId(planId);
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(planMapper.toEntity(createDto, userId)).thenReturn(plan);
-        when(planRepository.save(plan)).thenReturn(plan);
-        when(planRepository.findByIdWithDetails(planId)).thenReturn(Optional.of(plan));
-        when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
+	@Mock
+	private ValidationService validationService;
 
-        PlanResponseDto result = planService.createPlan(createDto);
+	@Mock
+	private ApplicationEventPublisher eventPublisher;
 
-        assertEquals(responseDto, result);
-        verify(planPopulationService).populate(responseDto);
-    }
+	@Mock
+	private TextRepository textRepository;
 
-    @Test
-    void createPlan_shouldPublish() {
-        plan.setId(planId);
-        ArgumentCaptor<PlanCreateEvent> eventCaptor = ArgumentCaptor
-                .forClass(PlanCreateEvent.class);
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-        when(planMapper.toEntity(createDto, userId)).thenReturn(plan);
-        when(planRepository.save(plan)).thenReturn(plan);
-        when(planRepository.findByIdWithDetails(planId)).thenReturn(Optional.of(plan));
-        when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
+	@Mock
+	private PlanPopulationService planPopulationService;
 
-        planService.createPlan(createDto);
+	@InjectMocks
+	private PlanServiceImpl planService;
 
-        verify(eventPublisher).publishEvent(eventCaptor.capture());
-        assertEquals(plan, eventCaptor.getValue().getPlan());
-    }
+	private Plan plan;
 
-    @Test
-    void updatePlan_shouldUpdate() throws JsonPatchException, JsonProcessingException {
-        when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
-        when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class))
-                .thenReturn(patchedDto);
-        when(planRepository.save(plan)).thenReturn(plan);
+	private PlanCreateDto createDto;
 
-        planService.updatePlan(planId, patch);
+	private PlanResponseDto responseDto;
 
-        verify(validationService).validate(patchedDto);
-        verify(planMapper).updatePlan(plan, patchedDto);
-        verify(planRepository).save(plan);
-    }
+	private PlanSummaryDto summaryDto;
 
-    @Test
-    void updatePlan_shouldPublish() throws JsonPatchException, JsonProcessingException {
-        ArgumentCaptor<PlanUpdateEvent> eventCaptor = ArgumentCaptor
-                .forClass(PlanUpdateEvent.class);
-        when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
-        when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class))
-                .thenReturn(patchedDto);
-        when(planRepository.save(plan)).thenReturn(plan);
+	private JsonMergePatch patch;
 
-        planService.updatePlan(planId, patch);
+	private PlanUpdateDto patchedDto;
 
-        verify(eventPublisher).publishEvent(eventCaptor.capture());
-        assertEquals(plan, eventCaptor.getValue().getPlan());
-    }
+	private int planId;
 
-    @Test
-    void updatePlan_shouldThrowExceptionWhenPlanNotFound() {
-        when(repositoryHelper.find(planRepository, Plan.class, planId))
-                .thenThrow(RecordNotFoundException.of(Plan.class, planId));
+	private int userId;
 
-        assertThrows(RecordNotFoundException.class, () -> planService.updatePlan(planId, patch));
+	private FilterDto filter;
 
-        verifyNoInteractions(planMapper, jsonPatchService, validationService, eventPublisher);
-        verify(planRepository, never()).save(plan);
-    }
+	private Pageable pageable;
 
-    @Test
-    void updatePlan_shouldThrowExceptionWhenPatchFails()
-            throws JsonPatchException, JsonProcessingException {
-        when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
-        when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class))
-                .thenThrow(JsonPatchException.class);
+	private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
 
-        assertThrows(JsonPatchException.class, () -> planService.updatePlan(planId, patch));
+	@BeforeEach
+	void setUp() {
+		plan = new Plan();
+		createDto = new PlanCreateDto();
+		responseDto = new PlanResponseDto();
+		summaryDto = new PlanSummaryDto();
+		patchedDto = new PlanUpdateDto();
+		planId = 1;
+		userId = 1;
+		filter = new FilterDto();
+		pageable = PageRequest.of(0, 100);
+		patch = mock(JsonMergePatch.class);
+		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
+	}
 
-        verifyNoInteractions(validationService, eventPublisher);
-        verify(planRepository, never()).save(plan);
-    }
+	@AfterEach
+	void tearDown() {
+		if (mockedAuthorizationUtil != null) {
+			mockedAuthorizationUtil.close();
+		}
+	}
 
-    @Test
-    void updatePlan_shouldThrowExceptionWhenValidationFails()
-            throws JsonPatchException, JsonProcessingException {
-        when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
-        when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class))
-                .thenReturn(patchedDto);
+	@Test
+	void createPlan_shouldCreatePlan() {
+		plan.setId(planId);
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(planMapper.toEntity(createDto, userId)).thenReturn(plan);
+		when(planRepository.save(plan)).thenReturn(plan);
+		when(planRepository.findByIdWithDetails(planId)).thenReturn(Optional.of(plan));
+		when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
 
-        doThrow(new IllegalArgumentException("Validation failed")).when(validationService)
-                .validate(patchedDto);
+		PlanResponseDto result = planService.createPlan(createDto);
 
-        assertThrows(RuntimeException.class, () -> planService.updatePlan(planId, patch));
+		assertEquals(responseDto, result);
+		verify(planPopulationService).populate(responseDto);
+	}
 
-        verify(validationService).validate(patchedDto);
-        verifyNoInteractions(eventPublisher);
-        verify(planRepository, never()).save(plan);
-    }
+	@Test
+	void createPlan_shouldPublish() {
+		plan.setId(planId);
+		ArgumentCaptor<PlanCreateEvent> eventCaptor = ArgumentCaptor.forClass(PlanCreateEvent.class);
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(planMapper.toEntity(createDto, userId)).thenReturn(plan);
+		when(planRepository.save(plan)).thenReturn(plan);
+		when(planRepository.findByIdWithDetails(planId)).thenReturn(Optional.of(plan));
+		when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
 
-    @Test
-    void deletePlan_shouldDelete() {
-        when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
+		planService.createPlan(createDto);
 
-        planService.deletePlan(planId);
+		verify(eventPublisher).publishEvent(eventCaptor.capture());
+		assertEquals(plan, eventCaptor.getValue().getPlan());
+	}
 
-        verify(planRepository).delete(plan);
-        verify(eventPublisher).publishEvent(any(PlanDeleteEvent.class));
-    }
+	@Test
+	void updatePlan_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+		when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
+		when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class)).thenReturn(patchedDto);
+		when(planRepository.save(plan)).thenReturn(plan);
 
-    @Test
-    void deletePlan_shouldThrowExceptionWhenPlanNotFound() {
-        when(repositoryHelper.find(planRepository, Plan.class, planId))
-                .thenThrow(RecordNotFoundException.of(Plan.class, planId));
+		planService.updatePlan(planId, patch);
 
-        assertThrows(RecordNotFoundException.class, () -> planService.deletePlan(planId));
+		verify(validationService).validate(patchedDto);
+		verify(planMapper).updatePlan(plan, patchedDto);
+		verify(planRepository).save(plan);
+	}
 
-        verify(planRepository, never()).delete(plan);
-        verify(eventPublisher, never()).publishEvent(any());
-    }
+	@Test
+	void updatePlan_shouldPublish() throws JsonPatchException, JsonProcessingException {
+		ArgumentCaptor<PlanUpdateEvent> eventCaptor = ArgumentCaptor.forClass(PlanUpdateEvent.class);
+		when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
+		when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class)).thenReturn(patchedDto);
+		when(planRepository.save(plan)).thenReturn(plan);
 
-    @Test
-    void getPlan_shouldReturnPlanWhenFound() {
-        when(planRepository.findByIdWithDetails(planId)).thenReturn(Optional.of(plan));
-        when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
+		planService.updatePlan(planId, patch);
 
-        PlanResponseDto result = planService.getPlan(planId);
+		verify(eventPublisher).publishEvent(eventCaptor.capture());
+		assertEquals(plan, eventCaptor.getValue().getPlan());
+	}
 
-        assertEquals(responseDto, result);
-        verify(planPopulationService).populate(responseDto);
-    }
+	@Test
+	void updatePlan_shouldThrowExceptionWhenPlanNotFound() {
+		when(repositoryHelper.find(planRepository, Plan.class, planId))
+			.thenThrow(RecordNotFoundException.of(Plan.class, planId));
 
-    @Test
-    void getPlan_shouldThrowExceptionWhenPlanNotFound() {
-        when(planRepository.findByIdWithDetails(planId)).thenReturn(Optional.empty());
+		assertThrows(RecordNotFoundException.class, () -> planService.updatePlan(planId, patch));
 
-        assertThrows(RecordNotFoundException.class, () -> planService.getPlan(planId));
+		verifyNoInteractions(planMapper, jsonPatchService, validationService, eventPublisher);
+		verify(planRepository, never()).save(plan);
+	}
 
-        verifyNoInteractions(planMapper);
-    }
+	@Test
+	void updatePlan_shouldThrowExceptionWhenPatchFails() throws JsonPatchException, JsonProcessingException {
+		when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
+		when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class)).thenThrow(JsonPatchException.class);
 
-    @Test
-    void getFilteredPlans_shouldReturnFilteredPlans() {
-        Page<Plan> planPage = new PageImpl<>(List.of(plan), pageable, 1);
+		assertThrows(JsonPatchException.class, () -> planService.updatePlan(planId, patch));
 
-        when(planRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(planPage);
-        when(planMapper.toSummaryDto(plan)).thenReturn(summaryDto);
+		verifyNoInteractions(validationService, eventPublisher);
+		verify(planRepository, never()).save(plan);
+	}
 
-        Page<PlanSummaryDto> result = planService.getFilteredPlans(filter, pageable);
+	@Test
+	void updatePlan_shouldThrowExceptionWhenValidationFails() throws JsonPatchException, JsonProcessingException {
+		when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
+		when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class)).thenReturn(patchedDto);
 
-        assertEquals(1, result.getTotalElements());
-        assertSame(summaryDto, result.getContent().get(0));
-        verify(planRepository).findAll(any(Specification.class), eq(pageable));
-        verify(planMapper).toSummaryDto(plan);
-        verify(planPopulationService).populate(anyList());
-    }
+		doThrow(new IllegalArgumentException("Validation failed")).when(validationService).validate(patchedDto);
 
-    @Test
-    void getFilteredPlans_shouldReturnEmptyPageWhenFilterHasNoCriteria() {
-        filter.setFilterCriteria(new ArrayList<>());
-        Page<Plan> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
+		assertThrows(RuntimeException.class, () -> planService.updatePlan(planId, patch));
 
-        when(planRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
+		verify(validationService).validate(patchedDto);
+		verifyNoInteractions(eventPublisher);
+		verify(planRepository, never()).save(plan);
+	}
 
-        Page<PlanSummaryDto> result = planService.getFilteredPlans(filter, pageable);
+	@Test
+	void deletePlan_shouldDelete() {
+		when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
 
-        assertTrue(result.isEmpty());
-        verify(planRepository).findAll(any(Specification.class), eq(pageable));
-        verify(planPopulationService).populate(anyList());
-    }
+		planService.deletePlan(planId);
 
-    @Test
-    void getFilteredPlans_shouldReturnEmptyPageWhenNoPlansMatchFilter() {
-        FilterCriteria criteria = new FilterCriteria();
-        criteria.setFilterKey("nonexistentKey");
-        filter.setFilterCriteria(List.of(criteria));
-        Page<Plan> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
+		verify(planRepository).delete(plan);
+		verify(eventPublisher).publishEvent(any(PlanDeleteEvent.class));
+	}
 
-        when(planRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
+	@Test
+	void deletePlan_shouldThrowExceptionWhenPlanNotFound() {
+		when(repositoryHelper.find(planRepository, Plan.class, planId))
+			.thenThrow(RecordNotFoundException.of(Plan.class, planId));
 
-        Page<PlanSummaryDto> result = planService.getFilteredPlans(filter, pageable);
+		assertThrows(RecordNotFoundException.class, () -> planService.deletePlan(planId));
 
-        assertTrue(result.isEmpty());
-        verify(planRepository).findAll(any(Specification.class), eq(pageable));
-        verify(planPopulationService).populate(anyList());
-    }
+		verify(planRepository, never()).delete(plan);
+		verify(eventPublisher, never()).publishEvent(any());
+	}
 
-    @Test
-    void incrementViews_shouldCallRepositoryIncrementViews() {
-        planService.incrementViews(planId);
+	@Test
+	void getPlan_shouldReturnPlanWhenFound() {
+		when(planRepository.findByIdWithDetails(planId)).thenReturn(Optional.of(plan));
+		when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
 
-        verify(planRepository).incrementViews(planId);
-    }
+		PlanResponseDto result = planService.getPlan(planId);
 
-    @Test
-    void incrementViews_shouldCallRepositoryWithCorrectId() {
-        int specificPlanId = 42;
+		assertEquals(responseDto, result);
+		verify(planPopulationService).populate(responseDto);
+	}
 
-        planService.incrementViews(specificPlanId);
+	@Test
+	void getPlan_shouldThrowExceptionWhenPlanNotFound() {
+		when(planRepository.findByIdWithDetails(planId)).thenReturn(Optional.empty());
 
-        verify(planRepository).incrementViews(specificPlanId);
-        verify(planRepository, never()).incrementViews(planId);
-    }
+		assertThrows(RecordNotFoundException.class, () -> planService.getPlan(planId));
+
+		verifyNoInteractions(planMapper);
+	}
+
+	@Test
+	void getFilteredPlans_shouldReturnFilteredPlans() {
+		Page<Plan> planPage = new PageImpl<>(List.of(plan), pageable, 1);
+
+		when(planRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(planPage);
+		when(planMapper.toSummaryDto(plan)).thenReturn(summaryDto);
+
+		Page<PlanSummaryDto> result = planService.getFilteredPlans(filter, pageable);
+
+		assertEquals(1, result.getTotalElements());
+		assertSame(summaryDto, result.getContent().get(0));
+		verify(planRepository).findAll(any(Specification.class), eq(pageable));
+		verify(planMapper).toSummaryDto(plan);
+		verify(planPopulationService).populate(anyList());
+	}
+
+	@Test
+	void getFilteredPlans_shouldReturnEmptyPageWhenFilterHasNoCriteria() {
+		filter.setFilterCriteria(new ArrayList<>());
+		Page<Plan> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
+
+		when(planRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
+
+		Page<PlanSummaryDto> result = planService.getFilteredPlans(filter, pageable);
+
+		assertTrue(result.isEmpty());
+		verify(planRepository).findAll(any(Specification.class), eq(pageable));
+		verify(planPopulationService).populate(anyList());
+	}
+
+	@Test
+	void getFilteredPlans_shouldReturnEmptyPageWhenNoPlansMatchFilter() {
+		FilterCriteria criteria = new FilterCriteria();
+		criteria.setFilterKey("nonexistentKey");
+		filter.setFilterCriteria(List.of(criteria));
+		Page<Plan> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
+
+		when(planRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
+
+		Page<PlanSummaryDto> result = planService.getFilteredPlans(filter, pageable);
+
+		assertTrue(result.isEmpty());
+		verify(planRepository).findAll(any(Specification.class), eq(pageable));
+		verify(planPopulationService).populate(anyList());
+	}
+
+	@Test
+	void incrementViews_shouldCallRepositoryIncrementViews() {
+		planService.incrementViews(planId);
+
+		verify(planRepository).incrementViews(planId);
+	}
+
+	@Test
+	void incrementViews_shouldCallRepositoryWithCorrectId() {
+		int specificPlanId = 42;
+
+		planService.incrementViews(specificPlanId);
+
+		verify(planRepository).incrementViews(specificPlanId);
+		verify(planRepository, never()).incrementViews(planId);
+	}
+
 }

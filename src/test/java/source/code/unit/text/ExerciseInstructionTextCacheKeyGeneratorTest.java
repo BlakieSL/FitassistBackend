@@ -1,5 +1,7 @@
 package source.code.unit.text;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,34 +11,34 @@ import source.code.model.exercise.Exercise;
 import source.code.model.text.ExerciseInstruction;
 import source.code.service.implementation.text.ExerciseInstructionTextCacheKeyGeneratorImpl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @ExtendWith(MockitoExtension.class)
 public class ExerciseInstructionTextCacheKeyGeneratorTest {
-    @InjectMocks
-    private ExerciseInstructionTextCacheKeyGeneratorImpl keyGenerator;
 
-    @Test
-    public void generateCacheKey() {
-        int exerciseId = 123;
-        var exerciseInstruction = new ExerciseInstruction();
-        var exercise = new Exercise();
-        exercise.setId(exerciseId);
-        exerciseInstruction.setExercise(exercise);
+	@InjectMocks
+	private ExerciseInstructionTextCacheKeyGeneratorImpl keyGenerator;
 
-        String result = keyGenerator.generateCacheKey(exerciseInstruction);
+	@Test
+	public void generateCacheKey() {
+		int exerciseId = 123;
+		var exerciseInstruction = new ExerciseInstruction();
+		var exercise = new Exercise();
+		exercise.setId(exerciseId);
+		exerciseInstruction.setExercise(exercise);
 
-        String expected = CacheKeys.EXERCISE_INSTRUCTION.toString() + exerciseId;
-        assertEquals(expected, result);
-    }
+		String result = keyGenerator.generateCacheKey(exerciseInstruction);
 
-    @Test
-    public void generateCacheKeyForParent() {
-        int exerciseId = 123;
+		String expected = CacheKeys.EXERCISE_INSTRUCTION.toString() + exerciseId;
+		assertEquals(expected, result);
+	}
 
-        String result = keyGenerator.generateCacheKeyForParent(exerciseId);
+	@Test
+	public void generateCacheKeyForParent() {
+		int exerciseId = 123;
 
-        String expected = CacheKeys.EXERCISE_INSTRUCTION.toString() + exerciseId;
-        assertEquals(expected, result);
-    }
+		String result = keyGenerator.generateCacheKeyForParent(exerciseId);
+
+		String expected = CacheKeys.EXERCISE_INSTRUCTION.toString() + exerciseId;
+		assertEquals(expected, result);
+	}
+
 }

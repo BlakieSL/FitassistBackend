@@ -12,7 +12,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PasswordResetRequestDto {
-    @NotBlank
-    @Email
-    private String email;
+
+	@NotBlank
+	@Email
+	private String email;
+
 }

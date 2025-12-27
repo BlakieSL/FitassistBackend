@@ -9,17 +9,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum PlanStructureType {
-    WEEKLY_SPLIT("Weekly Split"),
-    FIXED_PROGRAM("Fixed Program");
 
-    private final String name;
+	WEEKLY_SPLIT("Weekly Split"), FIXED_PROGRAM("Fixed Program");
 
-    public String getValue() {
-        return this.name();
-    }
+	private final String name;
 
-    @JsonCreator
-    public static PlanStructureType create(String value) {
-        return PlanStructureType.valueOf(value);
-    }
+	public String getValue() {
+		return this.name();
+	}
+
+	@JsonCreator
+	public static PlanStructureType create(String value) {
+		return PlanStructureType.valueOf(value);
+	}
+
 }

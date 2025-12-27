@@ -15,14 +15,16 @@ import source.code.model.exercise.Exercise;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class ExerciseInstruction extends TextBase {
-    @ManyToOne
-    @JoinColumn(name = "exercise_id")
-    private Exercise exercise;
 
-    public static ExerciseInstruction of(short number, String text) {
-        ExerciseInstruction instruction = new ExerciseInstruction();
-        instruction.setOrderIndex(number);
-        instruction.setText(text);
-        return instruction;
-    }
+	@ManyToOne
+	@JoinColumn(name = "exercise_id")
+	private Exercise exercise;
+
+	public static ExerciseInstruction of(short number, String text) {
+		ExerciseInstruction instruction = new ExerciseInstruction();
+		instruction.setOrderIndex(number);
+		instruction.setText(text);
+		return instruction;
+	}
+
 }

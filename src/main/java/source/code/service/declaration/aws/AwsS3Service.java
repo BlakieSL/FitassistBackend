@@ -1,9 +1,11 @@
 package source.code.service.declaration.aws;
 
 public interface AwsS3Service {
-    String uploadImage(byte[] imageBytes);
 
-    String getImage(String imageName);
+	String uploadImage(byte[] imageBytes);
 
-    void deleteImage(String imageName);
+	String getImage(String imageName);
+
+	void deleteImage(String imageName);
+
 }

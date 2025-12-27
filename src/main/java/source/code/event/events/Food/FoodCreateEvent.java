@@ -6,14 +6,16 @@ import source.code.model.food.Food;
 
 @Getter
 public class FoodCreateEvent extends ApplicationEvent {
-    private final Food food;
 
-    public FoodCreateEvent(Object source, Food food) {
-        super(source);
-        this.food = food;
-    }
+	private final Food food;
 
-    public static FoodCreateEvent of(Object source, Food food) {
-        return new FoodCreateEvent(source, food);
-    }
+	public FoodCreateEvent(Object source, Food food) {
+		super(source);
+		this.food = food;
+	}
+
+	public static FoodCreateEvent of(Object source, Food food) {
+		return new FoodCreateEvent(source, food);
+	}
+
 }

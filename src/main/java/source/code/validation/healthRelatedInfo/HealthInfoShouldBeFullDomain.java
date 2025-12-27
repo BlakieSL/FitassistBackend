@@ -12,9 +12,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HealthInfoShouldBeFullDomain {
-    String message() default "{HealthInformationShouldBeFullDomain.message}";
 
-    Class<?>[] groups() default {};
+	String message() default "{HealthInformationShouldBeFullDomain.message}";
 
-    Class<? extends Payload>[] payload() default {};
+	Class<?>[] groups() default {};
+
+	Class<? extends Payload>[] payload() default {};
+
 }

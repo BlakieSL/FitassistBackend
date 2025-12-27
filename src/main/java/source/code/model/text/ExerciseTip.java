@@ -15,21 +15,23 @@ import source.code.model.exercise.Exercise;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class ExerciseTip extends TextBase {
-    @ManyToOne
-    @JoinColumn(name = "exercise_id")
-    private Exercise exercise;
 
-    public static ExerciseTip createWithIdAndExercise(int id, Exercise exercise) {
-        ExerciseTip tip = new ExerciseTip();
-        tip.setId(id);
-        tip.setExercise(exercise);
-        return tip;
-    }
+	@ManyToOne
+	@JoinColumn(name = "exercise_id")
+	private Exercise exercise;
 
-    public static ExerciseTip createWithNumberAndText(short number, String text) {
-        ExerciseTip tip = new ExerciseTip();
-        tip.setOrderIndex(number);
-        tip.setText(text);
-        return tip;
-    }
+	public static ExerciseTip createWithIdAndExercise(int id, Exercise exercise) {
+		ExerciseTip tip = new ExerciseTip();
+		tip.setId(id);
+		tip.setExercise(exercise);
+		return tip;
+	}
+
+	public static ExerciseTip createWithNumberAndText(short number, String text) {
+		ExerciseTip tip = new ExerciseTip();
+		tip.setOrderIndex(number);
+		tip.setText(text);
+		return tip;
+	}
+
 }

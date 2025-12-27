@@ -1,5 +1,7 @@
 package source.code.service.implementation.user.interaction.withoutType;
 
+import java.util.List;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,79 +21,65 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.exercise.ExercisePopulationService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 
-import java.util.List;
-
 @Service("userExerciseService")
-public class UserExerciseServiceImpl
-        extends GenericSavedServiceWithoutType<Exercise, UserExercise, ExerciseSummaryDto>
-        implements SavedServiceWithoutType {
+public class UserExerciseServiceImpl extends GenericSavedServiceWithoutType<Exercise, UserExercise, ExerciseSummaryDto>
+	implements SavedServiceWithoutType {
 
-    private final ExerciseMapper exerciseMapper;
-    private final ExercisePopulationService exercisePopulationService;
+	private final ExerciseMapper exerciseMapper;
 
-    public UserExerciseServiceImpl(UserRepository userRepository,
-                                   JpaRepository<Exercise, Integer> entityRepository,
-                                   JpaRepository<UserExercise, Integer> userEntityRepository,
-                                   ExerciseMapper mapper,
-                                   ExercisePopulationService exercisePopulationService) {
-        super(userRepository, entityRepository, userEntityRepository, mapper::toSummaryDto, Exercise.class);
-        this.exerciseMapper = mapper;
-        this.exercisePopulationService = exercisePopulationService;
-    }
+	private final ExercisePopulationService exercisePopulationService;
 
-    @Override
-    @CacheEvict(value = CacheNames.EXERCISES, key = "#entityId")
-    public void saveToUser(int entityId) {
-        super.saveToUser(entityId);
-    }
+	public UserExerciseServiceImpl(UserRepository userRepository, JpaRepository<Exercise, Integer> entityRepository,
+								   JpaRepository<UserExercise, Integer> userEntityRepository, ExerciseMapper mapper,
+								   ExercisePopulationService exercisePopulationService) {
+		super(userRepository, entityRepository, userEntityRepository, mapper::toSummaryDto, Exercise.class);
+		this.exerciseMapper = mapper;
+		this.exercisePopulationService = exercisePopulationService;
+	}
 
-    @Override
-    @CacheEvict(value = CacheNames.EXERCISES, key = "#entityId")
-    public void deleteFromUser(int entityId) {
-        super.deleteFromUser(entityId);
-    }
+	@Override
+	@CacheEvict(value = CacheNames.EXERCISES, key = "#entityId")
+	public void saveToUser(int entityId) {
+		super.saveToUser(entityId);
+	}
 
-    @Override
-    public Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable) {
-        Page<UserExercise> userExercisePage = ((UserExerciseRepository) userEntityRepository)
-                .findAllByUserIdWithMedia(userId, pageable);
+	@Override
+	@CacheEvict(value = CacheNames.EXERCISES, key = "#entityId")
+	public void deleteFromUser(int entityId) {
+		super.deleteFromUser(entityId);
+	}
 
-        List<ExerciseSummaryDto> summaries = userExercisePage.getContent().stream()
-                .map(ue -> {
-                    ExerciseSummaryDto dto = exerciseMapper.toSummaryDto(ue.getExercise());
-                    dto.setInteractionCreatedAt(ue.getCreatedAt());
-                    return dto;
-                })
-                .toList();
+	@Override
+	public Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable) {
+		Page<UserExercise> userExercisePage = ((UserExerciseRepository) userEntityRepository)
+			.findAllByUserIdWithMedia(userId, pageable);
 
-        exercisePopulationService.populate(summaries);
+		List<ExerciseSummaryDto> summaries = userExercisePage.getContent().stream().map(ue -> {
+			ExerciseSummaryDto dto = exerciseMapper.toSummaryDto(ue.getExercise());
+			dto.setInteractionCreatedAt(ue.getCreatedAt());
+			return dto;
+		}).toList();
 
-        return new PageImpl<>(
-                summaries.stream().map(dto -> (BaseUserEntity) dto).toList(),
-                pageable,
-                userExercisePage.getTotalElements()
-        );
-    }
+		exercisePopulationService.populate(summaries);
 
-    @Override
-    protected boolean isAlreadySaved(int userId, int entityId) {
-        return ((UserExerciseRepository) userEntityRepository)
-                .existsByUserIdAndExerciseId(userId, entityId);
-    }
+		return new PageImpl<>(summaries.stream().map(dto -> (BaseUserEntity) dto).toList(), pageable,
+			userExercisePage.getTotalElements());
+	}
 
-    @Override
-    protected UserExercise createUserEntity(User user, Exercise entity) {
-        return UserExercise.of(user, entity);
-    }
+	@Override
+	protected boolean isAlreadySaved(int userId, int entityId) {
+		return ((UserExerciseRepository) userEntityRepository).existsByUserIdAndExerciseId(userId, entityId);
+	}
 
-    @Override
-    protected UserExercise findUserEntity(int userId, int entityId) {
-        return ((UserExerciseRepository) userEntityRepository)
-                .findByUserIdAndExerciseId(userId, entityId)
-                .orElseThrow(() -> RecordNotFoundException.of(
-                        UserExercise.class,
-                        userId,
-                        entityId
-                ));
-    }
+	@Override
+	protected UserExercise createUserEntity(User user, Exercise entity) {
+		return UserExercise.of(user, entity);
+	}
+
+	@Override
+	protected UserExercise findUserEntity(int userId, int entityId) {
+		return ((UserExerciseRepository) userEntityRepository).findByUserIdAndExerciseId(userId, entityId)
+			.orElseThrow(() -> RecordNotFoundException.of(UserExercise.class, userId, entityId));
+	}
+
 }

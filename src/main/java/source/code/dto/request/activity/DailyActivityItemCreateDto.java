@@ -3,27 +3,30 @@ package source.code.dto.request.activity;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Getter
 @Setter
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 public class DailyActivityItemCreateDto {
-    @NotNull
-    @Positive
-    private Short time;
 
-    @Positive
-    private BigDecimal weight;
+	@NotNull
+	@Positive
+	private Short time;
 
-    @NotNull
-    @PastOrPresent
-    private LocalDate date;
+	@Positive
+	private BigDecimal weight;
+
+	@NotNull
+	@PastOrPresent
+	private LocalDate date;
+
 }

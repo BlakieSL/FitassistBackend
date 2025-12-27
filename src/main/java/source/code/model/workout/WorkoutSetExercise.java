@@ -2,13 +2,14 @@ package source.code.model.workout;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.exercise.Exercise;
-
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "workout_set_exercise")
@@ -17,36 +18,38 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutSetExercise {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
-    @NotNull
-    @Column(nullable = false)
-    private BigDecimal weight;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @NotNull
-    @Column(nullable = false)
-    private Short repetitions;
+	@NotNull
+	@Column(nullable = false)
+	private BigDecimal weight;
 
-    @NotNull
-    @Column(name = "order_index", nullable = false)
-    private Short orderIndex;
+	@NotNull
+	@Column(nullable = false)
+	private Short repetitions;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "workout_set_id", nullable = false)
-    private WorkoutSet workoutSet;
+	@NotNull
+	@Column(name = "order_index", nullable = false)
+	private Short orderIndex;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "exercise_id", nullable = false)
-    private Exercise exercise;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "workout_set_id", nullable = false)
+	private WorkoutSet workoutSet;
 
-    public static WorkoutSetExercise of(Integer id, WorkoutSet workoutSet) {
-        WorkoutSetExercise workoutSetExercise = new WorkoutSetExercise();
-        workoutSetExercise.setId(id);
-        workoutSetExercise.setWorkoutSet(workoutSet);
-        return workoutSetExercise;
-    }
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "exercise_id", nullable = false)
+	private Exercise exercise;
+
+	public static WorkoutSetExercise of(Integer id, WorkoutSet workoutSet) {
+		WorkoutSetExercise workoutSetExercise = new WorkoutSetExercise();
+		workoutSetExercise.setId(id);
+		workoutSetExercise.setWorkoutSet(workoutSet);
+		return workoutSetExercise;
+	}
+
 }

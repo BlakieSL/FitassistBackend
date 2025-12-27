@@ -16,25 +16,30 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 public class RedissonRateLimitConfig {
-    private int userRate;
-    private int userInterval;
-    private int keyRate;
-    private int keyInterval;
 
-    @Value("${spring.data.redis.host}")
-    private String redisHost;
+	private int userRate;
 
-    @Value("${spring.data.redis.port}")
-    private int redisPort;
+	private int userInterval;
 
-    @Bean
-    @ConditionalOnProperty(name = "redis-flag.enabled", havingValue = "true")
-    public RedissonClient redissonClient() {
-        Config config = new Config();
-        config.useSingleServer()
-                .setAddress("redis://" + redisHost + ":" + redisPort)
-                .setConnectionMinimumIdleSize(10)
-                .setConnectTimeout(10000);
-        return Redisson.create(config);
-    }
+	private int keyRate;
+
+	private int keyInterval;
+
+	@Value("${spring.data.redis.host}")
+	private String redisHost;
+
+	@Value("${spring.data.redis.port}")
+	private int redisPort;
+
+	@Bean
+	@ConditionalOnProperty(name = "redis-flag.enabled", havingValue = "true")
+	public RedissonClient redissonClient() {
+		Config config = new Config();
+		config.useSingleServer()
+			.setAddress("redis://" + redisHost + ":" + redisPort)
+			.setConnectionMinimumIdleSize(10)
+			.setConnectTimeout(10000);
+		return Redisson.create(config);
+	}
+
 }

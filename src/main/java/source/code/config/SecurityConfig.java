@@ -1,5 +1,8 @@
 package source.code.config;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -24,90 +27,78 @@ import source.code.auth.JwtService;
 import source.code.auth.RateLimitingFilter;
 import source.code.service.implementation.user.UserServiceImpl;
 
-import java.util.Arrays;
-import java.util.List;
-
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final JwtService jwtService;
-    private final UserServiceImpl userServiceImpl;
-    private final RateLimitingFilter rateLimitingFilter;
 
-    public SecurityConfig(JwtService jwtService,
-                          @Lazy UserServiceImpl userServiceImpl,
-                          @Lazy RateLimitingFilter rateLimitingFilter
-    ) {
-        this.jwtService = jwtService;
-        this.userServiceImpl = userServiceImpl;
-        this.rateLimitingFilter = rateLimitingFilter;
-    }
+	private final JwtService jwtService;
 
-    @Bean
-    public SecurityFilterChain filterChain(
-            HttpSecurity http,
-            AuthenticationManagerBuilder authenticationManagerBuilder,
-            RequestMatcher requestMatcher)
-            throws Exception {
-        AuthenticationManager authenticationManager = authenticationManagerBuilder.getOrBuild();
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtService, userServiceImpl);
+	private final UserServiceImpl userServiceImpl;
 
-        BearerTokenFilter bearerTokenFilter = new BearerTokenFilter(jwtService);
+	private final RateLimitingFilter rateLimitingFilter;
 
-        http.authorizeHttpRequests(request -> request
-                        .requestMatchers(requestMatcher).permitAll()
-                        .anyRequest().authenticated())
-                .cors((cors) -> cors
-                        .configurationSource(corsConfigurationSource()))
-                .sessionManagement(sessionConfig -> sessionConfig
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(AbstractHttpConfigurer::disable)
-                .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(bearerTokenFilter, JwtAuthenticationFilter.class);
+	public SecurityConfig(JwtService jwtService, @Lazy UserServiceImpl userServiceImpl,
+						  @Lazy RateLimitingFilter rateLimitingFilter) {
+		this.jwtService = jwtService;
+		this.userServiceImpl = userServiceImpl;
+		this.rateLimitingFilter = rateLimitingFilter;
+	}
 
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManagerBuilder authenticationManagerBuilder,
+										   RequestMatcher requestMatcher) throws Exception {
+		AuthenticationManager authenticationManager = authenticationManagerBuilder.getOrBuild();
+		JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtService,
+			userServiceImpl);
 
-        return http.build();
-    }
+		BearerTokenFilter bearerTokenFilter = new BearerTokenFilter(jwtService);
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+		http.authorizeHttpRequests(
+				request -> request.requestMatchers(requestMatcher).permitAll().anyRequest().authenticated())
+			.cors((cors) -> cors.configurationSource(corsConfigurationSource()))
+			.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+			.csrf(AbstractHttpConfigurer::disable)
+			.addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
+			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+			.addFilterAfter(bearerTokenFilter, JwtAuthenticationFilter.class);
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174", "http://localhost:4173"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
+		return http.build();
+	}
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-    @Bean
-    public RequestMatcher publicEndpointsMatcher() {
-        return new OrRequestMatcher(
-                (request) ->
-                        "/api/users/register".equals(request.getRequestURI()) &&
-                                ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
-                (request) ->
-                        "/api/users/login".equals(request.getRequestURI()) &&
-                                ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
-                (request) ->
-                        "/api/users/refresh-token".equals(request.getRequestURI()) &&
-                                ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
-                (request) ->
-                        "/api/password-reset/request".equals(request.getRequestURI()) &&
-                                ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
-                (request) ->
-                        "/api/password-reset/reset".equals(request.getRequestURI()) &&
-                                ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
-                (request) ->
-                        "/api/virtual-threads/thread-info".equals(request.getRequestURI()) &&
-                                "GET".equals(request.getMethod()));
-    }
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration
+			.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174", "http://localhost:4173"));
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+		configuration.setAllowedHeaders(List.of("*"));
+		configuration.setAllowCredentials(true);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
+
+	@Bean
+	public RequestMatcher publicEndpointsMatcher() {
+		return new OrRequestMatcher(
+			(request) -> "/api/users/register".equals(request.getRequestURI())
+				&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
+			(request) -> "/api/users/login".equals(request.getRequestURI())
+				&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
+			(request) -> "/api/users/refresh-token".equals(request.getRequestURI())
+				&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
+			(request) -> "/api/password-reset/request".equals(request.getRequestURI())
+				&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
+			(request) -> "/api/password-reset/reset".equals(request.getRequestURI())
+				&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
+			(request) -> "/api/virtual-threads/thread-info".equals(request.getRequestURI())
+				&& "GET".equals(request.getMethod()));
+	}
+
 }

@@ -3,19 +3,22 @@ package source.code.service.declaration.category;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import source.code.dto.request.category.CategoryCreateDto;
-import source.code.dto.response.category.CategoryResponseDto;
 
 import java.util.List;
 
+import source.code.dto.request.category.CategoryCreateDto;
+import source.code.dto.response.category.CategoryResponseDto;
+
 public interface CategoryService {
-    CategoryResponseDto createCategory(CategoryCreateDto request);
 
-    void updateCategory(int categoryId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+	CategoryResponseDto createCategory(CategoryCreateDto request);
 
-    void deleteCategory(int categoryId);
+	void updateCategory(int categoryId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-    List<CategoryResponseDto> getAllCategories();
+	void deleteCategory(int categoryId);
 
-    CategoryResponseDto getCategory(int categoryId);
+	List<CategoryResponseDto> getAllCategories();
+
+	CategoryResponseDto getCategory(int categoryId);
+
 }

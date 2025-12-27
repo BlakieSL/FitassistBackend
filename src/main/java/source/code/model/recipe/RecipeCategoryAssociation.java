@@ -12,25 +12,27 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class RecipeCategoryAssociation {
-    @EqualsAndHashCode.Include
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "recipe_id", nullable = false)
-    private Recipe recipe;
+	@EqualsAndHashCode.Include
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "recipe_category_id", nullable = false)
-    private RecipeCategory recipeCategory;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "recipe_id", nullable = false)
+	private Recipe recipe;
 
-    public static RecipeCategoryAssociation createWithRecipeCategory(RecipeCategory recipeCategory) {
-        RecipeCategoryAssociation recipeCategoryAssociation = new RecipeCategoryAssociation();
-        recipeCategoryAssociation.setRecipeCategory(recipeCategory);
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "recipe_category_id", nullable = false)
+	private RecipeCategory recipeCategory;
 
-        return recipeCategoryAssociation;
-    }
+	public static RecipeCategoryAssociation createWithRecipeCategory(RecipeCategory recipeCategory) {
+		RecipeCategoryAssociation recipeCategoryAssociation = new RecipeCategoryAssociation();
+		recipeCategoryAssociation.setRecipeCategory(recipeCategory);
+
+		return recipeCategoryAssociation;
+	}
+
 }

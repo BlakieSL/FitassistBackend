@@ -8,12 +8,13 @@ import source.code.service.declaration.specificationHelpers.SpecificationFieldRe
 @Component
 public class SpecificationFieldResolverImpl implements SpecificationFieldResolver {
 
-    @Override
-    public <F extends Enum<F>> F resolveField(FilterCriteria criteria, Class<F> enumClass) {
-        try {
-            return Enum.valueOf(enumClass, criteria.getFilterKey());
-        } catch (IllegalArgumentException e) {
-            throw new InvalidFilterKeyException(criteria.getFilterKey());
-        }
-    }
+	@Override
+	public <F extends Enum<F>> F resolveField(FilterCriteria criteria, Class<F> enumClass) {
+		try {
+			return Enum.valueOf(enumClass, criteria.getFilterKey());
+		} catch (IllegalArgumentException e) {
+			throw new InvalidFilterKeyException(criteria.getFilterKey());
+		}
+	}
+
 }

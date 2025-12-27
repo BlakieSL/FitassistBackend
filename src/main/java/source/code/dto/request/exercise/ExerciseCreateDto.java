@@ -3,6 +3,9 @@ package source.code.dto.request.exercise;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,39 +13,40 @@ import lombok.Setter;
 import source.code.dto.request.text.ExerciseInstructionCreateDto;
 import source.code.dto.request.text.ExerciseTipCreateDto;
 
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExerciseCreateDto {
-    private static final int MAX_NAME_LENGTH = 100;
-    private static final int MAX_DESCRIPTION_LENGTH = 255;
 
-    @NotBlank
-    @Size(max = MAX_NAME_LENGTH)
-    private String name;
+	private static final int MAX_NAME_LENGTH = 100;
 
-    @NotBlank
-    @Size(max = MAX_DESCRIPTION_LENGTH)
-    private String description;
+	private static final int MAX_DESCRIPTION_LENGTH = 255;
 
-    @NotNull
-    private int equipmentId;
+	@NotBlank
+	@Size(max = MAX_NAME_LENGTH)
+	private String name;
 
-    @NotNull
-    private int expertiseLevelId;
+	@NotBlank
+	@Size(max = MAX_DESCRIPTION_LENGTH)
+	private String description;
 
-    @NotNull
-    private int mechanicsTypeId;
+	@NotNull
+	private int equipmentId;
 
-    @NotNull
-    private int forceTypeId;
+	@NotNull
+	private int expertiseLevelId;
 
-    private List<Integer> targetMusclesIds;
+	@NotNull
+	private int mechanicsTypeId;
 
-    private List<ExerciseInstructionCreateDto> instructions;
+	@NotNull
+	private int forceTypeId;
 
-    private List<ExerciseTipCreateDto> tips;
+	private List<Integer> targetMusclesIds;
+
+	private List<ExerciseInstructionCreateDto> instructions;
+
+	private List<ExerciseTipCreateDto> tips;
+
 }

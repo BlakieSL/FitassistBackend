@@ -6,9 +6,11 @@ import source.code.helper.BaseUserEntity;
 import source.code.model.user.TypeOfInteraction;
 
 public interface SavedService {
-    void saveToUser(int entityId, TypeOfInteraction type);
 
-    void deleteFromUser(int entityId, TypeOfInteraction type);
+	void saveToUser(int entityId, TypeOfInteraction type);
 
-    Page<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Pageable pageable);
+	void deleteFromUser(int entityId, TypeOfInteraction type);
+
+	Page<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Pageable pageable);
+
 }

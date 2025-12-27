@@ -6,6 +6,7 @@ import source.code.model.activity.Activity;
 
 @Getter
 public class ActivityDeleteEvent extends ApplicationEvent {
+
     private final Activity activity;
 
     public ActivityDeleteEvent(Object source, Activity activity) {
@@ -16,4 +17,5 @@ public class ActivityDeleteEvent extends ApplicationEvent {
     public static ActivityDeleteEvent of(Object source, Activity activity) {
         return new ActivityDeleteEvent(source, activity);
     }
+
 }

@@ -13,12 +13,14 @@ import source.code.helper.Enum.model.MediaConnectedEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MediaCreateDto {
-    @NotNull
-    private MultipartFile image;
 
-    @NotNull
-    private MediaConnectedEntity parentType;
+	@NotNull
+	private MultipartFile image;
 
-    @NotNull
-    private Integer parentId;
+	@NotNull
+	private MediaConnectedEntity parentType;
+
+	@NotNull
+	private Integer parentId;
+
 }

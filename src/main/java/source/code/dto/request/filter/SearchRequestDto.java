@@ -11,6 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SearchRequestDto {
-    @NotBlank
-    private String name;
+
+	@NotBlank
+	private String name;
+
 }

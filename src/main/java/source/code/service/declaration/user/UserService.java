@@ -8,15 +8,17 @@ import source.code.dto.request.user.UserUpdateDto;
 import source.code.dto.response.user.UserResponseDto;
 
 public interface UserService {
-    UserResponseDto register(UserCreateDto request);
 
-    void deleteUser(int id);
+	UserResponseDto register(UserCreateDto request);
 
-    void updateUser(int userId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+	void deleteUser(int id);
 
-    void updateUserSimple(int userId, UserUpdateDto updateDto);
+	void updateUser(int userId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-    UserResponseDto getUser(int id);
+	void updateUserSimple(int userId, UserUpdateDto updateDto);
 
-    int getUserIdByEmail(String email);
+	UserResponseDto getUser(int id);
+
+	int getUserIdByEmail(String email);
+
 }

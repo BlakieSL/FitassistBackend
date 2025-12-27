@@ -1,7 +1,14 @@
 package source.code.unit.user;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+
+import java.util.Optional;
+import java.util.Set;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,280 +30,274 @@ import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.helpers.JsonPatchServiceImpl;
 import source.code.service.implementation.user.UserServiceImpl;
 
-import java.util.Optional;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private UserMapper userMapper;
-    @Mock
-    private ValidationService validationService;
-    @Mock
-    private JsonPatchServiceImpl jsonPatchService;
-    @Mock
-    private PasswordEncoder passwordEncoder;
-    @Mock
-    private RepositoryHelper repositoryHelper;
-    @InjectMocks
-    private UserServiceImpl userService;
 
-    private int userId;
-    private String email;
-    private User user;
-    private UserCreateDto createDto;
-    private UserResponseDto responseDto;
-    private UserUpdateDto updateDto;
-    private JsonMergePatch patch;
+	@Mock
+	private UserRepository userRepository;
 
-    @BeforeEach
-    void setup() {
-        userId = 1;
-        email = "test@example.com";
-        user = new User();
-        createDto = new UserCreateDto();
-        responseDto = new UserResponseDto();
-        updateDto = new UserUpdateDto();
-        patch = mock(JsonMergePatch.class);
-    }
+	@Mock
+	private UserMapper userMapper;
 
-    @Test
-    void register_ShouldCreateAndReturnNewUser() {
-        when(userMapper.toEntity(createDto)).thenReturn(user);
-        when(userRepository.save(user)).thenReturn(user);
-        when(userMapper.toResponse(user)).thenReturn(responseDto);
+	@Mock
+	private ValidationService validationService;
 
-        userService.register(createDto);
+	@Mock
+	private JsonPatchServiceImpl jsonPatchService;
 
-        verify(userRepository).save(user);
-        verify(userMapper).toEntity(createDto);
-    }
+	@Mock
+	private PasswordEncoder passwordEncoder;
 
-    @Test
-    void deleteUser_ShouldDeleteUserById() {
-        when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
+	@Mock
+	private RepositoryHelper repositoryHelper;
 
-        userService.deleteUser(userId);
+	@InjectMocks
+	private UserServiceImpl userService;
 
-        verify(repositoryHelper).find(userRepository, User.class, userId);
-        verify(userRepository).delete(user);
-    }
+	private int userId;
 
-    @Test
-    void deleteUser_ShouldThrowRecordNotFoundExceptionWhenUserNotFound() {
-        when(repositoryHelper.find(userRepository, User.class, userId))
-                .thenThrow(RecordNotFoundException.class);
+	private String email;
 
-        assertThrows(RecordNotFoundException.class, () -> userService.deleteUser(userId));
+	private User user;
 
-        verify(repositoryHelper).find(userRepository, User.class, userId);
-        verify(userRepository, never()).delete(any());
-    }
+	private UserCreateDto createDto;
 
-    @Test
-    void updateUser_ShouldUpdate() throws Exception {
-        when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-        when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class)))
-                .thenReturn(updateDto);
-        doNothing().when(validationService).validate(updateDto);
-        doNothing().when(userMapper).updateUserFromDto(user, updateDto);
-        when(userRepository.save(user)).thenReturn(user);
+	private UserResponseDto responseDto;
 
-        userService.updateUser(userId, patch);
+	private UserUpdateDto updateDto;
 
-        verify(repositoryHelper, times(1)).find(userRepository, User.class, userId);
-        verify(validationService).validate(updateDto);
-        verify(userMapper).updateUserFromDto(user, updateDto);
-        verify(userRepository).save(user);
-        verify(passwordEncoder, never()).matches(anyString(), anyString());
-    }
+	private JsonMergePatch patch;
 
-    @Test
-    void updateUser_ShouldUpdatePassword() throws Exception {
-        String currentEncodedPassword = "encodedCurrentPassword";
-        user.setPassword(currentEncodedPassword);
-        updateDto.setOldPassword("currentPassword");
-        updateDto.setPassword("newPassword");
+	@BeforeEach
+	void setup() {
+		userId = 1;
+		email = "test@example.com";
+		user = new User();
+		createDto = new UserCreateDto();
+		responseDto = new UserResponseDto();
+		updateDto = new UserUpdateDto();
+		patch = mock(JsonMergePatch.class);
+	}
 
-        when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-        when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class)))
-                .thenReturn(updateDto);
-        doNothing().when(validationService).validate(updateDto);
-        doNothing().when(userMapper).updateUserFromDto(user, updateDto);
-        when(userRepository.save(user)).thenReturn(user);
+	@Test
+	void register_ShouldCreateAndReturnNewUser() {
+		when(userMapper.toEntity(createDto)).thenReturn(user);
+		when(userRepository.save(user)).thenReturn(user);
+		when(userMapper.toResponse(user)).thenReturn(responseDto);
 
-        when(passwordEncoder.matches(eq("currentPassword"), eq(currentEncodedPassword)))
-                .thenReturn(true);
+		userService.register(createDto);
 
-        userService.updateUser(userId, patch);
+		verify(userRepository).save(user);
+		verify(userMapper).toEntity(createDto);
+	}
 
-        verify(repositoryHelper, times(1)).find(userRepository, User.class, userId);
-        verify(validationService).validate(updateDto);
-        verify(userMapper).updateUserFromDto(user, updateDto);
-        verify(userRepository).save(user);
-    }
+	@Test
+	void deleteUser_ShouldDeleteUserById() {
+		when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
 
-    @Test
-    void updateUser_ShouldThrowRecordNotFoundExceptionWhenUserNotFound() throws Exception {
-        when(repositoryHelper.find(userRepository, User.class, userId))
-                .thenThrow(RecordNotFoundException.class);
+		userService.deleteUser(userId);
 
-        assertThrows(RecordNotFoundException.class,
-                () -> userService.updateUser(userId, patch));
+		verify(repositoryHelper).find(userRepository, User.class, userId);
+		verify(userRepository).delete(user);
+	}
 
-        verify(userRepository, never()).save(user);
-    }
+	@Test
+	void deleteUser_ShouldThrowRecordNotFoundExceptionWhenUserNotFound() {
+		when(repositoryHelper.find(userRepository, User.class, userId)).thenThrow(RecordNotFoundException.class);
 
-    @Test
-    void updateUser_ShouldThrowExceptionWhenPatchFails() throws Exception {
-        when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-        when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class)))
-                .thenThrow(JsonPatchException.class);
+		assertThrows(RecordNotFoundException.class, () -> userService.deleteUser(userId));
 
-        assertThrows(JsonPatchException.class, () -> userService.updateUser(userId, patch));
+		verify(repositoryHelper).find(userRepository, User.class, userId);
+		verify(userRepository, never()).delete(any());
+	}
 
-        verify(userRepository, never()).save(user);
-    }
+	@Test
+	void updateUser_ShouldUpdate() throws Exception {
+		when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
+		when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class))).thenReturn(updateDto);
+		doNothing().when(validationService).validate(updateDto);
+		doNothing().when(userMapper).updateUserFromDto(user, updateDto);
+		when(userRepository.save(user)).thenReturn(user);
 
-    @Test
-    void updateUser_ShouldThrowExceptionWhenUpdatingPasswordAndOldPasswordIsNull() throws Exception {
-        updateDto.setPassword("newPassword");
-        updateDto.setOldPassword(null);
+		userService.updateUser(userId, patch);
 
-        when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-        when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class)))
-                .thenReturn(updateDto);
+		verify(repositoryHelper, times(1)).find(userRepository, User.class, userId);
+		verify(validationService).validate(updateDto);
+		verify(userMapper).updateUserFromDto(user, updateDto);
+		verify(userRepository).save(user);
+		verify(passwordEncoder, never()).matches(anyString(), anyString());
+	}
 
-        assertThrows(IllegalArgumentException.class,
-                () -> userService.updateUser(userId, patch));
+	@Test
+	void updateUser_ShouldUpdatePassword() throws Exception {
+		String currentEncodedPassword = "encodedCurrentPassword";
+		user.setPassword(currentEncodedPassword);
+		updateDto.setOldPassword("currentPassword");
+		updateDto.setPassword("newPassword");
 
-        verify(userRepository, never()).save(user);
-    }
+		when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
+		when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class))).thenReturn(updateDto);
+		doNothing().when(validationService).validate(updateDto);
+		doNothing().when(userMapper).updateUserFromDto(user, updateDto);
+		when(userRepository.save(user)).thenReturn(user);
 
-    @Test
-    void updateUser_ShouldNotUpdatePasswordIfOldPasswordIsPresentAndNewIsAbsent() throws Exception {
-        String currentEncodedPassword = "encodedCurrentPassword";
-        user.setPassword(currentEncodedPassword);
-        updateDto.setOldPassword("currentPassword");
+		when(passwordEncoder.matches(eq("currentPassword"), eq(currentEncodedPassword))).thenReturn(true);
 
-        when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-        when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class)))
-                .thenReturn(updateDto);
-        doNothing().when(validationService).validate(updateDto);
-        doNothing().when(userMapper).updateUserFromDto(user, updateDto);
-        when(userRepository.save(user)).thenReturn(user);
+		userService.updateUser(userId, patch);
 
-        userService.updateUser(userId, patch);
+		verify(repositoryHelper, times(1)).find(userRepository, User.class, userId);
+		verify(validationService).validate(updateDto);
+		verify(userMapper).updateUserFromDto(user, updateDto);
+		verify(userRepository).save(user);
+	}
 
-        verify(repositoryHelper, times(1)).find(userRepository, User.class, userId);
-        verify(validationService).validate(updateDto);
-        verify(userMapper).updateUserFromDto(user, updateDto);
-        verify(userRepository).save(user);
-        verify(passwordEncoder, never()).matches(any(), any());
-    }
+	@Test
+	void updateUser_ShouldThrowRecordNotFoundExceptionWhenUserNotFound() throws Exception {
+		when(repositoryHelper.find(userRepository, User.class, userId)).thenThrow(RecordNotFoundException.class);
 
-    @Test
-    void updateUser_ShouldThrowExceptionWhenUpdatingPasswordAndOldPasswordDoesNotMatch() throws Exception {
-        user.setPassword("encodedPassword");
-        updateDto.setOldPassword("wrongPassword");
-        updateDto.setPassword("newPassword");
+		assertThrows(RecordNotFoundException.class, () -> userService.updateUser(userId, patch));
 
-        when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-        when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class)))
-                .thenReturn(updateDto);
-        when(passwordEncoder.matches("wrongPassword", "encodedPassword")).thenReturn(false);
+		verify(userRepository, never()).save(user);
+	}
 
-        assertThrows(IllegalArgumentException.class,
-                () -> userService.updateUser(userId, patch));
+	@Test
+	void updateUser_ShouldThrowExceptionWhenPatchFails() throws Exception {
+		when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
+		when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class))).thenThrow(JsonPatchException.class);
 
-        verify(userRepository, never()).save(user);
-    }
+		assertThrows(JsonPatchException.class, () -> userService.updateUser(userId, patch));
 
-    @Test
-    void updateUser_ShouldThrowExceptionWhenValidationFails() throws Exception {
-        when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-        when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class)))
-                .thenReturn(updateDto);
-        doThrow(IllegalArgumentException.class)
-                .when(validationService).validate(updateDto);
+		verify(userRepository, never()).save(user);
+	}
 
-        assertThrows(IllegalArgumentException.class, () -> userService.updateUser(userId, patch));
+	@Test
+	void updateUser_ShouldThrowExceptionWhenUpdatingPasswordAndOldPasswordIsNull() throws Exception {
+		updateDto.setPassword("newPassword");
+		updateDto.setOldPassword(null);
 
-        verify(userRepository, never()).save(user);
-    }
+		when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
+		when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class))).thenReturn(updateDto);
 
-    @Test
-    void loadUserByUsername_ShouldReturnUserDetailsByUsername() {
-        String username = "test@example.com";
-        User user = new User();
-        UserCredentialsDto credentialsDto = new UserCredentialsDto();
-        credentialsDto.setEmail(username);
-        credentialsDto.setPassword("encodedPassword");
-        credentialsDto.setRoles(Set.of("user"));
+		assertThrows(IllegalArgumentException.class, () -> userService.updateUser(userId, patch));
 
-        when(userRepository.findUserWithRolesByEmail(username)).thenReturn(Optional.of(user));
-        when(userMapper.toDetails(user)).thenReturn(credentialsDto);
+		verify(userRepository, never()).save(user);
+	}
 
-        UserDetails result = userService.loadUserByUsername(username);
+	@Test
+	void updateUser_ShouldNotUpdatePasswordIfOldPasswordIsPresentAndNewIsAbsent() throws Exception {
+		String currentEncodedPassword = "encodedCurrentPassword";
+		user.setPassword(currentEncodedPassword);
+		updateDto.setOldPassword("currentPassword");
 
-        assertNotNull(result);
-        assertEquals(username, result.getUsername());
-        verify(userRepository).findUserWithRolesByEmail(username);
-        verify(userMapper).toDetails(user);
-    }
+		when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
+		when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class))).thenReturn(updateDto);
+		doNothing().when(validationService).validate(updateDto);
+		doNothing().when(userMapper).updateUserFromDto(user, updateDto);
+		when(userRepository.save(user)).thenReturn(user);
 
-    @Test
-    void loadUserByUsername_ShouldThrowRecordNotFoundExceptionWhenUserNotFound() {
-        String username = "nonexistent@example.com";
+		userService.updateUser(userId, patch);
 
-        when(userRepository.findUserWithRolesByEmail(username)).thenReturn(Optional.empty());
+		verify(repositoryHelper, times(1)).find(userRepository, User.class, userId);
+		verify(validationService).validate(updateDto);
+		verify(userMapper).updateUserFromDto(user, updateDto);
+		verify(userRepository).save(user);
+		verify(passwordEncoder, never()).matches(any(), any());
+	}
 
-        assertThrows(RecordNotFoundException.class, () -> userService.loadUserByUsername(username));
-        verify(userRepository).findUserWithRolesByEmail(username);
-        verify(userMapper, never()).toDetails(any());
-    }
+	@Test
+	void updateUser_ShouldThrowExceptionWhenUpdatingPasswordAndOldPasswordDoesNotMatch() throws Exception {
+		user.setPassword("encodedPassword");
+		updateDto.setOldPassword("wrongPassword");
+		updateDto.setPassword("newPassword");
 
-    @Test
-    void getUser_ShouldReturnUserResponseById() {
-        when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-        when(userMapper.toResponse(user)).thenReturn(responseDto);
+		when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
+		when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class))).thenReturn(updateDto);
+		when(passwordEncoder.matches("wrongPassword", "encodedPassword")).thenReturn(false);
 
-        userService.getUser(userId);
+		assertThrows(IllegalArgumentException.class, () -> userService.updateUser(userId, patch));
 
-        verify(repositoryHelper).find(userRepository, User.class, userId);
-        verify(userMapper).toResponse(user);
-    }
+		verify(userRepository, never()).save(user);
+	}
 
-    @Test
-    void getUser_ShouldThrowRecordNotFoundExceptionWhenUserNotFound() {
-        when(repositoryHelper.find(userRepository, User.class, userId)).thenThrow(RecordNotFoundException.class);
+	@Test
+	void updateUser_ShouldThrowExceptionWhenValidationFails() throws Exception {
+		when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
+		when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class))).thenReturn(updateDto);
+		doThrow(IllegalArgumentException.class).when(validationService).validate(updateDto);
 
-        assertThrows(RecordNotFoundException.class, () -> userService.getUser(userId));
+		assertThrows(IllegalArgumentException.class, () -> userService.updateUser(userId, patch));
 
-        verify(repositoryHelper).find(userRepository, User.class, userId);
-    }
+		verify(userRepository, never()).save(user);
+	}
 
-    @Test
-    void getUserIdByEmail_ShouldReturnUserIdByEmail() {
-        user.setId(userId);
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+	@Test
+	void loadUserByUsername_ShouldReturnUserDetailsByUsername() {
+		String username = "test@example.com";
+		User user = new User();
+		UserCredentialsDto credentialsDto = new UserCredentialsDto();
+		credentialsDto.setEmail(username);
+		credentialsDto.setPassword("encodedPassword");
+		credentialsDto.setRoles(Set.of("user"));
 
-        userService.getUserIdByEmail(email);
+		when(userRepository.findUserWithRolesByEmail(username)).thenReturn(Optional.of(user));
+		when(userMapper.toDetails(user)).thenReturn(credentialsDto);
 
-        verify(userRepository).findByEmail(email);
-    }
+		UserDetails result = userService.loadUserByUsername(username);
 
-    @Test
-    void getUserIdByEmail_ShouldThrowRecordNotFoundExceptionWhenUserNotFoundByEmail() {
-        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+		assertNotNull(result);
+		assertEquals(username, result.getUsername());
+		verify(userRepository).findUserWithRolesByEmail(username);
+		verify(userMapper).toDetails(user);
+	}
 
-        assertThrows(RecordNotFoundException.class, () -> userService.getUserIdByEmail(email));
+	@Test
+	void loadUserByUsername_ShouldThrowRecordNotFoundExceptionWhenUserNotFound() {
+		String username = "nonexistent@example.com";
 
-        verify(userRepository).findByEmail(email);
-    }
+		when(userRepository.findUserWithRolesByEmail(username)).thenReturn(Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> userService.loadUserByUsername(username));
+		verify(userRepository).findUserWithRolesByEmail(username);
+		verify(userMapper, never()).toDetails(any());
+	}
+
+	@Test
+	void getUser_ShouldReturnUserResponseById() {
+		when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
+		when(userMapper.toResponse(user)).thenReturn(responseDto);
+
+		userService.getUser(userId);
+
+		verify(repositoryHelper).find(userRepository, User.class, userId);
+		verify(userMapper).toResponse(user);
+	}
+
+	@Test
+	void getUser_ShouldThrowRecordNotFoundExceptionWhenUserNotFound() {
+		when(repositoryHelper.find(userRepository, User.class, userId)).thenThrow(RecordNotFoundException.class);
+
+		assertThrows(RecordNotFoundException.class, () -> userService.getUser(userId));
+
+		verify(repositoryHelper).find(userRepository, User.class, userId);
+	}
+
+	@Test
+	void getUserIdByEmail_ShouldReturnUserIdByEmail() {
+		user.setId(userId);
+		when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+
+		userService.getUserIdByEmail(email);
+
+		verify(userRepository).findByEmail(email);
+	}
+
+	@Test
+	void getUserIdByEmail_ShouldThrowRecordNotFoundExceptionWhenUserNotFoundByEmail() {
+		when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> userService.getUserIdByEmail(email));
+
+		verify(userRepository).findByEmail(email);
+	}
+
 }

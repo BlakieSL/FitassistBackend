@@ -12,27 +12,29 @@ import source.code.service.implementation.helpers.RepositoryHelperImpl;
 
 @Mapper(componentModel = "spring", uses = {WorkoutSetExerciseMapper.class})
 public abstract class WorkoutSetMapper {
-    @Autowired
-    private RepositoryHelperImpl repositoryHelper;
 
-    @Autowired
-    private WorkoutRepository workoutRepository;
+	@Autowired
+	private RepositoryHelperImpl repositoryHelper;
 
-    public abstract WorkoutSetResponseDto toResponseDto(WorkoutSet workoutSet);
+	@Autowired
+	private WorkoutRepository workoutRepository;
 
-    @Mapping(target = "workout", source = "workoutId", qualifiedByName = "mapWorkoutIdToWorkout")
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "workoutSetExercises", ignore = true)
-    public abstract WorkoutSet toEntity(WorkoutSetCreateDto createDto);
+	public abstract WorkoutSetResponseDto toResponseDto(WorkoutSet workoutSet);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "workoutSetExercises", ignore = true)
-    @Mapping(target = "workout", source = "workoutId", qualifiedByName = "mapWorkoutIdToWorkout")
-    public abstract void updateWorkoutSet(@MappingTarget WorkoutSet workoutSet, WorkoutSetUpdateDto updateDto);
+	@Mapping(target = "workout", source = "workoutId", qualifiedByName = "mapWorkoutIdToWorkout")
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "workoutSetExercises", ignore = true)
+	public abstract WorkoutSet toEntity(WorkoutSetCreateDto createDto);
 
-    @Named("mapWorkoutIdToWorkout")
-    protected Workout mapWorkoutIdToWorkout(int workoutId) {
-        return repositoryHelper.find(workoutRepository, Workout.class, workoutId);
-    }
+	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "workoutSetExercises", ignore = true)
+	@Mapping(target = "workout", source = "workoutId", qualifiedByName = "mapWorkoutIdToWorkout")
+	public abstract void updateWorkoutSet(@MappingTarget WorkoutSet workoutSet, WorkoutSetUpdateDto updateDto);
+
+	@Named("mapWorkoutIdToWorkout")
+	protected Workout mapWorkoutIdToWorkout(int workoutId) {
+		return repositoryHelper.find(workoutRepository, Workout.class, workoutId);
+	}
+
 }

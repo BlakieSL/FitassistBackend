@@ -23,55 +23,53 @@ import source.code.service.declaration.food.FoodService;
 @RestController
 @RequestMapping(path = "/api/foods")
 public class FoodController {
-    private final FoodService foodService;
 
-    public FoodController(FoodService foodService) {
-        this.foodService = foodService;
-    }
+	private final FoodService foodService;
 
-    @AdminOnly
-    @PostMapping
-    public ResponseEntity<FoodResponseDto> createFood(@Valid @RequestBody FoodCreateDto dto) {
-        FoodResponseDto response = foodService.createFood(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+	public FoodController(FoodService foodService) {
+		this.foodService = foodService;
+	}
 
-    @AdminOnly
-    @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateFood(@PathVariable int id, @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        foodService.updateFood(id, patch);
-        return ResponseEntity.noContent().build();
-    }
+	@AdminOnly
+	@PostMapping
+	public ResponseEntity<FoodResponseDto> createFood(@Valid @RequestBody FoodCreateDto dto) {
+		FoodResponseDto response = foodService.createFood(dto);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
 
-    @AdminOnly
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFood(@PathVariable int id) {
-        foodService.deleteFood(id);
-        return ResponseEntity.noContent().build();
-    }
+	@AdminOnly
+	@PatchMapping("/{id}")
+	public ResponseEntity<Void> updateFood(@PathVariable int id, @RequestBody JsonMergePatch patch)
+		throws JsonPatchException, JsonProcessingException {
+		foodService.updateFood(id, patch);
+		return ResponseEntity.noContent().build();
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<FoodResponseDto> getFood(@PathVariable int id) {
-        FoodResponseDto food = foodService.getFood(id);
-        return ResponseEntity.ok(food);
-    }
+	@AdminOnly
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteFood(@PathVariable int id) {
+		foodService.deleteFood(id);
+		return ResponseEntity.noContent().build();
+	}
 
-    @PostMapping("/filter")
-    public ResponseEntity<Page<FoodSummaryDto>> getFilteredFoods(
-            @Valid @RequestBody FilterDto filterDto,
-            @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable
-    ) {
-        Page<FoodSummaryDto> response = foodService.getFilteredFoods(filterDto, pageable);
-        return ResponseEntity.ok(response);
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<FoodResponseDto> getFood(@PathVariable int id) {
+		FoodResponseDto food = foodService.getFood(id);
+		return ResponseEntity.ok(food);
+	}
 
-    @PostMapping("/{id}/calculate-macros")
-    public ResponseEntity<FoodCalculatedMacrosResponseDto> calculateFoodMacros(
-            @PathVariable int id,
-            @Valid @RequestBody CalculateFoodMacrosRequestDto request
-    ) {
-        FoodCalculatedMacrosResponseDto response = foodService.calculateFoodMacros(id, request);
-        return ResponseEntity.ok(response);
-    }
+	@PostMapping("/filter")
+	public ResponseEntity<Page<FoodSummaryDto>> getFilteredFoods(@Valid @RequestBody FilterDto filterDto,
+																 @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+		Page<FoodSummaryDto> response = foodService.getFilteredFoods(filterDto, pageable);
+		return ResponseEntity.ok(response);
+	}
+
+	@PostMapping("/{id}/calculate-macros")
+	public ResponseEntity<FoodCalculatedMacrosResponseDto> calculateFoodMacros(@PathVariable int id,
+																			   @Valid @RequestBody CalculateFoodMacrosRequestDto request) {
+		FoodCalculatedMacrosResponseDto response = foodService.calculateFoodMacros(id, request);
+		return ResponseEntity.ok(response);
+	}
+
 }

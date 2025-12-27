@@ -6,14 +6,16 @@ import source.code.model.exercise.Exercise;
 
 @Getter
 public class ExerciseUpdateEvent extends ApplicationEvent {
-    private final Exercise exercise;
 
-    public ExerciseUpdateEvent(Object source, Exercise exercise) {
-        super(source);
-        this.exercise = exercise;
-    }
+	private final Exercise exercise;
 
-    public static ExerciseUpdateEvent of(Object source, Exercise exercise) {
-        return new ExerciseUpdateEvent(source, exercise);
-    }
+	public ExerciseUpdateEvent(Object source, Exercise exercise) {
+		super(source);
+		this.exercise = exercise;
+	}
+
+	public static ExerciseUpdateEvent of(Object source, Exercise exercise) {
+		return new ExerciseUpdateEvent(source, exercise);
+	}
+
 }

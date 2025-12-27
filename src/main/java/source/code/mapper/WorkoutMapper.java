@@ -12,29 +12,31 @@ import source.code.service.declaration.helpers.RepositoryHelper;
 
 @Mapper(componentModel = "spring", uses = {WorkoutSetMapper.class})
 public abstract class WorkoutMapper {
-    @Autowired
-    private PlanRepository planRepository;
 
-    @Autowired
-    private RepositoryHelper repositoryHelper;
+	@Autowired
+	private PlanRepository planRepository;
 
-    @Mapping(target = "weekIndex", ignore = true)
-    @Mapping(target = "dayOfWeekIndex", ignore = true)
-    public abstract WorkoutResponseDto toResponseDto(Workout workout);
+	@Autowired
+	private RepositoryHelper repositoryHelper;
 
-    @Mapping(target = "plan", source = "planId", qualifiedByName = "mapPlanIdToPlan")
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "workoutSets", ignore = true)
-    public abstract Workout toEntity(WorkoutCreateDto createDto);
+	@Mapping(target = "weekIndex", ignore = true)
+	@Mapping(target = "dayOfWeekIndex", ignore = true)
+	public abstract WorkoutResponseDto toResponseDto(Workout workout);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "workoutSets", ignore = true)
-    @Mapping(target = "plan", ignore = true)
-    public abstract void updateWorkout(@MappingTarget Workout workout, WorkoutUpdateDto updateDto);
+	@Mapping(target = "plan", source = "planId", qualifiedByName = "mapPlanIdToPlan")
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "workoutSets", ignore = true)
+	public abstract Workout toEntity(WorkoutCreateDto createDto);
 
-    @Named("mapPlanIdToPlan")
-    protected Plan mapPlanIdToPlan(int planId) {
-        return repositoryHelper.find(planRepository, Plan.class, planId);
-    }
+	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "workoutSets", ignore = true)
+	@Mapping(target = "plan", ignore = true)
+	public abstract void updateWorkout(@MappingTarget Workout workout, WorkoutUpdateDto updateDto);
+
+	@Named("mapPlanIdToPlan")
+	protected Plan mapPlanIdToPlan(int planId) {
+		return repositoryHelper.find(planRepository, Plan.class, planId);
+	}
+
 }

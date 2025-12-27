@@ -1,20 +1,25 @@
 package source.code.dto.response;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.helper.Enum.model.MediaConnectedEntity;
 
-import java.io.Serializable;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class MediaResponseDto implements Serializable {
-    private Integer id;
-    private String imageUrl;
-    private MediaConnectedEntity parentType;
-    private Integer parentId;
+
+	private Integer id;
+
+	private String imageUrl;
+
+	private MediaConnectedEntity parentType;
+
+	private Integer parentId;
+
 }

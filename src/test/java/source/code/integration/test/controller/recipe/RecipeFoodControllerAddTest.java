@@ -1,5 +1,8 @@
 package source.code.integration.test.controller.recipe;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,102 +20,100 @@ import source.code.integration.containers.MySqlContainerInitializer;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @TestSetup
-@Import({MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class})
+@Import({ MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class })
 @TestPropertySource(properties = "schema.name=general")
-@ContextConfiguration(initializers = {MySqlContainerInitializer.class})
+@ContextConfiguration(initializers = { MySqlContainerInitializer.class })
 public class RecipeFoodControllerAddTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+	@Autowired
+	private ObjectMapper objectMapper;
 
-    @RecipeFoodSql
-    @Test
-    @DisplayName("POST - /add/{recipeId}/{foodId} - Should add food to recipe, When user is owner")
-    void addFoodToRecipe() throws Exception {
-        Utils.setUserContext(1);
+	@RecipeFoodSql
+	@Test
+	@DisplayName("POST - /add/{recipeId}/{foodId} - Should add food to recipe, When user is owner")
+	void addFoodToRecipe() throws Exception {
+		Utils.setUserContext(1);
 
-        var request = new RecipeFoodCreateDto();
+		var request = new RecipeFoodCreateDto();
 
-        mockMvc.perform(post("/api/recipe-food/4/add/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpectAll(status().isCreated());
-    }
+		mockMvc
+			.perform(post("/api/recipe-food/4/add/1").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpectAll(status().isCreated());
+	}
 
-    @RecipeFoodSql
-    @Test
-    @DisplayName("POST - /add/{recipeId}/{foodId} - Should add food to recipe, When user is admin")
-    void addFoodToRecipeAsAdmin() throws Exception {
-        Utils.setAdminContext(2);
+	@RecipeFoodSql
+	@Test
+	@DisplayName("POST - /add/{recipeId}/{foodId} - Should add food to recipe, When user is admin")
+	void addFoodToRecipeAsAdmin() throws Exception {
+		Utils.setAdminContext(2);
 
-        var request = new RecipeFoodCreateDto();
+		var request = new RecipeFoodCreateDto();
 
-        mockMvc.perform(post("/api/recipe-food/4/add/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpectAll(status().isCreated());
-    }
+		mockMvc
+			.perform(post("/api/recipe-food/4/add/1").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpectAll(status().isCreated());
+	}
 
-    @RecipeFoodSql
-    @Test
-    @DisplayName("POST - /add/{recipeId}/{foodId} - Should return 403, When user is not owner or admin")
-    void addFoodToRecipeNotOwnerOrAdmin() throws Exception {
-        Utils.setUserContext(3);
+	@RecipeFoodSql
+	@Test
+	@DisplayName("POST - /add/{recipeId}/{foodId} - Should return 403, When user is not owner or admin")
+	void addFoodToRecipeNotOwnerOrAdmin() throws Exception {
+		Utils.setUserContext(3);
 
-        var request = new RecipeFoodCreateDto();
+		var request = new RecipeFoodCreateDto();
 
-        mockMvc.perform(post("/api/recipe-food/4/add/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isForbidden());
-    }
+		mockMvc
+			.perform(post("/api/recipe-food/4/add/1").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpect(status().isForbidden());
+	}
 
-    @RecipeFoodSql
-    @Test
-    @DisplayName("POST - /add/{recipeId}/add/{foodId} - Should return 404, When recipe does not exist")
-    void addFoodToRecipeNotFound() throws Exception {
-        Utils.setAdminContext(2);
+	@RecipeFoodSql
+	@Test
+	@DisplayName("POST - /add/{recipeId}/add/{foodId} - Should return 404, When recipe does not exist")
+	void addFoodToRecipeNotFound() throws Exception {
+		Utils.setAdminContext(2);
 
-        var request = new RecipeFoodCreateDto();
+		var request = new RecipeFoodCreateDto();
 
-        mockMvc.perform(post("/api/recipe-food/999/add/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isNotFound());
-    }
+		mockMvc
+			.perform(post("/api/recipe-food/999/add/1").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpect(status().isNotFound());
+	}
 
-    @RecipeFoodSql
-    @Test
-    @DisplayName("POST - /add/{recipeId}/add/{foodId} - Should return 404, When food does not exist")
-    void addFoodToRecipeFoodNotFound() throws Exception {
-        Utils.setAdminContext(2);
+	@RecipeFoodSql
+	@Test
+	@DisplayName("POST - /add/{recipeId}/add/{foodId} - Should return 404, When food does not exist")
+	void addFoodToRecipeFoodNotFound() throws Exception {
+		Utils.setAdminContext(2);
 
-        var request = new RecipeFoodCreateDto();
+		var request = new RecipeFoodCreateDto();
 
-        mockMvc.perform(post("/api/recipe-food/1/add/999")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isNotFound());
-    }
+		mockMvc
+			.perform(post("/api/recipe-food/1/add/999").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpect(status().isNotFound());
+	}
 
-    @RecipeFoodSql
-    @Test
-    @DisplayName("POST - /add/{recipeId}/add/{foodId} - Should return 409, When food is already added to recipe")
-    void addFoodToRecipeAlreadyAdded() throws Exception {
-        Utils.setUserContext(1);
+	@RecipeFoodSql
+	@Test
+	@DisplayName("POST - /add/{recipeId}/add/{foodId} - Should return 409, When food is already added to recipe")
+	void addFoodToRecipeAlreadyAdded() throws Exception {
+		Utils.setUserContext(1);
 
-        var request = new RecipeFoodCreateDto();
+		var request = new RecipeFoodCreateDto();
 
-        mockMvc.perform(post("/api/recipe-food/1/add/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isConflict());
-    }
+		mockMvc
+			.perform(post("/api/recipe-food/1/add/1").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request)))
+			.andExpect(status().isConflict());
+	}
+
 }

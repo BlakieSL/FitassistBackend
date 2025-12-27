@@ -1,8 +1,13 @@
 package source.code.unit.workoutSetExercise;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,191 +26,206 @@ import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.implementation.helpers.JsonPatchServiceImpl;
 import source.code.service.implementation.workoutSetExercise.WorkoutSetExerciseServiceImpl;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class WorkoutSetExerciseServiceTest {
-    @Mock
-    private JsonPatchServiceImpl jsonPatchService;
 
-    @Mock
-    private ValidationService validationService;
+	@Mock
+	private JsonPatchServiceImpl jsonPatchService;
 
-    @Mock
-    private WorkoutSetExerciseMapper workoutSetExerciseMapper;
+	@Mock
+	private ValidationService validationService;
 
-    @Mock
-    private RepositoryHelper repositoryHelper;
+	@Mock
+	private WorkoutSetExerciseMapper workoutSetExerciseMapper;
 
-    @Mock
-    private WorkoutSetExerciseRepository workoutSetExerciseRepository;
+	@Mock
+	private RepositoryHelper repositoryHelper;
 
-    @InjectMocks
-    private WorkoutSetExerciseServiceImpl workoutSetExerciseService;
+	@Mock
+	private WorkoutSetExerciseRepository workoutSetExerciseRepository;
 
-    private int workoutSetExerciseId;
-    private WorkoutSetExercise workoutSetExercise;
-    private WorkoutSetExerciseCreateDto createDto;
-    private WorkoutSetExerciseUpdateDto updateDto;
-    private WorkoutSetExerciseResponseDto responseDto;
-    private JsonMergePatch patch;
+	@InjectMocks
+	private WorkoutSetExerciseServiceImpl workoutSetExerciseService;
 
-    @BeforeEach
-    public void setUp() {
-        workoutSetExerciseId = 1;
-        workoutSetExercise = new WorkoutSetExercise();
-        createDto = new WorkoutSetExerciseCreateDto();
-        updateDto = new WorkoutSetExerciseUpdateDto();
-        responseDto = new WorkoutSetExerciseResponseDto();
-        patch = mock(JsonMergePatch.class);
-    }
+	private int workoutSetExerciseId;
 
-    @Test
-    public void createWorkoutSetExercise_ShouldCreateNewWorkoutSetExercise() {
-        when(workoutSetExerciseMapper.toEntity(createDto)).thenReturn(workoutSetExercise);
-        when(workoutSetExerciseRepository.save(workoutSetExercise)).thenReturn(workoutSetExercise);
-        when(workoutSetExerciseMapper.toResponseDto(workoutSetExercise)).thenReturn(responseDto);
+	private WorkoutSetExercise workoutSetExercise;
 
-        workoutSetExerciseService.createWorkoutSetExercise(createDto);
+	private WorkoutSetExerciseCreateDto createDto;
 
-        verify(workoutSetExerciseMapper).toEntity(createDto);
-        verify(workoutSetExerciseRepository).save(workoutSetExercise);
-        verify(workoutSetExerciseMapper).toResponseDto(workoutSetExercise);
-    }
+	private WorkoutSetExerciseUpdateDto updateDto;
 
-    @Test
-    public void updateWorkoutSetExercise_ShouldUpdateExistingWorkoutSetExercise() throws JsonPatchException, JsonProcessingException {
-        when(repositoryHelper.find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId)).thenReturn(workoutSetExercise);
-        when(jsonPatchService.createFromPatch(eq(patch), eq(WorkoutSetExerciseUpdateDto.class)))
-                .thenReturn(updateDto);
-        doNothing().when(validationService).validate(updateDto);
-        doNothing().when(workoutSetExerciseMapper).updateWorkoutSetExercise(workoutSetExercise, updateDto);
-        when(workoutSetExerciseRepository.save(workoutSetExercise)).thenReturn(workoutSetExercise);
+	private WorkoutSetExerciseResponseDto responseDto;
 
-        workoutSetExerciseService.updateWorkoutSetExercise(workoutSetExerciseId, patch);
+	private JsonMergePatch patch;
 
-        verify(repositoryHelper).find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
-        verify(jsonPatchService).createFromPatch(eq(patch), eq(WorkoutSetExerciseUpdateDto.class));
-        verify(validationService).validate(updateDto);
-        verify(workoutSetExerciseMapper).updateWorkoutSetExercise(workoutSetExercise, updateDto);
-        verify(workoutSetExerciseRepository).save(workoutSetExercise);
-    }
+	@BeforeEach
+	public void setUp() {
+		workoutSetExerciseId = 1;
+		workoutSetExercise = new WorkoutSetExercise();
+		createDto = new WorkoutSetExerciseCreateDto();
+		updateDto = new WorkoutSetExerciseUpdateDto();
+		responseDto = new WorkoutSetExerciseResponseDto();
+		patch = mock(JsonMergePatch.class);
+	}
 
-    @Test
-    public void updateWorkoutSetExercise_ShouldThrowExceptionWhenWorkoutSetExerciseNotFound() throws JsonPatchException, JsonProcessingException {
-        when(repositoryHelper.find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId))
-                .thenThrow(RecordNotFoundException.class);
+	@Test
+	public void createWorkoutSetExercise_ShouldCreateNewWorkoutSetExercise() {
+		when(workoutSetExerciseMapper.toEntity(createDto)).thenReturn(workoutSetExercise);
+		when(workoutSetExerciseRepository.save(workoutSetExercise)).thenReturn(workoutSetExercise);
+		when(workoutSetExerciseMapper.toResponseDto(workoutSetExercise)).thenReturn(responseDto);
 
-        assertThrows(RecordNotFoundException.class, () -> workoutSetExerciseService.updateWorkoutSetExercise(workoutSetExerciseId, patch));
+		workoutSetExerciseService.createWorkoutSetExercise(createDto);
 
-        verify(repositoryHelper).find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
-        verify(workoutSetExerciseMapper, never()).toResponseDto(workoutSetExercise);
-        verify(jsonPatchService, never()).createFromPatch(any(), any());
-        verify(validationService, never()).validate(any());
-        verify(workoutSetExerciseMapper, never()).updateWorkoutSetExercise(any(), any());
-        verify(workoutSetExerciseRepository, never()).save(any());
-    }
+		verify(workoutSetExerciseMapper).toEntity(createDto);
+		verify(workoutSetExerciseRepository).save(workoutSetExercise);
+		verify(workoutSetExerciseMapper).toResponseDto(workoutSetExercise);
+	}
 
-    @Test
-    public void updateWorkoutSetExercise_ShouldThrowExceptionWhenValidationFails() throws JsonPatchException, JsonProcessingException {
-        when(repositoryHelper.find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId)).thenReturn(workoutSetExercise);
-        when(jsonPatchService.createFromPatch(eq(patch), eq(WorkoutSetExerciseUpdateDto.class)))
-                .thenReturn(updateDto);
-        doThrow(IllegalArgumentException.class).when(validationService).validate(updateDto);
+	@Test
+	public void updateWorkoutSetExercise_ShouldUpdateExistingWorkoutSetExercise()
+			throws JsonPatchException, JsonProcessingException {
+		when(repositoryHelper.find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId))
+			.thenReturn(workoutSetExercise);
+		when(jsonPatchService.createFromPatch(eq(patch), eq(WorkoutSetExerciseUpdateDto.class))).thenReturn(updateDto);
+		doNothing().when(validationService).validate(updateDto);
+		doNothing().when(workoutSetExerciseMapper).updateWorkoutSetExercise(workoutSetExercise, updateDto);
+		when(workoutSetExerciseRepository.save(workoutSetExercise)).thenReturn(workoutSetExercise);
 
-        assertThrows(IllegalArgumentException.class, () -> workoutSetExerciseService.updateWorkoutSetExercise(workoutSetExerciseId, patch));
+		workoutSetExerciseService.updateWorkoutSetExercise(workoutSetExerciseId, patch);
 
-        verify(repositoryHelper).find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
-        verify(jsonPatchService).createFromPatch(eq(patch), eq(WorkoutSetExerciseUpdateDto.class));
-        verify(validationService).validate(updateDto);
-        verify(workoutSetExerciseMapper, never()).updateWorkoutSetExercise(any(), any());
-        verify(workoutSetExerciseRepository, never()).save(any());
-    }
+		verify(repositoryHelper).find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
+		verify(jsonPatchService).createFromPatch(eq(patch), eq(WorkoutSetExerciseUpdateDto.class));
+		verify(validationService).validate(updateDto);
+		verify(workoutSetExerciseMapper).updateWorkoutSetExercise(workoutSetExercise, updateDto);
+		verify(workoutSetExerciseRepository).save(workoutSetExercise);
+	}
 
-    @Test
-    public void updateWorkoutSetExercise_ShouldThrowExceptionWhenPatchFails() throws JsonPatchException, JsonProcessingException {
-        when(repositoryHelper.find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId)).thenReturn(workoutSetExercise);
-        when(jsonPatchService.createFromPatch(eq(patch), eq(WorkoutSetExerciseUpdateDto.class)))
-                .thenThrow(JsonPatchException.class);
+	@Test
+	public void updateWorkoutSetExercise_ShouldThrowExceptionWhenWorkoutSetExerciseNotFound()
+			throws JsonPatchException, JsonProcessingException {
+		when(repositoryHelper.find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId))
+			.thenThrow(RecordNotFoundException.class);
 
-        assertThrows(JsonPatchException.class, () -> workoutSetExerciseService.updateWorkoutSetExercise(workoutSetExerciseId, patch));
+		assertThrows(RecordNotFoundException.class,
+				() -> workoutSetExerciseService.updateWorkoutSetExercise(workoutSetExerciseId, patch));
 
-        verify(repositoryHelper).find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
-        verify(jsonPatchService).createFromPatch(eq(patch), eq(WorkoutSetExerciseUpdateDto.class));
-        verify(validationService, never()).validate(any());
-        verify(workoutSetExerciseMapper, never()).updateWorkoutSetExercise(any(), any());
-        verify(workoutSetExerciseRepository, never()).save(any());
-    }
+		verify(repositoryHelper).find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
+		verify(workoutSetExerciseMapper, never()).toResponseDto(workoutSetExercise);
+		verify(jsonPatchService, never()).createFromPatch(any(), any());
+		verify(validationService, never()).validate(any());
+		verify(workoutSetExerciseMapper, never()).updateWorkoutSetExercise(any(), any());
+		verify(workoutSetExerciseRepository, never()).save(any());
+	}
 
-    @Test
-    public void deleteWorkoutSetExercise_ShouldDeleteExistingWorkoutSetExercise() {
-        when(repositoryHelper.find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId)).thenReturn(workoutSetExercise);
-        doNothing().when(workoutSetExerciseRepository).delete(workoutSetExercise);
+	@Test
+	public void updateWorkoutSetExercise_ShouldThrowExceptionWhenValidationFails()
+			throws JsonPatchException, JsonProcessingException {
+		when(repositoryHelper.find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId))
+			.thenReturn(workoutSetExercise);
+		when(jsonPatchService.createFromPatch(eq(patch), eq(WorkoutSetExerciseUpdateDto.class))).thenReturn(updateDto);
+		doThrow(IllegalArgumentException.class).when(validationService).validate(updateDto);
 
-        workoutSetExerciseService.deleteWorkoutSetExercise(workoutSetExerciseId);
+		assertThrows(IllegalArgumentException.class,
+				() -> workoutSetExerciseService.updateWorkoutSetExercise(workoutSetExerciseId, patch));
 
-        verify(repositoryHelper).find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
-        verify(workoutSetExerciseRepository).delete(workoutSetExercise);
-    }
+		verify(repositoryHelper).find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
+		verify(jsonPatchService).createFromPatch(eq(patch), eq(WorkoutSetExerciseUpdateDto.class));
+		verify(validationService).validate(updateDto);
+		verify(workoutSetExerciseMapper, never()).updateWorkoutSetExercise(any(), any());
+		verify(workoutSetExerciseRepository, never()).save(any());
+	}
 
-    @Test
-    public void deleteWorkoutSetExercise_ShouldThrowExceptionWhenWorkoutSetExerciseNotFound() {
-        when(repositoryHelper.find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId))
-                .thenThrow(RecordNotFoundException.class);
+	@Test
+	public void updateWorkoutSetExercise_ShouldThrowExceptionWhenPatchFails()
+			throws JsonPatchException, JsonProcessingException {
+		when(repositoryHelper.find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId))
+			.thenReturn(workoutSetExercise);
+		when(jsonPatchService.createFromPatch(eq(patch), eq(WorkoutSetExerciseUpdateDto.class)))
+			.thenThrow(JsonPatchException.class);
 
-        assertThrows(RecordNotFoundException.class, () -> workoutSetExerciseService.deleteWorkoutSetExercise(workoutSetExerciseId));
+		assertThrows(JsonPatchException.class,
+				() -> workoutSetExerciseService.updateWorkoutSetExercise(workoutSetExerciseId, patch));
 
-        verify(repositoryHelper).find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
-        verify(workoutSetExerciseRepository, never()).delete(any());
-    }
+		verify(repositoryHelper).find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
+		verify(jsonPatchService).createFromPatch(eq(patch), eq(WorkoutSetExerciseUpdateDto.class));
+		verify(validationService, never()).validate(any());
+		verify(workoutSetExerciseMapper, never()).updateWorkoutSetExercise(any(), any());
+		verify(workoutSetExerciseRepository, never()).save(any());
+	}
 
-    @Test
-    public void getWorkoutSetExercise_ShouldReturnWorkoutSetExerciseById() {
-        when(repositoryHelper.find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId)).thenReturn(workoutSetExercise);
-        when(workoutSetExerciseMapper.toResponseDto(workoutSetExercise)).thenReturn(responseDto);
+	@Test
+	public void deleteWorkoutSetExercise_ShouldDeleteExistingWorkoutSetExercise() {
+		when(repositoryHelper.find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId))
+			.thenReturn(workoutSetExercise);
+		doNothing().when(workoutSetExerciseRepository).delete(workoutSetExercise);
 
-        WorkoutSetExerciseResponseDto result = workoutSetExerciseService.getWorkoutSetExercise(workoutSetExerciseId);
+		workoutSetExerciseService.deleteWorkoutSetExercise(workoutSetExerciseId);
 
-        verify(repositoryHelper).find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
-        verify(workoutSetExerciseMapper).toResponseDto(workoutSetExercise);
-    }
+		verify(repositoryHelper).find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
+		verify(workoutSetExerciseRepository).delete(workoutSetExercise);
+	}
 
-    @Test
-    public void getWorkoutSetExercise_ShouldThrowExceptionWhenWorkoutSetExerciseNotFound() {
-        when(repositoryHelper.find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId))
-                .thenThrow(RecordNotFoundException.class);
+	@Test
+	public void deleteWorkoutSetExercise_ShouldThrowExceptionWhenWorkoutSetExerciseNotFound() {
+		when(repositoryHelper.find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId))
+			.thenThrow(RecordNotFoundException.class);
 
-        assertThrows(RecordNotFoundException.class, () -> workoutSetExerciseService.getWorkoutSetExercise(workoutSetExerciseId));
+		assertThrows(RecordNotFoundException.class,
+				() -> workoutSetExerciseService.deleteWorkoutSetExercise(workoutSetExerciseId));
 
-        verify(repositoryHelper).find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
-        verify(workoutSetExerciseMapper, never()).toResponseDto(any());
-    }
+		verify(repositoryHelper).find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
+		verify(workoutSetExerciseRepository, never()).delete(any());
+	}
 
-    @Test
-    public void getAllWorkoutSetExercisesForWorkoutSet_ShouldReturnAllWorkoutSetExercisesForWorkoutSet() {
-        int workoutSetId = 1;
-        when(workoutSetExerciseRepository.findAllByWorkoutSetId(workoutSetId)).thenReturn(List.of(workoutSetExercise));
-        when(workoutSetExerciseMapper.toResponseDto(workoutSetExercise)).thenReturn(responseDto);
+	@Test
+	public void getWorkoutSetExercise_ShouldReturnWorkoutSetExerciseById() {
+		when(repositoryHelper.find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId))
+			.thenReturn(workoutSetExercise);
+		when(workoutSetExerciseMapper.toResponseDto(workoutSetExercise)).thenReturn(responseDto);
 
-        List<WorkoutSetExerciseResponseDto> result = workoutSetExerciseService.getAllWorkoutSetExercisesForWorkoutSet(workoutSetId);
+		WorkoutSetExerciseResponseDto result = workoutSetExerciseService.getWorkoutSetExercise(workoutSetExerciseId);
 
-        verify(workoutSetExerciseRepository).findAllByWorkoutSetId(workoutSetId);
-        verify(workoutSetExerciseMapper).toResponseDto(workoutSetExercise);
-        assertEquals(1, result.size());
-    }
+		verify(repositoryHelper).find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
+		verify(workoutSetExerciseMapper).toResponseDto(workoutSetExercise);
+	}
 
-    @Test
-    public void getAllWorkoutSetExercisesForWorkoutSet_ShouldReturnEmptyListWhenNoWorkoutSetExercisesFound() {
-        int workoutSetId = 1;
-        when(workoutSetExerciseRepository.findAllByWorkoutSetId(workoutSetId)).thenReturn(List.of());
+	@Test
+	public void getWorkoutSetExercise_ShouldThrowExceptionWhenWorkoutSetExerciseNotFound() {
+		when(repositoryHelper.find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId))
+			.thenThrow(RecordNotFoundException.class);
 
-        List<WorkoutSetExerciseResponseDto> result = workoutSetExerciseService.getAllWorkoutSetExercisesForWorkoutSet(workoutSetId);
+		assertThrows(RecordNotFoundException.class,
+				() -> workoutSetExerciseService.getWorkoutSetExercise(workoutSetExerciseId));
 
-        verify(workoutSetExerciseRepository).findAllByWorkoutSetId(workoutSetId);
-        assertEquals(0, result.size());
-    }
+		verify(repositoryHelper).find(workoutSetExerciseRepository, WorkoutSetExercise.class, workoutSetExerciseId);
+		verify(workoutSetExerciseMapper, never()).toResponseDto(any());
+	}
+
+	@Test
+	public void getAllWorkoutSetExercisesForWorkoutSet_ShouldReturnAllWorkoutSetExercisesForWorkoutSet() {
+		int workoutSetId = 1;
+		when(workoutSetExerciseRepository.findAllByWorkoutSetId(workoutSetId)).thenReturn(List.of(workoutSetExercise));
+		when(workoutSetExerciseMapper.toResponseDto(workoutSetExercise)).thenReturn(responseDto);
+
+		List<WorkoutSetExerciseResponseDto> result = workoutSetExerciseService
+			.getAllWorkoutSetExercisesForWorkoutSet(workoutSetId);
+
+		verify(workoutSetExerciseRepository).findAllByWorkoutSetId(workoutSetId);
+		verify(workoutSetExerciseMapper).toResponseDto(workoutSetExercise);
+		assertEquals(1, result.size());
+	}
+
+	@Test
+	public void getAllWorkoutSetExercisesForWorkoutSet_ShouldReturnEmptyListWhenNoWorkoutSetExercisesFound() {
+		int workoutSetId = 1;
+		when(workoutSetExerciseRepository.findAllByWorkoutSetId(workoutSetId)).thenReturn(List.of());
+
+		List<WorkoutSetExerciseResponseDto> result = workoutSetExerciseService
+			.getAllWorkoutSetExercisesForWorkoutSet(workoutSetId);
+
+		verify(workoutSetExerciseRepository).findAllByWorkoutSetId(workoutSetId);
+		assertEquals(0, result.size());
+	}
+
 }

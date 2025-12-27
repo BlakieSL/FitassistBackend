@@ -7,11 +7,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-import source.code.service.declaration.rateLimiter.RedissonRateLimiterService;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -19,135 +14,144 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.jetbrains.annotations.NotNull;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+import source.code.service.declaration.rateLimiter.RedissonRateLimiterService;
+
 @Component
 public class RateLimitingFilter extends OncePerRequestFilter {
-    private static final String RATE_LIMIT_COOKIE_NAME = "RateLimit-Id";
-    private final RedissonRateLimiterService rateLimitingService;
-    private final RequestMatcher requestMatcher;
 
-    public RateLimitingFilter(RedissonRateLimiterService rateLimitingService, RequestMatcher requestMatcher) {
-        this.rateLimitingService = rateLimitingService;
-        this.requestMatcher = requestMatcher;
-    }
+	private static final String RATE_LIMIT_COOKIE_NAME = "RateLimit-Id";
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain)
-            throws ServletException, IOException {
+	private final RedissonRateLimiterService rateLimitingService;
 
-        String path = request.getRequestURI();
+	private final RequestMatcher requestMatcher;
 
-        if (isPublicEndpoint(request)) {
-            String identifier = getOrCreateRateLimitCookie(request, response);
-            if (!handleRateLimitingForNonAuth(identifier, path, response)) {
-                return;
-            }
-        } else {
-            if (!handleAuthRequestRateLimiting(request, response)) {
-                return;
-            }
-        }
+	public RateLimitingFilter(RedissonRateLimiterService rateLimitingService, RequestMatcher requestMatcher) {
+		this.rateLimitingService = rateLimitingService;
+		this.requestMatcher = requestMatcher;
+	}
 
-        filterChain.doFilter(request, response);
-    }
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response,
+									@NotNull FilterChain filterChain) throws ServletException, IOException {
 
-    private boolean isPublicEndpoint(HttpServletRequest request) {
-        return requestMatcher != null && requestMatcher.matches(request);
-    }
+		String path = request.getRequestURI();
 
-    private Optional<String> extractToken(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader("Authorization"))
-                .filter(authHeader -> authHeader.startsWith("Bearer"))
-                .map(authHeader -> authHeader.substring("Bearer".length()).trim());
-    }
+		if (isPublicEndpoint(request)) {
+			String identifier = getOrCreateRateLimitCookie(request, response);
+			if (!handleRateLimitingForNonAuth(identifier, path, response)) {
+				return;
+			}
+		} else {
+			if (!handleAuthRequestRateLimiting(request, response)) {
+				return;
+			}
+		}
 
-    private Optional<UserInfo> extractUserIdAndRoles(String token) {
-        try {
-            SignedJWT signedJWT = SignedJWT.parse(token);
-            JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
+		filterChain.doFilter(request, response);
+	}
 
-            int userId = claimsSet.getIntegerClaim("userId");
-            List<String> roles = claimsSet.getStringListClaim("authorities");
+	private boolean isPublicEndpoint(HttpServletRequest request) {
+		return requestMatcher != null && requestMatcher.matches(request);
+	}
 
-            return Optional.of(new UserInfo(userId, roles));
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-    }
+	private Optional<String> extractToken(HttpServletRequest request) {
+		return Optional.ofNullable(request.getHeader("Authorization"))
+			.filter(authHeader -> authHeader.startsWith("Bearer"))
+			.map(authHeader -> authHeader.substring("Bearer".length()).trim());
+	}
 
-    private boolean handleRateLimiting(UserInfo userInfo, HttpServletResponse response) throws IOException {
-        if (userInfo.roles.contains("ROLE_ADMIN")) {
-            return true;
-        }
+	private Optional<UserInfo> extractUserIdAndRoles(String token) {
+		try {
+			SignedJWT signedJWT = SignedJWT.parse(token);
+			JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
 
-        if (rateLimitingService.isAllowed(userInfo.userId)) {
-            return true;
-        } else {
-            return writeErrorResponse(response, 429, "Too many requests");
-        }
-    }
+			int userId = claimsSet.getIntegerClaim("userId");
+			List<String> roles = claimsSet.getStringListClaim("authorities");
 
-    private boolean handleAuthRequestRateLimiting(HttpServletRequest request, HttpServletResponse response) {
-        return extractToken(request)
-                .flatMap(this::extractUserIdAndRoles)
-                .map(userInfo -> safelyHandleRateLimiting(userInfo, response))
-                .orElseGet(() -> safelyHandleInvalidToken(response));
-    }
+			return Optional.of(new UserInfo(userId, roles));
+		} catch (Exception e) {
+			return Optional.empty();
+		}
+	}
 
-    private boolean safelyHandleRateLimiting(UserInfo userInfo, HttpServletResponse response) {
-        try {
-            return handleRateLimiting(userInfo, response);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to handle rate limiting", e);
-        }
-    }
+	private boolean handleRateLimiting(UserInfo userInfo, HttpServletResponse response) throws IOException {
+		if (userInfo.roles.contains("ROLE_ADMIN")) {
+			return true;
+		}
 
-    private boolean safelyHandleInvalidToken(HttpServletResponse response) {
-        try {
-            return handleInvalidToken(response);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to handle invalid token", e);
-        }
-    }
+		if (rateLimitingService.isAllowed(userInfo.userId)) {
+			return true;
+		} else {
+			return writeErrorResponse(response, 429, "Too many requests");
+		}
+	}
 
-    private boolean handleInvalidToken(HttpServletResponse response) throws IOException {
-        return writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid or missing token");
-    }
+	private boolean handleAuthRequestRateLimiting(HttpServletRequest request, HttpServletResponse response) {
+		return extractToken(request).flatMap(this::extractUserIdAndRoles)
+			.map(userInfo -> safelyHandleRateLimiting(userInfo, response))
+			.orElseGet(() -> safelyHandleInvalidToken(response));
+	}
 
-    private boolean writeErrorResponse(HttpServletResponse response, int statusCode, String message)
-            throws IOException {
-        response.setStatus(statusCode);
-        response.getWriter().write(message);
-        return false;
-    }
+	private boolean safelyHandleRateLimiting(UserInfo userInfo, HttpServletResponse response) {
+		try {
+			return handleRateLimiting(userInfo, response);
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to handle rate limiting", e);
+		}
+	}
 
-    private String getOrCreateRateLimitCookie(HttpServletRequest request, HttpServletResponse response) {
-        return Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[0]))
-                .filter(cookie -> RATE_LIMIT_COOKIE_NAME.equals(cookie.getName()))
-                .map(Cookie::getValue)
-                .findFirst()
-                .orElseGet(() -> createAndSetNewRateLimitCookie(response));
-    }
+	private boolean safelyHandleInvalidToken(HttpServletResponse response) {
+		try {
+			return handleInvalidToken(response);
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to handle invalid token", e);
+		}
+	}
 
-    private String createAndSetNewRateLimitCookie(HttpServletResponse response) {
-        String newIdentifier = UUID.randomUUID().toString();
-        Cookie rateLimitCookie = new Cookie(RATE_LIMIT_COOKIE_NAME, newIdentifier);
-        rateLimitCookie.setPath("/");
-        rateLimitCookie.setHttpOnly(true);
-        rateLimitCookie.setMaxAge(5 * 60);
-        response.addCookie(rateLimitCookie);
-        return newIdentifier;
-    }
+	private boolean handleInvalidToken(HttpServletResponse response) throws IOException {
+		return writeErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid or missing token");
+	}
 
-    private boolean handleRateLimitingForNonAuth(String identifier, String path, HttpServletResponse response)
-            throws IOException {
-        String rateLimitKey = identifier + ":" + path;
-        if (rateLimitingService.isAllowed(rateLimitKey)) {
-            return true;
-        } else {
-            return writeErrorResponse(response, 429, "Too many requests - please try again later");
-        }
-    }
+	private boolean writeErrorResponse(HttpServletResponse response, int statusCode, String message)
+		throws IOException {
+		response.setStatus(statusCode);
+		response.getWriter().write(message);
+		return false;
+	}
 
-    private record UserInfo(int userId, List<String> roles) {
-    }
+	private String getOrCreateRateLimitCookie(HttpServletRequest request, HttpServletResponse response) {
+		return Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[0]))
+			.filter(cookie -> RATE_LIMIT_COOKIE_NAME.equals(cookie.getName()))
+			.map(Cookie::getValue)
+			.findFirst()
+			.orElseGet(() -> createAndSetNewRateLimitCookie(response));
+	}
+
+	private String createAndSetNewRateLimitCookie(HttpServletResponse response) {
+		String newIdentifier = UUID.randomUUID().toString();
+		Cookie rateLimitCookie = new Cookie(RATE_LIMIT_COOKIE_NAME, newIdentifier);
+		rateLimitCookie.setPath("/");
+		rateLimitCookie.setHttpOnly(true);
+		rateLimitCookie.setMaxAge(5 * 60);
+		response.addCookie(rateLimitCookie);
+		return newIdentifier;
+	}
+
+	private boolean handleRateLimitingForNonAuth(String identifier, String path, HttpServletResponse response)
+		throws IOException {
+		String rateLimitKey = identifier + ":" + path;
+		if (rateLimitingService.isAllowed(rateLimitKey)) {
+			return true;
+		} else {
+			return writeErrorResponse(response, 429, "Too many requests - please try again later");
+		}
+	}
+
+	private record UserInfo(int userId, List<String> roles) {
+	}
+
 }

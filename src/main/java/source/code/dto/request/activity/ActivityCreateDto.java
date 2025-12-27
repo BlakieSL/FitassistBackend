@@ -4,28 +4,31 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.math.BigDecimal;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActivityCreateDto {
-    private static final int NAME_MAX_LENGTH = 50;
 
-    @Size(max = NAME_MAX_LENGTH)
-    @NotBlank
-    private String name;
+	private static final int NAME_MAX_LENGTH = 50;
 
-    @NotNull
-    @Positive
-    private BigDecimal met;
+	@Size(max = NAME_MAX_LENGTH)
+	@NotBlank
+	private String name;
 
-    @NotNull
-    private int categoryId;
+	@NotNull
+	@Positive
+	private BigDecimal met;
+
+	@NotNull
+	private int categoryId;
+
 }

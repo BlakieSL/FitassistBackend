@@ -1,5 +1,11 @@
 package source.code.unit.complaint;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,86 +25,86 @@ import source.code.model.complaint.ThreadComplaint;
 import source.code.repository.ComplaintRepository;
 import source.code.service.implementation.complaint.ComplaintServiceImpl;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class ComplaintServiceTest {
-    private static final int USER_ID = 1;
-    private static final int COMPLAINT_ID = 1;
-    private static final int INVALID_COMPLAINT_ID = 999;
 
-    @Mock
-    private ComplaintRepository complaintRepository;
-    @Mock
-    private ComplaintMapper complaintMapper;
-    @InjectMocks
-    private ComplaintServiceImpl complaintService;
+	private static final int USER_ID = 1;
 
-    private ComplaintCreateDto createDto;
-    private CommentComplaint commentComplaint;
-    private ThreadComplaint threadComplaint;
-    private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
+	private static final int COMPLAINT_ID = 1;
 
-    @BeforeEach
-    void setUp() {
-        createDto = new ComplaintCreateDto();
-        commentComplaint = new CommentComplaint();
-        threadComplaint = new ThreadComplaint();
-        mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
-    }
+	private static final int INVALID_COMPLAINT_ID = 999;
 
-    @AfterEach
-    void tearDown() {
-        if (mockedAuthorizationUtil != null) {
-            mockedAuthorizationUtil.close();
-        }
-    }
+	@Mock
+	private ComplaintRepository complaintRepository;
 
-    @Test
-    void createComplaint_shouldCreateCommentComplaint() {
-        createDto.setSubClass(ComplaintSubClass.COMMENT_COMPLAINT);
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(complaintMapper.toCommentComplaint(createDto, USER_ID)).thenReturn(commentComplaint);
+	@Mock
+	private ComplaintMapper complaintMapper;
 
-        complaintService.createComplaint(createDto);
+	@InjectMocks
+	private ComplaintServiceImpl complaintService;
 
-        verify(complaintRepository).save(commentComplaint);
-    }
+	private ComplaintCreateDto createDto;
 
-    @Test
-    void createComplaint_shouldCreateThreadComplaint() {
-        createDto.setSubClass(ComplaintSubClass.THREAD_COMPLAINT);
-        mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-        when(complaintMapper.toThreadComplaint(createDto, USER_ID)).thenReturn(threadComplaint);
+	private CommentComplaint commentComplaint;
 
-        complaintService.createComplaint(createDto);
+	private ThreadComplaint threadComplaint;
 
-        verify(complaintRepository).save(threadComplaint);
-    }
+	private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
 
-    @Test
-    void resolveComplaint_shouldResolveCommentComplaint() {
-        when(complaintRepository.findById(COMPLAINT_ID))
-                .thenReturn(Optional.of(commentComplaint));
+	@BeforeEach
+	void setUp() {
+		createDto = new ComplaintCreateDto();
+		commentComplaint = new CommentComplaint();
+		threadComplaint = new ThreadComplaint();
+		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
+	}
 
-        complaintService.resolveComplaint(COMPLAINT_ID);
+	@AfterEach
+	void tearDown() {
+		if (mockedAuthorizationUtil != null) {
+			mockedAuthorizationUtil.close();
+		}
+	}
 
-        assertEquals(ComplaintStatus.RESOLVED, commentComplaint.getStatus());
-        verify(complaintRepository, times(1)).findById(any(Integer.class));
-        verify(complaintRepository, times(1)).save(commentComplaint);
-    }
+	@Test
+	void createComplaint_shouldCreateCommentComplaint() {
+		createDto.setSubClass(ComplaintSubClass.COMMENT_COMPLAINT);
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+		when(complaintMapper.toCommentComplaint(createDto, USER_ID)).thenReturn(commentComplaint);
 
-    @Test
-    void resolveComplaint_shouldThrowExceptionWhenComplaintNotFound() {
-        when(complaintRepository.findById(INVALID_COMPLAINT_ID))
-                .thenReturn(Optional.empty());
+		complaintService.createComplaint(createDto);
 
-        assertThrows(RecordNotFoundException.class, () -> complaintService
-                .resolveComplaint(INVALID_COMPLAINT_ID));
-        verify(complaintRepository, times(1)).findById(INVALID_COMPLAINT_ID);
-    }
+		verify(complaintRepository).save(commentComplaint);
+	}
+
+	@Test
+	void createComplaint_shouldCreateThreadComplaint() {
+		createDto.setSubClass(ComplaintSubClass.THREAD_COMPLAINT);
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+		when(complaintMapper.toThreadComplaint(createDto, USER_ID)).thenReturn(threadComplaint);
+
+		complaintService.createComplaint(createDto);
+
+		verify(complaintRepository).save(threadComplaint);
+	}
+
+	@Test
+	void resolveComplaint_shouldResolveCommentComplaint() {
+		when(complaintRepository.findById(COMPLAINT_ID)).thenReturn(Optional.of(commentComplaint));
+
+		complaintService.resolveComplaint(COMPLAINT_ID);
+
+		assertEquals(ComplaintStatus.RESOLVED, commentComplaint.getStatus());
+		verify(complaintRepository, times(1)).findById(any(Integer.class));
+		verify(complaintRepository, times(1)).save(commentComplaint);
+	}
+
+	@Test
+	void resolveComplaint_shouldThrowExceptionWhenComplaintNotFound() {
+		when(complaintRepository.findById(INVALID_COMPLAINT_ID)).thenReturn(Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> complaintService.resolveComplaint(INVALID_COMPLAINT_ID));
+		verify(complaintRepository, times(1)).findById(INVALID_COMPLAINT_ID);
+	}
+
 }

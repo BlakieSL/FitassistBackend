@@ -1,5 +1,13 @@
 package source.code.unit.helpers;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,73 +18,65 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import source.code.exception.RecordNotFoundException;
 import source.code.service.implementation.helpers.RepositoryHelperImpl;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 public class RepositoryHelperTest {
 
-    @Mock
-    private JpaRepository<Object, Integer> repository;
+	@Mock
+	private JpaRepository<Object, Integer> repository;
 
-    @InjectMocks
-    private RepositoryHelperImpl repositoryHelper;
+	@InjectMocks
+	private RepositoryHelperImpl repositoryHelper;
 
-    private Object entity;
-    private int entityId;
+	private Object entity;
 
-    @BeforeEach
-    void setUp() {
-        entity = new Object();
-        entityId = 1;
-    }
+	private int entityId;
 
-    @Test
-    void find_shouldReturnEntityWhenFound() {
-        when(repository.findById(entityId)).thenReturn(Optional.of(entity));
+	@BeforeEach
+	void setUp() {
+		entity = new Object();
+		entityId = 1;
+	}
 
-        Object result = repositoryHelper.find(repository, Object.class, entityId);
+	@Test
+	void find_shouldReturnEntityWhenFound() {
+		when(repository.findById(entityId)).thenReturn(Optional.of(entity));
 
-        assertEquals(entity, result);
-        verify(repository).findById(entityId);
-    }
+		Object result = repositoryHelper.find(repository, Object.class, entityId);
 
-    @Test
-    void find_shouldThrowExceptionWhenNotFound() {
-        when(repository.findById(entityId)).thenReturn(Optional.empty());
+		assertEquals(entity, result);
+		verify(repository).findById(entityId);
+	}
 
-        assertThrows(RecordNotFoundException.class, () ->
-                repositoryHelper.find(repository, Object.class, entityId)
-        );
-    }
+	@Test
+	void find_shouldThrowExceptionWhenNotFound() {
+		when(repository.findById(entityId)).thenReturn(Optional.empty());
 
-    @Test
-    void findAll_shouldReturnMappedEntities() {
-        List<Object> entities = List.of(entity);
-        Function<Object, Object> mapper = Function.identity();
+		assertThrows(RecordNotFoundException.class, () -> repositoryHelper.find(repository, Object.class, entityId));
+	}
 
-        when(repository.findAll()).thenReturn(entities);
+	@Test
+	void findAll_shouldReturnMappedEntities() {
+		List<Object> entities = List.of(entity);
+		Function<Object, Object> mapper = Function.identity();
 
-        List<Object> result = repositoryHelper.findAll(repository, mapper);
+		when(repository.findAll()).thenReturn(entities);
 
-        assertEquals(entities, result);
-        verify(repository).findAll();
-    }
+		List<Object> result = repositoryHelper.findAll(repository, mapper);
 
-    @Test
-    void findAll_shouldReturnEmptyListWhenNoEntities() {
-        Function<Object, Object> mapper = Function.identity();
+		assertEquals(entities, result);
+		verify(repository).findAll();
+	}
 
-        when(repository.findAll()).thenReturn(List.of());
+	@Test
+	void findAll_shouldReturnEmptyListWhenNoEntities() {
+		Function<Object, Object> mapper = Function.identity();
 
-        List<Object> result = repositoryHelper.findAll(repository, mapper);
+		when(repository.findAll()).thenReturn(List.of());
 
-        assertTrue(result.isEmpty());
-        verify(repository).findAll();
-    }
+		List<Object> result = repositoryHelper.findAll(repository, mapper);
+
+		assertTrue(result.isEmpty());
+		verify(repository).findAll();
+	}
+
 }

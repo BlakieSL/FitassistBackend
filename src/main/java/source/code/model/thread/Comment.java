@@ -4,6 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,75 +20,67 @@ import source.code.model.media.Media;
 import source.code.model.user.User;
 import source.code.model.user.UserComment;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 @Entity
 @Table(name = "comment")
 @NamedEntityGraph(name = "Comment.withoutAssociations", attributeNodes = {})
 @NamedEntityGraph(name = "Comment.withAssociations", includeAllAttributes = true)
-@NamedEntityGraph(
-        name = "Comment.summary",
-        attributeNodes = {
-                @NamedAttributeNode("user"),
-                @NamedAttributeNode("thread")
-        }
-)
+@NamedEntityGraph(name = "Comment.summary",
+	attributeNodes = {@NamedAttributeNode("user"), @NamedAttributeNode("thread")})
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Comment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String text;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @NotNull
-    @PastOrPresent
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+	@NotBlank
+	@Column(nullable = false)
+	private String text;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "thread_id", nullable = false)
-    private ForumThread thread;
+	@NotNull
+	@PastOrPresent
+	@Column(name = "created_at", nullable = false)
+	private LocalDateTime createdAt;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "thread_id", nullable = false)
+	private ForumThread thread;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_comment_id")
-    private Comment parentComment;
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
 
-    @OneToMany(mappedBy = "parentComment")
-    private final Set<Comment> replies = new HashSet<>();
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "parent_comment_id")
+	private Comment parentComment;
 
-    @OneToMany(mappedBy = "comment")
-    private final Set<UserComment> userCommentLikes = new HashSet<>();
+	@OneToMany(mappedBy = "parentComment")
+	private final Set<Comment> replies = new HashSet<>();
 
-    @OneToMany
-    @JoinColumn(name = "parent_id", insertable = false, updatable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    @SQLRestriction("parentType = 'COMMENT'")
-    private List<Media> mediaList = new ArrayList<>();
+	@OneToMany(mappedBy = "comment")
+	private final Set<UserComment> userCommentLikes = new HashSet<>();
 
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-    }
+	@OneToMany
+	@JoinColumn(name = "parent_id", insertable = false, updatable = false,
+		foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@SQLRestriction("parentType = 'COMMENT'")
+	private List<Media> mediaList = new ArrayList<>();
 
-    public static Comment of(Integer id, User user) {
-        Comment comment = new Comment();
-        comment.setId(id);
-        comment.setUser(user);
-        return comment;
-    }
+	@PrePersist
+	public void prePersist() {
+		this.createdAt = LocalDateTime.now();
+	}
+
+	public static Comment of(Integer id, User user) {
+		Comment comment = new Comment();
+		comment.setId(id);
+		comment.setUser(user);
+		return comment;
+	}
+
 }

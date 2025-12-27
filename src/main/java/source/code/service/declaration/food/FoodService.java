@@ -3,6 +3,9 @@ package source.code.service.declaration.food;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import source.code.dto.request.filter.FilterDto;
@@ -13,20 +16,20 @@ import source.code.dto.response.food.FoodResponseDto;
 import source.code.dto.response.food.FoodSummaryDto;
 import source.code.model.food.Food;
 
-import java.util.List;
-
 public interface FoodService {
-    FoodResponseDto createFood(FoodCreateDto request);
 
-    void updateFood(int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+	FoodResponseDto createFood(FoodCreateDto request);
 
-    void deleteFood(int foodId);
+	void updateFood(int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
 
-    FoodResponseDto getFood(int foodId);
+	void deleteFood(int foodId);
 
-    Page<FoodSummaryDto> getFilteredFoods(FilterDto filter, Pageable pageable);
+	FoodResponseDto getFood(int foodId);
 
-    List<Food> getAllFoodEntities();
+	Page<FoodSummaryDto> getFilteredFoods(FilterDto filter, Pageable pageable);
 
-    FoodCalculatedMacrosResponseDto calculateFoodMacros(int foodId, CalculateFoodMacrosRequestDto request);
+	List<Food> getAllFoodEntities();
+
+	FoodCalculatedMacrosResponseDto calculateFoodMacros(int foodId, CalculateFoodMacrosRequestDto request);
+
 }

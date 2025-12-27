@@ -7,13 +7,15 @@ import source.code.service.declaration.text.TextCacheKeyGenerator;
 
 @Service
 public class ExerciseInstructionTextCacheKeyGeneratorImpl implements TextCacheKeyGenerator<ExerciseInstruction> {
-    @Override
-    public String generateCacheKey(ExerciseInstruction entity) {
-        return CacheKeys.EXERCISE_INSTRUCTION.toString() + entity.getExercise().getId();
-    }
 
-    @Override
-    public String generateCacheKeyForParent(int parentId) {
-        return CacheKeys.EXERCISE_INSTRUCTION.toString() + parentId;
-    }
+	@Override
+	public String generateCacheKey(ExerciseInstruction entity) {
+		return CacheKeys.EXERCISE_INSTRUCTION.toString() + entity.getExercise().getId();
+	}
+
+	@Override
+	public String generateCacheKeyForParent(int parentId) {
+		return CacheKeys.EXERCISE_INSTRUCTION.toString() + parentId;
+	}
+
 }

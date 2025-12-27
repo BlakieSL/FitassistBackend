@@ -1,5 +1,10 @@
 package source.code.service.implementation.user.interaction.withType;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,94 +26,72 @@ import source.code.repository.UserRepository;
 import source.code.service.declaration.plan.PlanPopulationService;
 import source.code.service.declaration.user.SavedService;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @Service("userPlanService")
-public class UserPlanServiceImpl
-        extends GenericSavedService<Plan, UserPlan, PlanResponseDto>
-        implements SavedService {
+public class UserPlanServiceImpl extends GenericSavedService<Plan, UserPlan, PlanResponseDto> implements SavedService {
 
-    private final PlanMapper planMapper;
-    private final PlanPopulationService planPopulationService;
+	private final PlanMapper planMapper;
 
-    public UserPlanServiceImpl(UserPlanRepository userPlanRepository,
-                               PlanRepository planRepository,
-                               UserRepository userRepository,
-                               PlanMapper planMapper,
-                               PlanPopulationService planPopulationService) {
-        super(userRepository,
-                planRepository,
-                userPlanRepository,
-                Plan.class,
-                UserPlan.class);
-        this.planMapper = planMapper;
-        this.planPopulationService = planPopulationService;
-    }
+	private final PlanPopulationService planPopulationService;
 
-    @Override
-    @CacheEvict(value = CacheNames.PLANS, key = "#entityId")
-    public void saveToUser(int entityId, TypeOfInteraction type) {
-        super.saveToUser(entityId, type);
-    }
+	public UserPlanServiceImpl(UserPlanRepository userPlanRepository, PlanRepository planRepository,
+							   UserRepository userRepository, PlanMapper planMapper, PlanPopulationService planPopulationService) {
+		super(userRepository, planRepository, userPlanRepository, Plan.class, UserPlan.class);
+		this.planMapper = planMapper;
+		this.planPopulationService = planPopulationService;
+	}
 
-    @Override
-    @CacheEvict(value = CacheNames.PLANS, key = "#entityId")
-    public void deleteFromUser(int entityId, TypeOfInteraction type) {
-        super.deleteFromUser(entityId, type);
-    }
+	@Override
+	@CacheEvict(value = CacheNames.PLANS, key = "#entityId")
+	public void saveToUser(int entityId, TypeOfInteraction type) {
+		super.saveToUser(entityId, type);
+	}
 
-    @Override
-    public Page<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Pageable pageable) {
-        Page<UserPlan> userPlanPage = ((UserPlanRepository) userEntityRepository)
-                .findAllByUserIdAndType(userId, type, pageable);
+	@Override
+	@CacheEvict(value = CacheNames.PLANS, key = "#entityId")
+	public void deleteFromUser(int entityId, TypeOfInteraction type) {
+		super.deleteFromUser(entityId, type);
+	}
 
-        List<Integer> planIds = userPlanPage.getContent().stream()
-                .map(up -> up.getPlan().getId())
-                .toList();
+	@Override
+	public Page<BaseUserEntity> getAllFromUser(int userId, TypeOfInteraction type, Pageable pageable) {
+		Page<UserPlan> userPlanPage = ((UserPlanRepository) userEntityRepository).findAllByUserIdAndType(userId, type,
+			pageable);
 
-        List<Plan> plansWithDetails = ((PlanRepository) entityRepository).findByIdsWithDetails(planIds);
+		List<Integer> planIds = userPlanPage.getContent().stream().map(up -> up.getPlan().getId()).toList();
 
-        Map<Integer, Plan> planMap = plansWithDetails.stream()
-                .collect(Collectors.toMap(Plan::getId, p -> p));
+		List<Plan> plansWithDetails = ((PlanRepository) entityRepository).findByIdsWithDetails(planIds);
 
-        List<PlanSummaryDto> summaries = userPlanPage.getContent().stream()
-                .map(up -> {
-                    Plan plan = planMap.get(up.getPlan().getId());
-                    PlanSummaryDto dto = planMapper.toSummaryDto(plan);
-                    dto.setInteractionCreatedAt(up.getCreatedAt());
-                    return dto;
-                })
-                .toList();
+		Map<Integer, Plan> planMap = plansWithDetails.stream().collect(Collectors.toMap(Plan::getId, p -> p));
 
-        planPopulationService.populate(summaries);
+		List<PlanSummaryDto> summaries = userPlanPage.getContent().stream().map(up -> {
+			Plan plan = planMap.get(up.getPlan().getId());
+			PlanSummaryDto dto = planMapper.toSummaryDto(plan);
+			dto.setInteractionCreatedAt(up.getCreatedAt());
+			return dto;
+		}).toList();
 
-        return new PageImpl<>(
-                summaries.stream().map(dto -> (BaseUserEntity) dto).toList(),
-                pageable,
-                userPlanPage.getTotalElements()
-        );
-    }
+		planPopulationService.populate(summaries);
 
-    @Override
-    protected boolean isAlreadySaved(int userId, int planId, TypeOfInteraction type) {
-        return ((UserPlanRepository) userEntityRepository)
-                .existsByUserIdAndPlanIdAndType(userId, planId, type);
-    }
+		return new PageImpl<>(summaries.stream().map(dto -> (BaseUserEntity) dto).toList(), pageable,
+			userPlanPage.getTotalElements());
+	}
 
-    @Override
-    protected UserPlan createUserEntity(User user, Plan entity, TypeOfInteraction type) {
-        if (!entity.getIsPublic()) {
-            throw new NotSupportedInteractionTypeException("Cannot save private plan");
-        }
-        return UserPlan.createWithUserPlanType(user, entity, type);
-    }
+	@Override
+	protected boolean isAlreadySaved(int userId, int planId, TypeOfInteraction type) {
+		return ((UserPlanRepository) userEntityRepository).existsByUserIdAndPlanIdAndType(userId, planId, type);
+	}
 
-    @Override
-    protected Optional<UserPlan> findUserEntityOptional(int userId, int entityId, TypeOfInteraction type) {
-        return ((UserPlanRepository) userEntityRepository)
-                .findByUserIdAndPlanIdAndType(userId, entityId, type);
-    }
+	@Override
+	protected UserPlan createUserEntity(User user, Plan entity, TypeOfInteraction type) {
+		if (!entity.getIsPublic()) {
+			throw new NotSupportedInteractionTypeException("Cannot save private plan");
+		}
+		return UserPlan.createWithUserPlanType(user, entity, type);
+	}
+
+	@Override
+	protected Optional<UserPlan> findUserEntityOptional(int userId, int entityId, TypeOfInteraction type) {
+		return ((UserPlanRepository) userEntityRepository).findByUserIdAndPlanIdAndType(userId, entityId, type);
+	}
+
 }

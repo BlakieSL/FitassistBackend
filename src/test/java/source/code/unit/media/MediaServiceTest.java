@@ -1,5 +1,11 @@
 package source.code.unit.media;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.io.IOException;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,143 +24,144 @@ import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.implementation.media.MediaServiceImpl;
 
-import java.io.IOException;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class MediaServiceTest {
-    @Mock
-    private AwsS3Service s3Service;
 
-    @Mock
-    private MediaMapper mediaMapper;
+	@Mock
+	private AwsS3Service s3Service;
 
-    @Mock
-    private RepositoryHelper repositoryHelper;
+	@Mock
+	private MediaMapper mediaMapper;
 
-    @Mock
-    private MediaRepository mediaRepository;
+	@Mock
+	private RepositoryHelper repositoryHelper;
 
-    @InjectMocks
-    private MediaServiceImpl mediaService;
+	@Mock
+	private MediaRepository mediaRepository;
 
-    private Media media;
-    private MediaCreateDto createDto;
-    private MediaResponseDto responseDto;
-    private int mediaId;
-    private int parentId;
-    private MediaConnectedEntity parentType;
-    private MultipartFile image;
+	@InjectMocks
+	private MediaServiceImpl mediaService;
 
-    @BeforeEach
-    void setUp() {
-        media = new Media();
-        createDto = new MediaCreateDto();
-        responseDto = new MediaResponseDto();
-        mediaId = 1;
-        parentId = 1;
-        parentType = MediaConnectedEntity.FOOD;
-        image = mock(MultipartFile.class);
-    }
+	private Media media;
 
-    @Test
-    void createMedia_shouldCreateMedia() throws IOException {
-        byte[] imageBytes = "randomImageBytes".getBytes();
-        String imageName = "randomImage.jpg";
-        String imageUrl = "http://example.com/randomImage.jpg";
-        createDto.setImage(image);
+	private MediaCreateDto createDto;
 
-        when(image.getBytes()).thenReturn(imageBytes);
-        when(s3Service.uploadImage(imageBytes)).thenReturn(imageName);
-        when(mediaMapper.toEntity(createDto, imageName)).thenReturn(media);
-        when(mediaRepository.save(media)).thenReturn(media);
-        when(s3Service.getImage(imageName)).thenReturn(imageUrl);
-        when(mediaMapper.toDto(media, imageUrl)).thenReturn(responseDto);
+	private MediaResponseDto responseDto;
 
-        MediaResponseDto result = mediaService.createMedia(createDto);
+	private int mediaId;
 
-        assertEquals(responseDto, result);
-        verify(mediaRepository).save(media);
-    }
+	private int parentId;
 
-    @Test
-    void deleteMedia_shouldDeleteMedia() {
-        media.setImageName("randomImage.jpg");
-        when(repositoryHelper.find(mediaRepository, Media.class, mediaId)).thenReturn(media);
-        doNothing().when(s3Service).deleteImage(media.getImageName());
+	private MediaConnectedEntity parentType;
 
-        mediaService.deleteMedia(mediaId);
+	private MultipartFile image;
 
-        verify(mediaRepository).delete(media);
-        verify(s3Service).deleteImage(media.getImageName());
-    }
+	@BeforeEach
+	void setUp() {
+		media = new Media();
+		createDto = new MediaCreateDto();
+		responseDto = new MediaResponseDto();
+		mediaId = 1;
+		parentId = 1;
+		parentType = MediaConnectedEntity.FOOD;
+		image = mock(MultipartFile.class);
+	}
 
-    @Test
-    void deleteMedia_shouldThrowExceptionWhenMediaNotFound() {
-        when(repositoryHelper.find(mediaRepository, Media.class, mediaId))
-                .thenThrow(RecordNotFoundException.of(Media.class, mediaId));
+	@Test
+	void createMedia_shouldCreateMedia() throws IOException {
+		byte[] imageBytes = "randomImageBytes".getBytes();
+		String imageName = "randomImage.jpg";
+		String imageUrl = "http://example.com/randomImage.jpg";
+		createDto.setImage(image);
 
-        assertThrows(RecordNotFoundException.class, () -> mediaService.deleteMedia(mediaId));
+		when(image.getBytes()).thenReturn(imageBytes);
+		when(s3Service.uploadImage(imageBytes)).thenReturn(imageName);
+		when(mediaMapper.toEntity(createDto, imageName)).thenReturn(media);
+		when(mediaRepository.save(media)).thenReturn(media);
+		when(s3Service.getImage(imageName)).thenReturn(imageUrl);
+		when(mediaMapper.toDto(media, imageUrl)).thenReturn(responseDto);
 
-        verify(mediaRepository, never()).delete(media);
-    }
+		MediaResponseDto result = mediaService.createMedia(createDto);
 
-    @Test
-    void getAllMediaForParent_shouldReturnAllMediaForParent() {
-        String imageUrl = "http://example.com/image.jpg";
-        when(mediaRepository.findByParentIdAndParentType(parentId, parentType))
-                .thenReturn(List.of(media));
-        when(s3Service.getImage(media.getImageName())).thenReturn(imageUrl);
-        when(mediaMapper.toDto(media, imageUrl)).thenReturn(responseDto);
+		assertEquals(responseDto, result);
+		verify(mediaRepository).save(media);
+	}
 
-        List<MediaResponseDto> result = mediaService.getAllMediaForParent(parentId, parentType);
+	@Test
+	void deleteMedia_shouldDeleteMedia() {
+		media.setImageName("randomImage.jpg");
+		when(repositoryHelper.find(mediaRepository, Media.class, mediaId)).thenReturn(media);
+		doNothing().when(s3Service).deleteImage(media.getImageName());
 
-        assertEquals(1, result.size());
-        assertSame(responseDto, result.get(0));
-    }
+		mediaService.deleteMedia(mediaId);
 
-    @Test
-    void getFirstMediaForParent_shouldReturnFirstMediaForParent() {
-        String imageUrl = "http://example.com/image.jpg";
-        when(mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(parentId, parentType))
-                .thenReturn(java.util.Optional.of(media));
-        when(s3Service.getImage(media.getImageName())).thenReturn(imageUrl);
-        when(mediaMapper.toDto(media, imageUrl)).thenReturn(responseDto);
+		verify(mediaRepository).delete(media);
+		verify(s3Service).deleteImage(media.getImageName());
+	}
 
-        MediaResponseDto result = mediaService.getFirstMediaForParent(parentId, parentType);
+	@Test
+	void deleteMedia_shouldThrowExceptionWhenMediaNotFound() {
+		when(repositoryHelper.find(mediaRepository, Media.class, mediaId))
+			.thenThrow(RecordNotFoundException.of(Media.class, mediaId));
 
-        assertEquals(responseDto, result);
-    }
+		assertThrows(RecordNotFoundException.class, () -> mediaService.deleteMedia(mediaId));
 
-    @Test
-    void getFirstMediaForParent_shouldThrowExceptionWhenMediaNotFound() {
-        when(mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(parentId, parentType))
-                .thenReturn(java.util.Optional.empty());
+		verify(mediaRepository, never()).delete(media);
+	}
 
-        assertThrows(RecordNotFoundException.class, () -> mediaService.getFirstMediaForParent(parentId, parentType));
-    }
+	@Test
+	void getAllMediaForParent_shouldReturnAllMediaForParent() {
+		String imageUrl = "http://example.com/image.jpg";
+		when(mediaRepository.findByParentIdAndParentType(parentId, parentType)).thenReturn(List.of(media));
+		when(s3Service.getImage(media.getImageName())).thenReturn(imageUrl);
+		when(mediaMapper.toDto(media, imageUrl)).thenReturn(responseDto);
 
-    @Test
-    void getMedia_shouldReturnMedia() {
-        String imageUrl = "http://example.com/image.jpg";
+		List<MediaResponseDto> result = mediaService.getAllMediaForParent(parentId, parentType);
 
-        when(repositoryHelper.find(mediaRepository, Media.class, mediaId)).thenReturn(media);
-        when(s3Service.getImage(media.getImageName())).thenReturn(imageUrl);
-        when(mediaMapper.toDto(media, imageUrl)).thenReturn(responseDto);
+		assertEquals(1, result.size());
+		assertSame(responseDto, result.get(0));
+	}
 
-        MediaResponseDto result = mediaService.getMedia(mediaId);
+	@Test
+	void getFirstMediaForParent_shouldReturnFirstMediaForParent() {
+		String imageUrl = "http://example.com/image.jpg";
+		when(mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(parentId, parentType))
+			.thenReturn(java.util.Optional.of(media));
+		when(s3Service.getImage(media.getImageName())).thenReturn(imageUrl);
+		when(mediaMapper.toDto(media, imageUrl)).thenReturn(responseDto);
 
-        assertEquals(responseDto, result);
-    }
+		MediaResponseDto result = mediaService.getFirstMediaForParent(parentId, parentType);
 
-    @Test
-    void getMedia_shouldThrowExceptionWhenMediaNotFound() {
-        when(repositoryHelper.find(mediaRepository, Media.class, mediaId))
-                .thenThrow(RecordNotFoundException.of(Media.class, mediaId));
+		assertEquals(responseDto, result);
+	}
 
-        assertThrows(RecordNotFoundException.class, () -> mediaService.getMedia(mediaId));
-    }
+	@Test
+	void getFirstMediaForParent_shouldThrowExceptionWhenMediaNotFound() {
+		when(mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(parentId, parentType))
+			.thenReturn(java.util.Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> mediaService.getFirstMediaForParent(parentId, parentType));
+	}
+
+	@Test
+	void getMedia_shouldReturnMedia() {
+		String imageUrl = "http://example.com/image.jpg";
+
+		when(repositoryHelper.find(mediaRepository, Media.class, mediaId)).thenReturn(media);
+		when(s3Service.getImage(media.getImageName())).thenReturn(imageUrl);
+		when(mediaMapper.toDto(media, imageUrl)).thenReturn(responseDto);
+
+		MediaResponseDto result = mediaService.getMedia(mediaId);
+
+		assertEquals(responseDto, result);
+	}
+
+	@Test
+	void getMedia_shouldThrowExceptionWhenMediaNotFound() {
+		when(repositoryHelper.find(mediaRepository, Media.class, mediaId))
+			.thenThrow(RecordNotFoundException.of(Media.class, mediaId));
+
+		assertThrows(RecordNotFoundException.class, () -> mediaService.getMedia(mediaId));
+	}
+
 }

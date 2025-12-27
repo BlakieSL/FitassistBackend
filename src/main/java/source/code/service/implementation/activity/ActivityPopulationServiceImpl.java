@@ -1,5 +1,9 @@
 package source.code.service.implementation.activity;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import source.code.dto.pojo.projection.SavesProjection;
 import source.code.dto.response.activity.ActivityResponseDto;
@@ -10,70 +14,68 @@ import source.code.service.declaration.activity.ActivityPopulationService;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.ImageUrlPopulationService;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 @Service
 public class ActivityPopulationServiceImpl implements ActivityPopulationService {
-    private final UserActivityRepository userActivityRepository;
-    private final AwsS3Service s3Service;
-    private final ImageUrlPopulationService imageUrlPopulationService;
 
-    public ActivityPopulationServiceImpl(UserActivityRepository userActivityRepository,
-                                         AwsS3Service s3Service,
-                                         ImageUrlPopulationService imageUrlPopulationService) {
-        this.userActivityRepository = userActivityRepository;
-        this.s3Service = s3Service;
-        this.imageUrlPopulationService = imageUrlPopulationService;
-    }
+	private final UserActivityRepository userActivityRepository;
 
-    @Override
-    public void populate(ActivityResponseDto activity) {
-        int userId = AuthorizationUtil.getUserId();
+	private final AwsS3Service s3Service;
 
-        SavesProjection savesData = userActivityRepository.findSavesCountAndUserSaved(activity.getId(), userId);
-        activity.setSavesCount(savesData.savesCount());
-        activity.setSaved(savesData.isSaved());
+	private final ImageUrlPopulationService imageUrlPopulationService;
 
-        imageUrlPopulationService.populateImageUrls(activity.getImages());
-    }
+	public ActivityPopulationServiceImpl(UserActivityRepository userActivityRepository, AwsS3Service s3Service,
+										 ImageUrlPopulationService imageUrlPopulationService) {
+		this.userActivityRepository = userActivityRepository;
+		this.s3Service = s3Service;
+		this.imageUrlPopulationService = imageUrlPopulationService;
+	}
 
-    @Override
-    public void populate(List<ActivitySummaryDto> activities) {
-        if (activities.isEmpty()) return;
+	@Override
+	public void populate(ActivityResponseDto activity) {
+		int userId = AuthorizationUtil.getUserId();
 
-        List<Integer> activityIds = activities.stream().map(ActivitySummaryDto::getId).toList();
+		SavesProjection savesData = userActivityRepository.findSavesCountAndUserSaved(activity.getId(), userId);
+		activity.setSavesCount(savesData.savesCount());
+		activity.setSaved(savesData.isSaved());
 
-        populateImageUrls(activities);
-        fetchAndPopulateUserInteractionsAndCounts(activities, activityIds);
-    }
+		imageUrlPopulationService.populateImageUrls(activity.getImages());
+	}
 
-    private void populateImageUrls(List<ActivitySummaryDto> activities) {
-        activities.forEach(activity -> {
-            if (activity.getImageName() != null) {
-                activity.setFirstImageUrl(s3Service.getImage(activity.getImageName()));
-            }
-        });
-    }
+	@Override
+	public void populate(List<ActivitySummaryDto> activities) {
+		if (activities.isEmpty())
+			return;
 
-    private void fetchAndPopulateUserInteractionsAndCounts(List<ActivitySummaryDto> activities, List<Integer> activityIds) {
-        int userId = AuthorizationUtil.getUserId();
+		List<Integer> activityIds = activities.stream().map(ActivitySummaryDto::getId).toList();
 
-        Map<Integer, SavesProjection> countsMap = userActivityRepository
-                .findCountsAndInteractionsByActivityIds(userId, activityIds)
-                .stream()
-                .collect(Collectors.toMap(
-                        SavesProjection::getEntityId,
-                        projection -> projection
-                ));
+		populateImageUrls(activities);
+		fetchAndPopulateUserInteractionsAndCounts(activities, activityIds);
+	}
 
-        activities.forEach(activity -> {
-            SavesProjection counts = countsMap.get(activity.getId());
-            if (counts != null) {
-                activity.setSavesCount(counts.savesCount());
-                activity.setSaved(counts.isSaved());
-            }
-        });
-    }
+	private void populateImageUrls(List<ActivitySummaryDto> activities) {
+		activities.forEach(activity -> {
+			if (activity.getImageName() != null) {
+				activity.setFirstImageUrl(s3Service.getImage(activity.getImageName()));
+			}
+		});
+	}
+
+	private void fetchAndPopulateUserInteractionsAndCounts(List<ActivitySummaryDto> activities,
+														   List<Integer> activityIds) {
+		int userId = AuthorizationUtil.getUserId();
+
+		Map<Integer, SavesProjection> countsMap = userActivityRepository
+			.findCountsAndInteractionsByActivityIds(userId, activityIds)
+			.stream()
+			.collect(Collectors.toMap(SavesProjection::getEntityId, projection -> projection));
+
+		activities.forEach(activity -> {
+			SavesProjection counts = countsMap.get(activity.getId());
+			if (counts != null) {
+				activity.setSavesCount(counts.savesCount());
+				activity.setSaved(counts.isSaved());
+			}
+		});
+	}
+
 }

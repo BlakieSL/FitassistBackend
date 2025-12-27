@@ -4,6 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
+
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -40,153 +44,165 @@ import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.ActivitySpecification;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 @Service
 public class ActivityServiceImpl implements ActivityService {
-    private final RepositoryHelper repositoryHelper;
-    private final ActivityMapper activityMapper;
-    private final ValidationService validationService;
-    private final JsonPatchService jsonPatchService;
-    private final ApplicationEventPublisher eventPublisher;
-    private final ActivityRepository activityRepository;
-    private final ActivityPopulationService activityPopulationService;
-    private final UserRepository userRepository;
-    private final SpecificationDependencies dependencies;
 
-    public ActivityServiceImpl(
-            RepositoryHelper repositoryHelper,
-            ActivityMapper activityMapper,
-            ValidationService validationService,
-            JsonPatchService jsonPatchService,
-            ApplicationEventPublisher eventPublisher,
-            ActivityRepository activityRepository,
-            ActivityPopulationService activityPopulationService,
-            UserRepository userRepository,
-            SpecificationDependencies dependencies) {
-        this.repositoryHelper = repositoryHelper;
-        this.activityMapper = activityMapper;
-        this.validationService = validationService;
-        this.jsonPatchService = jsonPatchService;
-        this.eventPublisher = eventPublisher;
-        this.activityRepository = activityRepository;
-        this.activityPopulationService = activityPopulationService;
-        this.userRepository = userRepository;
-        this.dependencies = dependencies;
-    }
+	private final RepositoryHelper repositoryHelper;
 
-    @Override
-    @Transactional
-    public ActivityResponseDto createActivity(ActivityCreateDto dto) {
-        Activity activity = activityRepository.save(activityMapper.toEntity(dto));
-        eventPublisher.publishEvent(ActivityCreateEvent.of(this, activity));
+	private final ActivityMapper activityMapper;
 
-        activityRepository.flush();
+	private final ValidationService validationService;
 
-        return findAndMap(activity.getId());
-    }
+	private final JsonPatchService jsonPatchService;
 
-    @Override
-    @Transactional
-    public void updateActivity(int activityId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        Activity activity = findActivity(activityId);
-        ActivityUpdateDto patched = applyPatchToActivity(patch);
+	private final ApplicationEventPublisher eventPublisher;
 
-        validationService.validate(patched);
-        activityMapper.updateActivityFromDto(activity, patched);
-        Activity savedActivity = activityRepository.save(activity);
+	private final ActivityRepository activityRepository;
 
-        eventPublisher.publishEvent(ActivityUpdateEvent.of(this, savedActivity));
-    }
+	private final ActivityPopulationService activityPopulationService;
 
-    @Override
-    @Transactional
-    public void deleteActivity(int activityId) {
-        Activity activity = findActivityWithAssociations(activityId);
-        activityRepository.delete(activity);
+	private final UserRepository userRepository;
 
-        eventPublisher.publishEvent(ActivityDeleteEvent.of(this, activity));
-    }
+	private final SpecificationDependencies dependencies;
 
-    @Override
-    public ActivityCalculatedResponseDto calculateCaloriesBurned(int activityId,
-                                                                 CalculateActivityCaloriesRequestDto request) {
-        Activity activity = findActivity(activityId);
-        BigDecimal weight = resolveWeightForCalculation(request);
+	public ActivityServiceImpl(RepositoryHelper repositoryHelper, ActivityMapper activityMapper,
+							   ValidationService validationService, JsonPatchService jsonPatchService,
+							   ApplicationEventPublisher eventPublisher, ActivityRepository activityRepository,
+							   ActivityPopulationService activityPopulationService, UserRepository userRepository,
+							   SpecificationDependencies dependencies) {
+		this.repositoryHelper = repositoryHelper;
+		this.activityMapper = activityMapper;
+		this.validationService = validationService;
+		this.jsonPatchService = jsonPatchService;
+		this.eventPublisher = eventPublisher;
+		this.activityRepository = activityRepository;
+		this.activityPopulationService = activityPopulationService;
+		this.userRepository = userRepository;
+		this.dependencies = dependencies;
+	}
 
-        return activityMapper.toCalculatedDto(activity, weight, request.getTime());
-    }
+	@Override
+	@Transactional
+	public ActivityResponseDto createActivity(ActivityCreateDto dto) {
+		Activity saved = activityRepository.save(activityMapper.toEntity(dto));
 
-    @Override
-    @Cacheable(value = CacheNames.ACTIVITIES, key = "#activityId")
-    public ActivityResponseDto getActivity(int activityId) {
-        return findAndMap(activityId);
-    }
+		activityRepository.flush();
 
-    @Override
-    public Page<ActivitySummaryDto> getFilteredActivities(FilterDto filter, Pageable pageable) {
-        SpecificationFactory<Activity> activityFactory = ActivitySpecification::new;
-        SpecificationBuilder<Activity> specificationBuilder = SpecificationBuilder.of(filter, activityFactory, dependencies);
-        Specification<Activity> specification = specificationBuilder.build();
+		Activity activity = activityRepository.findByIdWithMedia(saved.getId())
+			.orElseThrow(() -> RecordNotFoundException.of(Activity.class, saved.getId()));
 
-        Page<Activity> activityPage = activityRepository.findAll(specification, pageable);
+		eventPublisher.publishEvent(ActivityCreateEvent.of(this, activity));
 
-        List<ActivitySummaryDto> summaries = activityPage.getContent().stream()
-                .map(activityMapper::toSummaryDto)
-                .toList();
+		return findAndMap(activity.getId());
+	}
 
-        activityPopulationService.populate(summaries);
+	@Override
+	@Transactional
+	public void updateActivity(int activityId, JsonMergePatch patch)
+		throws JsonPatchException, JsonProcessingException {
+		Activity activity = findActivity(activityId);
+		ActivityUpdateDto patched = applyPatchToActivity(patch);
 
-        return new PageImpl<>(summaries, pageable, activityPage.getTotalElements());
-    }
+		validationService.validate(patched);
+		activityMapper.updateActivityFromDto(activity, patched);
+		Activity saved = activityRepository.save(activity);
 
-    @Override
-    public List<Activity> getAllActivityEntities() {
-        return activityRepository.findAllWithoutAssociations();
-    }
+		activityRepository.flush();
 
-    private ActivityUpdateDto applyPatchToActivity(JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        return jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class);
-    }
+		Activity refetchedActivity = activityRepository.findByIdWithMedia(saved.getId())
+			.orElseThrow(() -> RecordNotFoundException.of(Activity.class, saved.getId()));
 
-    private Activity findActivity(int activityId) {
-        return repositoryHelper.find(activityRepository, Activity.class, activityId);
-    }
+		eventPublisher.publishEvent(ActivityUpdateEvent.of(this, refetchedActivity));
+	}
 
-    private ActivityResponseDto findAndMap(int activityId) {
-        Activity activity = activityRepository.findByIdWithMedia(activityId)
-                .orElseThrow(() -> RecordNotFoundException.of(Activity.class, activityId));
-        ActivityResponseDto dto = activityMapper.toDetailedResponseDto(activity);
-        activityPopulationService.populate(dto);
-        return dto;
-    }
+	@Override
+	@Transactional
+	public void deleteActivity(int activityId) {
+		Activity activity = findActivityWithAssociations(activityId);
+		activityRepository.delete(activity);
 
-    private Activity findActivityWithAssociations(int activityId) {
-        return activityRepository.findByIdWithAssociations(activityId)
-                .orElseThrow(() -> new RecordNotFoundException(Activity.class, activityId));
-    }
+		eventPublisher.publishEvent(ActivityDeleteEvent.of(this, activity));
+	}
 
-    private User findUser(int userId) {
-        return repositoryHelper.find(userRepository, User.class, userId);
-    }
+	@Override
+	public ActivityCalculatedResponseDto calculateCaloriesBurned(int activityId,
+																 CalculateActivityCaloriesRequestDto request) {
+		Activity activity = findActivity(activityId);
+		BigDecimal weight = resolveWeightForCalculation(request);
 
+		return activityMapper.toCalculatedDto(activity, weight, request.getTime());
+	}
 
-    private BigDecimal resolveWeightForCalculation(CalculateActivityCaloriesRequestDto request) {
-        if (request.getWeight() != null) {
-            return request.getWeight();
-        }
+	@Override
+	@Cacheable(value = CacheNames.ACTIVITIES, key = "#activityId")
+	public ActivityResponseDto getActivity(int activityId) {
+		return findAndMap(activityId);
+	}
 
-        int userId = AuthorizationUtil.getUserId();
-        User user = findUser(userId);
+	@Override
+	public Page<ActivitySummaryDto> getFilteredActivities(FilterDto filter, Pageable pageable) {
+		SpecificationFactory<Activity> activityFactory = ActivitySpecification::new;
+		SpecificationBuilder<Activity> specificationBuilder = SpecificationBuilder.of(filter, activityFactory,
+			dependencies);
+		Specification<Activity> specification = specificationBuilder.build();
 
-        if (user.getWeight() != null) {
-            return user.getWeight();
-        }
+		Page<Activity> activityPage = activityRepository.findAll(specification, pageable);
 
-        throw new WeightRequiredException("Weight is required for calorie calculation. " +
-                "Please provide it in the request or set it in your profile.");
-    }
+		List<ActivitySummaryDto> summaries = activityPage.getContent()
+			.stream()
+			.map(activityMapper::toSummaryDto)
+			.toList();
+
+		activityPopulationService.populate(summaries);
+
+		return new PageImpl<>(summaries, pageable, activityPage.getTotalElements());
+	}
+
+	@Override
+	public List<Activity> getAllActivityEntities() {
+		return activityRepository.findAll();
+	}
+
+	private ActivityUpdateDto applyPatchToActivity(JsonMergePatch patch)
+		throws JsonPatchException, JsonProcessingException {
+		return jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class);
+	}
+
+	private Activity findActivity(int activityId) {
+		return repositoryHelper.find(activityRepository, Activity.class, activityId);
+	}
+
+	private ActivityResponseDto findAndMap(int activityId) {
+		Activity activity = activityRepository.findByIdWithMedia(activityId)
+			.orElseThrow(() -> RecordNotFoundException.of(Activity.class, activityId));
+		ActivityResponseDto dto = activityMapper.toDetailedResponseDto(activity);
+		activityPopulationService.populate(dto);
+		return dto;
+	}
+
+	private Activity findActivityWithAssociations(int activityId) {
+		return activityRepository.findByIdWithAssociations(activityId)
+			.orElseThrow(() -> new RecordNotFoundException(Activity.class, activityId));
+	}
+
+	private User findUser(int userId) {
+		return repositoryHelper.find(userRepository, User.class, userId);
+	}
+
+	private BigDecimal resolveWeightForCalculation(CalculateActivityCaloriesRequestDto request) {
+		if (request.getWeight() != null) {
+			return request.getWeight();
+		}
+
+		int userId = AuthorizationUtil.getUserId();
+		User user = findUser(userId);
+
+		if (user.getWeight() != null) {
+			return user.getWeight();
+		}
+
+		throw new WeightRequiredException("Weight is required for calorie calculation. "
+			+ "Please provide it in the request or set it in your profile.");
+	}
+
 }

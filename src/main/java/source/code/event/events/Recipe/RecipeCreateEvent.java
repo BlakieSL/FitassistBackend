@@ -6,14 +6,16 @@ import source.code.model.recipe.Recipe;
 
 @Getter
 public class RecipeCreateEvent extends ApplicationEvent {
-    private final Recipe recipe;
 
-    public RecipeCreateEvent(Object source, Recipe recipe) {
-        super(source);
-        this.recipe = recipe;
-    }
+	private final Recipe recipe;
 
-    public static RecipeCreateEvent of(Object source, Recipe recipe) {
-        return new RecipeCreateEvent(source, recipe);
-    }
+	public RecipeCreateEvent(Object source, Recipe recipe) {
+		super(source);
+		this.recipe = recipe;
+	}
+
+	public static RecipeCreateEvent of(Object source, Recipe recipe) {
+		return new RecipeCreateEvent(source, recipe);
+	}
+
 }

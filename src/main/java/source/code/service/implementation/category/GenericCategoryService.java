@@ -4,6 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
@@ -20,125 +25,111 @@ import source.code.service.declaration.category.CategoryCacheKeyGenerator;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.ValidationService;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
 public abstract class GenericCategoryService<T> {
-    protected final ValidationService validationService;
-    protected final JsonPatchService jsonPatchService;
-    protected final CategoryCacheKeyGenerator<T> cacheKeyGenerator;
-    protected final ApplicationEventPublisher applicationEventPublisher;
-    protected final CacheManager cacheManager;
-    protected final JpaRepository<T, Integer> repository;
-    protected final BaseMapper<T> mapper;
 
-    protected abstract boolean hasAssociatedEntities(int categoryId);
+	protected final ValidationService validationService;
 
-    protected abstract Class<T> getEntityClass();
+	protected final JsonPatchService jsonPatchService;
 
-    protected GenericCategoryService(ValidationService validationService,
-                                     JsonPatchService jsonPatchService,
-                                     CategoryCacheKeyGenerator<T> cacheKeyGenerator,
-                                     ApplicationEventPublisher applicationEventPublisher,
-                                     CacheManager cacheManager,
-                                     JpaRepository<T, Integer> repository,
-                                     BaseMapper<T> mapper) {
-        this.validationService = validationService;
-        this.jsonPatchService = jsonPatchService;
-        this.cacheKeyGenerator = cacheKeyGenerator;
-        this.applicationEventPublisher = applicationEventPublisher;
-        this.cacheManager = cacheManager;
-        this.repository = repository;
-        this.mapper = mapper;
-    }
+	protected final CategoryCacheKeyGenerator<T> cacheKeyGenerator;
 
-    @Transactional
-    public CategoryResponseDto createCategory(CategoryCreateDto request) {
-        T category = mapper.toEntity(request);
-        T savedCategory = repository.save(category);
+	protected final ApplicationEventPublisher applicationEventPublisher;
 
-        applicationEventPublisher.publishEvent(CategoryClearCacheEvent.of(
-                this,
-                cacheKeyGenerator.generateCacheKey())
-        );
-        return mapper.toResponseDto(savedCategory);
-    }
+	protected final CacheManager cacheManager;
 
-    @Transactional
-    public void updateCategory(int categoryId, JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        T category = find(categoryId);
-        CategoryUpdateDto patchedCategory = applyPatchToCategory(patch);
+	protected final JpaRepository<T, Integer> repository;
 
-        validationService.validate(patchedCategory);
-        mapper.updateEntityFromDto(category, patchedCategory);
-        repository.save(category);
+	protected final BaseMapper<T> mapper;
 
-        applicationEventPublisher.publishEvent(CategoryClearCacheEvent.of(
-                this,
-                cacheKeyGenerator.generateCacheKey())
-        );
-    }
+	protected abstract boolean hasAssociatedEntities(int categoryId);
 
-    @Transactional
-    public void deleteCategory(int categoryId) {
-        T category = find(categoryId);
+	protected abstract Class<T> getEntityClass();
 
-        if (hasAssociatedEntities(categoryId)) {
-            throw new ConflictDeletionException(getEntityClass(), categoryId);
-        }
+	protected GenericCategoryService(ValidationService validationService, JsonPatchService jsonPatchService,
+									 CategoryCacheKeyGenerator<T> cacheKeyGenerator, ApplicationEventPublisher applicationEventPublisher,
+									 CacheManager cacheManager, JpaRepository<T, Integer> repository, BaseMapper<T> mapper) {
+		this.validationService = validationService;
+		this.jsonPatchService = jsonPatchService;
+		this.cacheKeyGenerator = cacheKeyGenerator;
+		this.applicationEventPublisher = applicationEventPublisher;
+		this.cacheManager = cacheManager;
+		this.repository = repository;
+		this.mapper = mapper;
+	}
 
-        repository.delete(category);
+	@Transactional
+	public CategoryResponseDto createCategory(CategoryCreateDto request) {
+		T category = mapper.toEntity(request);
+		T savedCategory = repository.save(category);
 
-        applicationEventPublisher.publishEvent(CategoryClearCacheEvent.of(
-                this,
-                cacheKeyGenerator.generateCacheKey())
-        );
-    }
+		applicationEventPublisher.publishEvent(CategoryClearCacheEvent.of(this, cacheKeyGenerator.generateCacheKey()));
+		return mapper.toResponseDto(savedCategory);
+	}
 
-    public List<CategoryResponseDto> getAllCategories() {
-        String cacheKey = cacheKeyGenerator.generateCacheKey();
+	@Transactional
+	public void updateCategory(int categoryId, JsonMergePatch patch)
+		throws JsonPatchException, JsonProcessingException {
+		T category = find(categoryId);
+		CategoryUpdateDto patchedCategory = applyPatchToCategory(patch);
 
-        return getCachedCategories(cacheKey)
-                .orElseGet(() -> {
-                    List<CategoryResponseDto> categoryResponseDtos = repository.findAll().stream()
-                            .map(mapper::toResponseDto)
-                            .toList();
+		validationService.validate(patchedCategory);
+		mapper.updateEntityFromDto(category, patchedCategory);
+		repository.save(category);
 
-                    applicationEventPublisher.publishEvent(CategoryCreateCacheEvent.of(
-                            this,
-                            cacheKey,
-                            categoryResponseDtos)
-                    );
+		applicationEventPublisher.publishEvent(CategoryClearCacheEvent.of(this, cacheKeyGenerator.generateCacheKey()));
+	}
 
-                    return categoryResponseDtos;
-                });
-    }
+	@Transactional
+	public void deleteCategory(int categoryId) {
+		T category = find(categoryId);
 
-    public CategoryResponseDto getCategory(int categoryId) {
-        return mapper.toResponseDto(find(categoryId));
-    }
+		if (hasAssociatedEntities(categoryId)) {
+			throw new ConflictDeletionException(getEntityClass(), categoryId);
+		}
 
-    private T find(int categoryId) {
-        return repository.findById(categoryId)
-                .orElseThrow(() -> RecordNotFoundException.of(getEntityClass(), categoryId));
-    }
+		repository.delete(category);
 
-    private CategoryUpdateDto applyPatchToCategory(JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        return jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class);
-    }
+		applicationEventPublisher.publishEvent(CategoryClearCacheEvent.of(this, cacheKeyGenerator.generateCacheKey()));
+	}
 
-    private Optional<List<CategoryResponseDto>> getCachedCategories(String cacheKey) {
-        Cache cache = Objects.requireNonNull(cacheManager.getCache("allCategories"));
-        Cache.ValueWrapper cachedValue = cache.get(cacheKey);
+	public List<CategoryResponseDto> getAllCategories() {
+		String cacheKey = cacheKeyGenerator.generateCacheKey();
 
-        try {
-            return Optional.ofNullable(cachedValue)
-                    .map(value -> (List<CategoryResponseDto>) value.get());
-        } catch (ClassCastException exception) {
-            return Optional.empty();
-        }
-    }
+		return getCachedCategories(cacheKey).orElseGet(() -> {
+			List<CategoryResponseDto> categoryResponseDtos = repository.findAll()
+				.stream()
+				.map(mapper::toResponseDto)
+				.toList();
+
+			applicationEventPublisher.publishEvent(CategoryCreateCacheEvent.of(this, cacheKey, categoryResponseDtos));
+
+			return categoryResponseDtos;
+		});
+	}
+
+	public CategoryResponseDto getCategory(int categoryId) {
+		return mapper.toResponseDto(find(categoryId));
+	}
+
+	private T find(int categoryId) {
+		return repository.findById(categoryId)
+			.orElseThrow(() -> RecordNotFoundException.of(getEntityClass(), categoryId));
+	}
+
+	private CategoryUpdateDto applyPatchToCategory(JsonMergePatch patch)
+		throws JsonPatchException, JsonProcessingException {
+		return jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class);
+	}
+
+	private Optional<List<CategoryResponseDto>> getCachedCategories(String cacheKey) {
+		Cache cache = Objects.requireNonNull(cacheManager.getCache("allCategories"));
+		Cache.ValueWrapper cachedValue = cache.get(cacheKey);
+
+		try {
+			return Optional.ofNullable(cachedValue).map(value -> (List<CategoryResponseDto>) value.get());
+		} catch (ClassCastException exception) {
+			return Optional.empty();
+		}
+	}
+
 }

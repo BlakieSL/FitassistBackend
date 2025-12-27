@@ -12,9 +12,13 @@ import lombok.Setter;
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 public class CommentCreateDto {
-    @NotBlank
-    private String text;
-    @NotNull
-    private Integer threadId;
-    private Integer parentCommentId;
+
+	@NotBlank
+	private String text;
+
+	@NotNull
+	private Integer threadId;
+
+	private Integer parentCommentId;
+
 }

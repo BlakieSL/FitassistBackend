@@ -2,13 +2,14 @@ package source.code.model.thread;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "thread_category")
@@ -17,14 +18,16 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ThreadCategory {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String name;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @OneToMany(mappedBy = "threadCategory", cascade = CascadeType.REMOVE)
-    private final Set<ForumThread> threads = new HashSet<>();
+	@NotBlank
+	@Column(nullable = false)
+	private String name;
+
+	@OneToMany(mappedBy = "threadCategory", cascade = CascadeType.REMOVE)
+	private final Set<ForumThread> threads = new HashSet<>();
+
 }

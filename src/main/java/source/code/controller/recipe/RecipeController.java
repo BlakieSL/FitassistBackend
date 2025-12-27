@@ -22,56 +22,52 @@ import source.code.service.declaration.recipe.RecipeService;
 @RestController
 @RequestMapping(path = "/api/recipes")
 public class RecipeController {
-    private final RecipeService recipeService;
 
-    public RecipeController(RecipeService recipeService) {
-        this.recipeService = recipeService;
-    }
+	private final RecipeService recipeService;
 
-    @PostMapping
-    public ResponseEntity<RecipeResponseDto> createRecipe(
-            @Valid @RequestBody RecipeCreateDto recipeDto
-    ) {
-        RecipeResponseDto response = recipeService.createRecipe(recipeDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+	public RecipeController(RecipeService recipeService) {
+		this.recipeService = recipeService;
+	}
 
-    @RecipeOwnerOrAdmin
-    @PatchMapping("/{recipeId}")
-    public ResponseEntity<Void> updateRecipe(
-            @PathVariable int recipeId,
-            @RequestBody JsonMergePatch patch)
-            throws JsonPatchException, JsonProcessingException {
-        recipeService.updateRecipe(recipeId, patch);
-        return ResponseEntity.noContent().build();
-    }
+	@PostMapping
+	public ResponseEntity<RecipeResponseDto> createRecipe(@Valid @RequestBody RecipeCreateDto recipeDto) {
+		RecipeResponseDto response = recipeService.createRecipe(recipeDto);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
 
-    @RecipeOwnerOrAdmin
-    @DeleteMapping("/{recipeId}")
-    public ResponseEntity<Void> deleteRecipe(@PathVariable int recipeId) {
-        recipeService.deleteRecipe(recipeId);
-        return ResponseEntity.noContent().build();
-    }
+	@RecipeOwnerOrAdmin
+	@PatchMapping("/{recipeId}")
+	public ResponseEntity<Void> updateRecipe(@PathVariable int recipeId, @RequestBody JsonMergePatch patch)
+		throws JsonPatchException, JsonProcessingException {
+		recipeService.updateRecipe(recipeId, patch);
+		return ResponseEntity.noContent().build();
+	}
 
-    @PublicRecipeOrOwnerOrAdmin
-    @GetMapping("/{recipeId}")
-    public ResponseEntity<RecipeResponseDto> getRecipe(@PathVariable int recipeId) {
-        RecipeResponseDto recipe = recipeService.getRecipe(recipeId);
-        return ResponseEntity.ok(recipe);
-    }
+	@RecipeOwnerOrAdmin
+	@DeleteMapping("/{recipeId}")
+	public ResponseEntity<Void> deleteRecipe(@PathVariable int recipeId) {
+		recipeService.deleteRecipe(recipeId);
+		return ResponseEntity.noContent().build();
+	}
 
-    @PostMapping("/filter")
-    public ResponseEntity<Page<RecipeSummaryDto>> getFilteredRecipes(
-            @Valid @RequestBody FilterDto filterDto,
-            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
-        Page<RecipeSummaryDto> filtered = recipeService.getFilteredRecipes(filterDto, pageable);
-        return ResponseEntity.ok(filtered);
-    }
+	@PublicRecipeOrOwnerOrAdmin
+	@GetMapping("/{recipeId}")
+	public ResponseEntity<RecipeResponseDto> getRecipe(@PathVariable int recipeId) {
+		RecipeResponseDto recipe = recipeService.getRecipe(recipeId);
+		return ResponseEntity.ok(recipe);
+	}
 
-    @PatchMapping("/{recipeId}/view")
-    public ResponseEntity<Void> incrementViews(@PathVariable int recipeId) {
-        recipeService.incrementViews(recipeId);
-        return ResponseEntity.noContent().build();
-    }
+	@PostMapping("/filter")
+	public ResponseEntity<Page<RecipeSummaryDto>> getFilteredRecipes(@Valid @RequestBody FilterDto filterDto,
+																	 @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+		Page<RecipeSummaryDto> filtered = recipeService.getFilteredRecipes(filterDto, pageable);
+		return ResponseEntity.ok(filtered);
+	}
+
+	@PatchMapping("/{recipeId}/view")
+	public ResponseEntity<Void> incrementViews(@PathVariable int recipeId) {
+		recipeService.incrementViews(recipeId);
+		return ResponseEntity.noContent().build();
+	}
+
 }

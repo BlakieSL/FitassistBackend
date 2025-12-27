@@ -1,17 +1,19 @@
 package source.code.dto.pojo.projection;
 
 public interface SavesProjection {
-    Integer getEntityId();
 
-    Long getSavesCount();
+	Integer getEntityId();
 
-    Long getUserSaved();
+	Long getSavesCount();
 
-    default boolean isSaved() {
-        return getUserSaved() != null && getUserSaved() == 1;
-    }
+	Long getUserSaved();
 
-    default long savesCount() {
-        return getSavesCount() != null ? getSavesCount() : 0L;
-    }
+	default boolean isSaved() {
+		return getUserSaved() != null && getUserSaved() == 1;
+	}
+
+	default long savesCount() {
+		return getSavesCount() != null ? getSavesCount() : 0L;
+	}
+
 }

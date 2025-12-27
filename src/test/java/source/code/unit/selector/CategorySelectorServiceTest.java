@@ -1,5 +1,7 @@
 package source.code.unit.selector;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,57 +15,55 @@ import source.code.service.implementation.category.RecipeCategoryServiceImpl;
 import source.code.service.implementation.category.ThreadCategoryServiceImpl;
 import source.code.service.implementation.selector.CategorySelectorServiceImpl;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-
 @ExtendWith(MockitoExtension.class)
 public class CategorySelectorServiceTest {
 
-    @Mock
-    private FoodCategoryServiceImpl foodCategoryService;
-    @Mock
-    private ActivityCategoryServiceImpl activityCategoryService;
-    @Mock
-    private RecipeCategoryServiceImpl recipeCategoryService;
-    @Mock
-    private PlanCategoryServiceImpl planCategoryService;
-    @Mock
-    private ThreadCategoryServiceImpl threadCategoryService;
+	@Mock
+	private FoodCategoryServiceImpl foodCategoryService;
 
-    private CategorySelectorServiceImpl categorySelectorService;
+	@Mock
+	private ActivityCategoryServiceImpl activityCategoryService;
 
-    @BeforeEach
-    void setUp() {
-        categorySelectorService = new CategorySelectorServiceImpl(
-                foodCategoryService,
-                activityCategoryService,
-                recipeCategoryService,
-                planCategoryService,
-                threadCategoryService
-        );
-    }
+	@Mock
+	private RecipeCategoryServiceImpl recipeCategoryService;
 
-    @Test
-    void getService_shouldReturnFoodCategoryService() {
-        assertSame(foodCategoryService, categorySelectorService.getService(CategoryType.FOOD));
-    }
+	@Mock
+	private PlanCategoryServiceImpl planCategoryService;
 
-    @Test
-    void getService_shouldReturnActivityCategoryService() {
-        assertSame(activityCategoryService, categorySelectorService.getService(CategoryType.ACTIVITY));
-    }
+	@Mock
+	private ThreadCategoryServiceImpl threadCategoryService;
 
-    @Test
-    void getService_shouldReturnRecipeCategoryService() {
-        assertSame(recipeCategoryService, categorySelectorService.getService(CategoryType.RECIPE));
-    }
+	private CategorySelectorServiceImpl categorySelectorService;
 
-    @Test
-    void getService_shouldReturnPlanCategoryService() {
-        assertSame(planCategoryService, categorySelectorService.getService(CategoryType.PLAN));
-    }
+	@BeforeEach
+	void setUp() {
+		categorySelectorService = new CategorySelectorServiceImpl(foodCategoryService, activityCategoryService,
+			recipeCategoryService, planCategoryService, threadCategoryService);
+	}
 
-    @Test
-    void getService_shouldReturnThreadCategoryService() {
-        assertSame(threadCategoryService, categorySelectorService.getService(CategoryType.FORUM_THREAD));
-    }
+	@Test
+	void getService_shouldReturnFoodCategoryService() {
+		assertSame(foodCategoryService, categorySelectorService.getService(CategoryType.FOOD));
+	}
+
+	@Test
+	void getService_shouldReturnActivityCategoryService() {
+		assertSame(activityCategoryService, categorySelectorService.getService(CategoryType.ACTIVITY));
+	}
+
+	@Test
+	void getService_shouldReturnRecipeCategoryService() {
+		assertSame(recipeCategoryService, categorySelectorService.getService(CategoryType.RECIPE));
+	}
+
+	@Test
+	void getService_shouldReturnPlanCategoryService() {
+		assertSame(planCategoryService, categorySelectorService.getService(CategoryType.PLAN));
+	}
+
+	@Test
+	void getService_shouldReturnThreadCategoryService() {
+		assertSame(threadCategoryService, categorySelectorService.getService(CategoryType.FORUM_THREAD));
+	}
+
 }
