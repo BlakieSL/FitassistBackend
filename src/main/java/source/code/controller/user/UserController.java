@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import source.code.annotation.AccountOwnerOrAdmin;
 import source.code.auth.JwtService;
+import source.code.dto.pojo.AuthorDto;
 import source.code.dto.request.auth.RefreshTokenRequestDto;
 import source.code.dto.request.user.UserCreateDto;
 import source.code.dto.request.user.UserUpdateDto;
@@ -28,8 +29,6 @@ public class UserController {
 
 	private final JwtService jwtService;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-
 	public UserController(UserService userService, JwtService jwtService) {
 		this.userService = userService;
 		this.jwtService = jwtService;
@@ -40,6 +39,12 @@ public class UserController {
 	public ResponseEntity<UserResponseDto> getUser(@PathVariable int id) {
 		UserResponseDto user = userService.getUser(id);
 		return ResponseEntity.ok(user);
+	}
+
+	@GetMapping("/public/{id}")
+	public ResponseEntity<AuthorDto> getPublicUser(@PathVariable int id) {
+		AuthorDto authorDto = userService.getPublicUser(id);
+		return ResponseEntity.ok(authorDto);
 	}
 
 	@PostMapping("/refresh-token")

@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import source.code.dto.pojo.AuthorDto;
 import source.code.dto.pojo.UserCredentialsDto;
 import source.code.dto.request.user.UserCreateDto;
 import source.code.dto.request.user.UserUpdateDto;
@@ -103,6 +104,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public UserResponseDto getUser(int userId) {
 		User user = find(userId);
 		return userMapper.toResponse(user);
+	}
+
+	@Override
+	public AuthorDto getPublicUser(int userId) {
+		User user = find(userId);
+		return userMapper.toAuthorDto(user);
 	}
 
 	@Override
