@@ -26,7 +26,7 @@ public class PlanPopulationServiceImpl implements PlanPopulationService {
 	private final AwsS3Service s3Service;
 
 	public PlanPopulationServiceImpl(UserPlanRepository userPlanRepository, MediaRepository mediaRepository,
-									 AwsS3Service s3Service) {
+			AwsS3Service s3Service) {
 		this.userPlanRepository = userPlanRepository;
 		this.mediaRepository = mediaRepository;
 		this.s3Service = s3Service;
@@ -121,7 +121,7 @@ public class PlanPopulationServiceImpl implements PlanPopulationService {
 
 	private void fetchAndPopulateUserInteractionsAndCounts(PlanResponseDto plan, int requestingUserId) {
 		EntityCountsProjection result = userPlanRepository.findCountsAndInteractionsByPlanId(requestingUserId,
-			plan.getId());
+				plan.getId());
 
 		if (result == null)
 			return;

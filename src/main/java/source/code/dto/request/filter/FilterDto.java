@@ -17,9 +17,9 @@ import source.code.helper.Enum.filter.FilterDataOption;
 @NoArgsConstructor
 public class FilterDto {
 
-    @NotNull
-    private List<FilterCriteria> filterCriteria;
+	@NotNull
+	private List<FilterCriteria> filterCriteria;
 
-    private FilterDataOption dataOption;
+	private FilterDataOption dataOption;
 
 }

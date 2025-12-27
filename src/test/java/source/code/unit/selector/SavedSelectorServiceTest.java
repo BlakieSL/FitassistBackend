@@ -42,7 +42,7 @@ public class SavedSelectorServiceTest {
 	@BeforeEach
 	void setUp() {
 		savedSelectorService = new SavedSelectorServiceImpl(userPlanService, userRecipeService, userCommentService,
-			userExerciseService, userFoodService, userActivityService, userThreadService);
+				userExerciseService, userFoodService, userActivityService, userThreadService);
 	}
 
 	@Test
@@ -88,7 +88,7 @@ public class SavedSelectorServiceTest {
 	@Test
 	void getServiceWithoutType_shouldThrowExceptionForUnexpectedValue() {
 		assertThrows(IllegalStateException.class,
-			() -> savedSelectorService.getServiceWithoutType(SavedEntityType.PLAN));
+				() -> savedSelectorService.getServiceWithoutType(SavedEntityType.PLAN));
 	}
 
 }

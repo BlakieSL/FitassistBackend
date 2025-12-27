@@ -24,15 +24,15 @@ import source.code.service.declaration.user.SavedService;
 
 @Service("userCommentService")
 public class UserCommentServiceImpl extends GenericSavedService<Comment, UserComment, CommentResponseDto>
-	implements SavedService {
+		implements SavedService {
 
 	private final CommentMapper commentMapper;
 
 	private final CommentPopulationService commentPopulationService;
 
 	public UserCommentServiceImpl(UserRepository userRepository, JpaRepository<Comment, Integer> entityRepository,
-								  JpaRepository<UserComment, Integer> userEntityRepository, CommentMapper mapper,
-								  CommentPopulationService commentPopulationService) {
+			JpaRepository<UserComment, Integer> userEntityRepository, CommentMapper mapper,
+			CommentPopulationService commentPopulationService) {
 		super(userRepository, entityRepository, userEntityRepository, Comment.class, UserComment.class);
 		this.commentMapper = mapper;
 		this.commentPopulationService = commentPopulationService;
@@ -52,7 +52,7 @@ public class UserCommentServiceImpl extends GenericSavedService<Comment, UserCom
 		commentPopulationService.populate(summaries);
 
 		return new PageImpl<>(summaries.stream().map(dto -> (BaseUserEntity) dto).toList(), pageable,
-			userCommentPage.getTotalElements());
+				userCommentPage.getTotalElements());
 	}
 
 	@Override

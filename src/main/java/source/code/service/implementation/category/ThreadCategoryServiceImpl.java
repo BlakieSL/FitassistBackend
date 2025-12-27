@@ -17,11 +17,11 @@ public class ThreadCategoryServiceImpl extends GenericCategoryService<ThreadCate
 	private final ThreadCategoryRepository threadCategoryRepository;
 
 	protected ThreadCategoryServiceImpl(ValidationService validationService, JsonPatchService jsonPatchService,
-										CategoryCacheKeyGenerator<ThreadCategory> cacheKeyGenerator,
-										ApplicationEventPublisher applicationEventPublisher, CacheManager cacheManager,
-										ThreadCategoryRepository threadCategoryRepository, ThreadCategoryMapper mapper) {
+			CategoryCacheKeyGenerator<ThreadCategory> cacheKeyGenerator,
+			ApplicationEventPublisher applicationEventPublisher, CacheManager cacheManager,
+			ThreadCategoryRepository threadCategoryRepository, ThreadCategoryMapper mapper) {
 		super(validationService, jsonPatchService, cacheKeyGenerator, applicationEventPublisher, cacheManager,
-			threadCategoryRepository, mapper);
+				threadCategoryRepository, mapper);
 		this.threadCategoryRepository = threadCategoryRepository;
 	}
 

@@ -25,14 +25,14 @@ public class DailyFoodController {
 
 	@PostMapping
 	public ResponseEntity<DailyFoodsResponseDto> getAllFoodsInCartByUser(
-		@Valid @RequestBody DailyCartFoodGetDto request) {
+			@Valid @RequestBody DailyCartFoodGetDto request) {
 		DailyFoodsResponseDto cart = dailyFoodService.getFoodFromDailyCart(request);
 		return ResponseEntity.ok(cart);
 	}
 
 	@PostMapping("/add/{foodId}")
 	public ResponseEntity<Void> addDailyFoodToUser(@PathVariable int foodId,
-												   @Valid @RequestBody DailyCartFoodCreateDto request) {
+			@Valid @RequestBody DailyCartFoodCreateDto request) {
 		dailyFoodService.addFoodToDailyCart(foodId, request);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
@@ -47,7 +47,7 @@ public class DailyFoodController {
 	@DailyCartOwner
 	@PatchMapping("/update/{dailyCartFoodId}")
 	public ResponseEntity<Void> updateDailyCartFood(@PathVariable int dailyCartFoodId,
-													@RequestBody JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+			@RequestBody JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
 		dailyFoodService.updateDailyFoodItem(dailyCartFoodId, patch);
 		return ResponseEntity.noContent().build();
 	}

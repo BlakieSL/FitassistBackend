@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import source.code.model.thread.ForumThread;
 
 public interface ForumThreadRepository
-	extends JpaRepository<ForumThread, Integer>, JpaSpecificationExecutor<ForumThread> {
+		extends JpaRepository<ForumThread, Integer>, JpaSpecificationExecutor<ForumThread> {
 
 	@EntityGraph(value = "ForumThread.summary")
 	@NotNull

@@ -47,7 +47,7 @@ public class RedissonRateLimiterServiceImpl implements RedissonRateLimiterServic
 		String rateLimiterName = "rateLimiter:user:" + userId;
 		RRateLimiter rateLimiter = redissonClient.getRateLimiter(rateLimiterName);
 		rateLimiter.setRate(RateType.OVERALL, rateLimitConfig.getUserRate(), rateLimitConfig.getUserInterval(),
-			RateIntervalUnit.MINUTES);
+				RateIntervalUnit.MINUTES);
 		return rateLimiter;
 	}
 
@@ -59,7 +59,7 @@ public class RedissonRateLimiterServiceImpl implements RedissonRateLimiterServic
 		String rateLimiterName = "rateLimiter:key:" + key;
 		RRateLimiter rateLimiter = redissonClient.getRateLimiter(rateLimiterName);
 		rateLimiter.setRate(RateType.OVERALL, rateLimitConfig.getKeyRate(), rateLimitConfig.getKeyInterval(),
-			RateIntervalUnit.MINUTES);
+				RateIntervalUnit.MINUTES);
 		return rateLimiter;
 	}
 

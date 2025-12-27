@@ -17,14 +17,14 @@ public class SpecificationBuilder<T> {
 	private final SpecificationDependencies dependencies;
 
 	public SpecificationBuilder(FilterDto filterDto, SpecificationFactory<T> specificationFactory,
-								SpecificationDependencies dependencies) {
+			SpecificationDependencies dependencies) {
 		this.filterDto = filterDto;
 		this.specificationFactory = specificationFactory;
 		this.dependencies = dependencies;
 	}
 
 	public static <T> SpecificationBuilder<T> of(FilterDto filterDto, SpecificationFactory<T> specificationFactory,
-												 SpecificationDependencies dependencies) {
+			SpecificationDependencies dependencies) {
 		return new SpecificationBuilder<>(filterDto, specificationFactory, dependencies);
 	}
 
@@ -41,7 +41,8 @@ public class SpecificationBuilder<T> {
 
 			if (filterDto.getDataOption() == FilterDataOption.AND) {
 				result = result.and(spec);
-			} else {
+			}
+			else {
 				result = result.or(spec);
 			}
 		}

@@ -66,10 +66,10 @@ public class ActivityServiceImpl implements ActivityService {
 	private final SpecificationDependencies dependencies;
 
 	public ActivityServiceImpl(RepositoryHelper repositoryHelper, ActivityMapper activityMapper,
-							   ValidationService validationService, JsonPatchService jsonPatchService,
-							   ApplicationEventPublisher eventPublisher, ActivityRepository activityRepository,
-							   ActivityPopulationService activityPopulationService, UserRepository userRepository,
-							   SpecificationDependencies dependencies) {
+			ValidationService validationService, JsonPatchService jsonPatchService,
+			ApplicationEventPublisher eventPublisher, ActivityRepository activityRepository,
+			ActivityPopulationService activityPopulationService, UserRepository userRepository,
+			SpecificationDependencies dependencies) {
 		this.repositoryHelper = repositoryHelper;
 		this.activityMapper = activityMapper;
 		this.validationService = validationService;
@@ -99,7 +99,7 @@ public class ActivityServiceImpl implements ActivityService {
 	@Override
 	@Transactional
 	public void updateActivity(int activityId, JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		Activity activity = findActivity(activityId);
 		ActivityUpdateDto patched = applyPatchToActivity(patch);
 
@@ -126,7 +126,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	@Override
 	public ActivityCalculatedResponseDto calculateCaloriesBurned(int activityId,
-																 CalculateActivityCaloriesRequestDto request) {
+			CalculateActivityCaloriesRequestDto request) {
 		Activity activity = findActivity(activityId);
 		BigDecimal weight = resolveWeightForCalculation(request);
 
@@ -143,7 +143,7 @@ public class ActivityServiceImpl implements ActivityService {
 	public Page<ActivitySummaryDto> getFilteredActivities(FilterDto filter, Pageable pageable) {
 		SpecificationFactory<Activity> activityFactory = ActivitySpecification::new;
 		SpecificationBuilder<Activity> specificationBuilder = SpecificationBuilder.of(filter, activityFactory,
-			dependencies);
+				dependencies);
 		Specification<Activity> specification = specificationBuilder.build();
 
 		Page<Activity> activityPage = activityRepository.findAll(specification, pageable);
@@ -164,7 +164,7 @@ public class ActivityServiceImpl implements ActivityService {
 	}
 
 	private ActivityUpdateDto applyPatchToActivity(JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		return jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class);
 	}
 
@@ -202,7 +202,7 @@ public class ActivityServiceImpl implements ActivityService {
 		}
 
 		throw new WeightRequiredException("Weight is required for calorie calculation. "
-			+ "Please provide it in the request or set it in your profile.");
+				+ "Please provide it in the request or set it in your profile.");
 	}
 
 }

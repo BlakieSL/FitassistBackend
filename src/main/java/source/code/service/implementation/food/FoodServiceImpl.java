@@ -70,10 +70,10 @@ public class FoodServiceImpl implements FoodService {
 	private final SpecificationDependencies dependencies;
 
 	public FoodServiceImpl(ApplicationEventPublisher applicationEventPublisher, ValidationService validationService,
-						   JsonPatchService jsonPatchService, FoodRepository foodRepository, RecipeRepository recipeRepository,
-						   FoodMapper foodMapper, RecipeMapper recipeMapper, RepositoryHelper repositoryHelper,
-						   FoodPopulationService foodPopulationService, RecipePopulationService recipePopulationService,
-						   SpecificationDependencies dependencies) {
+			JsonPatchService jsonPatchService, FoodRepository foodRepository, RecipeRepository recipeRepository,
+			FoodMapper foodMapper, RecipeMapper recipeMapper, RepositoryHelper repositoryHelper,
+			FoodPopulationService foodPopulationService, RecipePopulationService recipePopulationService,
+			SpecificationDependencies dependencies) {
 		this.applicationEventPublisher = applicationEventPublisher;
 		this.validationService = validationService;
 		this.jsonPatchService = jsonPatchService;

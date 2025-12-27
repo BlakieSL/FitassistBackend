@@ -24,7 +24,7 @@ import source.code.model.user.UserFood;
 @Table(name = "food")
 @NamedEntityGraph(name = "Food.withoutAssociations", attributeNodes = {})
 @NamedEntityGraph(name = "Food.summary",
-	attributeNodes = {@NamedAttributeNode("foodCategory"), @NamedAttributeNode("mediaList")})
+		attributeNodes = { @NamedAttributeNode("foodCategory"), @NamedAttributeNode("mediaList") })
 @Getter
 @Setter
 @AllArgsConstructor
@@ -78,7 +78,7 @@ public class Food implements IndexedEntity {
 
 	@OneToMany
 	@JoinColumn(name = "parent_id", insertable = false, updatable = false,
-		foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+			foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	@SQLRestriction("parentType = 'FOOD'")
 	private List<Media> mediaList = new ArrayList<>();
 

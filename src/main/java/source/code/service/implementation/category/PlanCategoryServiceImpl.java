@@ -17,11 +17,11 @@ public class PlanCategoryServiceImpl extends GenericCategoryService<PlanCategory
 	private final PlanCategoryRepository planCategoryRepository;
 
 	protected PlanCategoryServiceImpl(ValidationService validationService, JsonPatchService jsonPatchService,
-									  CategoryCacheKeyGenerator<PlanCategory> cacheKeyGenerator,
-									  ApplicationEventPublisher applicationEventPublisher, CacheManager cacheManager,
-									  PlanCategoryRepository planCategoryRepository, PlanCategoryMapper mapper) {
+			CategoryCacheKeyGenerator<PlanCategory> cacheKeyGenerator,
+			ApplicationEventPublisher applicationEventPublisher, CacheManager cacheManager,
+			PlanCategoryRepository planCategoryRepository, PlanCategoryMapper mapper) {
 		super(validationService, jsonPatchService, cacheKeyGenerator, applicationEventPublisher, cacheManager,
-			planCategoryRepository, mapper);
+				planCategoryRepository, mapper);
 		this.planCategoryRepository = planCategoryRepository;
 	}
 

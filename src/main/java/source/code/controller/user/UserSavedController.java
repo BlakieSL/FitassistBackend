@@ -26,8 +26,8 @@ public class UserSavedController {
 
 	@GetMapping("/item-type/{itemType}/type/{type}/user/{userId}")
 	public ResponseEntity<Page<BaseUserEntity>> getAllFromUser(@PathVariable SavedEntityType itemType,
-															   @PathVariable TypeOfInteraction type, @PathVariable int userId,
-															   @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+			@PathVariable TypeOfInteraction type, @PathVariable int userId,
+			@PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 		SavedService savedService = savedSelectorService.getService(itemType);
 		Page<BaseUserEntity> dto = savedService.getAllFromUser(userId, type, pageable);
 		return ResponseEntity.ok(dto);
@@ -35,7 +35,7 @@ public class UserSavedController {
 
 	@PostMapping("/item-type/{itemType}/{itemId}/type/{type}")
 	public ResponseEntity<Void> saveToUser(@PathVariable SavedEntityType itemType, @PathVariable int itemId,
-										   @PathVariable TypeOfInteraction type) {
+			@PathVariable TypeOfInteraction type) {
 		SavedService savedService = savedSelectorService.getService(itemType);
 		savedService.saveToUser(itemId, type);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -43,7 +43,7 @@ public class UserSavedController {
 
 	@DeleteMapping("/item-type/{itemType}/{itemId}/type/{type}")
 	public ResponseEntity<Void> deleteFromUser(@PathVariable SavedEntityType itemType, @PathVariable int itemId,
-											   @PathVariable TypeOfInteraction type) {
+			@PathVariable TypeOfInteraction type) {
 		SavedService savedService = savedSelectorService.getService(itemType);
 		savedService.deleteFromUser(itemId, type);
 		return ResponseEntity.noContent().build();
@@ -51,8 +51,8 @@ public class UserSavedController {
 
 	@GetMapping("/item-type/{itemType}/user/{userId}")
 	public ResponseEntity<Page<BaseUserEntity>> getAllFromUserWithoutType(@PathVariable SavedEntityType itemType,
-																		  @PathVariable("userId") int userId,
-																		  @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+			@PathVariable("userId") int userId,
+			@PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 		SavedServiceWithoutType savedServiceWithoutType = savedSelectorService.getServiceWithoutType(itemType);
 		Page<BaseUserEntity> dto = savedServiceWithoutType.getAllFromUser(userId, pageable);
 		return ResponseEntity.ok(dto);
@@ -60,7 +60,7 @@ public class UserSavedController {
 
 	@PostMapping("/item-type/{itemType}/{itemId}")
 	public ResponseEntity<Void> saveToUserWithoutType(@PathVariable SavedEntityType itemType,
-													  @PathVariable int itemId) {
+			@PathVariable int itemId) {
 		SavedServiceWithoutType savedServiceWithoutType = savedSelectorService.getServiceWithoutType(itemType);
 		savedServiceWithoutType.saveToUser(itemId);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -68,7 +68,7 @@ public class UserSavedController {
 
 	@DeleteMapping("/item-type/{itemType}/{itemId}")
 	public ResponseEntity<Void> deleteFromUserWithoutType(@PathVariable SavedEntityType itemType,
-														  @PathVariable int itemId) {
+			@PathVariable int itemId) {
 		SavedServiceWithoutType savedServiceWithoutType = savedSelectorService.getServiceWithoutType(itemType);
 		savedServiceWithoutType.deleteFromUser(itemId);
 		return ResponseEntity.noContent().build();

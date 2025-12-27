@@ -81,7 +81,8 @@ public class CaffeineCacheStatsController {
 		for (Field field : CacheNames.class.getDeclaredFields()) {
 			try {
 				cacheNames.add((String) field.get(null));
-			} catch (IllegalAccessException e) {
+			}
+			catch (IllegalAccessException e) {
 				throw new RuntimeException(e);
 			}
 		}

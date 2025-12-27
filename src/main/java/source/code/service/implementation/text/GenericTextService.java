@@ -44,9 +44,9 @@ public abstract class GenericTextService<T, R, U, E extends JpaRepository<T, Int
 	protected final Class<U> entityType;
 
 	protected GenericTextService(ValidationService validationService, JsonPatchService jsonPatchService,
-								 TextCacheKeyGenerator<T> textCacheKeyGenerator, CacheManager cacheManager,
-								 ApplicationEventPublisher applicationEventPublisher, E repository, Function<T, R> toResponse,
-								 BiConsumer<T, U> update, Class<U> entityType) {
+			TextCacheKeyGenerator<T> textCacheKeyGenerator, CacheManager cacheManager,
+			ApplicationEventPublisher applicationEventPublisher, E repository, Function<T, R> toResponse,
+			BiConsumer<T, U> update, Class<U> entityType) {
 		this.validationService = validationService;
 		this.jsonPatchService = jsonPatchService;
 		this.textCacheKeyGenerator = textCacheKeyGenerator;

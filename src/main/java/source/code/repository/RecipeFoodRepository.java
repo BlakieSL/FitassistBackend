@@ -12,12 +12,12 @@ import source.code.model.recipe.RecipeFood;
 public interface RecipeFoodRepository extends JpaRepository<RecipeFood, Integer> {
 
 	@Query("""
-		    SELECT rf FROM RecipeFood rf
-		    JOIN FETCH rf.food f
-		    LEFT JOIN FETCH f.foodCategory
-		    LEFT JOIN FETCH f.mediaList
-		    WHERE rf.recipe.id = :recipeId
-		""")
+			    SELECT rf FROM RecipeFood rf
+			    JOIN FETCH rf.food f
+			    LEFT JOIN FETCH f.foodCategory
+			    LEFT JOIN FETCH f.mediaList
+			    WHERE rf.recipe.id = :recipeId
+			""")
 	List<RecipeFood> findByRecipeId(@Param("recipeId") int recipeId);
 
 	boolean existsByRecipeIdAndFoodId(int recipeId, int foodId);
@@ -25,11 +25,11 @@ public interface RecipeFoodRepository extends JpaRepository<RecipeFood, Integer>
 	Optional<RecipeFood> findByRecipeIdAndFoodId(int recipeId, int foodId);
 
 	@Query("""
-		    SELECT rf.recipe.id as recipeId, COUNT(rf) as ingredientCount
-		    FROM RecipeFood rf
-		    WHERE rf.recipe.id IN :recipeIds
-		    GROUP BY rf.recipe.id
-		""")
+			    SELECT rf.recipe.id as recipeId, COUNT(rf) as ingredientCount
+			    FROM RecipeFood rf
+			    WHERE rf.recipe.id IN :recipeIds
+			    GROUP BY rf.recipe.id
+			""")
 	List<RecipeIngredientCountProjection> countByRecipeIds(@Param("recipeIds") List<Integer> recipeIds);
 
 }

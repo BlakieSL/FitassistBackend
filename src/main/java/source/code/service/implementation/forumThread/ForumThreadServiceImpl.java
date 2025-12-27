@@ -49,9 +49,9 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 	private final ForumThreadPopulationService forumThreadPopulationService;
 
 	public ForumThreadServiceImpl(JsonPatchService jsonPatchService, ValidationService validationService,
-								  ForumThreadMapper forumThreadMapper, RepositoryHelper repositoryHelper,
-								  ForumThreadRepository forumThreadRepository, SpecificationDependencies dependencies,
-								  ForumThreadPopulationService forumThreadPopulationService) {
+			ForumThreadMapper forumThreadMapper, RepositoryHelper repositoryHelper,
+			ForumThreadRepository forumThreadRepository, SpecificationDependencies dependencies,
+			ForumThreadPopulationService forumThreadPopulationService) {
 		this.jsonPatchService = jsonPatchService;
 		this.validationService = validationService;
 		this.forumThreadMapper = forumThreadMapper;
@@ -76,7 +76,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 	@Override
 	@Transactional
 	public void updateForumThread(int threadId, JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		ForumThread thread = find(threadId);
 		ForumThreadUpdateDto patched = applyPatchToForumThread(patch);
 
@@ -98,7 +98,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 	}
 
 	private ForumThreadUpdateDto applyPatchToForumThread(JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		return jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class);
 	}
 
@@ -117,7 +117,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 	public Page<ForumThreadSummaryDto> getFilteredForumThreads(FilterDto filter, Pageable pageable) {
 		SpecificationFactory<ForumThread> threadFactory = ForumThreadSpecification::new;
 		SpecificationBuilder<ForumThread> specificationBuilder = SpecificationBuilder.of(filter, threadFactory,
-			dependencies);
+				dependencies);
 		Specification<ForumThread> specification = specificationBuilder.build();
 
 		Page<ForumThread> threadPage = forumThreadRepository.findAll(specification, pageable);

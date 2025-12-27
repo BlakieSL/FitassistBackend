@@ -61,7 +61,7 @@ public class UserCommentServiceTest {
 	void setUp() {
 		mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
 		userCommentService = new UserCommentServiceImpl(userRepository, commentRepository, userCommentRepository,
-			commentMapper, commentPopulationService);
+				commentMapper, commentPopulationService);
 	}
 
 	@AfterEach

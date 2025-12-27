@@ -49,7 +49,7 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
 		List<SearchResponseDto> results = new ArrayList<>();
 		String normalizedQuery = query.toLowerCase();
 		try (Directory directory = FSDirectory.open(Paths.get(PATH));
-			 IndexReader reader = DirectoryReader.open(directory)) {
+				IndexReader reader = DirectoryReader.open(directory)) {
 
 			IndexSearcher searcher = new IndexSearcher(reader);
 			BooleanQuery.Builder nameQuery = new BooleanQuery.Builder();
@@ -74,7 +74,8 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
 				Document doc = searcher.storedFields().document(scoreDoc.doc);
 				results.add(convertDocumentToEntity(doc));
 			}
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 		return results;
@@ -95,7 +96,7 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
 		String name = doc.get("name");
 
 		FoodMacros macros = FoodMacros.of(new BigDecimal(doc.get("calories")), new BigDecimal(doc.get("protein")),
-			new BigDecimal(doc.get("fat")), new BigDecimal(doc.get("carbohydrates")));
+				new BigDecimal(doc.get("fat")), new BigDecimal(doc.get("carbohydrates")));
 
 		String firstImageUrl = null;
 		String imageName = doc.get("imageName");
@@ -104,7 +105,7 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
 		}
 
 		CategoryResponseDto category = new CategoryResponseDto(Integer.parseInt(doc.get("categoryId")),
-			doc.get("categoryName"));
+				doc.get("categoryName"));
 
 		return new FoodSearchResponseDto(id, name, macros, firstImageUrl, category);
 	}
@@ -121,7 +122,7 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
 		}
 
 		CategoryResponseDto category = new CategoryResponseDto(Integer.parseInt(doc.get("categoryId")),
-			doc.get("categoryName"));
+				doc.get("categoryName"));
 
 		return new ActivitySearchResponseDto(id, name, met, firstImageUrl, category);
 	}

@@ -13,7 +13,7 @@ public interface CalculationsService {
 	BigDecimal calculateTDEE(BigDecimal bmr, ActivityLevel activityLevel);
 
 	BigDecimal calculateCaloricNeeds(BigDecimal weight, BigDecimal height, int age, Gender gender,
-									 ActivityLevel activityLevel, Goal goal);
+			ActivityLevel activityLevel, Goal goal);
 
 	BigDecimal calculateCaloriesBurned(int time, BigDecimal weight, BigDecimal met);
 

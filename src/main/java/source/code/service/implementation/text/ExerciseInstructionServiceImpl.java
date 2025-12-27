@@ -17,16 +17,16 @@ import source.code.service.declaration.text.TextService;
 
 @Service("exerciseInstructionService")
 public class ExerciseInstructionServiceImpl extends
-	GenericTextService<ExerciseInstruction, ExerciseInstructionResponseDto, ExerciseInstructionUpdateDto, ExerciseInstructionRepository>
-	implements TextService {
+		GenericTextService<ExerciseInstruction, ExerciseInstructionResponseDto, ExerciseInstructionUpdateDto, ExerciseInstructionRepository>
+		implements TextService {
 
 	protected ExerciseInstructionServiceImpl(ValidationService validationService, JsonPatchService jsonPatchService,
-											 TextCacheKeyGenerator<ExerciseInstruction> textCacheKeyGenerator, CacheManager cacheManager,
-											 ApplicationEventPublisher applicationEventPublisher, ExerciseInstructionRepository repository,
-											 TextMapper mapper) {
+			TextCacheKeyGenerator<ExerciseInstruction> textCacheKeyGenerator, CacheManager cacheManager,
+			ApplicationEventPublisher applicationEventPublisher, ExerciseInstructionRepository repository,
+			TextMapper mapper) {
 		super(validationService, jsonPatchService, textCacheKeyGenerator, cacheManager, applicationEventPublisher,
-			repository, mapper::toExerciseInstructionResponseDto, mapper::updateExerciseInstruction,
-			ExerciseInstructionUpdateDto.class);
+				repository, mapper::toExerciseInstructionResponseDto, mapper::updateExerciseInstruction,
+				ExerciseInstructionUpdateDto.class);
 	}
 
 	@Override

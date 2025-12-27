@@ -50,9 +50,9 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 	private final UserRepository userRepository;
 
 	public DailyFoodServiceImpl(ValidationService validationService, RepositoryHelper repositoryHelper,
-								DailyCartRepository dailyCartRepository, FoodRepository foodRepository, UserRepository userRepository,
-								JsonPatchService jsonPatchService, DailyFoodMapper dailyFoodMapper,
-								DailyCartFoodRepository dailyCartFoodRepository) {
+			DailyCartRepository dailyCartRepository, FoodRepository foodRepository, UserRepository userRepository,
+			JsonPatchService jsonPatchService, DailyFoodMapper dailyFoodMapper,
+			DailyCartFoodRepository dailyCartFoodRepository) {
 		this.validationService = validationService;
 		this.repositoryHelper = repositoryHelper;
 		this.dailyCartRepository = dailyCartRepository;
@@ -84,7 +84,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 	@Override
 	@Transactional
 	public void updateDailyFoodItem(int dailyCartFoodId, JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		DailyCartFood dailyCartFood = findWithoutAssociations(dailyCartFoodId);
 
 		DailyCartFoodUpdateDto patchedDto = applyPatchToDailyFoodItem(patch);
@@ -127,7 +127,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 	}
 
 	private DailyCartFoodUpdateDto applyPatchToDailyFoodItem(JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		return jsonPatchService.createFromPatch(patch, DailyCartFoodUpdateDto.class);
 	}
 

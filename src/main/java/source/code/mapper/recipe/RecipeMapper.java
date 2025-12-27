@@ -28,7 +28,7 @@ import source.code.repository.RecipeCategoryRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
-@Mapper(componentModel = "spring", uses = {CommonMappingHelper.class})
+@Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class RecipeMapper {
 
 	@Autowired
@@ -49,7 +49,7 @@ public abstract class RecipeMapper {
 	@Mapping(target = "saved", ignore = true)
 	@Mapping(target = "totalCalories", ignore = true)
 	@Mapping(target = "categories", source = "recipeCategoryAssociations",
-		qualifiedByName = "mapAssociationsToCategoryResponseDto")
+			qualifiedByName = "mapAssociationsToCategoryResponseDto")
 	@Mapping(target = "instructions", source = "recipeInstructions", qualifiedByName = "mapInstructionsToDto")
 	@Mapping(target = "imageUrls", ignore = true)
 	@Mapping(target = "foods", source = "recipeFoods", qualifiedByName = "mapFoodsToDto")
@@ -67,12 +67,12 @@ public abstract class RecipeMapper {
 	@Mapping(target = "public", ignore = true)
 	@Mapping(target = "ingredientsCount", ignore = true)
 	@Mapping(target = "categories", source = "recipeCategoryAssociations",
-		qualifiedByName = "mapAssociationsToCategoryResponseDto")
+			qualifiedByName = "mapAssociationsToCategoryResponseDto")
 	@Mapping(target = "interactionCreatedAt", ignore = true)
 	public abstract RecipeSummaryDto toSummaryDto(Recipe recipe);
 
 	@Mapping(target = "recipeCategoryAssociations", source = "categoryIds",
-		qualifiedByName = "mapCategoryIdsToAssociations")
+			qualifiedByName = "mapCategoryIdsToAssociations")
 	@Mapping(target = "user", expression = "java(userIdToUser(userId))")
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "userRecipes", ignore = true)
@@ -85,7 +85,7 @@ public abstract class RecipeMapper {
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "recipeCategoryAssociations", source = "categoryIds",
-		qualifiedByName = "mapCategoryIdsToAssociations")
+			qualifiedByName = "mapCategoryIdsToAssociations")
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "user", ignore = true)
 	@Mapping(target = "userRecipes", ignore = true)
@@ -104,7 +104,7 @@ public abstract class RecipeMapper {
 		List<RecipeInstruction> instructions = dto.getInstructions()
 			.stream()
 			.map(instructionDto -> RecipeInstruction.of(instructionDto.getOrderIndex(), instructionDto.getText(),
-				instructionDto.getText(), recipe))
+					instructionDto.getText(), recipe))
 			.toList();
 
 		recipe.getRecipeInstructions().addAll(instructions);
@@ -120,10 +120,10 @@ public abstract class RecipeMapper {
 
 	@Named("mapAssociationsToCategoryResponseDto")
 	protected List<CategoryResponseDto> mapAssociationsToCategoryResponseDto(
-		Set<RecipeCategoryAssociation> associations) {
+			Set<RecipeCategoryAssociation> associations) {
 		return associations.stream()
 			.map(association -> new CategoryResponseDto(association.getRecipeCategory().getId(),
-				association.getRecipeCategory().getName()))
+					association.getRecipeCategory().getName()))
 			.toList();
 	}
 
@@ -136,7 +136,7 @@ public abstract class RecipeMapper {
 	protected List<RecipeInstructionResponseDto> mapInstructionsToDto(Set<RecipeInstruction> instructions) {
 		return instructions.stream()
 			.map(instruction -> new RecipeInstructionResponseDto(instruction.getId(), instruction.getOrderIndex(),
-				instruction.getTitle(), instruction.getText()))
+					instruction.getTitle(), instruction.getText()))
 			.toList();
 	}
 
@@ -144,11 +144,11 @@ public abstract class RecipeMapper {
 	protected List<RecipeFoodDto> mapFoodsToDto(Set<RecipeFood> foods) {
 		return foods.stream().map(recipeFood -> {
 			CategoryResponseDto categoryDto = new CategoryResponseDto(recipeFood.getFood().getFoodCategory().getId(),
-				recipeFood.getFood().getFoodCategory().getName());
+					recipeFood.getFood().getFoodCategory().getName());
 			return new RecipeFoodDto(recipeFood.getId(), recipeFood.getQuantity(), recipeFood.getFood().getId(),
-				recipeFood.getFood().getName(), recipeFood.getFood().getCalories(),
-				recipeFood.getFood().getProtein(), recipeFood.getFood().getFat(),
-				recipeFood.getFood().getCarbohydrates(), categoryDto);
+					recipeFood.getFood().getName(), recipeFood.getFood().getCalories(),
+					recipeFood.getFood().getProtein(), recipeFood.getFood().getFat(),
+					recipeFood.getFood().getCarbohydrates(), categoryDto);
 		}).toList();
 	}
 

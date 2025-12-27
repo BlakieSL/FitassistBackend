@@ -63,9 +63,9 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 	private final FoodPopulationService foodPopulationService;
 
 	public RecipeFoodServiceImpl(RecipeService recipeService, ValidationService validationService,
-								 RecipeFoodMapper recipeFoodMapper, RecipeFoodRepository recipeFoodRepository, FoodRepository foodRepository,
-								 RecipeRepository recipeRepository, JsonPatchService jsonPatchService, FoodMapper foodMapper,
-								 RepositoryHelper repositoryHelper, FoodPopulationService foodPopulationService) {
+			RecipeFoodMapper recipeFoodMapper, RecipeFoodRepository recipeFoodRepository, FoodRepository foodRepository,
+			RecipeRepository recipeRepository, JsonPatchService jsonPatchService, FoodMapper foodMapper,
+			RepositoryHelper repositoryHelper, FoodPopulationService foodPopulationService) {
 		this.recipeService = recipeService;
 		this.validationService = validationService;
 		this.recipeFoodMapper = recipeFoodMapper;
@@ -79,7 +79,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 	}
 
 	@Override
-	@CacheEvict(value = {CacheNames.FOODS_BY_RECIPE}, allEntries = true)
+	@CacheEvict(value = { CacheNames.FOODS_BY_RECIPE }, allEntries = true)
 	@Transactional
 	public void saveFoodToRecipe(int recipeId, int foodId, RecipeFoodCreateDto request) {
 		if (isAlreadyAdded(recipeId, foodId)) {
@@ -94,10 +94,10 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 	}
 
 	@Override
-	@CachePut(value = {CacheNames.FOODS_BY_RECIPE}, key = "#recipeId")
+	@CachePut(value = { CacheNames.FOODS_BY_RECIPE }, key = "#recipeId")
 	@Transactional
 	public void updateFoodRecipe(int recipeId, int foodId, JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 
 		RecipeFood recipeFood = find(recipeId, foodId);
 		RecipeFoodCreateDto patchedDto = jsonPatchService.createFromPatch(patch, RecipeFoodCreateDto.class);
@@ -108,7 +108,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 	}
 
 	@Override
-	@CacheEvict(value = {CacheNames.FOODS_BY_RECIPE}, key = "#recipeId")
+	@CacheEvict(value = { CacheNames.FOODS_BY_RECIPE }, key = "#recipeId")
 	@Transactional
 	public void deleteFoodFromRecipe(int foodId, int recipeId) {
 		RecipeFood recipeFood = find(recipeId, foodId);

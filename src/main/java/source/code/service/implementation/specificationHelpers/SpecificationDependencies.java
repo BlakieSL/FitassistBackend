@@ -14,7 +14,7 @@ public class SpecificationDependencies {
 	private final SpecificationVisibilityPredicateBuilder visibilityPredicateBuilder;
 
 	public SpecificationDependencies(SpecificationFieldResolver fieldResolver,
-									 SpecificationVisibilityPredicateBuilder visibilityPredicateBuilder) {
+			SpecificationVisibilityPredicateBuilder visibilityPredicateBuilder) {
 		this.fieldResolver = fieldResolver;
 		this.visibilityPredicateBuilder = visibilityPredicateBuilder;
 	}

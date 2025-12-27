@@ -39,12 +39,12 @@ public class FoodSpecification extends AbstractSpecification<Food, FoodField> {
 			case FAT ->
 				GenericSpecificationHelper.buildPredicateNumericProperty(context, context.root().get(FAT_FIELD));
 			case CARBOHYDRATES -> GenericSpecificationHelper.buildPredicateNumericProperty(context,
-				context.root().get(CARBOHYDRATES_FIELD));
+					context.root().get(CARBOHYDRATES_FIELD));
 			case CATEGORY -> GenericSpecificationHelper.buildPredicateEntityProperty(context, FOOD_CATEGORY_FIELD);
 			case SAVED_BY_USER ->
 				GenericSpecificationHelper.buildSavedByUserPredicate(context, LikesAndSaves.USER_FOODS.getFieldName());
 			case SAVE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(context,
-				LikesAndSaves.USER_FOODS.getFieldName(), null, null);
+					LikesAndSaves.USER_FOODS.getFieldName(), null, null);
 		};
 	}
 

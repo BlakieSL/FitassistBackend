@@ -29,7 +29,7 @@ public abstract class TextMapper {
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "exercise", ignore = true)
 	public abstract void updateExerciseInstruction(@MappingTarget ExerciseInstruction instruction,
-												   ExerciseInstructionUpdateDto dto);
+			ExerciseInstructionUpdateDto dto);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "id", ignore = true)
@@ -40,12 +40,12 @@ public abstract class TextMapper {
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "recipe", ignore = true)
 	public abstract void updateRecipeInstruction(@MappingTarget RecipeInstruction instruction,
-												 RecipeInstructionUpdateDto dto);
+			RecipeInstructionUpdateDto dto);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "plan", ignore = true)
 	public abstract void updatePlanInstruction(@MappingTarget PlanInstruction instruction,
-											   PlanInstructionUpdateDto dto);
+			PlanInstructionUpdateDto dto);
 
 }

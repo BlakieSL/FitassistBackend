@@ -38,7 +38,8 @@ public class UniqueUserMediaValidator implements ConstraintValidator<UniqueUserM
 			}
 
 			return true;
-		} finally {
+		}
+		finally {
 			entityManager.setFlushMode(FlushModeType.AUTO);
 		}
 	}

@@ -149,7 +149,7 @@ public class PlanCategoryServiceTest {
 		when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
 
 		assertThrows(RecordNotFoundException.class,
-			() -> planCategoryService.updateCategory(nonExistentCategoryId, patch));
+				() -> planCategoryService.updateCategory(nonExistentCategoryId, patch));
 
 		verifyNoInteractions(validationService, mapper, applicationEventPublisher, cacheKeyGenerator);
 		verify(repository, never()).save(category);

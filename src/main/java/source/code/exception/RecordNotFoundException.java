@@ -6,7 +6,7 @@ public class RecordNotFoundException extends LocalizedException {
 
 	public <T> RecordNotFoundException(Class<T> entityClass, Object... identifiers) {
 		super("RecordNotFoundException.message", null, entityClass.getSimpleName(),
-			String.join(", ", toStringArray(identifiers)));
+				String.join(", ", toStringArray(identifiers)));
 	}
 
 	public static <T> RecordNotFoundException of(Class<T> entityClass, Object... identifiers) {
