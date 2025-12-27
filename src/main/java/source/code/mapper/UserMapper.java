@@ -9,11 +9,13 @@ import java.util.stream.Collectors;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import source.code.dto.pojo.AuthorDto;
 import source.code.dto.pojo.UserCredentialsDto;
 import source.code.dto.request.user.UserCreateDto;
 import source.code.dto.request.user.UserUpdateDto;
 import source.code.dto.response.user.UserResponseDto;
 import source.code.helper.Enum.model.MediaConnectedEntity;
+import source.code.mapper.helper.CommonMappingHelper;
 import source.code.model.user.Role;
 import source.code.model.user.User;
 import source.code.repository.MediaRepository;
@@ -21,7 +23,7 @@ import source.code.repository.RoleRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.CalculationsService;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = CommonMappingHelper.class)
 public abstract class UserMapper {
 
 	@Autowired
@@ -45,6 +47,10 @@ public abstract class UserMapper {
 	@Mapping(target = "calculatedCalories", expression = "java(calculatedCalories(user))")
 	@Mapping(target = "userImageUrl", expression = "java(getUserImageUrl(user))")
 	public abstract UserResponseDto toResponse(User user);
+
+	@Mapping(source = "user", target = ".", qualifiedByName = "userToAuthorDto")
+	@Mapping(target = "imageUrl", expression = "java(getUserImageUrl(user))")
+	public abstract AuthorDto toAuthorDto(User user);
 
 	@Mapping(target = "password", source = "password", qualifiedByName = "hashPassword")
 	@Mapping(target = "username", source = "dto", qualifiedByName = "generateUsername")
@@ -94,8 +100,6 @@ public abstract class UserMapper {
 		});
 		user.getRoles().add(role);
 	}
-
-	// helpers
 
 	@Named("rolesToRolesNames")
 	Set<String> rolesToRolesNames(Set<Role> roles) {
