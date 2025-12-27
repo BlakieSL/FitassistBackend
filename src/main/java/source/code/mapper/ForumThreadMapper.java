@@ -15,7 +15,7 @@ import source.code.model.user.User;
 import source.code.repository.ThreadCategoryRepository;
 import source.code.repository.UserRepository;
 
-@Mapper(componentModel = "spring", uses = {CommonMappingHelper.class})
+@Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class ForumThreadMapper {
 
 	@Autowired
@@ -41,7 +41,7 @@ public abstract class ForumThreadMapper {
 
 	@Mapping(target = "user", expression = "java(userIdToUser(userId))")
 	@Mapping(target = "threadCategory", source = "threadCategoryId",
-		qualifiedByName = "threadCategoryIdToThreadCategory")
+			qualifiedByName = "threadCategoryIdToThreadCategory")
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "views", ignore = true)

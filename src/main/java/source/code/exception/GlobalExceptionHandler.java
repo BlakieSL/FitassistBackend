@@ -122,7 +122,7 @@ public class GlobalExceptionHandler {
 	@ResponseBody
 	public String handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
 		return String.format("Invalid value for parameter '%s'. Expected type: %s", e.getName(),
-			Objects.requireNonNull(e.getRequiredType()).getSimpleName());
+				Objects.requireNonNull(e.getRequiredType()).getSimpleName());
 	}
 
 	@ExceptionHandler(AccessDeniedException.class)

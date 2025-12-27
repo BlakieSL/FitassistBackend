@@ -25,12 +25,12 @@ public class SavedSelectorServiceImpl implements SavedSelectorService {
 	private final SavedServiceWithoutType userThreadService;
 
 	public SavedSelectorServiceImpl(@Qualifier("userPlanService") SavedService userPlanService,
-									@Qualifier("userRecipeService") SavedService userRecipeService,
-									@Qualifier("userCommentService") SavedService userCommentService,
-									@Qualifier("userExerciseService") SavedServiceWithoutType userExerciseService,
-									@Qualifier("userFoodService") SavedServiceWithoutType userFoodService,
-									@Qualifier("userActivityService") SavedServiceWithoutType userActivityService,
-									@Qualifier("userThreadService") SavedServiceWithoutType userThreadService) {
+			@Qualifier("userRecipeService") SavedService userRecipeService,
+			@Qualifier("userCommentService") SavedService userCommentService,
+			@Qualifier("userExerciseService") SavedServiceWithoutType userExerciseService,
+			@Qualifier("userFoodService") SavedServiceWithoutType userFoodService,
+			@Qualifier("userActivityService") SavedServiceWithoutType userActivityService,
+			@Qualifier("userThreadService") SavedServiceWithoutType userThreadService) {
 		this.userActivityService = userActivityService;
 		this.userExerciseService = userExerciseService;
 		this.userFoodService = userFoodService;

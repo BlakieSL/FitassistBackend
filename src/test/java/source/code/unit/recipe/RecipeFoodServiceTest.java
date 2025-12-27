@@ -126,7 +126,7 @@ public class RecipeFoodServiceTest {
 		when(recipeFoodRepository.existsByRecipeIdAndFoodId(recipeId, foodId)).thenReturn(true);
 
 		assertThrows(NotUniqueRecordException.class,
-			() -> recipeFoodService.saveFoodToRecipe(recipeId, foodId, createDto));
+				() -> recipeFoodService.saveFoodToRecipe(recipeId, foodId, createDto));
 
 		verify(recipeFoodRepository, never()).save(any(RecipeFood.class));
 	}
@@ -137,7 +137,7 @@ public class RecipeFoodServiceTest {
 			.thenThrow(RecordNotFoundException.of(Recipe.class, recipeId));
 
 		assertThrows(RecordNotFoundException.class,
-			() -> recipeFoodService.saveFoodToRecipe(recipeId, foodId, createDto));
+				() -> recipeFoodService.saveFoodToRecipe(recipeId, foodId, createDto));
 
 		verify(recipeFoodRepository, never()).save(any(RecipeFood.class));
 	}
@@ -149,7 +149,7 @@ public class RecipeFoodServiceTest {
 			.thenThrow(RecordNotFoundException.of(Food.class, foodId));
 
 		assertThrows(RecordNotFoundException.class,
-			() -> recipeFoodService.saveFoodToRecipe(recipeId, foodId, createDto));
+				() -> recipeFoodService.saveFoodToRecipe(recipeId, foodId, createDto));
 
 		verify(recipeFoodRepository, never()).save(any(RecipeFood.class));
 	}

@@ -21,18 +21,18 @@ import source.code.service.declaration.user.SavedServiceWithoutType;
 
 @Service("userThreadService")
 public class UserThreadServiceImpl
-	extends GenericSavedServiceWithoutType<ForumThread, UserThread, ForumThreadSummaryDto>
-	implements SavedServiceWithoutType {
+		extends GenericSavedServiceWithoutType<ForumThread, UserThread, ForumThreadSummaryDto>
+		implements SavedServiceWithoutType {
 
 	private final ForumThreadMapper forumThreadMapper;
 
 	private final ForumThreadPopulationService forumThreadPopulationService;
 
 	public UserThreadServiceImpl(UserThreadRepository userThreadRepository, ForumThreadRepository forumThreadRepository,
-								 UserRepository userRepository, ForumThreadMapper forumThreadMapper,
-								 ForumThreadPopulationService forumThreadPopulationService) {
+			UserRepository userRepository, ForumThreadMapper forumThreadMapper,
+			ForumThreadPopulationService forumThreadPopulationService) {
 		super(userRepository, forumThreadRepository, userThreadRepository, forumThreadMapper::toSummaryDto,
-			ForumThread.class);
+				ForumThread.class);
 		this.forumThreadMapper = forumThreadMapper;
 		this.forumThreadPopulationService = forumThreadPopulationService;
 	}
@@ -40,7 +40,7 @@ public class UserThreadServiceImpl
 	@Override
 	public Page<BaseUserEntity> getAllFromUser(int userId, Pageable pageable) {
 		Page<UserThread> userThreadPage = ((UserThreadRepository) userEntityRepository).findAllByUserId(userId,
-			pageable);
+				pageable);
 
 		List<ForumThreadSummaryDto> summaries = userThreadPage.getContent().stream().map(ut -> {
 			ForumThreadSummaryDto dto = forumThreadMapper.toSummaryDto(ut.getForumThread());
@@ -51,7 +51,7 @@ public class UserThreadServiceImpl
 		forumThreadPopulationService.populate(summaries);
 
 		return new PageImpl<>(summaries.stream().map(dto -> (BaseUserEntity) dto).toList(), pageable,
-			userThreadPage.getTotalElements());
+				userThreadPage.getTotalElements());
 	}
 
 	@Override

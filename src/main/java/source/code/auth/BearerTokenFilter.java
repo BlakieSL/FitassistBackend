@@ -36,7 +36,7 @@ public class BearerTokenFilter extends HttpFilter {
 
 	@Override
 	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-		throws IOException, ServletException {
+			throws IOException, ServletException {
 		Optional<String> bearerToken = getBearerToken(request);
 
 		if (bearerToken.isEmpty()) {
@@ -49,9 +49,10 @@ public class BearerTokenFilter extends HttpFilter {
 			validateJwt(signedJwt);
 			setSecurityContext(signedJwt);
 			chain.doFilter(request, response);
-		} catch (JwtAuthenticationException | ParseException e) {
+		}
+		catch (JwtAuthenticationException | ParseException e) {
 			failureHandler.onAuthenticationFailure(request, response,
-				new JwtAuthenticationException("Bearer token could not be parsed or is invalid"));
+					new JwtAuthenticationException("Bearer token could not be parsed or is invalid"));
 		}
 	}
 

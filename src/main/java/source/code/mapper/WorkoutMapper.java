@@ -10,7 +10,7 @@ import source.code.model.workout.Workout;
 import source.code.repository.PlanRepository;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
-@Mapper(componentModel = "spring", uses = {WorkoutSetMapper.class})
+@Mapper(componentModel = "spring", uses = { WorkoutSetMapper.class })
 public abstract class WorkoutMapper {
 
 	@Autowired

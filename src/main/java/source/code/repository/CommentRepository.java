@@ -27,41 +27,41 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaS
 	Page<Comment> findAllByThreadIdAndParentCommentNull(int threadId, Pageable pageable);
 
 	@Query(value = """
-		WITH RECURSIVE comment_tree AS (
-		    SELECT
-		        c.id,
-		        c.text,
-		        c.thread_id,
-		        c.user_id,
-		        c.parent_comment_id,
-		        c.created_at
-		    FROM comment c
-		    WHERE c.parent_comment_id = :commentId
+			WITH RECURSIVE comment_tree AS (
+			    SELECT
+			        c.id,
+			        c.text,
+			        c.thread_id,
+			        c.user_id,
+			        c.parent_comment_id,
+			        c.created_at
+			    FROM comment c
+			    WHERE c.parent_comment_id = :commentId
 
-		    UNION ALL
+			    UNION ALL
 
-		    SELECT
-		        c.id,
-		        c.text,
-		        c.thread_id,
-		        c.user_id,
-		        c.parent_comment_id,
-		        c.created_at
-		    FROM comment c
-		    INNER JOIN comment_tree ct ON c.parent_comment_id = ct.id
-		)
-		SELECT
-		    ct.id,
-		    ct.text,
-		    ct.thread_id,
-		    ct.user_id,
-		    ct.parent_comment_id,
-		    ct.created_at,
-		    u.username
-		FROM comment_tree ct
-		JOIN user u ON u.id = ct.user_id
-		ORDER BY ct.id
-		""", nativeQuery = true)
+			    SELECT
+			        c.id,
+			        c.text,
+			        c.thread_id,
+			        c.user_id,
+			        c.parent_comment_id,
+			        c.created_at
+			    FROM comment c
+			    INNER JOIN comment_tree ct ON c.parent_comment_id = ct.id
+			)
+			SELECT
+			    ct.id,
+			    ct.text,
+			    ct.thread_id,
+			    ct.user_id,
+			    ct.parent_comment_id,
+			    ct.created_at,
+			    u.username
+			FROM comment_tree ct
+			JOIN user u ON u.id = ct.user_id
+			ORDER BY ct.id
+			""", nativeQuery = true)
 	List<Object[]> findCommentHierarchy(Integer commentId);
 
 	@Modifying
@@ -69,58 +69,58 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaS
 	void deleteCommentDirectly(int id);
 
 	@Query(value = """
-		WITH RECURSIVE ancestor_tree AS (
-		    SELECT
-		        c.id,
-		        c.thread_id,
-		        c.parent_comment_id
-		    FROM comment c
-		    WHERE c.id = :commentId
+			WITH RECURSIVE ancestor_tree AS (
+			    SELECT
+			        c.id,
+			        c.thread_id,
+			        c.parent_comment_id
+			    FROM comment c
+			    WHERE c.id = :commentId
 
-		    UNION ALL
+			    UNION ALL
 
-		    SELECT
-		        c.id,
-		        c.thread_id,
-		        c.parent_comment_id
-		    FROM comment c
-		    INNER JOIN ancestor_tree at ON c.id = at.parent_comment_id
-		)
-		SELECT
-		    at.id,
-		    at.thread_id
-		FROM ancestor_tree at
-		ORDER BY at.id
-		""", nativeQuery = true)
+			    SELECT
+			        c.id,
+			        c.thread_id,
+			        c.parent_comment_id
+			    FROM comment c
+			    INNER JOIN ancestor_tree at ON c.id = at.parent_comment_id
+			)
+			SELECT
+			    at.id,
+			    at.thread_id
+			FROM ancestor_tree at
+			ORDER BY at.id
+			""", nativeQuery = true)
 	List<Object[]> findCommentAncestry(Integer commentId);
 
 	@Query(value = """
-		SELECT c.id
-		FROM comment c
-		LEFT JOIN user_comment uc ON uc.comment_id = c.id AND uc.type = 'LIKE'
-		WHERE c.thread_id = :threadId
-		AND c.parent_comment_id IS NULL
-		GROUP BY c.id
-		ORDER BY
-		    CASE
-		        WHEN :direction = 'ASC' THEN COUNT(uc.id)
-		        ELSE -COUNT(uc.id)
-		    END
-		LIMIT :limit OFFSET :offset
-		""", nativeQuery = true)
+			SELECT c.id
+			FROM comment c
+			LEFT JOIN user_comment uc ON uc.comment_id = c.id AND uc.type = 'LIKE'
+			WHERE c.thread_id = :threadId
+			AND c.parent_comment_id IS NULL
+			GROUP BY c.id
+			ORDER BY
+			    CASE
+			        WHEN :direction = 'ASC' THEN COUNT(uc.id)
+			        ELSE -COUNT(uc.id)
+			    END
+			LIMIT :limit OFFSET :offset
+			""", nativeQuery = true)
 	List<Integer> findTopCommentIdsSortedByLikesCount(@Param("threadId") int threadId,
-													  @Param("direction") String direction, @Param("limit") int limit, @Param("offset") int offset);
+			@Param("direction") String direction, @Param("limit") int limit, @Param("offset") int offset);
 
 	@EntityGraph(value = "Comment.summary")
 	@Query("SELECT c FROM Comment c WHERE c.id IN :ids")
 	List<Comment> findAllByIds(@Param("ids") List<Integer> ids);
 
 	@Query(value = """
-		SELECT COUNT(DISTINCT c.id)
-		FROM comment c
-		WHERE c.thread_id = :threadId
-		AND c.parent_comment_id IS NULL
-		""", nativeQuery = true)
+			SELECT COUNT(DISTINCT c.id)
+			FROM comment c
+			WHERE c.thread_id = :threadId
+			AND c.parent_comment_id IS NULL
+			""", nativeQuery = true)
 	long countTopCommentsByThreadId(@Param("threadId") int threadId);
 
 }

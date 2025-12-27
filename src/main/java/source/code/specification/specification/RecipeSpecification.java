@@ -52,15 +52,15 @@ public class RecipeSpecification extends AbstractSpecification<Recipe, RecipeFie
 			case FOODS -> buildFoodsPredicate(context);
 			case CREATED_BY_USER -> GenericSpecificationHelper.buildPredicateEntityProperty(context, USER_FIELD);
 			case SAVED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(context,
-				LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.SAVE);
+					LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.SAVE);
 			case LIKED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(context,
-				LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.LIKE);
+					LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.LIKE);
 			case DISLIKED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(context,
-				LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.DISLIKE);
+					LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.DISLIKE);
 			case SAVE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(context,
-				LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.SAVE);
+					LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.SAVE);
 			case LIKE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(context,
-				LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.LIKE);
+					LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.LIKE);
 		};
 	}
 
@@ -69,7 +69,7 @@ public class RecipeSpecification extends AbstractSpecification<Recipe, RecipeFie
 			.join(RECIPE_CATEGORY_ASSOCIATIONS_FIELD, JoinType.LEFT);
 
 		return GenericSpecificationHelper.buildPredicateJoinProperty(context, categoryAssociationJoin,
-			RECIPE_CATEGORY_FIELD);
+				RECIPE_CATEGORY_FIELD);
 	}
 
 	private Predicate buildFoodsPredicate(PredicateContext<Recipe> context) {

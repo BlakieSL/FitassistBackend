@@ -17,11 +17,11 @@ public class ActivityCategoryServiceImpl extends GenericCategoryService<Activity
 	private final ActivityCategoryRepository activityCategoryRepository;
 
 	protected ActivityCategoryServiceImpl(ValidationService validationService, JsonPatchService jsonPatchService,
-										  CategoryCacheKeyGenerator<ActivityCategory> cacheKeyGenerator,
-										  ApplicationEventPublisher applicationEventPublisher, CacheManager cacheManager,
-										  ActivityCategoryRepository activityCategoryRepository, ActivityCategoryMapper mapper) {
+			CategoryCacheKeyGenerator<ActivityCategory> cacheKeyGenerator,
+			ApplicationEventPublisher applicationEventPublisher, CacheManager cacheManager,
+			ActivityCategoryRepository activityCategoryRepository, ActivityCategoryMapper mapper) {
 		super(validationService, jsonPatchService, cacheKeyGenerator, applicationEventPublisher, cacheManager,
-			activityCategoryRepository, mapper);
+				activityCategoryRepository, mapper);
 		this.activityCategoryRepository = activityCategoryRepository;
 	}
 

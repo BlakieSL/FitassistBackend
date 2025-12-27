@@ -45,7 +45,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 	private String fromEmail;
 
 	public PasswordResetServiceImpl(JwtService jwtService, EmailService emailService, UserRepository userRepository,
-									PasswordEncoder passwordEncoder) {
+			PasswordEncoder passwordEncoder) {
 		this.jwtService = jwtService;
 		this.emailService = emailService;
 		this.userRepository = userRepository;
@@ -61,7 +61,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 		String resetLink = frontendUrl + "/reset-password?token=" + resetToken;
 
 		EmailRequestDto emailRequest = new EmailRequestDto(fromEmail, List.of(user.getEmail()),
-			"Password Reset Request", buildEmailContent(user.getUsername(), resetLink), true);
+				"Password Reset Request", buildEmailContent(user.getUsername(), resetLink), true);
 
 		emailService.sendEmail(emailRequest);
 	}
@@ -99,37 +99,38 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 			user.setPassword(encodedPassword);
 			userRepository.save(user);
 
-		} catch (ParseException e) {
+		}
+		catch (ParseException e) {
 			throw new JwtAuthenticationException("Invalid password reset token");
 		}
 	}
 
 	private String generatePasswordResetToken(String email, Integer userId) {
 		return jwtService.createSignedJWT(email, userId, Collections.emptyList(), PASSWORD_RESET_TOKEN_DURATION_MINUTES,
-			PASSWORD_RESET_TOKEN_TYPE);
+				PASSWORD_RESET_TOKEN_TYPE);
 	}
 
 	private String buildEmailContent(String username, String resetLink) {
 		return String.format(
-			"""
-				<!DOCTYPE html>
-				<html>
-				<body>
-				    <div>
-				        <h2>Password Reset Request</h2>
-				        <p>Hello %s,</p>
-				        <p>We received a request to reset your password. Click the button below to reset your password:</p>
-				        <a href="%s" class="button">Reset Password</a>
-				        <p>This link will expire in 20 minutes.</p>
-				        <p>If you didn't request a password reset, please ignore this email.</p>
-				        <div>
-				            <p>This is an automated message, please do not reply.</p>
-				        </div>
-				    </div>
-				</body>
-				</html>
-				""",
-			username, resetLink);
+				"""
+						<!DOCTYPE html>
+						<html>
+						<body>
+						    <div>
+						        <h2>Password Reset Request</h2>
+						        <p>Hello %s,</p>
+						        <p>We received a request to reset your password. Click the button below to reset your password:</p>
+						        <a href="%s" class="button">Reset Password</a>
+						        <p>This link will expire in 20 minutes.</p>
+						        <p>If you didn't request a password reset, please ignore this email.</p>
+						        <div>
+						            <p>This is an automated message, please do not reply.</p>
+						        </div>
+						    </div>
+						</body>
+						</html>
+						""",
+				username, resetLink);
 	}
 
 }

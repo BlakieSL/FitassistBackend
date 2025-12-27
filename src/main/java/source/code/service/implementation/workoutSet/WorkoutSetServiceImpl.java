@@ -34,8 +34,8 @@ public class WorkoutSetServiceImpl implements WorkoutSetService {
 	private final WorkoutSetMapper workoutSetMapper;
 
 	public WorkoutSetServiceImpl(JsonPatchService jsonPatchService, ValidationService validationService,
-								 RepositoryHelper repositoryHelper, WorkoutSetRepository workoutSetRepository,
-								 WorkoutSetMapper workoutSetMapper) {
+			RepositoryHelper repositoryHelper, WorkoutSetRepository workoutSetRepository,
+			WorkoutSetMapper workoutSetMapper) {
 		this.jsonPatchService = jsonPatchService;
 		this.validationService = validationService;
 		this.repositoryHelper = repositoryHelper;
@@ -56,7 +56,7 @@ public class WorkoutSetServiceImpl implements WorkoutSetService {
 	@Transactional
 	@Override
 	public void updateWorkoutSet(int workoutSetId, JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		WorkoutSet workoutSet = find(workoutSetId);
 		WorkoutSetUpdateDto patched = applyPatchToWorkoutSet(patch);
 
@@ -96,7 +96,7 @@ public class WorkoutSetServiceImpl implements WorkoutSetService {
 	}
 
 	private WorkoutSetUpdateDto applyPatchToWorkoutSet(JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		return jsonPatchService.createFromPatch(patch, WorkoutSetUpdateDto.class);
 	}
 

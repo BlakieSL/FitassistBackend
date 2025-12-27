@@ -44,7 +44,7 @@ public class ActivityController {
 	@AdminOnly
 	@PatchMapping("/{id}")
 	public ResponseEntity<Void> updateActivity(@PathVariable int id, @RequestBody JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		activityService.updateActivity(id, patch);
 		return ResponseEntity.noContent().build();
 	}
@@ -64,14 +64,14 @@ public class ActivityController {
 
 	@PostMapping("/filter")
 	public ResponseEntity<Page<ActivitySummaryDto>> getFilteredActivities(@Valid @RequestBody FilterDto filterDto,
-																		  @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+			@PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 		Page<ActivitySummaryDto> filteredActivities = activityService.getFilteredActivities(filterDto, pageable);
 		return ResponseEntity.ok(filteredActivities);
 	}
 
 	@PostMapping("/{id}/calculate-calories")
 	public ResponseEntity<ActivityCalculatedResponseDto> calculateActivityCaloriesBurned(@PathVariable int id,
-																						 @Valid @RequestBody CalculateActivityCaloriesRequestDto request) {
+			@Valid @RequestBody CalculateActivityCaloriesRequestDto request) {
 		ActivityCalculatedResponseDto response = activityService.calculateCaloriesBurned(id, request);
 		return ResponseEntity.ok(response);
 	}

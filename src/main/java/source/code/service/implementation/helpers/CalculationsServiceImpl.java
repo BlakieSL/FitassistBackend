@@ -66,7 +66,7 @@ public final class CalculationsServiceImpl implements CalculationsService {
 
 	@Override
 	public BigDecimal calculateCaloricNeeds(BigDecimal weight, BigDecimal height, int age, Gender gender,
-											ActivityLevel activityLevel, Goal goal) {
+			ActivityLevel activityLevel, Goal goal) {
 		BigDecimal bmr = calculateBMR(weight, height, age, gender);
 		BigDecimal tdee = calculateTDEE(bmr, activityLevel);
 		return adjustCaloricNeedsBasedOnGoal(tdee, goal).setScale(RESULT_SCALE, ROUNDING_MODE);

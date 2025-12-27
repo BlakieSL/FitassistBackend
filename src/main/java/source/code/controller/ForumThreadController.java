@@ -29,7 +29,7 @@ public class ForumThreadController {
 
 	@PostMapping
 	public ResponseEntity<ForumThreadResponseDto> createForumThread(
-		@Valid @RequestBody ForumThreadCreateDto createDto) {
+			@Valid @RequestBody ForumThreadCreateDto createDto) {
 		ForumThreadResponseDto responseDto = forumThreadService.createForumThread(createDto);
 		return ResponseEntity.ok(responseDto);
 	}
@@ -37,7 +37,7 @@ public class ForumThreadController {
 	@ThreadOwnerOrAdmin
 	@PatchMapping("/{forumThreadId}")
 	public ResponseEntity<Void> updateForumThread(@PathVariable int forumThreadId, @RequestBody JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		forumThreadService.updateForumThread(forumThreadId, patch);
 		return ResponseEntity.ok().build();
 	}
@@ -57,7 +57,7 @@ public class ForumThreadController {
 
 	@PostMapping("/filter")
 	public ResponseEntity<Page<ForumThreadSummaryDto>> getFilteredForumThreads(@Valid @RequestBody FilterDto filterDto,
-																			   @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+			@PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 		Page<ForumThreadSummaryDto> threads = forumThreadService.getFilteredForumThreads(filterDto, pageable);
 		return ResponseEntity.ok(threads);
 	}

@@ -33,9 +33,9 @@ public class ForumThreadSpecification extends AbstractSpecification<ForumThread,
 			case CREATED_BY_USER -> GenericSpecificationHelper.buildPredicateEntityProperty(context, USER_FIELD);
 			case CATEGORY -> GenericSpecificationHelper.buildPredicateEntityProperty(context, THREAD_CATEGORY_FIELD);
 			case SAVE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(context,
-				LikesAndSaves.USER_THREADS.getFieldName(), TYPE_FIELD, TypeOfInteraction.SAVE);
+					LikesAndSaves.USER_THREADS.getFieldName(), TYPE_FIELD, TypeOfInteraction.SAVE);
 			case COMMENTS -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(context,
-				COMMENTS_FIELD, null, null);
+					COMMENTS_FIELD, null, null);
 		};
 	}
 

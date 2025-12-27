@@ -36,7 +36,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response,
-									@NotNull FilterChain filterChain) throws ServletException, IOException {
+			@NotNull FilterChain filterChain) throws ServletException, IOException {
 
 		String path = request.getRequestURI();
 
@@ -45,7 +45,8 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 			if (!handleRateLimitingForNonAuth(identifier, path, response)) {
 				return;
 			}
-		} else {
+		}
+		else {
 			if (!handleAuthRequestRateLimiting(request, response)) {
 				return;
 			}
@@ -73,7 +74,8 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 			List<String> roles = claimsSet.getStringListClaim("authorities");
 
 			return Optional.of(new UserInfo(userId, roles));
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			return Optional.empty();
 		}
 	}
@@ -85,7 +87,8 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 
 		if (rateLimitingService.isAllowed(userInfo.userId)) {
 			return true;
-		} else {
+		}
+		else {
 			return writeErrorResponse(response, 429, "Too many requests");
 		}
 	}
@@ -99,7 +102,8 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 	private boolean safelyHandleRateLimiting(UserInfo userInfo, HttpServletResponse response) {
 		try {
 			return handleRateLimiting(userInfo, response);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw new RuntimeException("Failed to handle rate limiting", e);
 		}
 	}
@@ -107,7 +111,8 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 	private boolean safelyHandleInvalidToken(HttpServletResponse response) {
 		try {
 			return handleInvalidToken(response);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw new RuntimeException("Failed to handle invalid token", e);
 		}
 	}
@@ -117,7 +122,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 	}
 
 	private boolean writeErrorResponse(HttpServletResponse response, int statusCode, String message)
-		throws IOException {
+			throws IOException {
 		response.setStatus(statusCode);
 		response.getWriter().write(message);
 		return false;
@@ -142,11 +147,12 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 	}
 
 	private boolean handleRateLimitingForNonAuth(String identifier, String path, HttpServletResponse response)
-		throws IOException {
+			throws IOException {
 		String rateLimitKey = identifier + ":" + path;
 		if (rateLimitingService.isAllowed(rateLimitKey)) {
 			return true;
-		} else {
+		}
+		else {
 			return writeErrorResponse(response, 429, "Too many requests - please try again later");
 		}
 	}

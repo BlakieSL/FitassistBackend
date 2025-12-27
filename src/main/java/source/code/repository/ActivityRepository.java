@@ -34,7 +34,7 @@ public interface ActivityRepository extends JpaRepository<Activity, Integer>, Jp
 	Optional<Activity> findByIdWithAssociations(int id);
 
 	@Query("SELECT a FROM Activity a " + "LEFT JOIN FETCH a.activityCategory " + "LEFT JOIN FETCH a.mediaList "
-		+ "WHERE a.id = :id")
+			+ "WHERE a.id = :id")
 	Optional<Activity> findByIdWithMedia(int id);
 
 }

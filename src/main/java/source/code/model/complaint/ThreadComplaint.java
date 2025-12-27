@@ -28,7 +28,7 @@ public class ThreadComplaint extends ComplaintBase {
 
 	@OneToMany
 	@JoinColumn(name = "parent_id", insertable = false, updatable = false,
-		foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+			foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	@SQLRestriction("parentType = 'THREAD_COMPLAINT'")
 	private List<Media> mediaList = new ArrayList<>();
 

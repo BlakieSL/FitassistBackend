@@ -60,7 +60,7 @@ public class UserFoodServiceTest {
 	void setUp() {
 		mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
 		userFoodService = new UserFoodServiceImpl(userRepository, foodRepository, userFoodRepository, foodMapper,
-			foodPopulationService);
+				foodPopulationService);
 	}
 
 	@AfterEach

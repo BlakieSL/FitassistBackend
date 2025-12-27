@@ -13,9 +13,9 @@ import source.code.model.food.Food;
 @Entity
 @Table(name = "user_food")
 @NamedEntityGraph(name = "UserFood.withFoodDetails",
-	attributeNodes = {@NamedAttributeNode(value = "food", subgraph = "food-subgraph")},
-	subgraphs = {@NamedSubgraph(name = "food-subgraph",
-		attributeNodes = {@NamedAttributeNode("foodCategory"), @NamedAttributeNode("mediaList")})})
+		attributeNodes = { @NamedAttributeNode(value = "food", subgraph = "food-subgraph") },
+		subgraphs = { @NamedSubgraph(name = "food-subgraph",
+				attributeNodes = { @NamedAttributeNode("foodCategory"), @NamedAttributeNode("mediaList") }) })
 @Getter
 @Setter
 @NoArgsConstructor

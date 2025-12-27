@@ -45,9 +45,9 @@ public class ExerciseSpecification extends AbstractSpecification<Exercise, Exerc
 			case FORCE_TYPE -> GenericSpecificationHelper.buildPredicateEntityProperty(context, FORCE_TYPE_FIELD);
 			case TARGET_MUSCLE -> buildTargetMusclePredicate(context);
 			case SAVED_BY_USER -> GenericSpecificationHelper.buildSavedByUserPredicate(context,
-				LikesAndSaves.USER_EXERCISES.getFieldName());
+					LikesAndSaves.USER_EXERCISES.getFieldName());
 			case SAVE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(context,
-				LikesAndSaves.USER_EXERCISES.getFieldName(), null, null);
+					LikesAndSaves.USER_EXERCISES.getFieldName(), null, null);
 		};
 	}
 

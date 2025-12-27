@@ -25,7 +25,7 @@ public class DailyActivityController {
 
 	@PostMapping
 	public ResponseEntity<DailyActivitiesResponseDto> getAllDailyActivitiesByUserAndDate(
-		@Valid @RequestBody DailyActivitiesGetDto request) {
+			@Valid @RequestBody DailyActivitiesGetDto request) {
 		return ResponseEntity.ok(dailyActivityService.getActivitiesFromDailyCart(request));
 	}
 
@@ -34,7 +34,7 @@ public class DailyActivityController {
 	// added to user retrieve from the auth context
 	@PostMapping("/add/{activityId}")
 	public ResponseEntity<Void> addDailyActivityToUser(@PathVariable int activityId,
-													   @Valid @RequestBody DailyActivityItemCreateDto request) {
+			@Valid @RequestBody DailyActivityItemCreateDto request) {
 		dailyActivityService.addActivityToDailyCart(activityId, request);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
@@ -42,7 +42,7 @@ public class DailyActivityController {
 	@DailyCartOwner
 	@PatchMapping("/modify-activity/{dailyActivityItemId}")
 	public ResponseEntity<Void> updateDailyCartActivity(@PathVariable int dailyActivityItemId,
-														@RequestBody JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+			@RequestBody JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
 		dailyActivityService.updateDailyActivityItem(dailyActivityItemId, patch);
 		return ResponseEntity.noContent().build();
 	}

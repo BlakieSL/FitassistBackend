@@ -12,11 +12,11 @@ public interface DailyCartActivityRepository extends JpaRepository<DailyCartActi
 	Optional<DailyCartActivity> findByDailyCartIdAndActivityId(int dailyCartId, int activityId);
 
 	@Query("""
-		    SELECT dca FROM DailyCartActivity dca
-		    LEFT JOIN FETCH dca.dailyCart dc
-		    LEFT JOIN FETCH dc.user u
-		    WHERE dca.id = :id
-		""")
+			    SELECT dca FROM DailyCartActivity dca
+			    LEFT JOIN FETCH dca.dailyCart dc
+			    LEFT JOIN FETCH dc.user u
+			    WHERE dca.id = :id
+			""")
 	@EntityGraph(value = "DailyCartActivity.withoutAssociations")
 	Optional<DailyCartActivity> findByIdWithUser(int id);
 

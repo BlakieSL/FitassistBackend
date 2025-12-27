@@ -52,7 +52,8 @@ public abstract class ComplaintMapper {
 	protected String getDiscriminatorValue(ComplaintBase complaint) {
 		if (complaint instanceof CommentComplaint) {
 			return "COMMENT_COMPLAINT";
-		} else if (complaint instanceof ThreadComplaint) {
+		}
+		else if (complaint instanceof ThreadComplaint) {
 			return "THREAD_COMPLAINT";
 		}
 		return null;
@@ -61,10 +62,11 @@ public abstract class ComplaintMapper {
 	protected Integer getAssociatedId(ComplaintBase complaint) {
 		if (complaint instanceof CommentComplaint) {
 			return ((CommentComplaint) complaint).getComment() != null
-				? ((CommentComplaint) complaint).getComment().getId() : null;
-		} else if (complaint instanceof ThreadComplaint) {
+					? ((CommentComplaint) complaint).getComment().getId() : null;
+		}
+		else if (complaint instanceof ThreadComplaint) {
 			return ((ThreadComplaint) complaint).getThread() != null ? ((ThreadComplaint) complaint).getThread().getId()
-				: null;
+					: null;
 		}
 		return null;
 	}

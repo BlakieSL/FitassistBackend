@@ -38,7 +38,7 @@ public abstract class WorkoutSetExerciseMapper {
 	@Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExerciseIdToExercise")
 	@Mapping(target = "id", ignore = true)
 	public abstract void updateWorkoutSetExercise(@MappingTarget WorkoutSetExercise workoutSetExercise,
-												  WorkoutSetExerciseUpdateDto updateDto);
+			WorkoutSetExerciseUpdateDto updateDto);
 
 	@Named("mapWorkoutSetIdToWorkoutSet")
 	protected WorkoutSet mapWorkoutSetIdToWorkoutSet(int workoutSetId) {

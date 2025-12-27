@@ -30,7 +30,7 @@ public class WorkoutSetExerciseController {
 	@WorkoutSetExerciseOwnerOrAdminCreation
 	@PostMapping
 	public ResponseEntity<WorkoutSetExerciseResponseDto> createWorkoutSetExercise(
-		@RequestBody WorkoutSetExerciseCreateDto createDto) {
+			@RequestBody WorkoutSetExerciseCreateDto createDto) {
 		WorkoutSetExerciseResponseDto response = workoutSetExerciseService.createWorkoutSetExercise(createDto);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
@@ -38,7 +38,7 @@ public class WorkoutSetExerciseController {
 	@WorkoutSetExerciseOwnerOrAdmin
 	@PatchMapping("/{id}")
 	public ResponseEntity<Void> updateWorkoutSetExercise(@PathVariable int id, @RequestBody JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		workoutSetExerciseService.updateWorkoutSetExercise(id, patch);
 		return ResponseEntity.noContent().build();
 	}
@@ -61,7 +61,7 @@ public class WorkoutSetExerciseController {
 	@PublicPlanOwnerOrAdminAcceptWorkoutSetId
 	@GetMapping("/workout-sets/{workoutSetId}")
 	public ResponseEntity<List<WorkoutSetExerciseResponseDto>> getAllWorkoutSetExercisesForWorkoutSet(
-		@PathVariable int workoutSetId) {
+			@PathVariable int workoutSetId) {
 		List<WorkoutSetExerciseResponseDto> workoutSetExercises = workoutSetExerciseService
 			.getAllWorkoutSetExercisesForWorkoutSet(workoutSetId);
 		return ResponseEntity.ok(workoutSetExercises);

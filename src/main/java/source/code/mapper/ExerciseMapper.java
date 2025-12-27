@@ -22,7 +22,7 @@ import source.code.model.text.ExerciseTip;
 import source.code.repository.*;
 import source.code.service.declaration.helpers.RepositoryHelper;
 
-@Mapper(componentModel = "spring", uses = {CommonMappingHelper.class})
+@Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class ExerciseMapper {
 
 	@Autowired
@@ -44,7 +44,7 @@ public abstract class ExerciseMapper {
 	private EquipmentRepository equipmentRepository;
 
 	@Mapping(target = "expertiseLevel", source = "expertiseLevel",
-		qualifiedByName = "mapExpertiseToCategoryResponseDto")
+			qualifiedByName = "mapExpertiseToCategoryResponseDto")
 	@Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsToCategoryResponseDto")
 	@Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceToCategoryResponseDto")
 	@Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToCategoryResponseDto")
@@ -56,9 +56,9 @@ public abstract class ExerciseMapper {
 	public abstract ExerciseSummaryDto toSummaryDto(Exercise exercise);
 
 	@Mapping(target = "targetMuscles", source = "exerciseTargetMuscles",
-		qualifiedByName = "mapAssociationsToTargetMuscleResponseDto")
+			qualifiedByName = "mapAssociationsToTargetMuscleResponseDto")
 	@Mapping(target = "expertiseLevel", source = "expertiseLevel",
-		qualifiedByName = "mapExpertiseToCategoryResponseDto")
+			qualifiedByName = "mapExpertiseToCategoryResponseDto")
 	@Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsToCategoryResponseDto")
 	@Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceToCategoryResponseDto")
 	@Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToCategoryResponseDto")
@@ -71,7 +71,7 @@ public abstract class ExerciseMapper {
 	public abstract ExerciseResponseDto toResponseDto(Exercise exercise);
 
 	@Mapping(target = "exerciseTargetMuscles", source = "targetMusclesIds",
-		qualifiedByName = "mapTargetMuscleIdsToAssociations")
+			qualifiedByName = "mapTargetMuscleIdsToAssociations")
 	@Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevel")
 	@Mapping(target = "mechanicsType", source = "mechanicsTypeId", qualifiedByName = "mapMechanicsType")
 	@Mapping(target = "forceType", source = "forceTypeId", qualifiedByName = "mapForceType")
@@ -86,7 +86,7 @@ public abstract class ExerciseMapper {
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "exerciseTargetMuscles", source = "targetMuscleIds",
-		qualifiedByName = "mapTargetMuscleIdsToAssociations")
+			qualifiedByName = "mapTargetMuscleIdsToAssociations")
 	@Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevel")
 	@Mapping(target = "mechanicsType", source = "mechanicsTypeId", qualifiedByName = "mapMechanicsType")
 	@Mapping(target = "forceType", source = "forceTypeId", qualifiedByName = "mapForceType")
@@ -103,7 +103,7 @@ public abstract class ExerciseMapper {
 	protected void setExerciseAssociations(@MappingTarget Exercise exercise, ExerciseCreateDto dto) {
 		List<ExerciseInstruction> instructions = dto.getInstructions().stream().map(instructionDto -> {
 			ExerciseInstruction instruction = ExerciseInstruction.of(instructionDto.getOrderIndex(),
-				instructionDto.getText());
+					instructionDto.getText());
 			instruction.setExercise(exercise);
 			return instruction;
 		}).toList();
@@ -129,10 +129,10 @@ public abstract class ExerciseMapper {
 
 	@Named("mapAssociationsToTargetMuscleResponseDto")
 	protected List<TargetMuscleResponseDto> mapAssociationsToTargetMuscleResponseDto(
-		Set<ExerciseTargetMuscle> associations) {
+			Set<ExerciseTargetMuscle> associations) {
 		return associations.stream()
 			.map(association -> TargetMuscleResponseDto.create(association.getTargetMuscle().getId(),
-				association.getTargetMuscle().getName(), association.getPriority()))
+					association.getTargetMuscle().getName(), association.getPriority()))
 			.toList();
 	}
 
@@ -180,7 +180,7 @@ public abstract class ExerciseMapper {
 	protected List<ExerciseInstructionResponseDto> mapInstructionsToDto(Set<ExerciseInstruction> instructions) {
 		return instructions.stream()
 			.map(instruction -> new ExerciseInstructionResponseDto(instruction.getId(), instruction.getOrderIndex(),
-				instruction.getText()))
+					instruction.getText()))
 			.toList();
 	}
 

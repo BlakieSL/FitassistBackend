@@ -38,7 +38,7 @@ public class RecipeController {
 	@RecipeOwnerOrAdmin
 	@PatchMapping("/{recipeId}")
 	public ResponseEntity<Void> updateRecipe(@PathVariable int recipeId, @RequestBody JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		recipeService.updateRecipe(recipeId, patch);
 		return ResponseEntity.noContent().build();
 	}
@@ -59,7 +59,7 @@ public class RecipeController {
 
 	@PostMapping("/filter")
 	public ResponseEntity<Page<RecipeSummaryDto>> getFilteredRecipes(@Valid @RequestBody FilterDto filterDto,
-																	 @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+			@PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 		Page<RecipeSummaryDto> filtered = recipeService.getFilteredRecipes(filterDto, pageable);
 		return ResponseEntity.ok(filtered);
 	}

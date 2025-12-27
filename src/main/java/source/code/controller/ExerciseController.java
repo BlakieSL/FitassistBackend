@@ -39,7 +39,7 @@ public class ExerciseController {
 	@AdminOnly
 	@PatchMapping("/{id}")
 	public ResponseEntity<Void> updateExercise(@PathVariable int id, @RequestBody JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		exerciseService.updateExercise(id, patch);
 		return ResponseEntity.noContent().build();
 	}
@@ -59,7 +59,7 @@ public class ExerciseController {
 
 	@PostMapping("/filter")
 	public ResponseEntity<Page<ExerciseSummaryDto>> getFilteredExercises(@Valid @RequestBody FilterDto filter,
-																		 @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+			@PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 		Page<ExerciseSummaryDto> filtered = exerciseService.getFilteredExercises(filter, pageable);
 		return ResponseEntity.ok(filtered);
 	}

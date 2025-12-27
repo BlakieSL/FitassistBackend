@@ -20,7 +20,7 @@ public class JsonPatchServiceImpl implements JsonPatchService {
 
 	@Override
 	public <T> T applyPatch(JsonMergePatch patch, Object targetBean, Class<T> beanClass)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		JsonNode targetNode = objectMapper.valueToTree(targetBean);
 		JsonNode patchedNode = patch.apply(targetNode);
 		return objectMapper.treeToValue(patchedNode, beanClass);
@@ -28,7 +28,7 @@ public class JsonPatchServiceImpl implements JsonPatchService {
 
 	@Override
 	public <T> T createFromPatch(JsonMergePatch patch, Class<T> beanClass)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		ObjectNode emptyNode = objectMapper.createObjectNode();
 
 		JsonNode patchedNode = patch.apply(emptyNode);

@@ -17,11 +17,11 @@ public class RecipeCategoryServiceImpl extends GenericCategoryService<RecipeCate
 	private final RecipeCategoryRepository recipeCategoryRepository;
 
 	protected RecipeCategoryServiceImpl(ValidationService validationService, JsonPatchService jsonPatchService,
-										CategoryCacheKeyGenerator<RecipeCategory> cacheKeyGenerator,
-										ApplicationEventPublisher applicationEventPublisher, CacheManager cacheManager,
-										RecipeCategoryRepository recipeCategoryRepository, RecipeCategoryMapper mapper) {
+			CategoryCacheKeyGenerator<RecipeCategory> cacheKeyGenerator,
+			ApplicationEventPublisher applicationEventPublisher, CacheManager cacheManager,
+			RecipeCategoryRepository recipeCategoryRepository, RecipeCategoryMapper mapper) {
 		super(validationService, jsonPatchService, cacheKeyGenerator, applicationEventPublisher, cacheManager,
-			recipeCategoryRepository, mapper);
+				recipeCategoryRepository, mapper);
 		this.recipeCategoryRepository = recipeCategoryRepository;
 	}
 

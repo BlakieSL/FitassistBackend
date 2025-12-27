@@ -224,7 +224,7 @@ public class DailyFoodServiceTest {
 
 	@Test
 	void updateDailyFoodItem_shouldThrowException_whenPatchValidationFails()
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		DailyCartFoodUpdateDto patchedDto = new DailyCartFoodUpdateDto();
 		patchedDto.setQuantity(BigDecimal.valueOf(120));
 
@@ -250,7 +250,7 @@ public class DailyFoodServiceTest {
 
 		FoodCalculatedMacrosResponseDto calculatedResponseDto = new FoodCalculatedMacrosResponseDto();
 		FoodMacros foodMacros = FoodMacros.of(BigDecimal.valueOf(100), BigDecimal.valueOf(10), BigDecimal.valueOf(5),
-			BigDecimal.valueOf(20));
+				BigDecimal.valueOf(20));
 		calculatedResponseDto.setFoodMacros(foodMacros);
 
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);

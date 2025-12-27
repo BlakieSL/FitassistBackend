@@ -149,7 +149,7 @@ public class ActivityCategoryServiceTest {
 		when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
 
 		assertThrows(RecordNotFoundException.class,
-			() -> activityCategoryService.updateCategory(nonExistentCategoryId, patch));
+				() -> activityCategoryService.updateCategory(nonExistentCategoryId, patch));
 
 		verifyNoInteractions(validationService, mapper, applicationEventPublisher, cacheKeyGenerator);
 		verify(repository, never()).save(category);
@@ -213,7 +213,7 @@ public class ActivityCategoryServiceTest {
 		when(repository.findById(nonExistentCategoryId)).thenReturn(Optional.empty());
 
 		assertThrows(RecordNotFoundException.class,
-			() -> activityCategoryService.deleteCategory(nonExistentCategoryId));
+				() -> activityCategoryService.deleteCategory(nonExistentCategoryId));
 
 		verifyNoInteractions(applicationEventPublisher, cacheKeyGenerator);
 		verify(repository, never()).delete(category);

@@ -20,10 +20,10 @@ public class CategorySelectorServiceImpl implements CategorySelectorService {
 	private final CategoryService threadCategoryService;
 
 	public CategorySelectorServiceImpl(@Qualifier("foodCategoryService") CategoryService foodCategoryService,
-									   @Qualifier("activityCategoryService") CategoryService activityCategoryService,
-									   @Qualifier("recipeCategoryService") CategoryService recipeCategoryService,
-									   @Qualifier("planCategoryService") CategoryService planCategoryService,
-									   @Qualifier("threadCategoryService") CategoryService threadCategoryService) {
+			@Qualifier("activityCategoryService") CategoryService activityCategoryService,
+			@Qualifier("recipeCategoryService") CategoryService recipeCategoryService,
+			@Qualifier("planCategoryService") CategoryService planCategoryService,
+			@Qualifier("threadCategoryService") CategoryService threadCategoryService) {
 		this.foodCategoryService = foodCategoryService;
 		this.activityCategoryService = activityCategoryService;
 		this.recipeCategoryService = recipeCategoryService;

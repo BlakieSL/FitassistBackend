@@ -40,7 +40,7 @@ public class FoodController {
 	@AdminOnly
 	@PatchMapping("/{id}")
 	public ResponseEntity<Void> updateFood(@PathVariable int id, @RequestBody JsonMergePatch patch)
-		throws JsonPatchException, JsonProcessingException {
+			throws JsonPatchException, JsonProcessingException {
 		foodService.updateFood(id, patch);
 		return ResponseEntity.noContent().build();
 	}
@@ -60,14 +60,14 @@ public class FoodController {
 
 	@PostMapping("/filter")
 	public ResponseEntity<Page<FoodSummaryDto>> getFilteredFoods(@Valid @RequestBody FilterDto filterDto,
-																 @PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+			@PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 		Page<FoodSummaryDto> response = foodService.getFilteredFoods(filterDto, pageable);
 		return ResponseEntity.ok(response);
 	}
 
 	@PostMapping("/{id}/calculate-macros")
 	public ResponseEntity<FoodCalculatedMacrosResponseDto> calculateFoodMacros(@PathVariable int id,
-																			   @Valid @RequestBody CalculateFoodMacrosRequestDto request) {
+			@Valid @RequestBody CalculateFoodMacrosRequestDto request) {
 		FoodCalculatedMacrosResponseDto response = foodService.calculateFoodMacros(id, request);
 		return ResponseEntity.ok(response);
 	}

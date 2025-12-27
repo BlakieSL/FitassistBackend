@@ -18,7 +18,7 @@ public class FoodSearchResponseDto extends SearchResponseDto {
 	private CategoryResponseDto category;
 
 	public FoodSearchResponseDto(Integer id, String name, FoodMacros macros, String firstImageUrl,
-								 CategoryResponseDto category) {
+			CategoryResponseDto category) {
 		super(id, name, "Food");
 		this.macros = macros;
 		this.firstImageUrl = firstImageUrl;

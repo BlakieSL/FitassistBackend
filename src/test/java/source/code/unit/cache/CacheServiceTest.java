@@ -79,7 +79,7 @@ public class CacheServiceTest {
 	void putCache_shouldThrowExceptionWhenCacheNull() {
 		when(cacheManager.getCache(nonExistingCacheName)).thenReturn(null);
 		assertThrows(NullPointerException.class,
-			() -> cacheServiceImpl.putCache(nonExistingCacheName, cacheKey, cacheData));
+				() -> cacheServiceImpl.putCache(nonExistingCacheName, cacheKey, cacheData));
 	}
 
 }
