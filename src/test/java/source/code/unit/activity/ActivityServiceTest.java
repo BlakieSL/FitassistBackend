@@ -166,9 +166,11 @@ public class ActivityServiceTest {
 
 	@Test
 	void updateActivity_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+		activity.setId(activityId);
 		when(repositoryHelper.find(activityRepository, Activity.class, activityId)).thenReturn(activity);
 		when(jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class)).thenReturn(patchedDto);
 		when(activityRepository.save(activity)).thenReturn(activity);
+		when(activityRepository.findByIdWithMedia(activityId)).thenReturn(Optional.of(activity));
 
 		activityService.updateActivity(activityId, patch);
 
@@ -181,9 +183,11 @@ public class ActivityServiceTest {
 	void updateActivity_shouldPublishEvent() throws JsonPatchException, JsonProcessingException {
 		ArgumentCaptor<ActivityUpdateEvent> eventCaptor = ArgumentCaptor.forClass(ActivityUpdateEvent.class);
 
+		activity.setId(activityId);
 		when(repositoryHelper.find(activityRepository, Activity.class, activityId)).thenReturn(activity);
 		when(jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class)).thenReturn(patchedDto);
 		when(activityRepository.save(activity)).thenReturn(activity);
+		when(activityRepository.findByIdWithMedia(activityId)).thenReturn(Optional.of(activity));
 
 		activityService.updateActivity(activityId, patch);
 
@@ -378,23 +382,23 @@ public class ActivityServiceTest {
 	@Test
 	void getAllActivityEntities_shouldReturnAllActivityEntities() {
 		List<Activity> activities = List.of(activity);
-		when(activityRepository.findAllWithoutAssociations()).thenReturn(activities);
+		when(activityRepository.findAll()).thenReturn(activities);
 
 		List<Activity> result = activityService.getAllActivityEntities();
 
 		assertEquals(activities, result);
-		verify(activityRepository).findAllWithoutAssociations();
+		verify(activityRepository).findAll();
 	}
 
 	@Test
 	void getAllActivityEntities_shouldReturnEmptyListWhenNoActivities() {
 		List<Activity> activities = List.of();
-		when(activityRepository.findAllWithoutAssociations()).thenReturn(activities);
+		when(activityRepository.findAll()).thenReturn(activities);
 
 		List<Activity> result = activityService.getAllActivityEntities();
 
 		assertTrue(result.isEmpty());
-		verify(activityRepository).findAllWithoutAssociations();
+		verify(activityRepository).findAll();
 	}
 
 }
