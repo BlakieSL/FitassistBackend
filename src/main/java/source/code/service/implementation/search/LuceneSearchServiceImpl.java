@@ -19,6 +19,7 @@ import source.code.dto.pojo.FoodMacros;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.search.ActivitySearchResponseDto;
 import source.code.dto.response.search.FoodSearchResponseDto;
+import source.code.dto.response.search.GenericSearchResponseDto;
 import source.code.dto.response.search.SearchResponseDto;
 import source.code.exception.InvalidFilterValueException;
 import source.code.service.declaration.aws.AwsS3Service;
@@ -87,6 +88,7 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
 		return switch (type) {
 			case "Food" -> convertToFoodSearchDto(doc);
 			case "Activity" -> convertToActivitySearchDto(doc);
+			case "Exercise", "Recipe", "Plan" -> convertToGenericSearchDto(doc);
 			default -> throw new InvalidFilterValueException(type);
 		};
 	}
@@ -125,6 +127,14 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
 				doc.get("categoryName"));
 
 		return new ActivitySearchResponseDto(id, name, met, firstImageUrl, category);
+	}
+
+	private GenericSearchResponseDto convertToGenericSearchDto(Document doc) {
+		int id = Integer.parseInt(doc.get("id"));
+		String name = doc.get("name");
+		String type = doc.get("type");
+
+		return new GenericSearchResponseDto(id, name, type);
 	}
 
 }
