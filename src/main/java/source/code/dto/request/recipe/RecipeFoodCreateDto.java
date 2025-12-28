@@ -1,5 +1,7 @@
 package source.code.dto.request.recipe;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
@@ -18,10 +20,23 @@ import lombok.Setter;
 public class RecipeFoodCreateDto {
 
 	@NotNull
-	@Positive
-	private BigDecimal quantity = BigDecimal.valueOf(100);
+	@NotEmpty
+	@Valid
+	private List<FoodQuantityPair> foods;
 
-	@NotNull
-	private List<Integer> foodIds;
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class FoodQuantityPair {
+
+		@NotNull
+		private Integer foodId;
+
+		@NotNull
+		@Positive
+		private BigDecimal quantity;
+
+	}
 
 }

@@ -42,7 +42,8 @@ public class RecipeFoodControllerAddTest {
 	void addFoodToRecipe() throws Exception {
 		Utils.setUserContext(1);
 
-		var request = new RecipeFoodCreateDto(BigDecimal.valueOf(100), List.of(1));
+		var request = new RecipeFoodCreateDto(
+				List.of(new RecipeFoodCreateDto.FoodQuantityPair(1, BigDecimal.valueOf(100))));
 
 		mockMvc
 			.perform(post("/api/recipe-food/4/add").contentType(MediaType.APPLICATION_JSON)
@@ -56,7 +57,8 @@ public class RecipeFoodControllerAddTest {
 	void addFoodToRecipeAsAdmin() throws Exception {
 		Utils.setAdminContext(2);
 
-		var request = new RecipeFoodCreateDto(BigDecimal.valueOf(100), List.of(1));
+		var request = new RecipeFoodCreateDto(
+				List.of(new RecipeFoodCreateDto.FoodQuantityPair(1, BigDecimal.valueOf(100))));
 
 		mockMvc
 			.perform(post("/api/recipe-food/4/add").contentType(MediaType.APPLICATION_JSON)
@@ -70,7 +72,9 @@ public class RecipeFoodControllerAddTest {
 	void addMultipleFoodsToRecipe() throws Exception {
 		Utils.setUserContext(1);
 
-		var request = new RecipeFoodCreateDto(BigDecimal.valueOf(100), List.of(1, 2));
+		var request = new RecipeFoodCreateDto(
+				List.of(new RecipeFoodCreateDto.FoodQuantityPair(1, BigDecimal.valueOf(100)),
+						new RecipeFoodCreateDto.FoodQuantityPair(2, BigDecimal.valueOf(150))));
 
 		mockMvc
 			.perform(post("/api/recipe-food/4/add").contentType(MediaType.APPLICATION_JSON)
@@ -84,7 +88,8 @@ public class RecipeFoodControllerAddTest {
 	void addFoodToRecipeNotOwnerOrAdmin() throws Exception {
 		Utils.setUserContext(3);
 
-		var request = new RecipeFoodCreateDto(BigDecimal.valueOf(100), List.of(1));
+		var request = new RecipeFoodCreateDto(
+				List.of(new RecipeFoodCreateDto.FoodQuantityPair(1, BigDecimal.valueOf(100))));
 
 		mockMvc
 			.perform(post("/api/recipe-food/4/add").contentType(MediaType.APPLICATION_JSON)
@@ -98,7 +103,8 @@ public class RecipeFoodControllerAddTest {
 	void addFoodToRecipeNotFound() throws Exception {
 		Utils.setAdminContext(2);
 
-		var request = new RecipeFoodCreateDto(BigDecimal.valueOf(100), List.of(1));
+		var request = new RecipeFoodCreateDto(
+				List.of(new RecipeFoodCreateDto.FoodQuantityPair(1, BigDecimal.valueOf(100))));
 
 		mockMvc
 			.perform(post("/api/recipe-food/999/add").contentType(MediaType.APPLICATION_JSON)
@@ -112,7 +118,8 @@ public class RecipeFoodControllerAddTest {
 	void addFoodToRecipeFoodNotFound() throws Exception {
 		Utils.setAdminContext(2);
 
-		var request = new RecipeFoodCreateDto(BigDecimal.valueOf(100), List.of(999));
+		var request = new RecipeFoodCreateDto(
+				List.of(new RecipeFoodCreateDto.FoodQuantityPair(999, BigDecimal.valueOf(100))));
 
 		mockMvc
 			.perform(post("/api/recipe-food/1/add").contentType(MediaType.APPLICATION_JSON)
@@ -126,7 +133,8 @@ public class RecipeFoodControllerAddTest {
 	void addFoodToRecipeAlreadyAdded() throws Exception {
 		Utils.setUserContext(1);
 
-		var request = new RecipeFoodCreateDto(BigDecimal.valueOf(100), List.of(1));
+		var request = new RecipeFoodCreateDto(
+				List.of(new RecipeFoodCreateDto.FoodQuantityPair(1, BigDecimal.valueOf(100))));
 
 		mockMvc
 			.perform(post("/api/recipe-food/1/add").contentType(MediaType.APPLICATION_JSON)

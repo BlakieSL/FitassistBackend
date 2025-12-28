@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import source.code.dto.request.recipe.FilterRecipesByFoodsDto;
 import source.code.dto.request.recipe.RecipeFoodCreateDto;
+import source.code.dto.request.recipe.RecipeFoodUpdateDto;
 import source.code.dto.response.food.FoodSummaryDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.exception.NotUniqueRecordException;
@@ -106,13 +107,15 @@ public class RecipeFoodServiceTest {
 		recipe = new Recipe();
 		food = mock(Food.class);
 		recipeFood = RecipeFood.of(BigDecimal.valueOf(100), recipe, food);
-		createDto = new RecipeFoodCreateDto(BigDecimal.valueOf(100), List.of(foodId));
+		createDto = new RecipeFoodCreateDto(
+				List.of(new RecipeFoodCreateDto.FoodQuantityPair(foodId, BigDecimal.valueOf(100))));
 		patch = mock(JsonMergePatch.class);
 		foodSummaryDto = new FoodSummaryDto();
 	}
 
 	@Test
 	void saveFoodToRecipe_shouldSaveFoodToRecipe() {
+		when(food.getId()).thenReturn(foodId);
 		when(recipeFoodRepository.findByRecipeIdAndFoodIds(recipeId, List.of(foodId))).thenReturn(List.of());
 		when(repositoryHelper.find(recipeRepository, Recipe.class, recipeId)).thenReturn(recipe);
 		when(foodRepository.findAllById(List.of(foodId))).thenReturn(List.of(food));
@@ -156,13 +159,14 @@ public class RecipeFoodServiceTest {
 
 	@Test
 	void updateFoodRecipe_shouldUpdateFoodRecipe() throws JsonPatchException, JsonProcessingException {
+		RecipeFoodUpdateDto updateDto = new RecipeFoodUpdateDto(BigDecimal.valueOf(300));
 		when(recipeFoodRepository.findByRecipeIdAndFoodId(recipeId, foodId)).thenReturn(Optional.of(recipeFood));
-		doReturn(createDto).when(jsonPatchService).createFromPatch(eq(patch), eq(RecipeFoodCreateDto.class));
+		doReturn(updateDto).when(jsonPatchService).createFromPatch(eq(patch), eq(RecipeFoodUpdateDto.class));
 
 		recipeFoodService.updateFoodRecipe(recipeId, foodId, patch);
 
-		verify(validationService).validate(createDto);
-		verify(recipeFoodMapper).update(recipeFood, createDto);
+		verify(validationService).validate(updateDto);
+		verify(recipeFoodMapper).update(recipeFood, updateDto);
 		verify(recipeFoodRepository).save(recipeFood);
 	}
 
