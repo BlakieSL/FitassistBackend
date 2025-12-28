@@ -11,16 +11,16 @@ import source.code.dto.response.category.CategoryResponseDto;
 @NoArgsConstructor
 public class FoodSearchResponseDto extends SearchResponseDto {
 
-	private FoodMacros macros;
+	private FoodMacros foodMacros;
 
 	private String firstImageUrl;
 
 	private CategoryResponseDto category;
 
-	public FoodSearchResponseDto(Integer id, String name, FoodMacros macros, String firstImageUrl,
-			CategoryResponseDto category) {
+	public FoodSearchResponseDto(Integer id, String name, FoodMacros foodMacros, String firstImageUrl,
+								 CategoryResponseDto category) {
 		super(id, name, "Food");
-		this.macros = macros;
+		this.foodMacros = foodMacros;
 		this.firstImageUrl = firstImageUrl;
 		this.category = category;
 	}
