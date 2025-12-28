@@ -81,16 +81,31 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 	@Override
 	@CacheEvict(value = { CacheNames.FOODS_BY_RECIPE }, allEntries = true)
 	@Transactional
-	public void saveFoodToRecipe(int recipeId, int foodId, RecipeFoodCreateDto request) {
-		if (isAlreadyAdded(recipeId, foodId)) {
-			throw new NotUniqueRecordException(RecipeFood.class, recipeId, foodId);
-		}
+	public void saveFoodToRecipe(int recipeId, RecipeFoodCreateDto request) {
+		List<Integer> foodIds = request.getFoodIds();
+
+		isAlreadyAdded(recipeId, foodIds);
 
 		Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
-		Food food = repositoryHelper.find(foodRepository, Food.class, foodId);
-		RecipeFood recipeFood = RecipeFood.of(request.getQuantity(), recipe, food);
+		List<Food> foods = foodRepository.findAllById(foodIds);
 
-		recipeFoodRepository.save(recipeFood);
+		if (foods.size() != foodIds.size()) {
+			throw RecordNotFoundException.of(Food.class);
+		}
+
+		List<RecipeFood> recipeFoods = foods.stream()
+			.map(food -> RecipeFood.of(request.getQuantity(), recipe, food))
+			.toList();
+
+		recipeFoodRepository.saveAll(recipeFoods);
+	}
+
+	private void isAlreadyAdded(int recipeId, List<Integer> foodIds) {
+		List<RecipeFood> existingRecipeFoods = recipeFoodRepository.findByRecipeIdAndFoodIds(recipeId, foodIds);
+		if (!existingRecipeFoods.isEmpty()) {
+			int existingFoodId = existingRecipeFoods.getFirst().getFood().getId();
+			throw new NotUniqueRecordException(RecipeFood.class, recipeId, existingFoodId);
+		}
 	}
 
 	@Override
@@ -147,5 +162,4 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 	private boolean isAlreadyAdded(int recipeId, int foodId) {
 		return recipeFoodRepository.existsByRecipeIdAndFoodId(recipeId, foodId);
 	}
-
 }
