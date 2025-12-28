@@ -17,6 +17,7 @@ import source.code.dto.pojo.FilterCriteria;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.recipe.FilterRecipesByFoodsDto;
 import source.code.dto.request.recipe.RecipeFoodCreateDto;
+import source.code.dto.request.recipe.RecipeFoodUpdateDto;
 import source.code.dto.response.food.FoodSummaryDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.exception.NotUniqueRecordException;
@@ -82,7 +83,10 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 	@CacheEvict(value = { CacheNames.FOODS_BY_RECIPE }, allEntries = true)
 	@Transactional
 	public void saveFoodToRecipe(int recipeId, RecipeFoodCreateDto request) {
-		List<Integer> foodIds = request.getFoodIds();
+		List<Integer> foodIds = request.getFoods()
+			.stream()
+			.map(RecipeFoodCreateDto.FoodQuantityPair::getFoodId)
+			.toList();
 
 		isAlreadyAdded(recipeId, foodIds);
 
@@ -93,9 +97,13 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 			throw RecordNotFoundException.of(Food.class);
 		}
 
-		List<RecipeFood> recipeFoods = foods.stream()
-			.map(food -> RecipeFood.of(request.getQuantity(), recipe, food))
-			.toList();
+		List<RecipeFood> recipeFoods = request.getFoods().stream().map(pair -> {
+			Food food = foods.stream()
+				.filter(f -> f.getId().equals(pair.getFoodId()))
+				.findFirst()
+				.orElseThrow(() -> RecordNotFoundException.of(Food.class, pair.getFoodId()));
+			return RecipeFood.of(pair.getQuantity(), recipe, food);
+		}).toList();
 
 		recipeFoodRepository.saveAll(recipeFoods);
 	}
@@ -115,7 +123,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 			throws JsonPatchException, JsonProcessingException {
 
 		RecipeFood recipeFood = find(recipeId, foodId);
-		RecipeFoodCreateDto patchedDto = jsonPatchService.createFromPatch(patch, RecipeFoodCreateDto.class);
+		RecipeFoodUpdateDto patchedDto = jsonPatchService.createFromPatch(patch, RecipeFoodUpdateDto.class);
 
 		validationService.validate(patchedDto);
 		recipeFoodMapper.update(recipeFood, patchedDto);
