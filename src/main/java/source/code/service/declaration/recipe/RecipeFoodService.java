@@ -15,7 +15,7 @@ import source.code.dto.response.recipe.RecipeSummaryDto;
 
 public interface RecipeFoodService {
 
-	void saveFoodToRecipe(int recipeId, int foodId, RecipeFoodCreateDto request);
+	void saveFoodToRecipe(int recipeId, RecipeFoodCreateDto request);
 
 	void updateFoodRecipe(int recipeId, int foodId, JsonMergePatch patch)
 			throws JsonPatchException, JsonProcessingException;

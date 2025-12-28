@@ -25,6 +25,13 @@ public interface RecipeFoodRepository extends JpaRepository<RecipeFood, Integer>
 	Optional<RecipeFood> findByRecipeIdAndFoodId(int recipeId, int foodId);
 
 	@Query("""
+			SELECT rf
+			FROM RecipeFood rf
+			WHERE rf.recipe.id = :recipeId AND rf.food.id IN :foodIds
+			""")
+	List<RecipeFood> findByRecipeIdAndFoodIds(int recipeId, List<Integer> foodIds);
+
+	@Query("""
 			    SELECT rf.recipe.id as recipeId, COUNT(rf) as ingredientCount
 			    FROM RecipeFood rf
 			    WHERE rf.recipe.id IN :recipeIds
