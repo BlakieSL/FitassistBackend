@@ -28,14 +28,14 @@ public class RecipeFoodController {
 
 	private final RecipeFoodService recipeFoodService;
 
-
 	public RecipeFoodController(RecipeFoodService recipeFoodService) {
 		this.recipeFoodService = recipeFoodService;
 	}
 
 	@RecipeOwnerOrAdmin
 	@PostMapping("/{recipeId}/add")
-	public ResponseEntity<Void> addFoodToRecipe(@PathVariable int recipeId, @Valid @RequestBody RecipeFoodCreateDto request) {
+	public ResponseEntity<Void> addFoodToRecipe(@PathVariable int recipeId,
+			@Valid @RequestBody RecipeFoodCreateDto request) {
 		recipeFoodService.saveFoodToRecipe(recipeId, request);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}

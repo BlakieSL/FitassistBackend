@@ -162,4 +162,5 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 	private boolean isAlreadyAdded(int recipeId, int foodId) {
 		return recipeFoodRepository.existsByRecipeIdAndFoodId(recipeId, foodId);
 	}
+
 }
