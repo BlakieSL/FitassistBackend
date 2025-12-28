@@ -100,58 +100,61 @@ public class RecipeFoodServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		recipe = new Recipe();
-		food = new Food();
-		recipeFood = RecipeFood.of(BigDecimal.valueOf(100), recipe, food);
-		createDto = new RecipeFoodCreateDto(BigDecimal.valueOf(100));
-		patch = mock(JsonMergePatch.class);
-		foodSummaryDto = new FoodSummaryDto();
 		recipeId = 1;
 		foodId = 1;
+
+		recipe = new Recipe();
+		food = mock(Food.class);
+		recipeFood = RecipeFood.of(BigDecimal.valueOf(100), recipe, food);
+		createDto = new RecipeFoodCreateDto(BigDecimal.valueOf(100), List.of(foodId));
+		patch = mock(JsonMergePatch.class);
+		foodSummaryDto = new FoodSummaryDto();
 	}
 
 	@Test
 	void saveFoodToRecipe_shouldSaveFoodToRecipe() {
+		when(recipeFoodRepository.findByRecipeIdAndFoodIds(recipeId, List.of(foodId))).thenReturn(List.of());
 		when(repositoryHelper.find(recipeRepository, Recipe.class, recipeId)).thenReturn(recipe);
-		when(repositoryHelper.find(foodRepository, Food.class, foodId)).thenReturn(food);
-		when(recipeFoodRepository.existsByRecipeIdAndFoodId(recipeId, foodId)).thenReturn(false);
+		when(foodRepository.findAllById(List.of(foodId))).thenReturn(List.of(food));
 
-		recipeFoodService.saveFoodToRecipe(recipeId, foodId, createDto);
+		recipeFoodService.saveFoodToRecipe(recipeId, createDto);
 
-		verify(recipeFoodRepository).save(any(RecipeFood.class));
+		verify(recipeFoodRepository).saveAll(anyList());
 	}
 
 	@Test
 	void saveFoodToRecipe_shouldThrowExceptionWhenFoodAlreadyAdded() {
-		when(recipeFoodRepository.existsByRecipeIdAndFoodId(recipeId, foodId)).thenReturn(true);
+		when(food.getId()).thenReturn(foodId);
+		when(recipeFoodRepository.findByRecipeIdAndFoodIds(recipeId, List.of(foodId))).thenReturn(List.of(recipeFood));
 
 		assertThrows(NotUniqueRecordException.class,
-				() -> recipeFoodService.saveFoodToRecipe(recipeId, foodId, createDto));
+				() -> recipeFoodService.saveFoodToRecipe(recipeId, createDto));
 
-		verify(recipeFoodRepository, never()).save(any(RecipeFood.class));
+		verify(recipeFoodRepository, never()).saveAll(anyList());
 	}
 
 	@Test
 	void saveFoodToRecipe_shouldThrowExceptionWhenRecipeNotFound() {
+		when(recipeFoodRepository.findByRecipeIdAndFoodIds(recipeId, List.of(foodId))).thenReturn(List.of());
 		when(repositoryHelper.find(recipeRepository, Recipe.class, recipeId))
 			.thenThrow(RecordNotFoundException.of(Recipe.class, recipeId));
 
 		assertThrows(RecordNotFoundException.class,
-				() -> recipeFoodService.saveFoodToRecipe(recipeId, foodId, createDto));
+				() -> recipeFoodService.saveFoodToRecipe(recipeId, createDto));
 
-		verify(recipeFoodRepository, never()).save(any(RecipeFood.class));
+		verify(recipeFoodRepository, never()).saveAll(anyList());
 	}
 
 	@Test
 	void saveFoodToRecipe_shouldThrowExceptionWhenFoodNotFound() {
+		when(recipeFoodRepository.findByRecipeIdAndFoodIds(recipeId, List.of(foodId))).thenReturn(List.of());
 		when(repositoryHelper.find(recipeRepository, Recipe.class, recipeId)).thenReturn(recipe);
-		when(repositoryHelper.find(foodRepository, Food.class, foodId))
-			.thenThrow(RecordNotFoundException.of(Food.class, foodId));
+		when(foodRepository.findAllById(List.of(foodId))).thenReturn(List.of());
 
 		assertThrows(RecordNotFoundException.class,
-				() -> recipeFoodService.saveFoodToRecipe(recipeId, foodId, createDto));
+				() -> recipeFoodService.saveFoodToRecipe(recipeId, createDto));
 
-		verify(recipeFoodRepository, never()).save(any(RecipeFood.class));
+		verify(recipeFoodRepository, never()).saveAll(anyList());
 	}
 
 	@Test
@@ -202,6 +205,7 @@ public class RecipeFoodServiceTest {
 
 		assertEquals(1, result.size());
 		assertSame(foodSummaryDto, result.get(0));
+		verify(foodPopulationService).populate(result);
 	}
 
 	@Test
@@ -211,6 +215,7 @@ public class RecipeFoodServiceTest {
 		List<FoodSummaryDto> result = recipeFoodService.getFoodsByRecipe(recipeId);
 
 		assertTrue(result.isEmpty());
+		verify(foodPopulationService).populate(result);
 	}
 
 	@Test

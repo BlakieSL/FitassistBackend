@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,5 +20,8 @@ public class RecipeFoodCreateDto {
 	@NotNull
 	@Positive
 	private BigDecimal quantity = BigDecimal.valueOf(100);
+
+	@NotNull
+	private List<Integer> foodIds;
 
 }
