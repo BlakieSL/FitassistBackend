@@ -23,6 +23,9 @@ public abstract class AbstractSpecification<T, F extends Enum<F>> implements Spe
 
 	@Override
 	public Predicate toPredicate(@NonNull Root<T> root, CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
+		if (criteria.getFilterKey() == null || criteria.getFilterKey().isEmpty()) {
+			return builder.conjunction();
+		}
 		F field = dependencies.getFieldResolver().resolveField(criteria, getFieldClass());
 		PredicateContext<T> context = new PredicateContext<>(builder, root, query, criteria);
 		return buildPredicateForField(context, field);
