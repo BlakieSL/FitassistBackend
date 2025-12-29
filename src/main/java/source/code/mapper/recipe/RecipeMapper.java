@@ -64,7 +64,7 @@ public abstract class RecipeMapper {
 	@Mapping(target = "liked", ignore = true)
 	@Mapping(target = "disliked", ignore = true)
 	@Mapping(target = "saved", ignore = true)
-	@Mapping(target = "public", ignore = true)
+	@Mapping(target = "public", source = "isPublic")
 	@Mapping(target = "ingredientsCount", ignore = true)
 	@Mapping(target = "categories", source = "recipeCategoryAssociations",
 			qualifiedByName = "mapAssociationsToCategoryResponseDto")

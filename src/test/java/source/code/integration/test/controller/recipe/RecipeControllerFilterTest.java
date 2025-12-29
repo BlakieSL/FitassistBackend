@@ -50,14 +50,14 @@ public class RecipeControllerFilterTest {
 
 	@RecipeSql
 	@Test
-	@DisplayName("POST - /filter - Should filter user's own recipes when isPublic = false by category")
+	@DisplayName("POST - /filter - Should filter public recipes and user's private recipes when isPublic = false by category")
 	void filterPrivateRecipesByCategory() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("CATEGORY", 1, FilterOperation.EQUAL, false);
 		String json = objectMapper.writeValueAsString(filterDto);
 
 		mockMvc.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON).content(json))
-			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(2)));
+			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(3)));
 	}
 
 	@RecipeSql
