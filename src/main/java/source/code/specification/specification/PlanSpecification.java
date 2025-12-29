@@ -50,6 +50,10 @@ public class PlanSpecification extends AbstractSpecification<Plan, PlanField> {
 		Predicate visibilityPredicate = dependencies.getVisibilityPredicateBuilder()
 			.buildVisibilityPredicate(builder, root, criteria, USER_FIELD, ID_FIELD, IS_PUBLIC_FIELD);
 
+		if (criteria.getFilterKey() == null || criteria.getFilterKey().isEmpty()) {
+			return visibilityPredicate;
+		}
+
 		PlanField field = dependencies.getFieldResolver().resolveField(criteria, PlanField.class);
 		PredicateContext<Plan> context = new PredicateContext<>(builder, root, query, criteria);
 		Predicate fieldPredicate = buildPredicateForField(context, field);
