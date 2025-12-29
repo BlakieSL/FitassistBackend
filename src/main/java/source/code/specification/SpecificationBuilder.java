@@ -31,7 +31,7 @@ public class SpecificationBuilder<T> {
 	public Specification<T> build() {
 		List<FilterCriteria> criteriaList = filterDto.getFilterCriteria();
 		if (criteriaList == null || criteriaList.isEmpty()) {
- 			return specificationFactory.createSpecification(new FilterCriteria(), dependencies);
+			return specificationFactory.createSpecification(new FilterCriteria(), dependencies);
 		}
 
 		Specification<T> result = specificationFactory.createSpecification(criteriaList.get(0), dependencies);
