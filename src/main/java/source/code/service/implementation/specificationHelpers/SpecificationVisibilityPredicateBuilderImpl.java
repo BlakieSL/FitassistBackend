@@ -15,8 +15,9 @@ public class SpecificationVisibilityPredicateBuilderImpl implements Specificatio
 	public <T> Predicate buildVisibilityPredicate(CriteriaBuilder builder, Root<T> root, FilterCriteria criteria,
 			String userField, String idField, String publicField) {
 
-		if (criteria.getIsPublic() != null && !criteria.getIsPublic()) {
-			return builder.equal(root.get(userField).get(idField), AuthorizationUtil.getUserId());
+		if (criteria.getIsPublic() != null && criteria.getIsPublic() == Boolean.FALSE) {
+			return builder.or(builder.isTrue(root.get(publicField)),
+					builder.equal(root.get(userField).get(idField), AuthorizationUtil.getUserId()));
 		}
 		return builder.isTrue(root.get(publicField));
 	}

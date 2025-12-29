@@ -14,10 +14,10 @@ import lombok.Setter;
 public class RecipeInstructionCreateDto {
 
 	@NotNull
-	private short orderIndex;
+	private Short orderIndex;
 
 	@NotBlank
-	private short title;
+	private String title;
 
 	@NotBlank
 	private String text;

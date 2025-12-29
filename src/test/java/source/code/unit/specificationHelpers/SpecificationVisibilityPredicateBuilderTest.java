@@ -60,21 +60,25 @@ public class SpecificationVisibilityPredicateBuilderTest {
 	}
 
 	@Test
-	void buildVisibilityPredicate_shouldReturnUserIdPredicateWhenIsPublicFalse() {
+	void buildVisibilityPredicate_shouldReturnOrPredicateWhenIsPublicFalse() {
 		int userId = 1;
 		criteria.setIsPublic(false);
 
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 		when(root.get("user")).thenReturn(userPath);
 		when(userPath.get("id")).thenReturn(idPath);
+		when(root.get("isPublic")).thenReturn((Path) publicPath);
+		when(criteriaBuilder.isTrue(publicPath)).thenReturn(predicate);
 		when(criteriaBuilder.equal(idPath, userId)).thenReturn(predicate);
+		when(criteriaBuilder.or(any(Predicate.class), any(Predicate.class))).thenReturn(predicate);
 
 		Predicate result = predicateBuilder.buildVisibilityPredicate(criteriaBuilder, root, criteria, "user", "id",
 				"isPublic");
 
 		assertEquals(predicate, result);
+		verify(criteriaBuilder).isTrue(publicPath);
 		verify(criteriaBuilder).equal(idPath, userId);
-		verify(criteriaBuilder, never()).isTrue(any());
+		verify(criteriaBuilder).or(any(Predicate.class), any(Predicate.class));
 	}
 
 	@Test
@@ -114,7 +118,10 @@ public class SpecificationVisibilityPredicateBuilderTest {
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 		when(root.get("author")).thenReturn(userPath);
 		when(userPath.get("userId")).thenReturn(idPath);
+		when(root.get("visible")).thenReturn((Path) publicPath);
+		when(criteriaBuilder.isTrue(publicPath)).thenReturn(predicate);
 		when(criteriaBuilder.equal(idPath, userId)).thenReturn(predicate);
+		when(criteriaBuilder.or(any(Predicate.class), any(Predicate.class))).thenReturn(predicate);
 
 		Predicate result = predicateBuilder.buildVisibilityPredicate(criteriaBuilder, root, criteria, "author",
 				"userId", "visible");
@@ -122,6 +129,7 @@ public class SpecificationVisibilityPredicateBuilderTest {
 		assertEquals(predicate, result);
 		verify(root).get("author");
 		verify(userPath).get("userId");
+		verify(root).get("visible");
 	}
 
 }
