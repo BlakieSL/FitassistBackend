@@ -51,14 +51,14 @@ public class PlanControllerFilterTest {
 
 	@PlanSql
 	@Test
-	@DisplayName("POST - /filter - Should retrieve private plans when isPublic = false filtered by structure type")
+	@DisplayName("POST - /filter - Should retrieve public plans and user's private plans when isPublic = false filtered by structure type")
 	void filterPrivatePlansByStructureType() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("STRUCTURE_TYPE", "WEEKLY_SPLIT", FilterOperation.EQUAL, false);
 		String json = objectMapper.writeValueAsString(filterDto);
 
 		mockMvc.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON).content(json))
-			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(2)));
+			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(3)));
 	}
 
 	@PlanSql
