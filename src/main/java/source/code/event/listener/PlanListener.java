@@ -26,8 +26,9 @@ public class PlanListener {
 	public void handlePlanCreate(PlanCreateEvent event) {
 		Plan plan = event.getPlan();
 
-		clearCommonCache(plan);
-		luceneService.addEntity(plan);
+		if (plan.getIsPublic()) {
+			luceneService.addEntity(plan);
+		}
 	}
 
 	@EventListener
@@ -35,7 +36,9 @@ public class PlanListener {
 		Plan plan = event.getPlan();
 
 		clearCache(plan);
-		luceneService.updateEntity(plan);
+		if (plan.getIsPublic()) {
+			luceneService.updateEntity(plan);
+		}
 	}
 
 	@EventListener
@@ -48,11 +51,6 @@ public class PlanListener {
 
 	private void clearCache(Plan plan) {
 		cacheService.evictCache(CacheNames.PLANS, plan.getId());
-		clearCommonCache(plan);
-	}
-
-	private void clearCommonCache(Plan plan) {
-		cacheService.clearCache(CacheNames.ALL_PLANS);
 	}
 
 }

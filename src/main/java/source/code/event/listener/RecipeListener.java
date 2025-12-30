@@ -26,7 +26,6 @@ public class RecipeListener {
 	public void handleRecipeCreate(RecipeCreateEvent event) {
 		Recipe recipe = event.getRecipe();
 
-		clearCommonCache(recipe);
 		if (recipe.getIsPublic()) {
 			luceneService.addEntity(recipe);
 		}
@@ -47,18 +46,11 @@ public class RecipeListener {
 		Recipe recipe = event.getRecipe();
 
 		clearCache(recipe);
-		if (recipe.getIsPublic()) {
-			luceneService.deleteEntity(recipe);
-		}
+		luceneService.deleteEntity(recipe);
 	}
 
 	private void clearCache(Recipe recipe) {
 		cacheService.evictCache(CacheNames.RECIPES, recipe.getId());
-		clearCommonCache(recipe);
-	}
-
-	private void clearCommonCache(Recipe recipe) {
-		cacheService.clearCache(CacheNames.ALL_RECIPES);
 	}
 
 }

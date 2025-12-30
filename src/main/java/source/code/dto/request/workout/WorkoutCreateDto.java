@@ -1,10 +1,15 @@
 package source.code.dto.request.workout;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.request.workoutSet.WorkoutSetCreateDto;
+import source.code.dto.request.workoutSet.WorkoutSetNestedCreateDto;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -32,5 +37,8 @@ public class WorkoutCreateDto {
 	@NotNull
 	@PositiveOrZero
 	private Byte restDaysAfter;
+
+	@Valid
+	private List<WorkoutSetNestedCreateDto> workoutSets;
 
 }

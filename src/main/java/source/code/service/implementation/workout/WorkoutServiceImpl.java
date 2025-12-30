@@ -46,9 +46,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 	@Transactional
 	public WorkoutResponseDto createWorkout(WorkoutCreateDto workoutDto) {
 		Workout saved = workoutRepository.save(workoutMapper.toEntity(workoutDto));
-
 		workoutRepository.flush();
-
 		return findAndMap(saved.getId());
 	}
 

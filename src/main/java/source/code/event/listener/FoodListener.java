@@ -26,7 +26,6 @@ public class FoodListener {
 	public void handleFoodCreate(FoodCreateEvent event) {
 		Food food = event.getFood();
 
-		clearCommonCache(food);
 		luceneService.addEntity(food);
 	}
 
@@ -48,11 +47,6 @@ public class FoodListener {
 
 	private void clearCache(Food food) {
 		cacheService.evictCache(CacheNames.FOODS, food.getId());
-		clearCommonCache(food);
-	}
-
-	private void clearCommonCache(Food food) {
-		cacheService.clearCache(CacheNames.ALL_FOODS);
 	}
 
 }

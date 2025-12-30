@@ -26,7 +26,6 @@ public class ExerciseListener {
 	public void handleExerciseCreate(ExerciseCreateEvent event) {
 		Exercise exercise = event.getExercise();
 
-		clearCommonCache(exercise);
 		luceneService.addEntity(exercise);
 	}
 
@@ -48,11 +47,6 @@ public class ExerciseListener {
 
 	private void clearCache(Exercise exercise) {
 		cacheService.evictCache(CacheNames.EXERCISES, exercise.getId());
-		clearCommonCache(exercise);
-	}
-
-	private void clearCommonCache(Exercise exercise) {
-		cacheService.clearCache(CacheNames.ALL_EXERCISES);
 	}
 
 }
