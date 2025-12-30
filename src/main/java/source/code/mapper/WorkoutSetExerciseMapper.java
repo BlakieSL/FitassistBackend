@@ -3,6 +3,7 @@ package source.code.mapper;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.workoutSetExercise.WorkoutSetExerciseCreateDto;
+import source.code.dto.request.workoutSetExercise.WorkoutSetExerciseNestedCreateDto;
 import source.code.dto.request.workoutSetExercise.WorkoutSetExerciseUpdateDto;
 import source.code.dto.response.workoutSetExercise.WorkoutSetExerciseResponseDto;
 import source.code.model.exercise.Exercise;
@@ -32,6 +33,11 @@ public abstract class WorkoutSetExerciseMapper {
 	@Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExerciseIdToExercise")
 	@Mapping(target = "id", ignore = true)
 	public abstract WorkoutSetExercise toEntity(WorkoutSetExerciseCreateDto createDto);
+
+	@Mapping(target = "workoutSet", ignore = true)
+	@Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExerciseIdToExercise")
+	@Mapping(target = "id", ignore = true)
+	public abstract WorkoutSetExercise toEntityNested(WorkoutSetExerciseNestedCreateDto createDto);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "workoutSet", source = "workoutSetId", qualifiedByName = "mapWorkoutSetIdToWorkoutSet")
