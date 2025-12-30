@@ -1,5 +1,6 @@
 package source.code.dto.request.plan;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -38,6 +39,7 @@ public class PlanCreateDto {
 
 	private List<Integer> categoryIds;
 
+	@Valid
 	private List<PlanInstructionCreateDto> instructions;
 
 }
