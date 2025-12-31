@@ -18,6 +18,7 @@ import org.apache.lucene.store.FSDirectory;
 import org.springframework.stereotype.Service;
 import source.code.helper.IndexedEntity;
 import source.code.model.activity.Activity;
+import source.code.model.exercise.Exercise;
 import source.code.model.food.Food;
 import source.code.service.declaration.search.LuceneIndexService;
 
@@ -86,30 +87,52 @@ public class LuceneIndexServiceImpl implements LuceneIndexService {
 		doc.add(new TextField("name", entity.getName(), Field.Store.YES));
 		doc.add(new StringField("type", entity.getClassName(), Field.Store.YES));
 
-		if (entity instanceof Food food) {
-			doc.add(new StoredField("calories", food.getCalories().toString()));
-			doc.add(new StoredField("protein", food.getProtein().toString()));
-			doc.add(new StoredField("fat", food.getFat().toString()));
-			doc.add(new StoredField("carbohydrates", food.getCarbohydrates().toString()));
+		switch (entity) {
+			case Food food -> {
+				doc.add(new StoredField("calories", food.getCalories().toString()));
+				doc.add(new StoredField("protein", food.getProtein().toString()));
+				doc.add(new StoredField("fat", food.getFat().toString()));
+				doc.add(new StoredField("carbohydrates", food.getCarbohydrates().toString()));
 
-			if (!food.getMediaList().isEmpty()) {
-				String firstImageName = food.getMediaList().getFirst().getImageName();
-				doc.add(new StoredField("imageName", firstImageName));
+				if (!food.getMediaList().isEmpty()) {
+					String firstImageName = food.getMediaList().getFirst().getImageName();
+					doc.add(new StoredField("imageName", firstImageName));
+				}
+
+				doc.add(new StoredField("categoryId", food.getFoodCategory().getId().toString()));
+				doc.add(new StoredField("categoryName", food.getFoodCategory().getName()));
 			}
+			case Activity activity -> {
+				doc.add(new StoredField("met", activity.getMet().toString()));
 
-			doc.add(new StoredField("categoryId", food.getFoodCategory().getId().toString()));
-			doc.add(new StoredField("categoryName", food.getFoodCategory().getName()));
-		}
-		else if (entity instanceof Activity activity) {
-			doc.add(new StoredField("met", activity.getMet().toString()));
+				if (!activity.getMediaList().isEmpty()) {
+					String firstImageName = activity.getMediaList().getFirst().getImageName();
+					doc.add(new StoredField("imageName", firstImageName));
+				}
 
-			if (!activity.getMediaList().isEmpty()) {
-				String firstImageName = activity.getMediaList().getFirst().getImageName();
-				doc.add(new StoredField("imageName", firstImageName));
+				doc.add(new StoredField("categoryId", activity.getActivityCategory().getId().toString()));
+				doc.add(new StoredField("categoryName", activity.getActivityCategory().getName()));
 			}
+			case Exercise exercise -> {
+				if (!exercise.getMediaList().isEmpty()) {
+					String firstImageName = exercise.getMediaList().getFirst().getImageName();
+					doc.add(new StoredField("imageName", firstImageName));
+				}
 
-			doc.add(new StoredField("categoryId", activity.getActivityCategory().getId().toString()));
-			doc.add(new StoredField("categoryName", activity.getActivityCategory().getName()));
+				doc.add(new StoredField("expertiseLevelId", exercise.getExpertiseLevel().getId().toString()));
+				doc.add(new StoredField("expertiseLevelName", exercise.getExpertiseLevel().getName()));
+
+				doc.add(new StoredField("equipmentId", exercise.getEquipment().getId().toString()));
+				doc.add(new StoredField("equipmentName", exercise.getEquipment().getName()));
+
+				doc.add(new StoredField("mechanicsTypeId", exercise.getMechanicsType().getId().toString()));
+				doc.add(new StoredField("mechanicsTypeName", exercise.getMechanicsType().getName()));
+
+				doc.add(new StoredField("forceTypeId", exercise.getForceType().getId().toString()));
+				doc.add(new StoredField("forceTypeName", exercise.getForceType().getName()));
+			}
+			default -> {
+			}
 		}
 
 		return doc;

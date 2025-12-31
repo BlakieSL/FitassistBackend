@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import source.code.dto.pojo.FoodMacros;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.search.ActivitySearchResponseDto;
+import source.code.dto.response.search.ExerciseSearchResponseDto;
 import source.code.dto.response.search.FoodSearchResponseDto;
 import source.code.dto.response.search.GenericSearchResponseDto;
 import source.code.dto.response.search.SearchResponseDto;
@@ -88,7 +89,8 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
 		return switch (type) {
 			case "Food" -> convertToFoodSearchDto(doc);
 			case "Activity" -> convertToActivitySearchDto(doc);
-			case "Exercise", "Recipe", "Plan" -> convertToGenericSearchDto(doc);
+			case "Exercise" -> convertToExerciseSearchDto(doc);
+			case "Recipe", "Plan" -> convertToGenericSearchDto(doc);
 			default -> throw new InvalidFilterValueException(type);
 		};
 	}
@@ -127,6 +129,32 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
 				doc.get("categoryName"));
 
 		return new ActivitySearchResponseDto(id, name, met, firstImageUrl, category);
+	}
+
+	private ExerciseSearchResponseDto convertToExerciseSearchDto(Document doc) {
+		int id = Integer.parseInt(doc.get("id"));
+		String name = doc.get("name");
+
+		String firstImageUrl = null;
+		String imageName = doc.get("imageName");
+		if (imageName != null) {
+			firstImageUrl = s3Service.getImage(imageName);
+		}
+
+		CategoryResponseDto expertiseLevel = new CategoryResponseDto(
+				Integer.parseInt(doc.get("expertiseLevelId")), doc.get("expertiseLevelName"));
+
+		CategoryResponseDto equipment = new CategoryResponseDto(Integer.parseInt(doc.get("equipmentId")),
+				doc.get("equipmentName"));
+
+		CategoryResponseDto mechanicsType = new CategoryResponseDto(Integer.parseInt(doc.get("mechanicsTypeId")),
+				doc.get("mechanicsTypeName"));
+
+		CategoryResponseDto forceType = new CategoryResponseDto(Integer.parseInt(doc.get("forceTypeId")),
+				doc.get("forceTypeName"));
+
+		return new ExerciseSearchResponseDto(id, name, firstImageUrl, expertiseLevel, equipment, mechanicsType,
+				forceType);
 	}
 
 	private GenericSearchResponseDto convertToGenericSearchDto(Document doc) {

@@ -20,9 +20,10 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Integer>, Jp
 	@Override
 	Page<Exercise> findAll(Specification<Exercise> spec, @NotNull Pageable pageable);
 
-	@EntityGraph(value = "Exercise.withoutAssociations")
-	@Query("SELECT e FROM Exercise e")
-	List<Exercise> findAllWithoutAssociations();
+	@EntityGraph(value = "Exercise.summary")
+	@NotNull
+	@Override
+	List<Exercise> findAll();
 
 	@Query("""
 			    SELECT e FROM Exercise e
@@ -37,5 +38,16 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Integer>, Jp
 			    WHERE e.id = :id
 			""")
 	Optional<Exercise> findByIdWithDetails(int id);
+
+	@Query("""
+			    SELECT e FROM Exercise e
+			    LEFT JOIN FETCH e.expertiseLevel
+			    LEFT JOIN FETCH e.equipment
+			    LEFT JOIN FETCH e.mechanicsType
+			    LEFT JOIN FETCH e.forceType
+			    LEFT JOIN FETCH e.mediaList
+			    WHERE e.id = :id
+			""")
+	Optional<Exercise> findByIdWithAssociationsForIndexing(int id);
 
 }

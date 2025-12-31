@@ -93,7 +93,10 @@ public class ActivityServiceImpl implements ActivityService {
 
 		eventPublisher.publishEvent(ActivityCreateEvent.of(this, activity));
 
-		return findAndMap(activity.getId());
+		var responseDto = activityMapper.toDetailedResponseDto(activity);
+		activityPopulationService.populate(responseDto);
+
+		return responseDto;
 	}
 
 	@Override
