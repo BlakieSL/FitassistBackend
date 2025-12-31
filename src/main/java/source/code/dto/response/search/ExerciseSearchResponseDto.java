@@ -20,9 +20,8 @@ public class ExerciseSearchResponseDto extends SearchResponseDto {
 
 	private CategoryResponseDto forceType;
 
-	public ExerciseSearchResponseDto(Integer id, String name, String firstImageUrl,
-			CategoryResponseDto expertiseLevel, CategoryResponseDto equipment, CategoryResponseDto mechanicsType,
-			CategoryResponseDto forceType) {
+	public ExerciseSearchResponseDto(Integer id, String name, String firstImageUrl, CategoryResponseDto expertiseLevel,
+			CategoryResponseDto equipment, CategoryResponseDto mechanicsType, CategoryResponseDto forceType) {
 		super(id, name, "Exercise");
 		this.firstImageUrl = firstImageUrl;
 		this.expertiseLevel = expertiseLevel;
