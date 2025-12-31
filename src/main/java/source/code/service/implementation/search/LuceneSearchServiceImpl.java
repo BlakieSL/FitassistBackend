@@ -141,8 +141,8 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
 			firstImageUrl = s3Service.getImage(imageName);
 		}
 
-		CategoryResponseDto expertiseLevel = new CategoryResponseDto(
-				Integer.parseInt(doc.get("expertiseLevelId")), doc.get("expertiseLevelName"));
+		CategoryResponseDto expertiseLevel = new CategoryResponseDto(Integer.parseInt(doc.get("expertiseLevelId")),
+				doc.get("expertiseLevelName"));
 
 		CategoryResponseDto equipment = new CategoryResponseDto(Integer.parseInt(doc.get("equipmentId")),
 				doc.get("equipmentName"));

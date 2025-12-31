@@ -154,8 +154,7 @@ public class ExerciseServiceTest {
 		exercise.setId(exerciseId);
 		when(exerciseMapper.toEntity(createDto)).thenReturn(exercise);
 		when(exerciseRepository.save(exercise)).thenReturn(exercise);
-		when(exerciseRepository.findByIdWithAssociationsForIndexing(exerciseId))
-			.thenReturn(Optional.of(exercise));
+		when(exerciseRepository.findByIdWithAssociationsForIndexing(exerciseId)).thenReturn(Optional.of(exercise));
 		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
 		when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
 
@@ -173,8 +172,7 @@ public class ExerciseServiceTest {
 		exercise.setId(exerciseId);
 		when(exerciseMapper.toEntity(createDto)).thenReturn(exercise);
 		when(exerciseRepository.save(exercise)).thenReturn(exercise);
-		when(exerciseRepository.findByIdWithAssociationsForIndexing(exerciseId))
-			.thenReturn(Optional.of(exercise));
+		when(exerciseRepository.findByIdWithAssociationsForIndexing(exerciseId)).thenReturn(Optional.of(exercise));
 		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(java.util.Optional.of(exercise));
 		when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
 
@@ -190,8 +188,7 @@ public class ExerciseServiceTest {
 		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
 		when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class)).thenReturn(patchedDto);
 		when(exerciseRepository.save(exercise)).thenReturn(exercise);
-		when(exerciseRepository.findByIdWithAssociationsForIndexing(exerciseId))
-			.thenReturn(Optional.of(exercise));
+		when(exerciseRepository.findByIdWithAssociationsForIndexing(exerciseId)).thenReturn(Optional.of(exercise));
 
 		exerciseService.updateExercise(exerciseId, patch);
 
@@ -208,8 +205,7 @@ public class ExerciseServiceTest {
 		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
 		when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class)).thenReturn(patchedDto);
 		when(exerciseRepository.save(exercise)).thenReturn(exercise);
-		when(exerciseRepository.findByIdWithAssociationsForIndexing(exerciseId))
-			.thenReturn(Optional.of(exercise));
+		when(exerciseRepository.findByIdWithAssociationsForIndexing(exerciseId)).thenReturn(Optional.of(exercise));
 
 		exerciseService.updateExercise(exerciseId, patch);
 
