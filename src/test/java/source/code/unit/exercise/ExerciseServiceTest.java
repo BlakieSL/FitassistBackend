@@ -154,7 +154,9 @@ public class ExerciseServiceTest {
 		exercise.setId(exerciseId);
 		when(exerciseMapper.toEntity(createDto)).thenReturn(exercise);
 		when(exerciseRepository.save(exercise)).thenReturn(exercise);
-		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(java.util.Optional.of(exercise));
+		when(exerciseRepository.findByIdWithAssociationsForIndexing(exerciseId))
+			.thenReturn(Optional.of(exercise));
+		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
 		when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
 
 		ExerciseResponseDto result = exerciseService.createExercise(createDto);
@@ -171,6 +173,8 @@ public class ExerciseServiceTest {
 		exercise.setId(exerciseId);
 		when(exerciseMapper.toEntity(createDto)).thenReturn(exercise);
 		when(exerciseRepository.save(exercise)).thenReturn(exercise);
+		when(exerciseRepository.findByIdWithAssociationsForIndexing(exerciseId))
+			.thenReturn(Optional.of(exercise));
 		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(java.util.Optional.of(exercise));
 		when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
 
@@ -182,9 +186,12 @@ public class ExerciseServiceTest {
 
 	@Test
 	void updateExercise_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+		exercise.setId(exerciseId);
 		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
 		when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class)).thenReturn(patchedDto);
 		when(exerciseRepository.save(exercise)).thenReturn(exercise);
+		when(exerciseRepository.findByIdWithAssociationsForIndexing(exerciseId))
+			.thenReturn(Optional.of(exercise));
 
 		exerciseService.updateExercise(exerciseId, patch);
 
@@ -197,9 +204,12 @@ public class ExerciseServiceTest {
 	void updateExercise_shouldPublishEvent() throws JsonPatchException, JsonProcessingException {
 		ArgumentCaptor<ExerciseUpdateEvent> eventCaptor = ArgumentCaptor.forClass(ExerciseUpdateEvent.class);
 
+		exercise.setId(exerciseId);
 		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
 		when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class)).thenReturn(patchedDto);
 		when(exerciseRepository.save(exercise)).thenReturn(exercise);
+		when(exerciseRepository.findByIdWithAssociationsForIndexing(exerciseId))
+			.thenReturn(Optional.of(exercise));
 
 		exerciseService.updateExercise(exerciseId, patch);
 
@@ -353,23 +363,23 @@ public class ExerciseServiceTest {
 	@Test
 	void getAllExerciseEntities_shouldReturnAllExerciseEntities() {
 		List<Exercise> exercises = List.of(exercise);
-		when(exerciseRepository.findAllWithoutAssociations()).thenReturn(exercises);
+		when(exerciseRepository.findAll()).thenReturn(exercises);
 
 		List<Exercise> result = exerciseService.getAllExerciseEntities();
 
 		assertEquals(exercises, result);
-		verify(exerciseRepository).findAllWithoutAssociations();
+		verify(exerciseRepository).findAll();
 	}
 
 	@Test
 	void getAllExerciseEntities_shouldReturnEmptyListWhenNoExercises() {
 		List<Exercise> exercises = List.of();
-		when(exerciseRepository.findAllWithoutAssociations()).thenReturn(exercises);
+		when(exerciseRepository.findAll()).thenReturn(exercises);
 
 		List<Exercise> result = exerciseService.getAllExerciseEntities();
 
 		assertTrue(result.isEmpty());
-		verify(exerciseRepository).findAllWithoutAssociations();
+		verify(exerciseRepository).findAll();
 	}
 
 }

@@ -111,9 +111,12 @@ public class ExerciseServiceImpl implements ExerciseService {
 	@Transactional
 	public ExerciseResponseDto createExercise(ExerciseCreateDto dto) {
 		Exercise saved = exerciseRepository.save(exerciseMapper.toEntity(dto));
-		applicationEventPublisher.publishEvent(ExerciseCreateEvent.of(this, saved));
 
 		exerciseRepository.flush();
+
+		Exercise exerciseWithMediaAndCategories = exerciseRepository.findByIdWithAssociationsForIndexing(saved.getId())
+			.orElseThrow(() -> RecordNotFoundException.of(Exercise.class, saved.getId()));
+		applicationEventPublisher.publishEvent(ExerciseCreateEvent.of(this, exerciseWithMediaAndCategories));
 
 		return findAndMap(saved.getId());
 	}
@@ -128,9 +131,12 @@ public class ExerciseServiceImpl implements ExerciseService {
 
 		validationService.validate(patchedExerciseUpdateDto);
 		exerciseMapper.updateExerciseFromDto(exercise, patchedExerciseUpdateDto);
-		Exercise savedExercise = exerciseRepository.save(exercise);
+		Exercise saved = exerciseRepository.save(exercise);
 
-		applicationEventPublisher.publishEvent(ExerciseUpdateEvent.of(this, savedExercise));
+		Exercise exerciseWithMediaAndCategories = exerciseRepository.findByIdWithAssociationsForIndexing(saved.getId())
+			.orElseThrow(() -> RecordNotFoundException.of(Exercise.class, saved.getId()));
+
+		applicationEventPublisher.publishEvent(ExerciseUpdateEvent.of(this, exerciseWithMediaAndCategories));
 	}
 
 	@Override
@@ -178,7 +184,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
 	@Override
 	public List<Exercise> getAllExerciseEntities() {
-		return exerciseRepository.findAllWithoutAssociations();
+		return exerciseRepository.findAll();
 	}
 
 	@Override
