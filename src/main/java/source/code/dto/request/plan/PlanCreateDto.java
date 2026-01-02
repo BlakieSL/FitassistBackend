@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.dto.request.text.PlanInstructionCreateDto;
+import source.code.dto.request.text.TextCreateDto;
 import source.code.helper.Enum.model.PlanStructureType;
 
 @Getter
@@ -40,6 +40,6 @@ public class PlanCreateDto {
 	private List<Integer> categoryIds;
 
 	@Valid
-	private List<PlanInstructionCreateDto> instructions;
+	private List<TextCreateDto> instructions;
 
 }

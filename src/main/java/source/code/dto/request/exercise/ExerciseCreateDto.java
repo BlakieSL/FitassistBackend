@@ -10,8 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.dto.request.text.ExerciseInstructionCreateDto;
-import source.code.dto.request.text.ExerciseTipCreateDto;
+import source.code.dto.request.text.TextCreateDto;
 
 @Getter
 @Setter
@@ -45,8 +44,8 @@ public class ExerciseCreateDto {
 
 	private List<Integer> targetMusclesIds;
 
-	private List<ExerciseInstructionCreateDto> instructions;
+	private List<TextCreateDto> instructions;
 
-	private List<ExerciseTipCreateDto> tips;
+	private List<TextCreateDto> tips;
 
 }

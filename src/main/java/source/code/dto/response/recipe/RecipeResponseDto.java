@@ -12,7 +12,7 @@ import lombok.Setter;
 import source.code.dto.pojo.AuthorDto;
 import source.code.dto.pojo.RecipeFoodDto;
 import source.code.dto.response.category.CategoryResponseDto;
-import source.code.dto.response.text.RecipeInstructionResponseDto;
+import source.code.dto.response.text.TextResponseDto;
 
 /**
  * fetched with db (findByIdWithDetails) -> mapper -> populated in createRecipe and
@@ -66,7 +66,7 @@ public class RecipeResponseDto implements Serializable {
 
 	private List<RecipeFoodDto> foods;
 
-	private List<RecipeInstructionResponseDto> instructions;
+	private List<TextResponseDto> instructions;
 
 	private List<CategoryResponseDto> categories;
 

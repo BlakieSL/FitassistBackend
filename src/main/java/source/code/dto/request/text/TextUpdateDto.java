@@ -9,10 +9,14 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExerciseTipUpdateDto {
+public class TextUpdateDto {
 
-	private short orderIndex;
+	private Integer id;
+
+	private Short orderIndex;
 
 	private String text;
+
+	private String title;
 
 }
