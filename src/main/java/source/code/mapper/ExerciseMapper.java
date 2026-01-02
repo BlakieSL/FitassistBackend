@@ -99,7 +99,7 @@ public abstract class ExerciseMapper {
 		if (dto.getInstructions() != null) {
 			List<ExerciseInstruction> instructions = dto.getInstructions().stream().map(instructionDto -> {
 				ExerciseInstruction instruction = ExerciseInstruction.of(instructionDto.getOrderIndex(),
-					instructionDto.getText());
+						instructionDto.getText());
 				instruction.setExercise(exercise);
 				return instruction;
 			}).toList();

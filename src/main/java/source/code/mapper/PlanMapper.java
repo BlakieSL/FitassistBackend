@@ -116,8 +116,7 @@ public abstract class PlanMapper {
 
 		List<PlanCategory> categories = planCategoryRepository.findAllByIdIn(dto.getCategoryIds());
 
-		List<PlanCategoryAssociation> associations = categories
-			.stream()
+		List<PlanCategoryAssociation> associations = categories.stream()
 			.map(category -> PlanCategoryAssociation.createWithPlanAndCategory(plan, category))
 			.toList();
 

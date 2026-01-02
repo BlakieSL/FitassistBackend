@@ -10,4 +10,5 @@ public interface PlanCategoryRepository extends JpaRepository<PlanCategory, Inte
 	boolean existsByIdAndPlanCategoryAssociationsIsNotEmpty(Integer id);
 
 	List<PlanCategory> findAllByIdIn(List<Integer> ids);
+
 }
