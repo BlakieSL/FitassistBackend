@@ -30,9 +30,6 @@ public abstract class PlanMapper {
 	private UserRepository userRepository;
 
 	@Autowired
-	private RepositoryHelper repositoryHelper;
-
-	@Autowired
 	private PlanCategoryRepository planCategoryRepository;
 
 	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
@@ -64,8 +61,7 @@ public abstract class PlanMapper {
 	@Mapping(target = "interactionCreatedAt", ignore = true)
 	public abstract PlanSummaryDto toSummaryDto(Plan plan);
 
-	@Mapping(target = "planCategoryAssociations", source = "categoryIds",
-			qualifiedByName = "mapCategoryIdsToAssociations")
+	@Mapping(target = "planCategoryAssociations", ignore = true)
 	@Mapping(target = "user", expression = "java(userIdToUser(userId))")
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "userPlans", ignore = true)
@@ -77,8 +73,7 @@ public abstract class PlanMapper {
 	public abstract Plan toEntity(PlanCreateDto dto, @Context int userId);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-	@Mapping(target = "planCategoryAssociations", source = "categoryIds",
-			qualifiedByName = "mapCategoryIdsToAssociations")
+	@Mapping(target = "planCategoryAssociations", ignore = true)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "user", ignore = true)
 	@Mapping(target = "userPlans", ignore = true)
@@ -91,17 +86,42 @@ public abstract class PlanMapper {
 
 	@AfterMapping
 	protected void setPlanAssociations(@MappingTarget Plan plan, PlanCreateDto dto) {
-		if (dto.getInstructions() == null) {
+		if (dto.getInstructions() != null) {
+			List<PlanInstruction> instructions = dto.getInstructions()
+				.stream()
+				.map(instructionDto -> PlanInstruction.of(instructionDto.getOrderIndex(), instructionDto.getTitle(),
+						instructionDto.getText(), plan))
+				.toList();
+
+			plan.getPlanInstructions().addAll(instructions);
+		}
+
+		if (dto.getCategoryIds() != null) {
+			List<PlanCategoryAssociation> categories = planCategoryRepository.findAllByIdIn(dto.getCategoryIds())
+				.stream()
+				.map(category -> PlanCategoryAssociation.createWithPlanAndCategory(plan, category))
+				.toList();
+
+			plan.getPlanCategoryAssociations().addAll(categories);
+		}
+	}
+
+	@AfterMapping
+	protected void updateCategoryAssociations(@MappingTarget Plan plan, PlanUpdateDto dto) {
+		if (dto.getCategoryIds() == null) {
 			return;
 		}
 
-		List<PlanInstruction> instructions = dto.getInstructions()
+		plan.getPlanCategoryAssociations().clear();
+
+		List<PlanCategory> categories = planCategoryRepository.findAllByIdIn(dto.getCategoryIds());
+
+		List<PlanCategoryAssociation> associations = categories
 			.stream()
-			.map(instructionDto -> PlanInstruction.of(instructionDto.getOrderIndex(), instructionDto.getText(),
-					instructionDto.getText(), plan))
+			.map(category -> PlanCategoryAssociation.createWithPlanAndCategory(plan, category))
 			.toList();
 
-		plan.getPlanInstructions().addAll(instructions);
+		plan.getPlanCategoryAssociations().addAll(associations);
 	}
 
 	@AfterMapping
@@ -120,14 +140,6 @@ public abstract class PlanMapper {
 	@Named("userIdToUser")
 	protected User userIdToUser(Integer userId) {
 		return userRepository.findById(userId).orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
-	}
-
-	@Named("mapCategoryIdsToAssociations")
-	protected Set<PlanCategoryAssociation> mapCategoryIdsToAssociations(List<Integer> categoryIds) {
-		return Optional.ofNullable(categoryIds).orElseGet(List::of).stream().map(categoryId -> {
-			PlanCategory category = repositoryHelper.find(planCategoryRepository, PlanCategory.class, categoryId);
-			return PlanCategoryAssociation.createWithPlanCategory(category);
-		}).collect(Collectors.toSet());
 	}
 
 	@Named("mapAssociationsToCategoryResponseDto")

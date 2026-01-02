@@ -13,7 +13,6 @@ import source.code.model.plan.Plan;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 public class PlanInstruction extends TextBase {
 
 	private String title;

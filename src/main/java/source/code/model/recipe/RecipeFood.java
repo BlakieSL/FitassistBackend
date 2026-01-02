@@ -15,12 +15,10 @@ import source.code.model.food.Food;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class RecipeFood {
 
 	public static final String FOOD = "food";
 
-	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;

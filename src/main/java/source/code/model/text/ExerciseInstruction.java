@@ -13,7 +13,6 @@ import source.code.model.exercise.Exercise;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 public class ExerciseInstruction extends TextBase {
 
 	@ManyToOne

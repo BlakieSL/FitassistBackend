@@ -38,9 +38,11 @@ public class ExerciseTargetMuscle {
 	@Column(nullable = false)
 	private BigDecimal priority;
 
-	public static ExerciseTargetMuscle createWithTargetMuscle(TargetMuscle targetMuscle) {
+	public static ExerciseTargetMuscle createWithTargetMuscleExercise(TargetMuscle targetMuscle, Exercise exercise) {
 		ExerciseTargetMuscle exerciseTargetMuscle = new ExerciseTargetMuscle();
 		exerciseTargetMuscle.setTargetMuscle(targetMuscle);
+		exerciseTargetMuscle.setExercise(exercise);
+		exerciseTargetMuscle.setPriority(BigDecimal.valueOf(1));
 
 		return exerciseTargetMuscle;
 	}

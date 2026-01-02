@@ -76,7 +76,7 @@ public class Plan implements IndexedEntity {
 	@OrderBy("orderIndex ASC")
 	private final Set<PlanInstruction> planInstructions = new LinkedHashSet<>();
 
-	@OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, orphanRemoval = true)
+	@OneToMany(mappedBy = "plan", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE }, orphanRemoval = true)
 	@OrderBy("id ASC")
 	private final Set<PlanCategoryAssociation> planCategoryAssociations = new LinkedHashSet<>();
 
