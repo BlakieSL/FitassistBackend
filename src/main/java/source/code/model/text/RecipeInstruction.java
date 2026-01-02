@@ -21,9 +21,9 @@ public class RecipeInstruction extends TextBase {
 	@JoinColumn(name = "recipe_id")
 	private Recipe recipe;
 
-	public static RecipeInstruction of(short number, String title, String text, Recipe recipe) {
+	public static RecipeInstruction of(Short orderIndex, String title, String text, Recipe recipe) {
 		RecipeInstruction instruction = new RecipeInstruction();
-		instruction.setOrderIndex(number);
+		instruction.setOrderIndex(orderIndex);
 		instruction.setTitle(title);
 		instruction.setText(text);
 		instruction.setRecipe(recipe);

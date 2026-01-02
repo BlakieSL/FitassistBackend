@@ -3,7 +3,6 @@ package source.code.service.implementation.annotation;
 import org.springframework.stereotype.Service;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.model.MediaConnectedEntity;
-import source.code.helper.Enum.model.TextType;
 import source.code.helper.utils.AuthorizationUtil;
 import source.code.model.complaint.CommentComplaint;
 import source.code.model.complaint.ThreadComplaint;
@@ -12,8 +11,6 @@ import source.code.model.daily.DailyCartFood;
 import source.code.model.media.Media;
 import source.code.model.plan.Plan;
 import source.code.model.recipe.Recipe;
-import source.code.model.text.PlanInstruction;
-import source.code.model.text.RecipeInstruction;
 import source.code.model.thread.Comment;
 import source.code.model.thread.ForumThread;
 import source.code.model.workout.Workout;
@@ -125,44 +122,6 @@ public class AuthAnnotationServiceImpl {
 	public boolean isMediaOwnerOrAdmin(int mediaId) {
 		Media media = repositoryHelper.find(mediaRepository, Media.class, mediaId);
 		Integer ownerId = findOwnerIdByParentTypeAndId(media.getParentType(), media.getParentId());
-		return AuthorizationUtil.isOwnerOrAdmin(ownerId);
-	}
-
-	public boolean isTextOwnerOrAdmin(int id, TextType type) {
-		Integer ownerId = switch (type) {
-			case RECIPE_INSTRUCTION -> repositoryHelper.find(recipeInstructionRepository, RecipeInstruction.class, id)
-				.getRecipe()
-				.getUser()
-				.getId();
-			case PLAN_INSTRUCTION ->
-				repositoryHelper.find(planInstructionRepository, PlanInstruction.class, id).getPlan().getUser().getId();
-			default -> null;
-		};
-		return AuthorizationUtil.isOwnerOrAdmin(ownerId);
-	}
-
-	public boolean idPublicTextOrOwnerOrAdmin(int parentId, TextType type) {
-		boolean isPublic = false;
-		Integer ownerId = switch (type) {
-			case RECIPE_INSTRUCTION -> {
-				Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, parentId);
-
-				isPublic = recipe.getIsPublic();
-				yield recipe.getUser().getId();
-			}
-			case PLAN_INSTRUCTION -> {
-				Plan plan = repositoryHelper.find(planRepository, Plan.class, parentId);
-
-				isPublic = plan.getIsPublic();
-				yield plan.getUser().getId();
-			}
-			default -> null;
-		};
-
-		if (isPublic) {
-			return true;
-		}
-
 		return AuthorizationUtil.isOwnerOrAdmin(ownerId);
 	}
 

@@ -15,15 +15,12 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.helper.Enum.model.MediaConnectedEntity;
-import source.code.helper.Enum.model.TextType;
 import source.code.helper.utils.AuthorizationUtil;
 import source.code.model.complaint.CommentComplaint;
 import source.code.model.complaint.ThreadComplaint;
 import source.code.model.media.Media;
 import source.code.model.plan.Plan;
 import source.code.model.recipe.Recipe;
-import source.code.model.text.PlanInstruction;
-import source.code.model.text.RecipeInstruction;
 import source.code.model.thread.Comment;
 import source.code.model.thread.ForumThread;
 import source.code.model.user.User;
@@ -307,56 +304,6 @@ public class AuthAnnotationServiceTest {
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(null)).thenReturn(false);
 
 		boolean result = authAnnotationService.isMediaOwnerOrAdmin(mediaId);
-
-		assertFalse(result);
-	}
-
-	@Test
-	void isTextOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdminForRecipeInstruction() {
-		int recipeInstructionId = 7;
-		Recipe recipe = Recipe.of(user);
-		RecipeInstruction recipeInstruction = RecipeInstruction.of(recipeInstructionId, recipe);
-		when(repositoryHelper.find(recipeInstructionRepository, RecipeInstruction.class, recipeInstructionId))
-			.thenReturn(recipeInstruction);
-
-		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId)).thenReturn(true);
-
-		boolean result = authAnnotationService.isTextOwnerOrAdmin(recipeInstructionId, TextType.RECIPE_INSTRUCTION);
-
-		assertTrue(result);
-	}
-
-	@Test
-	void isTextOwnerOrAdmin_shouldReturnTrueIfOwnerOrAdminForPlanInstruction() {
-		int planInstructionId = 8;
-		Plan plan = Plan.of(user);
-		PlanInstruction planInstruction = PlanInstruction.of(planInstructionId, plan);
-		when(repositoryHelper.find(planInstructionRepository, PlanInstruction.class, planInstructionId))
-			.thenReturn(planInstruction);
-
-		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId)).thenReturn(true);
-
-		boolean result = authAnnotationService.isTextOwnerOrAdmin(planInstructionId, TextType.PLAN_INSTRUCTION);
-
-		assertTrue(result);
-	}
-
-	@Test
-	void isTextOwnerOrAdmin_shouldReturnTrueForAdminWhenOwnerIdIsNullForExerciseInstruction() {
-		int exerciseInstructionId = 10;
-		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(null)).thenReturn(true);
-
-		boolean result = authAnnotationService.isTextOwnerOrAdmin(exerciseInstructionId, TextType.EXERCISE_INSTRUCTION);
-
-		assertTrue(result);
-	}
-
-	@Test
-	void isTextOwnerOrAdmin_shouldReturnFalseIfNotAdminWhenOwnerIdIsNullForExerciseInstruction() {
-		int exerciseInstructionId = 11;
-		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(null)).thenReturn(false);
-
-		boolean result = authAnnotationService.isTextOwnerOrAdmin(exerciseInstructionId, TextType.EXERCISE_INSTRUCTION);
 
 		assertFalse(result);
 	}
