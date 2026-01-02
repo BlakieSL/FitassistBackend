@@ -267,7 +267,7 @@ create table text
     id          int auto_increment
         primary key,
     order_index smallint     not null,
-    text        varchar(255) not null,
+    text        text not null,
     title       varchar(255) null,
     exercise_id int          null,
     plan_id     int          null,

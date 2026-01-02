@@ -31,9 +31,10 @@ public class PlanCategoryAssociation {
 	@JoinColumn(name = "plan_category_id", nullable = false)
 	private PlanCategory planCategory;
 
-	public static PlanCategoryAssociation createWithPlanCategory(PlanCategory category) {
+	public static PlanCategoryAssociation createWithPlanAndCategory(Plan plan, PlanCategory category) {
 		PlanCategoryAssociation association = new PlanCategoryAssociation();
 		association.setPlanCategory(category);
+		association.setPlan(plan);
 		return association;
 	}
 

@@ -26,9 +26,6 @@ import source.code.service.declaration.helpers.RepositoryHelper;
 public abstract class ExerciseMapper {
 
 	@Autowired
-	private RepositoryHelper repositoryHelper;
-
-	@Autowired
 	private TargetMuscleRepository targetMuscleRepository;
 
 	@Autowired
@@ -70,8 +67,7 @@ public abstract class ExerciseMapper {
 	@Mapping(target = "saved", ignore = true)
 	public abstract ExerciseResponseDto toResponseDto(Exercise exercise);
 
-	@Mapping(target = "exerciseTargetMuscles", source = "targetMusclesIds",
-			qualifiedByName = "mapTargetMuscleIdsToAssociations")
+	@Mapping(target = "exerciseTargetMuscles", ignore = true)
 	@Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevel")
 	@Mapping(target = "mechanicsType", source = "mechanicsTypeId", qualifiedByName = "mapMechanicsType")
 	@Mapping(target = "forceType", source = "forceTypeId", qualifiedByName = "mapForceType")
@@ -85,8 +81,7 @@ public abstract class ExerciseMapper {
 	public abstract Exercise toEntity(ExerciseCreateDto dto);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-	@Mapping(target = "exerciseTargetMuscles", source = "targetMuscleIds",
-			qualifiedByName = "mapTargetMuscleIdsToAssociations")
+	@Mapping(target = "exerciseTargetMuscles", ignore = true)
 	@Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevel")
 	@Mapping(target = "mechanicsType", source = "mechanicsTypeId", qualifiedByName = "mapMechanicsType")
 	@Mapping(target = "forceType", source = "forceTypeId", qualifiedByName = "mapForceType")
@@ -101,30 +96,51 @@ public abstract class ExerciseMapper {
 
 	@AfterMapping
 	protected void setExerciseAssociations(@MappingTarget Exercise exercise, ExerciseCreateDto dto) {
-		List<ExerciseInstruction> instructions = dto.getInstructions().stream().map(instructionDto -> {
-			ExerciseInstruction instruction = ExerciseInstruction.of(instructionDto.getOrderIndex(),
+		if (dto.getInstructions() != null) {
+			List<ExerciseInstruction> instructions = dto.getInstructions().stream().map(instructionDto -> {
+				ExerciseInstruction instruction = ExerciseInstruction.of(instructionDto.getOrderIndex(),
 					instructionDto.getText());
-			instruction.setExercise(exercise);
-			return instruction;
-		}).toList();
+				instruction.setExercise(exercise);
+				return instruction;
+			}).toList();
 
-		exercise.getExerciseInstructions().addAll(instructions);
+			exercise.getExerciseInstructions().addAll(instructions);
+		}
 
-		List<ExerciseTip> tips = dto.getTips().stream().map(tipDto -> {
-			ExerciseTip tip = ExerciseTip.createWithNumberAndText(tipDto.getOrderIndex(), tipDto.getText());
-			tip.setExercise(exercise);
-			return tip;
-		}).toList();
+		if (dto.getTips() != null) {
+			List<ExerciseTip> tips = dto.getTips().stream().map(tipDto -> {
+				ExerciseTip tip = ExerciseTip.createWithNumberAndText(tipDto.getOrderIndex(), tipDto.getText());
+				tip.setExercise(exercise);
+				return tip;
+			}).toList();
 
-		exercise.getExerciseTips().addAll(tips);
+			exercise.getExerciseTips().addAll(tips);
+		}
+
+		if (dto.getTargetMusclesIds() != null) {
+			List<ExerciseTargetMuscle> targetMuscles = targetMuscleRepository.findAllByIdIn(dto.getTargetMusclesIds())
+				.stream()
+				.map(tm -> ExerciseTargetMuscle.createWithTargetMuscleExercise(tm, exercise))
+				.toList();
+
+			exercise.getExerciseTargetMuscles().addAll(targetMuscles);
+		}
 	}
 
-	@Named("mapTargetMuscleIdsToAssociations")
-	protected Set<ExerciseTargetMuscle> mapCategoryIdsToAssociations(List<Integer> categoryIds) {
-		return Optional.ofNullable(categoryIds).orElseGet(List::of).stream().map(categoryId -> {
-			TargetMuscle category = repositoryHelper.find(targetMuscleRepository, TargetMuscle.class, categoryId);
-			return ExerciseTargetMuscle.createWithTargetMuscle(category);
-		}).collect(Collectors.toSet());
+	@AfterMapping
+	protected void updateTargetMuscleAssociations(@MappingTarget Exercise exercise, ExerciseUpdateDto dto) {
+		if (dto.getTargetMuscleIds() == null) {
+			return;
+		}
+
+		exercise.getExerciseTargetMuscles().clear();
+
+		List<ExerciseTargetMuscle> targetMuscles = targetMuscleRepository.findAllByIdIn(dto.getTargetMuscleIds())
+			.stream()
+			.map(tm -> ExerciseTargetMuscle.createWithTargetMuscleExercise(tm, exercise))
+			.toList();
+
+		exercise.getExerciseTargetMuscles().addAll(targetMuscles);
 	}
 
 	@Named("mapAssociationsToTargetMuscleResponseDto")
