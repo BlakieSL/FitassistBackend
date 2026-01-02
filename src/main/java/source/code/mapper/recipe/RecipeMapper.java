@@ -37,9 +37,6 @@ public abstract class RecipeMapper {
 	@Autowired
 	private RecipeCategoryRepository recipeCategoryRepository;
 
-	@Autowired
-	private RepositoryHelper repositoryHelper;
-
 	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
 	@Mapping(target = "likesCount", ignore = true)
 	@Mapping(target = "dislikesCount", ignore = true)
@@ -71,8 +68,7 @@ public abstract class RecipeMapper {
 	@Mapping(target = "interactionCreatedAt", ignore = true)
 	public abstract RecipeSummaryDto toSummaryDto(Recipe recipe);
 
-	@Mapping(target = "recipeCategoryAssociations", source = "categoryIds",
-			qualifiedByName = "mapCategoryIdsToAssociations")
+	@Mapping(target = "recipeCategoryAssociations", ignore = true)
 	@Mapping(target = "user", expression = "java(userIdToUser(userId))")
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "userRecipes", ignore = true)
@@ -84,8 +80,7 @@ public abstract class RecipeMapper {
 	public abstract Recipe toEntity(RecipeCreateDto dto, @Context int userId);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-	@Mapping(target = "recipeCategoryAssociations", source = "categoryIds",
-			qualifiedByName = "mapCategoryIdsToAssociations")
+	@Mapping(target = "recipeCategoryAssociations", ignore = true)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "user", ignore = true)
 	@Mapping(target = "userRecipes", ignore = true)
@@ -98,24 +93,53 @@ public abstract class RecipeMapper {
 
 	@AfterMapping
 	protected void setRecipeAssociations(@MappingTarget Recipe recipe, RecipeCreateDto dto) {
-		if (dto.getInstructions() == null) {
-			return;
-		}
-		List<RecipeInstruction> instructions = dto.getInstructions()
-			.stream()
-			.map(instructionDto -> RecipeInstruction.of(instructionDto.getOrderIndex(), instructionDto.getText(),
-					instructionDto.getText(), recipe))
-			.toList();
+		if (dto.getInstructions() != null) {
+			List<RecipeInstruction> instructions = dto.getInstructions()
+				.stream()
+				.map(instructionDto -> RecipeInstruction.of(instructionDto.getOrderIndex(), instructionDto.getText(),
+						instructionDto.getText(), recipe))
+				.toList();
 
-		recipe.getRecipeInstructions().addAll(instructions);
+			recipe.getRecipeInstructions().addAll(instructions);
+		}
+
+		if (dto.getCategoryIds() != null) {
+			List<RecipeCategory> categories = recipeCategoryRepository.findAllByIdIn(dto.getCategoryIds());
+
+			List<RecipeCategoryAssociation> associations = categories.stream()
+				.map(category -> RecipeCategoryAssociation.createWithRecipeAndCategory(recipe, category))
+				.toList();
+
+			recipe.getRecipeCategoryAssociations().addAll(associations);
+		}
 	}
 
-	@Named("mapCategoryIdsToAssociations")
-	protected Set<RecipeCategoryAssociation> mapCategoryIdsToAssociations(List<Integer> categoryIds) {
-		return Optional.ofNullable(categoryIds).orElseGet(List::of).stream().map(categoryId -> {
-			RecipeCategory category = repositoryHelper.find(recipeCategoryRepository, RecipeCategory.class, categoryId);
-			return RecipeCategoryAssociation.createWithRecipeCategory(category);
-		}).collect(Collectors.toSet());
+	@AfterMapping
+	protected void updateCategoryAssociations(@MappingTarget Recipe recipe, RecipeUpdateDto dto) {
+		if (dto.getCategoryIds() == null) {
+			return;
+		}
+
+		recipe.getRecipeCategoryAssociations().clear();
+
+		List<RecipeCategory> categories = recipeCategoryRepository.findAllByIdIn(dto.getCategoryIds());
+
+		List<RecipeCategoryAssociation> associations = categories.stream()
+			.map(category -> RecipeCategoryAssociation.createWithRecipeAndCategory(recipe, category))
+			.toList();
+
+		recipe.getRecipeCategoryAssociations().addAll(associations);
+	}
+
+	@AfterMapping
+	protected void calculateTotalCalories(@MappingTarget RecipeResponseDto dto) {
+		List<RecipeFoodDto> foods = Objects.requireNonNullElse(dto.getFoods(), List.of());
+
+		BigDecimal totalCalories = foods.stream()
+			.map(food -> food.getQuantity().multiply(food.getFoodCalories()))
+			.reduce(BigDecimal.ZERO, BigDecimal::add);
+
+		dto.setTotalCalories(totalCalories);
 	}
 
 	@Named("mapAssociationsToCategoryResponseDto")
@@ -151,16 +175,4 @@ public abstract class RecipeMapper {
 					recipeFood.getFood().getCarbohydrates(), categoryDto);
 		}).toList();
 	}
-
-	@AfterMapping
-	protected void calculateTotalCalories(@MappingTarget RecipeResponseDto dto) {
-		List<RecipeFoodDto> foods = Objects.requireNonNullElse(dto.getFoods(), List.of());
-
-		BigDecimal totalCalories = foods.stream()
-			.map(food -> food.getQuantity().multiply(food.getFoodCalories()))
-			.reduce(BigDecimal.ZERO, BigDecimal::add);
-
-		dto.setTotalCalories(totalCalories);
-	}
-
 }

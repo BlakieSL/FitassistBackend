@@ -10,10 +10,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class RecipeCategoryAssociation {
 
-	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -28,8 +26,10 @@ public class RecipeCategoryAssociation {
 	@JoinColumn(name = "recipe_category_id", nullable = false)
 	private RecipeCategory recipeCategory;
 
-	public static RecipeCategoryAssociation createWithRecipeCategory(RecipeCategory recipeCategory) {
+
+	public static RecipeCategoryAssociation createWithRecipeAndCategory(Recipe recipe, RecipeCategory recipeCategory) {
 		RecipeCategoryAssociation recipeCategoryAssociation = new RecipeCategoryAssociation();
+		recipeCategoryAssociation.setRecipe(recipe);
 		recipeCategoryAssociation.setRecipeCategory(recipeCategory);
 
 		return recipeCategoryAssociation;

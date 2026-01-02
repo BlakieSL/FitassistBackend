@@ -80,7 +80,7 @@ public class Exercise implements IndexedEntity {
 	@OrderBy("orderIndex ASC")
 	private final Set<ExerciseTip> exerciseTips = new LinkedHashSet<>();
 
-	@OneToMany(mappedBy = "exercise", cascade = { CascadeType.REMOVE }, orphanRemoval = true)
+	@OneToMany(mappedBy = "exercise", cascade = { CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE  }, orphanRemoval = true)
 	@OrderBy("priority DESC")
 	private final Set<ExerciseTargetMuscle> exerciseTargetMuscles = new LinkedHashSet<>();
 

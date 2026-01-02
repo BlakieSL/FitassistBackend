@@ -13,7 +13,6 @@ import source.code.model.recipe.Recipe;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 public class RecipeInstruction extends TextBase {
 
 	private String title;

@@ -13,10 +13,8 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public abstract class TextBase {
 
-	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -26,7 +24,7 @@ public abstract class TextBase {
 	private short orderIndex;
 
 	@NotBlank
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "TEXT")
 	private String text;
 
 }
