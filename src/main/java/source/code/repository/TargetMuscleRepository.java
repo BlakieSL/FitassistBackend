@@ -7,5 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface TargetMuscleRepository extends JpaRepository<TargetMuscle, Integer> {
+
 	List<TargetMuscle> findAllByIdIn(List<Integer> ids);
+
 }

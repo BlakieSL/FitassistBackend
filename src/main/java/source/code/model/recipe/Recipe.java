@@ -78,7 +78,8 @@ public class Recipe implements IndexedEntity {
 	@OrderBy("orderIndex ASC")
 	private final Set<RecipeInstruction> recipeInstructions = new LinkedHashSet<>();
 
-	@OneToMany(mappedBy = "recipe", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE }, orphanRemoval = true)
+	@OneToMany(mappedBy = "recipe", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE },
+			orphanRemoval = true)
 	@OrderBy("id ASC")
 	private final Set<RecipeCategoryAssociation> recipeCategoryAssociations = new LinkedHashSet<>();
 

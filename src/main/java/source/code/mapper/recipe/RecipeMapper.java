@@ -175,4 +175,5 @@ public abstract class RecipeMapper {
 					recipeFood.getFood().getCarbohydrates(), categoryDto);
 		}).toList();
 	}
+
 }
