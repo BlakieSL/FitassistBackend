@@ -3,20 +3,20 @@ package source.code.mapper.recipe;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.pojo.RecipeFoodDto;
 import source.code.dto.request.recipe.RecipeCreateDto;
 import source.code.dto.request.recipe.RecipeUpdateDto;
+import source.code.dto.request.text.TextUpdateDto;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
-import source.code.dto.response.text.RecipeInstructionResponseDto;
+import source.code.dto.response.text.TextResponseDto;
 import source.code.exception.RecordNotFoundException;
+import source.code.helper.Enum.model.TextType;
 import source.code.mapper.helper.CommonMappingHelper;
 import source.code.model.recipe.Recipe;
 import source.code.model.recipe.RecipeCategory;
@@ -26,7 +26,6 @@ import source.code.model.text.RecipeInstruction;
 import source.code.model.user.User;
 import source.code.repository.RecipeCategoryRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.helpers.RepositoryHelper;
 
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class RecipeMapper {
@@ -81,11 +80,11 @@ public abstract class RecipeMapper {
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "recipeCategoryAssociations", ignore = true)
+	@Mapping(target = "recipeInstructions", ignore = true)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "user", ignore = true)
 	@Mapping(target = "userRecipes", ignore = true)
 	@Mapping(target = "recipeFoods", ignore = true)
-	@Mapping(target = "recipeInstructions", ignore = true)
 	@Mapping(target = "views", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "mediaList", ignore = true)
@@ -96,7 +95,7 @@ public abstract class RecipeMapper {
 		if (dto.getInstructions() != null) {
 			List<RecipeInstruction> instructions = dto.getInstructions()
 				.stream()
-				.map(instructionDto -> RecipeInstruction.of(instructionDto.getOrderIndex(), instructionDto.getText(),
+				.map(instructionDto -> RecipeInstruction.of(instructionDto.getOrderIndex(), instructionDto.getTitle(),
 						instructionDto.getText(), recipe))
 				.toList();
 
@@ -115,20 +114,54 @@ public abstract class RecipeMapper {
 	}
 
 	@AfterMapping
-	protected void updateCategoryAssociations(@MappingTarget Recipe recipe, RecipeUpdateDto dto) {
-		if (dto.getCategoryIds() == null) {
-			return;
+	protected void updateAssociations(@MappingTarget Recipe recipe, RecipeUpdateDto dto) {
+		if (dto.getCategoryIds() != null) {
+			recipe.getRecipeCategoryAssociations().clear();
+
+			List<RecipeCategory> categories = recipeCategoryRepository.findAllByIdIn(dto.getCategoryIds());
+
+			List<RecipeCategoryAssociation> associations = categories.stream()
+				.map(category -> RecipeCategoryAssociation.createWithRecipeAndCategory(recipe, category))
+				.toList();
+
+			recipe.getRecipeCategoryAssociations().addAll(associations);
 		}
 
-		recipe.getRecipeCategoryAssociations().clear();
+		if (dto.getInstructions() != null) {
+			Set<RecipeInstruction> existingInstructions = recipe.getRecipeInstructions();
 
-		List<RecipeCategory> categories = recipeCategoryRepository.findAllByIdIn(dto.getCategoryIds());
+			List<Integer> updatedInstructionIds = dto.getInstructions()
+				.stream()
+				.map(TextUpdateDto::getId)
+				.filter(Objects::nonNull)
+				.toList();
 
-		List<RecipeCategoryAssociation> associations = categories.stream()
-			.map(category -> RecipeCategoryAssociation.createWithRecipeAndCategory(recipe, category))
-			.toList();
+			existingInstructions.removeIf(instruction -> !updatedInstructionIds.contains(instruction.getId()));
 
-		recipe.getRecipeCategoryAssociations().addAll(associations);
+			for (TextUpdateDto instructionDto : dto.getInstructions()) {
+				if (instructionDto.getId() != null) {
+					existingInstructions.stream()
+						.filter(instruction -> instruction.getId().equals(instructionDto.getId()))
+						.findFirst()
+						.ifPresent(instruction -> {
+							if (instructionDto.getOrderIndex() != null) {
+								instruction.setOrderIndex(instructionDto.getOrderIndex());
+							}
+							if (instructionDto.getText() != null) {
+								instruction.setText(instructionDto.getText());
+							}
+							if (instructionDto.getTitle() != null) {
+								instruction.setTitle(instructionDto.getTitle());
+							}
+						});
+				}
+				else {
+					RecipeInstruction newInstruction = RecipeInstruction.of(instructionDto.getOrderIndex(),
+							instructionDto.getTitle(), instructionDto.getText(), recipe);
+					existingInstructions.add(newInstruction);
+				}
+			}
+		}
 	}
 
 	@AfterMapping
@@ -157,10 +190,10 @@ public abstract class RecipeMapper {
 	}
 
 	@Named("mapInstructionsToDto")
-	protected List<RecipeInstructionResponseDto> mapInstructionsToDto(Set<RecipeInstruction> instructions) {
+	protected List<TextResponseDto> mapInstructionsToDto(Set<RecipeInstruction> instructions) {
 		return instructions.stream()
-			.map(instruction -> new RecipeInstructionResponseDto(instruction.getId(), instruction.getOrderIndex(),
-					instruction.getTitle(), instruction.getText()))
+			.map(instruction -> new TextResponseDto(instruction.getId(), instruction.getOrderIndex(),
+					instruction.getText(), instruction.getTitle()))
 			.toList();
 	}
 

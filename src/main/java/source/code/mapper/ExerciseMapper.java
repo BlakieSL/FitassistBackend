@@ -1,9 +1,7 @@
 package source.code.mapper;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +11,12 @@ import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
 import source.code.dto.response.exercise.TargetMuscleResponseDto;
-import source.code.dto.response.text.ExerciseInstructionResponseDto;
-import source.code.dto.response.text.ExerciseTipResponseDto;
+import source.code.dto.response.text.TextResponseDto;
 import source.code.mapper.helper.CommonMappingHelper;
 import source.code.model.exercise.*;
 import source.code.model.text.ExerciseInstruction;
 import source.code.model.text.ExerciseTip;
 import source.code.repository.*;
-import source.code.service.declaration.helpers.RepositoryHelper;
 
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class ExerciseMapper {
@@ -193,17 +189,17 @@ public abstract class ExerciseMapper {
 	}
 
 	@Named("mapInstructionsToDto")
-	protected List<ExerciseInstructionResponseDto> mapInstructionsToDto(Set<ExerciseInstruction> instructions) {
+	protected List<TextResponseDto> mapInstructionsToDto(Set<ExerciseInstruction> instructions) {
 		return instructions.stream()
-			.map(instruction -> new ExerciseInstructionResponseDto(instruction.getId(), instruction.getOrderIndex(),
-					instruction.getText()))
+			.map(instruction -> new TextResponseDto(instruction.getId(), instruction.getOrderIndex(),
+					instruction.getText(), null))
 			.toList();
 	}
 
 	@Named("mapTipsToDto")
-	protected List<ExerciseTipResponseDto> mapTipsToDto(Set<ExerciseTip> tips) {
+	protected List<TextResponseDto> mapTipsToDto(Set<ExerciseTip> tips) {
 		return tips.stream()
-			.map(tip -> new ExerciseTipResponseDto(tip.getId(), tip.getOrderIndex(), tip.getText()))
+			.map(tip -> new TextResponseDto(tip.getId(), tip.getOrderIndex(), tip.getText(), null))
 			.toList();
 	}
 

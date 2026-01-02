@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
-import source.code.dto.response.text.ExerciseInstructionResponseDto;
-import source.code.dto.response.text.ExerciseTipResponseDto;
+import source.code.dto.response.text.TextResponseDto;
 
 /**
  * fetched with db (findByIdWithDetails) -> mapper -> populated in createExercise and
@@ -52,9 +51,9 @@ public class ExerciseResponseDto implements Serializable {
 
 	private List<PlanSummaryDto> plans;
 
-	private List<ExerciseInstructionResponseDto> instructions;
+	private List<TextResponseDto> instructions;
 
-	private List<ExerciseTipResponseDto> tips;
+	private List<TextResponseDto> tips;
 
 	private long savesCount;
 

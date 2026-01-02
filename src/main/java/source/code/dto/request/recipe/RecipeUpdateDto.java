@@ -1,5 +1,6 @@
 package source.code.dto.request.recipe;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.request.text.TextUpdateDto;
 
 @Getter
 @Setter
@@ -30,5 +32,8 @@ public class RecipeUpdateDto {
 	private Boolean isPublic;
 
 	private List<Integer> categoryIds;
+
+	@Valid
+	private List<TextUpdateDto> instructions;
 
 }

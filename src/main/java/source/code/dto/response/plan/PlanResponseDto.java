@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.pojo.AuthorDto;
 import source.code.dto.response.category.CategoryResponseDto;
-import source.code.dto.response.text.PlanInstructionResponseDto;
+import source.code.dto.response.text.TextResponseDto;
 import source.code.dto.response.workout.WorkoutResponseDto;
 import source.code.helper.Enum.model.PlanStructureType;
 
@@ -66,7 +66,7 @@ public class PlanResponseDto implements Serializable {
 
 	private List<WorkoutResponseDto> workouts;
 
-	private List<PlanInstructionResponseDto> instructions;
+	private List<TextResponseDto> instructions;
 
 	private List<CategoryResponseDto> categories;
 
