@@ -53,7 +53,7 @@ public class Workout {
 	@JoinColumn(name = "plan_id", nullable = false)
 	private Plan plan;
 
-	@OneToMany(mappedBy = "workout", cascade = { CascadeType.REMOVE, CascadeType.PERSIST }, orphanRemoval = true)
+	@OneToMany(mappedBy = "workout", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE }, orphanRemoval = true)
 	@OrderBy("orderIndex ASC")
 	private final Set<WorkoutSet> workoutSets = new LinkedHashSet<>();
 

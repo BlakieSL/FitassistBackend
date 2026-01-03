@@ -33,7 +33,6 @@ public class RecipeUpdateDto {
 
 	private List<Integer> categoryIds;
 
-	@Valid
 	private List<TextUpdateDto> instructions;
 
 }

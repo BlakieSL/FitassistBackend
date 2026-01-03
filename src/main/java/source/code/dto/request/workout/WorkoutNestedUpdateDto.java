@@ -16,9 +16,11 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorkoutUpdateDto {
+public class WorkoutNestedUpdateDto {
 
 	private static final int NAME_MAX_LENGTH = 50;
+
+	private Integer id;
 
 	@Size(max = NAME_MAX_LENGTH)
 	private String name;
@@ -32,4 +34,6 @@ public class WorkoutUpdateDto {
 	@PositiveOrZero
 	private Byte restDaysAfter;
 
+	@Valid
+	private List<WorkoutSetNestedUpdateDto> workoutSets;
 }
