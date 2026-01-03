@@ -17,13 +17,13 @@ public interface RecipeFoodService {
 
 	void saveFoodToRecipe(int recipeId, RecipeFoodCreateDto request);
 
+	void replaceAllFoodsInRecipe(int recipeId, RecipeFoodCreateDto request);
+
 	void updateFoodRecipe(int recipeId, int foodId, JsonMergePatch patch)
 			throws JsonPatchException, JsonProcessingException;
 
 	void deleteFoodFromRecipe(int foodId, int recipeId);
 
 	List<FoodSummaryDto> getFoodsByRecipe(int recipeId);
-
-	Page<RecipeSummaryDto> getRecipesByFoods(FilterRecipesByFoodsDto filter, Pageable pageable);
 
 }

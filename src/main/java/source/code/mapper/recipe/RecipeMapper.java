@@ -7,7 +7,9 @@ import java.util.Set;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import source.code.dto.pojo.FoodMacros;
 import source.code.dto.pojo.RecipeFoodDto;
+import source.code.dto.response.food.IngredientResponseDto;
 import source.code.dto.request.recipe.RecipeCreateDto;
 import source.code.dto.request.recipe.RecipeUpdateDto;
 import source.code.dto.request.text.TextUpdateDto;
@@ -169,7 +171,7 @@ public abstract class RecipeMapper {
 		List<RecipeFoodDto> foods = Objects.requireNonNullElse(dto.getFoods(), List.of());
 
 		BigDecimal totalCalories = foods.stream()
-			.map(food -> food.getQuantity().multiply(food.getFoodCalories()))
+			.map(food -> food.getQuantity().multiply(food.getIngredient().getFoodMacros().getCalories()))
 			.reduce(BigDecimal.ZERO, BigDecimal::add);
 
 		dto.setTotalCalories(totalCalories);
@@ -202,10 +204,14 @@ public abstract class RecipeMapper {
 		return foods.stream().map(recipeFood -> {
 			CategoryResponseDto categoryDto = new CategoryResponseDto(recipeFood.getFood().getFoodCategory().getId(),
 					recipeFood.getFood().getFoodCategory().getName());
-			return new RecipeFoodDto(recipeFood.getId(), recipeFood.getQuantity(), recipeFood.getFood().getId(),
-					recipeFood.getFood().getName(), recipeFood.getFood().getCalories(),
-					recipeFood.getFood().getProtein(), recipeFood.getFood().getFat(),
-					recipeFood.getFood().getCarbohydrates(), categoryDto);
+
+			FoodMacros macros = FoodMacros.of(recipeFood.getFood().getCalories(), recipeFood.getFood().getProtein(),
+					recipeFood.getFood().getFat(), recipeFood.getFood().getCarbohydrates());
+
+			IngredientResponseDto ingredient = new IngredientResponseDto(recipeFood.getFood().getId(),
+					recipeFood.getFood().getName(), macros, categoryDto, null);
+
+			return new RecipeFoodDto(recipeFood.getId(), recipeFood.getQuantity(), ingredient);
 		}).toList();
 	}
 

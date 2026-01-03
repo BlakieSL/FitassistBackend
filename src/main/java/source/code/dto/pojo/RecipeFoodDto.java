@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import source.code.dto.response.category.CategoryResponseDto;
+import source.code.dto.response.food.IngredientResponseDto;
 
 @Getter
 @Setter
@@ -18,18 +18,6 @@ public class RecipeFoodDto {
 
 	private BigDecimal quantity;
 
-	private Integer foodId;
-
-	private String foodName;
-
-	private BigDecimal foodCalories;
-
-	private BigDecimal foodProtein;
-
-	private BigDecimal foodFat;
-
-	private BigDecimal foodCarbohydrates;
-
-	private CategoryResponseDto foodCategory;
+	private IngredientResponseDto ingredient;
 
 }

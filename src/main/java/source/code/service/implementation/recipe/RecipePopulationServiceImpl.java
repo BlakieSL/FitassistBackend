@@ -57,6 +57,7 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
 		fetchAndPopulateAuthorImage(recipe);
 		fetchAndPopulateImageUrls(recipe);
 		fetchAndPopulateUserInteractionsAndCounts(recipe, userId);
+		fetchAndPopulateIngredientImages(recipe);
 	}
 
 	private void fetchAndPopulateAuthorImages(List<RecipeSummaryDto> recipes) {
@@ -148,6 +149,25 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
 		recipe.setLikesCount(result.likesCount());
 		recipe.setDislikesCount(result.dislikesCount());
 		recipe.setSavesCount(result.savesCount());
+	}
+
+	private void fetchAndPopulateIngredientImages(RecipeResponseDto recipe) {
+		if (recipe.getFoods().isEmpty())
+			return;
+
+		List<Integer> foodIds = recipe.getFoods().stream().map(food -> food.getIngredient().getId()).toList();
+
+		Map<Integer, String> foodImageMap = mediaRepository
+			.findFirstMediaByParentIds(foodIds, MediaConnectedEntity.FOOD)
+			.stream()
+			.collect(Collectors.toMap(Media::getParentId, Media::getImageName));
+
+		recipe.getFoods().forEach(food -> {
+			String imageName = foodImageMap.get(food.getIngredient().getId());
+			if (imageName != null) {
+				food.getIngredient().setFirstImageUrl(s3Service.getImage(imageName));
+			}
+		});
 	}
 
 }

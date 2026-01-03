@@ -157,7 +157,6 @@ public class PlanServiceImpl implements PlanService {
 	}
 
 	@Override
-	@Cacheable(value = CacheNames.PLAN_CATEGORIES)
 	public PlanCategoriesResponseDto getAllPlanCategories() {
 		var structureTypes = List.of(PlanStructureType.values());
 

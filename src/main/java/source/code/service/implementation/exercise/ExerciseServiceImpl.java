@@ -188,7 +188,6 @@ public class ExerciseServiceImpl implements ExerciseService {
 	}
 
 	@Override
-	@Cacheable(value = CacheNames.EXERCISE_CATEGORIES)
 	public ExerciseCategoriesResponseDto getAllExerciseCategories() {
 		var equipments = equipmentRepository.findAll()
 			.stream()
