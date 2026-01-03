@@ -41,7 +41,7 @@ public class WorkoutControllerTest {
 	void createWorkout() throws Exception {
 		Utils.setUserContext(1);
 
-		var request = new WorkoutCreateDto("Evening Workout", (short) 45, 1, (short) 1, (byte) 0, null);
+		var request = new WorkoutCreateDto("Evening Workout", (short) 45, 1, (short) 1, (byte) 0);
 
 		mockMvc
 			.perform(post("/api/workouts").contentType(MediaType.APPLICATION_JSON)
