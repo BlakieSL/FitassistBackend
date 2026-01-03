@@ -69,7 +69,6 @@ public abstract class PlanMapper {
 	@Mapping(target = "user", expression = "java(userIdToUser(userId))")
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "userPlans", ignore = true)
-	@Mapping(target = "workouts", ignore = true)
 	@Mapping(target = "planInstructions", ignore = true)
 	@Mapping(target = "views", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
@@ -108,6 +107,8 @@ public abstract class PlanMapper {
 
 			plan.getPlanCategoryAssociations().addAll(categories);
 		}
+
+		plan.getWorkouts().forEach(workout -> workout.setPlan(plan));
 	}
 
 	@AfterMapping
@@ -151,7 +152,8 @@ public abstract class PlanMapper {
 								instruction.setTitle(instructionDto.getTitle());
 							}
 						});
-				} else {
+				}
+				else {
 					PlanInstruction newInstruction = PlanInstruction.of(instructionDto.getOrderIndex(),
 							instructionDto.getTitle(), instructionDto.getText(), plan);
 					existing.add(newInstruction);
@@ -176,7 +178,8 @@ public abstract class PlanMapper {
 						.filter(workout -> workout.getId().equals(workoutDto.getId()))
 						.findFirst()
 						.ifPresent(workout -> workoutMapper.updateWorkoutNested(workout, workoutDto));
-				} else {
+				}
+				else {
 					Workout newWorkout = workoutMapper.toEntityFromNested(workoutDto);
 					newWorkout.setPlan(plan);
 					existingWorkouts.add(newWorkout);

@@ -36,4 +36,5 @@ public class WorkoutNestedUpdateDto {
 
 	@Valid
 	private List<WorkoutSetNestedUpdateDto> workoutSets;
+
 }

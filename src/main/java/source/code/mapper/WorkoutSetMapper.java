@@ -48,7 +48,12 @@ public abstract class WorkoutSetMapper {
 	@Mapping(target = "id", ignore = true)
 	public abstract WorkoutSet toEntityFromNested(WorkoutSetNestedCreateDto createDto);
 
-	//this one is used when updating Workout and need to create new nested WorkoutSet
+	@AfterMapping
+	protected void setWorkoutSetAssociations(@MappingTarget WorkoutSet workoutSet, WorkoutSetNestedCreateDto dto) {
+		workoutSet.getWorkoutSetExercises().forEach(exercise -> exercise.setWorkoutSet(workoutSet));
+	}
+
+	// this one is used when updating Workout and need to create new nested WorkoutSet
 	@Mapping(target = "workout", ignore = true)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "workoutSetExercises", ignore = true)
@@ -77,7 +82,8 @@ public abstract class WorkoutSetMapper {
 				.peek(exercise -> exercise.setWorkoutSet(workoutSet))
 				.toList();
 			existingExercises.addAll(exercises);
-		} else {
+		}
+		else {
 			List<Integer> updatedExerciseIds = dto.getWorkoutSetExercises()
 				.stream()
 				.map(WorkoutSetExerciseNestedUpdateDto::getId)
@@ -91,19 +97,16 @@ public abstract class WorkoutSetMapper {
 					existingExercises.stream()
 						.filter(exercise -> exercise.getId().equals(exerciseDto.getId()))
 						.findFirst()
-						.ifPresent(exercise -> workoutSetExerciseMapper.updateWorkoutSetExerciseNested(exercise, exerciseDto));
-				} else {
+						.ifPresent(exercise -> workoutSetExerciseMapper.updateWorkoutSetExerciseNested(exercise,
+								exerciseDto));
+				}
+				else {
 					WorkoutSetExercise newExercise = workoutSetExerciseMapper.toEntityNested(exerciseDto);
 					newExercise.setWorkoutSet(workoutSet);
 					existingExercises.add(newExercise);
 				}
 			}
 		}
-	}
-
-	@AfterMapping
-	protected void setWorkoutSetAssociations(@MappingTarget WorkoutSet workoutSet, WorkoutSetNestedCreateDto dto) {
-		workoutSet.getWorkoutSetExercises().forEach(exercise -> exercise.setWorkoutSet(workoutSet));
 	}
 
 	@Named("mapWorkoutIdToWorkout")

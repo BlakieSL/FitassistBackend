@@ -156,7 +156,8 @@ public abstract class RecipeMapper {
 								instruction.setTitle(instructionDto.getTitle());
 							}
 						});
-				} else {
+				}
+				else {
 					RecipeInstruction newInstruction = RecipeInstruction.of(instructionDto.getOrderIndex(),
 							instructionDto.getTitle(), instructionDto.getText(), recipe);
 					existingInstructions.add(newInstruction);
