@@ -4,6 +4,7 @@ import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.workoutSetExercise.WorkoutSetExerciseCreateDto;
 import source.code.dto.request.workoutSetExercise.WorkoutSetExerciseNestedCreateDto;
+import source.code.dto.request.workoutSetExercise.WorkoutSetExerciseNestedUpdateDto;
 import source.code.dto.request.workoutSetExercise.WorkoutSetExerciseUpdateDto;
 import source.code.dto.response.workoutSetExercise.WorkoutSetExerciseResponseDto;
 import source.code.model.exercise.Exercise;
@@ -45,6 +46,18 @@ public abstract class WorkoutSetExerciseMapper {
 	@Mapping(target = "id", ignore = true)
 	public abstract void updateWorkoutSetExercise(@MappingTarget WorkoutSetExercise workoutSetExercise,
 			WorkoutSetExerciseUpdateDto updateDto);
+
+	@Mapping(target = "workoutSet", ignore = true)
+	@Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExerciseIdToExercise")
+	@Mapping(target = "id", ignore = true)
+	public abstract WorkoutSetExercise toEntityNested(WorkoutSetExerciseNestedUpdateDto updateDto);
+
+	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "workoutSet", ignore = true)
+	@Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExerciseIdToExercise")
+	public abstract void updateWorkoutSetExerciseNested(@MappingTarget WorkoutSetExercise exercise,
+			WorkoutSetExerciseNestedUpdateDto dto);
 
 	@Named("mapWorkoutSetIdToWorkoutSet")
 	protected WorkoutSet mapWorkoutSetIdToWorkoutSet(int workoutSetId) {

@@ -1,14 +1,15 @@
 package source.code.mapper;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.request.plan.PlanUpdateDto;
+import source.code.dto.request.text.TextUpdateDto;
+import source.code.dto.request.workout.WorkoutNestedUpdateDto;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
@@ -19,9 +20,9 @@ import source.code.model.plan.PlanCategory;
 import source.code.model.plan.PlanCategoryAssociation;
 import source.code.model.text.PlanInstruction;
 import source.code.model.user.User;
+import source.code.model.workout.Workout;
 import source.code.repository.PlanCategoryRepository;
 import source.code.repository.UserRepository;
-import source.code.service.declaration.helpers.RepositoryHelper;
 
 @Mapper(componentModel = "spring", uses = { WorkoutMapper.class, CommonMappingHelper.class })
 public abstract class PlanMapper {
@@ -31,6 +32,9 @@ public abstract class PlanMapper {
 
 	@Autowired
 	private PlanCategoryRepository planCategoryRepository;
+
+	@Autowired
+	private WorkoutMapper workoutMapper;
 
 	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
 	@Mapping(target = "likesCount", ignore = true)
@@ -85,7 +89,7 @@ public abstract class PlanMapper {
 	public abstract void updatePlan(@MappingTarget Plan plan, PlanUpdateDto planUpdateDto);
 
 	@AfterMapping
-	protected void setPlanAssociations(@MappingTarget Plan plan, PlanCreateDto dto) {
+	protected void setAssociations(@MappingTarget Plan plan, PlanCreateDto dto) {
 		if (dto.getInstructions() != null) {
 			List<PlanInstruction> instructions = dto.getInstructions()
 				.stream()
@@ -107,20 +111,78 @@ public abstract class PlanMapper {
 	}
 
 	@AfterMapping
-	protected void updateCategoryAssociations(@MappingTarget Plan plan, PlanUpdateDto dto) {
+	protected void updateAssociations(@MappingTarget Plan plan, PlanUpdateDto dto) {
 		if (dto.getCategoryIds() == null) {
-			return;
+			plan.getPlanCategoryAssociations().clear();
+
+			List<PlanCategory> categories = planCategoryRepository.findAllByIdIn(dto.getCategoryIds());
+
+			List<PlanCategoryAssociation> associations = categories.stream()
+				.map(category -> PlanCategoryAssociation.createWithPlanAndCategory(plan, category))
+				.toList();
+
+			plan.getPlanCategoryAssociations().addAll(associations);
 		}
 
-		plan.getPlanCategoryAssociations().clear();
+		if (dto.getInstructions() != null) {
+			Set<PlanInstruction> existing = plan.getPlanInstructions();
 
-		List<PlanCategory> categories = planCategoryRepository.findAllByIdIn(dto.getCategoryIds());
+			List<Integer> updatedInstructionIds = dto.getInstructions()
+				.stream()
+				.map(TextUpdateDto::getId)
+				.filter(Objects::nonNull)
+				.toList();
 
-		List<PlanCategoryAssociation> associations = categories.stream()
-			.map(category -> PlanCategoryAssociation.createWithPlanAndCategory(plan, category))
-			.toList();
+			existing.removeIf(instruction -> !updatedInstructionIds.contains(instruction.getId()));
 
-		plan.getPlanCategoryAssociations().addAll(associations);
+			for (TextUpdateDto instructionDto : dto.getInstructions()) {
+				if (instructionDto.getId() != null) {
+					existing.stream()
+						.filter(instruction -> instruction.getId().equals(instructionDto.getId()))
+						.findFirst()
+						.ifPresent(instruction -> {
+							if (instructionDto.getOrderIndex() != null) {
+								instruction.setOrderIndex(instructionDto.getOrderIndex());
+							}
+							if (instructionDto.getText() != null) {
+								instruction.setText(instructionDto.getText());
+							}
+							if (instructionDto.getTitle() != null) {
+								instruction.setTitle(instructionDto.getTitle());
+							}
+						});
+				} else {
+					PlanInstruction newInstruction = PlanInstruction.of(instructionDto.getOrderIndex(),
+							instructionDto.getTitle(), instructionDto.getText(), plan);
+					existing.add(newInstruction);
+				}
+			}
+		}
+
+		if (dto.getWorkouts() != null) {
+			Set<Workout> existingWorkouts = plan.getWorkouts();
+
+			List<Integer> updatedWorkoutIds = dto.getWorkouts()
+				.stream()
+				.map(WorkoutNestedUpdateDto::getId)
+				.filter(Objects::nonNull)
+				.toList();
+
+			existingWorkouts.removeIf(workout -> !updatedWorkoutIds.contains(workout.getId()));
+
+			for (WorkoutNestedUpdateDto workoutDto : dto.getWorkouts()) {
+				if (workoutDto.getId() != null) {
+					existingWorkouts.stream()
+						.filter(workout -> workout.getId().equals(workoutDto.getId()))
+						.findFirst()
+						.ifPresent(workout -> workoutMapper.updateWorkoutNested(workout, workoutDto));
+				} else {
+					Workout newWorkout = workoutMapper.toEntityFromNested(workoutDto);
+					newWorkout.setPlan(plan);
+					existingWorkouts.add(newWorkout);
+				}
+			}
+		}
 	}
 
 	@AfterMapping

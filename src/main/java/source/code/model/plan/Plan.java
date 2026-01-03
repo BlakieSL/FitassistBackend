@@ -72,7 +72,7 @@ public class Plan implements IndexedEntity {
 	@Column(name = "structure_type", nullable = false)
 	private PlanStructureType planStructureType;
 
-	@OneToMany(mappedBy = "plan", cascade = { CascadeType.PERSIST }, orphanRemoval = true)
+	@OneToMany(mappedBy = "plan", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE }, orphanRemoval = true)
 	@OrderBy("orderIndex ASC")
 	private final Set<PlanInstruction> planInstructions = new LinkedHashSet<>();
 
@@ -81,7 +81,7 @@ public class Plan implements IndexedEntity {
 	@OrderBy("id ASC")
 	private final Set<PlanCategoryAssociation> planCategoryAssociations = new LinkedHashSet<>();
 
-	@OneToMany(mappedBy = "plan", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToMany(mappedBy = "plan", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE }, orphanRemoval = true)
 	@OrderBy("orderIndex ASC")
 	private final Set<Workout> workouts = new LinkedHashSet<>();
 

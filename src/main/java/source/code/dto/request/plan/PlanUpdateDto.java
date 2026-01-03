@@ -1,5 +1,6 @@
 package source.code.dto.request.plan;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
@@ -8,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.request.text.TextUpdateDto;
+import source.code.dto.request.workout.WorkoutNestedUpdateDto;
 import source.code.helper.Enum.model.PlanStructureType;
 
 @Getter
@@ -31,5 +34,10 @@ public class PlanUpdateDto {
 	private PlanStructureType planStructureType;
 
 	private List<Integer> categoryIds;
+
+	private List<TextUpdateDto> instructions;
+
+	@Valid
+	private List<WorkoutNestedUpdateDto> workouts;
 
 }
