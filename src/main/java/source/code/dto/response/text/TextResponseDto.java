@@ -1,4 +1,6 @@
-package source.code.dto.request.text;
+package source.code.dto.response.text;
+
+import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,12 +11,14 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RecipeInstructionUpdateDto {
+public class TextResponseDto implements Serializable {
+
+	private Integer id;
 
 	private short orderIndex;
 
-	private short title;
-
 	private String text;
+
+	private String title;
 
 }
