@@ -27,9 +27,6 @@ public class WorkoutNestedCreateDto {
 	private Short duration;
 
 	@NotNull
-	private Integer planId;
-
-	@NotNull
 	@Positive
 	private Short orderIndex;
 
