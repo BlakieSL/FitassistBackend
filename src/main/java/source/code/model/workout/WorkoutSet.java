@@ -37,7 +37,7 @@ public class WorkoutSet {
 	private Workout workout;
 
 	@OneToMany(mappedBy = "workoutSet", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE },
-			orphanRemoval = true, fetch = FetchType.EAGER)
+			orphanRemoval = true)
 	@OrderBy("orderIndex ASC")
 	private Set<WorkoutSetExercise> workoutSetExercises = new LinkedHashSet<>();
 

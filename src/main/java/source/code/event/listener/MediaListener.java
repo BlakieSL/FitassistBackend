@@ -32,7 +32,9 @@ public class MediaListener {
 
 	private void invalidateParentCache(Media media) {
 		String cacheName = getCacheNameForParentType(media.getParentType());
-		cacheService.evictCache(cacheName, media.getParentId());
+		if (cacheName != null) {
+			cacheService.evictCache(cacheName, media.getParentId());
+		}
 	}
 
 	private String getCacheNameForParentType(MediaConnectedEntity parentType) {

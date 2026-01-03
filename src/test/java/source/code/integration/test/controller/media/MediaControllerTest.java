@@ -25,7 +25,7 @@ import source.code.integration.utils.Utils;
 @Import({ MockRedisConfig.class, MockAwsSesConfig.class, MockAwsSesConfig.class })
 @TestPropertySource(properties = "schema.name=general")
 @ContextConfiguration(initializers = { MySqlContainerInitializer.class, AwsS3ContainerInitializer.class })
-public class MediaTest {
+public class MediaControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
