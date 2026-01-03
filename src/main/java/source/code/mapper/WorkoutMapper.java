@@ -7,6 +7,7 @@ import java.util.Set;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.workout.WorkoutCreateDto;
+import source.code.dto.request.workout.WorkoutNestedCreateDto;
 import source.code.dto.request.workout.WorkoutNestedUpdateDto;
 import source.code.dto.request.workout.WorkoutUpdateDto;
 import source.code.dto.request.workoutSet.WorkoutSetNestedUpdateDto;
@@ -43,6 +44,16 @@ public abstract class WorkoutMapper {
 	@Mapping(target = "plan", ignore = true)
 	public abstract void updateWorkout(@MappingTarget Workout workout, WorkoutUpdateDto updateDto);
 
+	// this is used when creating Plan and need to create new nested Workout
+	@Mapping(target = "plan", ignore = true)
+	@Mapping(target = "id", ignore = true)
+	public abstract Workout toEntityFromNested(WorkoutNestedCreateDto createDto);
+
+	@AfterMapping
+	protected void setWorkoutAssociations(@MappingTarget Workout workout, WorkoutNestedCreateDto dto) {
+		workout.getWorkoutSets().forEach(workoutSet -> workoutSet.setWorkout(workout));
+	}
+
 	// this is used when updating Plan and need to create new nested Workout
 	@Mapping(target = "plan", ignore = true)
 	@Mapping(target = "id", ignore = true)
@@ -55,11 +66,6 @@ public abstract class WorkoutMapper {
 	@Mapping(target = "plan", ignore = true)
 	@Mapping(target = "workoutSets", ignore = true)
 	public abstract void updateWorkoutNested(@MappingTarget Workout workout, WorkoutNestedUpdateDto dto);
-
-	@AfterMapping
-	protected void setWorkoutAssociations(@MappingTarget Workout workout, WorkoutCreateDto dto) {
-		workout.getWorkoutSets().forEach(workoutSet -> workoutSet.setWorkout(workout));
-	}
 
 	@AfterMapping
 	protected void setWorkoutAssociations(@MappingTarget Workout workout, WorkoutNestedUpdateDto dto) {
@@ -77,7 +83,8 @@ public abstract class WorkoutMapper {
 				.peek(set -> set.setWorkout(workout))
 				.toList();
 			existingSets.addAll(sets);
-		} else {
+		}
+		else {
 			List<Integer> updatedSetIds = dto.getWorkoutSets()
 				.stream()
 				.map(WorkoutSetNestedUpdateDto::getId)
@@ -92,7 +99,8 @@ public abstract class WorkoutMapper {
 						.filter(set -> set.getId().equals(setDto.getId()))
 						.findFirst()
 						.ifPresent(set -> workoutSetMapper.updateWorkoutSetNested(set, setDto));
-				} else {
+				}
+				else {
 					WorkoutSet newSet = workoutSetMapper.toEntityFromNested(setDto);
 					newSet.setWorkout(workout);
 					existingSets.add(newSet);
