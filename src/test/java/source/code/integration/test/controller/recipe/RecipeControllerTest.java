@@ -165,8 +165,11 @@ public class RecipeControllerTest {
 					jsonPath("$.categories").isArray(), jsonPath("$.categories.length()").value(2),
 					jsonPath("$.instructions").isArray(), jsonPath("$.instructions.length()").value(2),
 					jsonPath("$.foods").isArray(), jsonPath("$.foods.length()").value(1),
-					jsonPath("$.foods[0].foodId").value(1), jsonPath("$.foods[0].foodName").value("Carrot"),
-					jsonPath("$.foods[0].quantity").value(200), jsonPath("$.imageUrls", hasSize(2)));
+					jsonPath("$.foods[0].id").exists(), jsonPath("$.foods[0].quantity").value(200),
+					jsonPath("$.foods[0].ingredient.id").value(1),
+					jsonPath("$.foods[0].ingredient.name").value("Carrot"),
+					jsonPath("$.foods[0].ingredient.foodMacros").exists(),
+					jsonPath("$.foods[0].ingredient.category").exists(), jsonPath("$.imageUrls", hasSize(2)));
 	}
 
 	@Test
