@@ -6,6 +6,8 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -80,7 +82,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 	}
 
 	@Override
-	@CacheEvict(value = { CacheNames.FOODS_BY_RECIPE }, allEntries = true)
+	@CacheEvict(value = { CacheNames.RECIPES }, key = "#recipeId")
 	@Transactional
 	public void saveFoodToRecipe(int recipeId, RecipeFoodCreateDto request) {
 		List<Integer> foodIds = request.getFoods()
@@ -88,27 +90,55 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 			.map(RecipeFoodCreateDto.FoodQuantityPair::getFoodId)
 			.toList();
 
-		isAlreadyAdded(recipeId, foodIds);
+		validateNotYetAdded(recipeId, foodIds);
 
 		Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
-		List<Food> foods = foodRepository.findAllById(foodIds);
 
-		if (foods.size() != foodIds.size()) {
+		Map<Integer, Food> foodsMap = foodRepository.findAllById(foodIds)
+			.stream()
+			.collect(Collectors.toMap(Food::getId, food -> food));
+
+		if (foodsMap.size() != foodIds.size()) {
 			throw RecordNotFoundException.of(Food.class);
 		}
 
-		List<RecipeFood> recipeFoods = request.getFoods().stream().map(pair -> {
-			Food food = foods.stream()
-				.filter(f -> f.getId().equals(pair.getFoodId()))
-				.findFirst()
-				.orElseThrow(() -> RecordNotFoundException.of(Food.class, pair.getFoodId()));
-			return RecipeFood.of(pair.getQuantity(), recipe, food);
-		}).toList();
+		List<RecipeFood> recipeFoods = request.getFoods()
+			.stream()
+			.map(pair -> RecipeFood.of(pair.getQuantity(), recipe, foodsMap.get(pair.getFoodId())))
+			.toList();
 
 		recipeFoodRepository.saveAll(recipeFoods);
 	}
 
-	private void isAlreadyAdded(int recipeId, List<Integer> foodIds) {
+	@Override
+	@CacheEvict(value = { CacheNames.RECIPES }, key = "#recipeId")
+	@Transactional
+	public void replaceAllFoodsInRecipe(int recipeId, RecipeFoodCreateDto request) {
+		Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
+		recipe.getRecipeFoods().clear();
+
+		List<Integer> foodIds = request.getFoods()
+			.stream()
+			.map(RecipeFoodCreateDto.FoodQuantityPair::getFoodId)
+			.toList();
+
+		Map<Integer, Food> foodsMap = foodRepository.findAllById(foodIds)
+			.stream()
+			.collect(Collectors.toMap(Food::getId, food -> food));
+
+		if (foodsMap.size() != foodIds.size()) {
+			throw RecordNotFoundException.of(Food.class);
+		}
+
+		request.getFoods()
+			.stream()
+			.map(pair -> RecipeFood.of(pair.getQuantity(), recipe, foodsMap.get(pair.getFoodId())))
+			.forEach(recipe.getRecipeFoods()::add);
+
+		recipeRepository.save(recipe);
+	}
+
+	private void validateNotYetAdded(int recipeId, List<Integer> foodIds) {
 		List<RecipeFood> existingRecipeFoods = recipeFoodRepository.findByRecipeIdAndFoodIds(recipeId, foodIds);
 		if (!existingRecipeFoods.isEmpty()) {
 			int existingFoodId = existingRecipeFoods.getFirst().getFood().getId();
@@ -117,7 +147,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 	}
 
 	@Override
-	@CachePut(value = { CacheNames.FOODS_BY_RECIPE }, key = "#recipeId")
+	@CacheEvict(value = { CacheNames.RECIPES }, key = "#recipeId")
 	@Transactional
 	public void updateFoodRecipe(int recipeId, int foodId, JsonMergePatch patch)
 			throws JsonPatchException, JsonProcessingException {
@@ -131,7 +161,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 	}
 
 	@Override
-	@CacheEvict(value = { CacheNames.FOODS_BY_RECIPE }, key = "#recipeId")
+	@CacheEvict(value = { CacheNames.RECIPES }, key = "#recipeId")
 	@Transactional
 	public void deleteFoodFromRecipe(int foodId, int recipeId) {
 		RecipeFood recipeFood = find(recipeId, foodId);
@@ -139,7 +169,6 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 	}
 
 	@Override
-	@Cacheable(value = CacheNames.FOODS_BY_RECIPE, key = "#recipeId")
 	public List<FoodSummaryDto> getFoodsByRecipe(int recipeId) {
 		List<FoodSummaryDto> summaries = recipeFoodRepository.findByRecipeId(recipeId)
 			.stream()
@@ -152,23 +181,9 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 		return summaries;
 	}
 
-	@Override
-	public Page<RecipeSummaryDto> getRecipesByFoods(FilterRecipesByFoodsDto filter, Pageable pageable) {
-		List<FilterCriteria> foodCriteriaList = filter.getFoodIds()
-			.stream()
-			.map(foodId -> FilterCriteria.of("FOODS", foodId, FilterOperation.EQUAL))
-			.toList();
-
-		return recipeService.getFilteredRecipes(FilterDto.of(foodCriteriaList, FilterDataOption.AND), pageable);
-	}
-
 	private RecipeFood find(int recipeId, int foodId) {
 		return recipeFoodRepository.findByRecipeIdAndFoodId(recipeId, foodId)
 			.orElseThrow(() -> RecordNotFoundException.of(RecipeFood.class, foodId, recipeId));
-	}
-
-	private boolean isAlreadyAdded(int recipeId, int foodId) {
-		return recipeFoodRepository.existsByRecipeIdAndFoodId(recipeId, foodId);
 	}
 
 }
