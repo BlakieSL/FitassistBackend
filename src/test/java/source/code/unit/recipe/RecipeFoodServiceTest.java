@@ -219,34 +219,4 @@ public class RecipeFoodServiceTest {
 		verify(foodPopulationService).populate(result);
 	}
 
-	@Test
-	void getRecipesByFoods_shouldReturnRecipesByFoods() {
-		List<Integer> foodIds = List.of(foodId);
-		FilterRecipesByFoodsDto filter = FilterRecipesByFoodsDto.of(foodIds);
-		Pageable pageable = PageRequest.of(0, 100);
-		List<RecipeSummaryDto> recipeSummaryDtos = List.of(new RecipeSummaryDto());
-		Page<RecipeSummaryDto> recipePage = new PageImpl<>(recipeSummaryDtos, pageable, recipeSummaryDtos.size());
-
-		when(recipeService.getFilteredRecipes(any(), eq(pageable))).thenReturn(recipePage);
-
-		Page<RecipeSummaryDto> result = recipeFoodService.getRecipesByFoods(filter, pageable);
-
-		assertEquals(1, result.getContent().size());
-		assertSame(recipeSummaryDtos.get(0), result.getContent().get(0));
-	}
-
-	@Test
-	void getRecipesByFoods_shouldReturnEmptyPageWhenNoRecipes() {
-		List<Integer> foodIds = List.of(foodId);
-		FilterRecipesByFoodsDto filter = FilterRecipesByFoodsDto.of(foodIds);
-		Pageable pageable = PageRequest.of(0, 100);
-		Page<RecipeSummaryDto> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-
-		when(recipeService.getFilteredRecipes(any(), eq(pageable))).thenReturn(emptyPage);
-
-		Page<RecipeSummaryDto> result = recipeFoodService.getRecipesByFoods(filter, pageable);
-
-		assertTrue(result.getContent().isEmpty());
-	}
-
 }

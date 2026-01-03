@@ -72,17 +72,4 @@ public class RecipeFoodControllerGetTest {
 		mockMvc.perform(get("/api/recipe-food/4/foods")).andExpectAll(status().isForbidden());
 	}
 
-	@RecipeFoodSql
-	@Test
-	@DisplayName("POST - /{filter}/foods - Should get recipes by foods")
-	void getRecipesByFoods_ShouldReturnRecipesWhenOwner() throws Exception {
-		Utils.setUserContext(1);
-
-		var filter = FilterRecipesByFoodsDto.of(List.of(1));
-		mockMvc
-			.perform(post("/api/recipe-food/filter/foods").content(objectMapper.writeValueAsString(filter))
-				.contentType(MediaType.APPLICATION_JSON))
-			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(1)));
-	}
-
 }

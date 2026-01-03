@@ -41,6 +41,14 @@ public class RecipeFoodController {
 	}
 
 	@RecipeOwnerOrAdmin
+	@PostMapping("/{recipeId}/replaceAll")
+	public ResponseEntity<Void> replaceAllFoodsInRecipe(@PathVariable int recipeId,
+			@Valid @RequestBody RecipeFoodCreateDto request) {
+		recipeFoodService.replaceAllFoodsInRecipe(recipeId, request);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
+
+	@RecipeOwnerOrAdmin
 	@DeleteMapping("/{recipeId}/remove/{foodId}")
 	public ResponseEntity<Void> deleteFoodFromRecipe(@PathVariable int recipeId, @PathVariable int foodId) {
 		recipeFoodService.deleteFoodFromRecipe(foodId, recipeId);
@@ -60,13 +68,6 @@ public class RecipeFoodController {
 	public ResponseEntity<List<FoodSummaryDto>> getFoodsByRecipe(@PathVariable int recipeId) {
 		List<FoodSummaryDto> foods = recipeFoodService.getFoodsByRecipe(recipeId);
 		return ResponseEntity.ok(foods);
-	}
-
-	@PostMapping("/filter/foods")
-	public ResponseEntity<Page<RecipeSummaryDto>> getRecipesByFoods(@Valid @RequestBody FilterRecipesByFoodsDto filter,
-			@PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-		Page<RecipeSummaryDto> recipes = recipeFoodService.getRecipesByFoods(filter, pageable);
-		return ResponseEntity.ok(recipes);
 	}
 
 }
