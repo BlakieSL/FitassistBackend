@@ -12,9 +12,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.multipart.MultipartFile;
 import source.code.dto.request.media.MediaCreateDto;
 import source.code.dto.response.MediaResponseDto;
+import source.code.event.events.Media.MediaDeleteEvent;
+import source.code.event.events.Media.MediaUpdateEvent;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.mapper.MediaMapper;
@@ -38,6 +41,9 @@ public class MediaServiceTest {
 
 	@Mock
 	private MediaRepository mediaRepository;
+
+	@Mock
+	private ApplicationEventPublisher applicationEventPublisher;
 
 	@InjectMocks
 	private MediaServiceImpl mediaService;
@@ -85,6 +91,7 @@ public class MediaServiceTest {
 
 		assertEquals(responseDto, result);
 		verify(mediaRepository).save(media);
+		verify(applicationEventPublisher).publishEvent(any(MediaUpdateEvent.class));
 	}
 
 	@Test
@@ -97,6 +104,7 @@ public class MediaServiceTest {
 
 		verify(mediaRepository).delete(media);
 		verify(s3Service).deleteImage(media.getImageName());
+		verify(applicationEventPublisher).publishEvent(any(MediaDeleteEvent.class));
 	}
 
 	@Test

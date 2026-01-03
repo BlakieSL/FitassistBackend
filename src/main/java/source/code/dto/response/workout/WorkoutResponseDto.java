@@ -21,6 +21,8 @@ public class WorkoutResponseDto implements Serializable {
 
 	private Short duration;
 
+	private Short orderIndex;
+
 	private Byte restDaysAfter;
 
 	private Integer weekIndex;

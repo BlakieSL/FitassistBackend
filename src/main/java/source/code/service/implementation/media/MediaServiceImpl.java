@@ -5,10 +5,13 @@ import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import source.code.dto.request.media.MediaCreateDto;
 import source.code.dto.response.MediaResponseDto;
+import source.code.event.events.Media.MediaDeleteEvent;
+import source.code.event.events.Media.MediaUpdateEvent;
 import source.code.exception.FileProcessingException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.model.MediaConnectedEntity;
@@ -30,12 +33,15 @@ public class MediaServiceImpl implements MediaService {
 
 	private final AwsS3Service s3Service;
 
+	private final ApplicationEventPublisher applicationEventPublisher;
+
 	public MediaServiceImpl(MediaRepository mediaRepository, MediaMapper mediaMapper, RepositoryHelper repositoryHelper,
-			AwsS3Service s3Service) {
+			AwsS3Service s3Service, ApplicationEventPublisher applicationEventPublisher) {
 		this.mediaRepository = mediaRepository;
 		this.mediaMapper = mediaMapper;
 		this.repositoryHelper = repositoryHelper;
 		this.s3Service = s3Service;
+		this.applicationEventPublisher = applicationEventPublisher;
 	}
 
 	@Override
@@ -47,6 +53,8 @@ public class MediaServiceImpl implements MediaService {
 		String imageName = s3Service.uploadImage(imageBytes);
 
 		Media savedMedia = mediaRepository.save(mediaMapper.toEntity(request, imageName));
+
+		applicationEventPublisher.publishEvent(MediaUpdateEvent.of(this, savedMedia));
 
 		String imageUrl = s3Service.getImage(imageName);
 
@@ -61,6 +69,8 @@ public class MediaServiceImpl implements MediaService {
 		s3Service.deleteImage(media.getImageName());
 
 		mediaRepository.delete(media);
+
+		applicationEventPublisher.publishEvent(MediaDeleteEvent.of(this, media));
 	}
 
 	@Override
@@ -110,6 +120,7 @@ public class MediaServiceImpl implements MediaService {
 				.ifPresent(existingMedia -> {
 					s3Service.deleteImage(existingMedia.getImageName());
 					mediaRepository.delete(existingMedia);
+					applicationEventPublisher.publishEvent(MediaDeleteEvent.of(this, existingMedia));
 				});
 		}
 	}
