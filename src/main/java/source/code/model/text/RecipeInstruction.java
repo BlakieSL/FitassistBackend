@@ -15,8 +15,6 @@ import source.code.model.recipe.Recipe;
 @NoArgsConstructor
 public class RecipeInstruction extends TextBase {
 
-	private String title;
-
 	@ManyToOne
 	@JoinColumn(name = "recipe_id")
 	private Recipe recipe;

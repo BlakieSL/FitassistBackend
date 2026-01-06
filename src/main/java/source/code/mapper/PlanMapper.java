@@ -36,6 +36,9 @@ public abstract class PlanMapper {
 	@Autowired
 	private WorkoutMapper workoutMapper;
 
+	@Autowired
+	private CommonMappingHelper commonMappingHelper;
+
 	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
 	@Mapping(target = "likesCount", ignore = true)
 	@Mapping(target = "dislikesCount", ignore = true)
@@ -126,39 +129,9 @@ public abstract class PlanMapper {
 		}
 
 		if (dto.getInstructions() != null) {
-			Set<PlanInstruction> existing = plan.getPlanInstructions();
-
-			List<Integer> updatedInstructionIds = dto.getInstructions()
-				.stream()
-				.map(TextUpdateDto::getId)
-				.filter(Objects::nonNull)
-				.toList();
-
-			existing.removeIf(instruction -> !updatedInstructionIds.contains(instruction.getId()));
-
-			for (TextUpdateDto instructionDto : dto.getInstructions()) {
-				if (instructionDto.getId() != null) {
-					existing.stream()
-						.filter(instruction -> instruction.getId().equals(instructionDto.getId()))
-						.findFirst()
-						.ifPresent(instruction -> {
-							if (instructionDto.getOrderIndex() != null) {
-								instruction.setOrderIndex(instructionDto.getOrderIndex());
-							}
-							if (instructionDto.getText() != null) {
-								instruction.setText(instructionDto.getText());
-							}
-							if (instructionDto.getTitle() != null) {
-								instruction.setTitle(instructionDto.getTitle());
-							}
-						});
-				}
-				else {
-					PlanInstruction newInstruction = PlanInstruction.of(instructionDto.getOrderIndex(),
-							instructionDto.getTitle(), instructionDto.getText(), plan);
-					existing.add(newInstruction);
-				}
-			}
+			commonMappingHelper.updateTextAssociations(plan.getPlanInstructions(), dto.getInstructions(),
+					instructionDto -> PlanInstruction.of(instructionDto.getOrderIndex(), instructionDto.getTitle(),
+							instructionDto.getText(), plan));
 		}
 
 		if (dto.getWorkouts() != null) {

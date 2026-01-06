@@ -19,10 +19,12 @@ public class ExerciseInstruction extends TextBase {
 	@JoinColumn(name = "exercise_id")
 	private Exercise exercise;
 
-	public static ExerciseInstruction of(short number, String text) {
+	public static ExerciseInstruction of(short number, String title, String text, Exercise exercise) {
 		ExerciseInstruction instruction = new ExerciseInstruction();
 		instruction.setOrderIndex(number);
 		instruction.setText(text);
+		instruction.setTitle(title);
+		instruction.setExercise(exercise);
 		return instruction;
 	}
 
