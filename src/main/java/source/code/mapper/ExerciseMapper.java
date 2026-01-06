@@ -36,6 +36,9 @@ public abstract class ExerciseMapper {
 	@Autowired
 	private EquipmentRepository equipmentRepository;
 
+	@Autowired
+	private CommonMappingHelper commonMappingHelper;
+
 	@Mapping(target = "expertiseLevel", source = "expertiseLevel",
 			qualifiedByName = "mapExpertiseToCategoryResponseDto")
 	@Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsToCategoryResponseDto")
@@ -93,22 +96,20 @@ public abstract class ExerciseMapper {
 	@AfterMapping
 	protected void setExerciseAssociations(@MappingTarget Exercise exercise, ExerciseCreateDto dto) {
 		if (dto.getInstructions() != null) {
-			List<ExerciseInstruction> instructions = dto.getInstructions().stream().map(instructionDto -> {
-				ExerciseInstruction instruction = ExerciseInstruction.of(instructionDto.getOrderIndex(),
-						instructionDto.getText());
-				instruction.setExercise(exercise);
-				return instruction;
-			}).toList();
+			List<ExerciseInstruction> instructions = dto.getInstructions()
+				.stream()
+				.map(instructionDto -> ExerciseInstruction.of(instructionDto.getOrderIndex(), instructionDto.getTitle(),
+						instructionDto.getText(), exercise))
+				.toList();
 
 			exercise.getExerciseInstructions().addAll(instructions);
 		}
 
 		if (dto.getTips() != null) {
-			List<ExerciseTip> tips = dto.getTips().stream().map(tipDto -> {
-				ExerciseTip tip = ExerciseTip.createWithNumberAndText(tipDto.getOrderIndex(), tipDto.getText());
-				tip.setExercise(exercise);
-				return tip;
-			}).toList();
+			List<ExerciseTip> tips = dto.getTips()
+				.stream()
+				.map(tipDto -> ExerciseTip.of(tipDto.getOrderIndex(), tipDto.getTitle(), tipDto.getText(), exercise))
+				.toList();
 
 			exercise.getExerciseTips().addAll(tips);
 		}
@@ -124,19 +125,28 @@ public abstract class ExerciseMapper {
 	}
 
 	@AfterMapping
-	protected void updateTargetMuscleAssociations(@MappingTarget Exercise exercise, ExerciseUpdateDto dto) {
-		if (dto.getTargetMuscleIds() == null) {
-			return;
+	protected void updateAssociations(@MappingTarget Exercise exercise, ExerciseUpdateDto dto) {
+		if (dto.getTargetMuscleIds() != null) {
+			exercise.getExerciseTargetMuscles().clear();
+
+			List<ExerciseTargetMuscle> targetMuscles = targetMuscleRepository.findAllByIdIn(dto.getTargetMuscleIds())
+				.stream()
+				.map(tm -> ExerciseTargetMuscle.createWithTargetMuscleExercise(tm, exercise))
+				.toList();
+
+			exercise.getExerciseTargetMuscles().addAll(targetMuscles);
 		}
 
-		exercise.getExerciseTargetMuscles().clear();
+		if (dto.getInstructions() != null) {
+			commonMappingHelper.updateTextAssociations(exercise.getExerciseInstructions(), dto.getInstructions(),
+					instructionDto -> ExerciseInstruction.of(instructionDto.getOrderIndex(), instructionDto.getTitle(),
+							instructionDto.getText(), exercise));
+		}
 
-		List<ExerciseTargetMuscle> targetMuscles = targetMuscleRepository.findAllByIdIn(dto.getTargetMuscleIds())
-			.stream()
-			.map(tm -> ExerciseTargetMuscle.createWithTargetMuscleExercise(tm, exercise))
-			.toList();
-
-		exercise.getExerciseTargetMuscles().addAll(targetMuscles);
+		if (dto.getTips() != null) {
+			commonMappingHelper.updateTextAssociations(exercise.getExerciseTips(), dto.getTips(),
+					tipDto -> ExerciseTip.of(tipDto.getOrderIndex(), tipDto.getTitle(), tipDto.getText(), exercise));
+		}
 	}
 
 	@Named("mapAssociationsToTargetMuscleResponseDto")
@@ -192,14 +202,14 @@ public abstract class ExerciseMapper {
 	protected List<TextResponseDto> mapInstructionsToDto(Set<ExerciseInstruction> instructions) {
 		return instructions.stream()
 			.map(instruction -> new TextResponseDto(instruction.getId(), instruction.getOrderIndex(),
-					instruction.getText(), null))
+					instruction.getText(), instruction.getTitle()))
 			.toList();
 	}
 
 	@Named("mapTipsToDto")
 	protected List<TextResponseDto> mapTipsToDto(Set<ExerciseTip> tips) {
 		return tips.stream()
-			.map(tip -> new TextResponseDto(tip.getId(), tip.getOrderIndex(), tip.getText(), null))
+			.map(tip -> new TextResponseDto(tip.getId(), tip.getOrderIndex(), tip.getText(), tip.getTitle()))
 			.toList();
 	}
 

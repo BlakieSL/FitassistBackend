@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
+import source.code.model.complaint.CommentComplaint;
 import source.code.model.media.Media;
 import source.code.model.user.User;
 import source.code.model.user.UserComment;
@@ -64,6 +65,9 @@ public class Comment {
 
 	@OneToMany(mappedBy = "comment")
 	private final Set<UserComment> userCommentLikes = new HashSet<>();
+
+	@OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
+	private final Set<CommentComplaint> complaints = new HashSet<>();
 
 	@OneToMany
 	@JoinColumn(name = "parent_id", insertable = false, updatable = false,

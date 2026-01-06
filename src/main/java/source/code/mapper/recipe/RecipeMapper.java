@@ -38,6 +38,9 @@ public abstract class RecipeMapper {
 	@Autowired
 	private RecipeCategoryRepository recipeCategoryRepository;
 
+	@Autowired
+	private CommonMappingHelper commonMappingHelper;
+
 	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
 	@Mapping(target = "likesCount", ignore = true)
 	@Mapping(target = "dislikesCount", ignore = true)
@@ -130,39 +133,9 @@ public abstract class RecipeMapper {
 		}
 
 		if (dto.getInstructions() != null) {
-			Set<RecipeInstruction> existingInstructions = recipe.getRecipeInstructions();
-
-			List<Integer> updatedInstructionIds = dto.getInstructions()
-				.stream()
-				.map(TextUpdateDto::getId)
-				.filter(Objects::nonNull)
-				.toList();
-
-			existingInstructions.removeIf(instruction -> !updatedInstructionIds.contains(instruction.getId()));
-
-			for (TextUpdateDto instructionDto : dto.getInstructions()) {
-				if (instructionDto.getId() != null) {
-					existingInstructions.stream()
-						.filter(instruction -> instruction.getId().equals(instructionDto.getId()))
-						.findFirst()
-						.ifPresent(instruction -> {
-							if (instructionDto.getOrderIndex() != null) {
-								instruction.setOrderIndex(instructionDto.getOrderIndex());
-							}
-							if (instructionDto.getText() != null) {
-								instruction.setText(instructionDto.getText());
-							}
-							if (instructionDto.getTitle() != null) {
-								instruction.setTitle(instructionDto.getTitle());
-							}
-						});
-				}
-				else {
-					RecipeInstruction newInstruction = RecipeInstruction.of(instructionDto.getOrderIndex(),
-							instructionDto.getTitle(), instructionDto.getText(), recipe);
-					existingInstructions.add(newInstruction);
-				}
-			}
+			commonMappingHelper.updateTextAssociations(recipe.getRecipeInstructions(), dto.getInstructions(),
+					instructionDto -> RecipeInstruction.of(instructionDto.getOrderIndex(), instructionDto.getTitle(),
+							instructionDto.getText(), recipe));
 		}
 	}
 

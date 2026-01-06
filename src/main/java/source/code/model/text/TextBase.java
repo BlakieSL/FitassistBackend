@@ -27,4 +27,6 @@ public abstract class TextBase {
 	@Column(nullable = false, columnDefinition = "TEXT")
 	private String text;
 
+	private String title;
+
 }

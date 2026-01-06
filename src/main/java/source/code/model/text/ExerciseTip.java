@@ -19,10 +19,12 @@ public class ExerciseTip extends TextBase {
 	@JoinColumn(name = "exercise_id")
 	private Exercise exercise;
 
-	public static ExerciseTip createWithNumberAndText(short number, String text) {
+	public static ExerciseTip of(short number, String title, String text, Exercise exercise) {
 		ExerciseTip tip = new ExerciseTip();
 		tip.setOrderIndex(number);
 		tip.setText(text);
+		tip.setTitle(title);
+		tip.setExercise(exercise);
 		return tip;
 	}
 

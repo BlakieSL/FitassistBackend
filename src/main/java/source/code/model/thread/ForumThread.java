@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
+import source.code.model.complaint.ThreadComplaint;
 import source.code.model.media.Media;
 import source.code.model.user.User;
 import source.code.model.user.UserThread;
@@ -70,6 +71,9 @@ public class ForumThread {
 
 	@OneToMany(mappedBy = "forumThread", cascade = CascadeType.REMOVE)
 	private final Set<UserThread> userThreads = new HashSet<>();
+
+	@OneToMany(mappedBy = "thread", cascade = CascadeType.REMOVE)
+	private final Set<ThreadComplaint> complaints = new HashSet<>();
 
 	@OneToMany
 	@JoinColumn(name = "parent_id", insertable = false, updatable = false,

@@ -18,7 +18,6 @@ import source.code.dto.request.category.CategoryUpdateDto;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.event.events.Category.CategoryClearCacheEvent;
 import source.code.event.events.Category.CategoryCreateCacheEvent;
-import source.code.exception.ConflictDeletionException;
 import source.code.exception.RecordNotFoundException;
 import source.code.mapper.category.BaseMapper;
 import source.code.service.declaration.category.CategoryCacheKeyGenerator;
@@ -82,10 +81,6 @@ public abstract class GenericCategoryService<T> {
 	@Transactional
 	public void deleteCategory(int categoryId) {
 		T category = find(categoryId);
-
-		if (hasAssociatedEntities(categoryId)) {
-			throw new ConflictDeletionException(getEntityClass(), categoryId);
-		}
 
 		repository.delete(category);
 

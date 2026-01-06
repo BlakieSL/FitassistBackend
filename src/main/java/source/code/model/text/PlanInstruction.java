@@ -15,8 +15,6 @@ import source.code.model.plan.Plan;
 @NoArgsConstructor
 public class PlanInstruction extends TextBase {
 
-	private String title;
-
 	@ManyToOne
 	@JoinColumn(name = "plan_id")
 	private Plan plan;
