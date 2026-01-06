@@ -72,11 +72,13 @@ public class Exercise implements IndexedEntity {
 	@JoinColumn(name = "force_type_id", nullable = false)
 	private ForceType forceType;
 
-	@OneToMany(mappedBy = "exercise", cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, orphanRemoval = true)
+	@OneToMany(mappedBy = "exercise", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE },
+			orphanRemoval = true)
 	@OrderBy("orderIndex ASC")
 	private final Set<ExerciseInstruction> exerciseInstructions = new LinkedHashSet<>();
 
-	@OneToMany(mappedBy = "exercise", cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, orphanRemoval = true)
+	@OneToMany(mappedBy = "exercise", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE },
+			orphanRemoval = true)
 	@OrderBy("orderIndex ASC")
 	private final Set<ExerciseTip> exerciseTips = new LinkedHashSet<>();
 

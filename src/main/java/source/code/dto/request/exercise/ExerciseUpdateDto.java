@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.request.text.TextUpdateDto;
 
 @Getter
 @Setter
@@ -34,5 +35,9 @@ public class ExerciseUpdateDto {
 	private Integer forceTypeId;
 
 	private List<Integer> targetMuscleIds;
+
+	private List<TextUpdateDto> instructions;
+
+	private List<TextUpdateDto> tips;
 
 }
