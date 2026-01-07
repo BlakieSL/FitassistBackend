@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.complaint.ComplaintCreateDto;
 import source.code.dto.response.comment.ComplaintResponseDto;
+import source.code.exception.InvalidFilterValueException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.utils.AuthorizationUtil;
 import source.code.mapper.ComplaintMapper;
@@ -30,18 +31,23 @@ public class ComplaintServiceImpl implements ComplaintService {
 
 	@Transactional
 	@Override
-	public void createComplaint(ComplaintCreateDto complaintCreateDto) {
+	public ComplaintResponseDto createComplaint(ComplaintCreateDto complaintCreateDto) {
 		int userId = AuthorizationUtil.getUserId();
+		ComplaintBase savedComplaint;
+
 		switch (complaintCreateDto.getSubClass()) {
 			case COMMENT_COMPLAINT -> {
 				CommentComplaint complaint = complaintMapper.toCommentComplaint(complaintCreateDto, userId);
-				complaintRepository.save(complaint);
+				savedComplaint = complaintRepository.save(complaint);
 			}
 			case THREAD_COMPLAINT -> {
 				ThreadComplaint complaint = complaintMapper.toThreadComplaint(complaintCreateDto, userId);
-				complaintRepository.save(complaint);
+				savedComplaint = complaintRepository.save(complaint);
 			}
+			default -> throw new InvalidFilterValueException("Unsupported complaint subclass: " + complaintCreateDto.getSubClass());
 		}
+
+		return getComplaintById(savedComplaint.getId());
 	}
 
 	@Transactional

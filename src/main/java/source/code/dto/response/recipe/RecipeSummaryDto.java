@@ -41,7 +41,7 @@ public class RecipeSummaryDto implements BaseUserEntity, Serializable {
 
 	private String description;
 
-	private boolean isPublic;
+	private Boolean isPublic;
 
 	private short minutesToPrepare;
 

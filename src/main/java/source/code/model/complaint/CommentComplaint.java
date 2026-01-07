@@ -38,5 +38,4 @@ public class CommentComplaint extends ComplaintBase {
 		complaint.setUser(user);
 		return complaint;
 	}
-
 }

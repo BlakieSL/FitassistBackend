@@ -64,7 +64,6 @@ public abstract class PlanMapper {
 	@Mapping(target = "liked", ignore = true)
 	@Mapping(target = "disliked", ignore = true)
 	@Mapping(target = "saved", ignore = true)
-	@Mapping(target = "public", source = "isPublic")
 	@Mapping(target = "interactionCreatedAt", ignore = true)
 	public abstract PlanSummaryDto toSummaryDto(Plan plan);
 
