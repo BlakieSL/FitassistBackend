@@ -15,6 +15,8 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.request.complaint.ComplaintCreateDto;
+import source.code.dto.response.comment.ComplaintResponseDto;
+import source.code.exception.InvalidFilterValueException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.model.ComplaintSubClass;
 import source.code.helper.utils.AuthorizationUtil;
@@ -49,13 +51,18 @@ public class ComplaintServiceTest {
 
 	private ThreadComplaint threadComplaint;
 
+	private ComplaintResponseDto responseDto;
+
 	private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
 
 	@BeforeEach
 	void setUp() {
 		createDto = new ComplaintCreateDto();
 		commentComplaint = new CommentComplaint();
+		commentComplaint.setId(COMPLAINT_ID);
 		threadComplaint = new ThreadComplaint();
+		threadComplaint.setId(COMPLAINT_ID);
+		responseDto = new ComplaintResponseDto();
 		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
 	}
 
@@ -71,10 +78,16 @@ public class ComplaintServiceTest {
 		createDto.setSubClass(ComplaintSubClass.COMMENT_COMPLAINT);
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 		when(complaintMapper.toCommentComplaint(createDto, USER_ID)).thenReturn(commentComplaint);
+		when(complaintRepository.save(commentComplaint)).thenReturn(commentComplaint);
+		when(complaintRepository.findById(COMPLAINT_ID)).thenReturn(Optional.of(commentComplaint));
+		when(complaintMapper.toResponseDto(commentComplaint)).thenReturn(responseDto);
 
-		complaintService.createComplaint(createDto);
+		ComplaintResponseDto result = complaintService.createComplaint(createDto);
 
+		assertEquals(responseDto, result);
 		verify(complaintRepository).save(commentComplaint);
+		verify(complaintRepository).findById(COMPLAINT_ID);
+		verify(complaintMapper).toResponseDto(commentComplaint);
 	}
 
 	@Test
@@ -82,10 +95,16 @@ public class ComplaintServiceTest {
 		createDto.setSubClass(ComplaintSubClass.THREAD_COMPLAINT);
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 		when(complaintMapper.toThreadComplaint(createDto, USER_ID)).thenReturn(threadComplaint);
+		when(complaintRepository.save(threadComplaint)).thenReturn(threadComplaint);
+		when(complaintRepository.findById(COMPLAINT_ID)).thenReturn(Optional.of(threadComplaint));
+		when(complaintMapper.toResponseDto(threadComplaint)).thenReturn(responseDto);
 
-		complaintService.createComplaint(createDto);
+		ComplaintResponseDto result = complaintService.createComplaint(createDto);
 
+		assertEquals(responseDto, result);
 		verify(complaintRepository).save(threadComplaint);
+		verify(complaintRepository).findById(COMPLAINT_ID);
+		verify(complaintMapper).toResponseDto(threadComplaint);
 	}
 
 	@Test
