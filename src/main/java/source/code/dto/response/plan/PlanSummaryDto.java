@@ -45,7 +45,7 @@ public class PlanSummaryDto implements BaseUserEntity, Serializable {
 
 	private String description;
 
-	private boolean isPublic;
+	private Boolean isPublic;
 
 	private String firstImageName;
 

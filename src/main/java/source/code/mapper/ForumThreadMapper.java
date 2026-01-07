@@ -52,7 +52,7 @@ public abstract class ForumThreadMapper {
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "user", ignore = true)
-	@Mapping(target = "threadCategory", ignore = true)
+	@Mapping(target = "threadCategory", source = "threadCategoryId", qualifiedByName = "threadCategoryIdToThreadCategory")
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "views", ignore = true)

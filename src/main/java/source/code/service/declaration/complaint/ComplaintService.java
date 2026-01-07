@@ -7,7 +7,7 @@ import source.code.dto.response.comment.ComplaintResponseDto;
 
 public interface ComplaintService {
 
-	void createComplaint(ComplaintCreateDto complaintCreateDto);
+	ComplaintResponseDto createComplaint(ComplaintCreateDto complaintCreateDto);
 
 	void resolveComplaint(int complaintId);
 

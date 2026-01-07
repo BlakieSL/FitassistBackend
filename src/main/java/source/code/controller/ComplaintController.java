@@ -24,9 +24,9 @@ public class ComplaintController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Void> createComplaint(@Valid @RequestBody ComplaintCreateDto complaintCreateDto) {
-		complaintService.createComplaint(complaintCreateDto);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+	public ResponseEntity<ComplaintResponseDto> createComplaint(@Valid @RequestBody ComplaintCreateDto complaintCreateDto) {
+		ComplaintResponseDto response = complaintService.createComplaint(complaintCreateDto);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
 	@AdminOnly
