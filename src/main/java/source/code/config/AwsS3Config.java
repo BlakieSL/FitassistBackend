@@ -22,17 +22,17 @@ public class AwsS3Config {
 	@Value("${spring.cloud.aws.s3.endpoint:#{null}}")
 	private String endpoint;
 
-	@Value("${spring.cloud.aws.credentials.access-key}")
-	private String accessKey;
-
-	@Value("${spring.cloud.aws.credentials.secret-key}")
-	private String secretKey;
+//	@Value("${spring.cloud.aws.credentials.access-key}")
+//	private String accessKey;
+//
+//	@Value("${spring.cloud.aws.credentials.secret-key}")
+//	private String secretKey;
 
 	@Bean
 	public S3Client s3Client() {
 		var builder = S3Client.builder()
-			.region(Region.of(region))
-			.credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)));
+			.region(Region.of(region));
+//			.credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)));
 
 		if (endpoint != null && !endpoint.isEmpty()) {
 			builder.endpointOverride(URI.create(endpoint));
@@ -44,8 +44,8 @@ public class AwsS3Config {
 	@Bean
 	public S3Presigner s3Presigner() {
 		var builder = S3Presigner.builder()
-			.region(Region.of(region))
-			.credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)));
+			.region(Region.of(region));
+//			.credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)));
 
 		if (endpoint != null && !endpoint.isEmpty()) {
 			builder.endpointOverride(URI.create(endpoint));
