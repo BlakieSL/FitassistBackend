@@ -2,10 +2,23 @@ spring:
   threads:
     virtual:
       enabled: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/test-db
+    username: test
+    password: test
+
   jpa:
     hibernate:
       ddl-auto: none
+    show-sql: false
     open-in-view: false
+
   cloud:
     aws:
       s3:
@@ -13,20 +26,36 @@ spring:
       ses:
         enabled: false
       credentials:
-        access-key: ${AWS_ACCESS_KEY_ID}
-        secret-key: ${AWS_SECRET_ACCESS_KEY}
+        access-key: test
+        secret-key: test
       region:
         static: eu-central-1
-s3:
-  bucket:
-    name: ${S3_BUCKET_NAME}
+
 redis-flag:
   enabled: false
+
+s3:
+  bucket:
+    name: test-bucket
+
 lucene:
   enabled: false
 
+jws:
+  sharedKey: adskjfa;sdkfjasd;asdfasdfasdfdasfasdgeawtrewt
+
+rate-limiter:
+  user-rate: 10000
+  user-interval: 1
+  key-rate: 10000
+  key-interval: 1
+
 app:
   frontend:
-    url: ${FRONTEND_URL:http://localhost:5173}
+    url: http://localhost:5173
   email:
-    from: ${EMAIL_FROM:test@example.com}
+    from: test@example.com
+
+logging:
+  level:
+    root: INFO

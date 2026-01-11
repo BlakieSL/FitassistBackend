@@ -11,7 +11,7 @@ public class MockAwsSesConfig {
 
 	@ConditionalOnProperty(name = "spring.cloud.aws.ses.enabled", havingValue = "false", matchIfMissing = true)
 	@Bean
-	public EmailService emailServiceStub() {
+	public EmailService emailServiceTestStub() {
 		return new EmailService() {
 			@Override
 			public void sendEmail(EmailRequestDto request) {
