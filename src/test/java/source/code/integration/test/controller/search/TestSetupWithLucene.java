@@ -14,7 +14,7 @@ import org.springframework.test.context.jdbc.SqlMergeMode;
 @Target(ElementType.TYPE)
 @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
 @AutoConfigureMockMvc
-@ActiveProfiles({"test", "test-lucene"})
+@ActiveProfiles({ "test", "test-lucene" })
 @SpringBootTest
 @Sql(scripts = { "classpath:${schema.name}/schema/drop-schema.sql",
 		"classpath:${schema.name}/schema/create-schema.sql" })
