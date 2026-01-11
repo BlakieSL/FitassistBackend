@@ -4,11 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import source.code.dto.request.email.EmailRequestDto;
 import source.code.service.declaration.email.EmailService;
 
 @Slf4j
 @Configuration
+@Profile("!test")
 public class DevAwsEmailConfig {
 
 	@ConditionalOnProperty(name = "spring.cloud.aws.ses.enabled", havingValue = "false", matchIfMissing = true)

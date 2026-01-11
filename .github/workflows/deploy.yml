@@ -9,7 +9,7 @@ env:
   ECR_REPOSITORY: fitassist-backend
   ECS_SERVICE: fitassist-backend-task-service
   ECS_CLUSTER: fitassist-cluster
-  ECS_TASK_DEFINITION: fitassist-backend-task
+  ECS_TASK_DEFINITION: FitassistBackend/src/main/resources/aws/task-definition.json
   CONTAINER_NAME: fitassist-backend
 
 permissions:
