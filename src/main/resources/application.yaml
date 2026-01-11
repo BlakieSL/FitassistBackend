@@ -1,43 +1,23 @@
 spring:
   application:
-    name: SimpleFullStackProject
+    name: Fitassist
+
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE}
+
   config:
     import: optional:file:.env.properties
-
-#  data:
-#    redis:
-#      host: localhost
-#      port: 6379
-
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-
-#  datasource:
-#    url: jdbc:mysql://localhost:3308/main-db
-#    username: root
-#    password: root
-  datasource:
-    url: ${RDS_URL}
-    username: ${RDS_USERNAME}
-    password: ${RDS_PASSWORD}
 
   jpa:
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
     open-in-view: false
 
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-file-size: 5MB
+      max-request-size: 5MB
 
   threads:
     virtual:
@@ -45,13 +25,6 @@ spring:
 
   cloud:
     aws:
-      s3:
-        enabled: true
-      ses:
-        enabled: true
-#      credentials:
-#        access-key: ${AWS_ACCESS_KEY_ID}
-#        secret-key: ${AWS_SECRET_ACCESS_KEY}
       region:
         static: eu-central-1
 
@@ -65,30 +38,5 @@ management:
       probes:
         enabled: true
 
-redis-flag:
-  enabled: true
-
-s3:
-  bucket:
-    name: ${S3_BUCKET_NAME}
-
-lucene:
-  enabled: true
-
-jws:
-  sharedKey: 1234567890qwertyuiopasdfghjklzxcvbnmaskdjfjasdhfjasdgfoweqryuieqwhzcnxvb32u46832tgdnsabfwry3210478gfdxhzbDSOFY1320486321Thgf9d761328947gdsafhga03128412360gasdfhbgcvnbaskhdfga
-
 server:
   port: 8000
-
-rate-limiter:
-  user-rate: 1000
-  user-interval: 1
-  key-rate: 1000
-  key-interval: 1
-
-app:
-  frontend:
-    url: ${FRONTEND_URL}
-  email:
-    from: ${EMAIL_FROM}

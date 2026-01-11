@@ -1,0 +1,62 @@
+spring:
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
+  datasource:
+    url: ${RDS_URL}
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+
+  cloud:
+    aws:
+      s3:
+        enabled: true
+      ses:
+        enabled: true
+
+redis-flag:
+  enabled: true
+
+s3:
+  bucket:
+    name: ${S3_BUCKET_NAME}
+
+lucene:
+  enabled: true
+
+jws:
+  sharedKey: ${JWT_SECRET_KEY}
+
+rate-limiter:
+  user-rate: ${RATE_LIMITER_USER_RATE}
+  user-interval: ${RATE_LIMITER_USER_INTERVAL}
+  key-rate: ${RATE_LIMITER_KEY_RATE}
+  key-interval: ${RATE_LIMITER_KEY_INTERVAL}
+
+app:
+  frontend:
+    url: ${FRONTEND_URL}
+  email:
+    from: ${EMAIL_FROM}
+
+logging:
+  level:
+    root: WARN
+    source.code: INFO
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"

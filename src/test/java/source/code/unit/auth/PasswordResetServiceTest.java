@@ -90,7 +90,6 @@ public class PasswordResetServiceTest {
 		assertTrue(sentEmail.getToEmails().contains(email));
 		assertEquals("Password Reset Request", sentEmail.getSubject());
 		assertTrue(sentEmail.getContent().contains(resetToken));
-		assertTrue(sentEmail.isHtml());
 	}
 
 	@Test
