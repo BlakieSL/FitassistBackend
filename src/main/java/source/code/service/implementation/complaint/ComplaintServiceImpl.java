@@ -44,7 +44,8 @@ public class ComplaintServiceImpl implements ComplaintService {
 				ThreadComplaint complaint = complaintMapper.toThreadComplaint(complaintCreateDto, userId);
 				savedComplaint = complaintRepository.save(complaint);
 			}
-			default -> throw new InvalidFilterValueException("Unsupported complaint subclass: " + complaintCreateDto.getSubClass());
+			default -> throw new InvalidFilterValueException(
+					"Unsupported complaint subclass: " + complaintCreateDto.getSubClass());
 		}
 
 		return getComplaintById(savedComplaint.getId());
