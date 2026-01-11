@@ -19,6 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
+import source.code.integration.config.TestAwsS3Config;
 import source.code.integration.containers.AwsS3ContainerInitializer;
 import source.code.integration.containers.MySqlContainerInitializer;
 import source.code.service.declaration.aws.AwsS3Service;
@@ -26,7 +27,7 @@ import source.code.service.declaration.aws.AwsS3Service;
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @SpringBootTest
-@Import({ MockRedisConfig.class, MockAwsSesConfig.class })
+@Import({ MockRedisConfig.class, MockAwsSesConfig.class, TestAwsS3Config.class })
 @ContextConfiguration(initializers = { MySqlContainerInitializer.class, AwsS3ContainerInitializer.class })
 public class AwsS3ControllerTest {
 

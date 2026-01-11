@@ -145,7 +145,7 @@ public class FoodControllerTest {
 					jsonPath("$.savesCount").value(2), jsonPath("$.saved").value(true), jsonPath("$.recipes").isArray(),
 					jsonPath("$.recipes.length()").value(2), jsonPath("$.recipes[0].id").exists(),
 					jsonPath("$.recipes[0].name").exists(), jsonPath("$.recipes[0].description").exists(),
-					jsonPath("$.recipes[0].public").exists(), jsonPath("$.recipes[0].author.username").exists(),
+					jsonPath("$.recipes[0].isPublic").exists(), jsonPath("$.recipes[0].author.username").exists(),
 					jsonPath("$.recipes[0].author.id").exists());
 	}
 
