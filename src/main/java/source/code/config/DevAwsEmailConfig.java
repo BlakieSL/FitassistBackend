@@ -10,6 +10,7 @@ import source.code.service.declaration.email.EmailService;
 @Slf4j
 @Configuration
 public class DevAwsEmailConfig {
+
 	@ConditionalOnProperty(name = "spring.cloud.aws.ses.enabled", havingValue = "false", matchIfMissing = true)
 	@Bean
 	public EmailService emailServiceStub() {
@@ -23,4 +24,5 @@ public class DevAwsEmailConfig {
 			}
 		};
 	}
+
 }
