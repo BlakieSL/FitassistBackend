@@ -30,6 +30,4 @@ public class EmailRequestDto {
 	@NotBlank
 	private String content;
 
-	private boolean isHtml = false;
-
 }
