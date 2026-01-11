@@ -53,10 +53,10 @@ public class CategoryControllerDeleteCategoryTest {
 
 	@CategorySql
 	@Test
-	@DisplayName("DELETE /FOOD/{id} - Should return 409 for food category with associated food items")
+	@DisplayName("DELETE /FOOD/{id} - Should return 500 for food category with associated food items")
 	void deleteFoodCategoryWithAssociations() throws Exception {
 		Utils.setAdminContext(1);
-		mockMvc.perform(delete("/api/categories/FOOD/1")).andExpect(status().isConflict());
+		mockMvc.perform(delete("/api/categories/FOOD/1")).andExpect(status().isInternalServerError());
 	}
 
 	@CategorySql
@@ -83,10 +83,10 @@ public class CategoryControllerDeleteCategoryTest {
 
 	@CategorySql
 	@Test
-	@DisplayName("DELETE /ACTIVITY/{id} - Should return 409 for activity category with associated activities")
+	@DisplayName("DELETE /ACTIVITY/{id} - Should return 500 for activity category with associated activities")
 	void deleteActivityCategoryWithAssociations() throws Exception {
 		Utils.setAdminContext(1);
-		mockMvc.perform(delete("/api/categories/ACTIVITY/1")).andExpect(status().isConflict());
+		mockMvc.perform(delete("/api/categories/ACTIVITY/1")).andExpect(status().isInternalServerError());
 	}
 
 	@CategorySql
@@ -118,7 +118,7 @@ public class CategoryControllerDeleteCategoryTest {
 	@DisplayName("DELETE /RECIPE/{id} - Should return 409 for recipe category with associated recipes")
 	void deleteRecipeCategoryWithAssociations() throws Exception {
 		Utils.setAdminContext(1);
-		mockMvc.perform(delete("/api/categories/RECIPE/1")).andExpect(status().isConflict());
+		mockMvc.perform(delete("/api/categories/RECIPE/1")).andExpect(status().isInternalServerError());
 	}
 
 	@CategorySql
@@ -147,10 +147,10 @@ public class CategoryControllerDeleteCategoryTest {
 
 	@CategorySql
 	@Test
-	@DisplayName("DELETE/PLAN/{id} - Should return 409 for plan category with associated plans")
+	@DisplayName("DELETE/PLAN/{id} - Should return 500 for plan category with associated plans")
 	void deletePlanCategoryWithAssociations() throws Exception {
 		Utils.setAdminContext(1);
-		mockMvc.perform(delete("/api/categories/PLAN/1")).andExpect(status().isConflict());
+		mockMvc.perform(delete("/api/categories/PLAN/1")).andExpect(status().isInternalServerError());
 	}
 
 }

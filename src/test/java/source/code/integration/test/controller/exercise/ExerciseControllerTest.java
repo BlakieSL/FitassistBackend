@@ -177,7 +177,7 @@ public class ExerciseControllerTest {
 			.andExpectAll(status().isOk(), jsonPath("$.imageUrls").isArray(), jsonPath("$.plans").isArray(),
 					jsonPath("$.plans.length()").value(2), jsonPath("$.plans[0].id").isNumber(),
 					jsonPath("$.plans[0].name").isString(), jsonPath("$.plans[0].description").isString(),
-					jsonPath("$.plans[0].public").isBoolean(),
+					jsonPath("$.plans[0].isPublic").isBoolean(),
 					jsonPath("$.plans[0].author.username").value("test_user"),
 					jsonPath("$.plans[0].author.id").value(1), jsonPath("$.plans[0].likesCount").isNumber(),
 					jsonPath("$.plans[0].savesCount").isNumber(), jsonPath("$.plans[0].views").isNumber(),
