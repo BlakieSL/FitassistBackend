@@ -18,12 +18,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
-import source.code.integration.config.MockSearchConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
 import source.code.service.declaration.search.LuceneInitialLoadService;
 
 @TestSetupWithLucene
-@Import({ MockSearchConfig.class, MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class })
+@Import({ MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class })
 @TestPropertySource(properties = "schema.name=general")
 @ContextConfiguration(initializers = { MySqlContainerInitializer.class })
 public class SearchControllerTest {
