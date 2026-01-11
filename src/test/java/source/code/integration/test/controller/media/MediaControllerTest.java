@@ -16,13 +16,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import source.code.helper.Enum.model.MediaConnectedEntity;
 import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
+import source.code.integration.config.TestAwsS3Config;
 import source.code.integration.containers.AwsS3ContainerInitializer;
 import source.code.integration.containers.MySqlContainerInitializer;
 import source.code.integration.utils.TestSetup;
 import source.code.integration.utils.Utils;
 
 @TestSetup
-@Import({ MockRedisConfig.class, MockAwsSesConfig.class, MockAwsSesConfig.class })
+@Import({ MockRedisConfig.class, MockAwsSesConfig.class, TestAwsS3Config.class })
 @TestPropertySource(properties = "schema.name=general")
 @ContextConfiguration(initializers = { MySqlContainerInitializer.class, AwsS3ContainerInitializer.class })
 public class MediaControllerTest {
