@@ -25,8 +25,8 @@ public class EmailServiceImpl implements EmailService {
 			.message(Message.builder()
 				.subject(Content.builder().data(emailRequest.getSubject()).build())
 				.body(Body.builder()
-					.html(emailRequest.isHtml() ? Content.builder().data(emailRequest.getContent()).build() : null)
-					.text(!emailRequest.isHtml() ? Content.builder().data(emailRequest.getContent()).build() : null)
+					.html(Content.builder().data(emailRequest.getContent()).build())
+					.text(Content.builder().data(emailRequest.getContent()).build())
 					.build())
 				.build())
 			.build();
