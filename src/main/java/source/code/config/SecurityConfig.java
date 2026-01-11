@@ -73,10 +73,8 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration
-			.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174", "http://localhost:4173",
-				"https://master.d2li7hc8a6datu.amplifyapp.com",
-				"https://fitassist.app",
+		configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174",
+				"http://localhost:4173", "https://master.d2li7hc8a6datu.amplifyapp.com", "https://fitassist.app",
 				"https://www.fitassist.app"));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
 		configuration.setAllowedHeaders(List.of("*"));
@@ -102,8 +100,7 @@ public class SecurityConfig {
 						&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
 				(request) -> "/api/virtual-threads/thread-info".equals(request.getRequestURI())
 						&& "GET".equals(request.getMethod()),
-				(request) -> "/actuator/health".equals(request.getRequestURI())
-						&& "GET".equals(request.getMethod()));
+				(request) -> "/actuator/health".equals(request.getRequestURI()) && "GET".equals(request.getMethod()));
 	}
 
 }
