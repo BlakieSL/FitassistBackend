@@ -1,0 +1,148 @@
+{
+  "taskDefinitionArn": "arn:aws:ecs:eu-central-1:940922024669:task-definition/fitassist-backend-task:7",
+  "containerDefinitions": [
+    {
+      "name": "fitassist-backend",
+      "image": "940922024669.dkr.ecr.eu-central-1.amazonaws.com/fitassist-backend:latest",
+      "cpu": 0,
+      "portMappings": [
+        {
+          "name": "fitassist-backend-8000-tcp",
+          "containerPort": 8000,
+          "hostPort": 8000,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "environment": [
+        {
+          "name": "REDIS_HOST",
+          "value": "fitassist-redis.ui7e5f.ng.0001.euc1.cache.amazonaws.com"
+        },
+        {
+          "name": "SPRING_PROFILES_ACTIVE",
+          "value": "prod"
+        },
+        {
+          "name": "RATE_LIMITER_KEY_INTERVAL",
+          "value": "5"
+        },
+        {
+          "name": "S3_BUCKET_NAME",
+          "value": "fitassist-images"
+        },
+        {
+          "name": "RATE_LIMITER_USER_RATE",
+          "value": "50"
+        },
+        {
+          "name": "EMAIL_FROM",
+          "value": "artemladnyi@gmail.com"
+        },
+        {
+          "name": "JWT_SECRET_KEY",
+          "value": "***REMOVED***"
+        },
+        {
+          "name": "FRONTEND_URL",
+          "value": "https://fitassist.app"
+        },
+        {
+          "name": "RDS_PASSWORD",
+          "value": "***REMOVED***"
+        },
+        {
+          "name": "REDIS_PORT",
+          "value": "6379"
+        },
+        {
+          "name": "RDS_URL",
+          "value": "jdbc:mysql://fitassist-db.c7sec6yu4470.eu-central-1.rds.amazonaws.com:3306/fitassist"
+        },
+        {
+          "name": "RATE_LIMITER_KEY_RATE",
+          "value": "30"
+        },
+        {
+          "name": "RDS_USERNAME",
+          "value": "admin"
+        },
+        {
+          "name": "RATE_LIMITER_USER_INTERVAL",
+          "value": "5"
+        }
+      ],
+      "environmentFiles": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "ulimits": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/fitassist-backend-task",
+          "awslogs-create-group": "true",
+          "awslogs-region": "eu-central-1",
+          "awslogs-stream-prefix": "ecs"
+        },
+        "secretOptions": []
+      },
+      "systemControls": []
+    }
+  ],
+  "family": "fitassist-backend-task",
+  "taskRoleArn": "arn:aws:iam::940922024669:role/FitassistBackendTaskRole",
+  "executionRoleArn": "arn:aws:iam::940922024669:role/EcsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "revision": 7,
+  "volumes": [],
+  "status": "ACTIVE",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
+    },
+    {
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "name": "ecs.capability.task-eni"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+    }
+  ],
+  "placementConstraints": [],
+  "compatibilities": [
+    "EC2",
+    "MANAGED_INSTANCES",
+    "FARGATE"
+  ],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "512",
+  "memory": "1024",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "registeredAt": "2026-01-11T17:16:47.003Z",
+  "registeredBy": "arn:aws:iam::940922024669:root",
+  "enableFaultInjection": false,
+  "tags": []
+}
