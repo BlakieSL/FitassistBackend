@@ -158,7 +158,8 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public ErrorResponseDto handleNullPointerException(NullPointerException e) {
-		return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An unexpected error occurred. Please contact support.");
+		return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				"An unexpected error occurred. Please contact support.");
 	}
 
 	@ExceptionHandler(IllegalStateException.class)
@@ -172,7 +173,8 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public ErrorResponseDto handleException(Exception e) {
-		return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An unexpected error occurred. Please contact support.");
+		return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				"An unexpected error occurred. Please contact support.");
 	}
 
 }
