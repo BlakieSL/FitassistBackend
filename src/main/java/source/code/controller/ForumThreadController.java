@@ -10,7 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.annotation.ThreadOwnerOrAdmin;
+import source.code.annotation.ThreadOwnerOrAdminOrModerator;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.forumThread.ForumThreadCreateDto;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
@@ -34,7 +34,7 @@ public class ForumThreadController {
 		return ResponseEntity.ok(responseDto);
 	}
 
-	@ThreadOwnerOrAdmin
+	@ThreadOwnerOrAdminOrModerator
 	@PatchMapping("/{forumThreadId}")
 	public ResponseEntity<Void> updateForumThread(@PathVariable int forumThreadId, @RequestBody JsonMergePatch patch)
 			throws JsonPatchException, JsonProcessingException {
@@ -42,7 +42,7 @@ public class ForumThreadController {
 		return ResponseEntity.ok().build();
 	}
 
-	@ThreadOwnerOrAdmin
+	@ThreadOwnerOrAdminOrModerator
 	@DeleteMapping("/{forumThreadId}")
 	public ResponseEntity<Void> deleteForumThread(@PathVariable int forumThreadId) {
 		forumThreadService.deleteForumThread(forumThreadId);
