@@ -1,12 +1,9 @@
 package source.code.integration.config;
 
-import static org.mockito.Mockito.mock;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -16,6 +13,10 @@ import org.springframework.cache.support.NoOpCacheManager;
 import org.springframework.context.annotation.Bean;
 import source.code.auth.RateLimitingFilter;
 import source.code.service.declaration.rateLimiter.RedissonRateLimiterService;
+
+import java.io.IOException;
+
+import static org.mockito.Mockito.mock;
 
 @TestConfiguration
 public class MockRedisConfig {

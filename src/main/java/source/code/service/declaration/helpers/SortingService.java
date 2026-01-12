@@ -1,10 +1,10 @@
 package source.code.service.declaration.helpers;
 
+import org.springframework.data.domain.Sort;
+
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.function.Function;
-
-import org.springframework.data.domain.Sort;
 
 public interface SortingService {
 

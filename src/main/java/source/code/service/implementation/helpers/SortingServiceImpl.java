@@ -1,12 +1,12 @@
 package source.code.service.implementation.helpers;
 
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.function.Function;
-
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import source.code.service.declaration.helpers.SortingService;
+
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.function.Function;
 
 @Service
 public class SortingServiceImpl implements SortingService {

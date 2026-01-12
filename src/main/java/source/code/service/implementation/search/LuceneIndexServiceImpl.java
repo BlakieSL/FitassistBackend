@@ -1,15 +1,7 @@
 package source.code.service.implementation.search;
 
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.List;
-
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StoredField;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.*;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
@@ -21,6 +13,10 @@ import source.code.model.activity.Activity;
 import source.code.model.exercise.Exercise;
 import source.code.model.food.Food;
 import source.code.service.declaration.search.LuceneIndexService;
+
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
 
 @Service
 public class LuceneIndexServiceImpl implements LuceneIndexService {

@@ -1,10 +1,6 @@
 package source.code.model.complaint;
 
 import jakarta.persistence.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +9,9 @@ import org.hibernate.annotations.SQLRestriction;
 import source.code.model.media.Media;
 import source.code.model.thread.ForumThread;
 import source.code.model.user.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @DiscriminatorValue("THREAD_COMPLAINT")

@@ -1,9 +1,9 @@
 package source.code.repository;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import source.code.model.workout.WorkoutSetExercise;
+
+import java.util.List;
 
 public interface WorkoutSetExerciseRepository extends JpaRepository<WorkoutSetExercise, Integer> {
 

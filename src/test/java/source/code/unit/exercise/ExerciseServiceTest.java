@@ -1,16 +1,8 @@
 package source.code.unit.exercise;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +31,7 @@ import source.code.event.events.Exercise.ExerciseUpdateEvent;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.utils.AuthorizationUtil;
 import source.code.mapper.ExerciseMapper;
-import source.code.mapper.PlanMapper;
+import source.code.mapper.plan.PlanMapper;
 import source.code.model.exercise.Exercise;
 import source.code.model.plan.Plan;
 import source.code.repository.*;
@@ -50,6 +42,13 @@ import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.declaration.plan.PlanPopulationService;
 import source.code.service.implementation.exercise.ExerciseServiceImpl;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ExerciseServiceTest {

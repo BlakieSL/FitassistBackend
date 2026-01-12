@@ -3,10 +3,6 @@ package source.code.service.implementation.comment;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-
-import java.sql.Timestamp;
-import java.util.*;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +29,9 @@ import source.code.service.implementation.specificationHelpers.SpecificationDepe
 import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.CommentSpecification;
+
+import java.sql.Timestamp;
+import java.util.*;
 
 @Service
 public class CommentServiceImpl implements CommentService {

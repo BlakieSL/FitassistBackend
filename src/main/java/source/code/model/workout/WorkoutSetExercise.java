@@ -2,14 +2,13 @@ package source.code.model.workout;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
-import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.model.exercise.Exercise;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "workout_set_exercise")

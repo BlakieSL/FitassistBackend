@@ -1,7 +1,5 @@
 package source.code.service.implementation.user.interaction.withoutType;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +16,8 @@ import source.code.repository.UserRepository;
 import source.code.repository.UserThreadRepository;
 import source.code.service.declaration.thread.ForumThreadPopulationService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
+
+import java.util.List;
 
 @Service("userThreadService")
 public class UserThreadServiceImpl

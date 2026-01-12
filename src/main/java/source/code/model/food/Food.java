@@ -2,13 +2,6 @@ package source.code.model.food;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +12,12 @@ import source.code.model.daily.DailyCartFood;
 import source.code.model.media.Media;
 import source.code.model.recipe.RecipeFood;
 import source.code.model.user.UserFood;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "food")

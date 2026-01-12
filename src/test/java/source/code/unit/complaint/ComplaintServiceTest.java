@@ -1,11 +1,5 @@
 package source.code.unit.complaint;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
-
-import java.util.Optional;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +10,6 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.request.complaint.ComplaintCreateDto;
 import source.code.dto.response.comment.ComplaintResponseDto;
-import source.code.exception.InvalidFilterValueException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.model.ComplaintSubClass;
 import source.code.helper.utils.AuthorizationUtil;
@@ -26,6 +19,12 @@ import source.code.model.complaint.ComplaintStatus;
 import source.code.model.complaint.ThreadComplaint;
 import source.code.repository.ComplaintRepository;
 import source.code.service.implementation.complaint.ComplaintServiceImpl;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ComplaintServiceTest {

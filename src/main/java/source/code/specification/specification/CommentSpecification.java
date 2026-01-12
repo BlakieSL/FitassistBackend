@@ -1,13 +1,13 @@
 package source.code.specification.specification;
 
-import static source.code.specification.SpecificationConstants.USER_FIELD;
-
 import jakarta.persistence.criteria.Predicate;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.helper.Enum.model.field.CommentField;
 import source.code.model.thread.Comment;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 import source.code.specification.PredicateContext;
+
+import static source.code.specification.SpecificationConstants.USER_FIELD;
 
 public class CommentSpecification extends AbstractSpecification<Comment, CommentField> {
 

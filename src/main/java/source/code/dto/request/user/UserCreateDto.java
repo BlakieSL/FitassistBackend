@@ -1,10 +1,6 @@
 package source.code.dto.request.user;
 
 import jakarta.validation.constraints.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +13,9 @@ import source.code.validation.password.PasswordDigitsDomain;
 import source.code.validation.password.PasswordLowercaseDomain;
 import source.code.validation.password.PasswordSpecialDomain;
 import source.code.validation.password.PasswordUppercaseDomain;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Getter
 @Setter

@@ -1,8 +1,5 @@
 package source.code.mapper.daily;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import org.mapstruct.*;
 import source.code.dto.pojo.FoodMacros;
 import source.code.dto.response.category.CategoryResponseDto;
@@ -10,6 +7,9 @@ import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
 import source.code.model.daily.DailyCartFood;
 import source.code.model.food.Food;
 import source.code.model.food.FoodCategory;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Mapper(componentModel = "spring")
 public abstract class DailyFoodMapper {

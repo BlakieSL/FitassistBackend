@@ -3,9 +3,6 @@ package source.code.service.declaration.activity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import source.code.dto.request.activity.ActivityCreateDto;
@@ -15,6 +12,8 @@ import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 import source.code.dto.response.activity.ActivityResponseDto;
 import source.code.dto.response.activity.ActivitySummaryDto;
 import source.code.model.activity.Activity;
+
+import java.util.List;
 
 public interface ActivityService {
 

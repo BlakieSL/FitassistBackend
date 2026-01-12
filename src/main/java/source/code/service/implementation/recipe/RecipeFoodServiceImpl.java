@@ -4,29 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import source.code.dto.pojo.FilterCriteria;
-import source.code.dto.request.filter.FilterDto;
-import source.code.dto.request.recipe.FilterRecipesByFoodsDto;
 import source.code.dto.request.recipe.RecipeFoodCreateDto;
 import source.code.dto.request.recipe.RecipeFoodUpdateDto;
 import source.code.dto.response.food.FoodSummaryDto;
-import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.cache.CacheNames;
-import source.code.helper.Enum.filter.FilterDataOption;
-import source.code.helper.Enum.filter.FilterOperation;
 import source.code.mapper.FoodMapper;
 import source.code.mapper.recipe.RecipeFoodMapper;
 import source.code.model.food.Food;
@@ -41,6 +26,10 @@ import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.declaration.recipe.RecipeFoodService;
 import source.code.service.declaration.recipe.RecipeService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipeFoodServiceImpl implements RecipeFoodService {

@@ -1,11 +1,11 @@
 package source.code.service.implementation.helpers;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 import source.code.dto.pojo.MediaImagesDto;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.ImageUrlPopulationService;
+
+import java.util.List;
 
 @Service
 public class ImageUrlPopulationServiceImpl implements ImageUrlPopulationService {

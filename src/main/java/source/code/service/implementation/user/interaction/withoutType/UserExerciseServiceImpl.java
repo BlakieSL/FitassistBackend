@@ -1,7 +1,5 @@
 package source.code.service.implementation.user.interaction.withoutType;
 
-import java.util.List;
-
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,6 +18,8 @@ import source.code.repository.UserExerciseRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.exercise.ExercisePopulationService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
+
+import java.util.List;
 
 @Service("userExerciseService")
 public class UserExerciseServiceImpl extends GenericSavedServiceWithoutType<Exercise, UserExercise, ExerciseSummaryDto>

@@ -1,9 +1,5 @@
 package source.code.mapper;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.pojo.FoodMacros;
@@ -18,6 +14,10 @@ import source.code.model.food.Food;
 import source.code.model.food.FoodCategory;
 import source.code.repository.FoodCategoryRepository;
 import source.code.service.declaration.helpers.RepositoryHelper;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class FoodMapper {

@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
-import java.util.*;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +15,8 @@ import source.code.model.text.ExerciseInstruction;
 import source.code.model.text.ExerciseTip;
 import source.code.model.user.UserExercise;
 import source.code.model.workout.WorkoutSetExercise;
+
+import java.util.*;
 
 @Entity
 @Table(name = "exercise")

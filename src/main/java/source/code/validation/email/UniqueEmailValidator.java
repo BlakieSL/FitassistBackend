@@ -4,13 +4,12 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.FlushModeType;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-
-import java.util.Optional;
-
 import source.code.config.ContextProvider;
 import source.code.dto.request.user.UserUpdateDto;
 import source.code.model.user.User;
 import source.code.repository.UserRepository;
+
+import java.util.Optional;
 
 public class UniqueEmailValidator implements ConstraintValidator<UniqueEmailDomain, Object> {
 

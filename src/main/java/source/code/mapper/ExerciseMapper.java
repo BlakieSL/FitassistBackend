@@ -1,8 +1,5 @@
 package source.code.mapper;
 
-import java.util.List;
-import java.util.Set;
-
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.exercise.ExerciseCreateDto;
@@ -17,6 +14,9 @@ import source.code.model.exercise.*;
 import source.code.model.text.ExerciseInstruction;
 import source.code.model.text.ExerciseTip;
 import source.code.repository.*;
+
+import java.util.List;
+import java.util.Set;
 
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class ExerciseMapper {

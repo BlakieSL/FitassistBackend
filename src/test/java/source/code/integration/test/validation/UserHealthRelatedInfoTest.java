@@ -1,15 +1,9 @@
 package source.code.integration.test.validation;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,6 +18,13 @@ import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRateLimitingConfig;
 import source.code.integration.containers.MySqlRedisAwsContainers;
 import source.code.model.user.User;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @AutoConfigureMockMvc
 @ActiveProfiles("test")

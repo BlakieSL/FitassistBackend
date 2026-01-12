@@ -1,9 +1,5 @@
 package source.code.service.implementation.plan;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import source.code.dto.pojo.projection.EntityCountsProjection;
 import source.code.dto.response.plan.PlanResponseDto;
@@ -15,6 +11,10 @@ import source.code.repository.MediaRepository;
 import source.code.repository.UserPlanRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.plan.PlanPopulationService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class PlanPopulationServiceImpl implements PlanPopulationService {

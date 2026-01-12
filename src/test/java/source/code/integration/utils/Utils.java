@@ -1,9 +1,10 @@
 package source.code.integration.utils;
 
-import java.util.List;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import source.code.auth.CustomAuthenticationToken;
+
+import java.util.List;
 
 public class Utils {
 
