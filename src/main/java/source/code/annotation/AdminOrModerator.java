@@ -1,4 +1,4 @@
-package source.code.annotation.workout;
+package source.code.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,7 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@authAnnotationServiceImpl.planOwnerOrAdminOrModerator(#workoutDto.planId)")
-public @interface WorkoutOwnerOrAdminCreation {
+@PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
+public @interface AdminOrModerator {
 
 }

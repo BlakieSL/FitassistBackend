@@ -11,8 +11,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.annotation.recipe.PublicRecipeOrOwnerOrAdmin;
-import source.code.annotation.recipe.RecipeOwnerOrAdmin;
+import source.code.annotation.recipe.PublicRecipeOrOwnerOrAdminOrModerator;
+import source.code.annotation.recipe.RecipeOwnerOrAdminOrModerator;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.recipe.RecipeCreateDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
@@ -35,7 +35,7 @@ public class RecipeController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
-	@RecipeOwnerOrAdmin
+	@RecipeOwnerOrAdminOrModerator
 	@PatchMapping("/{recipeId}")
 	public ResponseEntity<Void> updateRecipe(@PathVariable int recipeId, @RequestBody JsonMergePatch patch)
 			throws JsonPatchException, JsonProcessingException {
@@ -43,14 +43,14 @@ public class RecipeController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@RecipeOwnerOrAdmin
+	@RecipeOwnerOrAdminOrModerator
 	@DeleteMapping("/{recipeId}")
 	public ResponseEntity<Void> deleteRecipe(@PathVariable int recipeId) {
 		recipeService.deleteRecipe(recipeId);
 		return ResponseEntity.noContent().build();
 	}
 
-	@PublicRecipeOrOwnerOrAdmin
+	@PublicRecipeOrOwnerOrAdminOrModerator
 	@GetMapping("/{recipeId}")
 	public ResponseEntity<RecipeResponseDto> getRecipe(@PathVariable int recipeId) {
 		RecipeResponseDto recipe = recipeService.getRecipe(recipeId);
