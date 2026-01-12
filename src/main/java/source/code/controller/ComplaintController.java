@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.annotation.AdminOnly;
+import source.code.annotation.AdminOrModerator;
 import source.code.dto.request.complaint.ComplaintCreateDto;
 import source.code.dto.response.comment.ComplaintResponseDto;
 import source.code.service.declaration.complaint.ComplaintService;
@@ -30,14 +31,14 @@ public class ComplaintController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
-	@AdminOnly
+	@AdminOrModerator
 	@PutMapping("/{complaintId}/resolve")
 	public ResponseEntity<Void> resolveComplaint(@PathVariable int complaintId) {
 		complaintService.resolveComplaint(complaintId);
 		return ResponseEntity.noContent().build();
 	}
 
-	@AdminOnly
+	@AdminOrModerator
 	@GetMapping("/all")
 	public ResponseEntity<Page<ComplaintResponseDto>> getAllComplaints(
 			@PageableDefault(size = 100, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
@@ -45,7 +46,7 @@ public class ComplaintController {
 		return ResponseEntity.ok(response);
 	}
 
-	@AdminOnly
+	@AdminOrModerator
 	@GetMapping("/{complaintId}")
 	public ResponseEntity<ComplaintResponseDto> getComplaintById(@PathVariable int complaintId) {
 		ComplaintResponseDto response = complaintService.getComplaintById(complaintId);

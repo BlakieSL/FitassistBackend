@@ -1,4 +1,4 @@
-package source.code.annotation.recipe;
+package source.code.annotation.plan;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,7 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@authAnnotationServiceImpl.isPublicRecipeOrOwnerOrAdmin(#recipeId)")
-public @interface PublicRecipeOrOwnerOrAdmin {
+@PreAuthorize("@authAnnotationServiceImpl.isPlanOwnerOrAdminOrModerator(#planId)")
+public @interface PlanOwnerOrAdminOrModerator {
 
 }

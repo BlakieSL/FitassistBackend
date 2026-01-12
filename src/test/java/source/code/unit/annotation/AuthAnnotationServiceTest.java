@@ -127,7 +127,7 @@ public class AuthAnnotationServiceTest {
 		when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId)).thenReturn(true);
 
-		boolean result = authAnnotationService.isPlanOwnerOrAdmin(planId);
+		boolean result = authAnnotationService.isPlanOwnerOrAdminOrModerator(planId);
 
 		assertTrue(result);
 	}
@@ -139,7 +139,7 @@ public class AuthAnnotationServiceTest {
 		when(repositoryHelper.find(recipeRepository, Recipe.class, recipeId)).thenReturn(recipe);
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId)).thenReturn(true);
 
-		boolean result = authAnnotationService.isRecipeOwnerOrAdmin(recipeId);
+		boolean result = authAnnotationService.isRecipeOwnerOrAdminOrModerator(recipeId);
 
 		assertTrue(result);
 	}

@@ -9,7 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@authAnnotationServiceImpl.isRecipeOwnerOrAdmin(#recipeId)")
-public @interface RecipeOwnerOrAdmin {
+@PreAuthorize("@authAnnotationServiceImpl.isRecipeOwnerOrAdminOrModerator(#recipeId)")
+public @interface RecipeOwnerOrAdminOrModerator {
 
 }

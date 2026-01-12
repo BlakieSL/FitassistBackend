@@ -11,8 +11,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.annotation.plan.PlanOwnerOrAdmin;
-import source.code.annotation.plan.PublicPlanOrOwnerOrAdmin;
+import source.code.annotation.plan.PlanOwnerOrAdminOrModerator;
+import source.code.annotation.plan.PublicPlanOrOwnerOrAdminOrModerator;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.request.plan.PlanCreateDto;
 import source.code.dto.response.plan.PlanCategoriesResponseDto;
@@ -36,7 +36,7 @@ public class PlanController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
-	@PlanOwnerOrAdmin
+	@PlanOwnerOrAdminOrModerator
 	@PatchMapping("/{planId}")
 	public ResponseEntity<Void> updatePlan(@PathVariable int planId, @RequestBody JsonMergePatch patch)
 			throws JsonPatchException, JsonProcessingException {
@@ -44,14 +44,14 @@ public class PlanController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@PlanOwnerOrAdmin
+	@PlanOwnerOrAdminOrModerator
 	@DeleteMapping("/{planId}")
 	public ResponseEntity<Void> deletePlan(@PathVariable int planId) {
 		planService.deletePlan(planId);
 		return ResponseEntity.noContent().build();
 	}
 
-	@PublicPlanOrOwnerOrAdmin
+	@PublicPlanOrOwnerOrAdminOrModerator
 	@GetMapping("/{planId}")
 	public ResponseEntity<PlanResponseDto> getPlan(@PathVariable int planId) {
 		PlanResponseDto plan = planService.getPlan(planId);
