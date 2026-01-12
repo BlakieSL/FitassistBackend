@@ -1,8 +1,5 @@
 package source.code.integration.test.localization;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Locale;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,6 +14,10 @@ import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
 import source.code.model.user.User;
+
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @AutoConfigureMockMvc
 @Import({ MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class })

@@ -1,8 +1,5 @@
 package source.code.dto.response.food;
 
-import java.io.Serializable;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +8,9 @@ import source.code.dto.pojo.FoodMacros;
 import source.code.dto.pojo.MediaImagesDto;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * fetched with db (findByIdWithMedia) -> mapper -> populated in createFood and getFood

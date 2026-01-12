@@ -1,10 +1,10 @@
 package source.code.service.declaration.helpers;
 
-import java.math.BigDecimal;
-
 import source.code.helper.Enum.model.user.ActivityLevel;
 import source.code.helper.Enum.model.user.Gender;
 import source.code.helper.Enum.model.user.Goal;
+
+import java.math.BigDecimal;
 
 public interface CalculationsService {
 

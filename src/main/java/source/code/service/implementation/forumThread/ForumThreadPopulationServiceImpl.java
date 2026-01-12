@@ -1,9 +1,5 @@
 package source.code.service.implementation.forumThread;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import source.code.dto.pojo.projection.thread.ForumThreadCountsProjection;
 import source.code.dto.response.forumThread.ForumThreadResponseDto;
@@ -15,6 +11,10 @@ import source.code.repository.MediaRepository;
 import source.code.repository.UserThreadRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.thread.ForumThreadPopulationService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ForumThreadPopulationServiceImpl implements ForumThreadPopulationService {

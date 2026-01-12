@@ -1,13 +1,5 @@
 package source.code.unit.user.withType;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-
-import java.util.List;
-import java.util.Optional;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +16,7 @@ import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.BaseUserEntity;
 import source.code.helper.utils.AuthorizationUtil;
-import source.code.mapper.PlanMapper;
+import source.code.mapper.plan.PlanMapper;
 import source.code.model.plan.Plan;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.User;
@@ -34,6 +26,14 @@ import source.code.repository.UserPlanRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.plan.PlanPopulationService;
 import source.code.service.implementation.user.interaction.withType.UserPlanServiceImpl;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserPlanServiceTest {

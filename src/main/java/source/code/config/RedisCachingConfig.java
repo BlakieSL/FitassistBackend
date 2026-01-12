@@ -1,10 +1,6 @@
 package source.code.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-
-import java.time.Duration;
-import java.util.concurrent.TimeUnit;
-
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration;
@@ -21,6 +17,9 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 @EnableAutoConfiguration(exclude = RedisRepositoriesAutoConfiguration.class)
 @Configuration

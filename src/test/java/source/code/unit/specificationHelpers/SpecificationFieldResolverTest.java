@@ -1,8 +1,5 @@
 package source.code.unit.specificationHelpers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +7,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.exception.InvalidFilterKeyException;
 import source.code.service.implementation.specificationHelpers.SpecificationFieldResolverImpl;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 public class SpecificationFieldResolverTest {

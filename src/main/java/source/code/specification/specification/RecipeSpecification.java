@@ -1,7 +1,5 @@
 package source.code.specification.specification;
 
-import static source.code.specification.SpecificationConstants.*;
-
 import jakarta.persistence.criteria.*;
 import org.jetbrains.annotations.NotNull;
 import source.code.dto.pojo.FilterCriteria;
@@ -13,6 +11,8 @@ import source.code.model.recipe.RecipeFood;
 import source.code.model.user.TypeOfInteraction;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 import source.code.specification.PredicateContext;
+
+import static source.code.specification.SpecificationConstants.*;
 
 public class RecipeSpecification extends AbstractSpecification<Recipe, RecipeField> {
 

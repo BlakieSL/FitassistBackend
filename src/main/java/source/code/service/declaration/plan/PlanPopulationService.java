@@ -1,9 +1,9 @@
 package source.code.service.declaration.plan;
 
-import java.util.List;
-
 import source.code.dto.response.plan.PlanResponseDto;
 import source.code.dto.response.plan.PlanSummaryDto;
+
+import java.util.List;
 
 public interface PlanPopulationService {
 

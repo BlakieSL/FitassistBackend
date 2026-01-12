@@ -3,9 +3,6 @@ package source.code.service.implementation.forumThread;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +27,8 @@ import source.code.service.implementation.specificationHelpers.SpecificationDepe
 import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.ForumThreadSpecification;
+
+import java.util.List;
 
 @Service
 public class ForumThreadServiceImpl implements ForumThreadService {

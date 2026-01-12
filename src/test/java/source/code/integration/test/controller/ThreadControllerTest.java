@@ -1,7 +1,5 @@
 package source.code.integration.test.controller;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +14,8 @@ import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockAwsSesConfig;
 import source.code.integration.config.MockRedisConfig;
 import source.code.integration.containers.MySqlContainerInitializer;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Import({ MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class })
 @ActiveProfiles("test")

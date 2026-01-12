@@ -1,8 +1,5 @@
 package source.code.specification.specification;
 
-import static source.code.specification.SpecificationConstants.TYPE_FIELD;
-import static source.code.specification.SpecificationConstants.USER_FIELD;
-
 import jakarta.persistence.criteria.Predicate;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.helper.Enum.model.LikesAndSaves;
@@ -11,6 +8,9 @@ import source.code.model.thread.ForumThread;
 import source.code.model.user.TypeOfInteraction;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
 import source.code.specification.PredicateContext;
+
+import static source.code.specification.SpecificationConstants.TYPE_FIELD;
+import static source.code.specification.SpecificationConstants.USER_FIELD;
 
 public class ForumThreadSpecification extends AbstractSpecification<ForumThread, ForumThreadField> {
 

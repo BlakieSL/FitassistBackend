@@ -1,14 +1,14 @@
 package source.code.dto.response.activity;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.pojo.MediaImagesDto;
 import source.code.dto.response.category.CategoryResponseDto;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * fetched with db (findByIdWithMedia) -> mapper -> populated in createActivity and

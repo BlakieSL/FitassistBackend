@@ -3,14 +3,13 @@ package source.code.dto.request.exercise;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.request.text.TextCreateDto;
+
+import java.util.List;
 
 @Getter
 @Setter

@@ -2,14 +2,6 @@ package source.code.model.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +20,13 @@ import source.code.model.thread.ForumThread;
 import source.code.validation.ValidationGroups;
 import source.code.validation.email.UniqueEmailDomain;
 import source.code.validation.healthRelatedInfo.HealthInfoShouldBeFullDomain;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @HealthInfoShouldBeFullDomain
 @Entity

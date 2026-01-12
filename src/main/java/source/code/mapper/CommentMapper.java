@@ -1,7 +1,5 @@
 package source.code.mapper;
 
-import java.util.Optional;
-
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.comment.CommentCreateDto;
@@ -16,6 +14,8 @@ import source.code.model.user.User;
 import source.code.repository.CommentRepository;
 import source.code.repository.ForumThreadRepository;
 import source.code.repository.UserRepository;
+
+import java.util.Optional;
 
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class CommentMapper {

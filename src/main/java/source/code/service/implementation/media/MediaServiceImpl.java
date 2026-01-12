@@ -1,15 +1,11 @@
 package source.code.service.implementation.media;
 
 import jakarta.transaction.Transactional;
-
-import java.io.IOException;
-import java.util.List;
-
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import source.code.dto.request.media.MediaCreateDto;
-import source.code.dto.response.MediaResponseDto;
+import source.code.dto.response.other.MediaResponseDto;
 import source.code.event.events.Media.MediaDeleteEvent;
 import source.code.event.events.Media.MediaUpdateEvent;
 import source.code.exception.FileProcessingException;
@@ -21,6 +17,9 @@ import source.code.repository.MediaRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.declaration.media.MediaService;
+
+import java.io.IOException;
+import java.util.List;
 
 @Service
 public class MediaServiceImpl implements MediaService {

@@ -4,11 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
@@ -23,6 +18,10 @@ import source.code.mapper.category.BaseMapper;
 import source.code.service.declaration.category.CategoryCacheKeyGenerator;
 import source.code.service.declaration.helpers.JsonPatchService;
 import source.code.service.declaration.helpers.ValidationService;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public abstract class GenericCategoryService<T> {
 

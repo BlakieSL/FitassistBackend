@@ -1,8 +1,8 @@
 package source.code.service.declaration.search;
 
-import java.util.List;
-
 import source.code.helper.IndexedEntity;
+
+import java.util.List;
 
 public interface LuceneIndexService {
 

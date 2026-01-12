@@ -1,9 +1,5 @@
 package source.code.unit.forumThread;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
@@ -30,6 +26,10 @@ import source.code.service.declaration.helpers.ValidationService;
 import source.code.service.declaration.thread.ForumThreadPopulationService;
 import source.code.service.implementation.forumThread.ForumThreadServiceImpl;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ForumThreadServiceTest {

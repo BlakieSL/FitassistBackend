@@ -1,8 +1,5 @@
 package source.code.config;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -26,6 +23,9 @@ import source.code.auth.JwtAuthenticationFilter;
 import source.code.auth.JwtService;
 import source.code.auth.RateLimitingFilter;
 import source.code.service.implementation.user.UserServiceImpl;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableMethodSecurity

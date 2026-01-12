@@ -1,12 +1,5 @@
 package source.code.service.implementation.search;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -17,14 +10,17 @@ import org.apache.lucene.store.FSDirectory;
 import org.springframework.stereotype.Service;
 import source.code.dto.pojo.FoodMacros;
 import source.code.dto.response.category.CategoryResponseDto;
-import source.code.dto.response.search.ActivitySearchResponseDto;
-import source.code.dto.response.search.ExerciseSearchResponseDto;
-import source.code.dto.response.search.FoodSearchResponseDto;
-import source.code.dto.response.search.GenericSearchResponseDto;
-import source.code.dto.response.search.SearchResponseDto;
+import source.code.dto.response.search.*;
 import source.code.exception.InvalidFilterValueException;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.search.LuceneSearchService;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class LuceneSearchServiceImpl implements LuceneSearchService {

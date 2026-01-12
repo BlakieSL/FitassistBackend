@@ -6,18 +6,17 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
-
-import java.text.ParseException;
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import source.code.exception.InvalidRefreshTokenException;
 import source.code.exception.JwtAuthenticationException;
+
+import java.text.ParseException;
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class JwtService {

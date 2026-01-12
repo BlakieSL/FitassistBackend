@@ -1,9 +1,6 @@
 package source.code.service.implementation.user.interaction.withoutType;
 
 import jakarta.transaction.Transactional;
-
-import java.util.function.Function;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import source.code.exception.NotUniqueRecordException;
 import source.code.exception.RecordNotFoundException;
@@ -11,6 +8,8 @@ import source.code.helper.utils.AuthorizationUtil;
 import source.code.model.user.User;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.user.SavedServiceWithoutType;
+
+import java.util.function.Function;
 
 public abstract class GenericSavedServiceWithoutType<T, U, R> implements SavedServiceWithoutType {
 

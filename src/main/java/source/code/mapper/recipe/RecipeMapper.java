@@ -1,24 +1,17 @@
 package source.code.mapper.recipe;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.pojo.FoodMacros;
 import source.code.dto.pojo.RecipeFoodDto;
-import source.code.dto.response.food.IngredientResponseDto;
 import source.code.dto.request.recipe.RecipeCreateDto;
 import source.code.dto.request.recipe.RecipeUpdateDto;
-import source.code.dto.request.text.TextUpdateDto;
 import source.code.dto.response.category.CategoryResponseDto;
+import source.code.dto.response.food.IngredientResponseDto;
 import source.code.dto.response.recipe.RecipeResponseDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.dto.response.text.TextResponseDto;
 import source.code.exception.RecordNotFoundException;
-import source.code.helper.Enum.model.TextType;
 import source.code.mapper.helper.CommonMappingHelper;
 import source.code.model.recipe.Recipe;
 import source.code.model.recipe.RecipeCategory;
@@ -28,6 +21,11 @@ import source.code.model.text.RecipeInstruction;
 import source.code.model.user.User;
 import source.code.repository.RecipeCategoryRepository;
 import source.code.repository.UserRepository;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class RecipeMapper {

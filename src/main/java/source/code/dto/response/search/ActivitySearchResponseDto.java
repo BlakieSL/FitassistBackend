@@ -1,11 +1,11 @@
 package source.code.dto.response.search;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.response.category.CategoryResponseDto;
+
+import java.math.BigDecimal;
 
 @Getter
 @Setter

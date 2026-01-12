@@ -1,11 +1,5 @@
 package source.code.unit.media;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import java.io.IOException;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.multipart.MultipartFile;
 import source.code.dto.request.media.MediaCreateDto;
-import source.code.dto.response.MediaResponseDto;
+import source.code.dto.response.other.MediaResponseDto;
 import source.code.event.events.Media.MediaDeleteEvent;
 import source.code.event.events.Media.MediaUpdateEvent;
 import source.code.exception.RecordNotFoundException;
@@ -26,6 +20,12 @@ import source.code.repository.MediaRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.helpers.RepositoryHelper;
 import source.code.service.implementation.media.MediaServiceImpl;
+
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MediaServiceTest {

@@ -1,14 +1,8 @@
 package source.code.unit.validation;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.FlushModeType;
 import jakarta.validation.ConstraintValidatorContext;
-
-import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +17,11 @@ import source.code.model.user.User;
 import source.code.repository.UserRepository;
 import source.code.validation.email.UniqueEmailDomain;
 import source.code.validation.email.UniqueEmailValidator;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UniqueEmailValidatorTest {

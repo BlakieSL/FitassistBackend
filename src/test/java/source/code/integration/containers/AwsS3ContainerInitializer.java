@@ -1,6 +1,5 @@
 package source.code.integration.containers;
 
-import java.net.URI;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -11,6 +10,8 @@ import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+
+import java.net.URI;
 
 @Testcontainers
 public class AwsS3ContainerInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

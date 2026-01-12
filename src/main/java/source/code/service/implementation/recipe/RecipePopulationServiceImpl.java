@@ -1,9 +1,5 @@
 package source.code.service.implementation.recipe;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import source.code.dto.pojo.projection.EntityCountsProjection;
 import source.code.dto.pojo.projection.recipe.RecipeIngredientCountProjection;
@@ -17,6 +13,10 @@ import source.code.repository.RecipeFoodRepository;
 import source.code.repository.UserRecipeRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.recipe.RecipePopulationService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipePopulationServiceImpl implements RecipePopulationService {

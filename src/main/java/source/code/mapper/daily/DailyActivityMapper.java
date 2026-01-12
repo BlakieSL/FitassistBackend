@@ -1,8 +1,5 @@
 package source.code.mapper.daily;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
@@ -10,6 +7,9 @@ import source.code.dto.response.category.CategoryResponseDto;
 import source.code.model.activity.ActivityCategory;
 import source.code.model.daily.DailyCartActivity;
 import source.code.service.declaration.helpers.CalculationsService;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Mapper(componentModel = "spring")
 public abstract class DailyActivityMapper {

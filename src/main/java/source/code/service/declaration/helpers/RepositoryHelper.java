@@ -1,9 +1,9 @@
 package source.code.service.declaration.helpers;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.List;
 import java.util.function.Function;
-
-import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RepositoryHelper {
 

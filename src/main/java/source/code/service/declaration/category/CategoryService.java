@@ -3,11 +3,10 @@ package source.code.service.declaration.category;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-
-import java.util.List;
-
 import source.code.dto.request.category.CategoryCreateDto;
 import source.code.dto.response.category.CategoryResponseDto;
+
+import java.util.List;
 
 public interface CategoryService {
 

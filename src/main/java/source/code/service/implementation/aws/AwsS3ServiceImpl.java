@@ -1,7 +1,5 @@
 package source.code.service.implementation.aws;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
@@ -11,6 +9,8 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import source.code.service.declaration.aws.AwsS3Service;
+
+import java.util.UUID;
 
 @ConditionalOnProperty(name = "spring.cloud.aws.s3.enabled", havingValue = "true")
 @Service

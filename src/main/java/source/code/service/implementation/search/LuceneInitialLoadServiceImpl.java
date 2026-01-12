@@ -1,15 +1,6 @@
 package source.code.service.implementation.search;
 
 import jakarta.annotation.PreDestroy;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Stream;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +15,14 @@ import source.code.service.declaration.plan.PlanService;
 import source.code.service.declaration.recipe.RecipeService;
 import source.code.service.declaration.search.LuceneIndexService;
 import source.code.service.declaration.search.LuceneInitialLoadService;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 public class LuceneInitialLoadServiceImpl implements LuceneInitialLoadService {

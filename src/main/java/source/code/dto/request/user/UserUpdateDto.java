@@ -4,10 +4,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
 import lombok.Getter;
 import lombok.Setter;
 import source.code.helper.Enum.model.user.ActivityLevel;
@@ -18,6 +14,9 @@ import source.code.validation.password.PasswordDigitsDomain;
 import source.code.validation.password.PasswordLowercaseDomain;
 import source.code.validation.password.PasswordSpecialDomain;
 import source.code.validation.password.PasswordUppercaseDomain;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Getter
 @Setter

@@ -3,9 +3,6 @@ package source.code.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +12,8 @@ import source.code.dto.response.category.CategoryResponseDto;
 import source.code.helper.Enum.model.CategoryType;
 import source.code.service.declaration.category.CategoryService;
 import source.code.service.declaration.selector.CategorySelectorService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")

@@ -1,9 +1,5 @@
 package source.code.service.implementation.food;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import source.code.dto.pojo.projection.SavesProjection;
 import source.code.dto.response.food.FoodResponseDto;
@@ -13,6 +9,10 @@ import source.code.repository.UserFoodRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.food.FoodPopulationService;
 import source.code.service.declaration.helpers.ImageUrlPopulationService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class FoodPopulationServiceImpl implements FoodPopulationService {

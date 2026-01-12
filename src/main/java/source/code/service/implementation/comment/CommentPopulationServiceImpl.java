@@ -1,9 +1,5 @@
 package source.code.service.implementation.comment;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import source.code.dto.pojo.projection.comment.CommentCountsProjection;
 import source.code.dto.response.comment.CommentResponseDto;
@@ -15,6 +11,10 @@ import source.code.repository.MediaRepository;
 import source.code.repository.UserCommentRepository;
 import source.code.service.declaration.aws.AwsS3Service;
 import source.code.service.declaration.comment.CommentPopulationService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentPopulationServiceImpl implements CommentPopulationService {

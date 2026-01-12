@@ -1,8 +1,5 @@
 package source.code.mapper;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import source.code.dto.request.activity.ActivityCreateDto;
@@ -17,6 +14,9 @@ import source.code.model.activity.ActivityCategory;
 import source.code.repository.ActivityCategoryRepository;
 import source.code.service.declaration.helpers.CalculationsService;
 import source.code.service.declaration.helpers.RepositoryHelper;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class ActivityMapper {

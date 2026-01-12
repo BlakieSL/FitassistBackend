@@ -1,9 +1,9 @@
 package source.code.service.declaration.food;
 
-import java.util.List;
-
 import source.code.dto.response.food.FoodResponseDto;
 import source.code.dto.response.food.FoodSummaryDto;
+
+import java.util.List;
 
 public interface FoodPopulationService {
 

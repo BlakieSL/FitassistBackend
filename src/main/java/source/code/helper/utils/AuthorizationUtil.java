@@ -1,10 +1,10 @@
 package source.code.helper.utils;
 
-import java.util.Optional;
-
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import source.code.auth.CustomAuthenticationToken;
+
+import java.util.Optional;
 
 @Service
 public class AuthorizationUtil {

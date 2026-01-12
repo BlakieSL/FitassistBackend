@@ -1,10 +1,5 @@
 package source.code.mapper.helper;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.Function;
-
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 import source.code.dto.pojo.AuthorDto;
@@ -13,6 +8,11 @@ import source.code.dto.request.text.TextUpdateDto;
 import source.code.model.media.Media;
 import source.code.model.text.TextBase;
 import source.code.model.user.User;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
 
 @Component
 public class CommonMappingHelper {

@@ -1,10 +1,5 @@
 package source.code.service.implementation.user.interaction.withType;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -15,7 +10,7 @@ import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.exception.NotSupportedInteractionTypeException;
 import source.code.helper.BaseUserEntity;
 import source.code.helper.Enum.cache.CacheNames;
-import source.code.mapper.PlanMapper;
+import source.code.mapper.plan.PlanMapper;
 import source.code.model.plan.Plan;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.User;
@@ -25,6 +20,11 @@ import source.code.repository.UserPlanRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.plan.PlanPopulationService;
 import source.code.service.declaration.user.SavedService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service("userPlanService")
 public class UserPlanServiceImpl extends GenericSavedService<Plan, UserPlan, PlanResponseDto> implements SavedService {

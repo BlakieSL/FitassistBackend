@@ -1,10 +1,5 @@
 package source.code.service.implementation.user.interaction.withType;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,6 +20,11 @@ import source.code.repository.UserRecipeRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.recipe.RecipePopulationService;
 import source.code.service.declaration.user.SavedService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service("userRecipeService")
 public class UserRecipeServiceImpl extends GenericSavedService<Recipe, UserRecipe, RecipeResponseDto>

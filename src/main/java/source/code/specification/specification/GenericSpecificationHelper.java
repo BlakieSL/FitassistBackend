@@ -1,17 +1,16 @@
 package source.code.specification.specification;
 
-import static source.code.specification.SpecificationConstants.ID_FIELD;
-import static source.code.specification.SpecificationConstants.USER_FIELD;
-
 import jakarta.persistence.criteria.*;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-
 import source.code.dto.pojo.FilterCriteria;
 import source.code.exception.InvalidFilterOperationException;
 import source.code.exception.InvalidFilterValueException;
 import source.code.specification.PredicateContext;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+
+import static source.code.specification.SpecificationConstants.ID_FIELD;
+import static source.code.specification.SpecificationConstants.USER_FIELD;
 
 public class GenericSpecificationHelper {
 

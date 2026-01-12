@@ -1,10 +1,10 @@
 package source.code.service.declaration.media;
 
-import java.util.List;
-
 import source.code.dto.request.media.MediaCreateDto;
-import source.code.dto.response.MediaResponseDto;
+import source.code.dto.response.other.MediaResponseDto;
 import source.code.helper.Enum.model.MediaConnectedEntity;
+
+import java.util.List;
 
 public interface MediaService {
 

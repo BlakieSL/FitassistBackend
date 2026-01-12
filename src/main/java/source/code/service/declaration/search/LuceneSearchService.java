@@ -1,8 +1,8 @@
 package source.code.service.declaration.search;
 
-import java.util.List;
-
 import source.code.dto.response.search.SearchResponseDto;
+
+import java.util.List;
 
 public interface LuceneSearchService {
 

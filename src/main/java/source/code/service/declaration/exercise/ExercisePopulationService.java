@@ -1,9 +1,9 @@
 package source.code.service.declaration.exercise;
 
-import java.util.List;
-
 import source.code.dto.response.exercise.ExerciseResponseDto;
 import source.code.dto.response.exercise.ExerciseSummaryDto;
+
+import java.util.List;
 
 public interface ExercisePopulationService {
 

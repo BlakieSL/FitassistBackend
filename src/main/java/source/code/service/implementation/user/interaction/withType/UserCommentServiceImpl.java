@@ -1,8 +1,5 @@
 package source.code.service.implementation.user.interaction.withType;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +18,9 @@ import source.code.repository.UserCommentRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.comment.CommentPopulationService;
 import source.code.service.declaration.user.SavedService;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service("userCommentService")
 public class UserCommentServiceImpl extends GenericSavedService<Comment, UserComment, CommentResponseDto>

@@ -1,10 +1,5 @@
 package source.code.dto.response.plan;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +8,11 @@ import source.code.dto.pojo.AuthorDto;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.helper.BaseUserEntity;
 import source.code.helper.Enum.model.PlanStructureType;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * fetched with db (findAll) -> mapper -> populated in getFilteredPlans fetched with db

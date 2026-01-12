@@ -4,11 +4,6 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
 import jakarta.transaction.Transactional;
-
-import java.text.ParseException;
-import java.util.Collections;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +17,10 @@ import source.code.model.user.User;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.auth.PasswordResetService;
 import source.code.service.declaration.email.EmailService;
+
+import java.text.ParseException;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class PasswordResetServiceImpl implements PasswordResetService {

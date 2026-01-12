@@ -1,13 +1,13 @@
 package source.code.service.implementation.helpers;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import org.springframework.stereotype.Service;
 import source.code.helper.Enum.model.user.ActivityLevel;
 import source.code.helper.Enum.model.user.Gender;
 import source.code.helper.Enum.model.user.Goal;
 import source.code.service.declaration.helpers.CalculationsService;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Service
 public final class CalculationsServiceImpl implements CalculationsService {
