@@ -9,6 +9,7 @@ import source.code.dto.request.user.UserCreateDto;
 import source.code.dto.request.user.UserUpdateDto;
 import source.code.dto.response.user.UserResponseDto;
 import source.code.helper.Enum.model.MediaConnectedEntity;
+import source.code.helper.Enum.model.RoleEnum;
 import source.code.mapper.helper.CommonMappingHelper;
 import source.code.model.user.Role;
 import source.code.model.user.User;
@@ -93,9 +94,9 @@ public abstract class UserMapper {
 	public abstract void updateUserFromDto(@MappingTarget User user, UserUpdateDto request);
 
 	public void addDefaultRole(User user) {
-		Role role = roleRepository.findByName("USER").orElseGet(() -> {
+		Role role = roleRepository.findByName(RoleEnum.USER).orElseGet(() -> {
 			Role newRole = new Role();
-			newRole.setName("USER");
+			newRole.setName(RoleEnum.USER);
 			return roleRepository.save(newRole);
 		});
 		user.getRoles().add(role);
@@ -103,7 +104,7 @@ public abstract class UserMapper {
 
 	@Named("rolesToRolesNames")
 	Set<String> rolesToRolesNames(Set<Role> roles) {
-		return roles.stream().map(Role::getName).collect(Collectors.toSet());
+		return roles.stream().map(role -> role.getName().name()).collect(Collectors.toSet());
 	}
 
 	@Named("hashPassword")

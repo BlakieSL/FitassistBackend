@@ -1,7 +1,7 @@
 INSERT INTO role (name)
 VALUES ('USER'),
        ('ADMIN'),
-       ('MOD');
+       ('MODERATOR');
 
 INSERT INTO activity_category (name)
 VALUES ('Running'),
