@@ -103,7 +103,7 @@ public class AuthAnnotationServiceTest {
 		when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId)).thenReturn(true);
 
-		boolean result = authAnnotationService.isCommentOwnerOrAdmin(commentId);
+		boolean result = authAnnotationService.isCommentOwnerOrAdminOrModerator(commentId);
 
 		assertTrue(result);
 	}
@@ -115,7 +115,7 @@ public class AuthAnnotationServiceTest {
 		when(repositoryHelper.find(forumThreadRepository, ForumThread.class, forumThreadId)).thenReturn(forumThread);
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId)).thenReturn(true);
 
-		boolean result = authAnnotationService.isForumThreadOwnerOrAdmin(forumThreadId);
+		boolean result = authAnnotationService.isForumThreadOwnerOrAdminOrModerator(forumThreadId);
 
 		assertTrue(result);
 	}
@@ -151,7 +151,7 @@ public class AuthAnnotationServiceTest {
 		when(repositoryHelper.find(commentRepository, Comment.class, commentId)).thenReturn(comment);
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId)).thenReturn(true);
 
-		boolean result = authAnnotationService.isOwnerOrAdminForParentEntity(MediaConnectedEntity.COMMENT, commentId);
+		boolean result = authAnnotationService.isOwnerOrAdminOrModeratorForParentEntity(MediaConnectedEntity.COMMENT, commentId);
 
 		assertTrue(result);
 	}
@@ -163,7 +163,7 @@ public class AuthAnnotationServiceTest {
 		when(repositoryHelper.find(forumThreadRepository, ForumThread.class, forumThreadId)).thenReturn(forumThread);
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId)).thenReturn(true);
 
-		boolean result = authAnnotationService.isOwnerOrAdminForParentEntity(MediaConnectedEntity.FORUM_THREAD,
+		boolean result = authAnnotationService.isOwnerOrAdminOrModeratorForParentEntity(MediaConnectedEntity.FORUM_THREAD,
 				forumThreadId);
 
 		assertTrue(result);
@@ -177,7 +177,7 @@ public class AuthAnnotationServiceTest {
 			.thenReturn(commentComplaint);
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId)).thenReturn(true);
 
-		boolean result = authAnnotationService.isOwnerOrAdminForParentEntity(MediaConnectedEntity.COMMENT_COMPLAINT,
+		boolean result = authAnnotationService.isOwnerOrAdminOrModeratorForParentEntity(MediaConnectedEntity.COMMENT_COMPLAINT,
 				commentComplaintId);
 
 		assertTrue(result);
@@ -191,7 +191,7 @@ public class AuthAnnotationServiceTest {
 			.thenReturn(threadComplaint);
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId)).thenReturn(true);
 
-		boolean result = authAnnotationService.isOwnerOrAdminForParentEntity(MediaConnectedEntity.THREAD_COMPLAINT,
+		boolean result = authAnnotationService.isOwnerOrAdminOrModeratorForParentEntity(MediaConnectedEntity.THREAD_COMPLAINT,
 				threadComplaintId);
 
 		assertTrue(result);
@@ -204,7 +204,7 @@ public class AuthAnnotationServiceTest {
 		when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId)).thenReturn(true);
 
-		boolean result = authAnnotationService.isOwnerOrAdminForParentEntity(MediaConnectedEntity.PLAN, planId);
+		boolean result = authAnnotationService.isOwnerOrAdminOrModeratorForParentEntity(MediaConnectedEntity.PLAN, planId);
 
 		assertTrue(result);
 	}
@@ -216,7 +216,7 @@ public class AuthAnnotationServiceTest {
 		when(repositoryHelper.find(recipeRepository, Recipe.class, recipeId)).thenReturn(recipe);
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId)).thenReturn(true);
 
-		boolean result = authAnnotationService.isOwnerOrAdminForParentEntity(MediaConnectedEntity.RECIPE, recipeId);
+		boolean result = authAnnotationService.isOwnerOrAdminOrModeratorForParentEntity(MediaConnectedEntity.RECIPE, recipeId);
 
 		assertTrue(result);
 	}
@@ -226,7 +226,7 @@ public class AuthAnnotationServiceTest {
 		int foodId = 10;
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(null)).thenReturn(true);
 
-		boolean result = authAnnotationService.isOwnerOrAdminForParentEntity(MediaConnectedEntity.FOOD, foodId);
+		boolean result = authAnnotationService.isOwnerOrAdminOrModeratorForParentEntity(MediaConnectedEntity.FOOD, foodId);
 
 		assertTrue(result);
 		verifyNoInteractions(repositoryHelper);
@@ -237,7 +237,7 @@ public class AuthAnnotationServiceTest {
 		int activityId = 11;
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(null)).thenReturn(false);
 
-		boolean result = authAnnotationService.isOwnerOrAdminForParentEntity(MediaConnectedEntity.ACTIVITY, activityId);
+		boolean result = authAnnotationService.isOwnerOrAdminOrModeratorForParentEntity(MediaConnectedEntity.ACTIVITY, activityId);
 
 		assertFalse(result);
 		verifyNoInteractions(repositoryHelper);
@@ -248,7 +248,7 @@ public class AuthAnnotationServiceTest {
 		int exerciseId = 12;
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(null)).thenReturn(false);
 
-		boolean result = authAnnotationService.isOwnerOrAdminForParentEntity(MediaConnectedEntity.EXERCISE, exerciseId);
+		boolean result = authAnnotationService.isOwnerOrAdminOrModeratorForParentEntity(MediaConnectedEntity.EXERCISE, exerciseId);
 
 		assertFalse(result);
 		verifyNoInteractions(repositoryHelper);
@@ -264,7 +264,7 @@ public class AuthAnnotationServiceTest {
 		when(repositoryHelper.find(planRepository, Plan.class, media.getParentId())).thenReturn(plan);
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId)).thenReturn(true);
 
-		boolean result = authAnnotationService.isMediaOwnerOrAdmin(mediaId);
+		boolean result = authAnnotationService.isMediaOwnerOrAdminOrModerator(mediaId);
 
 		assertTrue(result);
 	}
@@ -279,7 +279,7 @@ public class AuthAnnotationServiceTest {
 		when(repositoryHelper.find(recipeRepository, Recipe.class, media.getParentId())).thenReturn(recipe);
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(userId)).thenReturn(false);
 
-		boolean result = authAnnotationService.isMediaOwnerOrAdmin(mediaId);
+		boolean result = authAnnotationService.isMediaOwnerOrAdminOrModerator(mediaId);
 
 		assertFalse(result);
 	}
@@ -291,7 +291,7 @@ public class AuthAnnotationServiceTest {
 		when(repositoryHelper.find(mediaRepository, Media.class, mediaId)).thenReturn(media);
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(null)).thenReturn(true);
 
-		boolean result = authAnnotationService.isMediaOwnerOrAdmin(mediaId);
+		boolean result = authAnnotationService.isMediaOwnerOrAdminOrModerator(mediaId);
 
 		assertTrue(result);
 	}
@@ -303,7 +303,7 @@ public class AuthAnnotationServiceTest {
 		when(repositoryHelper.find(mediaRepository, Media.class, mediaId)).thenReturn(media);
 		mockedAuthorizationUtil.when(() -> AuthorizationUtil.isOwnerOrAdmin(null)).thenReturn(false);
 
-		boolean result = authAnnotationService.isMediaOwnerOrAdmin(mediaId);
+		boolean result = authAnnotationService.isMediaOwnerOrAdminOrModerator(mediaId);
 
 		assertFalse(result);
 	}

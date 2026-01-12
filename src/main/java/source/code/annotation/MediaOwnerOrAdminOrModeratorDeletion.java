@@ -9,7 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@authAnnotationServiceImpl.isForumThreadOwnerOrAdmin(#forumThreadId)")
-public @interface ThreadOwnerOrAdmin {
+@PreAuthorize("@authAnnotationServiceImpl.isMediaOwnerOrAdminOrModerator(#mediaId)")
+public @interface MediaOwnerOrAdminOrModeratorDeletion {
 
 }

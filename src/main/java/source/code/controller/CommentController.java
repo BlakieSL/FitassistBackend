@@ -14,7 +14,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.annotation.CommentOwnerOrAdmin;
+import source.code.annotation.CommentOwnerOrAdminOrModerator;
 import source.code.dto.request.comment.CommentCreateDto;
 import source.code.dto.request.filter.FilterDto;
 import source.code.dto.response.comment.CommentAncestryDto;
@@ -38,7 +38,7 @@ public class CommentController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
 	}
 
-	@CommentOwnerOrAdmin
+	@CommentOwnerOrAdminOrModerator
 	@PatchMapping("/{commentId}")
 	public ResponseEntity<Void> updateComment(@PathVariable int commentId, @RequestBody JsonMergePatch patch)
 			throws JsonPatchException, JsonProcessingException {
@@ -46,7 +46,7 @@ public class CommentController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@CommentOwnerOrAdmin
+	@CommentOwnerOrAdminOrModerator
 	@DeleteMapping("/{commentId}")
 	public ResponseEntity<Void> deleteComment(@PathVariable int commentId) {
 		commentService.deleteComment(commentId);
