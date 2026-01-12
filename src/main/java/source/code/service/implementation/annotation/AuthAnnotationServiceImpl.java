@@ -77,15 +77,15 @@ public class AuthAnnotationServiceImpl {
 		this.dailyCartFoodRepository = dailyCartFoodRepository;
 	}
 
-	public boolean isCommentOwnerOrAdmin(int commentId) {
+	public boolean isCommentOwnerOrAdminOrModerator(int commentId) {
 		Comment comment = commentRepository.findById(commentId)
 			.orElseThrow(() -> new RecordNotFoundException(Comment.class, commentId));
-		return AuthorizationUtil.isOwnerOrAdmin(comment.getUser().getId());
+		return AuthorizationUtil.isOwnerOrAdminOrModerator(comment.getUser().getId());
 	}
 
-	public boolean isForumThreadOwnerOrAdmin(int forumThreadId) {
+	public boolean isForumThreadOwnerOrAdminOrModerator(int forumThreadId) {
 		ForumThread forumThread = repositoryHelper.find(forumThreadRepository, ForumThread.class, forumThreadId);
-		return AuthorizationUtil.isOwnerOrAdmin(forumThread.getUser().getId());
+		return AuthorizationUtil.isOwnerOrAdminOrModerator(forumThread.getUser().getId());
 	}
 
 	public boolean isPlanOwnerOrAdminOrModerator(int planId) {
@@ -114,15 +114,15 @@ public class AuthAnnotationServiceImpl {
 		return AuthorizationUtil.isOwnerOrAdminOrModerator(recipe.getUser().getId());
 	}
 
-	public boolean isOwnerOrAdminForParentEntity(MediaConnectedEntity parentType, int parentId) {
+	public boolean isOwnerOrAdminOrModeratorForParentEntity(MediaConnectedEntity parentType, int parentId) {
 		Integer ownerId = findOwnerIdByParentTypeAndId(parentType, parentId);
-		return AuthorizationUtil.isOwnerOrAdmin(ownerId);
+		return AuthorizationUtil.isOwnerOrAdminOrModerator(ownerId);
 	}
 
-	public boolean isMediaOwnerOrAdmin(int mediaId) {
+	public boolean isMediaOwnerOrAdminOrModerator(int mediaId) {
 		Media media = repositoryHelper.find(mediaRepository, Media.class, mediaId);
 		Integer ownerId = findOwnerIdByParentTypeAndId(media.getParentType(), media.getParentId());
-		return AuthorizationUtil.isOwnerOrAdmin(ownerId);
+		return AuthorizationUtil.isOwnerOrAdminOrModerator(ownerId);
 	}
 
 	public boolean isWorkoutOwnerOrAdmin(int workoutId) {

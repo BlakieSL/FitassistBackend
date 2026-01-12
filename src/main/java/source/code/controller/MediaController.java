@@ -7,8 +7,8 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.annotation.MediaOwnerOrAdminCreation;
-import source.code.annotation.MediaOwnerOrAdminDeletion;
+import source.code.annotation.MediaOwnerOrAdminOrModeratorCreation;
+import source.code.annotation.MediaOwnerOrAdminOrModeratorDeletion;
 import source.code.dto.request.media.MediaCreateDto;
 import source.code.dto.response.MediaResponseDto;
 import source.code.helper.Enum.model.MediaConnectedEntity;
@@ -44,14 +44,14 @@ public class MediaController {
 		return ResponseEntity.ok(media);
 	}
 
-	@MediaOwnerOrAdminCreation
+	@MediaOwnerOrAdminOrModeratorCreation
 	@PostMapping
 	public ResponseEntity<MediaResponseDto> createMedia(@Valid @ModelAttribute MediaCreateDto request) {
 		MediaResponseDto response = mediaService.createMedia(request);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
-	@MediaOwnerOrAdminDeletion
+	@MediaOwnerOrAdminOrModeratorDeletion
 	@DeleteMapping("/{mediaId}")
 	public ResponseEntity<Void> removeMediaFromParent(@PathVariable int mediaId) {
 		mediaService.deleteMedia(mediaId);

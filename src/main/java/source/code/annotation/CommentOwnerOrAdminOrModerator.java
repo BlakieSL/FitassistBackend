@@ -9,7 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@authAnnotationServiceImpl.isCommentOwnerOrAdmin(#commentId)")
-public @interface CommentOwnerOrAdmin {
+@PreAuthorize("@authAnnotationServiceImpl.isCommentOwnerOrAdminOrModerator(#commentId)")
+public @interface CommentOwnerOrAdminOrModerator {
 
 }
