@@ -10,7 +10,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.annotation.plan.PublicPlanOrOwnerOrAdmin;
+import source.code.annotation.plan.PublicPlanOrOwnerOrAdminOrModerator;
 import source.code.annotation.workout.PublicPlanOwnerOrAdminAcceptWorkoutId;
 import source.code.annotation.workout.WorkoutOwnerOrAdmin;
 import source.code.annotation.workout.WorkoutOwnerOrAdminCreation;
@@ -57,7 +57,7 @@ public class WorkoutController {
 		return ResponseEntity.ok(workout);
 	}
 
-	@PublicPlanOrOwnerOrAdmin
+	@PublicPlanOrOwnerOrAdminOrModerator
 	@GetMapping("/plans/{planId}")
 	public ResponseEntity<List<WorkoutResponseDto>> getAllWorkoutsForPlan(@PathVariable int planId) {
 		List<WorkoutResponseDto> workouts = workoutService.getAllWorkoutsForPlan(planId);

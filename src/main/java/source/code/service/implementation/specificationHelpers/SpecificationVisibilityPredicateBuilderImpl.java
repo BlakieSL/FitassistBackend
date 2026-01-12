@@ -19,6 +19,11 @@ public class SpecificationVisibilityPredicateBuilderImpl implements Specificatio
 			return builder.or(builder.isTrue(root.get(publicField)),
 					builder.equal(root.get(userField).get(idField), AuthorizationUtil.getUserId()));
 		}
+
+		if (AuthorizationUtil.isAdmin()) {
+			return builder.conjunction();
+		}
+
 		return builder.isTrue(root.get(publicField));
 	}
 

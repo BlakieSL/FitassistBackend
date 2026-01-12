@@ -22,7 +22,7 @@ public class Role {
 
 	private static final int MIN_ROLE_NAME_LENGTH = 4;
 
-	private static final int MAX_ROLE_NAME_LENGTH = 5;
+	private static final int MAX_ROLE_NAME_LENGTH = 9;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,7 @@ public class Role {
 
 	@NotBlank
 	@Size(min = MIN_ROLE_NAME_LENGTH, max = MAX_ROLE_NAME_LENGTH)
-	@Column(nullable = false, length = MAX_ROLE_NAME_LENGTH)
+	@Column(nullable = false, length = MAX_ROLE_NAME_LENGTH, unique = true)
 	private String name;
 
 	@ManyToMany(mappedBy = "roles")

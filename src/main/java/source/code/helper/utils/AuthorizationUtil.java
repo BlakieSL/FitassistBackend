@@ -10,15 +10,12 @@ import source.code.auth.CustomAuthenticationToken;
 public class AuthorizationUtil {
 
 	public static boolean isOwnerOrAdmin(Integer ownerId) {
-		CustomAuthenticationToken auth = (CustomAuthenticationToken) SecurityContextHolder.getContext()
-			.getAuthentication();
-		Integer currentUserId = auth.getUserId();
+		if (isAdmin()) {
+			return true;
+		}
 
-		boolean isAdmin = auth.getAuthorities()
-			.stream()
-			.anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
-
-		return isAdmin || Optional.ofNullable(ownerId).map(id -> id.equals(currentUserId)).orElse(false);
+		Integer currentUserId = getUserId();
+		return Optional.ofNullable(ownerId).map(id -> id.equals(currentUserId)).orElse(false);
 	}
 
 	public static int getUserId() {
@@ -27,6 +24,39 @@ public class AuthorizationUtil {
 			return ((CustomAuthenticationToken) auth).getUserId();
 		}
 		return -1;
+	}
+
+	public static boolean isAdmin() {
+		var auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth instanceof CustomAuthenticationToken) {
+			return ((CustomAuthenticationToken) auth).getAuthorities()
+				.stream()
+				.anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+		}
+		return false;
+	}
+
+	public static boolean isModerator() {
+		var auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth instanceof CustomAuthenticationToken) {
+			return ((CustomAuthenticationToken) auth).getAuthorities()
+				.stream()
+				.anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_MODERATOR"));
+		}
+		return false;
+	}
+
+	public static boolean isAdminOrModerator() {
+		return isAdmin() || isModerator();
+	}
+
+	public static boolean isOwnerOrAdminOrModerator(Integer ownerId) {
+		if (isAdminOrModerator()) {
+			return true;
+		}
+
+		Integer currentUserId = getUserId();
+		return Optional.ofNullable(ownerId).map(id -> id.equals(currentUserId)).orElse(false);
 	}
 
 }

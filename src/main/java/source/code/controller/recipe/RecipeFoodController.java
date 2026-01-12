@@ -1,25 +1,18 @@
 package source.code.controller.recipe;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import source.code.annotation.recipe.RecipeOwnerOrAdmin;
-import source.code.dto.request.recipe.FilterRecipesByFoodsDto;
+import source.code.annotation.recipe.RecipeOwnerOrAdminOrModerator;
 import source.code.dto.request.recipe.RecipeFoodCreateDto;
 import source.code.dto.response.food.FoodSummaryDto;
-import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.service.declaration.recipe.RecipeFoodService;
 
 @RestController
@@ -32,7 +25,7 @@ public class RecipeFoodController {
 		this.recipeFoodService = recipeFoodService;
 	}
 
-	@RecipeOwnerOrAdmin
+	@RecipeOwnerOrAdminOrModerator
 	@PostMapping("/{recipeId}/add")
 	public ResponseEntity<Void> addFoodToRecipe(@PathVariable int recipeId,
 			@Valid @RequestBody RecipeFoodCreateDto request) {
@@ -40,7 +33,7 @@ public class RecipeFoodController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@RecipeOwnerOrAdmin
+	@RecipeOwnerOrAdminOrModerator
 	@PostMapping("/{recipeId}/replaceAll")
 	public ResponseEntity<Void> replaceAllFoodsInRecipe(@PathVariable int recipeId,
 			@Valid @RequestBody RecipeFoodCreateDto request) {
@@ -48,14 +41,14 @@ public class RecipeFoodController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@RecipeOwnerOrAdmin
+	@RecipeOwnerOrAdminOrModerator
 	@DeleteMapping("/{recipeId}/remove/{foodId}")
 	public ResponseEntity<Void> deleteFoodFromRecipe(@PathVariable int recipeId, @PathVariable int foodId) {
 		recipeFoodService.deleteFoodFromRecipe(foodId, recipeId);
 		return ResponseEntity.ok().build();
 	}
 
-	@RecipeOwnerOrAdmin
+	@RecipeOwnerOrAdminOrModerator
 	@PatchMapping("/{recipeId}/modify/{foodId}")
 	public ResponseEntity<Void> updateFoodRecipe(@PathVariable int recipeId, @PathVariable int foodId,
 			@RequestBody JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
@@ -63,7 +56,7 @@ public class RecipeFoodController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@RecipeOwnerOrAdmin
+	@RecipeOwnerOrAdminOrModerator
 	@GetMapping("/{recipeId}/foods")
 	public ResponseEntity<List<FoodSummaryDto>> getFoodsByRecipe(@PathVariable int recipeId) {
 		List<FoodSummaryDto> foods = recipeFoodService.getFoodsByRecipe(recipeId);

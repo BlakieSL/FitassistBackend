@@ -88,30 +88,30 @@ public class AuthAnnotationServiceImpl {
 		return AuthorizationUtil.isOwnerOrAdmin(forumThread.getUser().getId());
 	}
 
-	public boolean isPlanOwnerOrAdmin(int planId) {
+	public boolean isPlanOwnerOrAdminOrModerator(int planId) {
 		Plan plan = repositoryHelper.find(planRepository, Plan.class, planId);
-		return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
+		return AuthorizationUtil.isOwnerOrAdminOrModerator(plan.getUser().getId());
 	}
 
-	public boolean isPublicPlanOrOwnerOrAdmin(int planId) {
+	public boolean isPublicPlanOrOwnerOrAdminOrModerator(int planId) {
 		Plan plan = repositoryHelper.find(planRepository, Plan.class, planId);
 		if (plan.getIsPublic()) {
 			return true;
 		}
-		return AuthorizationUtil.isOwnerOrAdmin(plan.getUser().getId());
+		return AuthorizationUtil.isOwnerOrAdminOrModerator(plan.getUser().getId());
 	}
 
-	public boolean isRecipeOwnerOrAdmin(int recipeId) {
+	public boolean isRecipeOwnerOrAdminOrModerator(int recipeId) {
 		Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
-		return AuthorizationUtil.isOwnerOrAdmin(recipe.getUser().getId());
+		return AuthorizationUtil.isOwnerOrAdminOrModerator(recipe.getUser().getId());
 	}
 
-	public boolean isPublicRecipeOrOwnerOrAdmin(int recipeId) {
+	public boolean isPublicRecipeOrOwnerOrAdminOrModerator(int recipeId) {
 		Recipe recipe = repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
 		if (recipe.getIsPublic()) {
 			return true;
 		}
-		return AuthorizationUtil.isOwnerOrAdmin(recipe.getUser().getId());
+		return AuthorizationUtil.isOwnerOrAdminOrModerator(recipe.getUser().getId());
 	}
 
 	public boolean isOwnerOrAdminForParentEntity(MediaConnectedEntity parentType, int parentId) {
