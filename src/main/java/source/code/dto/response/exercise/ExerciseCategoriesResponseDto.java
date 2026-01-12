@@ -1,12 +1,12 @@
 package source.code.dto.response.exercise;
 
-import java.io.Serializable;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import source.code.dto.response.category.CategoryResponseDto;
+
+import java.io.Serializable;
+import java.util.List;
 
 @Data
 @NoArgsConstructor

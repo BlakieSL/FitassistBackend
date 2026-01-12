@@ -1,8 +1,5 @@
 package source.code.unit.specificationHelpers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
@@ -17,6 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.helper.utils.AuthorizationUtil;
 import source.code.service.implementation.specificationHelpers.SpecificationVisibilityPredicateBuilderImpl;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class SpecificationVisibilityPredicateBuilderTest {

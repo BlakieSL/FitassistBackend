@@ -1,7 +1,5 @@
 package source.code.service.implementation.user.interaction.withoutType;
 
-import java.util.List;
-
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,6 +18,8 @@ import source.code.repository.UserFoodRepository;
 import source.code.repository.UserRepository;
 import source.code.service.declaration.food.FoodPopulationService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
+
+import java.util.List;
 
 @Service("userFoodService")
 public class UserFoodServiceImpl extends GenericSavedServiceWithoutType<Food, UserFood, FoodSummaryDto>

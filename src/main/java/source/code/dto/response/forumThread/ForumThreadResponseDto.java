@@ -1,14 +1,14 @@
 package source.code.dto.response.forumThread;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import source.code.dto.pojo.AuthorDto;
 import source.code.dto.response.category.CategoryResponseDto;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * fetched with db (findById) -> mapper -> populated in createForumThread and

@@ -1,16 +1,15 @@
 package source.code.repository;
 
 import io.lettuce.core.dynamic.annotation.Param;
-
-import java.util.List;
-import java.util.Optional;
-
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
 import source.code.model.recipe.Recipe;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpecificationExecutor<Recipe> {
 

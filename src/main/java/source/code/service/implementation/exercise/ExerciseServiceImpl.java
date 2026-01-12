@@ -4,9 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
-
-import java.util.List;
-
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -28,7 +25,7 @@ import source.code.event.events.Exercise.ExerciseUpdateEvent;
 import source.code.exception.RecordNotFoundException;
 import source.code.helper.Enum.cache.CacheNames;
 import source.code.mapper.ExerciseMapper;
-import source.code.mapper.PlanMapper;
+import source.code.mapper.plan.PlanMapper;
 import source.code.model.exercise.Exercise;
 import source.code.repository.*;
 import source.code.service.declaration.exercise.ExercisePopulationService;
@@ -41,6 +38,8 @@ import source.code.service.implementation.specificationHelpers.SpecificationDepe
 import source.code.specification.SpecificationBuilder;
 import source.code.specification.SpecificationFactory;
 import source.code.specification.specification.ExerciseSpecification;
+
+import java.util.List;
 
 @Service
 public class ExerciseServiceImpl implements ExerciseService {

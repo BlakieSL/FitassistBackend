@@ -1,12 +1,12 @@
 package source.code.specification;
 
-import java.util.List;
-
 import org.springframework.data.jpa.domain.Specification;
 import source.code.dto.pojo.FilterCriteria;
 import source.code.dto.request.filter.FilterDto;
 import source.code.helper.Enum.filter.FilterDataOption;
 import source.code.service.implementation.specificationHelpers.SpecificationDependencies;
+
+import java.util.List;
 
 public class SpecificationBuilder<T> {
 

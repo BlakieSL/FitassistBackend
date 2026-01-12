@@ -1,7 +1,5 @@
 package source.code.service.implementation.user.interaction.withType;
 
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import source.code.exception.NotUniqueRecordException;
@@ -10,6 +8,8 @@ import source.code.helper.utils.AuthorizationUtil;
 import source.code.model.user.TypeOfInteraction;
 import source.code.model.user.User;
 import source.code.repository.UserRepository;
+
+import java.util.Optional;
 
 public abstract class GenericSavedService<T, U, R> {
 

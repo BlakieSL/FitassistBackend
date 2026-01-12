@@ -1,13 +1,7 @@
 package source.code.unit.auth;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
-
-import java.text.ParseException;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +10,11 @@ import org.springframework.security.core.Authentication;
 import source.code.auth.JwtService;
 import source.code.exception.InvalidRefreshTokenException;
 import source.code.exception.JwtAuthenticationException;
+
+import java.text.ParseException;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class JwtServiceTest {

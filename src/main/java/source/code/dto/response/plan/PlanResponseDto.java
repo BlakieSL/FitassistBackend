@@ -1,9 +1,5 @@
 package source.code.dto.response.plan;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +7,11 @@ import lombok.Setter;
 import source.code.dto.pojo.AuthorDto;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.dto.response.text.TextResponseDto;
-import source.code.dto.response.workout.WorkoutResponseDto;
 import source.code.helper.Enum.model.PlanStructureType;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * fetched with db (findByIdWithDetails) -> mapper -> populated in createPlan and getPlan

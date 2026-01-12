@@ -4,16 +4,15 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import source.code.dto.request.plan.workout.WorkoutNestedCreateDto;
 import source.code.dto.request.text.TextCreateDto;
-import source.code.dto.request.workout.WorkoutNestedCreateDto;
 import source.code.helper.Enum.model.PlanStructureType;
+
+import java.util.List;
 
 @Getter
 @Setter

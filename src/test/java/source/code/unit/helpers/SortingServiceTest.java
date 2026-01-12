@@ -1,12 +1,5 @@
 package source.code.unit.helpers;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Stream;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,6 +8,13 @@ import org.springframework.data.domain.Sort;
 import source.code.dto.response.plan.PlanSummaryDto;
 import source.code.dto.response.recipe.RecipeSummaryDto;
 import source.code.service.implementation.helpers.SortingServiceImpl;
+
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class SortingServiceTest {

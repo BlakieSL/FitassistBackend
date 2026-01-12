@@ -1,12 +1,6 @@
 package source.code.unit.validation;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import jakarta.validation.ConstraintValidatorContext;
-
-import java.math.BigDecimal;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,6 +11,11 @@ import source.code.helper.Enum.model.user.Goal;
 import source.code.model.user.User;
 import source.code.validation.healthRelatedInfo.HealthInfoShouldBeFullDomain;
 import source.code.validation.healthRelatedInfo.HealthRelatedInfoShouldBeFullValidator;
+
+import java.math.BigDecimal;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 public class HealthRelatedInfoShouldBeFullValidatorTest {

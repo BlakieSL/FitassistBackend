@@ -1,12 +1,12 @@
 package source.code.dto.response.food;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
 import lombok.*;
 import source.code.dto.pojo.FoodMacros;
 import source.code.dto.response.category.CategoryResponseDto;
 import source.code.helper.BaseUserEntity;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * fetched with db (findAll) -> mapper -> populated in getFilteredFoods fetched with db

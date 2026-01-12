@@ -1,9 +1,5 @@
 package source.code.unit.helpers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.math.BigDecimal;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,6 +8,10 @@ import source.code.helper.Enum.model.user.ActivityLevel;
 import source.code.helper.Enum.model.user.Gender;
 import source.code.helper.Enum.model.user.Goal;
 import source.code.service.implementation.helpers.CalculationsServiceImpl;
+
+import java.math.BigDecimal;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class CalculationsServiceTest {

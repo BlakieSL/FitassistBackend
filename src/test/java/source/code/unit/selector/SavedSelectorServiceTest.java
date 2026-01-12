@@ -1,8 +1,5 @@
 package source.code.unit.selector;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +9,9 @@ import source.code.helper.Enum.model.SavedEntityType;
 import source.code.service.declaration.user.SavedService;
 import source.code.service.declaration.user.SavedServiceWithoutType;
 import source.code.service.implementation.selector.SavedSelectorServiceImpl;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 public class SavedSelectorServiceTest {

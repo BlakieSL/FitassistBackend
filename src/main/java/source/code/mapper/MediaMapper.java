@@ -3,7 +3,7 @@ package source.code.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import source.code.dto.request.media.MediaCreateDto;
-import source.code.dto.response.MediaResponseDto;
+import source.code.dto.response.other.MediaResponseDto;
 import source.code.model.media.Media;
 
 @Mapper(componentModel = "spring")
