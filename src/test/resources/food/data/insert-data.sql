@@ -54,19 +54,17 @@ VALUES (1, 1, 2.0),
        (6, 2, 1.0),
        (6, 4, 1.0);
 
-INSERT INTO daily_cart_activity (daily_cart_id, activity_id, time)
-VALUES (1, 1, 30),
-       (1, 4, 45),
-       (2, 2, 20),
-       (2, 5, 30),
-       (3, 3, 40),
-       (3, 4, 60),
-       (4, 1, 45),
-       (4, 5, 30),
-       (5, 2, 25),
-       (5, 4, 40),
-       (6, 3, 50),
-       (6, 5, 30);
+INSERT INTO daily_cart_activity (daily_cart_id, activity_id, time, weight)
+VALUES (1, 1, 30, 70.00),
+       (1, 4, 45, 70.00),
+       (2, 2, 20, 70.00),
+       (2, 5, 30, 70.00),
+       (3, 3, 40, 70.00),
+       (3, 4, 60, 70.00),
+       (5, 2, 25, 60.00),
+       (5, 4, 40, 60.00),
+       (6, 3, 50, 60.00),
+       (6, 5, 30, 60.00);
 
 INSERT INTO recipe_category (name)
 VALUES ('Breakfast'),

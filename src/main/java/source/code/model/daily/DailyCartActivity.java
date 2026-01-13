@@ -29,8 +29,9 @@ public class DailyCartActivity {
 	@Column(nullable = false)
 	private Short time;
 
+	@NotNull
 	@Positive
-	@Column(precision = 38, scale = 2)
+	@Column(nullable = false, precision = 38, scale = 2)
 	private BigDecimal weight;
 
 	@NotNull

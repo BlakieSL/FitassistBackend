@@ -7,6 +7,7 @@ import lombok.Setter;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -17,6 +18,6 @@ public class DailyActivitiesResponseDto implements Serializable {
 
 	List<ActivityCalculatedResponseDto> activities;
 
-	private int totalCaloriesBurned;
+	private BigDecimal totalCaloriesBurned;
 
 }

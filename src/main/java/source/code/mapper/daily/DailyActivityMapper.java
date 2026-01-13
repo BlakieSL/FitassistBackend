@@ -32,7 +32,7 @@ public abstract class DailyActivityMapper {
 		BigDecimal caloriesBurned = calculationsService.calculateCaloriesBurned(dailyCartActivity.getTime(),
 				dailyCartActivity.getWeight(), dailyCartActivity.getActivity().getMet());
 
-		responseDto.setCaloriesBurned(caloriesBurned.setScale(0, RoundingMode.HALF_UP).intValue());
+		responseDto.setCaloriesBurned(caloriesBurned);
 	}
 
 	@Named("mapActivityCategoryToResponseDto")

@@ -107,9 +107,10 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 				.stream()
 				.map(dailyActivityMapper::toActivityCalculatedResponseDto)
 				.collect(Collectors.teeing(Collectors.toList(),
-						Collectors.summingInt(ActivityCalculatedResponseDto::getCaloriesBurned),
+						Collectors.reducing(BigDecimal.ZERO, ActivityCalculatedResponseDto::getCaloriesBurned,
+								BigDecimal::add),
 						DailyActivitiesResponseDto::of)))
-			.orElse(DailyActivitiesResponseDto.of(Collections.emptyList(), 0));
+			.orElse(DailyActivitiesResponseDto.of(Collections.emptyList(), BigDecimal.ZERO));
 	}
 
 	private void updateOrAddDailyActivityItem(DailyCart dailyCart, Activity activity, Short time, BigDecimal weight) {

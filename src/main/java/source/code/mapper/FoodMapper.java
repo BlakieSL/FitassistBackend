@@ -2,6 +2,7 @@ package source.code.mapper;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import source.code.dto.pojo.DateFoodMacros;
 import source.code.dto.pojo.FoodMacros;
 import source.code.dto.request.food.FoodCreateDto;
 import source.code.dto.request.food.FoodUpdateDto;
@@ -67,6 +68,8 @@ public abstract class FoodMapper {
 	@Mapping(target = "savesCount", ignore = true)
 	@Mapping(target = "saved", ignore = true)
 	public abstract FoodResponseDto toDetailedResponseDto(Food food);
+
+	public abstract FoodMacros toFoodMacros(DateFoodMacros dateFoodMacros);
 
 	@AfterMapping
 	protected void calculateMacros(@MappingTarget FoodCalculatedMacrosResponseDto dto, Food food,

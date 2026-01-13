@@ -3,6 +3,10 @@ spring:
     virtual:
       enabled: true
 
+  sql:
+    init:
+      mode: never
+
   data:
     redis:
       host: localhost

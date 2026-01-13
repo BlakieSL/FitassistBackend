@@ -269,7 +269,7 @@ public class DailyActivityServiceTest {
 		dailyCart.getDailyCartActivities().add(dailyCartActivity);
 
 		ActivityCalculatedResponseDto calculatedResponseDto = new ActivityCalculatedResponseDto();
-		calculatedResponseDto.setCaloriesBurned(100);
+		calculatedResponseDto.setCaloriesBurned(BigDecimal.valueOf(100));
 
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 		when(dailyCartRepository.findByUserIdAndDateWithActivityAssociations(USER_ID, LocalDate.now()))
@@ -280,7 +280,7 @@ public class DailyActivityServiceTest {
 			.getActivitiesFromDailyCart(new DailyActivitiesGetDto(LocalDate.now()));
 
 		assertEquals(1, result.getActivities().size());
-		assertEquals(100, result.getTotalCaloriesBurned());
+		assertEquals(BigDecimal.valueOf(100), result.getTotalCaloriesBurned());
 	}
 
 	@Test
@@ -299,7 +299,7 @@ public class DailyActivityServiceTest {
 			.getActivitiesFromDailyCart(new DailyActivitiesGetDto(LocalDate.now()));
 
 		assertTrue(result.getActivities().isEmpty());
-		assertEquals(0, result.getTotalCaloriesBurned());
+		assertEquals(BigDecimal.ZERO, result.getTotalCaloriesBurned());
 		verify(dailyActivityMapper, never()).toActivityCalculatedResponseDto(any());
 	}
 
