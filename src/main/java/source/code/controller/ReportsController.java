@@ -1,4 +1,4 @@
-package source.code.controller.daily;
+package source.code.controller;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import source.code.dto.response.reports.DailyReportResponseDto;
 import source.code.dto.response.reports.PeriodicReportResponseDto;
+import source.code.dto.response.reports.UserActionCountsDto;
 import source.code.service.declaration.daily.ReportsService;
 
 import java.time.LocalDate;
@@ -35,6 +36,12 @@ public class ReportsController {
 			@RequestParam LocalDate toDate) throws BadRequestException {
 		PeriodicReportResponseDto report = reportsService.getPeriodicReport(fromDate, toDate);
 		return ResponseEntity.ok(report);
+	}
+
+	@GetMapping("/heatmap")
+	public ResponseEntity<List<UserActionCountsDto>> getHeatmap() {
+		List<UserActionCountsDto> heatmap = reportsService.getHeatmap();
+		return ResponseEntity.ok(heatmap);
 	}
 
 }
