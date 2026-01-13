@@ -1,5 +1,6 @@
 package source.code.controller.daily;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import source.code.dto.response.reports.DailyReportResponseDto;
+import source.code.dto.response.reports.PeriodicReportResponseDto;
 import source.code.service.declaration.daily.ReportsService;
 
 import java.time.LocalDate;
@@ -29,10 +31,10 @@ public class ReportsController {
 	}
 
 	@GetMapping("/periodic/")
-	public ResponseEntity<List<DailyReportResponseDto>> getPeriodicReport(@RequestParam LocalDate fromDate,
-			@RequestParam LocalDate toDate) {
-		List<DailyReportResponseDto> reports = reportsService.getPeriodicReport(fromDate, toDate);
-		return ResponseEntity.ok(reports);
+	public ResponseEntity<PeriodicReportResponseDto> getPeriodicReport(@RequestParam LocalDate fromDate,
+			@RequestParam LocalDate toDate) throws BadRequestException {
+		PeriodicReportResponseDto report = reportsService.getPeriodicReport(fromDate, toDate);
+		return ResponseEntity.ok(report);
 	}
 
 }

@@ -72,10 +72,16 @@ public class ReportsControllerTest {
 		Utils.setUserContext(1);
 
 		mockMvc.perform(get("/api/reports/periodic/").param("fromDate", "2025-04-01").param("toDate", "2025-04-03"))
-			.andExpectAll(status().isOk(), jsonPath("$.length()").value(3), jsonPath("$[0].date").value("2025-04-01"),
-					jsonPath("$[0].totalCaloriesConsumed").isNumber(), jsonPath("$[0].totalCaloriesBurned").isNumber(),
-					jsonPath("$[0].netCalories").isNumber(), jsonPath("$[1].date").value("2025-04-02"),
-					jsonPath("$[2].date").value("2025-04-03"));
+			.andExpectAll(status().isOk(), jsonPath("$.dailyReports.length()").value(3),
+					jsonPath("$.dailyReports[0].date").value("2025-04-01"),
+					jsonPath("$.dailyReports[0].totalCaloriesConsumed").isNumber(),
+					jsonPath("$.dailyReports[0].totalCaloriesBurned").isNumber(),
+					jsonPath("$.dailyReports[0].netCalories").isNumber(),
+					jsonPath("$.dailyReports[1].date").value("2025-04-02"),
+					jsonPath("$.dailyReports[2].date").value("2025-04-03"),
+					jsonPath("$.avgCaloriesConsumed").isNumber(), jsonPath("$.avgCaloriesBurned").isNumber(),
+					jsonPath("$.avgNetCalories").isNumber(), jsonPath("$.avgMacros.protein").isNumber(),
+					jsonPath("$.avgMacros.fat").isNumber(), jsonPath("$.avgMacros.carbohydrates").isNumber());
 	}
 
 	@FoodSql
@@ -85,9 +91,13 @@ public class ReportsControllerTest {
 		Utils.setUserContext(2);
 
 		mockMvc.perform(get("/api/reports/periodic/").param("fromDate", "2025-03-31").param("toDate", "2025-04-02"))
-			.andExpectAll(status().isOk(), jsonPath("$.length()").value(3), jsonPath("$[0].date").value("2025-03-31"),
-					jsonPath("$[0].totalCaloriesConsumed").value(0), jsonPath("$[0].totalCaloriesBurned").value(0),
-					jsonPath("$[1].date").value("2025-04-01"), jsonPath("$[1].totalCaloriesConsumed").isNumber());
+			.andExpectAll(status().isOk(), jsonPath("$.dailyReports.length()").value(3),
+					jsonPath("$.dailyReports[0].date").value("2025-03-31"),
+					jsonPath("$.dailyReports[0].totalCaloriesConsumed").value(0),
+					jsonPath("$.dailyReports[0].totalCaloriesBurned").value(0),
+					jsonPath("$.dailyReports[1].date").value("2025-04-01"),
+					jsonPath("$.dailyReports[1].totalCaloriesConsumed").isNumber(),
+					jsonPath("$.avgCaloriesConsumed").isNumber());
 	}
 
 	@Test
@@ -96,9 +106,11 @@ public class ReportsControllerTest {
 		Utils.setUserContext(1);
 
 		mockMvc.perform(get("/api/reports/periodic/").param("fromDate", "2025-12-01").param("toDate", "2025-12-03"))
-			.andExpectAll(status().isOk(), jsonPath("$.length()").value(3),
-					jsonPath("$[0].totalCaloriesConsumed").value(0), jsonPath("$[0].totalCaloriesBurned").value(0),
-					jsonPath("$[0].netCalories").value(0));
+			.andExpectAll(status().isOk(), jsonPath("$.dailyReports.length()").value(3),
+					jsonPath("$.dailyReports[0].totalCaloriesConsumed").value(0),
+					jsonPath("$.dailyReports[0].totalCaloriesBurned").value(0),
+					jsonPath("$.dailyReports[0].netCalories").value(0), jsonPath("$.avgCaloriesConsumed").value(0),
+					jsonPath("$.avgCaloriesBurned").value(0), jsonPath("$.avgNetCalories").value(0));
 	}
 
 	@FoodSql
@@ -108,8 +120,11 @@ public class ReportsControllerTest {
 		Utils.setUserContext(1);
 
 		mockMvc.perform(get("/api/reports/periodic/").param("fromDate", "2025-04-01").param("toDate", "2025-04-01"))
-			.andExpectAll(status().isOk(), jsonPath("$.length()").value(1), jsonPath("$[0].date").value("2025-04-01"),
-					jsonPath("$[0].totalCaloriesConsumed").isNumber(), jsonPath("$[0].totalCaloriesBurned").isNumber());
+			.andExpectAll(status().isOk(), jsonPath("$.dailyReports.length()").value(1),
+					jsonPath("$.dailyReports[0].date").value("2025-04-01"),
+					jsonPath("$.dailyReports[0].totalCaloriesConsumed").isNumber(),
+					jsonPath("$.dailyReports[0].totalCaloriesBurned").isNumber(),
+					jsonPath("$.avgCaloriesConsumed").isNumber());
 	}
 
 }
