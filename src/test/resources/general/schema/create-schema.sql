@@ -112,7 +112,9 @@ create table role
 (
     id   int auto_increment
         primary key,
-    name varchar(5) not null
+    name enum ('USER', 'ADMIN', 'MODERATOR') not null,
+    constraint unique_role_name
+        unique (name)
 );
 
 create table target_muscle

@@ -72,9 +72,7 @@ public abstract class ActivityMapper {
 			@Context BigDecimal weight, @Context int time) {
 		BigDecimal caloriesBurned = calculationsService.calculateCaloriesBurned(time, weight, activity.getMet());
 
-		int calories = caloriesBurned.setScale(0, RoundingMode.HALF_UP).intValue();
-
-		dto.setCaloriesBurned(calories);
+		dto.setCaloriesBurned(caloriesBurned);
 		dto.setTime(time);
 		dto.setWeight(weight);
 	}
