@@ -5,9 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import source.code.dto.pojo.DateFoodMacros;
 import source.code.dto.pojo.FoodMacros;
+import source.code.dto.pojo.projection.UserActionCountsProjection;
 import source.code.model.daily.DailyCart;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -80,6 +80,19 @@ public interface DailyCartRepository extends JpaRepository<DailyCart, Integer> {
 			    WHERE dc.user.id = :userId AND dc.date BETWEEN :startDate AND :endDate
 			""")
 	List<DailyCart> findByUserIdAndDateRangeWithActivityAssociations(int userId, LocalDate startDate,
+			LocalDate endDate);
+
+	@Query("""
+			    SELECT dc.date AS date,
+			        COUNT(DISTINCT dcf.id) AS foodLogsCount,
+			        COUNT(DISTINCT dca.id) AS activityLogsCount
+			    FROM DailyCart dc
+			    LEFT JOIN dc.dailyCartFoods dcf
+			    LEFT JOIN dc.dailyCartActivities dca
+			    WHERE dc.user.id = :userId AND dc.date BETWEEN :startDate AND :endDate
+			    GROUP BY dc.date
+			""")
+	List<UserActionCountsProjection> findActionCountsByUserIdAndDateRange(int userId, LocalDate startDate,
 			LocalDate endDate);
 
 }

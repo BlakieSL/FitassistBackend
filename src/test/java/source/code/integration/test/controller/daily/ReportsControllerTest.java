@@ -79,9 +79,14 @@ public class ReportsControllerTest {
 					jsonPath("$.dailyReports[0].netCalories").isNumber(),
 					jsonPath("$.dailyReports[1].date").value("2025-04-02"),
 					jsonPath("$.dailyReports[2].date").value("2025-04-03"),
-					jsonPath("$.avgCaloriesConsumed").isNumber(), jsonPath("$.avgCaloriesBurned").isNumber(),
-					jsonPath("$.avgNetCalories").isNumber(), jsonPath("$.avgMacros.protein").isNumber(),
-					jsonPath("$.avgMacros.fat").isNumber(), jsonPath("$.avgMacros.carbohydrates").isNumber());
+					jsonPath("$.stats.avgCaloriesConsumed").isNumber(),
+					jsonPath("$.stats.avgCaloriesBurned").isNumber(), jsonPath("$.stats.avgNetCalories").isNumber(),
+					jsonPath("$.stats.maxCaloriesConsumed").isNumber(),
+					jsonPath("$.stats.minCaloriesConsumed").isNumber(),
+					jsonPath("$.stats.maxCaloriesBurned").isNumber(), jsonPath("$.stats.minCaloriesBurned").isNumber(),
+					jsonPath("$.stats.maxNetCalories").isNumber(), jsonPath("$.stats.minNetCalories").isNumber(),
+					jsonPath("$.avgMacros.protein").isNumber(), jsonPath("$.avgMacros.fat").isNumber(),
+					jsonPath("$.avgMacros.carbohydrates").isNumber());
 	}
 
 	@FoodSql
@@ -97,7 +102,7 @@ public class ReportsControllerTest {
 					jsonPath("$.dailyReports[0].totalCaloriesBurned").value(0),
 					jsonPath("$.dailyReports[1].date").value("2025-04-01"),
 					jsonPath("$.dailyReports[1].totalCaloriesConsumed").isNumber(),
-					jsonPath("$.avgCaloriesConsumed").isNumber());
+					jsonPath("$.stats.avgCaloriesConsumed").isNumber());
 	}
 
 	@Test
@@ -109,8 +114,9 @@ public class ReportsControllerTest {
 			.andExpectAll(status().isOk(), jsonPath("$.dailyReports.length()").value(3),
 					jsonPath("$.dailyReports[0].totalCaloriesConsumed").value(0),
 					jsonPath("$.dailyReports[0].totalCaloriesBurned").value(0),
-					jsonPath("$.dailyReports[0].netCalories").value(0), jsonPath("$.avgCaloriesConsumed").value(0),
-					jsonPath("$.avgCaloriesBurned").value(0), jsonPath("$.avgNetCalories").value(0));
+					jsonPath("$.dailyReports[0].netCalories").value(0),
+					jsonPath("$.stats.avgCaloriesConsumed").value(0), jsonPath("$.stats.avgCaloriesBurned").value(0),
+					jsonPath("$.stats.avgNetCalories").value(0));
 	}
 
 	@FoodSql
@@ -124,7 +130,7 @@ public class ReportsControllerTest {
 					jsonPath("$.dailyReports[0].date").value("2025-04-01"),
 					jsonPath("$.dailyReports[0].totalCaloriesConsumed").isNumber(),
 					jsonPath("$.dailyReports[0].totalCaloriesBurned").isNumber(),
-					jsonPath("$.avgCaloriesConsumed").isNumber());
+					jsonPath("$.stats.avgCaloriesConsumed").isNumber());
 	}
 
 }
