@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 import source.code.dto.pojo.DateFoodMacros;
 import source.code.dto.pojo.FoodMacros;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
+import source.code.dto.pojo.ReportStats;
 import source.code.dto.response.reports.DailyReportResponseDto;
 import source.code.dto.response.reports.PeriodicReportResponseDto;
+import source.code.dto.response.reports.UserActionCountsDto;
 import source.code.helper.utils.AuthorizationUtil;
 import source.code.mapper.FoodMapper;
 import source.code.mapper.daily.DailyActivityMapper;
@@ -86,7 +88,7 @@ public class ReportsServiceImpl implements ReportsService {
 			.map(date -> createDailyReport(date, foodMacrosByDate.get(date), caloriesBurnedByDate.get(date)))
 			.collect(Collectors.toList());
 
-		return createPeriodicReport(dailyReports);
+		return calculatePeriodicReport(dailyReports);
 	}
 
 	private DailyReportResponseDto createDailyReport(LocalDate date, DateFoodMacros dateFoodMacros,
@@ -100,47 +102,81 @@ public class ReportsServiceImpl implements ReportsService {
 		return new DailyReportResponseDto(date, foodMacros.getCalories(), calories, netCalories, foodMacros);
 	}
 
-	private PeriodicReportResponseDto createPeriodicReport(List<DailyReportResponseDto> dailyReports) {
+	private PeriodicReportResponseDto calculatePeriodicReport(List<DailyReportResponseDto> dailyReports) {
 		int totalDays = dailyReports.size();
 
-		BigDecimal avgCaloriesConsumed = dailyReports.stream()
-			.map(DailyReportResponseDto::getTotalCaloriesConsumed)
-			.reduce(BigDecimal.ZERO, BigDecimal::add)
-			.divide(BigDecimal.valueOf(totalDays), 2, RoundingMode.HALF_UP);
+		DailyReportResponseDto first = dailyReports.getFirst();
 
-		BigDecimal avgCaloriesBurned = dailyReports.stream()
-			.map(DailyReportResponseDto::getTotalCaloriesBurned)
-			.reduce(BigDecimal.ZERO, BigDecimal::add)
-			.divide(BigDecimal.valueOf(totalDays), 2, RoundingMode.HALF_UP);
+		BigDecimal sumConsumed = first.getTotalCaloriesConsumed();
+		BigDecimal maxConsumed = first.getTotalCaloriesConsumed();
+		BigDecimal minConsumed = first.getTotalCaloriesConsumed();
 
-		BigDecimal avgNetCalories = dailyReports.stream()
-			.map(DailyReportResponseDto::getNetCalories)
-			.reduce(BigDecimal.ZERO, BigDecimal::add)
-			.divide(BigDecimal.valueOf(totalDays), 2, RoundingMode.HALF_UP);
+		BigDecimal sumBurned = first.getTotalCaloriesBurned();
+		BigDecimal maxBurned = first.getTotalCaloriesBurned();
+		BigDecimal minBurned = first.getTotalCaloriesBurned();
 
-		FoodMacros avgMacros = calculateAverageMacros(dailyReports, totalDays);
+		BigDecimal sumNet = first.getNetCalories();
+		BigDecimal maxNet = first.getNetCalories();
+		BigDecimal minNet = first.getNetCalories();
 
-		return new PeriodicReportResponseDto(dailyReports, avgCaloriesConsumed, avgCaloriesBurned, avgNetCalories,
-				avgMacros);
+		BigDecimal sumProtein = first.getMacros().getProtein();
+		BigDecimal sumFat = first.getMacros().getFat();
+		BigDecimal sumCarbs = first.getMacros().getCarbohydrates();
+
+		for (int i = 1; i < totalDays; i++) {
+			DailyReportResponseDto report = dailyReports.get(i);
+			BigDecimal consumed = report.getTotalCaloriesConsumed();
+			BigDecimal burned = report.getTotalCaloriesBurned();
+			BigDecimal net = report.getNetCalories();
+			BigDecimal protein = report.getMacros().getProtein();
+			BigDecimal fat = report.getMacros().getFat();
+			BigDecimal carbs = report.getMacros().getCarbohydrates();
+
+			sumConsumed = sumConsumed.add(consumed);
+			maxConsumed = maxConsumed.max(consumed);
+			minConsumed = minConsumed.min(consumed);
+
+			sumBurned = sumBurned.add(burned);
+			maxBurned = maxBurned.max(burned);
+			minBurned = minBurned.min(burned);
+
+			sumNet = sumNet.add(net);
+			maxNet = maxNet.max(net);
+			minNet = minNet.min(net);
+
+			sumProtein = sumProtein.add(protein);
+			sumFat = sumFat.add(fat);
+			sumCarbs = sumCarbs.add(carbs);
+		}
+
+		BigDecimal totalDaysDivisor = BigDecimal.valueOf(totalDays);
+
+		BigDecimal avgConsumed = sumConsumed.divide(totalDaysDivisor, 2, RoundingMode.HALF_UP);
+		BigDecimal avgBurned = sumBurned.divide(totalDaysDivisor, 2, RoundingMode.HALF_UP);
+		BigDecimal avgNet = sumNet.divide(totalDaysDivisor, 2, RoundingMode.HALF_UP);
+
+		BigDecimal avgProtein = sumProtein.divide(totalDaysDivisor, 2, RoundingMode.HALF_UP);
+		BigDecimal avgFat = sumFat.divide(totalDaysDivisor, 2, RoundingMode.HALF_UP);
+		BigDecimal avgCarbs = sumCarbs.divide(totalDaysDivisor, 2, RoundingMode.HALF_UP);
+
+		ReportStats stats = new ReportStats(avgConsumed, maxConsumed, minConsumed, avgBurned, maxBurned, minBurned,
+				avgNet, maxNet, minNet);
+		FoodMacros avgMacros = new FoodMacros(null, avgProtein, avgFat, avgCarbs);
+
+		return new PeriodicReportResponseDto(dailyReports, avgMacros, stats);
 	}
 
-	private FoodMacros calculateAverageMacros(List<DailyReportResponseDto> dailyReports, int totalDays) {
-		BigDecimal avgProtein = dailyReports.stream()
-			.map(report -> report.getMacros().getProtein())
-			.reduce(BigDecimal.ZERO, BigDecimal::add)
-			.divide(BigDecimal.valueOf(totalDays), 2, RoundingMode.HALF_UP);
+	@Override
+	public List<UserActionCountsDto> getHeatmap() {
+		int userId = AuthorizationUtil.getUserId();
+		LocalDate endDate = LocalDate.now();
+		LocalDate startDate = endDate.minusYears(1);
 
-		BigDecimal avgFat = dailyReports.stream()
-			.map(report -> report.getMacros().getFat())
-			.reduce(BigDecimal.ZERO, BigDecimal::add)
-			.divide(BigDecimal.valueOf(totalDays), 2, RoundingMode.HALF_UP);
-
-		BigDecimal avgCarbs = dailyReports.stream()
-			.map(report -> report.getMacros().getCarbohydrates())
-			.reduce(BigDecimal.ZERO, BigDecimal::add)
-			.divide(BigDecimal.valueOf(totalDays), 2, RoundingMode.HALF_UP);
-
-		return FoodMacros.of(null, avgProtein, avgFat, avgCarbs);
+		return dailyCartRepository.findActionCountsByUserIdAndDateRange(userId, startDate, endDate)
+			.stream()
+			.map(ac -> new UserActionCountsDto(ac.getDate(), ac.getFoodLogsCount() + ac.getActivityLogsCount(),
+					ac.getFoodLogsCount(), ac.getActivityLogsCount()))
+			.collect(Collectors.toList());
 	}
 
 }
