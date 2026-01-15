@@ -33,7 +33,7 @@ public class DailyFoodController {
 
 	@PostMapping("/add/{foodId}")
 	public ResponseEntity<Void> addDailyFoodToUser(@PathVariable int foodId,
-												   @Valid @RequestBody DailyCartFoodCreateDto request) {
+			@Valid @RequestBody DailyCartFoodCreateDto request) {
 		dailyFoodService.addFoodToDailyCart(foodId, request);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
