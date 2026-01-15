@@ -10,7 +10,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import source.code.dto.request.food.DailyCartFoodCreateDto;
-import source.code.dto.request.food.DailyCartFoodGetDto;
 import source.code.dto.request.food.DailyCartFoodUpdateDto;
 import source.code.integration.config.MockAwsS3Config;
 import source.code.integration.config.MockAwsSesConfig;
@@ -41,46 +40,31 @@ public class DailyFoodControllerTest {
 
 	@FoodSql
 	@Test
-	@DisplayName("POST - / - Should return all daily foods for the user")
+	@DisplayName("GET - /{date} - Should return all daily foods for the user")
 	void getAllDailyFoodsByUser() throws Exception {
 		Utils.setUserContext(1);
 
-		DailyCartFoodGetDto request = new DailyCartFoodGetDto();
-		request.setDate(LocalDate.of(2025, 4, 1));
-
-		mockMvc
-			.perform(post("/api/cart").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request)))
+		mockMvc.perform(get("/api/cart/2025-04-01"))
 			.andExpectAll(status().isOk(), jsonPath("$.foods").isArray(), jsonPath("$.foods.length()").value(3),
 					jsonPath("$.totalCalories").isNumber());
 	}
 
 	@Test
-	@DisplayName("POST - / - Should return empty list when no daily food items exist in existing daily cart")
+	@DisplayName("GET - /{date} - Should return empty list when no daily food items exist in existing daily cart")
 	void getAllDailyFoodsByUserEmpty() throws Exception {
 		Utils.setUserContext(1);
 
-		DailyCartFoodGetDto request = new DailyCartFoodGetDto();
-		request.setDate(LocalDate.of(2025, 4, 4));
-
-		mockMvc
-			.perform(post("/api/cart").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request)))
+		mockMvc.perform(get("/api/cart/2025-04-04"))
 			.andExpectAll(status().isOk(), jsonPath("$.foods").isArray(), jsonPath("$.foods.length()").value(0),
 					jsonPath("$.totalCalories").value(0));
 	}
 
 	@Test
-	@DisplayName("POST - / - Should return empty list when daily cart didn't exist for the date")
+	@DisplayName("GET - /{date} - Should return empty list when daily cart didn't exist for the date")
 	void getAllDailyFoodsByUserNotFound() throws Exception {
 		Utils.setUserContext(1);
 
-		DailyCartFoodGetDto request = new DailyCartFoodGetDto();
-		request.setDate(LocalDate.of(2023, 10, 2));
-
-		mockMvc
-			.perform(post("/api/cart").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request)))
+		mockMvc.perform(get("/api/cart/2023-10-02"))
 			.andExpectAll(status().isOk(), jsonPath("$.foods").isArray(), jsonPath("$.foods.length()").value(0),
 					jsonPath("$.totalCalories").value(0));
 	}
@@ -100,12 +84,7 @@ public class DailyFoodControllerTest {
 				.content(objectMapper.writeValueAsString(request)))
 			.andExpect(status().isCreated());
 
-		DailyCartFoodGetDto verifyRequest = new DailyCartFoodGetDto();
-		verifyRequest.setDate(LocalDate.of(2025, 4, 4));
-
-		mockMvc
-			.perform(post("/api/cart").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(verifyRequest)))
+		mockMvc.perform(get("/api/cart/2025-04-04"))
 			.andExpectAll(jsonPath("$.foods.length()").value(1), jsonPath("$.foods[0].id").value(4),
 					jsonPath("$.foods[0].quantity").value(2.5));
 	}
@@ -125,12 +104,7 @@ public class DailyFoodControllerTest {
 				.content(objectMapper.writeValueAsString(request)))
 			.andExpect(status().isCreated());
 
-		DailyCartFoodGetDto verifyRequest = new DailyCartFoodGetDto();
-		verifyRequest.setDate(LocalDate.of(2025, 4, 1));
-
-		mockMvc
-			.perform(post("/api/cart").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(verifyRequest)))
+		mockMvc.perform(get("/api/cart/2025-04-01"))
 			.andExpectAll(jsonPath("$.foods[?(@.id == 1)].quantity").value(3.0),
 					jsonPath("$.foods[?(@.id == 3)].quantity").value(1.0),
 					jsonPath("$.foods[?(@.id == 5)].quantity").value(1.5));
@@ -159,12 +133,7 @@ public class DailyFoodControllerTest {
 
 		mockMvc.perform(delete("/api/cart/remove/1")).andExpect(status().isNoContent());
 
-		DailyCartFoodGetDto request = new DailyCartFoodGetDto();
-		request.setDate(LocalDate.of(2025, 4, 1));
-
-		mockMvc
-			.perform(post("/api/cart").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request)))
+		mockMvc.perform(get("/api/cart/2025-04-01"))
 			.andExpectAll(jsonPath("$.foods").isArray(), jsonPath("$.foods.length()").value(2),
 					jsonPath("$.foods[?(@.id == 3)].quantity").value(1.0),
 					jsonPath("$.foods[?(@.id == 5)].quantity").value(1.5));

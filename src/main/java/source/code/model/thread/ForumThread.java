@@ -44,7 +44,6 @@ public class ForumThread {
 	private String title;
 
 	@NotNull
-	@PastOrPresent
 	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt;
 

@@ -4,14 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import source.code.annotation.DailyCartOwner;
-import source.code.dto.request.activity.DailyActivitiesGetDto;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
 import source.code.dto.response.daily.DailyActivitiesResponseDto;
 import source.code.service.declaration.daily.DailyActivityService;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping(path = "/api/daily-activities")
@@ -23,10 +25,9 @@ public class DailyActivityController {
 		this.dailyActivityService = dailyActivityService;
 	}
 
-	@PostMapping
-	public ResponseEntity<DailyActivitiesResponseDto> getAllDailyActivitiesByUserAndDate(
-			@Valid @RequestBody DailyActivitiesGetDto request) {
-		return ResponseEntity.ok(dailyActivityService.getActivitiesFromDailyCart(request));
+	@GetMapping("/{date}")
+	public ResponseEntity<DailyActivitiesResponseDto> getAllDailyActivitiesByUserAndDate(@PathVariable LocalDate date) {
+		return ResponseEntity.ok(dailyActivityService.getActivitiesFromDailyCart(date));
 	}
 
 	// This endpoint doesn't need to be annotated with @DailyCartOwner since under the

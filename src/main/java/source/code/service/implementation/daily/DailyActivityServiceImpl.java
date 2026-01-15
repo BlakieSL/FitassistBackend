@@ -5,7 +5,6 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import source.code.dto.request.activity.DailyActivitiesGetDto;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
 import source.code.dto.request.activity.DailyActivityItemUpdateDto;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
@@ -99,10 +98,10 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 	}
 
 	@Override
-	public DailyActivitiesResponseDto getActivitiesFromDailyCart(DailyActivitiesGetDto request) {
+	public DailyActivitiesResponseDto getActivitiesFromDailyCart(LocalDate date) {
 		int userId = AuthorizationUtil.getUserId();
 
-		return dailyCartRepository.findByUserIdAndDateWithActivityAssociations(userId, request.getDate())
+		return dailyCartRepository.findByUserIdAndDateWithActivityAssociations(userId, date)
 			.map(dailyCart -> dailyCart.getDailyCartActivities()
 				.stream()
 				.map(dailyActivityMapper::toActivityCalculatedResponseDto)

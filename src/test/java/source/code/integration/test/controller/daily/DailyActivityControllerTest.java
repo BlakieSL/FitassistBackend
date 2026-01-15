@@ -9,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import source.code.dto.request.activity.DailyActivitiesGetDto;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
 import source.code.dto.request.activity.DailyActivityItemUpdateDto;
 import source.code.integration.config.MockAwsS3Config;
@@ -41,48 +40,33 @@ public class DailyActivityControllerTest {
 
 	@ActivitySql
 	@Test
-	@DisplayName("POST - / - Should return all daily activities for the user")
+	@DisplayName("GET - /{date} - Should return all daily activities for the user")
 	void getAllDailyActivitiesByUser() throws Exception {
 		Utils.setUserContext(1);
 
-		DailyActivitiesGetDto request = new DailyActivitiesGetDto();
-		request.setDate(LocalDate.of(2023, 10, 5));
-
-		mockMvc
-			.perform(post("/api/daily-activities").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request)))
+		mockMvc.perform(get("/api/daily-activities/2023-10-05"))
 			.andExpectAll(status().isOk(), jsonPath("$.activities").isArray(),
 					jsonPath("$.activities.length()").value(2), jsonPath("$.totalCaloriesBurned").isNumber());
 	}
 
 	@ActivitySql
 	@Test
-	@DisplayName("POST - / - Should return empty list when no daily activity items exist in existing daily cart")
+	@DisplayName("GET - /{date} - Should return empty list when no daily activity items exist in existing daily cart")
 	void getAllDailyActivitiesByUserEmpty() throws Exception {
 		Utils.setUserContext(1);
 
-		DailyActivitiesGetDto request = new DailyActivitiesGetDto();
-		request.setDate(LocalDate.of(2023, 10, 6));
-
-		mockMvc
-			.perform(post("/api/daily-activities").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request)))
+		mockMvc.perform(get("/api/daily-activities/2023-10-06"))
 			.andExpectAll(status().isOk(), jsonPath("$.activities").isArray(),
 					jsonPath("$.activities.length()").value(0), jsonPath("$.totalCaloriesBurned").value(0));
 	}
 
 	@ActivitySql
 	@Test
-	@DisplayName("POST - / - Should return empty list when daily cart didn't exist for the date")
+	@DisplayName("GET - /{date} - Should return empty list when daily cart didn't exist for the date")
 	void getAllDailyActivitiesByUserNotFound() throws Exception {
 		Utils.setUserContext(1);
 
-		DailyActivitiesGetDto request = new DailyActivitiesGetDto();
-		request.setDate(LocalDate.of(2023, 10, 2));
-
-		mockMvc
-			.perform(post("/api/daily-activities").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request)))
+		mockMvc.perform(get("/api/daily-activities/2023-10-02"))
 			.andExpectAll(status().isOk(), jsonPath("$.activities").isArray(),
 					jsonPath("$.activities.length()").value(0), jsonPath("$.totalCaloriesBurned").value(0));
 	}
@@ -120,12 +104,7 @@ public class DailyActivityControllerTest {
 				.content(objectMapper.writeValueAsString(request)))
 			.andExpect(status().isCreated());
 
-		DailyActivitiesGetDto verifyRequest = new DailyActivitiesGetDto();
-		verifyRequest.setDate(LocalDate.of(2023, 10, 5));
-
-		mockMvc
-			.perform(post("/api/daily-activities").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(verifyRequest)))
+		mockMvc.perform(get("/api/daily-activities/2023-10-05"))
 			.andExpectAll(jsonPath("$.activities[?(@.id == 1)].time").value(50),
 					jsonPath("$.activities[?(@.id == 2)].time").value(45),
 					jsonPath("$.activities[?(@.id == 1)].weight").value(72.00));
@@ -163,12 +142,7 @@ public class DailyActivityControllerTest {
 				.content(objectMapper.writeValueAsString(updateDto)))
 			.andExpect(status().isNoContent());
 
-		DailyActivitiesGetDto verifyRequest = new DailyActivitiesGetDto();
-		verifyRequest.setDate(LocalDate.of(2023, 10, 5));
-
-		mockMvc
-			.perform(post("/api/daily-activities").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(verifyRequest)))
+		mockMvc.perform(get("/api/daily-activities/2023-10-05"))
 			.andExpectAll(jsonPath("$.activities[?(@.id == 1)].time").value(40),
 					jsonPath("$.activities[?(@.id == 1)].weight").value(80.00),
 					jsonPath("$.activities[?(@.id == 2)].time").value(45));
@@ -226,12 +200,7 @@ public class DailyActivityControllerTest {
 
 		mockMvc.perform(delete("/api/daily-activities/remove/1")).andExpect(status().isNoContent());
 
-		DailyActivitiesGetDto verifyRequest = new DailyActivitiesGetDto();
-		verifyRequest.setDate(LocalDate.of(2023, 10, 5));
-
-		mockMvc
-			.perform(post("/api/daily-activities").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(verifyRequest)))
+		mockMvc.perform(get("/api/daily-activities/2023-10-05"))
 			.andExpectAll(jsonPath("$.activities.length()").value(1), jsonPath("$.activities[0].id").value(2));
 	}
 

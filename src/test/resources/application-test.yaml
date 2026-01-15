@@ -1,4 +1,9 @@
 spring:
+  mvc:
+    format:
+      date: yyyy-MM-dd
+      date-time: yyyy-MM-dd'T'HH:mm:ss
+
   threads:
     virtual:
       enabled: true
