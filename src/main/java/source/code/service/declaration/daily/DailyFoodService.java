@@ -4,8 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import source.code.dto.request.food.DailyCartFoodCreateDto;
-import source.code.dto.request.food.DailyCartFoodGetDto;
 import source.code.dto.response.daily.DailyFoodsResponseDto;
+
+import java.time.LocalDate;
 
 public interface DailyFoodService {
 
@@ -16,6 +17,6 @@ public interface DailyFoodService {
 	void updateDailyFoodItem(int dailyCartFoodId, JsonMergePatch patch)
 			throws JsonPatchException, JsonProcessingException;
 
-	DailyFoodsResponseDto getFoodFromDailyCart(DailyCartFoodGetDto request);
+	DailyFoodsResponseDto getFoodFromDailyCart(LocalDate date);
 
 }
