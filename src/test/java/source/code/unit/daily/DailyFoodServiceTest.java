@@ -14,7 +14,6 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import source.code.dto.pojo.FoodMacros;
 import source.code.dto.request.food.DailyCartFoodCreateDto;
-import source.code.dto.request.food.DailyCartFoodGetDto;
 import source.code.dto.request.food.DailyCartFoodUpdateDto;
 import source.code.dto.response.daily.DailyFoodsResponseDto;
 import source.code.dto.response.food.FoodCalculatedMacrosResponseDto;
@@ -257,7 +256,7 @@ public class DailyFoodServiceTest {
 			.thenReturn(Optional.of(dailyCart));
 		when(dailyFoodMapper.toFoodCalculatedMacrosResponseDto(dailyCartFood)).thenReturn(calculatedResponseDto);
 
-		DailyFoodsResponseDto result = dailyFoodService.getFoodFromDailyCart(new DailyCartFoodGetDto(LocalDate.now()));
+		DailyFoodsResponseDto result = dailyFoodService.getFoodFromDailyCart(LocalDate.now());
 
 		assertEquals(1, result.getFoods().size());
 		assertEquals(BigDecimal.valueOf(100.0), result.getTotalCalories());
@@ -278,7 +277,7 @@ public class DailyFoodServiceTest {
 		when(dailyCartRepository.findByUserIdAndDateWithFoodAssociations(USER_ID, LocalDate.now()))
 			.thenReturn(Optional.empty());
 
-		DailyFoodsResponseDto result = dailyFoodService.getFoodFromDailyCart(new DailyCartFoodGetDto(LocalDate.now()));
+		DailyFoodsResponseDto result = dailyFoodService.getFoodFromDailyCart(LocalDate.now());
 
 		assertTrue(result.getFoods().isEmpty());
 	}

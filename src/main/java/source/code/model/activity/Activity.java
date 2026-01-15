@@ -34,7 +34,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class Activity implements IndexedEntity {
 
-	private static final int NAME_MAX_LENGTH = 50;
+	private static final int NAME_MAX_LENGTH = 500;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

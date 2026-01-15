@@ -6,7 +6,6 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import source.code.dto.request.food.DailyCartFoodCreateDto;
-import source.code.dto.request.food.DailyCartFoodGetDto;
 import source.code.dto.request.food.DailyCartFoodUpdateDto;
 import source.code.dto.response.daily.DailyFoodsResponseDto;
 import source.code.exception.RecordNotFoundException;
@@ -94,10 +93,10 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 	}
 
 	@Override
-	public DailyFoodsResponseDto getFoodFromDailyCart(DailyCartFoodGetDto request) {
+	public DailyFoodsResponseDto getFoodFromDailyCart(LocalDate date) {
 		int userId = AuthorizationUtil.getUserId();
 
-		return dailyCartRepository.findByUserIdAndDateWithFoodAssociations(userId, request.getDate())
+		return dailyCartRepository.findByUserIdAndDateWithFoodAssociations(userId, date)
 			.map(dailyCart -> DailyFoodsResponseDto.create(dailyCart.getDailyCartFoods()
 				.stream()
 				.map(dailyFoodMapper::toFoodCalculatedMacrosResponseDto)

@@ -12,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import source.code.dto.request.activity.DailyActivitiesGetDto;
 import source.code.dto.request.activity.DailyActivityItemCreateDto;
 import source.code.dto.request.activity.DailyActivityItemUpdateDto;
 import source.code.dto.response.activity.ActivityCalculatedResponseDto;
@@ -276,8 +275,7 @@ public class DailyActivityServiceTest {
 			.thenReturn(Optional.of(dailyCart));
 		when(dailyActivityMapper.toActivityCalculatedResponseDto(dailyCartActivity)).thenReturn(calculatedResponseDto);
 
-		DailyActivitiesResponseDto result = dailyActivityService
-			.getActivitiesFromDailyCart(new DailyActivitiesGetDto(LocalDate.now()));
+		DailyActivitiesResponseDto result = dailyActivityService.getActivitiesFromDailyCart(LocalDate.now());
 
 		assertEquals(1, result.getActivities().size());
 		assertEquals(BigDecimal.valueOf(100), result.getTotalCaloriesBurned());
@@ -295,8 +293,7 @@ public class DailyActivityServiceTest {
 		when(dailyCartRepository.findByUserIdAndDateWithActivityAssociations(eq(USER_ID), any()))
 			.thenReturn(Optional.empty());
 
-		DailyActivitiesResponseDto result = dailyActivityService
-			.getActivitiesFromDailyCart(new DailyActivitiesGetDto(LocalDate.now()));
+		DailyActivitiesResponseDto result = dailyActivityService.getActivitiesFromDailyCart(LocalDate.now());
 
 		assertTrue(result.getActivities().isEmpty());
 		assertEquals(BigDecimal.ZERO, result.getTotalCaloriesBurned());

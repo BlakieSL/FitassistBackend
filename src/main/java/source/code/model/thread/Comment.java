@@ -41,7 +41,6 @@ public class Comment {
 	private String text;
 
 	@NotNull
-	@PastOrPresent
 	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt;
 
