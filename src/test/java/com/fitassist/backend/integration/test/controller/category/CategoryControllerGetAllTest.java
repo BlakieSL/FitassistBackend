@@ -1,0 +1,90 @@
+package com.fitassist.backend.integration.test.controller.category;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
+import com.fitassist.backend.integration.config.MockAwsS3Config;
+import com.fitassist.backend.integration.config.MockAwsSesConfig;
+import com.fitassist.backend.integration.config.MockRedisConfig;
+import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
+import com.fitassist.backend.integration.utils.TestSetup;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@TestSetup
+@Import({ MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class })
+@TestPropertySource(properties = "schema.name=general")
+@ContextConfiguration(initializers = { MySqlContainerInitializer.class })
+public class CategoryControllerGetAllTest {
+
+	@Autowired
+	private MockMvc mockMvc;
+
+	@WithMockUser
+	@CategorySql
+	@Test
+	@DisplayName("GET /FOOD - Should return food categories")
+	void getFoodCategories() throws Exception {
+		mockMvc.perform(get("/api/categories/FOOD")).andExpectAll(status().isOk(), jsonPath("$").isNotEmpty());
+	}
+
+	@WithMockUser
+	@Test
+	@DisplayName("GET /FOOD - Should return empty list for food categories")
+	void getFoodCategoriesEmpty() throws Exception {
+		mockMvc.perform(get("/api/categories/FOOD")).andExpectAll(status().isOk(), jsonPath("$").isEmpty());
+	}
+
+	@WithMockUser
+	@CategorySql
+	@Test
+	@DisplayName("GET /ACTIVITY - Should return activity categories")
+	void getActivityCategories() throws Exception {
+		mockMvc.perform(get("/api/categories/ACTIVITY")).andExpectAll(status().isOk(), jsonPath("$").isNotEmpty());
+	}
+
+	@WithMockUser
+	@Test
+	@DisplayName("GET /ACTIVITY - Should return empty list for activity categories")
+	void getActivityCategoriesEmpty() throws Exception {
+		mockMvc.perform(get("/api/categories/ACTIVITY")).andExpectAll(status().isOk(), jsonPath("$").isEmpty());
+	}
+
+	@WithMockUser
+	@CategorySql
+	@Test
+	@DisplayName("GET /RECIPE - Should return recipe categories")
+	void getRecipeCategories() throws Exception {
+		mockMvc.perform(get("/api/categories/RECIPE")).andExpectAll(status().isOk(), jsonPath("$").isNotEmpty());
+	}
+
+	@WithMockUser
+	@Test
+	@DisplayName("GET /RECIPE - Should return empty list for recipe categories")
+	void getRecipeCategoriesEmpty() throws Exception {
+		mockMvc.perform(get("/api/categories/RECIPE")).andExpectAll(status().isOk(), jsonPath("$").isEmpty());
+	}
+
+	@WithMockUser
+	@CategorySql
+	@Test
+	@DisplayName("GET /PLAN - Should return plan categories")
+	void getPlanCategories() throws Exception {
+		mockMvc.perform(get("/api/categories/PLAN")).andExpectAll(status().isOk(), jsonPath("$").isNotEmpty());
+	}
+
+	@WithMockUser
+	@Test
+	@DisplayName("GET /PLAN - Should return empty list for plan categories")
+	void getPlanCategoriesEmpty() throws Exception {
+		mockMvc.perform(get("/api/categories/PLAN")).andExpectAll(status().isOk(), jsonPath("$").isEmpty());
+	}
+
+}
