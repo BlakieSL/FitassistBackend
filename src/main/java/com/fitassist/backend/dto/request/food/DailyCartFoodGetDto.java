@@ -1,0 +1,22 @@
+package com.fitassist.backend.dto.request.food;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDate;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class DailyCartFoodGetDto {
+
+	@NotNull
+	@PastOrPresent
+	private LocalDate date;
+
+}

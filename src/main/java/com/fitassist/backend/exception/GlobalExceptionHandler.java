@@ -1,0 +1,180 @@
+package com.fitassist.backend.exception;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatchException;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import com.fitassist.backend.dto.response.error.ErrorResponseDto;
+import com.fitassist.backend.dto.response.error.ValidationErrorDto;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+	@ExceptionHandler(NotSupportedInteractionTypeException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorResponseDto handleNotSupportedInteractionTypeException(NotSupportedInteractionTypeException e) {
+		return new ErrorResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+	}
+
+	@ExceptionHandler(WeightRequiredException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorResponseDto handleWeightRequiredException(WeightRequiredException e) {
+		return new ErrorResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+	}
+
+	@ExceptionHandler(InvalidFilterKeyException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorResponseDto handleInvalidFilterKeyException(InvalidFilterKeyException e) {
+		return new ErrorResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+	}
+
+	@ExceptionHandler(InvalidFilterValueException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorResponseDto handleInvalidFilterValueException(InvalidFilterValueException e) {
+		return new ErrorResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+	}
+
+	@ExceptionHandler(InvalidFilterOperationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorResponseDto handleInvalidFilterOperationException(InvalidFilterOperationException e) {
+		return new ErrorResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+	}
+
+	@ExceptionHandler(NoSuchElementException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ResponseBody
+	public ErrorResponseDto handleNoSuchElementException(NoSuchElementException e) {
+		return new ErrorResponseDto(HttpStatus.NOT_FOUND.value(), e.getMessage());
+	}
+
+	@ExceptionHandler(RecordNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ResponseBody
+	public ErrorResponseDto handleRecordNotFoundException(RecordNotFoundException e) {
+		return new ErrorResponseDto(HttpStatus.NOT_FOUND.value(), e.getMessage());
+	}
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorResponseDto handleIllegalArgumentException(IllegalArgumentException e) {
+		return new ErrorResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+	}
+
+	@ExceptionHandler(IOException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseBody
+	public ErrorResponseDto handleIOException(IOException e) {
+		return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+	}
+
+	@ExceptionHandler(JsonPatchException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseBody
+	public ErrorResponseDto handleJsonPatchException(JsonPatchException e) {
+		return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+	}
+
+	@ExceptionHandler(JsonProcessingException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseBody
+	public ErrorResponseDto handleJsonProcessingException(JsonProcessingException e) {
+		return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+	}
+
+	@ExceptionHandler(FileProcessingException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseBody
+	public ErrorResponseDto handleFileProcessingException(FileProcessingException e) {
+		return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public List<ValidationErrorDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+		return e.getBindingResult()
+			.getFieldErrors()
+			.stream()
+			.map(error -> new ValidationErrorDto(error.getField(), error.getDefaultMessage()))
+			.collect(Collectors.toList());
+	}
+
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorResponseDto handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+		String message = "Invalid value for parameter '" + e.getName() + "'. Expected type: "
+				+ Objects.requireNonNull(e.getRequiredType()).getSimpleName();
+		return new ErrorResponseDto(HttpStatus.BAD_REQUEST.value(), message);
+	}
+
+	@ExceptionHandler(AccessDeniedException.class)
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	@ResponseBody
+	public ErrorResponseDto handleAccessDeniedException(AccessDeniedException e) {
+		return new ErrorResponseDto(HttpStatus.FORBIDDEN.value(), "Access is denied");
+	}
+
+	@ExceptionHandler(InvalidRefreshTokenException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorResponseDto handleInvalidRefreshTokenException(InvalidRefreshTokenException e) {
+		return new ErrorResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+	}
+
+	@ExceptionHandler(JwtAuthenticationException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	@ResponseBody
+	public ErrorResponseDto handleJwtAuthenticationException(JwtAuthenticationException e) {
+		return new ErrorResponseDto(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
+	}
+
+	@ExceptionHandler(NotUniqueRecordException.class)
+	@ResponseStatus(HttpStatus.CONFLICT)
+	@ResponseBody
+	public ErrorResponseDto handleNotUniqueRecordException(NotUniqueRecordException e) {
+		return new ErrorResponseDto(HttpStatus.CONFLICT.value(), e.getMessage());
+	}
+
+	@ExceptionHandler(NullPointerException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseBody
+	public ErrorResponseDto handleNullPointerException(NullPointerException e) {
+		return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				"An unexpected error occurred. Please contact support.");
+	}
+
+	@ExceptionHandler(IllegalStateException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseBody
+	public ErrorResponseDto handleIllegalStateException(IllegalStateException e) {
+		return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An internal error occurred");
+	}
+
+	@ExceptionHandler(Exception.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseBody
+	public ErrorResponseDto handleException(Exception e) {
+		return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				"An unexpected error occurred. Please contact support.");
+	}
+
+}
