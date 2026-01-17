@@ -12,7 +12,7 @@ import com.fitassist.backend.model.complaint.ComplaintStatus;
 import com.fitassist.backend.model.complaint.ThreadComplaint;
 import com.fitassist.backend.repository.ComplaintRepository;
 import com.fitassist.backend.service.declaration.complaint.ComplaintService;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
