@@ -1,21 +1,13 @@
 package com.fitassist.backend.service.implementation.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import jakarta.transaction.Transactional;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import com.fitassist.backend.auth.UserDetailsHelper;
 import com.fitassist.backend.dto.pojo.AuthorDto;
 import com.fitassist.backend.dto.pojo.UserCredentialsDto;
 import com.fitassist.backend.dto.request.user.UserCreateDto;
 import com.fitassist.backend.dto.request.user.UserUpdateDto;
 import com.fitassist.backend.dto.response.user.UserResponseDto;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.auth.UserDetailsHelper;
 import com.fitassist.backend.mapper.UserMapper;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.UserRepository;
@@ -24,6 +16,14 @@ import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.declaration.user.UserService;
 import com.fitassist.backend.service.implementation.helpers.JsonPatchServiceImpl;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.transaction.Transactional;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 

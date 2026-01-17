@@ -1,10 +1,10 @@
 package com.fitassist.backend.specification.specification;
 
-import jakarta.persistence.criteria.*;
 import com.fitassist.backend.dto.pojo.FilterCriteria;
 import com.fitassist.backend.exception.InvalidFilterOperationException;
 import com.fitassist.backend.exception.InvalidFilterValueException;
 import com.fitassist.backend.specification.PredicateContext;
+import jakarta.persistence.criteria.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

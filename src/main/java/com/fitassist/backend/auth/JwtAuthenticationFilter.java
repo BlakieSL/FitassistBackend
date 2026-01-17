@@ -1,6 +1,7 @@
 package com.fitassist.backend.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fitassist.backend.service.implementation.user.UserServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpFilter;
@@ -14,7 +15,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import com.fitassist.backend.service.implementation.user.UserServiceImpl;
 
 import java.io.IOException;
 

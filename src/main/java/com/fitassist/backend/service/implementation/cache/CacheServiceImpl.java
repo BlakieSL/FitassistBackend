@@ -1,8 +1,8 @@
 package com.fitassist.backend.service.implementation.cache;
 
+import com.fitassist.backend.service.declaration.cache.CacheService;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
-import com.fitassist.backend.service.declaration.cache.CacheService;
 
 import java.util.Objects;
 

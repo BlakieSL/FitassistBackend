@@ -1,14 +1,14 @@
 package com.fitassist.backend.service.implementation.food;
 
-import org.springframework.stereotype.Service;
+import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.pojo.projection.SavesProjection;
 import com.fitassist.backend.dto.response.food.FoodResponseDto;
 import com.fitassist.backend.dto.response.food.FoodSummaryDto;
-import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.repository.UserFoodRepository;
 import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import com.fitassist.backend.service.declaration.food.FoodPopulationService;
 import com.fitassist.backend.service.declaration.helpers.ImageUrlPopulationService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;

@@ -1,5 +1,9 @@
 package com.fitassist.backend.controller;
 
+import com.fitassist.backend.annotation.AdminOrModerator;
+import com.fitassist.backend.dto.request.complaint.ComplaintCreateDto;
+import com.fitassist.backend.dto.response.comment.ComplaintResponseDto;
+import com.fitassist.backend.service.declaration.complaint.ComplaintService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,10 +12,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.fitassist.backend.annotation.AdminOrModerator;
-import com.fitassist.backend.dto.request.complaint.ComplaintCreateDto;
-import com.fitassist.backend.dto.response.comment.ComplaintResponseDto;
-import com.fitassist.backend.service.declaration.complaint.ComplaintService;
 
 @RestController
 @RequestMapping("/api/complaint")

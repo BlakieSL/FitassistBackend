@@ -1,9 +1,9 @@
 package com.fitassist.backend.repository;
 
+import com.fitassist.backend.model.workout.WorkoutSet;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import com.fitassist.backend.model.workout.WorkoutSet;
 
 import java.util.List;
 import java.util.Optional;

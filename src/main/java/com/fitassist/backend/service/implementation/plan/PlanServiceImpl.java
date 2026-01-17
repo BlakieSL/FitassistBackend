@@ -1,16 +1,8 @@
 package com.fitassist.backend.service.implementation.plan;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import jakarta.transaction.Transactional;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
+import com.fitassist.backend.auth.AuthorizationUtil;
+import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.dto.request.filter.FilterDto;
 import com.fitassist.backend.dto.request.plan.PlanCreateDto;
 import com.fitassist.backend.dto.request.plan.PlanUpdateDto;
@@ -22,11 +14,9 @@ import com.fitassist.backend.event.events.Plan.PlanCreateEvent;
 import com.fitassist.backend.event.events.Plan.PlanDeleteEvent;
 import com.fitassist.backend.event.events.Plan.PlanUpdateEvent;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.config.cache.CacheNames;
-import com.fitassist.backend.model.plan.PlanStructureType;
-import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.mapper.plan.PlanMapper;
 import com.fitassist.backend.model.plan.Plan;
+import com.fitassist.backend.model.plan.PlanStructureType;
 import com.fitassist.backend.repository.EquipmentRepository;
 import com.fitassist.backend.repository.PlanCategoryRepository;
 import com.fitassist.backend.repository.PlanRepository;
@@ -40,6 +30,16 @@ import com.fitassist.backend.service.implementation.specification.SpecificationD
 import com.fitassist.backend.specification.SpecificationBuilder;
 import com.fitassist.backend.specification.SpecificationFactory;
 import com.fitassist.backend.specification.specification.PlanSpecification;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 

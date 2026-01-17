@@ -1,11 +1,11 @@
 package com.fitassist.backend.model.user;
 
+import com.fitassist.backend.model.food.Food;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fitassist.backend.model.food.Food;
 
 import java.time.LocalDateTime;
 

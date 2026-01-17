@@ -1,7 +1,5 @@
 package com.fitassist.backend.mapper;
 
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fitassist.backend.dto.request.activity.ActivityCreateDto;
 import com.fitassist.backend.dto.request.activity.ActivityUpdateDto;
 import com.fitassist.backend.dto.response.activity.ActivityCalculatedResponseDto;
@@ -14,6 +12,8 @@ import com.fitassist.backend.model.activity.ActivityCategory;
 import com.fitassist.backend.repository.ActivityCategoryRepository;
 import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 

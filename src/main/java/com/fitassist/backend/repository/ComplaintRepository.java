@@ -1,12 +1,12 @@
 package com.fitassist.backend.repository;
 
+import com.fitassist.backend.model.complaint.ComplaintBase;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import com.fitassist.backend.model.complaint.ComplaintBase;
 
 import java.util.Optional;
 

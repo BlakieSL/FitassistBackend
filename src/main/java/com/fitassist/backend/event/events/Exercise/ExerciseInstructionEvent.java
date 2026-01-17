@@ -1,8 +1,8 @@
 package com.fitassist.backend.event.events.Exercise;
 
+import com.fitassist.backend.model.text.ExerciseInstruction;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import com.fitassist.backend.model.text.ExerciseInstruction;
 
 @Getter
 public class ExerciseInstructionEvent extends ApplicationEvent {

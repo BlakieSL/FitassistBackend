@@ -1,9 +1,9 @@
 package com.fitassist.backend.service.implementation.helpers;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Component;
 import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.function.Function;

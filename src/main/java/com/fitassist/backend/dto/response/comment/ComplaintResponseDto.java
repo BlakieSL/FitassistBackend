@@ -1,10 +1,10 @@
 package com.fitassist.backend.dto.response.comment;
 
+import com.fitassist.backend.model.complaint.ComplaintReason;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fitassist.backend.model.complaint.ComplaintReason;
 
 import java.io.Serializable;
 

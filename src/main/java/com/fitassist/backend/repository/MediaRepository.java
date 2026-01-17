@@ -1,10 +1,10 @@
 package com.fitassist.backend.repository;
 
+import com.fitassist.backend.model.media.Media;
+import com.fitassist.backend.model.media.MediaConnectedEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import com.fitassist.backend.model.media.MediaConnectedEntity;
-import com.fitassist.backend.model.media.Media;
 
 import java.util.List;
 import java.util.Optional;

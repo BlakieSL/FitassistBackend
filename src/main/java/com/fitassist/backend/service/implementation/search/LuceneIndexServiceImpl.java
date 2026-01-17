@@ -1,5 +1,10 @@
 package com.fitassist.backend.service.implementation.search;
 
+import com.fitassist.backend.model.IndexedEntity;
+import com.fitassist.backend.model.activity.Activity;
+import com.fitassist.backend.model.exercise.Exercise;
+import com.fitassist.backend.model.food.Food;
+import com.fitassist.backend.service.declaration.search.LuceneIndexService;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.IndexWriter;
@@ -8,11 +13,6 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.springframework.stereotype.Service;
-import com.fitassist.backend.model.IndexedEntity;
-import com.fitassist.backend.model.activity.Activity;
-import com.fitassist.backend.model.exercise.Exercise;
-import com.fitassist.backend.model.food.Food;
-import com.fitassist.backend.service.declaration.search.LuceneIndexService;
 
 import java.io.IOException;
 import java.nio.file.Paths;

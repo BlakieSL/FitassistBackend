@@ -1,6 +1,13 @@
 package com.fitassist.backend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fitassist.backend.annotation.CommentOwnerOrAdminOrModerator;
+import com.fitassist.backend.dto.request.comment.CommentCreateDto;
+import com.fitassist.backend.dto.request.filter.FilterDto;
+import com.fitassist.backend.dto.response.comment.CommentAncestryDto;
+import com.fitassist.backend.dto.response.comment.CommentResponseDto;
+import com.fitassist.backend.dto.response.comment.CommentSummaryDto;
+import com.fitassist.backend.service.declaration.comment.CommentService;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
@@ -11,13 +18,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.fitassist.backend.annotation.CommentOwnerOrAdminOrModerator;
-import com.fitassist.backend.dto.request.comment.CommentCreateDto;
-import com.fitassist.backend.dto.request.filter.FilterDto;
-import com.fitassist.backend.dto.response.comment.CommentAncestryDto;
-import com.fitassist.backend.dto.response.comment.CommentResponseDto;
-import com.fitassist.backend.dto.response.comment.CommentSummaryDto;
-import com.fitassist.backend.service.declaration.comment.CommentService;
 
 import java.util.List;
 

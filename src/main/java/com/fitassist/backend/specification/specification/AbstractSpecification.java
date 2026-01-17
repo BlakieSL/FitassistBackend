@@ -1,14 +1,14 @@
 package com.fitassist.backend.specification.specification;
 
+import com.fitassist.backend.dto.pojo.FilterCriteria;
+import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
+import com.fitassist.backend.specification.PredicateContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
-import com.fitassist.backend.dto.pojo.FilterCriteria;
-import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
-import com.fitassist.backend.specification.PredicateContext;
 
 public abstract class AbstractSpecification<T, F extends Enum<F>> implements Specification<T> {
 

@@ -1,14 +1,14 @@
 package com.fitassist.backend.event.listener;
 
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
+import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.event.events.Exercise.ExerciseCreateEvent;
 import com.fitassist.backend.event.events.Exercise.ExerciseDeleteEvent;
 import com.fitassist.backend.event.events.Exercise.ExerciseUpdateEvent;
-import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.model.exercise.Exercise;
 import com.fitassist.backend.service.declaration.cache.CacheService;
 import com.fitassist.backend.service.declaration.search.LuceneIndexService;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ExerciseListener {

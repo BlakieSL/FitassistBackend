@@ -1,6 +1,11 @@
 package com.fitassist.backend.service.implementation.search;
 
+import com.fitassist.backend.dto.pojo.FoodMacros;
+import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.dto.response.search.*;
+import com.fitassist.backend.exception.InvalidFilterValueException;
+import com.fitassist.backend.service.declaration.aws.AwsS3Service;
+import com.fitassist.backend.service.declaration.search.LuceneSearchService;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -9,12 +14,6 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.springframework.stereotype.Service;
-import com.fitassist.backend.dto.pojo.FoodMacros;
-import com.fitassist.backend.dto.response.category.CategoryResponseDto;
-import source.code.dto.response.search.*;
-import com.fitassist.backend.exception.InvalidFilterValueException;
-import com.fitassist.backend.service.declaration.aws.AwsS3Service;
-import com.fitassist.backend.service.declaration.search.LuceneSearchService;
 
 import java.io.IOException;
 import java.math.BigDecimal;

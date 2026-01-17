@@ -1,8 +1,8 @@
 package com.fitassist.backend.validation.health;
 
+import com.fitassist.backend.model.user.User;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import com.fitassist.backend.model.user.User;
 
 public class HealthRelatedInfoShouldBeFullValidator implements ConstraintValidator<HealthInfoShouldBeFullDomain, User> {
 

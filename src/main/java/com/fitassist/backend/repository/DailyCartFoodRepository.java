@@ -1,9 +1,9 @@
 package com.fitassist.backend.repository;
 
+import com.fitassist.backend.model.daily.DailyCartFood;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import com.fitassist.backend.model.daily.DailyCartFood;
 
 import java.util.Optional;
 

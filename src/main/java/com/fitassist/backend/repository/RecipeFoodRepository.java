@@ -1,10 +1,10 @@
 package com.fitassist.backend.repository;
 
+import com.fitassist.backend.dto.pojo.projection.recipe.RecipeIngredientCountProjection;
+import com.fitassist.backend.model.recipe.RecipeFood;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import com.fitassist.backend.dto.pojo.projection.recipe.RecipeIngredientCountProjection;
-import com.fitassist.backend.model.recipe.RecipeFood;
 
 import java.util.List;
 import java.util.Optional;

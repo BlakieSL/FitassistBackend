@@ -1,9 +1,9 @@
 package com.fitassist.backend.service.declaration.specification;
 
+import com.fitassist.backend.dto.pojo.FilterCriteria;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import com.fitassist.backend.dto.pojo.FilterCriteria;
 
 public interface SpecificationVisibilityPredicateBuilder {
 

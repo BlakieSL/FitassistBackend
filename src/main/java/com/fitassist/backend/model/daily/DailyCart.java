@@ -1,12 +1,12 @@
 package com.fitassist.backend.model.daily;
 
+import com.fitassist.backend.model.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fitassist.backend.model.user.User;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

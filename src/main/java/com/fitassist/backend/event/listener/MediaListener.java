@@ -1,13 +1,13 @@
 package com.fitassist.backend.event.listener;
 
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
+import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.event.events.Media.MediaDeleteEvent;
 import com.fitassist.backend.event.events.Media.MediaUpdateEvent;
-import com.fitassist.backend.config.cache.CacheNames;
-import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.model.media.Media;
+import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.service.declaration.cache.CacheService;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 
 @Component
 public class MediaListener {

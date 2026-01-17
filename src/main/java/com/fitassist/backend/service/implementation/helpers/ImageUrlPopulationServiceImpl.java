@@ -1,9 +1,9 @@
 package com.fitassist.backend.service.implementation.helpers;
 
-import org.springframework.stereotype.Service;
 import com.fitassist.backend.dto.pojo.MediaImagesDto;
 import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import com.fitassist.backend.service.declaration.helpers.ImageUrlPopulationService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 

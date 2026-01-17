@@ -1,8 +1,8 @@
 package com.fitassist.backend.event.events.Media;
 
+import com.fitassist.backend.model.media.Media;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import com.fitassist.backend.model.media.Media;
 
 @Getter
 public class MediaUpdateEvent extends ApplicationEvent {

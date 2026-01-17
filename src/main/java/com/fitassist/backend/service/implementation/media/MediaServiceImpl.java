@@ -1,22 +1,22 @@
 package com.fitassist.backend.service.implementation.media;
 
-import jakarta.transaction.Transactional;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import com.fitassist.backend.dto.request.media.MediaCreateDto;
 import com.fitassist.backend.dto.response.other.MediaResponseDto;
 import com.fitassist.backend.event.events.Media.MediaDeleteEvent;
 import com.fitassist.backend.event.events.Media.MediaUpdateEvent;
 import com.fitassist.backend.exception.FileProcessingException;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.mapper.MediaMapper;
 import com.fitassist.backend.model.media.Media;
+import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.repository.MediaRepository;
 import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.media.MediaService;
+import jakarta.transaction.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;

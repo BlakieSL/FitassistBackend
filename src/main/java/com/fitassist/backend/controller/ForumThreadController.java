@@ -1,6 +1,12 @@
 package com.fitassist.backend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fitassist.backend.annotation.ThreadOwnerOrAdminOrModerator;
+import com.fitassist.backend.dto.request.filter.FilterDto;
+import com.fitassist.backend.dto.request.forumThread.ForumThreadCreateDto;
+import com.fitassist.backend.dto.response.forumThread.ForumThreadResponseDto;
+import com.fitassist.backend.dto.response.forumThread.ForumThreadSummaryDto;
+import com.fitassist.backend.service.declaration.forumthread.ForumThreadService;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
@@ -10,12 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.fitassist.backend.annotation.ThreadOwnerOrAdminOrModerator;
-import com.fitassist.backend.dto.request.filter.FilterDto;
-import com.fitassist.backend.dto.request.forumThread.ForumThreadCreateDto;
-import com.fitassist.backend.dto.response.forumThread.ForumThreadResponseDto;
-import com.fitassist.backend.dto.response.forumThread.ForumThreadSummaryDto;
-import com.fitassist.backend.service.declaration.forumthread.ForumThreadService;
 
 @RestController
 @RequestMapping("/api/threads")

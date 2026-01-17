@@ -1,15 +1,15 @@
 package com.fitassist.backend.service.declaration.comment;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import com.fitassist.backend.dto.request.comment.CommentCreateDto;
 import com.fitassist.backend.dto.request.filter.FilterDto;
 import com.fitassist.backend.dto.response.comment.CommentAncestryDto;
 import com.fitassist.backend.dto.response.comment.CommentResponseDto;
 import com.fitassist.backend.dto.response.comment.CommentSummaryDto;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 

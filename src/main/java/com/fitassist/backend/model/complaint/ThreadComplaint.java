@@ -1,14 +1,14 @@
 package com.fitassist.backend.model.complaint;
 
+import com.fitassist.backend.model.media.Media;
+import com.fitassist.backend.model.thread.ForumThread;
+import com.fitassist.backend.model.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
-import com.fitassist.backend.model.media.Media;
-import com.fitassist.backend.model.thread.ForumThread;
-import com.fitassist.backend.model.user.User;
 
 import java.util.ArrayList;
 import java.util.List;

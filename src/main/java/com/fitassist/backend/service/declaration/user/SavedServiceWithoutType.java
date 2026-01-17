@@ -1,8 +1,8 @@
 package com.fitassist.backend.service.declaration.user;
 
+import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
 
 public interface SavedServiceWithoutType {
 

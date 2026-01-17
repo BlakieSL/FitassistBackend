@@ -1,16 +1,16 @@
 package com.fitassist.backend.service.implementation.comment;
 
-import org.springframework.stereotype.Service;
+import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.pojo.projection.comment.CommentCountsProjection;
 import com.fitassist.backend.dto.response.comment.CommentResponseDto;
 import com.fitassist.backend.dto.response.comment.CommentSummaryDto;
-import com.fitassist.backend.model.media.MediaConnectedEntity;
-import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.model.media.Media;
+import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.repository.MediaRepository;
 import com.fitassist.backend.repository.UserCommentRepository;
 import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import com.fitassist.backend.service.declaration.comment.CommentPopulationService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;

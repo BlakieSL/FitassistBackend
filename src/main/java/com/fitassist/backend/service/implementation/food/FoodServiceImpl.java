@@ -1,16 +1,7 @@
 package com.fitassist.backend.service.implementation.food;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import jakarta.transaction.Transactional;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
+import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.dto.request.filter.FilterDto;
 import com.fitassist.backend.dto.request.food.CalculateFoodMacrosRequestDto;
 import com.fitassist.backend.dto.request.food.FoodCreateDto;
@@ -22,7 +13,6 @@ import com.fitassist.backend.event.events.Food.FoodCreateEvent;
 import com.fitassist.backend.event.events.Food.FoodDeleteEvent;
 import com.fitassist.backend.event.events.Food.FoodUpdateEvent;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.mapper.FoodMapper;
 import com.fitassist.backend.mapper.recipe.RecipeMapper;
 import com.fitassist.backend.model.food.Food;
@@ -38,6 +28,16 @@ import com.fitassist.backend.service.implementation.specification.SpecificationD
 import com.fitassist.backend.specification.SpecificationBuilder;
 import com.fitassist.backend.specification.SpecificationFactory;
 import com.fitassist.backend.specification.specification.FoodSpecification;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

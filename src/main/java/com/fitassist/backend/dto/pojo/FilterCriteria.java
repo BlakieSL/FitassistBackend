@@ -1,10 +1,10 @@
 package com.fitassist.backend.dto.pojo;
 
+import com.fitassist.backend.specification.specification.filter.FilterOperation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fitassist.backend.specification.specification.filter.FilterOperation;
 
 @Getter
 @Setter

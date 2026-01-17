@@ -1,5 +1,6 @@
 package com.fitassist.backend.service.implementation.aws;
 
+import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
@@ -8,7 +9,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
-import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 
 import java.util.UUID;
 

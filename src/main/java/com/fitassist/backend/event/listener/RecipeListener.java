@@ -1,14 +1,14 @@
 package com.fitassist.backend.event.listener;
 
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
+import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.event.events.Recipe.RecipeCreateEvent;
 import com.fitassist.backend.event.events.Recipe.RecipeDeleteEvent;
 import com.fitassist.backend.event.events.Recipe.RecipeUpdateEvent;
-import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.model.recipe.Recipe;
 import com.fitassist.backend.service.declaration.cache.CacheService;
 import com.fitassist.backend.service.declaration.search.LuceneIndexService;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 
 @Component
 public class RecipeListener {

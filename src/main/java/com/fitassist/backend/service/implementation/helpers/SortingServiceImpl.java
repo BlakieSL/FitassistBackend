@@ -1,8 +1,8 @@
 package com.fitassist.backend.service.implementation.helpers;
 
+import com.fitassist.backend.service.declaration.helpers.SortingService;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import com.fitassist.backend.service.declaration.helpers.SortingService;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;

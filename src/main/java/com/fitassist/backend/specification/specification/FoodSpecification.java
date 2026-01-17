@@ -1,12 +1,12 @@
 package com.fitassist.backend.specification.specification;
 
-import jakarta.persistence.criteria.Predicate;
 import com.fitassist.backend.dto.pojo.FilterCriteria;
-import com.fitassist.backend.specification.specification.field.LikesAndSaves;
-import com.fitassist.backend.specification.specification.field.FoodField;
 import com.fitassist.backend.model.food.Food;
 import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
 import com.fitassist.backend.specification.PredicateContext;
+import com.fitassist.backend.specification.specification.field.FoodField;
+import com.fitassist.backend.specification.specification.field.LikesAndSaves;
+import jakarta.persistence.criteria.Predicate;
 
 public class FoodSpecification extends AbstractSpecification<Food, FoodField> {
 

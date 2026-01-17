@@ -1,20 +1,12 @@
 package com.fitassist.backend.service.implementation.forumthread;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.request.filter.FilterDto;
 import com.fitassist.backend.dto.request.forumThread.ForumThreadCreateDto;
 import com.fitassist.backend.dto.request.forumThread.ForumThreadUpdateDto;
 import com.fitassist.backend.dto.response.forumThread.ForumThreadResponseDto;
 import com.fitassist.backend.dto.response.forumThread.ForumThreadSummaryDto;
-import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.mapper.ForumThreadMapper;
 import com.fitassist.backend.model.thread.ForumThread;
 import com.fitassist.backend.repository.ForumThreadRepository;
@@ -27,6 +19,14 @@ import com.fitassist.backend.service.implementation.specification.SpecificationD
 import com.fitassist.backend.specification.SpecificationBuilder;
 import com.fitassist.backend.specification.SpecificationFactory;
 import com.fitassist.backend.specification.specification.ForumThreadSpecification;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

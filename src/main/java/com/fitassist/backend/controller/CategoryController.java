@@ -1,17 +1,17 @@
 package com.fitassist.backend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fitassist.backend.annotation.AdminOnly;
+import com.fitassist.backend.dto.request.category.CategoryCreateDto;
+import com.fitassist.backend.dto.response.category.CategoryResponseDto;
+import com.fitassist.backend.service.declaration.category.CategoryService;
+import com.fitassist.backend.service.declaration.selector.CategorySelectorService;
+import com.fitassist.backend.service.implementation.selector.CategoryType;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.fitassist.backend.annotation.AdminOnly;
-import com.fitassist.backend.dto.request.category.CategoryCreateDto;
-import com.fitassist.backend.dto.response.category.CategoryResponseDto;
-import com.fitassist.backend.service.implementation.selector.CategoryType;
-import com.fitassist.backend.service.declaration.category.CategoryService;
-import com.fitassist.backend.service.declaration.selector.CategorySelectorService;
 
 import java.util.List;
 

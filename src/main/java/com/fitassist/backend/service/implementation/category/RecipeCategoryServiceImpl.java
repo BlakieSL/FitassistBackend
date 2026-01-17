@@ -1,8 +1,5 @@
 package com.fitassist.backend.service.implementation.category;
 
-import org.springframework.cache.CacheManager;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Service;
 import com.fitassist.backend.mapper.category.RecipeCategoryMapper;
 import com.fitassist.backend.model.recipe.RecipeCategory;
 import com.fitassist.backend.repository.RecipeCategoryRepository;
@@ -10,6 +7,9 @@ import com.fitassist.backend.service.declaration.category.CategoryCacheKeyGenera
 import com.fitassist.backend.service.declaration.category.CategoryService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
+import org.springframework.cache.CacheManager;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
 
 @Service("recipeCategoryService")
 public class RecipeCategoryServiceImpl extends GenericCategoryService<RecipeCategory> implements CategoryService {

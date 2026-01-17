@@ -1,16 +1,16 @@
 package com.fitassist.backend.service.implementation.plan;
 
-import org.springframework.stereotype.Service;
+import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.pojo.projection.EntityCountsProjection;
 import com.fitassist.backend.dto.response.plan.PlanResponseDto;
 import com.fitassist.backend.dto.response.plan.PlanSummaryDto;
-import com.fitassist.backend.model.media.MediaConnectedEntity;
-import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.model.media.Media;
+import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.repository.MediaRepository;
 import com.fitassist.backend.repository.UserPlanRepository;
 import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import com.fitassist.backend.service.declaration.plan.PlanPopulationService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;

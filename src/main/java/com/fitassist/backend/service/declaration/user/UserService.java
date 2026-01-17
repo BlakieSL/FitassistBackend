@@ -1,12 +1,12 @@
 package com.fitassist.backend.service.declaration.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import com.fitassist.backend.dto.pojo.AuthorDto;
 import com.fitassist.backend.dto.request.user.UserCreateDto;
 import com.fitassist.backend.dto.request.user.UserUpdateDto;
 import com.fitassist.backend.dto.response.user.UserResponseDto;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 
 public interface UserService {
 

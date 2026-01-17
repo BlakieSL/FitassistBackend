@@ -1,10 +1,10 @@
 package com.fitassist.backend.dto.response.search;
 
+import com.fitassist.backend.dto.pojo.FoodMacros;
+import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fitassist.backend.dto.pojo.FoodMacros;
-import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 
 @Getter
 @Setter

@@ -1,15 +1,9 @@
 package com.fitassist.backend.service.implementation.user.interaction.withoutType;
 
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Service;
-import com.fitassist.backend.dto.response.exercise.ExerciseSummaryDto;
-import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
 import com.fitassist.backend.config.cache.CacheNames;
+import com.fitassist.backend.dto.response.exercise.ExerciseSummaryDto;
+import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
+import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.mapper.ExerciseMapper;
 import com.fitassist.backend.model.exercise.Exercise;
 import com.fitassist.backend.model.user.User;
@@ -18,6 +12,12 @@ import com.fitassist.backend.repository.UserExerciseRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.exercise.ExercisePopulationService;
 import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 

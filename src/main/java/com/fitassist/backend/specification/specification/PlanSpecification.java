@@ -1,22 +1,22 @@
 package com.fitassist.backend.specification.specification;
 
-import jakarta.persistence.criteria.*;
-import org.jetbrains.annotations.NotNull;
 import com.fitassist.backend.dto.pojo.FilterCriteria;
 import com.fitassist.backend.exception.InvalidFilterOperationException;
 import com.fitassist.backend.exception.InvalidFilterValueException;
-import com.fitassist.backend.specification.specification.field.LikesAndSaves;
-import com.fitassist.backend.model.plan.PlanStructureType;
-import com.fitassist.backend.specification.specification.field.PlanField;
 import com.fitassist.backend.model.exercise.Exercise;
 import com.fitassist.backend.model.plan.Plan;
 import com.fitassist.backend.model.plan.PlanCategoryAssociation;
+import com.fitassist.backend.model.plan.PlanStructureType;
 import com.fitassist.backend.model.user.TypeOfInteraction;
 import com.fitassist.backend.model.workout.Workout;
 import com.fitassist.backend.model.workout.WorkoutSet;
 import com.fitassist.backend.model.workout.WorkoutSetExercise;
 import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
 import com.fitassist.backend.specification.PredicateContext;
+import com.fitassist.backend.specification.specification.field.LikesAndSaves;
+import com.fitassist.backend.specification.specification.field.PlanField;
+import jakarta.persistence.criteria.*;
+import org.jetbrains.annotations.NotNull;
 
 import static com.fitassist.backend.specification.SpecificationConstants.*;
 

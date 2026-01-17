@@ -1,7 +1,5 @@
 package com.fitassist.backend.mapper;
 
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fitassist.backend.dto.pojo.DateFoodMacros;
 import com.fitassist.backend.dto.pojo.FoodMacros;
 import com.fitassist.backend.dto.request.food.FoodCreateDto;
@@ -15,6 +13,8 @@ import com.fitassist.backend.model.food.Food;
 import com.fitassist.backend.model.food.FoodCategory;
 import com.fitassist.backend.repository.FoodCategoryRepository;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

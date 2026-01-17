@@ -1,12 +1,12 @@
 package com.fitassist.backend.repository;
 
+import com.fitassist.backend.model.thread.Comment;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
-import com.fitassist.backend.model.thread.Comment;
 
 import java.util.List;
 import java.util.Optional;

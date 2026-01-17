@@ -1,11 +1,11 @@
 package com.fitassist.backend.dto.response.forumThread;
 
+import com.fitassist.backend.dto.pojo.AuthorDto;
+import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fitassist.backend.dto.pojo.AuthorDto;
-import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

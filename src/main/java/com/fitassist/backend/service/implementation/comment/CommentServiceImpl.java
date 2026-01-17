@@ -1,14 +1,7 @@
 package com.fitassist.backend.service.implementation.comment;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.pojo.AuthorDto;
 import com.fitassist.backend.dto.request.comment.CommentCreateDto;
 import com.fitassist.backend.dto.request.comment.CommentUpdateDto;
@@ -17,7 +10,6 @@ import com.fitassist.backend.dto.response.comment.CommentAncestryDto;
 import com.fitassist.backend.dto.response.comment.CommentResponseDto;
 import com.fitassist.backend.dto.response.comment.CommentSummaryDto;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.mapper.CommentMapper;
 import com.fitassist.backend.model.thread.Comment;
 import com.fitassist.backend.repository.CommentRepository;
@@ -29,6 +21,14 @@ import com.fitassist.backend.service.implementation.specification.SpecificationD
 import com.fitassist.backend.specification.SpecificationBuilder;
 import com.fitassist.backend.specification.SpecificationFactory;
 import com.fitassist.backend.specification.specification.CommentSpecification;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.*;

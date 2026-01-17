@@ -1,17 +1,7 @@
 package com.fitassist.backend.service.implementation.exercise;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fitassist.backend.repository.*;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import jakarta.transaction.Transactional;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
+import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.dto.request.exercise.ExerciseCreateDto;
 import com.fitassist.backend.dto.request.exercise.ExerciseUpdateDto;
 import com.fitassist.backend.dto.request.filter.FilterDto;
@@ -24,11 +14,10 @@ import com.fitassist.backend.event.events.Exercise.ExerciseCreateEvent;
 import com.fitassist.backend.event.events.Exercise.ExerciseDeleteEvent;
 import com.fitassist.backend.event.events.Exercise.ExerciseUpdateEvent;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.mapper.ExerciseMapper;
 import com.fitassist.backend.mapper.plan.PlanMapper;
 import com.fitassist.backend.model.exercise.Exercise;
-import source.code.repository.*;
+import com.fitassist.backend.repository.*;
 import com.fitassist.backend.service.declaration.exercise.ExercisePopulationService;
 import com.fitassist.backend.service.declaration.exercise.ExerciseService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
@@ -39,6 +28,16 @@ import com.fitassist.backend.service.implementation.specification.SpecificationD
 import com.fitassist.backend.specification.SpecificationBuilder;
 import com.fitassist.backend.specification.SpecificationFactory;
 import com.fitassist.backend.specification.specification.ExerciseSpecification;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 

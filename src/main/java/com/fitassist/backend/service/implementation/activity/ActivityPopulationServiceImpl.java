@@ -1,14 +1,14 @@
 package com.fitassist.backend.service.implementation.activity;
 
-import org.springframework.stereotype.Service;
+import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.pojo.projection.SavesProjection;
 import com.fitassist.backend.dto.response.activity.ActivityResponseDto;
 import com.fitassist.backend.dto.response.activity.ActivitySummaryDto;
-import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.repository.UserActivityRepository;
 import com.fitassist.backend.service.declaration.activity.ActivityPopulationService;
 import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import com.fitassist.backend.service.declaration.helpers.ImageUrlPopulationService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;

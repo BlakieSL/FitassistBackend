@@ -1,20 +1,20 @@
 package com.fitassist.backend.service.implementation.daily;
 
-import org.apache.coyote.BadRequestException;
-import org.springframework.stereotype.Service;
+import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.pojo.DateFoodMacros;
 import com.fitassist.backend.dto.pojo.FoodMacros;
-import com.fitassist.backend.dto.response.activity.ActivityCalculatedResponseDto;
 import com.fitassist.backend.dto.pojo.ReportStats;
+import com.fitassist.backend.dto.response.activity.ActivityCalculatedResponseDto;
 import com.fitassist.backend.dto.response.reports.DailyReportResponseDto;
 import com.fitassist.backend.dto.response.reports.PeriodicReportResponseDto;
 import com.fitassist.backend.dto.response.reports.UserActionCountsDto;
-import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.mapper.FoodMapper;
 import com.fitassist.backend.mapper.daily.DailyActivityMapper;
 import com.fitassist.backend.model.daily.DailyCart;
 import com.fitassist.backend.repository.DailyCartRepository;
 import com.fitassist.backend.service.declaration.daily.ReportsService;
+import org.apache.coyote.BadRequestException;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

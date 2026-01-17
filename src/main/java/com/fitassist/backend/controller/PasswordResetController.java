@@ -1,14 +1,14 @@
 package com.fitassist.backend.controller;
 
+import com.fitassist.backend.dto.request.auth.PasswordResetDto;
+import com.fitassist.backend.dto.request.auth.PasswordResetRequestDto;
+import com.fitassist.backend.service.declaration.auth.PasswordResetService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.fitassist.backend.dto.request.auth.PasswordResetDto;
-import com.fitassist.backend.dto.request.auth.PasswordResetRequestDto;
-import com.fitassist.backend.service.declaration.auth.PasswordResetService;
 
 @RestController
 @RequestMapping(path = "/api/password-reset")

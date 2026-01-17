@@ -1,5 +1,6 @@
 package com.fitassist.backend.model.daily;
 
+import com.fitassist.backend.model.activity.Activity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -7,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fitassist.backend.model.activity.Activity;
 
 import java.math.BigDecimal;
 

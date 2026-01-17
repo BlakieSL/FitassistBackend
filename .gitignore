@@ -36,10 +36,7 @@ out/
 ### VS Code ###
 .vscode/
 
-.fastRequest
 /src/main/resources/lucene-index/
 
 /.env
 /.env.properties
-/.claude/
-/.editorconfig

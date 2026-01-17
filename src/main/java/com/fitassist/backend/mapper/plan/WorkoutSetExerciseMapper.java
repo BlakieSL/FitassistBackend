@@ -1,7 +1,5 @@
 package com.fitassist.backend.mapper.plan;
 
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fitassist.backend.dto.request.plan.workoutSetExercise.WorkoutSetExerciseNestedCreateDto;
 import com.fitassist.backend.dto.request.plan.workoutSetExercise.WorkoutSetExerciseNestedUpdateDto;
 import com.fitassist.backend.dto.response.plan.WorkoutSetExerciseResponseDto;
@@ -9,6 +7,8 @@ import com.fitassist.backend.model.exercise.Exercise;
 import com.fitassist.backend.model.workout.WorkoutSetExercise;
 import com.fitassist.backend.repository.ExerciseRepository;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring")
 public abstract class WorkoutSetExerciseMapper {

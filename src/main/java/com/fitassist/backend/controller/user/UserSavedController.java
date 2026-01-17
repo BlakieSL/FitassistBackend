@@ -1,5 +1,11 @@
 package com.fitassist.backend.controller.user;
 
+import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
+import com.fitassist.backend.model.user.TypeOfInteraction;
+import com.fitassist.backend.service.declaration.selector.SavedSelectorService;
+import com.fitassist.backend.service.declaration.user.SavedService;
+import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
+import com.fitassist.backend.service.implementation.selector.SavedEntityType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -7,12 +13,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
-import com.fitassist.backend.service.implementation.selector.SavedEntityType;
-import com.fitassist.backend.model.user.TypeOfInteraction;
-import com.fitassist.backend.service.declaration.selector.SavedSelectorService;
-import com.fitassist.backend.service.declaration.user.SavedService;
-import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
 
 @RestController
 @RequestMapping(path = "/api/user-saved")

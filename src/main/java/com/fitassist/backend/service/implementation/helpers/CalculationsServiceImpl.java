@@ -1,10 +1,10 @@
 package com.fitassist.backend.service.implementation.helpers;
 
-import org.springframework.stereotype.Service;
 import com.fitassist.backend.model.user.ActivityLevel;
 import com.fitassist.backend.model.user.Gender;
 import com.fitassist.backend.model.user.Goal;
 import com.fitassist.backend.service.declaration.helpers.CalculationsService;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

@@ -1,10 +1,10 @@
 package com.fitassist.backend.dto.response.plan;
 
+import com.fitassist.backend.dto.response.category.CategoryResponseDto;
+import com.fitassist.backend.model.plan.PlanStructureType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.fitassist.backend.dto.response.category.CategoryResponseDto;
-import com.fitassist.backend.model.plan.PlanStructureType;
 
 import java.io.Serializable;
 import java.util.List;

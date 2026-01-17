@@ -1,12 +1,5 @@
 package com.fitassist.backend.service.implementation.auth;
 
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.JWTParser;
-import com.nimbusds.jwt.SignedJWT;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 import com.fitassist.backend.auth.JwtService;
 import com.fitassist.backend.dto.request.auth.PasswordResetDto;
 import com.fitassist.backend.dto.request.auth.PasswordResetRequestDto;
@@ -17,6 +10,13 @@ import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.auth.PasswordResetService;
 import com.fitassist.backend.service.declaration.email.EmailService;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
+import com.nimbusds.jwt.SignedJWT;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.Collections;

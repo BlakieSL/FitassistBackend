@@ -1,13 +1,6 @@
 package com.fitassist.backend.controller.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
 import com.fitassist.backend.annotation.AccountOwnerOrAdmin;
 import com.fitassist.backend.auth.JwtService;
 import com.fitassist.backend.dto.pojo.AuthorDto;
@@ -18,6 +11,13 @@ import com.fitassist.backend.dto.response.other.AccessTokenResponseDto;
 import com.fitassist.backend.dto.response.user.UserResponseDto;
 import com.fitassist.backend.service.declaration.user.UserService;
 import com.fitassist.backend.validation.ValidationGroups;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/users")

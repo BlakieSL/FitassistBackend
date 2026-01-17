@@ -1,15 +1,10 @@
 package com.fitassist.backend.service.implementation.user.interaction.withType;
 
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
+import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.dto.response.plan.PlanResponseDto;
 import com.fitassist.backend.dto.response.plan.PlanSummaryDto;
-import com.fitassist.backend.exception.NotSupportedInteractionTypeException;
 import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
-import com.fitassist.backend.config.cache.CacheNames;
+import com.fitassist.backend.exception.NotSupportedInteractionTypeException;
 import com.fitassist.backend.mapper.plan.PlanMapper;
 import com.fitassist.backend.model.plan.Plan;
 import com.fitassist.backend.model.user.TypeOfInteraction;
@@ -20,6 +15,11 @@ import com.fitassist.backend.repository.UserPlanRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.plan.PlanPopulationService;
 import com.fitassist.backend.service.declaration.user.SavedService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;

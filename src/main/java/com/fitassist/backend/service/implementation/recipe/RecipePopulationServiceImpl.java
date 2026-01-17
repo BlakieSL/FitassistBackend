@@ -1,18 +1,18 @@
 package com.fitassist.backend.service.implementation.recipe;
 
-import org.springframework.stereotype.Service;
+import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.pojo.projection.EntityCountsProjection;
 import com.fitassist.backend.dto.pojo.projection.recipe.RecipeIngredientCountProjection;
 import com.fitassist.backend.dto.response.recipe.RecipeResponseDto;
 import com.fitassist.backend.dto.response.recipe.RecipeSummaryDto;
-import com.fitassist.backend.model.media.MediaConnectedEntity;
-import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.model.media.Media;
+import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.repository.MediaRepository;
 import com.fitassist.backend.repository.RecipeFoodRepository;
 import com.fitassist.backend.repository.UserRecipeRepository;
 import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import com.fitassist.backend.service.declaration.recipe.RecipePopulationService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;

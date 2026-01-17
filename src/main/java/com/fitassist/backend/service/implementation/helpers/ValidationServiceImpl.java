@@ -1,9 +1,9 @@
 package com.fitassist.backend.service.implementation.helpers;
 
+import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.springframework.stereotype.Service;
-import com.fitassist.backend.service.declaration.helpers.ValidationService;
 
 import java.util.Set;
 

@@ -1,5 +1,11 @@
 package com.fitassist.backend.model.plan;
 
+import com.fitassist.backend.model.IndexedEntity;
+import com.fitassist.backend.model.media.Media;
+import com.fitassist.backend.model.text.PlanInstruction;
+import com.fitassist.backend.model.user.User;
+import com.fitassist.backend.model.user.UserPlan;
+import com.fitassist.backend.model.workout.Workout;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,12 +15,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
-import com.fitassist.backend.model.IndexedEntity;
-import com.fitassist.backend.model.media.Media;
-import com.fitassist.backend.model.text.PlanInstruction;
-import com.fitassist.backend.model.user.User;
-import com.fitassist.backend.model.user.UserPlan;
-import com.fitassist.backend.model.workout.Workout;
 
 import java.time.LocalDateTime;
 import java.util.*;

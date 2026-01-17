@@ -1,12 +1,5 @@
 package com.fitassist.backend.service.implementation.search;
 
-import jakarta.annotation.PreDestroy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Service;
 import com.fitassist.backend.model.IndexedEntity;
 import com.fitassist.backend.service.declaration.activity.ActivityService;
 import com.fitassist.backend.service.declaration.exercise.ExerciseService;
@@ -15,6 +8,13 @@ import com.fitassist.backend.service.declaration.plan.PlanService;
 import com.fitassist.backend.service.declaration.recipe.RecipeService;
 import com.fitassist.backend.service.declaration.search.LuceneIndexService;
 import com.fitassist.backend.service.declaration.search.LuceneInitialLoadService;
+import jakarta.annotation.PreDestroy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;
