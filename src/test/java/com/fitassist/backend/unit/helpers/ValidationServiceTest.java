@@ -1,5 +1,6 @@
 package com.fitassist.backend.unit.helpers;
 
+import com.fitassist.backend.service.implementation.helpers.ValidationServiceImpl;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.fitassist.backend.service.implementation.helpers.ValidationServiceImpl;
 
 import java.util.Set;
 

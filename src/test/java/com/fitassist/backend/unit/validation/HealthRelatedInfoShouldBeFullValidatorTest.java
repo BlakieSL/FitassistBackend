@@ -1,16 +1,16 @@
 package com.fitassist.backend.unit.validation;
 
+import com.fitassist.backend.model.user.ActivityLevel;
+import com.fitassist.backend.model.user.Goal;
+import com.fitassist.backend.model.user.User;
+import com.fitassist.backend.validation.health.HealthInfoShouldBeFullDomain;
+import com.fitassist.backend.validation.health.HealthRelatedInfoShouldBeFullValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.fitassist.backend.model.user.ActivityLevel;
-import com.fitassist.backend.model.user.Goal;
-import com.fitassist.backend.model.user.User;
-import com.fitassist.backend.validation.health.HealthInfoShouldBeFullDomain;
-import com.fitassist.backend.validation.health.HealthRelatedInfoShouldBeFullValidator;
 
 import java.math.BigDecimal;
 

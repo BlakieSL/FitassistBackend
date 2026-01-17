@@ -1,5 +1,11 @@
 package com.fitassist.backend.integration.test.controller.aws;
 
+import com.fitassist.backend.integration.config.MockAwsSesConfig;
+import com.fitassist.backend.integration.config.MockRedisConfig;
+import com.fitassist.backend.integration.config.TestAwsS3Config;
+import com.fitassist.backend.integration.containers.AwsS3ContainerInitializer;
+import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
+import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,12 +17,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import com.fitassist.backend.integration.config.MockAwsSesConfig;
-import com.fitassist.backend.integration.config.MockRedisConfig;
-import com.fitassist.backend.integration.config.TestAwsS3Config;
-import com.fitassist.backend.integration.containers.AwsS3ContainerInitializer;
-import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
-import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 
 import java.nio.charset.StandardCharsets;
 
