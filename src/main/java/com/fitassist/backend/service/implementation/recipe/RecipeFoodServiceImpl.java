@@ -23,7 +23,7 @@ import com.fitassist.backend.service.declaration.recipe.RecipeFoodService;
 import com.fitassist.backend.service.declaration.recipe.RecipeService;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 

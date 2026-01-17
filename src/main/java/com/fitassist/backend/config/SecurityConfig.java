@@ -20,12 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
@@ -37,11 +32,14 @@ public class SecurityConfig {
 
 	private final RateLimitingFilter rateLimitingFilter;
 
+	private final CorsConfigurationSource corsConfigurationSource;
+
 	public SecurityConfig(JwtService jwtService, @Lazy UserServiceImpl userServiceImpl,
-			@Lazy RateLimitingFilter rateLimitingFilter) {
+			@Lazy RateLimitingFilter rateLimitingFilter, CorsConfigurationSource corsConfigurationSource) {
 		this.jwtService = jwtService;
 		this.userServiceImpl = userServiceImpl;
 		this.rateLimitingFilter = rateLimitingFilter;
+		this.corsConfigurationSource = corsConfigurationSource;
 	}
 
 	@Bean
@@ -55,7 +53,7 @@ public class SecurityConfig {
 
 		http.authorizeHttpRequests(
 				request -> request.requestMatchers(requestMatcher).permitAll().anyRequest().authenticated())
-			.cors((cors) -> cors.configurationSource(corsConfigurationSource()))
+			.cors((cors) -> cors.configurationSource(corsConfigurationSource))
 			.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.csrf(AbstractHttpConfigurer::disable)
 			.addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
@@ -68,21 +66,6 @@ public class SecurityConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
-	}
-
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174",
-				"http://localhost:4173", "https://master.d2li7hc8a6datu.amplifyapp.com", "https://fitassist.app",
-				"https://www.fitassist.app"));
-		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-		configuration.setAllowedHeaders(List.of("*"));
-		configuration.setAllowCredentials(true);
-
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", configuration);
-		return source;
 	}
 
 	@Bean

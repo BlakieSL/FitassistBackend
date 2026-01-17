@@ -20,7 +20,6 @@ public final class ValidationServiceImpl implements ValidationService {
 	public <T> void validate(T dto, Class<?>... groups) {
 		Set<ConstraintViolation<T>> errors = validator.validate(dto, groups);
 		if (!errors.isEmpty()) {
-			System.out.println("Validation errors detected:");
 			errors.forEach(error -> System.out
 				.println(error.getPropertyPath() + " " + error.getMessage() + " " + error.getInvalidValue()));
 			throw new IllegalArgumentException("Validation failed");

@@ -6,7 +6,7 @@ import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.function.Function;
