@@ -1,7 +1,6 @@
 package com.fitassist.backend.dto.request.activity;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +24,6 @@ public class DailyActivityItemCreateDto {
 	private BigDecimal weight;
 
 	@NotNull
-	@PastOrPresent
 	private LocalDate date;
 
 }
