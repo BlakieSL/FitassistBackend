@@ -1,7 +1,6 @@
 package com.fitassist.backend.dto.request.food;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +19,6 @@ public class DailyCartFoodCreateDto {
 	private BigDecimal quantity;
 
 	@NotNull
-	@PastOrPresent
 	private LocalDate date;
 
 }
