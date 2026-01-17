@@ -1,10 +1,10 @@
 package com.fitassist.backend.mapper.category;
 
-import org.mapstruct.*;
 import com.fitassist.backend.dto.request.category.CategoryCreateDto;
 import com.fitassist.backend.dto.request.category.CategoryUpdateDto;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.model.thread.ThreadCategory;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public abstract class ThreadCategoryMapper implements BaseMapper<ThreadCategory> {

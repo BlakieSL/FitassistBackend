@@ -1,13 +1,13 @@
 package com.fitassist.backend.dto.response.plan;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import com.fitassist.backend.dto.pojo.AuthorDto;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.dto.response.text.TextResponseDto;
 import com.fitassist.backend.model.plan.PlanStructureType;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

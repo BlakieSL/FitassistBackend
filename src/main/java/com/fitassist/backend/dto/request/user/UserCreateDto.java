@@ -1,10 +1,5 @@
 package com.fitassist.backend.dto.request.user;
 
-import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import com.fitassist.backend.model.user.ActivityLevel;
 import com.fitassist.backend.model.user.Gender;
 import com.fitassist.backend.model.user.Goal;
@@ -13,6 +8,11 @@ import com.fitassist.backend.validation.password.PasswordDigitsDomain;
 import com.fitassist.backend.validation.password.PasswordLowercaseDomain;
 import com.fitassist.backend.validation.password.PasswordSpecialDomain;
 import com.fitassist.backend.validation.password.PasswordUppercaseDomain;
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

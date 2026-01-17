@@ -1,13 +1,13 @@
 package com.fitassist.backend.dto.response.food;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import com.fitassist.backend.dto.pojo.FoodMacros;
 import com.fitassist.backend.dto.pojo.MediaImagesDto;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.dto.response.recipe.RecipeSummaryDto;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.List;

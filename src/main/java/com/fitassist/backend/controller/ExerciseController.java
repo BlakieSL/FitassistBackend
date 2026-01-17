@@ -1,6 +1,13 @@
 package com.fitassist.backend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fitassist.backend.annotation.AdminOnly;
+import com.fitassist.backend.dto.request.exercise.ExerciseCreateDto;
+import com.fitassist.backend.dto.request.filter.FilterDto;
+import com.fitassist.backend.dto.response.exercise.ExerciseCategoriesResponseDto;
+import com.fitassist.backend.dto.response.exercise.ExerciseResponseDto;
+import com.fitassist.backend.dto.response.exercise.ExerciseSummaryDto;
+import com.fitassist.backend.service.declaration.exercise.ExerciseService;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
@@ -11,13 +18,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.fitassist.backend.annotation.AdminOnly;
-import com.fitassist.backend.dto.request.exercise.ExerciseCreateDto;
-import com.fitassist.backend.dto.request.filter.FilterDto;
-import com.fitassist.backend.dto.response.exercise.ExerciseCategoriesResponseDto;
-import com.fitassist.backend.dto.response.exercise.ExerciseResponseDto;
-import com.fitassist.backend.dto.response.exercise.ExerciseSummaryDto;
-import com.fitassist.backend.service.declaration.exercise.ExerciseService;
 
 @RestController
 @RequestMapping("/api/exercises")

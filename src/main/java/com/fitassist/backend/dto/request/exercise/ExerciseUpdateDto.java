@@ -1,11 +1,11 @@
 package com.fitassist.backend.dto.request.exercise;
 
+import com.fitassist.backend.dto.request.text.TextUpdateDto;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fitassist.backend.dto.request.text.TextUpdateDto;
 
 import java.util.List;
 

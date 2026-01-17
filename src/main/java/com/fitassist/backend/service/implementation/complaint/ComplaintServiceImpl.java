@@ -1,14 +1,10 @@
 package com.fitassist.backend.service.implementation.complaint;
 
-import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
+import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.request.complaint.ComplaintCreateDto;
 import com.fitassist.backend.dto.response.comment.ComplaintResponseDto;
 import com.fitassist.backend.exception.InvalidFilterValueException;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.mapper.ComplaintMapper;
 import com.fitassist.backend.model.complaint.CommentComplaint;
 import com.fitassist.backend.model.complaint.ComplaintBase;
@@ -16,6 +12,10 @@ import com.fitassist.backend.model.complaint.ComplaintStatus;
 import com.fitassist.backend.model.complaint.ThreadComplaint;
 import com.fitassist.backend.repository.ComplaintRepository;
 import com.fitassist.backend.service.declaration.complaint.ComplaintService;
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ComplaintServiceImpl implements ComplaintService {

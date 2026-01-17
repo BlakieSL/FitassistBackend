@@ -1,8 +1,8 @@
 package com.fitassist.backend.auth;
 
+import com.fitassist.backend.dto.pojo.UserCredentialsDto;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.fitassist.backend.dto.pojo.UserCredentialsDto;
 
 public class UserDetailsHelper {
 

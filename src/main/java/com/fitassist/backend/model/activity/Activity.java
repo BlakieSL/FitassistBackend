@@ -1,5 +1,9 @@
 package com.fitassist.backend.model.activity;
 
+import com.fitassist.backend.model.IndexedEntity;
+import com.fitassist.backend.model.daily.DailyCartActivity;
+import com.fitassist.backend.model.media.Media;
+import com.fitassist.backend.model.user.UserActivity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,10 +14,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
-import com.fitassist.backend.model.IndexedEntity;
-import com.fitassist.backend.model.daily.DailyCartActivity;
-import com.fitassist.backend.model.media.Media;
-import com.fitassist.backend.model.user.UserActivity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

@@ -1,16 +1,16 @@
 package com.fitassist.backend.specification.specification;
 
-import jakarta.persistence.criteria.*;
-import org.jetbrains.annotations.NotNull;
 import com.fitassist.backend.dto.pojo.FilterCriteria;
-import com.fitassist.backend.specification.specification.field.LikesAndSaves;
-import com.fitassist.backend.specification.specification.field.RecipeField;
 import com.fitassist.backend.model.recipe.Recipe;
 import com.fitassist.backend.model.recipe.RecipeCategoryAssociation;
 import com.fitassist.backend.model.recipe.RecipeFood;
 import com.fitassist.backend.model.user.TypeOfInteraction;
 import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
 import com.fitassist.backend.specification.PredicateContext;
+import com.fitassist.backend.specification.specification.field.LikesAndSaves;
+import com.fitassist.backend.specification.specification.field.RecipeField;
+import jakarta.persistence.criteria.*;
+import org.jetbrains.annotations.NotNull;
 
 import static com.fitassist.backend.specification.SpecificationConstants.*;
 

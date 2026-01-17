@@ -1,9 +1,9 @@
 package com.fitassist.backend.service.implementation.specification;
 
-import org.springframework.stereotype.Component;
 import com.fitassist.backend.dto.pojo.FilterCriteria;
 import com.fitassist.backend.exception.InvalidFilterKeyException;
 import com.fitassist.backend.service.declaration.specification.SpecificationFieldResolver;
+import org.springframework.stereotype.Component;
 
 @Component
 public class SpecificationFieldResolverImpl implements SpecificationFieldResolver {

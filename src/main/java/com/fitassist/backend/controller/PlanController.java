@@ -1,6 +1,14 @@
 package com.fitassist.backend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fitassist.backend.annotation.plan.PlanOwnerOrAdminOrModerator;
+import com.fitassist.backend.annotation.plan.PublicPlanOrOwnerOrAdminOrModerator;
+import com.fitassist.backend.dto.request.filter.FilterDto;
+import com.fitassist.backend.dto.request.plan.PlanCreateDto;
+import com.fitassist.backend.dto.response.plan.PlanCategoriesResponseDto;
+import com.fitassist.backend.dto.response.plan.PlanResponseDto;
+import com.fitassist.backend.dto.response.plan.PlanSummaryDto;
+import com.fitassist.backend.service.declaration.plan.PlanService;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
@@ -11,14 +19,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.fitassist.backend.annotation.plan.PlanOwnerOrAdminOrModerator;
-import com.fitassist.backend.annotation.plan.PublicPlanOrOwnerOrAdminOrModerator;
-import com.fitassist.backend.dto.request.filter.FilterDto;
-import com.fitassist.backend.dto.request.plan.PlanCreateDto;
-import com.fitassist.backend.dto.response.plan.PlanCategoriesResponseDto;
-import com.fitassist.backend.dto.response.plan.PlanResponseDto;
-import com.fitassist.backend.dto.response.plan.PlanSummaryDto;
-import com.fitassist.backend.service.declaration.plan.PlanService;
 
 @RestController
 @RequestMapping("/api/plans")

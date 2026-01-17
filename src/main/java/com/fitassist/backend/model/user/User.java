@@ -1,12 +1,5 @@
 package com.fitassist.backend.model.user;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.SQLRestriction;
 import com.fitassist.backend.model.complaint.ComplaintBase;
 import com.fitassist.backend.model.daily.DailyCart;
 import com.fitassist.backend.model.media.Media;
@@ -17,6 +10,13 @@ import com.fitassist.backend.model.thread.ForumThread;
 import com.fitassist.backend.validation.ValidationGroups;
 import com.fitassist.backend.validation.email.UniqueEmailDomain;
 import com.fitassist.backend.validation.health.HealthInfoShouldBeFullDomain;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

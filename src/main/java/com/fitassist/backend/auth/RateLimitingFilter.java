@@ -1,5 +1,6 @@
 package com.fitassist.backend.auth;
 
+import com.fitassist.backend.service.declaration.ratelimiter.RedissonRateLimiterService;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import jakarta.servlet.FilterChain;
@@ -11,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.fitassist.backend.service.declaration.ratelimiter.RedissonRateLimiterService;
 
 import java.io.IOException;
 import java.util.Arrays;

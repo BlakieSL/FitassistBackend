@@ -1,7 +1,7 @@
 package com.fitassist.backend.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.fitassist.backend.model.plan.PlanCategory;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 

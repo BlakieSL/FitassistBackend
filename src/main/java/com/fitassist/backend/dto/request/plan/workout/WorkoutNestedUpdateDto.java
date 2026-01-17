@@ -1,5 +1,6 @@
 package com.fitassist.backend.dto.request.plan.workout;
 
+import com.fitassist.backend.dto.request.plan.workoutSet.WorkoutSetNestedUpdateDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -8,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fitassist.backend.dto.request.plan.workoutSet.WorkoutSetNestedUpdateDto;
 
 import java.util.List;
 

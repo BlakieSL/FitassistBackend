@@ -1,12 +1,12 @@
 package com.fitassist.backend.repository;
 
+import com.fitassist.backend.dto.pojo.projection.SavesProjection;
+import com.fitassist.backend.model.user.UserExercise;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import com.fitassist.backend.dto.pojo.projection.SavesProjection;
-import com.fitassist.backend.model.user.UserExercise;
 
 import java.util.List;
 import java.util.Optional;

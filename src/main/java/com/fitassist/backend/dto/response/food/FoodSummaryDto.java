@@ -1,9 +1,9 @@
 package com.fitassist.backend.dto.response.food;
 
-import lombok.*;
 import com.fitassist.backend.dto.pojo.FoodMacros;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

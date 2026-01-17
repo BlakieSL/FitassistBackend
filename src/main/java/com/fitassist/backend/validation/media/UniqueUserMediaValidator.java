@@ -1,13 +1,13 @@
 package com.fitassist.backend.validation.media;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.FlushModeType;
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
 import com.fitassist.backend.config.ContextProvider;
 import com.fitassist.backend.dto.request.media.MediaCreateDto;
 import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.repository.MediaRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.FlushModeType;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 public class UniqueUserMediaValidator implements ConstraintValidator<UniqueUserMedia, Object> {
 

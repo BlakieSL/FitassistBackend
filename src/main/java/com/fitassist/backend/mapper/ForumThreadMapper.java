@@ -1,7 +1,5 @@
 package com.fitassist.backend.mapper;
 
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fitassist.backend.dto.request.forumThread.ForumThreadCreateDto;
 import com.fitassist.backend.dto.request.forumThread.ForumThreadUpdateDto;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
@@ -14,6 +12,8 @@ import com.fitassist.backend.model.thread.ThreadCategory;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.ThreadCategoryRepository;
 import com.fitassist.backend.repository.UserRepository;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class ForumThreadMapper {

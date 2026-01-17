@@ -1,13 +1,13 @@
 package com.fitassist.backend.service.implementation.user.interaction.withoutType;
 
-import jakarta.transaction.Transactional;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.exception.NotUniqueRecordException;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.function.Function;
 

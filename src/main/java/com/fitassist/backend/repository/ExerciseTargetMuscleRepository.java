@@ -1,9 +1,9 @@
 package com.fitassist.backend.repository;
 
+import com.fitassist.backend.model.exercise.ExerciseTargetMuscle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import com.fitassist.backend.model.exercise.ExerciseTargetMuscle;
 
 import java.util.List;
 

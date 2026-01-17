@@ -1,22 +1,22 @@
 package com.fitassist.backend.mapper;
 
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import com.fitassist.backend.dto.pojo.AuthorDto;
 import com.fitassist.backend.dto.pojo.UserCredentialsDto;
 import com.fitassist.backend.dto.request.user.UserCreateDto;
 import com.fitassist.backend.dto.request.user.UserUpdateDto;
 import com.fitassist.backend.dto.response.user.UserResponseDto;
-import com.fitassist.backend.model.media.MediaConnectedEntity;
-import com.fitassist.backend.model.user.RoleEnum;
 import com.fitassist.backend.mapper.helper.CommonMappingHelper;
+import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.model.user.Role;
+import com.fitassist.backend.model.user.RoleEnum;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.MediaRepository;
 import com.fitassist.backend.repository.RoleRepository;
 import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import com.fitassist.backend.service.declaration.helpers.CalculationsService;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

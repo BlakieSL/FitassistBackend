@@ -1,10 +1,5 @@
 package com.fitassist.backend.mapper;
 
-import org.mapstruct.Context;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fitassist.backend.dto.request.complaint.ComplaintCreateDto;
 import com.fitassist.backend.dto.response.comment.ComplaintResponseDto;
 import com.fitassist.backend.exception.RecordNotFoundException;
@@ -17,6 +12,11 @@ import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.CommentRepository;
 import com.fitassist.backend.repository.ForumThreadRepository;
 import com.fitassist.backend.repository.UserRepository;
+import org.mapstruct.Context;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring")
 public abstract class ComplaintMapper {

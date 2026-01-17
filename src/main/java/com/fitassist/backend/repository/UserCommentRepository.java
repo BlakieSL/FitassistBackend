@@ -1,13 +1,13 @@
 package com.fitassist.backend.repository;
 
+import com.fitassist.backend.dto.pojo.projection.comment.CommentCountsProjection;
+import com.fitassist.backend.model.user.TypeOfInteraction;
+import com.fitassist.backend.model.user.UserComment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import com.fitassist.backend.dto.pojo.projection.comment.CommentCountsProjection;
-import com.fitassist.backend.model.user.TypeOfInteraction;
-import com.fitassist.backend.model.user.UserComment;
 
 import java.util.List;
 import java.util.Optional;

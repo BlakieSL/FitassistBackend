@@ -1,16 +1,16 @@
 package com.fitassist.backend.service.declaration.exercise;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import com.fitassist.backend.dto.request.exercise.ExerciseCreateDto;
 import com.fitassist.backend.dto.request.filter.FilterDto;
 import com.fitassist.backend.dto.response.exercise.ExerciseCategoriesResponseDto;
 import com.fitassist.backend.dto.response.exercise.ExerciseResponseDto;
 import com.fitassist.backend.dto.response.exercise.ExerciseSummaryDto;
 import com.fitassist.backend.model.exercise.Exercise;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 

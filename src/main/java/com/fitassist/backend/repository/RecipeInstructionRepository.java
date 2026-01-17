@@ -1,7 +1,7 @@
 package com.fitassist.backend.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.fitassist.backend.model.text.RecipeInstruction;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 

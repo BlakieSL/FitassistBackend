@@ -1,6 +1,14 @@
 package com.fitassist.backend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fitassist.backend.annotation.AdminOnly;
+import com.fitassist.backend.dto.request.filter.FilterDto;
+import com.fitassist.backend.dto.request.food.CalculateFoodMacrosRequestDto;
+import com.fitassist.backend.dto.request.food.FoodCreateDto;
+import com.fitassist.backend.dto.response.food.FoodCalculatedMacrosResponseDto;
+import com.fitassist.backend.dto.response.food.FoodResponseDto;
+import com.fitassist.backend.dto.response.food.FoodSummaryDto;
+import com.fitassist.backend.service.declaration.food.FoodService;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
@@ -11,14 +19,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.fitassist.backend.annotation.AdminOnly;
-import com.fitassist.backend.dto.request.filter.FilterDto;
-import com.fitassist.backend.dto.request.food.CalculateFoodMacrosRequestDto;
-import com.fitassist.backend.dto.request.food.FoodCreateDto;
-import com.fitassist.backend.dto.response.food.FoodCalculatedMacrosResponseDto;
-import com.fitassist.backend.dto.response.food.FoodResponseDto;
-import com.fitassist.backend.dto.response.food.FoodSummaryDto;
-import com.fitassist.backend.service.declaration.food.FoodService;
 
 @RestController
 @RequestMapping(path = "/api/foods")

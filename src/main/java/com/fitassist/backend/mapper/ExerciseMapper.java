@@ -1,9 +1,5 @@
 package com.fitassist.backend.mapper;
 
-import com.fitassist.backend.model.exercise.*;
-import com.fitassist.backend.repository.*;
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fitassist.backend.dto.request.exercise.ExerciseCreateDto;
 import com.fitassist.backend.dto.request.exercise.ExerciseUpdateDto;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
@@ -12,10 +8,12 @@ import com.fitassist.backend.dto.response.exercise.ExerciseSummaryDto;
 import com.fitassist.backend.dto.response.exercise.TargetMuscleResponseDto;
 import com.fitassist.backend.dto.response.text.TextResponseDto;
 import com.fitassist.backend.mapper.helper.CommonMappingHelper;
-import source.code.model.exercise.*;
+import com.fitassist.backend.model.exercise.*;
 import com.fitassist.backend.model.text.ExerciseInstruction;
 import com.fitassist.backend.model.text.ExerciseTip;
-import source.code.repository.*;
+import com.fitassist.backend.repository.*;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Set;

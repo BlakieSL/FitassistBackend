@@ -1,21 +1,20 @@
 package com.fitassist.backend.service.implementation.annotation;
 
-import com.fitassist.backend.repository.*;
-import org.springframework.stereotype.Service;
-import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.auth.AuthorizationUtil;
+import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.model.complaint.CommentComplaint;
 import com.fitassist.backend.model.complaint.ThreadComplaint;
 import com.fitassist.backend.model.daily.DailyCartActivity;
 import com.fitassist.backend.model.daily.DailyCartFood;
 import com.fitassist.backend.model.media.Media;
+import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.model.plan.Plan;
 import com.fitassist.backend.model.recipe.Recipe;
 import com.fitassist.backend.model.thread.Comment;
 import com.fitassist.backend.model.thread.ForumThread;
-import source.code.repository.*;
+import com.fitassist.backend.repository.*;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
+import org.springframework.stereotype.Service;
 
 @Service
 public class AuthAnnotationServiceImpl {
@@ -32,12 +31,6 @@ public class AuthAnnotationServiceImpl {
 
 	private final MediaRepository mediaRepository;
 
-	private final WorkoutRepository workoutRepository;
-
-	private final WorkoutSetRepository workoutSetRepository;
-
-	private final WorkoutSetExerciseRepository workoutSetExerciseRepository;
-
 	private final CommentComplaintRepository commentComplaintRepository;
 
 	private final ThreadComplaintRepository threadComplaintRepository;
@@ -48,8 +41,7 @@ public class AuthAnnotationServiceImpl {
 
 	public AuthAnnotationServiceImpl(CommentRepository commentRepository, RepositoryHelper repositoryHelper,
 			ForumThreadRepository forumThreadRepository, PlanRepository planRepository,
-			RecipeRepository recipeRepository, MediaRepository mediaRepository, WorkoutRepository workoutRepository,
-			WorkoutSetRepository workoutSetRepository, WorkoutSetExerciseRepository workoutSetExerciseRepository,
+			RecipeRepository recipeRepository, MediaRepository mediaRepository,
 			CommentComplaintRepository commentComplaintRepository, ThreadComplaintRepository threadComplaintRepository,
 			DailyCartActivityRepository dailyCartActivityRepository, DailyCartFoodRepository dailyCartFoodRepository) {
 		this.commentRepository = commentRepository;
@@ -58,9 +50,6 @@ public class AuthAnnotationServiceImpl {
 		this.planRepository = planRepository;
 		this.recipeRepository = recipeRepository;
 		this.mediaRepository = mediaRepository;
-		this.workoutRepository = workoutRepository;
-		this.workoutSetRepository = workoutSetRepository;
-		this.workoutSetExerciseRepository = workoutSetExerciseRepository;
 		this.commentComplaintRepository = commentComplaintRepository;
 		this.threadComplaintRepository = threadComplaintRepository;
 		this.dailyCartActivityRepository = dailyCartActivityRepository;

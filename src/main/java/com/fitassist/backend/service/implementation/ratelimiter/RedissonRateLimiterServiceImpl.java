@@ -1,12 +1,12 @@
 package com.fitassist.backend.service.implementation.ratelimiter;
 
+import com.fitassist.backend.config.RedissonRateLimitConfig;
+import com.fitassist.backend.service.declaration.ratelimiter.RedissonRateLimiterService;
 import org.redisson.api.RRateLimiter;
 import org.redisson.api.RateIntervalUnit;
 import org.redisson.api.RateType;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
-import com.fitassist.backend.config.RedissonRateLimitConfig;
-import com.fitassist.backend.service.declaration.ratelimiter.RedissonRateLimiterService;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

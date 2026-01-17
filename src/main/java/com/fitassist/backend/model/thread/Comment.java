@@ -1,5 +1,9 @@
 package com.fitassist.backend.model.thread;
 
+import com.fitassist.backend.model.complaint.CommentComplaint;
+import com.fitassist.backend.model.media.Media;
+import com.fitassist.backend.model.user.User;
+import com.fitassist.backend.model.user.UserComment;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,10 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
-import com.fitassist.backend.model.complaint.CommentComplaint;
-import com.fitassist.backend.model.media.Media;
-import com.fitassist.backend.model.user.User;
-import com.fitassist.backend.model.user.UserComment;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

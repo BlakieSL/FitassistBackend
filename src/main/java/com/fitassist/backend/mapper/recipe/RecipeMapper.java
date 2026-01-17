@@ -1,7 +1,5 @@
 package com.fitassist.backend.mapper.recipe;
 
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fitassist.backend.dto.pojo.FoodMacros;
 import com.fitassist.backend.dto.pojo.RecipeFoodDto;
 import com.fitassist.backend.dto.request.recipe.RecipeCreateDto;
@@ -21,6 +19,8 @@ import com.fitassist.backend.model.text.RecipeInstruction;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.RecipeCategoryRepository;
 import com.fitassist.backend.repository.UserRepository;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.util.List;

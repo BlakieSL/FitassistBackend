@@ -1,8 +1,8 @@
 package com.fitassist.backend.event.events.Plan;
 
+import com.fitassist.backend.model.plan.Plan;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import com.fitassist.backend.model.plan.Plan;
 
 @Getter
 public class PlanUpdateEvent extends ApplicationEvent {
