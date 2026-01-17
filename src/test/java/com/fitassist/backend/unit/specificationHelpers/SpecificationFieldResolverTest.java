@@ -1,12 +1,12 @@
 package com.fitassist.backend.unit.specificationHelpers;
 
+import com.fitassist.backend.dto.pojo.FilterCriteria;
+import com.fitassist.backend.exception.InvalidFilterKeyException;
+import com.fitassist.backend.service.implementation.specification.SpecificationFieldResolverImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.fitassist.backend.dto.pojo.FilterCriteria;
-import com.fitassist.backend.exception.InvalidFilterKeyException;
-import com.fitassist.backend.service.implementation.specification.SpecificationFieldResolverImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

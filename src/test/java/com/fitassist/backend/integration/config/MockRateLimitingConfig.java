@@ -1,5 +1,6 @@
 package com.fitassist.backend.integration.config;
 
+import com.fitassist.backend.auth.RateLimitingFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import com.fitassist.backend.auth.RateLimitingFilter;
 
 import java.io.IOException;
 

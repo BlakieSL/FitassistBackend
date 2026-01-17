@@ -1,16 +1,6 @@
 package com.fitassist.backend.integration.test.controller.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
 import com.fitassist.backend.auth.JwtService;
 import com.fitassist.backend.dto.request.auth.PasswordResetDto;
 import com.fitassist.backend.dto.request.auth.PasswordResetRequestDto;
@@ -21,6 +11,16 @@ import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
 import com.fitassist.backend.integration.utils.TestSetup;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.UserRepository;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 

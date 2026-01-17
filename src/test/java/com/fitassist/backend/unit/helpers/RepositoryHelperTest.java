@@ -1,5 +1,7 @@
 package com.fitassist.backend.unit.helpers;
 
+import com.fitassist.backend.exception.RecordNotFoundException;
+import com.fitassist.backend.service.implementation.helpers.RepositoryHelperImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -7,8 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.service.implementation.helpers.RepositoryHelperImpl;
 
 import java.util.List;
 import java.util.Optional;

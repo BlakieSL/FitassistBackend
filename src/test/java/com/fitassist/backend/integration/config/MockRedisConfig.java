@@ -1,5 +1,7 @@
 package com.fitassist.backend.integration.config;
 
+import com.fitassist.backend.auth.RateLimitingFilter;
+import com.fitassist.backend.service.declaration.ratelimiter.RedissonRateLimiterService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,8 +13,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.support.NoOpCacheManager;
 import org.springframework.context.annotation.Bean;
-import com.fitassist.backend.auth.RateLimitingFilter;
-import com.fitassist.backend.service.declaration.ratelimiter.RedissonRateLimiterService;
 
 import java.io.IOException;
 

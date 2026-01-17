@@ -1,20 +1,11 @@
 package com.fitassist.backend.unit.user.withType;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.*;
+import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.response.comment.CommentSummaryDto;
+import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
 import com.fitassist.backend.exception.NotSupportedInteractionTypeException;
 import com.fitassist.backend.exception.NotUniqueRecordException;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
-import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.mapper.CommentMapper;
 import com.fitassist.backend.model.thread.Comment;
 import com.fitassist.backend.model.user.TypeOfInteraction;
@@ -25,6 +16,15 @@ import com.fitassist.backend.repository.UserCommentRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.comment.CommentPopulationService;
 import com.fitassist.backend.service.implementation.user.interaction.withType.UserCommentServiceImpl;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 
 import java.time.LocalDateTime;
 import java.util.List;

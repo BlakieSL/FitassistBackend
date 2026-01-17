@@ -1,14 +1,14 @@
 package com.fitassist.backend.unit.selector;
 
+import com.fitassist.backend.service.declaration.user.SavedService;
+import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
+import com.fitassist.backend.service.implementation.selector.SavedEntityType;
+import com.fitassist.backend.service.implementation.selector.SavedSelectorServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.fitassist.backend.service.implementation.selector.SavedEntityType;
-import com.fitassist.backend.service.declaration.user.SavedService;
-import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
-import com.fitassist.backend.service.implementation.selector.SavedSelectorServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;

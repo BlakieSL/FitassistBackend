@@ -1,5 +1,11 @@
 package com.fitassist.backend.unit.validation;
 
+import com.fitassist.backend.config.ContextProvider;
+import com.fitassist.backend.dto.request.user.UserUpdateDto;
+import com.fitassist.backend.model.user.User;
+import com.fitassist.backend.repository.UserRepository;
+import com.fitassist.backend.validation.email.UniqueEmailDomain;
+import com.fitassist.backend.validation.email.UniqueEmailValidator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.FlushModeType;
 import jakarta.validation.ConstraintValidatorContext;
@@ -11,12 +17,6 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.fitassist.backend.config.ContextProvider;
-import com.fitassist.backend.dto.request.user.UserUpdateDto;
-import com.fitassist.backend.model.user.User;
-import com.fitassist.backend.repository.UserRepository;
-import com.fitassist.backend.validation.email.UniqueEmailDomain;
-import com.fitassist.backend.validation.email.UniqueEmailValidator;
 
 import java.util.Optional;
 

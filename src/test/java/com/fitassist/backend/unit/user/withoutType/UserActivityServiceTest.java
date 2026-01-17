@@ -1,19 +1,10 @@
 package com.fitassist.backend.unit.user.withoutType;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.*;
+import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.response.activity.ActivitySummaryDto;
+import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
 import com.fitassist.backend.exception.NotUniqueRecordException;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
-import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.mapper.ActivityMapper;
 import com.fitassist.backend.model.activity.Activity;
 import com.fitassist.backend.model.user.User;
@@ -23,6 +14,15 @@ import com.fitassist.backend.repository.UserActivityRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.activity.ActivityPopulationService;
 import com.fitassist.backend.service.implementation.user.interaction.withoutType.UserActivityServiceImpl;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,14 +1,6 @@
 package com.fitassist.backend.integration.test.controller.complaint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
 import com.fitassist.backend.dto.request.complaint.ComplaintCreateDto;
 import com.fitassist.backend.dto.request.complaint.ComplaintSubClass;
 import com.fitassist.backend.integration.config.MockAwsS3Config;
@@ -18,6 +10,14 @@ import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
 import com.fitassist.backend.integration.utils.TestSetup;
 import com.fitassist.backend.integration.utils.Utils;
 import com.fitassist.backend.model.complaint.ComplaintReason;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

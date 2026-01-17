@@ -1,9 +1,9 @@
 package com.fitassist.backend.integration.config;
 
+import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 
 @TestConfiguration
 public class MockAwsS3Config {

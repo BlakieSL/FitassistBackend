@@ -1,8 +1,8 @@
 package com.fitassist.backend.integration.utils;
 
+import com.fitassist.backend.auth.CustomAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import com.fitassist.backend.auth.CustomAuthenticationToken;
 
 import java.util.List;
 

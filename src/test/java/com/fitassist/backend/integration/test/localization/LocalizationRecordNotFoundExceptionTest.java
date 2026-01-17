@@ -1,5 +1,11 @@
 package com.fitassist.backend.integration.test.localization;
 
+import com.fitassist.backend.exception.RecordNotFoundException;
+import com.fitassist.backend.integration.config.MockAwsS3Config;
+import com.fitassist.backend.integration.config.MockAwsSesConfig;
+import com.fitassist.backend.integration.config.MockRedisConfig;
+import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
+import com.fitassist.backend.model.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -8,12 +14,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.integration.config.MockAwsS3Config;
-import com.fitassist.backend.integration.config.MockAwsSesConfig;
-import com.fitassist.backend.integration.config.MockRedisConfig;
-import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
-import com.fitassist.backend.model.user.User;
 
 import java.util.Locale;
 

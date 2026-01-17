@@ -1,5 +1,8 @@
 package com.fitassist.backend.unit.auth;
 
+import com.fitassist.backend.auth.JwtService;
+import com.fitassist.backend.exception.InvalidRefreshTokenException;
+import com.fitassist.backend.exception.JwtAuthenticationException;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,9 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
-import com.fitassist.backend.auth.JwtService;
-import com.fitassist.backend.exception.InvalidRefreshTokenException;
-import com.fitassist.backend.exception.JwtAuthenticationException;
 
 import java.text.ParseException;
 import java.util.List;

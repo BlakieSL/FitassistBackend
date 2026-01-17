@@ -1,5 +1,13 @@
 package com.fitassist.backend.integration.test.validation;
 
+import com.fitassist.backend.integration.config.MockAwsS3Config;
+import com.fitassist.backend.integration.config.MockAwsSesConfig;
+import com.fitassist.backend.integration.config.MockRateLimitingConfig;
+import com.fitassist.backend.integration.containers.MySqlRedisAwsContainers;
+import com.fitassist.backend.model.user.ActivityLevel;
+import com.fitassist.backend.model.user.Gender;
+import com.fitassist.backend.model.user.Goal;
+import com.fitassist.backend.model.user.User;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -10,14 +18,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import com.fitassist.backend.model.user.ActivityLevel;
-import com.fitassist.backend.model.user.Gender;
-import com.fitassist.backend.model.user.Goal;
-import com.fitassist.backend.integration.config.MockAwsS3Config;
-import com.fitassist.backend.integration.config.MockAwsSesConfig;
-import com.fitassist.backend.integration.config.MockRateLimitingConfig;
-import com.fitassist.backend.integration.containers.MySqlRedisAwsContainers;
-import com.fitassist.backend.model.user.User;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

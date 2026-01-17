@@ -1,14 +1,5 @@
 package com.fitassist.backend.unit.auth;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.util.ReflectionTestUtils;
 import com.fitassist.backend.auth.JwtService;
 import com.fitassist.backend.dto.request.auth.PasswordResetDto;
 import com.fitassist.backend.dto.request.auth.PasswordResetRequestDto;
@@ -19,6 +10,15 @@ import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.email.EmailService;
 import com.fitassist.backend.service.implementation.auth.PasswordResetServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Collections;
 import java.util.Optional;

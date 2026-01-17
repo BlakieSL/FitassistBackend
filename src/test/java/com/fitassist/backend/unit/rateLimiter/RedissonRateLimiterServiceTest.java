@@ -1,5 +1,7 @@
 package com.fitassist.backend.unit.rateLimiter;
 
+import com.fitassist.backend.config.RedissonRateLimitConfig;
+import com.fitassist.backend.service.implementation.ratelimiter.RedissonRateLimiterServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,8 +12,6 @@ import org.redisson.api.RRateLimiter;
 import org.redisson.api.RateIntervalUnit;
 import org.redisson.api.RateType;
 import org.redisson.api.RedissonClient;
-import com.fitassist.backend.config.RedissonRateLimitConfig;
-import com.fitassist.backend.service.implementation.ratelimiter.RedissonRateLimiterServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

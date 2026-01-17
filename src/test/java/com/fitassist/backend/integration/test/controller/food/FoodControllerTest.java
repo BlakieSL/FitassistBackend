@@ -1,14 +1,6 @@
 package com.fitassist.backend.integration.test.controller.food;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
 import com.fitassist.backend.dto.request.food.CalculateFoodMacrosRequestDto;
 import com.fitassist.backend.dto.request.food.FoodCreateDto;
 import com.fitassist.backend.dto.request.food.FoodUpdateDto;
@@ -18,6 +10,14 @@ import com.fitassist.backend.integration.config.MockRedisConfig;
 import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
 import com.fitassist.backend.integration.utils.TestSetup;
 import com.fitassist.backend.integration.utils.Utils;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 

@@ -1,5 +1,9 @@
 package com.fitassist.backend.integration.test.controller;
 
+import com.fitassist.backend.integration.config.MockAwsS3Config;
+import com.fitassist.backend.integration.config.MockAwsSesConfig;
+import com.fitassist.backend.integration.config.MockRedisConfig;
+import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.RestTemplate;
-import com.fitassist.backend.integration.config.MockAwsS3Config;
-import com.fitassist.backend.integration.config.MockAwsSesConfig;
-import com.fitassist.backend.integration.config.MockRedisConfig;
-import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

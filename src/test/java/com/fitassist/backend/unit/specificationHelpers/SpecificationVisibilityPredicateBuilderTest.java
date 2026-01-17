@@ -1,5 +1,8 @@
 package com.fitassist.backend.unit.specificationHelpers;
 
+import com.fitassist.backend.auth.AuthorizationUtil;
+import com.fitassist.backend.dto.pojo.FilterCriteria;
+import com.fitassist.backend.service.implementation.specification.SpecificationVisibilityPredicateBuilderImpl;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
@@ -11,9 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.fitassist.backend.dto.pojo.FilterCriteria;
-import com.fitassist.backend.auth.AuthorizationUtil;
-import com.fitassist.backend.service.implementation.specification.SpecificationVisibilityPredicateBuilderImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;

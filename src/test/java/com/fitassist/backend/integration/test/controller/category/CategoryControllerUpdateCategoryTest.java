@@ -1,6 +1,13 @@
 package com.fitassist.backend.integration.test.controller.category;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fitassist.backend.dto.request.category.CategoryCreateDto;
+import com.fitassist.backend.integration.config.MockAwsS3Config;
+import com.fitassist.backend.integration.config.MockAwsSesConfig;
+import com.fitassist.backend.integration.config.MockRedisConfig;
+import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
+import com.fitassist.backend.integration.utils.TestSetup;
+import com.fitassist.backend.integration.utils.Utils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import com.fitassist.backend.dto.request.category.CategoryCreateDto;
-import com.fitassist.backend.integration.config.MockAwsS3Config;
-import com.fitassist.backend.integration.config.MockAwsSesConfig;
-import com.fitassist.backend.integration.config.MockRedisConfig;
-import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
-import com.fitassist.backend.integration.utils.TestSetup;
-import com.fitassist.backend.integration.utils.Utils;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

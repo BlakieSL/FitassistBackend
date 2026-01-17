@@ -1,6 +1,16 @@
 package com.fitassist.backend.integration.test.controller.plan;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fitassist.backend.dto.pojo.FilterCriteria;
+import com.fitassist.backend.dto.request.filter.FilterDto;
+import com.fitassist.backend.integration.config.MockAwsS3Config;
+import com.fitassist.backend.integration.config.MockAwsSesConfig;
+import com.fitassist.backend.integration.config.MockRedisConfig;
+import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
+import com.fitassist.backend.integration.utils.TestSetup;
+import com.fitassist.backend.integration.utils.Utils;
+import com.fitassist.backend.specification.specification.filter.FilterDataOption;
+import com.fitassist.backend.specification.specification.filter.FilterOperation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,16 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import com.fitassist.backend.dto.pojo.FilterCriteria;
-import com.fitassist.backend.dto.request.filter.FilterDto;
-import com.fitassist.backend.specification.specification.filter.FilterDataOption;
-import com.fitassist.backend.specification.specification.filter.FilterOperation;
-import com.fitassist.backend.integration.config.MockAwsS3Config;
-import com.fitassist.backend.integration.config.MockAwsSesConfig;
-import com.fitassist.backend.integration.config.MockRedisConfig;
-import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
-import com.fitassist.backend.integration.utils.TestSetup;
-import com.fitassist.backend.integration.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
