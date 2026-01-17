@@ -1,15 +1,15 @@
 package com.fitassist.backend.specification.specification;
 
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
 import com.fitassist.backend.dto.pojo.FilterCriteria;
-import com.fitassist.backend.specification.specification.field.LikesAndSaves;
-import com.fitassist.backend.specification.specification.field.ExerciseField;
 import com.fitassist.backend.model.exercise.Exercise;
 import com.fitassist.backend.model.exercise.ExerciseTargetMuscle;
 import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
 import com.fitassist.backend.specification.PredicateContext;
+import com.fitassist.backend.specification.specification.field.ExerciseField;
+import com.fitassist.backend.specification.specification.field.LikesAndSaves;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 
 public class ExerciseSpecification extends AbstractSpecification<Exercise, ExerciseField> {
 

@@ -1,9 +1,9 @@
 package com.fitassist.backend.service.implementation.specification;
 
-import lombok.Getter;
-import org.springframework.stereotype.Component;
 import com.fitassist.backend.service.declaration.specification.SpecificationFieldResolver;
 import com.fitassist.backend.service.declaration.specification.SpecificationVisibilityPredicateBuilder;
+import lombok.Getter;
+import org.springframework.stereotype.Component;
 
 @Component
 @Getter

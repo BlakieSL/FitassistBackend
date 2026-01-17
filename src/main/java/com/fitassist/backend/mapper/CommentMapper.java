@@ -1,7 +1,5 @@
 package com.fitassist.backend.mapper;
 
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fitassist.backend.dto.request.comment.CommentCreateDto;
 import com.fitassist.backend.dto.request.comment.CommentUpdateDto;
 import com.fitassist.backend.dto.response.comment.CommentResponseDto;
@@ -14,6 +12,8 @@ import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.CommentRepository;
 import com.fitassist.backend.repository.ForumThreadRepository;
 import com.fitassist.backend.repository.UserRepository;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 

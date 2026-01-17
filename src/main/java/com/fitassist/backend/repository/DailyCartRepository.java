@@ -1,12 +1,12 @@
 package com.fitassist.backend.repository;
 
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import com.fitassist.backend.dto.pojo.DateFoodMacros;
 import com.fitassist.backend.dto.pojo.FoodMacros;
 import com.fitassist.backend.dto.pojo.projection.UserActionCountsProjection;
 import com.fitassist.backend.model.daily.DailyCart;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -40,7 +40,7 @@ public interface DailyCartRepository extends JpaRepository<DailyCart, Integer> {
 	Optional<DailyCart> findByUserIdAndDateWithFoodAssociations(int userId, LocalDate date);
 
 	@Query("""
-			    SELECT new source.code.dto.pojo.FoodMacros(
+			    SELECT new com.fitassist.backend.dto.pojo.FoodMacros(
 			        CAST(COALESCE(SUM(f.calories * dcf.quantity / 100), 0) AS bigdecimal),
 			        CAST(COALESCE(SUM(f.protein * dcf.quantity / 100), 0) AS bigdecimal),
 			        CAST(COALESCE(SUM(f.fat * dcf.quantity / 100), 0) AS bigdecimal),
@@ -54,7 +54,7 @@ public interface DailyCartRepository extends JpaRepository<DailyCart, Integer> {
 	Optional<FoodMacros> findAggregatedFoodMacrosByUserIdAndDate(int userId, LocalDate date);
 
 	@Query("""
-			    SELECT new source.code.dto.pojo.DateFoodMacros(
+			    SELECT new com.fitassist.backend.dto.pojo.DateFoodMacros(
 			        dc.date,
 			        CAST(COALESCE(SUM(f.calories * dcf.quantity / 100), 0) AS bigdecimal),
 			        CAST(COALESCE(SUM(f.protein * dcf.quantity / 100), 0) AS bigdecimal),

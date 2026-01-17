@@ -1,12 +1,12 @@
 package com.fitassist.backend.mapper.daily;
 
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fitassist.backend.dto.response.activity.ActivityCalculatedResponseDto;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.model.activity.ActivityCategory;
 import com.fitassist.backend.model.daily.DailyCartActivity;
 import com.fitassist.backend.service.declaration.helpers.CalculationsService;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 

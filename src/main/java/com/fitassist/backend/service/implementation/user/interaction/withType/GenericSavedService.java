@@ -1,13 +1,13 @@
 package com.fitassist.backend.service.implementation.user.interaction.withType;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.transaction.annotation.Transactional;
+import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.exception.NotUniqueRecordException;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.model.user.TypeOfInteraction;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.UserRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 

@@ -1,10 +1,10 @@
 package com.fitassist.backend.service.implementation.selector;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 import com.fitassist.backend.service.declaration.selector.SavedSelectorService;
 import com.fitassist.backend.service.declaration.user.SavedService;
 import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 @Service
 public class SavedSelectorServiceImpl implements SavedSelectorService {

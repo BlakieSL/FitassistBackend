@@ -1,10 +1,10 @@
 package com.fitassist.backend.dto.response.reports;
 
+import com.fitassist.backend.dto.pojo.FoodMacros;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fitassist.backend.dto.pojo.FoodMacros;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

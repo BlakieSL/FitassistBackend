@@ -1,13 +1,6 @@
 package com.fitassist.backend.service.implementation.category;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import jakarta.transaction.Transactional;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.fitassist.backend.dto.request.category.CategoryCreateDto;
 import com.fitassist.backend.dto.request.category.CategoryUpdateDto;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
@@ -18,6 +11,13 @@ import com.fitassist.backend.mapper.category.BaseMapper;
 import com.fitassist.backend.service.declaration.category.CategoryCacheKeyGenerator;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.transaction.Transactional;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Objects;

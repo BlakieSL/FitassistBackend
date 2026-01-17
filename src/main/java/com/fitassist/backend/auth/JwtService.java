@@ -1,5 +1,7 @@
 package com.fitassist.backend.auth;
 
+import com.fitassist.backend.exception.InvalidRefreshTokenException;
+import com.fitassist.backend.exception.JwtAuthenticationException;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -10,8 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
-import com.fitassist.backend.exception.InvalidRefreshTokenException;
-import com.fitassist.backend.exception.JwtAuthenticationException;
 
 import java.text.ParseException;
 import java.time.Instant;

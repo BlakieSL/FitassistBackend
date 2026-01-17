@@ -1,9 +1,9 @@
 package com.fitassist.backend.dto.response.exercise;
 
+import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 
 import java.io.Serializable;
 import java.util.List;

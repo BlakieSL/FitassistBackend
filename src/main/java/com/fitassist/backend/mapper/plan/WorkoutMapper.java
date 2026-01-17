@@ -1,13 +1,13 @@
 package com.fitassist.backend.mapper.plan;
 
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fitassist.backend.dto.request.plan.workout.WorkoutNestedCreateDto;
 import com.fitassist.backend.dto.request.plan.workout.WorkoutNestedUpdateDto;
 import com.fitassist.backend.dto.request.plan.workoutSet.WorkoutSetNestedUpdateDto;
 import com.fitassist.backend.dto.response.plan.WorkoutResponseDto;
 import com.fitassist.backend.model.workout.Workout;
 import com.fitassist.backend.model.workout.WorkoutSet;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Objects;

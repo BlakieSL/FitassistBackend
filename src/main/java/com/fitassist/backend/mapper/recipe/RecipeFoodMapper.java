@@ -1,8 +1,8 @@
 package com.fitassist.backend.mapper.recipe;
 
-import org.mapstruct.*;
 import com.fitassist.backend.dto.request.recipe.RecipeFoodUpdateDto;
 import com.fitassist.backend.model.recipe.RecipeFood;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public abstract class RecipeFoodMapper {

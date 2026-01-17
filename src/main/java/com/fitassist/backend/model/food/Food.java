@@ -1,5 +1,10 @@
 package com.fitassist.backend.model.food;
 
+import com.fitassist.backend.model.IndexedEntity;
+import com.fitassist.backend.model.daily.DailyCartFood;
+import com.fitassist.backend.model.media.Media;
+import com.fitassist.backend.model.recipe.RecipeFood;
+import com.fitassist.backend.model.user.UserFood;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -7,11 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
-import com.fitassist.backend.model.IndexedEntity;
-import com.fitassist.backend.model.daily.DailyCartFood;
-import com.fitassist.backend.model.media.Media;
-import com.fitassist.backend.model.recipe.RecipeFood;
-import com.fitassist.backend.model.user.UserFood;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class Food implements IndexedEntity {
 
-	private static final int MAX_NAME_LENGTH = 50;
+	private static final int MAX_NAME_LENGTH = 500;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,8 +1,8 @@
 package com.fitassist.backend.repository;
 
+import com.fitassist.backend.model.user.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.fitassist.backend.model.user.User;
 
 import java.util.Optional;
 

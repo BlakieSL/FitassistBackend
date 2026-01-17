@@ -1,12 +1,12 @@
 package com.fitassist.backend.mapper.daily;
 
-import org.mapstruct.*;
 import com.fitassist.backend.dto.pojo.FoodMacros;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.dto.response.food.FoodCalculatedMacrosResponseDto;
 import com.fitassist.backend.model.daily.DailyCartFood;
 import com.fitassist.backend.model.food.Food;
 import com.fitassist.backend.model.food.FoodCategory;
+import org.mapstruct.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

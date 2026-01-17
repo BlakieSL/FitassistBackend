@@ -1,10 +1,10 @@
 package com.fitassist.backend.specification;
 
-import org.springframework.data.jpa.domain.Specification;
 import com.fitassist.backend.dto.pojo.FilterCriteria;
 import com.fitassist.backend.dto.request.filter.FilterDto;
-import com.fitassist.backend.specification.specification.filter.FilterDataOption;
 import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
+import com.fitassist.backend.specification.specification.filter.FilterDataOption;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 

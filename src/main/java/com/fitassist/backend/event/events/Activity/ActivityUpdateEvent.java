@@ -1,8 +1,8 @@
 package com.fitassist.backend.event.events.Activity;
 
+import com.fitassist.backend.model.activity.Activity;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import com.fitassist.backend.model.activity.Activity;
 
 @Getter
 public class ActivityUpdateEvent extends ApplicationEvent {

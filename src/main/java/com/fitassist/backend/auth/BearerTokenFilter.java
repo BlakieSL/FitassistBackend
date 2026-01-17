@@ -1,5 +1,6 @@
 package com.fitassist.backend.auth;
 
+import com.fitassist.backend.exception.JwtAuthenticationException;
 import com.nimbusds.jwt.SignedJWT;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import com.fitassist.backend.exception.JwtAuthenticationException;
 
 import java.io.IOException;
 import java.text.ParseException;

@@ -1,11 +1,11 @@
 package com.fitassist.backend.specification.specification;
 
-import jakarta.persistence.criteria.Predicate;
 import com.fitassist.backend.dto.pojo.FilterCriteria;
-import com.fitassist.backend.specification.specification.field.CommentField;
 import com.fitassist.backend.model.thread.Comment;
 import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
 import com.fitassist.backend.specification.PredicateContext;
+import com.fitassist.backend.specification.specification.field.CommentField;
+import jakarta.persistence.criteria.Predicate;
 
 import static com.fitassist.backend.specification.SpecificationConstants.USER_FIELD;
 

@@ -1,12 +1,8 @@
 package com.fitassist.backend.service.implementation.user.interaction.withoutType;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 import com.fitassist.backend.dto.response.forumThread.ForumThreadSummaryDto;
-import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
+import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.mapper.ForumThreadMapper;
 import com.fitassist.backend.model.thread.ForumThread;
 import com.fitassist.backend.model.user.User;
@@ -16,6 +12,10 @@ import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.repository.UserThreadRepository;
 import com.fitassist.backend.service.declaration.thread.ForumThreadPopulationService;
 import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 

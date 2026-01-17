@@ -1,7 +1,5 @@
 package com.fitassist.backend.mapper.plan;
 
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fitassist.backend.dto.request.plan.PlanCreateDto;
 import com.fitassist.backend.dto.request.plan.PlanUpdateDto;
 import com.fitassist.backend.dto.request.plan.workout.WorkoutNestedUpdateDto;
@@ -18,6 +16,8 @@ import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.model.workout.Workout;
 import com.fitassist.backend.repository.PlanCategoryRepository;
 import com.fitassist.backend.repository.UserRepository;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Objects;

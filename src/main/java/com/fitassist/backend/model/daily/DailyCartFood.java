@@ -1,6 +1,7 @@
 package com.fitassist.backend.model.daily;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fitassist.backend.model.food.Food;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -8,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fitassist.backend.model.food.Food;
 
 import java.math.BigDecimal;
 

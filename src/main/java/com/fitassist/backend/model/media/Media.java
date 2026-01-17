@@ -1,12 +1,12 @@
 package com.fitassist.backend.model.media;
 
+import com.fitassist.backend.validation.media.UniqueUserMedia;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fitassist.backend.validation.media.UniqueUserMedia;
 
 @UniqueUserMedia
 @Entity

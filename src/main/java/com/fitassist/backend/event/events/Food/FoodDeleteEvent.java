@@ -1,8 +1,8 @@
 package com.fitassist.backend.event.events.Food;
 
+import com.fitassist.backend.model.food.Food;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import com.fitassist.backend.model.food.Food;
 
 @Getter
 public class FoodDeleteEvent extends ApplicationEvent {

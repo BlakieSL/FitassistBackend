@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.springframework.stereotype.Service;
-import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 
 @Service
 public class JsonPatchServiceImpl implements JsonPatchService {

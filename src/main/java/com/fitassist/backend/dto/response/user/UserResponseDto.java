@@ -1,10 +1,10 @@
 package com.fitassist.backend.dto.response.user;
 
+import com.fitassist.backend.model.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fitassist.backend.model.user.User;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

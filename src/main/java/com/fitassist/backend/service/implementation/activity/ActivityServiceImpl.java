@@ -1,16 +1,8 @@
 package com.fitassist.backend.service.implementation.activity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import jakarta.transaction.Transactional;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
+import com.fitassist.backend.auth.AuthorizationUtil;
+import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.dto.request.activity.ActivityCreateDto;
 import com.fitassist.backend.dto.request.activity.ActivityUpdateDto;
 import com.fitassist.backend.dto.request.activity.CalculateActivityCaloriesRequestDto;
@@ -23,8 +15,6 @@ import com.fitassist.backend.event.events.Activity.ActivityDeleteEvent;
 import com.fitassist.backend.event.events.Activity.ActivityUpdateEvent;
 import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.exception.WeightRequiredException;
-import com.fitassist.backend.config.cache.CacheNames;
-import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.mapper.ActivityMapper;
 import com.fitassist.backend.model.activity.Activity;
 import com.fitassist.backend.model.user.User;
@@ -39,6 +29,16 @@ import com.fitassist.backend.service.implementation.specification.SpecificationD
 import com.fitassist.backend.specification.SpecificationBuilder;
 import com.fitassist.backend.specification.SpecificationFactory;
 import com.fitassist.backend.specification.specification.ActivitySpecification;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;

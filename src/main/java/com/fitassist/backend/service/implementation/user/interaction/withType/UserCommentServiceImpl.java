@@ -1,14 +1,9 @@
 package com.fitassist.backend.service.implementation.user.interaction.withType;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Service;
 import com.fitassist.backend.dto.response.comment.CommentResponseDto;
 import com.fitassist.backend.dto.response.comment.CommentSummaryDto;
-import com.fitassist.backend.exception.NotSupportedInteractionTypeException;
 import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
+import com.fitassist.backend.exception.NotSupportedInteractionTypeException;
 import com.fitassist.backend.mapper.CommentMapper;
 import com.fitassist.backend.model.thread.Comment;
 import com.fitassist.backend.model.user.TypeOfInteraction;
@@ -18,6 +13,11 @@ import com.fitassist.backend.repository.UserCommentRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.comment.CommentPopulationService;
 import com.fitassist.backend.service.declaration.user.SavedService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;

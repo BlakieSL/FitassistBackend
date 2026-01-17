@@ -1,12 +1,12 @@
 package com.fitassist.backend.model.user;
 
+import com.fitassist.backend.model.thread.Comment;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fitassist.backend.model.thread.Comment;
 
 import java.time.LocalDateTime;
 

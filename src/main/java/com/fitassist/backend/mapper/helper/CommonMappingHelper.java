@@ -1,13 +1,13 @@
 package com.fitassist.backend.mapper.helper;
 
-import org.mapstruct.Named;
-import org.springframework.stereotype.Component;
 import com.fitassist.backend.dto.pojo.AuthorDto;
 import com.fitassist.backend.dto.pojo.MediaImagesDto;
 import com.fitassist.backend.dto.request.text.TextUpdateDto;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.text.TextBase;
 import com.fitassist.backend.model.user.User;
+import org.mapstruct.Named;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;

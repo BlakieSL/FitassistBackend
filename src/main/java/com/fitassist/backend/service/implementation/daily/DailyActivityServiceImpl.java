@@ -1,17 +1,13 @@
 package com.fitassist.backend.service.implementation.daily;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;
+import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.request.activity.DailyActivityItemCreateDto;
 import com.fitassist.backend.dto.request.activity.DailyActivityItemUpdateDto;
 import com.fitassist.backend.dto.response.activity.ActivityCalculatedResponseDto;
 import com.fitassist.backend.dto.response.daily.DailyActivitiesResponseDto;
 import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.exception.WeightRequiredException;
-import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.mapper.daily.DailyActivityMapper;
 import com.fitassist.backend.model.activity.Activity;
 import com.fitassist.backend.model.daily.DailyCart;
@@ -25,6 +21,10 @@ import com.fitassist.backend.service.declaration.daily.DailyActivityService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

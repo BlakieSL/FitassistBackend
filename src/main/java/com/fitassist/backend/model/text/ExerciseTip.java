@@ -1,5 +1,6 @@
 package com.fitassist.backend.model.text;
 
+import com.fitassist.backend.model.exercise.Exercise;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -8,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fitassist.backend.model.exercise.Exercise;
 
 @Entity
 @DiscriminatorValue("EXERCISE_TIP")

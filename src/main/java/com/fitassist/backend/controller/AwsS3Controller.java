@@ -1,10 +1,10 @@
 package com.fitassist.backend.controller;
 
+import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 
 @RestController
 @RequestMapping("/api/s3")

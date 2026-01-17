@@ -1,8 +1,8 @@
 package com.fitassist.backend.event.events.Recipe;
 
+import com.fitassist.backend.model.recipe.Recipe;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import com.fitassist.backend.model.recipe.Recipe;
 
 @Getter
 public class RecipeUpdateEvent extends ApplicationEvent {

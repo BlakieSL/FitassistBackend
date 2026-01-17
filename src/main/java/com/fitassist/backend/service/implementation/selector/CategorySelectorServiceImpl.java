@@ -1,9 +1,9 @@
 package com.fitassist.backend.service.implementation.selector;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 import com.fitassist.backend.service.declaration.category.CategoryService;
 import com.fitassist.backend.service.declaration.selector.CategorySelectorService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CategorySelectorServiceImpl implements CategorySelectorService {
