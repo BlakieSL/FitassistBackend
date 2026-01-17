@@ -1,6 +1,15 @@
 package com.fitassist.backend.integration.test.controller.plan;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fitassist.backend.dto.request.plan.PlanCreateDto;
+import com.fitassist.backend.dto.request.plan.PlanUpdateDto;
+import com.fitassist.backend.integration.config.MockAwsS3Config;
+import com.fitassist.backend.integration.config.MockAwsSesConfig;
+import com.fitassist.backend.integration.config.MockRedisConfig;
+import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
+import com.fitassist.backend.integration.utils.TestSetup;
+import com.fitassist.backend.integration.utils.Utils;
+import com.fitassist.backend.model.plan.PlanStructureType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +19,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import com.fitassist.backend.dto.request.plan.PlanCreateDto;
-import com.fitassist.backend.dto.request.plan.PlanUpdateDto;
-import com.fitassist.backend.model.plan.PlanStructureType;
-import com.fitassist.backend.integration.config.MockAwsS3Config;
-import com.fitassist.backend.integration.config.MockAwsSesConfig;
-import com.fitassist.backend.integration.config.MockRedisConfig;
-import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
-import com.fitassist.backend.integration.utils.TestSetup;
-import com.fitassist.backend.integration.utils.Utils;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

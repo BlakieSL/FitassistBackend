@@ -1,14 +1,6 @@
 package com.fitassist.backend.integration.test.controller.daily;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
 import com.fitassist.backend.dto.request.food.DailyCartFoodCreateDto;
 import com.fitassist.backend.dto.request.food.DailyCartFoodUpdateDto;
 import com.fitassist.backend.integration.config.MockAwsS3Config;
@@ -18,6 +10,14 @@ import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
 import com.fitassist.backend.integration.test.controller.food.FoodSql;
 import com.fitassist.backend.integration.utils.TestSetup;
 import com.fitassist.backend.integration.utils.Utils;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

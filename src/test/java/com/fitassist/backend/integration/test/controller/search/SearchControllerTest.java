@@ -1,6 +1,11 @@
 package com.fitassist.backend.integration.test.controller.search;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fitassist.backend.integration.config.MockAwsS3Config;
+import com.fitassist.backend.integration.config.MockAwsSesConfig;
+import com.fitassist.backend.integration.config.MockRedisConfig;
+import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
+import com.fitassist.backend.service.declaration.search.LuceneInitialLoadService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,11 +15,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import com.fitassist.backend.integration.config.MockAwsS3Config;
-import com.fitassist.backend.integration.config.MockAwsSesConfig;
-import com.fitassist.backend.integration.config.MockRedisConfig;
-import com.fitassist.backend.integration.containers.MySqlContainerInitializer;
-import com.fitassist.backend.service.declaration.search.LuceneInitialLoadService;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

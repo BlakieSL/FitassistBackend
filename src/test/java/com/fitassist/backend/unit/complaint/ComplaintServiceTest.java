@@ -1,5 +1,16 @@
 package com.fitassist.backend.unit.complaint;
 
+import com.fitassist.backend.auth.AuthorizationUtil;
+import com.fitassist.backend.dto.request.complaint.ComplaintCreateDto;
+import com.fitassist.backend.dto.request.complaint.ComplaintSubClass;
+import com.fitassist.backend.dto.response.comment.ComplaintResponseDto;
+import com.fitassist.backend.exception.RecordNotFoundException;
+import com.fitassist.backend.mapper.ComplaintMapper;
+import com.fitassist.backend.model.complaint.CommentComplaint;
+import com.fitassist.backend.model.complaint.ComplaintStatus;
+import com.fitassist.backend.model.complaint.ThreadComplaint;
+import com.fitassist.backend.repository.ComplaintRepository;
+import com.fitassist.backend.service.implementation.complaint.ComplaintServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,17 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.fitassist.backend.dto.request.complaint.ComplaintCreateDto;
-import com.fitassist.backend.dto.response.comment.ComplaintResponseDto;
-import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.dto.request.complaint.ComplaintSubClass;
-import com.fitassist.backend.auth.AuthorizationUtil;
-import com.fitassist.backend.mapper.ComplaintMapper;
-import com.fitassist.backend.model.complaint.CommentComplaint;
-import com.fitassist.backend.model.complaint.ComplaintStatus;
-import com.fitassist.backend.model.complaint.ThreadComplaint;
-import com.fitassist.backend.repository.ComplaintRepository;
-import com.fitassist.backend.service.implementation.complaint.ComplaintServiceImpl;
 
 import java.util.Optional;
 

@@ -1,15 +1,15 @@
 package com.fitassist.backend.unit.comment;
 
+import com.fitassist.backend.dto.response.comment.CommentResponseDto;
+import com.fitassist.backend.repository.CommentRepository;
+import com.fitassist.backend.service.declaration.comment.CommentPopulationService;
+import com.fitassist.backend.service.implementation.comment.CommentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.fitassist.backend.dto.response.comment.CommentResponseDto;
-import com.fitassist.backend.repository.CommentRepository;
-import com.fitassist.backend.service.declaration.comment.CommentPopulationService;
-import com.fitassist.backend.service.implementation.comment.CommentServiceImpl;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;

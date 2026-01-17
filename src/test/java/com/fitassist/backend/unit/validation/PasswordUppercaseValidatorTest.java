@@ -1,5 +1,7 @@
 package com.fitassist.backend.unit.validation;
 
+import com.fitassist.backend.validation.password.PasswordUppercaseDomain;
+import com.fitassist.backend.validation.password.PasswordUppercaseValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,8 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.fitassist.backend.validation.password.PasswordUppercaseDomain;
-import com.fitassist.backend.validation.password.PasswordUppercaseValidator;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

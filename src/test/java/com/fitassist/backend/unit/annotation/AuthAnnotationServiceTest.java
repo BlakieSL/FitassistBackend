@@ -1,6 +1,18 @@
 package com.fitassist.backend.unit.annotation;
 
+import com.fitassist.backend.auth.AuthorizationUtil;
+import com.fitassist.backend.model.complaint.CommentComplaint;
+import com.fitassist.backend.model.complaint.ThreadComplaint;
+import com.fitassist.backend.model.media.Media;
+import com.fitassist.backend.model.media.MediaConnectedEntity;
+import com.fitassist.backend.model.plan.Plan;
+import com.fitassist.backend.model.recipe.Recipe;
+import com.fitassist.backend.model.thread.Comment;
+import com.fitassist.backend.model.thread.ForumThread;
+import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.*;
+import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
+import com.fitassist.backend.service.implementation.annotation.AuthAnnotationServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,19 +21,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.fitassist.backend.model.media.MediaConnectedEntity;
-import com.fitassist.backend.auth.AuthorizationUtil;
-import com.fitassist.backend.model.complaint.CommentComplaint;
-import com.fitassist.backend.model.complaint.ThreadComplaint;
-import com.fitassist.backend.model.media.Media;
-import com.fitassist.backend.model.plan.Plan;
-import com.fitassist.backend.model.recipe.Recipe;
-import com.fitassist.backend.model.thread.Comment;
-import com.fitassist.backend.model.thread.ForumThread;
-import com.fitassist.backend.model.user.User;
-import source.code.repository.*;
-import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
-import com.fitassist.backend.service.implementation.annotation.AuthAnnotationServiceImpl;
 
 import java.util.Optional;
 
