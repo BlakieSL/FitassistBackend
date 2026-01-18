@@ -140,6 +140,8 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 		Cookie rateLimitCookie = new Cookie(RATE_LIMIT_COOKIE_NAME, newIdentifier);
 		rateLimitCookie.setPath("/");
 		rateLimitCookie.setHttpOnly(true);
+		rateLimitCookie.setSecure(true);
+		rateLimitCookie.setAttribute("SameSite", "Strict");
 		rateLimitCookie.setMaxAge(5 * 60);
 		response.addCookie(rateLimitCookie);
 		return newIdentifier;
