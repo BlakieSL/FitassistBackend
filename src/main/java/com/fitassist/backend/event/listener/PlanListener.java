@@ -7,8 +7,9 @@ import com.fitassist.backend.event.events.Plan.PlanUpdateEvent;
 import com.fitassist.backend.model.plan.Plan;
 import com.fitassist.backend.service.declaration.cache.CacheService;
 import com.fitassist.backend.service.declaration.search.LuceneIndexService;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 public class PlanListener {
@@ -22,7 +23,7 @@ public class PlanListener {
 		this.luceneService = luceneService;
 	}
 
-	@EventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handlePlanCreate(PlanCreateEvent event) {
 		Plan plan = event.getPlan();
 
@@ -31,7 +32,7 @@ public class PlanListener {
 		}
 	}
 
-	@EventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handlePlanUpdate(PlanUpdateEvent event) {
 		Plan plan = event.getPlan();
 
@@ -41,7 +42,7 @@ public class PlanListener {
 		}
 	}
 
-	@EventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handlePlanDelete(PlanDeleteEvent event) {
 		Plan plan = event.getPlan();
 

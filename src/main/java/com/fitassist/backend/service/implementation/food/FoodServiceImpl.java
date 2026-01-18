@@ -122,6 +122,7 @@ public class FoodServiceImpl implements FoodService {
 	}
 
 	@Override
+	@Transactional
 	public void deleteFood(int foodId) {
 		Food food = find(foodId);
 		foodRepository.delete(food);

@@ -51,7 +51,15 @@ public class MediaServiceImpl implements MediaService {
 		byte[] imageBytes = multipartFileToBytes(request.getImage());
 		String imageName = s3Service.uploadImage(imageBytes);
 
-		Media savedMedia = mediaRepository.save(mediaMapper.toEntity(request, imageName));
+		Media savedMedia;
+		try {
+			savedMedia = mediaRepository.save(mediaMapper.toEntity(request, imageName));
+			mediaRepository.flush();
+		}
+		catch (Exception e) {
+			s3Service.deleteImage(imageName);
+			throw e;
+		}
 
 		applicationEventPublisher.publishEvent(MediaUpdateEvent.of(this, savedMedia));
 
@@ -64,10 +72,12 @@ public class MediaServiceImpl implements MediaService {
 	@Transactional
 	public void deleteMedia(int mediaId) {
 		Media media = find(mediaId);
-
-		s3Service.deleteImage(media.getImageName());
+		String imageName = media.getImageName();
 
 		mediaRepository.delete(media);
+		mediaRepository.flush();
+
+		s3Service.deleteImage(imageName);
 
 		applicationEventPublisher.publishEvent(MediaDeleteEvent.of(this, media));
 	}
@@ -117,8 +127,10 @@ public class MediaServiceImpl implements MediaService {
 			mediaRepository
 				.findFirstByParentIdAndParentTypeOrderByIdAsc(request.getParentId(), MediaConnectedEntity.USER)
 				.ifPresent(existingMedia -> {
-					s3Service.deleteImage(existingMedia.getImageName());
+					String imageName = existingMedia.getImageName();
 					mediaRepository.delete(existingMedia);
+					mediaRepository.flush();
+					s3Service.deleteImage(imageName);
 					applicationEventPublisher.publishEvent(MediaDeleteEvent.of(this, existingMedia));
 				});
 		}

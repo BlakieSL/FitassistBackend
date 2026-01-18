@@ -7,8 +7,9 @@ import com.fitassist.backend.event.events.Activity.ActivityUpdateEvent;
 import com.fitassist.backend.model.activity.Activity;
 import com.fitassist.backend.service.declaration.cache.CacheService;
 import com.fitassist.backend.service.declaration.search.LuceneIndexService;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 public class ActivityListener {
@@ -22,14 +23,14 @@ public class ActivityListener {
 		this.luceneService = luceneService;
 	}
 
-	@EventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handleActivityCreate(ActivityCreateEvent event) {
 		Activity activity = event.getActivity();
 
 		luceneService.addEntity(activity);
 	}
 
-	@EventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handleActivityUpdate(ActivityUpdateEvent event) {
 		Activity activity = event.getActivity();
 
@@ -37,7 +38,7 @@ public class ActivityListener {
 		luceneService.updateEntity(activity);
 	}
 
-	@EventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handleActivityDelete(ActivityDeleteEvent event) {
 		Activity activity = event.getActivity();
 

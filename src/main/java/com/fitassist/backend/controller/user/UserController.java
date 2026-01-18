@@ -58,10 +58,10 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
+	//deprecated - use put instead
 	@AccountOwnerOrAdmin
 	@PatchMapping("/{id}")
-	public ResponseEntity<Void> updateUser(@PathVariable int id,
-			@Validated(ValidationGroups.Registration.class) @RequestBody JsonMergePatch patch)
+	public ResponseEntity<Void> updateUser(@PathVariable int id, @RequestBody JsonMergePatch patch)
 			throws JsonPatchException, JsonProcessingException {
 		userService.updateUser(id, patch);
 		return ResponseEntity.noContent().build();

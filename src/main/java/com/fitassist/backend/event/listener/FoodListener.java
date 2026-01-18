@@ -7,8 +7,9 @@ import com.fitassist.backend.event.events.Food.FoodUpdateEvent;
 import com.fitassist.backend.model.food.Food;
 import com.fitassist.backend.service.declaration.cache.CacheService;
 import com.fitassist.backend.service.declaration.search.LuceneIndexService;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 public class FoodListener {
@@ -22,14 +23,14 @@ public class FoodListener {
 		this.luceneService = luceneService;
 	}
 
-	@EventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handleFoodCreate(FoodCreateEvent event) {
 		Food food = event.getFood();
 
 		luceneService.addEntity(food);
 	}
 
-	@EventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handleFoodUpdate(FoodUpdateEvent event) {
 		Food food = event.getFood();
 
@@ -37,7 +38,7 @@ public class FoodListener {
 		luceneService.updateEntity(food);
 	}
 
-	@EventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handleFoodDelete(FoodDeleteEvent event) {
 		Food food = event.getFood();
 
