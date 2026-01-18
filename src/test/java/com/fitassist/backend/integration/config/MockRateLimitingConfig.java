@@ -16,10 +16,10 @@ public class MockRateLimitingConfig {
 
 	@Bean
 	public RateLimitingFilter rateLimitingFilter() {
-		return new RateLimitingFilter(null, null) {
+		return new RateLimitingFilter(null, null, null) {
 			@Override
-			protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response,
-					@NotNull FilterChain filterChain) throws ServletException, IOException {
+			protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response,
+											@NotNull FilterChain filterChain) throws ServletException, IOException {
 				filterChain.doFilter(request, response);
 			}
 		};

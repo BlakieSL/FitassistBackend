@@ -1,8 +1,7 @@
 package com.fitassist.backend.integration.test.controller.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fitassist.backend.auth.CookieService;
 import com.fitassist.backend.auth.JwtService;
-import com.fitassist.backend.dto.request.auth.RefreshTokenRequestDto;
 import com.fitassist.backend.integration.config.MockAwsS3Config;
 import com.fitassist.backend.integration.config.MockAwsSesConfig;
 import com.fitassist.backend.integration.config.MockRedisConfig;
@@ -13,12 +12,12 @@ import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -29,7 +28,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestSetup
@@ -42,26 +41,24 @@ public class UserControllerRefreshTokenTest {
 	private MockMvc mockMvc;
 
 	@Autowired
-	private ObjectMapper objectMapper;
+	private JwtService jwtService;
 
 	@Autowired
-	private JwtService jwtService;
+	private CookieService cookieService;
 
 	@Value("${jws.sharedKey}")
 	private String sharedKey;
 
 	@WithAnonymousUser
 	@Test
-	@DisplayName("POST - /refresh-token - Should return new access token with valid refresh token")
+	@DisplayName("POST - /refresh-token - Should return new access token cookie with valid refresh token")
 	void refreshTokenSuccess() throws Exception {
-		String validRefreshToken = jwtService.createAccessToken("username", 1, List.of("ROLE_USER"));
-
-		var request = new RefreshTokenRequestDto(validRefreshToken);
+		String validRefreshToken = jwtService.createRefreshToken("username", 1, List.of("ROLE_USER"));
 
 		mockMvc
-			.perform(post("/api/users/refresh-token").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request)))
-			.andExpectAll(status().isOk(), jsonPath("$.accessToken").isNotEmpty());
+			.perform(post("/api/users/refresh-token")
+				.cookie(new Cookie(cookieService.getRefreshTokenCookieName(), validRefreshToken)))
+			.andExpectAll(status().isOk(), cookie().exists(cookieService.getAccessTokenCookieName()));
 	}
 
 	@WithAnonymousUser
@@ -70,11 +67,9 @@ public class UserControllerRefreshTokenTest {
 	void refreshTokenInvalid() throws Exception {
 		String invalidToken = "thisIsNotAValidJWT";
 
-		var request = new RefreshTokenRequestDto(invalidToken);
-
 		mockMvc
-			.perform(post("/api/users/refresh-token").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request)))
+			.perform(post("/api/users/refresh-token")
+				.cookie(new Cookie(cookieService.getRefreshTokenCookieName(), invalidToken)))
 			.andExpectAll(status().isBadRequest());
 	}
 
@@ -92,11 +87,9 @@ public class UserControllerRefreshTokenTest {
 		SignedJWT expiredToken = new SignedJWT(signedJWT.getHeader(), expiredClaimsSet);
 		expiredToken.sign(new MACSigner(sharedKey.getBytes()));
 
-		var request = new RefreshTokenRequestDto(expiredToken.serialize());
-
 		mockMvc
-			.perform(post("/api/users/refresh-token").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request)))
+			.perform(post("/api/users/refresh-token")
+				.cookie(new Cookie(cookieService.getRefreshTokenCookieName(), expiredToken.serialize())))
 			.andExpectAll(status().isUnauthorized());
 	}
 
@@ -115,11 +108,9 @@ public class UserControllerRefreshTokenTest {
 		SignedJWT tamperedToken = new SignedJWT(signedJWT.getHeader(), tamperedClaimsSet);
 		tamperedToken.sign(new MACSigner("INVALID_SHARED_KEY_FOR_TESTING_PURPOSE".getBytes()));
 
-		var request = new RefreshTokenRequestDto(tamperedToken.serialize());
-
 		mockMvc
-			.perform(post("/api/users/refresh-token").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request)))
+			.perform(post("/api/users/refresh-token")
+				.cookie(new Cookie(cookieService.getRefreshTokenCookieName(), tamperedToken.serialize())))
 			.andExpectAll(status().isUnauthorized());
 	}
 
@@ -136,12 +127,28 @@ public class UserControllerRefreshTokenTest {
 		SignedJWT tokenWithMissingClaims = new SignedJWT(header, missingClaimsSet);
 		tokenWithMissingClaims.sign(new MACSigner(sharedKey.getBytes()));
 
-		var request = new RefreshTokenRequestDto(tokenWithMissingClaims.serialize());
-
 		mockMvc
-			.perform(post("/api/users/refresh-token").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request)))
+			.perform(post("/api/users/refresh-token")
+				.cookie(new Cookie(cookieService.getRefreshTokenCookieName(), tokenWithMissingClaims.serialize())))
 			.andExpectAll(status().isBadRequest());
+	}
+
+	@WithAnonymousUser
+	@Test
+	@DisplayName("POST - /refresh-token - Should return 400 when no refresh token cookie")
+	void refreshTokenMissingCookie() throws Exception {
+		mockMvc.perform(post("/api/users/refresh-token")).andExpectAll(status().isBadRequest());
+	}
+
+	@WithAnonymousUser
+	@Test
+	@DisplayName("POST - /logout - Should clear auth cookies")
+	void logoutSuccess() throws Exception {
+		mockMvc.perform(post("/api/users/logout"))
+			.andExpectAll(status().isOk(), cookie().exists(cookieService.getAccessTokenCookieName()),
+					cookie().exists(cookieService.getRefreshTokenCookieName()),
+					cookie().maxAge(cookieService.getAccessTokenCookieName(), 0),
+					cookie().maxAge(cookieService.getRefreshTokenCookieName(), 0));
 	}
 
 }

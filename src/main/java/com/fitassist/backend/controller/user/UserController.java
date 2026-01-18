@@ -2,16 +2,18 @@ package com.fitassist.backend.controller.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fitassist.backend.annotation.AccountOwnerOrAdmin;
+import com.fitassist.backend.auth.CookieService;
 import com.fitassist.backend.auth.JwtService;
 import com.fitassist.backend.dto.pojo.AuthorDto;
-import com.fitassist.backend.dto.request.auth.RefreshTokenRequestDto;
 import com.fitassist.backend.dto.request.user.UserCreateDto;
 import com.fitassist.backend.dto.request.user.UserUpdateDto;
-import com.fitassist.backend.dto.response.other.AccessTokenResponseDto;
 import com.fitassist.backend.dto.response.user.UserResponseDto;
+import com.fitassist.backend.exception.InvalidRefreshTokenException;
 import com.fitassist.backend.service.declaration.user.UserService;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +27,12 @@ public class UserController {
 
 	private final JwtService jwtService;
 
-	public UserController(UserService userService, JwtService jwtService) {
+	private final CookieService cookieService;
+
+	public UserController(UserService userService, JwtService jwtService, CookieService cookieService) {
 		this.userService = userService;
 		this.jwtService = jwtService;
+		this.cookieService = cookieService;
 	}
 
 	@AccountOwnerOrAdmin
@@ -44,10 +49,18 @@ public class UserController {
 	}
 
 	@PostMapping("/refresh-token")
-	public ResponseEntity<AccessTokenResponseDto> refreshToken(@Valid @RequestBody RefreshTokenRequestDto dtoRequest) {
-		String newAccessToken = jwtService.refreshAccessToken(dtoRequest.getRefreshToken());
-		AccessTokenResponseDto accessTokenResponseDto = AccessTokenResponseDto.of(newAccessToken);
-		return ResponseEntity.ok(accessTokenResponseDto);
+	public ResponseEntity<Void> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+		String refreshToken = cookieService.getRefreshTokenFromCookie(request)
+			.orElseThrow(() -> new InvalidRefreshTokenException("No refresh token"));
+		String newAccessToken = jwtService.refreshAccessToken(refreshToken);
+		cookieService.setAccessTokenCookie(response, newAccessToken);
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/logout")
+	public ResponseEntity<Void> logout(HttpServletResponse response) {
+		cookieService.clearAuthCookies(response);
+		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping("/register")

@@ -1,10 +1,10 @@
 package com.fitassist.backend.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitassist.backend.service.implementation.user.UserServiceImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -18,9 +18,13 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
 	private final UserServiceImpl userServiceImpl;
 
-	public JwtAuthenticationSuccessHandler(JwtService jwtService, UserServiceImpl userServiceImpl) {
+	private final CookieService cookieService;
+
+	public JwtAuthenticationSuccessHandler(JwtService jwtService, UserServiceImpl userServiceImpl,
+			CookieService cookieService) {
 		this.jwtService = jwtService;
 		this.userServiceImpl = userServiceImpl;
+		this.cookieService = cookieService;
 	}
 
 	@Override
@@ -35,10 +39,10 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
 		String accessToken = jwtService.createAccessToken(authentication.getName(), userId, authorities);
 		String refreshToken = jwtService.createRefreshToken(authentication.getName(), userId, authorities);
-		new ObjectMapper().writeValue(response.getWriter(), new JwtWrapper(accessToken, refreshToken));
-	}
 
-	private record JwtWrapper(String accessToken, String refreshToken) {
+		cookieService.setAccessTokenCookie(response, accessToken);
+		cookieService.setRefreshTokenCookie(response, refreshToken);
+		response.setStatus(HttpStatus.OK.value());
 	}
 
 }

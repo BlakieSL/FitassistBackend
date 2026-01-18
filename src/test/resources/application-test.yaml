@@ -68,3 +68,14 @@ app:
 logging:
   level:
     root: INFO
+
+cookie:
+  access-token:
+    name: accessToken
+    max-age: 900
+  refresh-token:
+    name: refreshToken
+    max-age: 604800
+  rate-limit:
+    name: rateLimitId
+    max-age: 300
