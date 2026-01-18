@@ -59,3 +59,14 @@ cors:
     - https://master.d2li7hc8a6datu.amplifyapp.com
     - https://fitassist.app
     - https://www.fitassist.app
+
+cookie:
+  access-token:
+    name: accessToken
+    max-age: 900
+  refresh-token:
+    name: refreshToken
+    max-age: 604800
+  rate-limit:
+    name: rateLimitId
+    max-age: 300

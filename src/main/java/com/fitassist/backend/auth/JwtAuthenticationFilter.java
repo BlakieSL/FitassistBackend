@@ -30,9 +30,9 @@ public class JwtAuthenticationFilter extends HttpFilter {
 	private final AuthenticationSuccessHandler successHandler;
 
 	public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtService jwtService,
-			UserServiceImpl userServiceImpl) {
+			UserServiceImpl userServiceImpl, CookieService cookieService) {
 		this.authenticationManager = authenticationManager;
-		successHandler = new JwtAuthenticationSuccessHandler(jwtService, userServiceImpl);
+		successHandler = new JwtAuthenticationSuccessHandler(jwtService, userServiceImpl, cookieService);
 	}
 
 	@Override

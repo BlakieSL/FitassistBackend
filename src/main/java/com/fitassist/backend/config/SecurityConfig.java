@@ -1,6 +1,7 @@
 package com.fitassist.backend.config;
 
 import com.fitassist.backend.auth.BearerTokenFilter;
+import com.fitassist.backend.auth.CookieService;
 import com.fitassist.backend.auth.JwtAuthenticationFilter;
 import com.fitassist.backend.auth.JwtService;
 import com.fitassist.backend.auth.RateLimitingFilter;
@@ -34,12 +35,16 @@ public class SecurityConfig {
 
 	private final CorsConfigurationSource corsConfigurationSource;
 
+	private final CookieService cookieService;
+
 	public SecurityConfig(JwtService jwtService, @Lazy UserServiceImpl userServiceImpl,
-			@Lazy RateLimitingFilter rateLimitingFilter, CorsConfigurationSource corsConfigurationSource) {
+			@Lazy RateLimitingFilter rateLimitingFilter, CorsConfigurationSource corsConfigurationSource,
+			CookieService cookieService) {
 		this.jwtService = jwtService;
 		this.userServiceImpl = userServiceImpl;
 		this.rateLimitingFilter = rateLimitingFilter;
 		this.corsConfigurationSource = corsConfigurationSource;
+		this.cookieService = cookieService;
 	}
 
 	@Bean
@@ -47,9 +52,9 @@ public class SecurityConfig {
 			RequestMatcher requestMatcher) throws Exception {
 		AuthenticationManager authenticationManager = authenticationManagerBuilder.getOrBuild();
 		JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtService,
-				userServiceImpl);
+				userServiceImpl, cookieService);
 
-		BearerTokenFilter bearerTokenFilter = new BearerTokenFilter(jwtService);
+		BearerTokenFilter bearerTokenFilter = new BearerTokenFilter(jwtService, cookieService);
 
 		http.authorizeHttpRequests(
 				request -> request.requestMatchers(requestMatcher).permitAll().anyRequest().authenticated())
@@ -76,6 +81,8 @@ public class SecurityConfig {
 				(request) -> "/api/users/login".equals(request.getRequestURI())
 						&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
 				(request) -> "/api/users/refresh-token".equals(request.getRequestURI())
+						&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
+				(request) -> "/api/users/logout".equals(request.getRequestURI())
 						&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
 				(request) -> "/api/password-reset/request".equals(request.getRequestURI())
 						&& ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod())),
