@@ -9,8 +9,12 @@ import com.fitassist.backend.dto.request.user.UserUpdateDto;
 import com.fitassist.backend.dto.response.user.UserResponseDto;
 import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.mapper.UserMapper;
+import com.fitassist.backend.model.user.Role;
+import com.fitassist.backend.model.user.RoleEnum;
 import com.fitassist.backend.model.user.User;
+import com.fitassist.backend.repository.RoleRepository;
 import com.fitassist.backend.repository.UserRepository;
+import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
@@ -18,13 +22,16 @@ import com.fitassist.backend.service.declaration.user.UserService;
 import com.fitassist.backend.service.implementation.helpers.JsonPatchServiceImpl;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Optional;
 
 @Service
@@ -42,25 +49,40 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	private final UserRepository userRepository;
 
+	private final RoleRepository roleRepository;
+
+	private final CalculationsService calculationsService;
+
 	public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, ValidationService validationService,
-			JsonPatchServiceImpl jsonPatchService, PasswordEncoder passwordEncoder, RepositoryHelper repositoryHelper) {
+			JsonPatchServiceImpl jsonPatchService, PasswordEncoder passwordEncoder, RepositoryHelper repositoryHelper,
+			RoleRepository roleRepository, CalculationsService calculationsService) {
 		this.userRepository = userRepository;
 		this.userMapper = userMapper;
 		this.validationService = validationService;
 		this.jsonPatchService = jsonPatchService;
 		this.passwordEncoder = passwordEncoder;
 		this.repositoryHelper = repositoryHelper;
+		this.roleRepository = roleRepository;
+		this.calculationsService = calculationsService;
 	}
 
 	@Override
 	@Transactional
 	public UserResponseDto register(UserCreateDto request) {
 		User user = userMapper.toEntity(request);
-		userMapper.addDefaultRole(user);
+		user.setPassword(passwordEncoder.encode(request.getPassword()));
+		addDefaultRole(user);
 
 		User savedUser = userRepository.save(user);
+		UserResponseDto response = userMapper.toResponse(savedUser);
 
-		return userMapper.toResponse(savedUser);
+		return calculateCalories(savedUser, response);
+	}
+
+	private void addDefaultRole(User user) {
+		Role role = roleRepository.findByName(RoleEnum.USER)
+			.orElseThrow(() -> new RecordNotFoundException(Role.class, RoleEnum.USER.name()));
+		user.getRoles().add(role);
 	}
 
 	@Override
@@ -76,9 +98,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		User user = find(userId);
 		UserUpdateDto patchedUserUpdateDto = applyPatchToUser(patch, userId);
 
-		validatePasswordIfNeeded(user, patchedUserUpdateDto);
+		validatePasswordIfPresent(user, patchedUserUpdateDto);
 		validationService.validate(patchedUserUpdateDto);
 		userMapper.updateUserFromDto(user, patchedUserUpdateDto);
+		hashPasswordIfPresent(user, patchedUserUpdateDto);
 		userRepository.save(user);
 	}
 
@@ -87,9 +110,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public void updateUserSimple(int userId, UserUpdateDto updateDto) {
 		User user = find(userId);
 
-		validatePasswordIfNeeded(user, updateDto);
+		validatePasswordIfPresent(user, updateDto);
 		validationService.validate(updateDto);
 		userMapper.updateUserFromDto(user, updateDto);
+		hashPasswordIfPresent(user, updateDto);
 		userRepository.save(user);
 	}
 
@@ -102,7 +126,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	@Override
 	public UserResponseDto getUser(int userId) {
 		User user = find(userId);
-		return userMapper.toResponse(user);
+		UserResponseDto response = userMapper.toResponse(user);
+
+		return calculateCalories(user, response);
 	}
 
 	@Override
@@ -123,7 +149,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		return jsonPatchService.createFromPatch(patch, UserUpdateDto.class);
 	}
 
-	private void validatePasswordIfNeeded(User user, UserUpdateDto dto) {
+	private void validatePasswordIfPresent(User user, UserUpdateDto dto) {
 		if (isPasswordChangeRequested(dto)) {
 			validateOldPassword(user, dto.getOldPassword());
 		}
@@ -134,6 +160,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			throw new IllegalArgumentException("Old password is required when changing to a new password.");
 		}
 		return dto.getOldPassword() != null && dto.getPassword() != null;
+	}
+
+	private void hashPasswordIfPresent(User user, UserUpdateDto dto) {
+		if (dto.getPassword() != null) {
+			user.setPassword(passwordEncoder.encode(dto.getPassword()));
+		}
 	}
 
 	private void validateOldPassword(User user, String oldPassword) {
@@ -148,6 +180,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	private User find(int userId) {
 		return repositoryHelper.find(userRepository, User.class, userId);
+	}
+
+	private UserResponseDto calculateCalories(User user, UserResponseDto response) {
+		if (hasRequiredData(user)) {
+			int age = Period.between(user.getBirthday(), LocalDate.now()).getYears();
+			BigDecimal calories = calculationsService.calculateCaloricNeeds(user.getWeight(), user.getHeight(), age,
+					user.getGender(), user.getActivityLevel(), user.getGoal());
+			response.setCalculatedCalories(calories);
+		}
+		return response;
+	}
+
+	private boolean hasRequiredData(User user) {
+		return user.getWeight() != null && user.getHeight() != null && user.getActivityLevel() != null
+				&& user.getGoal() != null && user.getBirthday() != null && user.getGender() != null;
 	}
 
 }
