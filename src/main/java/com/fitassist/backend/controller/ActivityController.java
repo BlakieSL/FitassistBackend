@@ -28,8 +28,6 @@ public class ActivityController {
 
 	private final ActivityService activityService;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActivityController.class);
-
 	public ActivityController(ActivityService activityService) {
 		this.activityService = activityService;
 	}

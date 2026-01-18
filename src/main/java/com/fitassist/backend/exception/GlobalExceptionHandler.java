@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fitassist.backend.dto.response.error.ErrorResponseDto;
 import com.fitassist.backend.dto.response.error.ValidationErrorDto;
 import com.github.fge.jsonpatch.JsonPatchException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -109,12 +110,24 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
-	public List<ValidationErrorDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-		return e.getBindingResult()
+	public ErrorResponseDto handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+		List<ValidationErrorDto> errors = e.getBindingResult()
 			.getFieldErrors()
 			.stream()
 			.map(error -> new ValidationErrorDto(error.getField(), error.getDefaultMessage()))
 			.collect(Collectors.toList());
+		return new ErrorResponseDto(HttpStatus.BAD_REQUEST.value(), "Validation failed", errors);
+	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorResponseDto handleConstraintViolationException(ConstraintViolationException e) {
+		List<ValidationErrorDto> errors = e.getConstraintViolations()
+			.stream()
+			.map(v -> new ValidationErrorDto(v.getPropertyPath().toString(), v.getMessage()))
+			.toList();
+		return new ErrorResponseDto(HttpStatus.BAD_REQUEST.value(), "Validation failed", errors);
 	}
 
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
