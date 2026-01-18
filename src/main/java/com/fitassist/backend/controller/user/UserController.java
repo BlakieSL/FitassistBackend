@@ -2,6 +2,7 @@ package com.fitassist.backend.controller.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fitassist.backend.annotation.AccountOwnerOrAdmin;
+import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.auth.CookieService;
 import com.fitassist.backend.auth.JwtService;
 import com.fitassist.backend.dto.pojo.AuthorDto;
@@ -33,6 +34,13 @@ public class UserController {
 		this.userService = userService;
 		this.jwtService = jwtService;
 		this.cookieService = cookieService;
+	}
+
+	@GetMapping("/me")
+	public ResponseEntity<UserResponseDto> getCurrentUser() {
+		int userId = AuthorizationUtil.getUserId();
+		UserResponseDto user = userService.getUser(userId);
+		return ResponseEntity.ok(user);
 	}
 
 	@AccountOwnerOrAdmin
