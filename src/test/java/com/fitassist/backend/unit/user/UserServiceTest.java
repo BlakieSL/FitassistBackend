@@ -6,8 +6,12 @@ import com.fitassist.backend.dto.request.user.UserUpdateDto;
 import com.fitassist.backend.dto.response.user.UserResponseDto;
 import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.mapper.UserMapper;
+import com.fitassist.backend.model.user.Role;
+import com.fitassist.backend.model.user.RoleEnum;
 import com.fitassist.backend.model.user.User;
+import com.fitassist.backend.repository.RoleRepository;
 import com.fitassist.backend.repository.UserRepository;
+import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.implementation.helpers.JsonPatchServiceImpl;
@@ -50,6 +54,12 @@ public class UserServiceTest {
 	@Mock
 	private RepositoryHelper repositoryHelper;
 
+	@Mock
+	private RoleRepository roleRepository;
+
+	@Mock
+	private CalculationsService calculationsService;
+
 	@InjectMocks
 	private UserServiceImpl userService;
 
@@ -80,14 +90,24 @@ public class UserServiceTest {
 
 	@Test
 	void register_ShouldCreateAndReturnNewUser() {
+		String rawPassword = "password123";
+		String encodedPassword = "encodedPassword";
+		Role userRole = new Role();
+		createDto.setPassword(rawPassword);
+
 		when(userMapper.toEntity(createDto)).thenReturn(user);
+		when(passwordEncoder.encode(rawPassword)).thenReturn(encodedPassword);
+		when(roleRepository.findByName(RoleEnum.USER)).thenReturn(Optional.of(userRole));
 		when(userRepository.save(user)).thenReturn(user);
 		when(userMapper.toResponse(user)).thenReturn(responseDto);
 
 		userService.register(createDto);
 
-		verify(userRepository).save(user);
 		verify(userMapper).toEntity(createDto);
+		verify(passwordEncoder).encode(rawPassword);
+		verify(roleRepository).findByName(RoleEnum.USER);
+		verify(userRepository).save(user);
+		verify(userMapper).toResponse(user);
 	}
 
 	@Test

@@ -2,6 +2,7 @@ package com.fitassist.backend.unit.helpers;
 
 import com.fitassist.backend.service.implementation.helpers.ValidationServiceImpl;
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ public class ValidationServiceTest {
 		ConstraintViolation<Object> violation = mock(ConstraintViolation.class);
 		when(validator.validate(dto)).thenReturn(Set.of(violation));
 
-		assertThrows(IllegalArgumentException.class, () -> validationService.validate(dto));
+		assertThrows(ConstraintViolationException.class, () -> validationService.validate(dto));
 
 		verify(validator).validate(dto);
 	}

@@ -8,33 +8,17 @@ import com.fitassist.backend.dto.response.user.UserResponseDto;
 import com.fitassist.backend.mapper.helper.CommonMappingHelper;
 import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.model.user.Role;
-import com.fitassist.backend.model.user.RoleEnum;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.MediaRepository;
-import com.fitassist.backend.repository.RoleRepository;
 import com.fitassist.backend.service.declaration.aws.AwsS3Service;
-import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", uses = CommonMappingHelper.class)
 public abstract class UserMapper {
-
-	@Autowired
-	private CalculationsService calculationsService;
-
-	@Autowired
-	private RoleRepository roleRepository;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private MediaRepository mediaRepository;
@@ -45,7 +29,7 @@ public abstract class UserMapper {
 	@Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToRolesNames")
 	public abstract UserCredentialsDto toDetails(User user);
 
-	@Mapping(target = "calculatedCalories", expression = "java(calculatedCalories(user))")
+	@Mapping(target = "calculatedCalories", ignore = true)
 	@Mapping(target = "userImageUrl", expression = "java(getUserImageUrl(user))")
 	public abstract UserResponseDto toResponse(User user);
 
@@ -53,7 +37,7 @@ public abstract class UserMapper {
 	@Mapping(target = "imageUrl", expression = "java(getUserImageUrl(user))")
 	public abstract AuthorDto toAuthorDto(User user);
 
-	@Mapping(target = "password", source = "password", qualifiedByName = "hashPassword")
+	@Mapping(target = "password", ignore = true)
 	@Mapping(target = "username", source = "dto", qualifiedByName = "generateUsername")
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "dailyCarts", ignore = true)
@@ -74,7 +58,7 @@ public abstract class UserMapper {
 	public abstract User toEntity(UserCreateDto dto);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-	@Mapping(target = "password", source = "password", qualifiedByName = "hashPassword")
+	@Mapping(target = "password", ignore = true)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "dailyCarts", ignore = true)
 	@Mapping(target = "roles", ignore = true)
@@ -93,23 +77,9 @@ public abstract class UserMapper {
 	@Mapping(target = "mediaList", ignore = true)
 	public abstract void updateUserFromDto(@MappingTarget User user, UserUpdateDto request);
 
-	public void addDefaultRole(User user) {
-		Role role = roleRepository.findByName(RoleEnum.USER).orElseGet(() -> {
-			Role newRole = new Role();
-			newRole.setName(RoleEnum.USER);
-			return roleRepository.save(newRole);
-		});
-		user.getRoles().add(role);
-	}
-
 	@Named("rolesToRolesNames")
 	Set<String> rolesToRolesNames(Set<Role> roles) {
 		return roles.stream().map(role -> role.getName().name()).collect(Collectors.toSet());
-	}
-
-	@Named("hashPassword")
-	protected String hashPassword(String password) {
-		return passwordEncoder.encode(password);
 	}
 
 	@Named("generateUsername")
@@ -125,20 +95,6 @@ public abstract class UserMapper {
 		return mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(user.getId(), MediaConnectedEntity.USER)
 			.map(media -> s3Service.getImage(media.getImageName()))
 			.orElse(null);
-	}
-
-	BigDecimal calculatedCalories(User user) {
-		if (!hasRequiredData(user))
-			return null;
-
-		int age = Period.between(user.getBirthday(), LocalDate.now()).getYears();
-		return calculationsService.calculateCaloricNeeds(user.getWeight(), user.getHeight(), age, user.getGender(),
-				user.getActivityLevel(), user.getGoal());
-	}
-
-	private boolean hasRequiredData(User user) {
-		return user.getWeight() != null && user.getHeight() != null && user.getActivityLevel() != null
-				&& user.getGoal() != null && user.getBirthday() != null && user.getGender() != null;
 	}
 
 }
