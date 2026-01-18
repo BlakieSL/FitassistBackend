@@ -125,7 +125,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public UserResponseDto getUser(int userId) {
-		User user = find(userId);
+		User user = userRepository.findUserWithRolesById(userId)
+			.orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
 		UserResponseDto response = userMapper.toResponse(user);
 
 		return calculateCalories(user, response);

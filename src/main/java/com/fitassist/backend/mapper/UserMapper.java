@@ -8,6 +8,7 @@ import com.fitassist.backend.dto.response.user.UserResponseDto;
 import com.fitassist.backend.mapper.helper.CommonMappingHelper;
 import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.model.user.Role;
+import com.fitassist.backend.model.user.RoleEnum;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.MediaRepository;
 import com.fitassist.backend.service.declaration.aws.AwsS3Service;
@@ -31,6 +32,7 @@ public abstract class UserMapper {
 
 	@Mapping(target = "calculatedCalories", ignore = true)
 	@Mapping(target = "userImageUrl", expression = "java(getUserImageUrl(user))")
+	@Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToRoleEnums")
 	public abstract UserResponseDto toResponse(User user);
 
 	@Mapping(source = "user", target = ".", qualifiedByName = "userToAuthorDto")
@@ -80,6 +82,11 @@ public abstract class UserMapper {
 	@Named("rolesToRolesNames")
 	Set<String> rolesToRolesNames(Set<Role> roles) {
 		return roles.stream().map(role -> role.getName().name()).collect(Collectors.toSet());
+	}
+
+	@Named("rolesToRoleEnums")
+	Set<RoleEnum> rolesToRoleEnums(Set<Role> roles) {
+		return roles.stream().map(Role::getName).collect(Collectors.toSet());
 	}
 
 	@Named("generateUsername")

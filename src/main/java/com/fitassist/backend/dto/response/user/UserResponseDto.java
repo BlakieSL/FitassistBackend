@@ -1,5 +1,6 @@
 package com.fitassist.backend.dto.response.user;
 
+import com.fitassist.backend.model.user.RoleEnum;
 import com.fitassist.backend.model.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 /**
  * DTO for {@link User}
@@ -40,5 +42,7 @@ public class UserResponseDto implements Serializable {
 	private String activityLevel;
 
 	private String userImageUrl;
+
+	private Set<RoleEnum> roles;
 
 }
