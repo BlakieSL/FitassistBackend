@@ -282,22 +282,22 @@ public class UserServiceTest {
 
 	@Test
 	void getUser_ShouldReturnUserResponseById() {
-		when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
+		when(userRepository.findUserWithRolesById(userId)).thenReturn(Optional.of(user));
 		when(userMapper.toResponse(user)).thenReturn(responseDto);
 
 		userService.getUser(userId);
 
-		verify(repositoryHelper).find(userRepository, User.class, userId);
+		verify(userRepository).findUserWithRolesById(userId);
 		verify(userMapper).toResponse(user);
 	}
 
 	@Test
 	void getUser_ShouldThrowRecordNotFoundExceptionWhenUserNotFound() {
-		when(repositoryHelper.find(userRepository, User.class, userId)).thenThrow(RecordNotFoundException.class);
+		when(userRepository.findUserWithRolesById(userId)).thenReturn(Optional.empty());
 
 		assertThrows(RecordNotFoundException.class, () -> userService.getUser(userId));
 
-		verify(repositoryHelper).find(userRepository, User.class, userId);
+		verify(userRepository).findUserWithRolesById(userId);
 	}
 
 	@Test
