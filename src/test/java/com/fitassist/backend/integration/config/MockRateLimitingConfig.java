@@ -19,7 +19,7 @@ public class MockRateLimitingConfig {
 		return new RateLimitingFilter(null, null, null) {
 			@Override
 			protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response,
-											@NotNull FilterChain filterChain) throws ServletException, IOException {
+					@NotNull FilterChain filterChain) throws ServletException, IOException {
 				filterChain.doFilter(request, response);
 			}
 		};
