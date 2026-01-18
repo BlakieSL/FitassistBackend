@@ -13,9 +13,9 @@ import com.fitassist.backend.repository.MediaRepository;
 import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.media.MediaService;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
