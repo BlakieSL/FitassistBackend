@@ -6,8 +6,9 @@ import com.fitassist.backend.event.events.Media.MediaUpdateEvent;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.service.declaration.cache.CacheService;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 public class MediaListener {
@@ -18,13 +19,13 @@ public class MediaListener {
 		this.cacheService = cacheService;
 	}
 
-	@EventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handleMediaUpdate(MediaUpdateEvent event) {
 		Media media = event.getMedia();
 		invalidateParentCache(media);
 	}
 
-	@EventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handleMediaDelete(MediaDeleteEvent event) {
 		Media media = event.getMedia();
 		invalidateParentCache(media);

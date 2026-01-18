@@ -7,8 +7,9 @@ import com.fitassist.backend.event.events.Recipe.RecipeUpdateEvent;
 import com.fitassist.backend.model.recipe.Recipe;
 import com.fitassist.backend.service.declaration.cache.CacheService;
 import com.fitassist.backend.service.declaration.search.LuceneIndexService;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 public class RecipeListener {
@@ -22,7 +23,7 @@ public class RecipeListener {
 		this.luceneService = luceneService;
 	}
 
-	@EventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handleRecipeCreate(RecipeCreateEvent event) {
 		Recipe recipe = event.getRecipe();
 
@@ -31,7 +32,7 @@ public class RecipeListener {
 		}
 	}
 
-	@EventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handleRecipeUpdate(RecipeUpdateEvent event) {
 		Recipe recipe = event.getRecipe();
 
@@ -41,7 +42,7 @@ public class RecipeListener {
 		}
 	}
 
-	@EventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handleRecipeDelete(RecipeDeleteEvent event) {
 		Recipe recipe = event.getRecipe();
 

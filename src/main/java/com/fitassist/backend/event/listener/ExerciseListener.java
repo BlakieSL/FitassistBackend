@@ -7,8 +7,9 @@ import com.fitassist.backend.event.events.Exercise.ExerciseUpdateEvent;
 import com.fitassist.backend.model.exercise.Exercise;
 import com.fitassist.backend.service.declaration.cache.CacheService;
 import com.fitassist.backend.service.declaration.search.LuceneIndexService;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 public class ExerciseListener {
@@ -22,14 +23,14 @@ public class ExerciseListener {
 		this.luceneService = luceneService;
 	}
 
-	@EventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handleExerciseCreate(ExerciseCreateEvent event) {
 		Exercise exercise = event.getExercise();
 
 		luceneService.addEntity(exercise);
 	}
 
-	@EventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handleExerciseUpdate(ExerciseUpdateEvent event) {
 		Exercise exercise = event.getExercise();
 
@@ -37,7 +38,7 @@ public class ExerciseListener {
 		luceneService.updateEntity(exercise);
 	}
 
-	@EventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void handleExerciseDelete(ExerciseDeleteEvent event) {
 		Exercise exercise = event.getExercise();
 
