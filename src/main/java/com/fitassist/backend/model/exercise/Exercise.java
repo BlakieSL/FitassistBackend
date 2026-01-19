@@ -56,19 +56,16 @@ public class Exercise implements IndexedEntity {
 	@JoinColumn(name = "expertise_level_id", nullable = false)
 	private ExpertiseLevel expertiseLevel;
 
-	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "equipment_id", nullable = false)
+	@JoinColumn(name = "equipment_id")
 	private Equipment equipment;
 
-	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "mechanics_type_id", nullable = false)
+	@JoinColumn(name = "mechanics_type_id")
 	private MechanicsType mechanicsType;
 
-	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "force_type_id", nullable = false)
+	@JoinColumn(name = "force_type_id")
 	private ForceType forceType;
 
 	@OneToMany(mappedBy = "exercise", cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE },

@@ -118,14 +118,20 @@ public class LuceneIndexServiceImpl implements LuceneIndexService {
 				doc.add(new StoredField("expertiseLevelId", exercise.getExpertiseLevel().getId().toString()));
 				doc.add(new StoredField("expertiseLevelName", exercise.getExpertiseLevel().getName()));
 
-				doc.add(new StoredField("equipmentId", exercise.getEquipment().getId().toString()));
-				doc.add(new StoredField("equipmentName", exercise.getEquipment().getName()));
+				if (exercise.getEquipment() != null) {
+					doc.add(new StoredField("equipmentId", exercise.getEquipment().getId().toString()));
+					doc.add(new StoredField("equipmentName", exercise.getEquipment().getName()));
+				}
 
-				doc.add(new StoredField("mechanicsTypeId", exercise.getMechanicsType().getId().toString()));
-				doc.add(new StoredField("mechanicsTypeName", exercise.getMechanicsType().getName()));
+				if (exercise.getMechanicsType() != null) {
+					doc.add(new StoredField("mechanicsTypeId", exercise.getMechanicsType().getId().toString()));
+					doc.add(new StoredField("mechanicsTypeName", exercise.getMechanicsType().getName()));
+				}
 
-				doc.add(new StoredField("forceTypeId", exercise.getForceType().getId().toString()));
-				doc.add(new StoredField("forceTypeName", exercise.getForceType().getName()));
+				if (exercise.getForceType() != null) {
+					doc.add(new StoredField("forceTypeId", exercise.getForceType().getId().toString()));
+					doc.add(new StoredField("forceTypeName", exercise.getForceType().getName()));
+				}
 			}
 			default -> {
 			}
