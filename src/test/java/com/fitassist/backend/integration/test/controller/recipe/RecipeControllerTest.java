@@ -162,7 +162,7 @@ public class RecipeControllerTest {
 					jsonPath("$.likesCount").value(0), jsonPath("$.dislikesCount").value(0),
 					jsonPath("$.savesCount").value(1), jsonPath("$.views").value(0), jsonPath("$.liked").value(false),
 					jsonPath("$.disliked").value(false), jsonPath("$.saved").value(true),
-					jsonPath("$.totalCalories").value(8200.0), jsonPath("$.minutesToPrepare").value(15),
+					jsonPath("$.totalCalories").value(82.0), jsonPath("$.minutesToPrepare").value(15),
 					jsonPath("$.categories").isArray(), jsonPath("$.categories.length()").value(2),
 					jsonPath("$.instructions").isArray(), jsonPath("$.instructions.length()").value(2),
 					jsonPath("$.foods").isArray(), jsonPath("$.foods.length()").value(1),
