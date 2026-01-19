@@ -165,17 +165,17 @@ public abstract class ExerciseMapper {
 
 	@Named("mapMechanicsToCategoryResponseDto")
 	protected CategoryResponseDto mapMechanicsToCategoryResponseDto(MechanicsType mechanicsType) {
-		return new CategoryResponseDto(mechanicsType.getId(), mechanicsType.getName());
+		return mechanicsType != null ? new CategoryResponseDto(mechanicsType.getId(), mechanicsType.getName()) : null;
 	}
 
 	@Named("mapForceToCategoryResponseDto")
 	protected CategoryResponseDto mapForceToCategoryResponseDto(ForceType forceType) {
-		return new CategoryResponseDto(forceType.getId(), forceType.getName());
+		return forceType != null ? new CategoryResponseDto(forceType.getId(), forceType.getName()) : null;
 	}
 
 	@Named("mapEquipmentToCategoryResponseDto")
 	protected CategoryResponseDto mapEquipmentToCategoryResponseDto(Equipment equipment) {
-		return new CategoryResponseDto(equipment.getId(), equipment.getName());
+		return equipment != null ? new CategoryResponseDto(equipment.getId(), equipment.getName()) : null;
 	}
 
 	@Named("mapExpertiseLevel")
@@ -185,17 +185,17 @@ public abstract class ExerciseMapper {
 
 	@Named("mapMechanicsType")
 	protected MechanicsType mapMechanicsType(Integer mechanicsTypeId) {
-		return mechanicsTypeRepository.getReferenceById(mechanicsTypeId);
+		return mechanicsTypeId != null ? mechanicsTypeRepository.getReferenceById(mechanicsTypeId) : null;
 	}
 
 	@Named("mapForceType")
 	protected ForceType mapForceType(Integer forceTypeId) {
-		return forceTypeRepository.getReferenceById(forceTypeId);
+		return forceTypeId != null ? forceTypeRepository.getReferenceById(forceTypeId) : null;
 	}
 
 	@Named("mapExerciseEquipment")
 	protected Equipment mapExerciseEquipment(Integer equipmentId) {
-		return equipmentRepository.getReferenceById(equipmentId);
+		return equipmentId != null ? equipmentRepository.getReferenceById(equipmentId) : null;
 	}
 
 	@Named("mapInstructionsToDto")

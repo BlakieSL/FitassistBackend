@@ -51,7 +51,7 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
 			IndexSearcher searcher = new IndexSearcher(reader);
 			BooleanQuery.Builder mainQuery = new BooleanQuery.Builder();
 
-			String[] words = query.trim().toLowerCase().split(" +");
+			String[] words = query.trim().toLowerCase().split("[\\s\\-_\\\\/]+");
 			for (String word : words) {
 				BooleanQuery.Builder wordQuery = new BooleanQuery.Builder();
 				wordQuery.add(new FuzzyQuery(new Term("name", word)), BooleanClause.Occur.SHOULD);
@@ -139,14 +139,21 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
 		CategoryResponseDto expertiseLevel = new CategoryResponseDto(Integer.parseInt(doc.get("expertiseLevelId")),
 				doc.get("expertiseLevelName"));
 
-		CategoryResponseDto equipment = new CategoryResponseDto(Integer.parseInt(doc.get("equipmentId")),
-				doc.get("equipmentName"));
+		CategoryResponseDto equipment = null;
+		if (doc.get("equipmentId") != null) {
+			equipment = new CategoryResponseDto(Integer.parseInt(doc.get("equipmentId")), doc.get("equipmentName"));
+		}
 
-		CategoryResponseDto mechanicsType = new CategoryResponseDto(Integer.parseInt(doc.get("mechanicsTypeId")),
-				doc.get("mechanicsTypeName"));
+		CategoryResponseDto mechanicsType = null;
+		if (doc.get("mechanicsTypeId") != null) {
+			mechanicsType = new CategoryResponseDto(Integer.parseInt(doc.get("mechanicsTypeId")),
+					doc.get("mechanicsTypeName"));
+		}
 
-		CategoryResponseDto forceType = new CategoryResponseDto(Integer.parseInt(doc.get("forceTypeId")),
-				doc.get("forceTypeName"));
+		CategoryResponseDto forceType = null;
+		if (doc.get("forceTypeId") != null) {
+			forceType = new CategoryResponseDto(Integer.parseInt(doc.get("forceTypeId")), doc.get("forceTypeName"));
+		}
 
 		return new ExerciseSearchResponseDto(id, name, firstImageUrl, expertiseLevel, equipment, mechanicsType,
 				forceType);

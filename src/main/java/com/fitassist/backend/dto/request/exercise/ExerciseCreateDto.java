@@ -29,17 +29,14 @@ public class ExerciseCreateDto {
 	@Size(max = MAX_DESCRIPTION_LENGTH)
 	private String description;
 
-	@NotNull
-	private int equipmentId;
+	private Integer equipmentId;
 
 	@NotNull
 	private int expertiseLevelId;
 
-	@NotNull
-	private int mechanicsTypeId;
+	private Integer mechanicsTypeId;
 
-	@NotNull
-	private int forceTypeId;
+	private Integer forceTypeId;
 
 	private List<Integer> targetMusclesIds;
 
