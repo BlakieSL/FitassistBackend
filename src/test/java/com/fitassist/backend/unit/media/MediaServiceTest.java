@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -134,7 +135,7 @@ public class MediaServiceTest {
 	void getFirstMediaForParent_shouldReturnFirstMediaForParent() {
 		String imageUrl = "http://example.com/image.jpg";
 		when(mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(parentId, parentType))
-			.thenReturn(java.util.Optional.of(media));
+			.thenReturn(Optional.of(media));
 		when(s3Service.getImage(media.getImageName())).thenReturn(imageUrl);
 		when(mediaMapper.toDto(media, imageUrl)).thenReturn(responseDto);
 
@@ -146,7 +147,7 @@ public class MediaServiceTest {
 	@Test
 	void getFirstMediaForParent_shouldThrowExceptionWhenMediaNotFound() {
 		when(mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(parentId, parentType))
-			.thenReturn(java.util.Optional.empty());
+			.thenReturn(Optional.empty());
 
 		assertThrows(RecordNotFoundException.class, () -> mediaService.getFirstMediaForParent(parentId, parentType));
 	}
