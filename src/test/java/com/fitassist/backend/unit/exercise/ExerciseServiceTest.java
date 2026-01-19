@@ -172,7 +172,7 @@ public class ExerciseServiceTest {
 		when(exerciseMapper.toEntity(createDto)).thenReturn(exercise);
 		when(exerciseRepository.save(exercise)).thenReturn(exercise);
 		when(exerciseRepository.findByIdWithAssociationsForIndexing(exerciseId)).thenReturn(Optional.of(exercise));
-		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(java.util.Optional.of(exercise));
+		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
 		when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
 
 		exerciseService.createExercise(createDto);
@@ -286,7 +286,7 @@ public class ExerciseServiceTest {
 		PlanSummaryDto planSummaryDto = new PlanSummaryDto();
 		planSummaryDto.setId(1);
 
-		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(java.util.Optional.of(exercise));
+		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
 		when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
 		when(planRepository.findByExerciseIdWithDetails(exerciseId)).thenReturn(List.of(plan));
 		when(planMapper.toSummaryDto(plan)).thenReturn(planSummaryDto);
@@ -304,7 +304,7 @@ public class ExerciseServiceTest {
 
 	@Test
 	void getExercise_shouldThrowExceptionWhenExerciseNotFound() {
-		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(java.util.Optional.empty());
+		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.empty());
 
 		assertThrows(RecordNotFoundException.class, () -> exerciseService.getExercise(exerciseId));
 
