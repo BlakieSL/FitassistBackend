@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface LuceneSearchService {
 
-	List<SearchResponseDto> search(String query, String type);
+	List<SearchResponseDto> search(String query, String type, int limit);
 
 }
