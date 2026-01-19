@@ -10,6 +10,7 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
+import java.time.Duration;
 import java.util.UUID;
 
 @ConditionalOnProperty(name = "spring.cloud.aws.s3.enabled", havingValue = "true")
@@ -53,7 +54,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 
 	private String generatePresignedUrl(String keyName) {
 		return s3Presigner
-			.presignGetObject(builder -> builder.signatureDuration(java.time.Duration.ofMinutes(10))
+			.presignGetObject(builder -> builder.signatureDuration(Duration.ofMinutes(10))
 				.getObjectRequest(getObjectRequestBuilder -> getObjectRequestBuilder.bucket(bucketName).key(keyName)))
 			.url()
 			.toString();

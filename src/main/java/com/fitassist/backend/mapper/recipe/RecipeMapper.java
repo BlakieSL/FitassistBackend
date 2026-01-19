@@ -23,6 +23,7 @@ import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -141,7 +142,9 @@ public abstract class RecipeMapper {
 		List<RecipeFoodDto> foods = Objects.requireNonNullElse(dto.getFoods(), List.of());
 
 		BigDecimal totalCalories = foods.stream()
-			.map(food -> food.getQuantity().multiply(food.getIngredient().getFoodMacros().getCalories()))
+			.map(food -> food.getQuantity()
+				.multiply(food.getIngredient().getFoodMacros().getCalories())
+				.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP))
 			.reduce(BigDecimal.ZERO, BigDecimal::add);
 
 		dto.setTotalCalories(totalCalories);
