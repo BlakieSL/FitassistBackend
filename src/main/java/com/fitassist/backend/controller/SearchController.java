@@ -22,8 +22,9 @@ public class SearchController {
 
 	@GetMapping
 	public ResponseEntity<List<SearchResponseDto>> search(@RequestParam String query,
-			@RequestParam(required = false) String type) {
-		List<SearchResponseDto> result = luceneSearchService.search(query, type);
+			@RequestParam(required = false) String type,
+			@RequestParam(defaultValue = "10") int limit) {
+		List<SearchResponseDto> result = luceneSearchService.search(query, type, limit);
 		return ResponseEntity.ok(result);
 	}
 
