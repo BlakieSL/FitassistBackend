@@ -57,10 +57,10 @@ public class Comment {
 	@JoinColumn(name = "parent_comment_id")
 	private Comment parentComment;
 
-	@OneToMany(mappedBy = "parentComment")
+	@OneToMany(mappedBy = "parentComment", cascade = CascadeType.REMOVE)
 	private final Set<Comment> replies = new HashSet<>();
 
-	@OneToMany(mappedBy = "comment")
+	@OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
 	private final Set<UserComment> userCommentLikes = new HashSet<>();
 
 	@OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
