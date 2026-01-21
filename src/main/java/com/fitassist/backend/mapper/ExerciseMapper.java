@@ -82,9 +82,12 @@ public abstract class ExerciseMapper {
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "exerciseTargetMuscles", ignore = true)
 	@Mapping(target = "expertiseLevel", source = "expertiseLevelId", qualifiedByName = "mapExpertiseLevel")
-	@Mapping(target = "mechanicsType", source = "mechanicsTypeId", qualifiedByName = "mapMechanicsType")
-	@Mapping(target = "forceType", source = "forceTypeId", qualifiedByName = "mapForceType")
-	@Mapping(target = "equipment", source = "equipmentId", qualifiedByName = "mapExerciseEquipment")
+	@Mapping(target = "mechanicsType", source = "mechanicsTypeId", qualifiedByName = "mapMechanicsType",
+			nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
+	@Mapping(target = "forceType", source = "forceTypeId", qualifiedByName = "mapForceType",
+			nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
+	@Mapping(target = "equipment", source = "equipmentId", qualifiedByName = "mapExerciseEquipment",
+			nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "userExercises", ignore = true)
 	@Mapping(target = "workoutSetExercises", ignore = true)
