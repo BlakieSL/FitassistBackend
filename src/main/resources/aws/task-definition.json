@@ -34,7 +34,7 @@
         },
         {
           "name": "RATE_LIMITER_USER_RATE",
-          "value": "50"
+          "value": "100"
         },
         {
           "name": "EMAIL_FROM",
@@ -54,7 +54,7 @@
         },
         {
           "name": "RATE_LIMITER_KEY_RATE",
-          "value": "30"
+          "value": "50"
         },
         {
           "name": "RDS_USERNAME",
