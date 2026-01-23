@@ -1,5 +1,6 @@
 package com.fitassist.backend.integration.test.controller.exercise;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitassist.backend.dto.request.exercise.ExerciseCreateDto;
 import com.fitassist.backend.dto.request.exercise.ExerciseUpdateDto;
@@ -91,9 +92,11 @@ public class ExerciseControllerTest {
 		updateDto.setDescription("This is an updated test exercise.");
 		updateDto.setEquipmentId(2);
 
+		ObjectMapper patchMapper = objectMapper.copy().setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
 		mockMvc
 			.perform(patch("/api/exercises/1").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(updateDto)))
+				.content(patchMapper.writeValueAsString(updateDto)))
 			.andExpect(status().isNoContent());
 
 		mockMvc.perform(get("/api/exercises/1").accept(MediaType.APPLICATION_JSON))

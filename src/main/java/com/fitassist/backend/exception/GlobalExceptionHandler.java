@@ -14,12 +14,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -171,6 +174,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public ErrorResponseDto handleNullPointerException(NullPointerException e) {
+		log.error("NullPointerException occurred", e);
 		return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(),
 				"An unexpected error occurred. Please contact support.");
 	}
@@ -179,6 +183,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public ErrorResponseDto handleIllegalStateException(IllegalStateException e) {
+		log.error("IllegalStateException occurred", e);
 		return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An internal error occurred");
 	}
 
@@ -186,6 +191,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public ErrorResponseDto handleException(Exception e) {
+		log.error("Unhandled exception occurred", e);
 		return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(),
 				"An unexpected error occurred. Please contact support.");
 	}

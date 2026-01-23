@@ -54,6 +54,9 @@ app:
     from: ${EMAIL_FROM}
 
 logging:
+  structured:
+    format:
+      console: ecs
   level:
     root: WARN
     source.code: INFO
