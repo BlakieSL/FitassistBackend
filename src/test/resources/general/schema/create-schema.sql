@@ -71,10 +71,10 @@ create table exercise
         primary key,
     description        varchar(255) not null,
     name               varchar(100) not null,
-    equipment_id       int          not null,
+    equipment_id       int          null,
     expertise_level_id int          not null,
-    force_type_id      int          not null,
-    mechanics_type_id  int          not null,
+    force_type_id      int          null,
+    mechanics_type_id  int          null,
     constraint FK1pnc72jktj32lju0xs13417e8
         foreign key (expertise_level_id) references expertise_level (id),
     constraint FKdaiw8tnyg1v77vh9aocupho2n
