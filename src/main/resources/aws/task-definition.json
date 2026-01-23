@@ -41,16 +41,8 @@
           "value": "artemladnyi@gmail.com"
         },
         {
-          "name": "JWT_SECRET_KEY",
-          "value": "***REMOVED***"
-        },
-        {
           "name": "FRONTEND_URL",
           "value": "https://fitassist.app"
-        },
-        {
-          "name": "RDS_PASSWORD",
-          "value": "***REMOVED***"
         },
         {
           "name": "REDIS_PORT",
@@ -71,6 +63,16 @@
         {
           "name": "RATE_LIMITER_USER_INTERVAL",
           "value": "5"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "RDS_PASSWORD",
+          "valueFrom": "arn:aws:ssm:eu-central-1:940922024669:parameter/fitassist/rds-password"
+        },
+        {
+          "name": "JWT_SECRET_KEY",
+          "valueFrom": "arn:aws:ssm:eu-central-1:940922024669:parameter/fitassist/jwt-secret"
         }
       ],
       "environmentFiles": [],
