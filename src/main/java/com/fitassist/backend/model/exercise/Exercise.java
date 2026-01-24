@@ -35,8 +35,6 @@ public class Exercise implements IndexedEntity {
 
 	private static final int MAX_NAME_LENGTH = 100;
 
-	private static final int MAX_DESCRIPTION_LENGTH = 255;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -47,8 +45,7 @@ public class Exercise implements IndexedEntity {
 	private String name;
 
 	@NotBlank
-	@Size(max = MAX_DESCRIPTION_LENGTH)
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "TEXT")
 	private String description;
 
 	@NotNull
