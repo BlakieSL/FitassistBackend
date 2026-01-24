@@ -19,14 +19,11 @@ public class ExerciseCreateDto {
 
 	private static final int MAX_NAME_LENGTH = 100;
 
-	private static final int MAX_DESCRIPTION_LENGTH = 255;
-
 	@NotBlank
 	@Size(max = MAX_NAME_LENGTH)
 	private String name;
 
 	@NotBlank
-	@Size(max = MAX_DESCRIPTION_LENGTH)
 	private String description;
 
 	private Integer equipmentId;
