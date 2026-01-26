@@ -1,4 +1,4 @@
-package com.fitassist.backend.event.events.Recipe;
+package com.fitassist.backend.event.event.Recipe;
 
 import com.fitassist.backend.model.recipe.Recipe;
 import lombok.Getter;

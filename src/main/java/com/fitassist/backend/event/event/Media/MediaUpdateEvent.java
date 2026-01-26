@@ -1,4 +1,4 @@
-package com.fitassist.backend.event.events.Media;
+package com.fitassist.backend.event.event.Media;
 
 import com.fitassist.backend.model.media.Media;
 import lombok.Getter;

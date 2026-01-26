@@ -1,9 +1,9 @@
 package com.fitassist.backend.event.listener;
 
 import com.fitassist.backend.config.cache.CacheNames;
-import com.fitassist.backend.event.events.Activity.ActivityCreateEvent;
-import com.fitassist.backend.event.events.Activity.ActivityDeleteEvent;
-import com.fitassist.backend.event.events.Activity.ActivityUpdateEvent;
+import com.fitassist.backend.event.event.Activity.ActivityCreateEvent;
+import com.fitassist.backend.event.event.Activity.ActivityDeleteEvent;
+import com.fitassist.backend.event.event.Activity.ActivityUpdateEvent;
 import com.fitassist.backend.model.activity.Activity;
 import com.fitassist.backend.service.declaration.cache.CacheService;
 import com.fitassist.backend.service.declaration.search.LuceneIndexService;

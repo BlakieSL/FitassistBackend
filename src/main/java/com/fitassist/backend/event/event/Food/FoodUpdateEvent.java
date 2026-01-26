@@ -1,4 +1,4 @@
-package com.fitassist.backend.event.events.Food;
+package com.fitassist.backend.event.event.Food;
 
 import com.fitassist.backend.model.food.Food;
 import lombok.Getter;

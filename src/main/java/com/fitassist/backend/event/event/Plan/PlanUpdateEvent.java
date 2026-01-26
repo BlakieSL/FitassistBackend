@@ -1,4 +1,4 @@
-package com.fitassist.backend.event.events.Plan;
+package com.fitassist.backend.event.event.Plan;
 
 import com.fitassist.backend.model.plan.Plan;
 import lombok.Getter;

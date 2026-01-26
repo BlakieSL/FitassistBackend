@@ -114,7 +114,7 @@ public abstract class PlanMapper {
 
 	@AfterMapping
 	protected void updateAssociations(@MappingTarget Plan plan, PlanUpdateDto dto) {
-		if (dto.getCategoryIds() == null) {
+		if (dto.getCategoryIds() != null) {
 			plan.getPlanCategoryAssociations().clear();
 
 			List<PlanCategory> categories = planCategoryRepository.findAllByIdIn(dto.getCategoryIds());
