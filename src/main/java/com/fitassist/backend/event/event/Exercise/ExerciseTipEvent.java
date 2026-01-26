@@ -1,4 +1,4 @@
-package com.fitassist.backend.event.events.Exercise;
+package com.fitassist.backend.event.event.Exercise;
 
 import com.fitassist.backend.model.text.ExerciseTip;
 import lombok.Getter;

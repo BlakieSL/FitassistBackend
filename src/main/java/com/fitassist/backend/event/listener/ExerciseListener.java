@@ -1,9 +1,9 @@
 package com.fitassist.backend.event.listener;
 
 import com.fitassist.backend.config.cache.CacheNames;
-import com.fitassist.backend.event.events.Exercise.ExerciseCreateEvent;
-import com.fitassist.backend.event.events.Exercise.ExerciseDeleteEvent;
-import com.fitassist.backend.event.events.Exercise.ExerciseUpdateEvent;
+import com.fitassist.backend.event.event.Exercise.ExerciseCreateEvent;
+import com.fitassist.backend.event.event.Exercise.ExerciseDeleteEvent;
+import com.fitassist.backend.event.event.Exercise.ExerciseUpdateEvent;
 import com.fitassist.backend.model.exercise.Exercise;
 import com.fitassist.backend.service.declaration.cache.CacheService;
 import com.fitassist.backend.service.declaration.search.LuceneIndexService;
