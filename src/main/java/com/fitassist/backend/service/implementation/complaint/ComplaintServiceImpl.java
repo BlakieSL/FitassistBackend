@@ -10,12 +10,17 @@ import com.fitassist.backend.model.complaint.CommentComplaint;
 import com.fitassist.backend.model.complaint.ComplaintBase;
 import com.fitassist.backend.model.complaint.ComplaintStatus;
 import com.fitassist.backend.model.complaint.ThreadComplaint;
+import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.repository.ComplaintRepository;
+import com.fitassist.backend.repository.MediaRepository;
+import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import com.fitassist.backend.service.declaration.complaint.ComplaintService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class ComplaintServiceImpl implements ComplaintService {
@@ -24,9 +29,16 @@ public class ComplaintServiceImpl implements ComplaintService {
 
 	private final ComplaintRepository complaintRepository;
 
-	public ComplaintServiceImpl(ComplaintMapper complaintMapper, ComplaintRepository complaintRepository) {
+	private final MediaRepository mediaRepository;
+
+	private final AwsS3Service s3Service;
+
+	public ComplaintServiceImpl(ComplaintMapper complaintMapper, ComplaintRepository complaintRepository,
+			MediaRepository mediaRepository, AwsS3Service s3Service) {
 		this.complaintMapper = complaintMapper;
 		this.complaintRepository = complaintRepository;
+		this.mediaRepository = mediaRepository;
+		this.s3Service = s3Service;
 	}
 
 	@Transactional
@@ -64,14 +76,39 @@ public class ComplaintServiceImpl implements ComplaintService {
 	@Override
 	public Page<ComplaintResponseDto> getAllComplaints(Pageable pageable) {
 		Page<ComplaintBase> complaints = complaintRepository.findAll(pageable);
-		return complaints.map(complaintMapper::toResponseDto);
+		return complaints.map(complaint -> {
+			ComplaintResponseDto dto = complaintMapper.toResponseDto(complaint);
+			populateImageUrls(dto, complaint);
+			return dto;
+		});
+	}
+
+	private void populateImageUrls(ComplaintResponseDto dto, ComplaintBase complaint) {
+		MediaConnectedEntity mediaType = getMediaType(complaint);
+		List<String> imageUrls = mediaRepository.findByParentIdAndParentType(complaint.getId(), mediaType)
+			.stream()
+			.map(media -> s3Service.getImage(media.getImageName()))
+			.toList();
+		dto.setImageUrls(imageUrls);
 	}
 
 	@Override
 	public ComplaintResponseDto getComplaintById(int complaintId) {
 		ComplaintBase complaint = complaintRepository.findById(complaintId)
 			.orElseThrow(() -> RecordNotFoundException.of(ComplaintBase.class, complaintId));
-		return complaintMapper.toResponseDto(complaint);
+		ComplaintResponseDto dto = complaintMapper.toResponseDto(complaint);
+		populateImageUrls(dto, complaint);
+		return dto;
+	}
+
+	private MediaConnectedEntity getMediaType(ComplaintBase complaint) {
+		if (complaint instanceof CommentComplaint) {
+			return MediaConnectedEntity.COMMENT_COMPLAINT;
+		}
+		else if (complaint instanceof ThreadComplaint) {
+			return MediaConnectedEntity.THREAD_COMPLAINT;
+		}
+		throw new InvalidFilterValueException("Unsupported complaint subclass");
 	}
 
 }
