@@ -9,7 +9,10 @@ import com.fitassist.backend.mapper.ComplaintMapper;
 import com.fitassist.backend.model.complaint.CommentComplaint;
 import com.fitassist.backend.model.complaint.ComplaintStatus;
 import com.fitassist.backend.model.complaint.ThreadComplaint;
+import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.repository.ComplaintRepository;
+import com.fitassist.backend.repository.MediaRepository;
+import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import com.fitassist.backend.service.implementation.complaint.ComplaintServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,6 +44,12 @@ public class ComplaintServiceTest {
 
 	@Mock
 	private ComplaintMapper complaintMapper;
+
+	@Mock
+	private MediaRepository mediaRepository;
+
+	@Mock
+	private AwsS3Service s3Service;
 
 	@InjectMocks
 	private ComplaintServiceImpl complaintService;
@@ -80,6 +90,8 @@ public class ComplaintServiceTest {
 		when(complaintRepository.save(commentComplaint)).thenReturn(commentComplaint);
 		when(complaintRepository.findById(COMPLAINT_ID)).thenReturn(Optional.of(commentComplaint));
 		when(complaintMapper.toResponseDto(commentComplaint)).thenReturn(responseDto);
+		when(mediaRepository.findByParentIdAndParentType(COMPLAINT_ID, MediaConnectedEntity.COMMENT_COMPLAINT))
+			.thenReturn(Collections.emptyList());
 
 		ComplaintResponseDto result = complaintService.createComplaint(createDto);
 
@@ -97,6 +109,8 @@ public class ComplaintServiceTest {
 		when(complaintRepository.save(threadComplaint)).thenReturn(threadComplaint);
 		when(complaintRepository.findById(COMPLAINT_ID)).thenReturn(Optional.of(threadComplaint));
 		when(complaintMapper.toResponseDto(threadComplaint)).thenReturn(responseDto);
+		when(mediaRepository.findByParentIdAndParentType(COMPLAINT_ID, MediaConnectedEntity.THREAD_COMPLAINT))
+			.thenReturn(Collections.emptyList());
 
 		ComplaintResponseDto result = complaintService.createComplaint(createDto);
 

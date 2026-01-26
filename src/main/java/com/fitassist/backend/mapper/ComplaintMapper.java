@@ -47,6 +47,7 @@ public abstract class ComplaintMapper {
 	@Mapping(target = "userId", source = "user.id")
 	@Mapping(target = "discriminatorValue", expression = "java(getDiscriminatorValue(complaint))")
 	@Mapping(target = "associatedId", expression = "java(getAssociatedId(complaint))")
+	@Mapping(target = "imageUrls", ignore = true)
 	public abstract ComplaintResponseDto toResponseDto(ComplaintBase complaint);
 
 	protected String getDiscriminatorValue(ComplaintBase complaint) {
