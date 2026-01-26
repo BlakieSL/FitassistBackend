@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,5 +26,7 @@ public class ComplaintResponseDto implements Serializable {
 	private String discriminatorValue;
 
 	private Integer associatedId;
+
+	private List<String> imageUrls;
 
 }
