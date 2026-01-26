@@ -1,4 +1,4 @@
-package com.fitassist.backend.event.events.Category;
+package com.fitassist.backend.event.event.Category;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;

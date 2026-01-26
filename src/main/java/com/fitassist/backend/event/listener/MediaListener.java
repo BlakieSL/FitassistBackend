@@ -1,8 +1,8 @@
 package com.fitassist.backend.event.listener;
 
 import com.fitassist.backend.config.cache.CacheNames;
-import com.fitassist.backend.event.events.Media.MediaDeleteEvent;
-import com.fitassist.backend.event.events.Media.MediaUpdateEvent;
+import com.fitassist.backend.event.event.Media.MediaDeleteEvent;
+import com.fitassist.backend.event.event.Media.MediaUpdateEvent;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.service.declaration.cache.CacheService;

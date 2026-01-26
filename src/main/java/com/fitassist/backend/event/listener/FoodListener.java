@@ -1,9 +1,9 @@
 package com.fitassist.backend.event.listener;
 
 import com.fitassist.backend.config.cache.CacheNames;
-import com.fitassist.backend.event.events.Food.FoodCreateEvent;
-import com.fitassist.backend.event.events.Food.FoodDeleteEvent;
-import com.fitassist.backend.event.events.Food.FoodUpdateEvent;
+import com.fitassist.backend.event.event.Food.FoodCreateEvent;
+import com.fitassist.backend.event.event.Food.FoodDeleteEvent;
+import com.fitassist.backend.event.event.Food.FoodUpdateEvent;
 import com.fitassist.backend.model.food.Food;
 import com.fitassist.backend.service.declaration.cache.CacheService;
 import com.fitassist.backend.service.declaration.search.LuceneIndexService;
