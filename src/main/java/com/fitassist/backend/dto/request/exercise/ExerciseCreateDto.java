@@ -1,6 +1,7 @@
 package com.fitassist.backend.dto.request.exercise;
 
 import com.fitassist.backend.dto.request.text.TextCreateDto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -41,8 +42,10 @@ public class ExerciseCreateDto {
 	@NotEmpty
 	private List<Integer> targetMusclesIds;
 
+	@Valid
 	private List<TextCreateDto> instructions;
 
+	@Valid
 	private List<TextCreateDto> tips;
 
 }

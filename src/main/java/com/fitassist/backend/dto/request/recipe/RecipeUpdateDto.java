@@ -1,6 +1,7 @@
 package com.fitassist.backend.dto.request.recipe;
 
 import com.fitassist.backend.dto.request.text.TextUpdateDto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -34,6 +35,7 @@ public class RecipeUpdateDto {
 	@Size(min = 1)
 	private List<Integer> categoryIds;
 
+	@Valid
 	private List<TextUpdateDto> instructions;
 
 }
