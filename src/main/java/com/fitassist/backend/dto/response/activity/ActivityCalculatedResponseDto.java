@@ -27,7 +27,7 @@ public class ActivityCalculatedResponseDto implements Serializable {
 
 	private BigDecimal caloriesBurned;
 
-	private int time;
+	private Short time;
 
 	private BigDecimal weight;
 

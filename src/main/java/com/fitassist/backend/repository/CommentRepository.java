@@ -62,7 +62,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaS
 			JOIN user u ON u.id = ct.user_id
 			ORDER BY ct.id
 			""", nativeQuery = true)
-	List<Object[]> findCommentHierarchy(Integer commentId);
+	List<Object[]> findCommentHierarchy(int commentId);
 
 	@Modifying
 	@Query(nativeQuery = true, value = "DELETE FROM comment WHERE id = :id")
@@ -92,7 +92,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaS
 			FROM ancestor_tree at
 			ORDER BY at.id
 			""", nativeQuery = true)
-	List<Object[]> findCommentAncestry(Integer commentId);
+	List<Object[]> findCommentAncestry(int commentId);
 
 	@Query(value = """
 			SELECT c.id

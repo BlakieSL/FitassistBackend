@@ -15,7 +15,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
 
 	@Modifying
 	@Query("UPDATE Recipe r SET r.views = r.views + 1 WHERE r.id = :recipeId")
-	void incrementViews(@Param("recipeId") Integer recipeId);
+	void incrementViews(@Param("recipeId") int recipeId);
 
 	@EntityGraph(value = "Recipe.withoutAssociations")
 	@Query("SELECT r FROM Recipe r WHERE r.isPublic = true")
