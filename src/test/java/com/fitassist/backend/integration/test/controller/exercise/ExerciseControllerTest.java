@@ -20,6 +20,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -50,7 +51,7 @@ public class ExerciseControllerTest {
 		request.setExpertiseLevelId(1);
 		request.setMechanicsTypeId(1);
 		request.setForceTypeId(1);
-		request.setTargetMusclesIds(Collections.emptyList());
+		request.setTargetMusclesIds(List.of(1));
 		request.setInstructions(Collections.emptyList());
 		request.setTips(Collections.emptyList());
 
@@ -72,7 +73,7 @@ public class ExerciseControllerTest {
 		request.setExpertiseLevelId(1);
 		request.setMechanicsTypeId(1);
 		request.setForceTypeId(1);
-		request.setTargetMusclesIds(Collections.emptyList());
+		request.setTargetMusclesIds(List.of(1));
 		request.setInstructions(Collections.emptyList());
 		request.setTips(Collections.emptyList());
 

@@ -31,7 +31,7 @@ public class RecipeUpdateDto {
 
 	private Boolean isPublic;
 
-	@NotEmpty
+	@Size(min = 1)
 	private List<Integer> categoryIds;
 
 	private List<TextUpdateDto> instructions;

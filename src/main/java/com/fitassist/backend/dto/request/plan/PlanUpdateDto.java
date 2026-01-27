@@ -32,7 +32,7 @@ public class PlanUpdateDto {
 
 	private PlanStructureType planStructureType;
 
-	@NotEmpty
+	@Size(min = 1)
 	private List<Integer> categoryIds;
 
 	private List<TextUpdateDto> instructions;
