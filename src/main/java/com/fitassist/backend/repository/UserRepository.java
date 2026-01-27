@@ -16,6 +16,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	Optional<User> findUserWithRolesByEmail(String email);
 
 	@EntityGraph(attributePaths = { "roles" })
-	Optional<User> findUserWithRolesById(Integer id);
+	Optional<User> findUserWithRolesById(int id);
 
 }

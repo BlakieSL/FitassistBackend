@@ -35,7 +35,7 @@ public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecifi
 
 	@Modifying
 	@Query("UPDATE Plan p SET p.views = p.views + 1 WHERE p.id = :planId")
-	void incrementViews(@Param("planId") Integer planId);
+	void incrementViews(@Param("planId") int planId);
 
 	@EntityGraph(value = "Plan.withoutAssociations")
 	@Query("SELECT p FROM Plan p WHERE p.isPublic = true")

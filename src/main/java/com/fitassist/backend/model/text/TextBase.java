@@ -28,7 +28,7 @@ public abstract class TextBase {
 
 	@NotNull
 	@Column(name = "order_index", nullable = false)
-	private short orderIndex;
+	private Short orderIndex;
 
 	@NotBlank
 	@Size(max = TEXT_MAX_LENGTH)
