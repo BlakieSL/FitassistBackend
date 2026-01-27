@@ -283,7 +283,7 @@ public class ActivityControllerTest {
 	void calculateActivityCaloriesBurned() throws Exception {
 		Utils.setUserContext(1);
 		CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto();
-		request.setTime(60);
+		request.setTime((short) 60);
 
 		mockMvc
 			.perform(post("/api/activities/1/calculate-calories").contentType(MediaType.APPLICATION_JSON)
@@ -297,7 +297,7 @@ public class ActivityControllerTest {
 	@DisplayName("POST - /{id}/calculate-calories - Should calculate calories burned for an activity with health-related information provided in request")
 	void calculateActivityCaloriesBurnedWithHealthInfo() throws Exception {
 		CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto();
-		request.setTime(60);
+		request.setTime((short) 60);
 		request.setWeight(new BigDecimal("80.0"));
 
 		mockMvc
@@ -312,7 +312,7 @@ public class ActivityControllerTest {
 	void calculateActivityCaloriesBurnedWithoutHealthInfo() throws Exception {
 		Utils.setUserContext(2);
 		CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto();
-		request.setTime(60);
+		request.setTime((short) 60);
 
 		mockMvc
 			.perform(post("/api/activities/1/calculate-calories").contentType(MediaType.APPLICATION_JSON)
@@ -326,7 +326,7 @@ public class ActivityControllerTest {
 	@DisplayName("POST - /{id}/calculate-calories - Should return 404 when activity does not exist")
 	void calculateActivityCaloriesBurnedNotFound() throws Exception {
 		CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto();
-		request.setTime(60);
+		request.setTime((short) 60);
 		request.setWeight(new BigDecimal("80.0"));
 
 		mockMvc

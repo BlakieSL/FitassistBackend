@@ -49,7 +49,7 @@ public abstract class ActivityMapper {
 	@Mapping(target = "dailyItemId", ignore = true)
 	@Mapping(target = "weight", ignore = true)
 	public abstract ActivityCalculatedResponseDto toCalculatedDto(Activity activity, @Context BigDecimal weight,
-			@Context int time);
+			@Context Short time);
 
 	@Mapping(target = "activityCategory", source = "categoryId", qualifiedByName = "categoryIdToActivityCategory")
 	@Mapping(target = "id", ignore = true)
@@ -68,7 +68,7 @@ public abstract class ActivityMapper {
 
 	@AfterMapping
 	protected void setCaloriesBurned(@MappingTarget ActivityCalculatedResponseDto dto, Activity activity,
-			@Context BigDecimal weight, @Context int time) {
+			@Context BigDecimal weight, @Context Short time) {
 		BigDecimal caloriesBurned = calculationsService.calculateCaloriesBurned(time, weight, activity.getMet());
 
 		dto.setCaloriesBurned(caloriesBurned);
