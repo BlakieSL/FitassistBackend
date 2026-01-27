@@ -26,6 +26,6 @@ public class ForumThreadCreateDto {
 	private String text;
 
 	@NotNull
-	private Integer threadCategoryId;
+	private int threadCategoryId;
 
 }

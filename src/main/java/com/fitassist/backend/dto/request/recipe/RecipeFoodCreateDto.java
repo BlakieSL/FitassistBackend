@@ -30,7 +30,7 @@ public class RecipeFoodCreateDto {
 	public static class FoodQuantityPair {
 
 		@NotNull
-		private Integer foodId;
+		private int foodId;
 
 		@NotNull
 		@Positive
