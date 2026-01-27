@@ -15,8 +15,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class DailyCartFoodUpdateDto {
 
-	@Positive
 	@NotNull
+	@Positive
 	private BigDecimal quantity;
 
 }

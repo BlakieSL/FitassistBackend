@@ -4,6 +4,7 @@ import com.fitassist.backend.dto.request.text.TextCreateDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,22 +13,25 @@ import lombok.Setter;
 
 import java.util.List;
 
+import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
+import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecipeCreateDto {
 
-	private static final int NAME_MAX_LENGTH = 100;
-
 	@NotBlank
 	@Size(max = NAME_MAX_LENGTH)
 	private String name;
 
 	@NotBlank
+	@Size(max = TEXT_MAX_LENGTH)
 	private String description;
 
 	@NotNull
+	@Positive
 	private Short minutesToPrepare;
 
 	private Boolean isPublic = false;

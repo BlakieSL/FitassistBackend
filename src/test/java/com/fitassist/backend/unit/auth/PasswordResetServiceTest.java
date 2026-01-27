@@ -87,7 +87,7 @@ public class PasswordResetServiceTest {
 
 		EmailRequestDto sentEmail = emailCaptor.getValue();
 		assertEquals("noreply@fitassist.com", sentEmail.getFromEmail());
-		assertTrue(sentEmail.getToEmails().contains(email));
+		assertEquals(email, sentEmail.getToEmail());
 		assertEquals("Password Reset Request", sentEmail.getSubject());
 		assertTrue(sentEmail.getContent().contains(resetToken));
 	}

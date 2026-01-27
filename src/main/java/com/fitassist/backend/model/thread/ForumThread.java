@@ -20,6 +20,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
+import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
+
 @Entity
 @Table(name = "thread")
 @NamedEntityGraph(name = "Thread.withoutAssociations", attributeNodes = {})
@@ -31,15 +34,13 @@ import java.util.Set;
 @NoArgsConstructor
 public class ForumThread {
 
-	private static final int TITLE_MAX_LENGTH = 255;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@NotBlank
-	@Size(max = TITLE_MAX_LENGTH)
-	@Column(nullable = false)
+	@Size(max = NAME_MAX_LENGTH)
+	@Column(nullable = false, length = NAME_MAX_LENGTH)
 	private String title;
 
 	@NotNull
@@ -47,7 +48,8 @@ public class ForumThread {
 	private LocalDateTime createdAt;
 
 	@NotBlank
-	@Column(nullable = false, columnDefinition = "TEXT")
+	@Size(max = TEXT_MAX_LENGTH)
+	@Column(nullable = false, length = TEXT_MAX_LENGTH)
 	private String text;
 
 	@Column(nullable = false)

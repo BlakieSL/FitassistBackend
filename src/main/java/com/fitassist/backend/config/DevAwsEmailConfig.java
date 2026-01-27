@@ -20,7 +20,7 @@ public class DevAwsEmailConfig {
 			@Override
 			public void sendEmail(EmailRequestDto request) {
 				log.info("=== Stub Email Service ===");
-				log.info("To : {}", request.getToEmails());
+				log.info("To : {}", request.getToEmail());
 				log.info("Subject : {}", request.getSubject());
 				log.info("Content : {}", request.getContent());
 			}

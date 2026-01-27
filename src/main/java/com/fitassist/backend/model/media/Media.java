@@ -3,6 +3,7 @@ package com.fitassist.backend.model.media;
 import com.fitassist.backend.validation.media.UniqueUserMedia;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +22,11 @@ public class Media {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	private static final int MAX_IMAGE_NAME_LENGTH = 500;
+
 	@NotNull
-	@Column(name = "image_name", nullable = false)
+	@Size(max = MAX_IMAGE_NAME_LENGTH)
+	@Column(name = "image_name", nullable = false, length = MAX_IMAGE_NAME_LENGTH)
 	private String imageName;
 
 	@NotNull

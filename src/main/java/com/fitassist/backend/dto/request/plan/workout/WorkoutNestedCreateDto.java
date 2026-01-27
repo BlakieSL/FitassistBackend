@@ -10,13 +10,14 @@ import lombok.Setter;
 
 import java.util.List;
 
+import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
+import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutNestedCreateDto {
-
-	private static final int NAME_MAX_LENGTH = 50;
 
 	@NotBlank
 	@Size(max = NAME_MAX_LENGTH)

@@ -14,11 +14,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class CategoryResponseDto implements Serializable {
 
-	private static final int NAME_MAX_LENGTH = 50;
-
 	private int id;
 
-	@Size(max = NAME_MAX_LENGTH)
 	private String name;
 
 }

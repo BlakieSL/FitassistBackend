@@ -2,6 +2,7 @@ package com.fitassist.backend.model.exercise;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,23 +11,8 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Represents a level of expertise or skill required for an activity or exercise.
- *
- * <p>
- * <strong>Known predefined values:</strong>
- *
- * <ul>
- * <li>{@code NOVICE}
- * <li>{@code BEGINNER}
- * <li>{@code INTERMEDIATE}
- * <li>{@code ADVANCED}
- * </ul>
- *
- * <p>
- * Note: These values are not hardcoded and may be extended or modified through the
- * application.
- */
+import static com.fitassist.backend.model.SchemaConstants.CATEGORY_NAME_MAX_LENGTH;
+
 @Entity
 @Table(name = "expertise_level")
 @Getter
@@ -40,7 +26,8 @@ public class ExpertiseLevel {
 	private Integer id;
 
 	@NotBlank
-	@Column(nullable = false)
+	@Size(max = CATEGORY_NAME_MAX_LENGTH)
+	@Column(nullable = false, length = CATEGORY_NAME_MAX_LENGTH)
 	private String name;
 
 	@OneToMany(mappedBy = "expertiseLevel", cascade = CascadeType.REMOVE)

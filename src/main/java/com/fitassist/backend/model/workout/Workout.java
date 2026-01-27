@@ -14,6 +14,8 @@ import lombok.Setter;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
+
 @Entity
 @Table(name = "workout")
 @Getter
@@ -21,8 +23,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Workout {
-
-	private static final int NAME_MAX_LENGTH = 50;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
