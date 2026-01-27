@@ -4,6 +4,7 @@ import com.fitassist.backend.dto.request.plan.workout.WorkoutNestedUpdateDto;
 import com.fitassist.backend.dto.request.text.TextUpdateDto;
 import com.fitassist.backend.model.plan.PlanStructureType;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,6 +32,7 @@ public class PlanUpdateDto {
 
 	private PlanStructureType planStructureType;
 
+	@NotEmpty
 	private List<Integer> categoryIds;
 
 	private List<TextUpdateDto> instructions;
