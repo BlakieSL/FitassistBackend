@@ -35,6 +35,7 @@ public class PlanUpdateDto {
 	@Size(min = 1)
 	private List<Integer> categoryIds;
 
+	@Valid
 	private List<TextUpdateDto> instructions;
 
 	@Valid
