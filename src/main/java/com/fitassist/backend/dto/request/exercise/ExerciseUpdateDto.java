@@ -9,20 +9,19 @@ import lombok.Setter;
 
 import java.util.List;
 
+import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
+import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExerciseUpdateDto {
 
-	private static final int MAX_NAME_LENGTH = 100;
-
-	private static final int MAX_DESCRIPTION_LENGTH = 255;
-
-	@Size(max = MAX_NAME_LENGTH)
+	@Size(max = NAME_MAX_LENGTH)
 	private String name;
 
-	@Size(max = MAX_DESCRIPTION_LENGTH)
+	@Size(max = TEXT_MAX_LENGTH)
 	private String description;
 
 	private Integer equipmentId;

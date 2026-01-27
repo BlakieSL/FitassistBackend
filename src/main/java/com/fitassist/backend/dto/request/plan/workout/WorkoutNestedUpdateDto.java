@@ -12,13 +12,13 @@ import lombok.Setter;
 
 import java.util.List;
 
+import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkoutNestedUpdateDto {
-
-	private static final int NAME_MAX_LENGTH = 50;
 
 	private Integer id;
 

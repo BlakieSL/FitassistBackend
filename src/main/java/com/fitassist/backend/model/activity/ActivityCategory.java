@@ -11,24 +11,8 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Represents a category of activity. Known predefined values (subject to change):
- *
- * <ul>
- * <li>{@code HOME}
- * <li>{@code LAWN_OR_GARDEN}
- * <li>{@code WALKING}
- * <li>{@code TRANSPORTATION}
- * <li>{@code OCCUPATION}
- * <li>{@code SPORTS}
- * <li>{@code WATER}
- * <li>{@code WINTER}
- * <li>{@code RELIGIOUS}
- * </ul>
- *
- * <p>
- * These values can be extended or modified via the application or admin interface.
- */
+import static com.fitassist.backend.model.SchemaConstants.CATEGORY_NAME_MAX_LENGTH;
+
 @Entity
 @Table(name = "activity_category")
 @Getter
@@ -37,14 +21,13 @@ import java.util.Set;
 @NoArgsConstructor
 public class ActivityCategory {
 
-	private static final int NAME_MAX_LENGTH = 50;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@NotBlank
-	@Size(max = NAME_MAX_LENGTH)
+	@Size(max = CATEGORY_NAME_MAX_LENGTH)
+	@Column(nullable = false, length = CATEGORY_NAME_MAX_LENGTH)
 	private String name;
 
 	@OneToMany(mappedBy = "activityCategory")

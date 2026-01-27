@@ -23,7 +23,7 @@ public class WorkoutSetExercise {
 	private Integer id;
 
 	@NotNull
-	@Column(nullable = false)
+	@Column(nullable = false, precision = 5, scale = 2)
 	private BigDecimal weight;
 
 	@NotNull

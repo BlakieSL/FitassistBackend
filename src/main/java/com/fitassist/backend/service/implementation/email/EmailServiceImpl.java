@@ -21,7 +21,7 @@ public class EmailServiceImpl implements EmailService {
 	public void sendEmail(EmailRequestDto emailRequest) {
 		SendEmailRequest request = SendEmailRequest.builder()
 			.source(emailRequest.getFromEmail())
-			.destination(Destination.builder().toAddresses(emailRequest.getToEmails()).build())
+			.destination(Destination.builder().toAddresses(emailRequest.getToEmail()).build())
 			.message(Message.builder()
 				.subject(Content.builder().data(emailRequest.getSubject()).build())
 				.body(Body.builder()

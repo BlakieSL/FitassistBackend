@@ -11,6 +11,8 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.fitassist.backend.model.SchemaConstants.CATEGORY_NAME_MAX_LENGTH;
+
 @Entity
 @Table(name = "target_muscle")
 @Getter
@@ -19,14 +21,13 @@ import java.util.Set;
 @NoArgsConstructor
 public class TargetMuscle {
 
-	private static final int NAME_MAX_LENGTH = 50;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@NotBlank
-	@Size(max = NAME_MAX_LENGTH)
+	@Size(max = CATEGORY_NAME_MAX_LENGTH)
+	@Column(nullable = false, length = CATEGORY_NAME_MAX_LENGTH)
 	private String name;
 
 	@OneToMany(mappedBy = "targetMuscle")

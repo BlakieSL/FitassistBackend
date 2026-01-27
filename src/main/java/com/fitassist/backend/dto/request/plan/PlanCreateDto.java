@@ -14,19 +14,21 @@ import lombok.Setter;
 
 import java.util.List;
 
+import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
+import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlanCreateDto {
 
-	private static final int NAME_MAX_LENGTH = 100;
-
 	@NotBlank
 	@Size(max = NAME_MAX_LENGTH)
 	private String name;
 
 	@NotBlank
+	@Size(max = TEXT_MAX_LENGTH)
 	private String description;
 
 	private Boolean isPublic = false;

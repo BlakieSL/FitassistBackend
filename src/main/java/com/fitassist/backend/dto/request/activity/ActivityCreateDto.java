@@ -11,16 +11,16 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActivityCreateDto {
 
-	private static final int NAME_MAX_LENGTH = 50;
-
-	@Size(max = NAME_MAX_LENGTH)
 	@NotBlank
+	@Size(max = NAME_MAX_LENGTH)
 	private String name;
 
 	@NotNull

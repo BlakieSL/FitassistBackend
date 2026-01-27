@@ -1,6 +1,7 @@
 package com.fitassist.backend.model.activity;
 
 import com.fitassist.backend.model.IndexedEntity;
+import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
 import com.fitassist.backend.model.daily.DailyCartActivity;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.user.UserActivity;
@@ -34,8 +35,6 @@ import java.util.Set;
 @NoArgsConstructor
 public class Activity implements IndexedEntity {
 
-	private static final int NAME_MAX_LENGTH = 500;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -47,7 +46,7 @@ public class Activity implements IndexedEntity {
 
 	@NotNull
 	@Positive
-	@Column(nullable = false)
+	@Column(nullable = false, precision = 4, scale = 2)
 	private BigDecimal met;
 
 	@NotNull

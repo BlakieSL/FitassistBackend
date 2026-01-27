@@ -2,13 +2,10 @@ package com.fitassist.backend.dto.request.email;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,8 +17,9 @@ public class EmailRequestDto {
 	@Email
 	private String fromEmail;
 
-	@NotEmpty
-	private List<@Email String> toEmails;
+	@NotBlank
+	@Email
+	private String toEmail;
 
 	@NotBlank
 	private String subject;

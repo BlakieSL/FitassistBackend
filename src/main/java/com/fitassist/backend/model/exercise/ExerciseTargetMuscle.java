@@ -17,8 +17,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor(staticName = "of")
 public class ExerciseTargetMuscle {
 
-	public static final String TARGET_MUSCLE = "targetMuscle";
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -34,7 +32,7 @@ public class ExerciseTargetMuscle {
 	private TargetMuscle targetMuscle;
 
 	@NotNull
-	@Column(nullable = false)
+	@Column(nullable = false, precision = 3, scale = 2)
 	private BigDecimal priority;
 
 	public static ExerciseTargetMuscle createWithTargetMuscleExercise(TargetMuscle targetMuscle, Exercise exercise) {

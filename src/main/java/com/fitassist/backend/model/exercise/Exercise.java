@@ -1,6 +1,8 @@
 package com.fitassist.backend.model.exercise;
 
 import com.fitassist.backend.model.IndexedEntity;
+import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
+import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.text.ExerciseInstruction;
 import com.fitassist.backend.model.text.ExerciseTip;
@@ -33,19 +35,18 @@ import java.util.*;
 @NoArgsConstructor
 public class Exercise implements IndexedEntity {
 
-	private static final int MAX_NAME_LENGTH = 100;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@NotBlank
-	@Size(max = MAX_NAME_LENGTH)
-	@Column(nullable = false, length = MAX_NAME_LENGTH)
+	@Size(max = NAME_MAX_LENGTH)
+	@Column(nullable = false, length = NAME_MAX_LENGTH)
 	private String name;
 
 	@NotBlank
-	@Column(nullable = false, columnDefinition = "TEXT")
+	@Size(max = TEXT_MAX_LENGTH)
+	@Column(nullable = false, length = TEXT_MAX_LENGTH)
 	private String description;
 
 	@NotNull

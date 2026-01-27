@@ -11,25 +11,27 @@ import lombok.Setter;
 
 import java.util.List;
 
+import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
+import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExerciseCreateDto {
 
-	private static final int MAX_NAME_LENGTH = 100;
-
 	@NotBlank
-	@Size(max = MAX_NAME_LENGTH)
+	@Size(max = NAME_MAX_LENGTH)
 	private String name;
 
 	@NotBlank
+	@Size(max = TEXT_MAX_LENGTH)
 	private String description;
-
-	private Integer equipmentId;
 
 	@NotNull
 	private int expertiseLevelId;
+
+	private Integer equipmentId;
 
 	private Integer mechanicsTypeId;
 
