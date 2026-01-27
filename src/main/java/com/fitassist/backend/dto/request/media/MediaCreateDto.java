@@ -21,6 +21,6 @@ public class MediaCreateDto {
 	private MediaConnectedEntity parentType;
 
 	@NotNull
-	private Integer parentId;
+	private int parentId;
 
 }

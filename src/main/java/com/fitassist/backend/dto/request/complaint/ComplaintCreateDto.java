@@ -17,7 +17,7 @@ public class ComplaintCreateDto {
 	private ComplaintReason reason;
 
 	@NotNull
-	private Integer parentId;
+	private int parentId;
 
 	@NotNull
 	private ComplaintSubClass subClass;

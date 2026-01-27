@@ -25,7 +25,7 @@ public class WorkoutSetExerciseNestedCreateDto {
 	private Short repetitions;
 
 	@NotNull
-	private Integer exerciseId;
+	private int exerciseId;
 
 	@NotNull
 	@Positive
