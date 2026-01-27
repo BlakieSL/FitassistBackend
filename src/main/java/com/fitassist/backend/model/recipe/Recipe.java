@@ -66,11 +66,6 @@ public class Recipe implements IndexedEntity {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	@PrePersist
-	protected void onCreate() {
-		createdAt = LocalDateTime.now();
-	}
-
 	@OneToMany(mappedBy = "recipe", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE },
 			orphanRemoval = true)
 	@OrderBy("orderIndex ASC")
@@ -98,6 +93,11 @@ public class Recipe implements IndexedEntity {
 	@Override
 	public String getClassName() {
 		return this.getClass().getSimpleName();
+	}
+
+	@PrePersist
+	protected void onCreate() {
+		createdAt = LocalDateTime.now();
 	}
 
 	public static Recipe of(Integer id, User user) {

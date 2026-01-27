@@ -1,6 +1,7 @@
 package com.fitassist.backend.dto.request.exercise;
 
 import com.fitassist.backend.dto.request.text.TextUpdateDto;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,6 +33,7 @@ public class ExerciseUpdateDto {
 
 	private Integer forceTypeId;
 
+	@NotEmpty
 	private List<Integer> targetMuscleIds;
 
 	private List<TextUpdateDto> instructions;
