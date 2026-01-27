@@ -1,6 +1,7 @@
 package com.fitassist.backend.dto.request.recipe;
 
 import com.fitassist.backend.dto.request.text.TextUpdateDto;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,7 @@ public class RecipeUpdateDto {
 
 	private Boolean isPublic;
 
+	@NotEmpty
 	private List<Integer> categoryIds;
 
 	private List<TextUpdateDto> instructions;
