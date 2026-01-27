@@ -11,28 +11,8 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Represents a category used to classify recipes based on when or how they are typically
- * consumed.
- *
- * <p>
- * <strong>Known predefined values:</strong>
- *
- * <ul>
- * <li>{@code BREAKFAST}
- * <li>{@code LUNCH}
- * <li>{@code DINNER}
- * <li>{@code SNACK}
- * <li>{@code DESSERT}
- * <li>{@code APPETIZER}
- * <li>{@code SIDE_DISH}
- * <li>{@code MAIN_COURSE}
- * </ul>
- *
- * <p>
- * Note: These values are not hardcoded and may be extended or modified through the
- * application.
- */
+import static com.fitassist.backend.model.SchemaConstants.CATEGORY_NAME_MAX_LENGTH;
+
 @Entity
 @Table(name = "recipe_category")
 @Getter
@@ -41,14 +21,13 @@ import java.util.Set;
 @NoArgsConstructor
 public class RecipeCategory {
 
-	private static final int NAME_MAX_LENGTH = 50;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@NotBlank
-	@Size(max = NAME_MAX_LENGTH)
+	@Size(max = CATEGORY_NAME_MAX_LENGTH)
+	@Column(nullable = false, length = CATEGORY_NAME_MAX_LENGTH)
 	private String name;
 
 	@OneToMany(mappedBy = "recipeCategory")

@@ -7,16 +7,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import static com.fitassist.backend.model.SchemaConstants.CATEGORY_NAME_MAX_LENGTH;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryCreateDto {
 
-	private static final int NAME_MAX_LENGTH = 50;
-
 	@NotBlank
-	@Size(max = NAME_MAX_LENGTH)
+	@Size(max = CATEGORY_NAME_MAX_LENGTH)
 	private String name;
 
 }

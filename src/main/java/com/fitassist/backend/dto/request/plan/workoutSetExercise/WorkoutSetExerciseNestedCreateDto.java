@@ -2,6 +2,7 @@ package com.fitassist.backend.dto.request.plan.workoutSetExercise;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ import java.math.BigDecimal;
 public class WorkoutSetExerciseNestedCreateDto {
 
 	@NotNull
-	@Positive
+	@PositiveOrZero
 	private BigDecimal weight;
 
 	@NotNull

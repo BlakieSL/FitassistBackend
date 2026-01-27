@@ -19,6 +19,9 @@ import org.hibernate.annotations.SQLRestriction;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
+import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
+
 @Entity
 @Table(name = "plan")
 @NamedEntityGraph(name = "Plan.withoutAssociations", attributeNodes = {})
@@ -32,8 +35,6 @@ import java.util.*;
 @NoArgsConstructor
 public class Plan implements IndexedEntity {
 
-	private static final int NAME_MAX_LENGTH = 100;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -44,7 +45,8 @@ public class Plan implements IndexedEntity {
 	private String name;
 
 	@NotBlank
-	@Column(nullable = false, columnDefinition = "TEXT")
+	@Size(max = TEXT_MAX_LENGTH)
+	@Column(nullable = false, length = TEXT_MAX_LENGTH)
 	private String description;
 
 	@NotNull

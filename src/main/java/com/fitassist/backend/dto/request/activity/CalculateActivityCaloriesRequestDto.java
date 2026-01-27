@@ -17,8 +17,9 @@ public class CalculateActivityCaloriesRequestDto {
 
 	@NotNull
 	@Positive
-	private int time = 1;
+	private int time;
 
+	@Positive
 	private BigDecimal weight;
 
 }

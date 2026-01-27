@@ -27,7 +27,7 @@ public class DailyCartFood {
 
 	@NotNull
 	@Positive
-	@Column(nullable = false)
+	@Column(nullable = false, precision = 7, scale = 2)
 	private BigDecimal quantity;
 
 	@NotNull

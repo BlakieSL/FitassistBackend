@@ -7,6 +7,7 @@ import com.fitassist.backend.model.user.UserComment;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
 
 @Entity
 @Table(name = "comment")
@@ -36,7 +39,8 @@ public class Comment {
 	private Integer id;
 
 	@NotBlank
-	@Column(nullable = false)
+	@Size(max = TEXT_MAX_LENGTH)
+	@Column(nullable = false, length = TEXT_MAX_LENGTH)
 	private String text;
 
 	@NotNull

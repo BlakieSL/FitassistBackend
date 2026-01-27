@@ -1,6 +1,7 @@
 package com.fitassist.backend.model.food;
 
 import com.fitassist.backend.model.IndexedEntity;
+import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
 import com.fitassist.backend.model.daily.DailyCartFood;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.recipe.RecipeFood;
@@ -30,35 +31,33 @@ import java.util.Set;
 @NoArgsConstructor
 public class Food implements IndexedEntity {
 
-	private static final int MAX_NAME_LENGTH = 500;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@NotBlank
-	@Size(max = MAX_NAME_LENGTH)
-	@Column(nullable = false, length = MAX_NAME_LENGTH)
+	@Size(max = NAME_MAX_LENGTH)
+	@Column(nullable = false, length = NAME_MAX_LENGTH)
 	private String name;
 
 	@NotNull
-	@Positive
-	@Column(nullable = false)
+	@PositiveOrZero
+	@Column(nullable = false, precision = 7, scale = 2)
 	private BigDecimal calories;
 
 	@NotNull
 	@PositiveOrZero
-	@Column(nullable = false)
+	@Column(nullable = false, precision = 7, scale = 2)
 	private BigDecimal protein;
 
 	@NotNull
 	@PositiveOrZero
-	@Column(nullable = false)
+	@Column(nullable = false, precision = 7, scale = 2)
 	private BigDecimal fat;
 
 	@NotNull
 	@PositiveOrZero
-	@Column(nullable = false)
+	@Column(nullable = false, precision = 7, scale = 2)
 	private BigDecimal carbohydrates;
 
 	@NotNull
