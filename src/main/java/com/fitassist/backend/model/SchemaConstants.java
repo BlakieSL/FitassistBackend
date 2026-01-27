@@ -1,6 +1,5 @@
 package com.fitassist.backend.model;
 
-
 public final class SchemaConstants {
 
 	public static final int CATEGORY_NAME_MAX_LENGTH = 50;
