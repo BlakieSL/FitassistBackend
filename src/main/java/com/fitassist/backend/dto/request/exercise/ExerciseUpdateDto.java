@@ -33,7 +33,7 @@ public class ExerciseUpdateDto {
 
 	private Integer forceTypeId;
 
-	@NotEmpty
+	@Size(min = 1)
 	private List<Integer> targetMuscleIds;
 
 	private List<TextUpdateDto> instructions;

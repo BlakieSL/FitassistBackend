@@ -20,6 +20,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -46,6 +48,7 @@ public class PlanControllerTest {
 		createDto.setName("Test Plan");
 		createDto.setDescription("A test plan description");
 		createDto.setPlanStructureType(PlanStructureType.WEEKLY_SPLIT);
+		createDto.setCategoryIds(List.of(1));
 
 		mockMvc
 			.perform(post("/api/plans").contentType(MediaType.APPLICATION_JSON)
