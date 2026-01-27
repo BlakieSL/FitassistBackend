@@ -1,6 +1,5 @@
 package com.fitassist.backend.dto.response.category;
 
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class CategoryResponseDto implements Serializable {
 
-	private int id;
+	private Integer id;
 
 	private String name;
 

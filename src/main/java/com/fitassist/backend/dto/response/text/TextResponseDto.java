@@ -15,7 +15,7 @@ public class TextResponseDto implements Serializable {
 
 	private Integer id;
 
-	private short orderIndex;
+	private Short orderIndex;
 
 	private String text;
 
