@@ -17,6 +17,8 @@ public interface UserFoodRepository extends JpaRepository<UserFood, Integer> {
 
 	Optional<UserFood> findByUserIdAndFoodId(int userId, int foodId);
 
+	long countByFoodId(int foodId);
+
 	@Query("""
 			    SELECT COUNT(uf) as savesCount,
 			           SUM(CASE WHEN uf.user.id = :userId THEN 1 ELSE 0 END) as userSaved

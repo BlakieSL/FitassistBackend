@@ -27,6 +27,6 @@ public interface RecipeService {
 
 	List<Recipe> getAllRecipeEntities();
 
-	void incrementViews(int recipeId);
+	Long incrementViews(int recipeId);
 
 }

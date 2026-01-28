@@ -17,6 +17,8 @@ public interface UserExerciseRepository extends JpaRepository<UserExercise, Inte
 
 	Optional<UserExercise> findByUserIdAndExerciseId(int userId, int exerciseId);
 
+	long countByExerciseId(int exerciseId);
+
 	@Query(value = """
 			SELECT ue FROM UserExercise ue
 			JOIN FETCH ue.exercise e

@@ -73,4 +73,9 @@ public class UserCommentServiceImpl extends GenericSavedService<Comment, UserCom
 		return ((UserCommentRepository) userEntityRepository).findByUserIdAndCommentIdAndType(userId, entityId, type);
 	}
 
+	@Override
+	protected long countByEntityIdAndType(int entityId, TypeOfInteraction type) {
+		return ((UserCommentRepository) userEntityRepository).countByCommentIdAndType(entityId, type);
+	}
+
 }

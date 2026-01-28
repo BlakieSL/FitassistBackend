@@ -1,6 +1,7 @@
 package com.fitassist.backend.service.implementation.user.interaction.withType;
 
 import com.fitassist.backend.auth.AuthorizationUtil;
+import com.fitassist.backend.dto.response.user.InteractionResponseDto;
 import com.fitassist.backend.exception.NotUniqueRecordException;
 import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.model.user.TypeOfInteraction;
@@ -33,7 +34,7 @@ public abstract class GenericSavedService<T, U, R> {
 	}
 
 	@Transactional
-	public void saveToUser(int entityId, TypeOfInteraction type) {
+	public InteractionResponseDto saveToUser(int entityId, TypeOfInteraction type) {
 		int userId = AuthorizationUtil.getUserId();
 		if (isAlreadySaved(userId, entityId, type)) {
 			throw new NotUniqueRecordException(User.class, userId, entityId, type);
@@ -51,14 +52,20 @@ public abstract class GenericSavedService<T, U, R> {
 
 		U userEntity = createUserEntity(user, entity, type);
 		userEntityRepository.save(userEntity);
+
+		return new InteractionResponseDto(true, countByEntityIdAndType(entityId, type));
 	}
 
 	@Transactional
-	public void deleteFromUser(int entityId, TypeOfInteraction type) {
+	public InteractionResponseDto deleteFromUser(int entityId, TypeOfInteraction type) {
 		int userId = AuthorizationUtil.getUserId();
 		U userEntity = findUserEntity(userId, entityId, type);
 		userEntityRepository.delete(userEntity);
+
+		return new InteractionResponseDto(false, countByEntityIdAndType(entityId, type));
 	}
+
+	protected abstract long countByEntityIdAndType(int entityId, TypeOfInteraction type);
 
 	protected abstract boolean isAlreadySaved(int userId, int entityId, TypeOfInteraction type);
 

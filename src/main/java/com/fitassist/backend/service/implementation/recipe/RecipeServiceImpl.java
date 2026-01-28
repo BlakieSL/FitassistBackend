@@ -132,8 +132,9 @@ public class RecipeServiceImpl implements RecipeService {
 
 	@Override
 	@Transactional
-	public void incrementViews(int recipeId) {
+	public Long incrementViews(int recipeId) {
 		recipeRepository.incrementViews(recipeId);
+		return recipeRepository.getViews(recipeId);
 	}
 
 	private Recipe find(int recipeId) {

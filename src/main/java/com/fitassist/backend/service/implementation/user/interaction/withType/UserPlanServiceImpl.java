@@ -3,6 +3,7 @@ package com.fitassist.backend.service.implementation.user.interaction.withType;
 import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.dto.response.plan.PlanResponseDto;
 import com.fitassist.backend.dto.response.plan.PlanSummaryDto;
+import com.fitassist.backend.dto.response.user.InteractionResponseDto;
 import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
 import com.fitassist.backend.exception.NotSupportedInteractionTypeException;
 import com.fitassist.backend.mapper.plan.PlanMapper;
@@ -42,14 +43,19 @@ public class UserPlanServiceImpl extends GenericSavedService<Plan, UserPlan, Pla
 
 	@Override
 	@CacheEvict(value = CacheNames.PLANS, key = "#entityId")
-	public void saveToUser(int entityId, TypeOfInteraction type) {
-		super.saveToUser(entityId, type);
+	public InteractionResponseDto saveToUser(int entityId, TypeOfInteraction type) {
+		return super.saveToUser(entityId, type);
 	}
 
 	@Override
 	@CacheEvict(value = CacheNames.PLANS, key = "#entityId")
-	public void deleteFromUser(int entityId, TypeOfInteraction type) {
-		super.deleteFromUser(entityId, type);
+	public InteractionResponseDto deleteFromUser(int entityId, TypeOfInteraction type) {
+		return super.deleteFromUser(entityId, type);
+	}
+
+	@Override
+	protected long countByEntityIdAndType(int entityId, TypeOfInteraction type) {
+		return ((UserPlanRepository) userEntityRepository).countByPlanIdAndType(entityId, type);
 	}
 
 	@Override
