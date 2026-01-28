@@ -8,9 +8,9 @@ VALUES (1, 'Vegetables'),
        (3, 'Grains');
 
 INSERT INTO food (id, name, calories, carbohydrates, fat, protein, food_category_id)
-VALUES (1, 'Carrot', 41, 9.6, 0.2, 0.9, 1),
-       (2, 'Chicken Breast', 165, 0, 3.6, 31, 2),
-       (3, 'Rice', 130, 28, 0.3, 2.7, 3);
+VALUES (1, 'Carrot', 41.0, 9.60, 0.20, 0.90, 1),
+       (2, 'Chicken Breast', 165.0, 0.00, 3.60, 31.00, 2),
+       (3, 'Rice', 130.0, 28.00, 0.30, 2.70, 3);
 
 INSERT INTO recipe_category (id, name)
 VALUES (1, 'Vegetarian'),
@@ -35,11 +35,11 @@ VALUES (1, 1, 1),
        (8, 5, 3);
 
 INSERT INTO recipe_food (id, quantity, recipe_id, food_id)
-VALUES (1, 200, 1, 1),
-       (2, 150, 2, 2),
-       (3, 100, 3, 2),
-       (4, 150, 3, 3),
-       (5, 100, 5, 1);
+VALUES (1, 200.00, 1, 1),
+       (2, 150.00, 2, 2),
+       (3, 100.00, 3, 2),
+       (4, 150.00, 3, 3),
+       (5, 100.00, 5, 1);
 
 INSERT INTO user_recipe (id, type, recipie_id, user_id, created_at)
 VALUES (1, 'SAVE', 1, 1, NOW()),

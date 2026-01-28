@@ -60,24 +60,24 @@ VALUES ('USER'),
        ('ADMIN');
 
 INSERT INTO user (username, email, password, gender, birthday, height, weight, activity_level, goal)
-VALUES ('testuser', 'test@example.com', '$2a$10$examplehashedpassword', 'MALE', '1990-01-01', 180.00, 75.00,
+VALUES ('testuser', 'test@example.com', '$2a$10$examplehashedpassword', 'MALE', '1990-01-01', 180.0, 75.0,
         'MODERATELY_ACTIVE', 'BUILD_MUSCLE');
 
 INSERT INTO food (name, calories, protein, carbohydrates, fat, food_category_id)
-VALUES ('test', 52.00, 0.26, 13.81, 0.17, 1),
-       ('test', 165.00, 31.00, 0.00, 3.60, 3),
-       ('test', 111.00, 2.59, 23.00, 0.90, 4),
-       ('test', 34.00, 2.82, 6.64, 0.37, 2),
-       ('test', 208.00, 20.42, 0.00, 13.42, 3),
-       ('Greek Yogurt (Plain)', 59.00, 10.00, 3.60, 0.40, 5);
+VALUES ('test', 52.0, 0.26, 13.81, 0.17, 1),
+       ('test', 165.0, 31.00, 0.00, 3.60, 3),
+       ('test', 111.0, 2.59, 23.00, 0.90, 4),
+       ('test', 34.0, 2.82, 6.64, 0.37, 2),
+       ('test', 208.0, 20.42, 0.00, 13.42, 3),
+       ('Greek Yogurt (Plain)', 59.0, 10.00, 3.60, 0.40, 5);
 
 INSERT INTO activity (name, met, activity_category_id)
-VALUES ('Running (8 km/h)', 8.00, 1),
-       ('Cycling (Leisure)', 4.00, 2),
-       ('Swimming (Moderate)', 6.00, 3),
-       ('Weight Lifting (General)', 3.00, 6),
-       ('Walking (3.2 km/h)', 2.50, 6),
-       ('House Cleaning', 3.50, 5);
+VALUES ('Running (8 km/h)', 8.0, 1),
+       ('Cycling (Leisure)', 4.0, 2),
+       ('Swimming (Moderate)', 6.0, 3),
+       ('Weight Lifting (General)', 3.0, 6),
+       ('Walking (3.2 km/h)', 2.5, 6),
+       ('House Cleaning', 3.5, 5);
 
 INSERT INTO exercise (name, description, equipment_id, expertise_level_id, force_type_id, mechanics_type_id)
 VALUES ('Bench Press', 'Lying on a bench, press a barbell upwards.', 1, 2, 1, 1),

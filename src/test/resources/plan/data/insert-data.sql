@@ -1,10 +1,10 @@
 INSERT INTO user (id, activity_level, birthday, email, gender, goal, height, password, username, weight)
-VALUES (1, 'MODERATELY_ACTIVE', '1990-05-15', 'user1@example.com', 'MALE', 'BUILD_MUSCLE', 180.00,
-        '$2a$10$exampleHash1', 'fitness_lover', 80.00),
-       (2, 'VERY_ACTIVE', '1985-08-22', 'user2@example.com', 'MALE', 'MAINTAIN_WEIGHT', 175.00, '$2a$10$exampleHash2',
-        'gym_enthusiast', 75.00),
-       (3, 'SEDENTARY', '1992-11-10', 'user3@example.com', 'MALE', 'LOSE_WEIGHT', 185.00, '$2a$10$exampleHash3',
-        'office_worker', 90.00);
+VALUES (1, 'MODERATELY_ACTIVE', '1990-05-15', 'user1@example.com', 'MALE', 'BUILD_MUSCLE', 180.0,
+        '$2a$10$exampleHash1', 'fitness_lover', 80.0),
+       (2, 'VERY_ACTIVE', '1985-08-22', 'user2@example.com', 'MALE', 'MAINTAIN_WEIGHT', 175.0, '$2a$10$exampleHash2',
+        'gym_enthusiast', 75.0),
+       (3, 'SEDENTARY', '1992-11-10', 'user3@example.com', 'MALE', 'LOSE_WEIGHT', 185.0, '$2a$10$exampleHash3',
+        'office_worker', 90.0);
 
 INSERT INTO plan_category (id, name)
 VALUES (1, 'Strength Training'),
@@ -38,12 +38,12 @@ VALUES (1, 'Standard bench press', 'Barbell Bench Press', 2, 2, 1, 1),
        (3, 'Bent-over row', 'Barbell Row', 2, 2, 2, 1);
 
 INSERT INTO exercise_target_muscle (exercise_id, target_muscle_id, priority)
-VALUES (1, 1, 1.0),
-       (1, 3, 0.8),
-       (2, 3, 1.0),
-       (2, 1, 0.6),
-       (3, 2, 1.0),
-       (3, 3, 0.6);
+VALUES (1, 1, 1.00),
+       (1, 3, 0.80),
+       (2, 3, 1.00),
+       (2, 1, 0.60),
+       (3, 2, 1.00),
+       (3, 3, 0.60);
 
 INSERT INTO plan (is_public, id, description, name, structure_type, user_id, created_at)
 VALUES (true, 1, 'Beginner workout plan', 'Beginner Strength', 'WEEKLY_SPLIT', 1, NOW()),
