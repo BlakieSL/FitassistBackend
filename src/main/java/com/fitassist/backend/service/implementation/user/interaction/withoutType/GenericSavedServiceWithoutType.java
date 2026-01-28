@@ -1,6 +1,7 @@
 package com.fitassist.backend.service.implementation.user.interaction.withoutType;
 
 import com.fitassist.backend.auth.AuthorizationUtil;
+import com.fitassist.backend.dto.response.user.InteractionResponseDto;
 import com.fitassist.backend.exception.NotUniqueRecordException;
 import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.model.user.User;
@@ -34,7 +35,7 @@ public abstract class GenericSavedServiceWithoutType<T, U, R> implements SavedSe
 
 	@Override
 	@Transactional
-	public void saveToUser(int entityId) {
+	public InteractionResponseDto saveToUser(int entityId) {
 		int userId = AuthorizationUtil.getUserId();
 		if (isAlreadySaved(userId, entityId)) {
 			throw new NotUniqueRecordException(User.class, userId, entityId);
@@ -47,15 +48,21 @@ public abstract class GenericSavedServiceWithoutType<T, U, R> implements SavedSe
 
 		U userEntity = createUserEntity(user, entity);
 		userEntityRepository.save(userEntity);
+
+		return new InteractionResponseDto(true, countByEntityId(entityId));
 	}
 
 	@Override
 	@Transactional
-	public void deleteFromUser(int entityId) {
+	public InteractionResponseDto deleteFromUser(int entityId) {
 		int userId = AuthorizationUtil.getUserId();
 		U userEntity = findUserEntity(userId, entityId);
 		userEntityRepository.delete(userEntity);
+
+		return new InteractionResponseDto(false, countByEntityId(entityId));
 	}
+
+	protected abstract long countByEntityId(int entityId);
 
 	protected abstract boolean isAlreadySaved(int userId, int entityId);
 

@@ -191,28 +191,18 @@ public class RecipeControllerTest {
 	@WithMockUser
 	@RecipeSql
 	@Test
-	@DisplayName("PATCH - /{id}/view - Should increment views for a recipe")
+	@DisplayName("PATCH - /{id}/view - Should increment views for a recipe and return updated count")
 	void incrementViews() throws Exception {
-		mockMvc.perform(patch("/api/recipes/1/view")).andExpect(status().isNoContent());
-	}
-
-	@WithMockUser
-	@RecipeSql
-	@Test
-	@DisplayName("PATCH - /{id}/view - Should increment views multiple times")
-	void incrementViewsMultipleTimes() throws Exception {
-		mockMvc.perform(patch("/api/recipes/1/view")).andExpect(status().isNoContent());
-
-		mockMvc.perform(patch("/api/recipes/1/view")).andExpect(status().isNoContent());
-
-		mockMvc.perform(patch("/api/recipes/1/view")).andExpect(status().isNoContent());
+		mockMvc.perform(patch("/api/recipes/1/view"))
+			.andExpectAll(status().isOk(), jsonPath("$").value(1));
 	}
 
 	@WithMockUser
 	@Test
-	@DisplayName("PATCH - /{id}/view - Should return 204 even for non-existent recipe")
+	@DisplayName("PATCH - /{id}/view - Should return null for non-existent recipe")
 	void incrementViewsNonExistentRecipe() throws Exception {
-		mockMvc.perform(patch("/api/recipes/999/view")).andExpect(status().isNoContent());
+		mockMvc.perform(patch("/api/recipes/999/view"))
+			.andExpectAll(status().isOk(), jsonPath("$").doesNotExist());
 	}
 
 }

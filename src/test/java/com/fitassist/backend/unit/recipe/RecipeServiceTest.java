@@ -299,20 +299,15 @@ public class RecipeServiceTest {
 	}
 
 	@Test
-	void incrementViews_shouldCallRepositoryIncrementViews() {
-		recipeService.incrementViews(recipeId);
+	void incrementViews_shouldIncrementAndReturnViews() {
+		long expectedViews = 10L;
+		when(recipeRepository.getViews(recipeId)).thenReturn(expectedViews);
+
+		Long result = recipeService.incrementViews(recipeId);
 
 		verify(recipeRepository).incrementViews(recipeId);
-	}
-
-	@Test
-	void incrementViews_shouldCallRepositoryWithCorrectId() {
-		int specificRecipeId = 42;
-
-		recipeService.incrementViews(specificRecipeId);
-
-		verify(recipeRepository).incrementViews(specificRecipeId);
-		verify(recipeRepository, never()).incrementViews(recipeId);
+		verify(recipeRepository).getViews(recipeId);
+		assertEquals(expectedViews, result);
 	}
 
 }

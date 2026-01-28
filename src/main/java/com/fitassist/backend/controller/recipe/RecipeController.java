@@ -65,9 +65,9 @@ public class RecipeController {
 	}
 
 	@PatchMapping("/{recipeId}/view")
-	public ResponseEntity<Void> incrementViews(@PathVariable int recipeId) {
-		recipeService.incrementViews(recipeId);
-		return ResponseEntity.noContent().build();
+	public ResponseEntity<Long> incrementViews(@PathVariable int recipeId) {
+		Long views = recipeService.incrementViews(recipeId);
+		return ResponseEntity.ok(views);
 	}
 
 }

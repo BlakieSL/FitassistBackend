@@ -18,6 +18,8 @@ public interface UserPlanRepository extends JpaRepository<UserPlan, Integer> {
 
 	boolean existsByUserIdAndPlanIdAndType(int userId, int planId, TypeOfInteraction type);
 
+	long countByPlanIdAndType(int planId, TypeOfInteraction type);
+
 	@Query("""
 			    SELECT
 			        p.id as entityId,

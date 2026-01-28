@@ -17,6 +17,8 @@ public interface UserActivityRepository extends JpaRepository<UserActivity, Inte
 
 	Optional<UserActivity> findByUserIdAndActivityId(int userId, int activityId);
 
+	long countByActivityId(int activityId);
+
 	@Query(value = """
 			SELECT ua FROM UserActivity ua
 			JOIN FETCH ua.activity a

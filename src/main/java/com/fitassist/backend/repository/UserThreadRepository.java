@@ -17,6 +17,8 @@ public interface UserThreadRepository extends JpaRepository<UserThread, Integer>
 
 	Optional<UserThread> findByUserIdAndForumThreadId(int userId, int forumThreadId);
 
+	long countByForumThreadId(int forumThreadId);
+
 	@Query(value = """
 			    SELECT ut
 			    FROM UserThread ut

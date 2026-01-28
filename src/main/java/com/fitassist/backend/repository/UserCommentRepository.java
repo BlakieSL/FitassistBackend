@@ -18,6 +18,8 @@ public interface UserCommentRepository extends JpaRepository<UserComment, Intege
 
 	Optional<UserComment> findByUserIdAndCommentIdAndType(int userId, int commentId, TypeOfInteraction type);
 
+	long countByCommentIdAndType(int commentId, TypeOfInteraction type);
+
 	@Query(value = """
 			    WITH RECURSIVE comment_descendants AS (
 			        SELECT id, parent_comment_id, parent_comment_id as root_comment_id
