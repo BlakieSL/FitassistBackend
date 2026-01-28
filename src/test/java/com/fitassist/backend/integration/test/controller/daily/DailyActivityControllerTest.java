@@ -79,7 +79,7 @@ public class DailyActivityControllerTest {
 
 		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
 		request.setTime((short) 30);
-		request.setWeight(new BigDecimal("75.50"));
+		request.setWeight(new BigDecimal("75.5"));
 		request.setDate(LocalDate.of(2023, 10, 6));
 
 		mockMvc
@@ -96,7 +96,7 @@ public class DailyActivityControllerTest {
 
 		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
 		request.setTime((short) 20);
-		request.setWeight(new BigDecimal("72.00"));
+		request.setWeight(new BigDecimal("72.0"));
 		request.setDate(LocalDate.of(2023, 10, 5));
 
 		mockMvc
@@ -107,7 +107,7 @@ public class DailyActivityControllerTest {
 		mockMvc.perform(get("/api/daily-activities/2023-10-05"))
 			.andExpectAll(jsonPath("$.activities[?(@.id == 1)].time").value(50),
 					jsonPath("$.activities[?(@.id == 2)].time").value(45),
-					jsonPath("$.activities[?(@.id == 1)].weight").value(72.00));
+					jsonPath("$.activities[?(@.id == 1)].weight").value(72.0));
 	}
 
 	@ActivitySql
@@ -118,7 +118,7 @@ public class DailyActivityControllerTest {
 
 		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
 		request.setTime((short) 30);
-		request.setWeight(new BigDecimal("75.00"));
+		request.setWeight(new BigDecimal("75.0"));
 		request.setDate(LocalDate.of(2023, 10, 6));
 
 		mockMvc
@@ -135,7 +135,7 @@ public class DailyActivityControllerTest {
 
 		DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
 		updateDto.setTime((short) 40);
-		updateDto.setWeight(new BigDecimal("80.00"));
+		updateDto.setWeight(new BigDecimal("80.0"));
 
 		mockMvc
 			.perform(patch("/api/daily-activities/modify-activity/1").contentType(MediaType.APPLICATION_JSON)
@@ -144,7 +144,7 @@ public class DailyActivityControllerTest {
 
 		mockMvc.perform(get("/api/daily-activities/2023-10-05"))
 			.andExpectAll(jsonPath("$.activities[?(@.id == 1)].time").value(40),
-					jsonPath("$.activities[?(@.id == 1)].weight").value(80.00),
+					jsonPath("$.activities[?(@.id == 1)].weight").value(80.0),
 					jsonPath("$.activities[?(@.id == 2)].time").value(45));
 	}
 
