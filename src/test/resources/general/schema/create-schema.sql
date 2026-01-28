@@ -9,7 +9,7 @@ create table activity
 (
     id                   int auto_increment
         primary key,
-    met                  decimal(38, 2) not null,
+    met                  decimal(3, 1) not null,
     name                 varchar(50)    not null,
     activity_category_id int            not null,
     constraint FKdp1iuiugdyvggej0rb7srlbqr
@@ -41,11 +41,11 @@ create table food
 (
     id               int auto_increment
         primary key,
-    calories         decimal(38, 2) not null,
-    carbohydrates    decimal(38, 2) not null,
-    fat              decimal(38, 2) not null,
+    calories         decimal(4, 1) not null,
+    carbohydrates    decimal(5, 2) not null,
+    fat              decimal(5, 2) not null,
     name             varchar(50)    not null,
-    protein          decimal(38, 2) not null,
+    protein          decimal(5, 2) not null,
     food_category_id int            not null,
     constraint FKpnfa6f8ubf600psx2mhefa1a1
         foreign key (food_category_id) references food_category (id)
@@ -128,7 +128,7 @@ create table exercise_target_muscle
 (
     id               int auto_increment
         primary key,
-    priority         decimal(38, 2) not null,
+    priority         decimal(3, 2) not null,
     exercise_id      int            not null,
     target_muscle_id int            not null,
     constraint FK96dsvb4of0glllrnwyra2msdk
@@ -153,10 +153,10 @@ create table user
     email          varchar(50)                                                                              not null,
     gender         enum ('FEMALE', 'MALE')                                                                  not null,
     goal           enum ('BUILD_MUSCLE', 'LOSE_WEIGHT', 'MAINTAIN_WEIGHT')                                  null,
-    height         decimal(38, 2)                                                                           null,
+    height         decimal(4, 1)                                                                            null,
     password       varchar(60)                                                                              not null,
     username       varchar(40)                                                                              not null,
-    weight         decimal(38, 2)                                                                           null
+    weight         decimal(4, 1)                                                                            null
 );
 
 create table daily_cart
@@ -174,7 +174,7 @@ create table daily_cart_activity
     id            int auto_increment
         primary key,
     time          smallint       not null,
-    weight        decimal(38, 2) null,
+    weight        decimal(5, 2) not null,
     activity_id   int            not null,
     daily_cart_id int            not null,
     constraint FKdgesrmrhq8h50f65y57nan844
@@ -187,7 +187,7 @@ create table daily_cart_food
 (
     id            int auto_increment
         primary key,
-    quantity      decimal(38, 2) not null,
+    quantity      decimal(7, 2) not null,
     daily_cart_id int            not null,
     food_id       int            not null,
     constraint FKbknvob606ghq2w8lopi49t094
@@ -254,7 +254,7 @@ create table recipe_food
 (
     id        int auto_increment
         primary key,
-    quantity  decimal(38, 2) not null,
+    quantity  decimal(6, 2) not null,
     food_id   int            not null,
     recipe_id int            not null,
     constraint FKptig88aycf6b7voflw0r3arb3
@@ -467,7 +467,7 @@ create table workout_set_exercise
     id             int auto_increment
         primary key,
     repetitions    smallint       not null,
-    weight         decimal(38, 2) not null,
+    weight         decimal(4, 1) not null,
     exercise_id    int            not null,
     workout_set_id int            not null,
     order_index    smallint       not null,
