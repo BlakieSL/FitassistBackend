@@ -66,11 +66,11 @@ VALUES ('Chest'),
 
 INSERT INTO user (username, email, password, birthday, gender, height, weight, activity_level, goal)
 VALUES ('testuser', 'user@test.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi', '1990-01-01',
-        'MALE', 180.00, 75.00, 'MODERATELY_ACTIVE', 'BUILD_MUSCLE'),
+        'MALE', 180.0, 75.0, 'MODERATELY_ACTIVE', 'BUILD_MUSCLE'),
        ('adminuser', 'admin@test.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi', '1985-05-15',
-        'FEMALE', 165.00, 60.00, 'VERY_ACTIVE', 'LOSE_WEIGHT'),
+        'FEMALE', 165.0, 60.0, 'VERY_ACTIVE', 'LOSE_WEIGHT'),
        ('moduser', 'mod@test.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi', '1995-11-20', 'MALE',
-        175.00, 70.00, 'LIGHTLY_ACTIVE', 'MAINTAIN_WEIGHT');
+        175.0, 70.0, 'LIGHTLY_ACTIVE', 'MAINTAIN_WEIGHT');
 
 INSERT INTO user_roles (users_id, roles_id)
 VALUES (1, 1),
@@ -86,11 +86,11 @@ VALUES ('Running (6 mph)', 9.8, 1),
        ('Weight Training (general)', 6.0, 4);
 
 INSERT INTO food (name, calories, protein, carbohydrates, fat, food_category_id)
-VALUES ('Apple', 52.00, 0.30, 14.00, 0.20, 1),
-       ('Chicken Breast', 165.00, 31.00, 0.00, 3.60, 4),
-       ('Brown Rice', 111.00, 2.60, 23.00, 0.90, 5),
-       ('Broccoli', 34.00, 2.80, 6.60, 0.40, 2),
-       ('Greek Yogurt', 59.00, 10.00, 3.60, 0.40, 3);
+VALUES ('Apple', 52.0, 0.30, 14.00, 0.20, 1),
+       ('Chicken Breast', 165.0, 31.00, 0.00, 3.60, 4),
+       ('Brown Rice', 111.0, 2.60, 23.00, 0.90, 5),
+       ('Broccoli', 34.0, 2.80, 6.60, 0.40, 2),
+       ('Greek Yogurt', 59.0, 10.00, 3.60, 0.40, 3);
 
 INSERT INTO exercise (name, description, equipment_id, expertise_level_id, force_type_id, mechanics_type_id)
 VALUES ('Bench Press', 'Basic chest exercise', 2, 1, 1, 1),
@@ -150,22 +150,22 @@ VALUES (1, 1, 90),
        (5, 1, 60);
 
 INSERT INTO workout_set_exercise (workout_set_id, exercise_id, repetitions, weight, order_index)
-VALUES (1, 1, 10.00, 60.00, 1),
-       (1, 1, 8.00, 70.00, 2),
-       (1, 1, 6.00, 80.00, 3),
-       (2, 4, 12.00, 10.00, 1),
-       (2, 4, 10.00, 12.50, 2),
-       (3, 3, 8.00, 100.00, 1),
-       (3, 3, 8.00, 100.00, 2),
-       (3, 3, 8.00, 100.00, 3),
-       (4, 1, 5.00, 80.00, 1),
-       (4, 1, 5.00, 80.00, 2),
-       (4, 1, 5.00, 80.00, 3),
-       (5, 2, 8.00, 0.00, 1),
-       (5, 2, 8.00, 0.00, 2),
-       (6, 3, 10.00, 60.00, 1),
-       (6, 1, 10.00, 50.00, 2),
-       (6, 4, 12.00, 8.00, 3);
+VALUES (1, 1, 10.00, 60.0, 1),
+       (1, 1, 8.00, 70.0, 2),
+       (1, 1, 6.00, 80.0, 3),
+       (2, 4, 12.00, 10.0, 1),
+       (2, 4, 10.00, 12.5, 2),
+       (3, 3, 8.00, 100.0, 1),
+       (3, 3, 8.00, 100.0, 2),
+       (3, 3, 8.00, 100.0, 3),
+       (4, 1, 5.00, 80.0, 1),
+       (4, 1, 5.00, 80.0, 2),
+       (4, 1, 5.00, 80.0, 3),
+       (5, 2, 8.00, 0.0, 1),
+       (5, 2, 8.00, 0.0, 2),
+       (6, 3, 10.00, 60.0, 1),
+       (6, 1, 10.00, 50.0, 2),
+       (6, 4, 12.00, 8.0, 3);
 
 INSERT INTO thread (title, text, created_at, views, user_id, thread_category_id)
 VALUES ('Getting started with fitness', 'What are some good beginner tips?', NOW(), 25, 1, 1),
@@ -239,10 +239,10 @@ VALUES (1, CURDATE()),
        (2, CURDATE()),
        (3, CURDATE());
 
-INSERT INTO daily_cart_activity (daily_cart_id, activity_id, time)
-VALUES (1, 1, 30),
-       (2, 3, 45),
-       (3, 4, 60);
+INSERT INTO daily_cart_activity (daily_cart_id, activity_id, time, weight)
+VALUES (1, 1, 30, 75.00),
+       (2, 3, 45, 60.00),
+       (3, 4, 60, 70.00);
 
 INSERT INTO daily_cart_food (daily_cart_id, food_id, quantity)
 VALUES (1, 2, 200.00),
