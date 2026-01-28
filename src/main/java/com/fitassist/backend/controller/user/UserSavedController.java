@@ -1,5 +1,6 @@
 package com.fitassist.backend.controller.user;
 
+import com.fitassist.backend.dto.response.user.InteractionResponseDto;
 import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
 import com.fitassist.backend.model.user.TypeOfInteraction;
 import com.fitassist.backend.service.declaration.selector.SavedSelectorService;
@@ -34,19 +35,19 @@ public class UserSavedController {
 	}
 
 	@PostMapping("/item-type/{itemType}/{itemId}/type/{type}")
-	public ResponseEntity<Void> saveToUser(@PathVariable SavedEntityType itemType, @PathVariable int itemId,
-			@PathVariable TypeOfInteraction type) {
+	public ResponseEntity<InteractionResponseDto> saveToUser(@PathVariable SavedEntityType itemType,
+			@PathVariable int itemId, @PathVariable TypeOfInteraction type) {
 		SavedService savedService = savedSelectorService.getService(itemType);
-		savedService.saveToUser(itemId, type);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		InteractionResponseDto response = savedService.saveToUser(itemId, type);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
 	@DeleteMapping("/item-type/{itemType}/{itemId}/type/{type}")
-	public ResponseEntity<Void> deleteFromUser(@PathVariable SavedEntityType itemType, @PathVariable int itemId,
-			@PathVariable TypeOfInteraction type) {
+	public ResponseEntity<InteractionResponseDto> deleteFromUser(@PathVariable SavedEntityType itemType,
+			@PathVariable int itemId, @PathVariable TypeOfInteraction type) {
 		SavedService savedService = savedSelectorService.getService(itemType);
-		savedService.deleteFromUser(itemId, type);
-		return ResponseEntity.noContent().build();
+		InteractionResponseDto response = savedService.deleteFromUser(itemId, type);
+		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping("/item-type/{itemType}/user/{userId}")
@@ -59,19 +60,19 @@ public class UserSavedController {
 	}
 
 	@PostMapping("/item-type/{itemType}/{itemId}")
-	public ResponseEntity<Void> saveToUserWithoutType(@PathVariable SavedEntityType itemType,
+	public ResponseEntity<InteractionResponseDto> saveToUserWithoutType(@PathVariable SavedEntityType itemType,
 			@PathVariable int itemId) {
 		SavedServiceWithoutType savedServiceWithoutType = savedSelectorService.getServiceWithoutType(itemType);
-		savedServiceWithoutType.saveToUser(itemId);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		InteractionResponseDto response = savedServiceWithoutType.saveToUser(itemId);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
 	@DeleteMapping("/item-type/{itemType}/{itemId}")
-	public ResponseEntity<Void> deleteFromUserWithoutType(@PathVariable SavedEntityType itemType,
+	public ResponseEntity<InteractionResponseDto> deleteFromUserWithoutType(@PathVariable SavedEntityType itemType,
 			@PathVariable int itemId) {
 		SavedServiceWithoutType savedServiceWithoutType = savedSelectorService.getServiceWithoutType(itemType);
-		savedServiceWithoutType.deleteFromUser(itemId);
-		return ResponseEntity.noContent().build();
+		InteractionResponseDto response = savedServiceWithoutType.deleteFromUser(itemId);
+		return ResponseEntity.ok(response);
 	}
 
 }
