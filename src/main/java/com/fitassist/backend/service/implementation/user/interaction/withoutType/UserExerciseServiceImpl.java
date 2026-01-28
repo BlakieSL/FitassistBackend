@@ -2,6 +2,7 @@ package com.fitassist.backend.service.implementation.user.interaction.withoutTyp
 
 import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.dto.response.exercise.ExerciseSummaryDto;
+import com.fitassist.backend.dto.response.user.InteractionResponseDto;
 import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
 import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.mapper.ExerciseMapper;
@@ -39,14 +40,19 @@ public class UserExerciseServiceImpl extends GenericSavedServiceWithoutType<Exer
 
 	@Override
 	@CacheEvict(value = CacheNames.EXERCISES, key = "#entityId")
-	public void saveToUser(int entityId) {
-		super.saveToUser(entityId);
+	public InteractionResponseDto saveToUser(int entityId) {
+		return super.saveToUser(entityId);
 	}
 
 	@Override
 	@CacheEvict(value = CacheNames.EXERCISES, key = "#entityId")
-	public void deleteFromUser(int entityId) {
-		super.deleteFromUser(entityId);
+	public InteractionResponseDto deleteFromUser(int entityId) {
+		return super.deleteFromUser(entityId);
+	}
+
+	@Override
+	protected long countByEntityId(int entityId) {
+		return ((UserExerciseRepository) userEntityRepository).countByExerciseId(entityId);
 	}
 
 	@Override

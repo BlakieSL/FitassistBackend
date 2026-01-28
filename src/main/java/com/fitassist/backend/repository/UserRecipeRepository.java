@@ -18,6 +18,8 @@ public interface UserRecipeRepository extends JpaRepository<UserRecipe, Integer>
 
 	boolean existsByUserIdAndRecipeIdAndType(int userId, int recipeId, TypeOfInteraction type);
 
+	long countByRecipeIdAndType(int recipeId, TypeOfInteraction type);
+
 	@Query("""
 			    SELECT
 			        r.id as entityId,

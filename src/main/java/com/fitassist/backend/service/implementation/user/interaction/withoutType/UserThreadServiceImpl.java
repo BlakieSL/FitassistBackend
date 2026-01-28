@@ -70,4 +70,9 @@ public class UserThreadServiceImpl
 			.orElseThrow(() -> RecordNotFoundException.of(UserThread.class, userId, entityId));
 	}
 
+	@Override
+	protected long countByEntityId(int entityId) {
+		return ((UserThreadRepository) userEntityRepository).countByForumThreadId(entityId);
+	}
+
 }
