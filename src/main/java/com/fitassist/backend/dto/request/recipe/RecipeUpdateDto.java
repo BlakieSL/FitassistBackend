@@ -2,6 +2,7 @@ package com.fitassist.backend.dto.request.recipe;
 
 import com.fitassist.backend.dto.request.text.TextUpdateDto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -28,6 +29,7 @@ public class RecipeUpdateDto {
 	private String description;
 
 	@Positive
+	@Max(1440)
 	private Short minutesToPrepare;
 
 	private Boolean isPublic;

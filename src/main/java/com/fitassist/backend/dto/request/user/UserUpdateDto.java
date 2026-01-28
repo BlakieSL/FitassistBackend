@@ -8,10 +8,7 @@ import com.fitassist.backend.validation.password.PasswordDigitsDomain;
 import com.fitassist.backend.validation.password.PasswordLowercaseDomain;
 import com.fitassist.backend.validation.password.PasswordSpecialDomain;
 import com.fitassist.backend.validation.password.PasswordUppercaseDomain;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,9 +42,15 @@ public class UserUpdateDto {
 	private LocalDate birthday;
 
 	@Positive
+	@Digits(integer = 3, fraction = 1)
+	@Min(50)
+	@Max(300)
 	private BigDecimal height;
 
 	@Positive
+	@Digits(integer = 3, fraction = 1)
+	@Min(20)
+	@Max(500)
 	private BigDecimal weight;
 
 	private ActivityLevel activityLevel;

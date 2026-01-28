@@ -42,22 +42,30 @@ public class Food implements IndexedEntity {
 
 	@NotNull
 	@PositiveOrZero
-	@Column(nullable = false, precision = 7, scale = 2)
+	@Digits(integer = 3, fraction = 1)
+	@Max(900)
+	@Column(nullable = false, precision = 4, scale = 1)
 	private BigDecimal calories;
 
 	@NotNull
 	@PositiveOrZero
-	@Column(nullable = false, precision = 7, scale = 2)
+	@Digits(integer = 3, fraction = 2)
+	@Max(100)
+	@Column(nullable = false, precision = 5, scale = 2)
 	private BigDecimal protein;
 
 	@NotNull
 	@PositiveOrZero
-	@Column(nullable = false, precision = 7, scale = 2)
+	@Digits(integer = 3, fraction = 2)
+	@Max(100)
+	@Column(nullable = false, precision = 5, scale = 2)
 	private BigDecimal fat;
 
 	@NotNull
 	@PositiveOrZero
-	@Column(nullable = false, precision = 7, scale = 2)
+	@Digits(integer = 3, fraction = 2)
+	@Max(100)
+	@Column(nullable = false, precision = 5, scale = 2)
 	private BigDecimal carbohydrates;
 
 	@NotNull

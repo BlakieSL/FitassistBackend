@@ -46,9 +46,15 @@ public class UserCreateDto {
 	private LocalDate birthday;
 
 	@Positive
+	@Digits(integer = 3, fraction = 1)
+	@Min(50)
+	@Max(300)
 	private BigDecimal height;
 
 	@Positive
+	@Digits(integer = 3, fraction = 1)
+	@Min(20)
+	@Max(500)
 	private BigDecimal weight;
 
 	private ActivityLevel activityLevel;

@@ -29,6 +29,7 @@ public class RecipeCreateDto {
 
 	@NotNull
 	@Positive
+	@Max(1440)
 	private Short minutesToPrepare;
 
 	private Boolean isPublic = false;

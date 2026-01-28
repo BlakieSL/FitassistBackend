@@ -1,7 +1,10 @@
 package com.fitassist.backend.model.workout;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,10 +26,14 @@ public class WorkoutSet {
 	private Integer id;
 
 	@NotNull
+	@Positive
+	@Max(50)
 	@Column(name = "order_index", nullable = false)
 	private Short orderIndex;
 
 	@NotNull
+	@PositiveOrZero
+	@Max(600)
 	@Column(name = "rest_seconds", nullable = false)
 	private Short restSeconds;
 

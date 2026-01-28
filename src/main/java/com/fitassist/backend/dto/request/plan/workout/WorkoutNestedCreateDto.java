@@ -25,14 +25,17 @@ public class WorkoutNestedCreateDto {
 
 	@NotNull
 	@PositiveOrZero
+	@Max(480)
 	private Short duration;
 
 	@NotNull
 	@Positive
+	@Max(365)
 	private Short orderIndex;
 
 	@NotNull
 	@PositiveOrZero
+	@Max(7)
 	private Byte restDaysAfter;
 
 	@Valid

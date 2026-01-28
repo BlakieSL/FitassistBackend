@@ -69,11 +69,17 @@ public class User {
 	private LocalDate birthday;
 
 	@Positive
-	@Column(precision = 5, scale = 2)
+	@Digits(integer = 3, fraction = 1)
+	@Min(50)
+	@Max(300)
+	@Column(precision = 4, scale = 1)
 	private BigDecimal height;
 
 	@Positive
-	@Column(precision = 5, scale = 2)
+	@Digits(integer = 3, fraction = 1)
+	@Min(20)
+	@Max(500)
+	@Column(precision = 4, scale = 1)
 	private BigDecimal weight;
 
 	@Enumerated(EnumType.STRING)

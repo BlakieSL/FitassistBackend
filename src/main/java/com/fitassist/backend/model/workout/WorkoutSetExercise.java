@@ -2,7 +2,7 @@ package com.fitassist.backend.model.workout;
 
 import com.fitassist.backend.model.exercise.Exercise;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,14 +23,20 @@ public class WorkoutSetExercise {
 	private Integer id;
 
 	@NotNull
-	@Column(nullable = false, precision = 5, scale = 2)
+	@PositiveOrZero
+	@Digits(integer = 3, fraction = 1)
+	@Column(nullable = false, precision = 4, scale = 1)
 	private BigDecimal weight;
 
 	@NotNull
+	@Positive
+	@Max(100)
 	@Column(nullable = false)
 	private Short repetitions;
 
 	@NotNull
+	@Positive
+	@Max(20)
 	@Column(name = "order_index", nullable = false)
 	private Short orderIndex;
 

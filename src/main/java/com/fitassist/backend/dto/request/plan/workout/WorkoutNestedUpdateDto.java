@@ -2,6 +2,7 @@ package com.fitassist.backend.dto.request.plan.workout;
 
 import com.fitassist.backend.dto.request.plan.workoutSet.WorkoutSetNestedUpdateDto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -26,12 +27,15 @@ public class WorkoutNestedUpdateDto {
 	private String name;
 
 	@PositiveOrZero
+	@Max(480)
 	private Short duration;
 
 	@Positive
+	@Max(365)
 	private Short orderIndex;
 
 	@PositiveOrZero
+	@Max(7)
 	private Byte restDaysAfter;
 
 	@Valid
