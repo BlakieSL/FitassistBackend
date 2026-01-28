@@ -169,7 +169,7 @@ public class UserSavedControllerWithTypeTest {
 	void deleteFromUser() throws Exception {
 		Utils.setUserContext(1);
 
-		mockMvc.perform(delete("/api/user-saved/item-type/PLAN/1/type/SAVE")).andExpectAll(status().isNoContent());
+		mockMvc.perform(delete("/api/user-saved/item-type/PLAN/1/type/SAVE")).andExpectAll(status().isOk());
 	}
 
 	@UserSavedSql
