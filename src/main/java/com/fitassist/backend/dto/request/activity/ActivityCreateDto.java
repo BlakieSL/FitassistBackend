@@ -1,9 +1,6 @@
 package com.fitassist.backend.dto.request.activity;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +22,9 @@ public class ActivityCreateDto {
 
 	@NotNull
 	@Positive
+	@Min(1)
+	@Max(25)
+	@Digits(integer = 2, fraction = 1)
 	private BigDecimal met;
 
 	@NotNull

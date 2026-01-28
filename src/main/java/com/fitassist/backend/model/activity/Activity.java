@@ -6,10 +6,7 @@ import com.fitassist.backend.model.daily.DailyCartActivity;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.user.UserActivity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,7 +43,10 @@ public class Activity implements IndexedEntity {
 
 	@NotNull
 	@Positive
-	@Column(nullable = false, precision = 4, scale = 2)
+	@Min(1)
+	@Max(25)
+	@Digits(integer = 2, fraction = 1)
+	@Column(nullable = false, precision = 3, scale = 1)
 	private BigDecimal met;
 
 	@NotNull

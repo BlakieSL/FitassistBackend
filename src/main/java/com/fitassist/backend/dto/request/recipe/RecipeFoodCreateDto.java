@@ -1,6 +1,7 @@
 package com.fitassist.backend.dto.request.recipe;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -34,6 +35,7 @@ public class RecipeFoodCreateDto {
 
 		@NotNull
 		@Positive
+		@Digits(integer = 4, fraction = 2)
 		private BigDecimal quantity;
 
 	}
