@@ -1,5 +1,6 @@
 package com.fitassist.backend.dto.request.food;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
 
 @Getter
