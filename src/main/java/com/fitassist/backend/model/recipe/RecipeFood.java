@@ -2,6 +2,7 @@ package com.fitassist.backend.model.recipe;
 
 import com.fitassist.backend.model.food.Food;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -27,7 +28,8 @@ public class RecipeFood {
 
 	@NotNull
 	@Positive
-	@Column(nullable = false, precision = 7, scale = 2)
+	@Digits(integer = 4, fraction = 2)
+	@Column(nullable = false, precision = 6, scale = 2)
 	private BigDecimal quantity;
 
 	@NotNull

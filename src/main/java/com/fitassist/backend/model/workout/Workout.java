@@ -2,10 +2,7 @@ package com.fitassist.backend.model.workout;
 
 import com.fitassist.backend.model.plan.Plan;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,15 +32,19 @@ public class Workout {
 
 	@NotNull
 	@PositiveOrZero
+	@Max(480)
 	@Column(nullable = false)
 	private Short duration;
 
 	@NotNull
+	@Positive
+	@Max(365)
 	@Column(name = "order_index", nullable = false)
 	private Short orderIndex;
 
 	@NotNull
 	@PositiveOrZero
+	@Max(7)
 	@Column(name = "rest_days_after", nullable = false)
 	private Byte restDaysAfter;
 

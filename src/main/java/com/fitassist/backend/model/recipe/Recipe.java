@@ -8,6 +8,7 @@ import com.fitassist.backend.model.text.RecipeInstruction;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.model.user.UserRecipe;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -48,6 +49,7 @@ public class Recipe implements IndexedEntity {
 	private String description;
 
 	@NotNull
+	@Max(1440)
 	@Column(name = "minutes_to_prepare", nullable = false)
 	private Short minutesToPrepare;
 

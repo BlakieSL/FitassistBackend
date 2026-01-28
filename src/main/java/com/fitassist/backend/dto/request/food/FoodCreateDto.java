@@ -22,18 +22,26 @@ public class FoodCreateDto {
 
 	@NotNull
 	@PositiveOrZero
+	@Digits(integer = 3, fraction = 1)
+	@Max(900)
 	private BigDecimal calories;
 
 	@NotNull
 	@PositiveOrZero
+	@Digits(integer = 3, fraction = 2)
+	@Max(100)
 	private BigDecimal protein;
 
 	@NotNull
 	@PositiveOrZero
+	@Digits(integer = 3, fraction = 2)
+	@Max(100)
 	private BigDecimal fat;
 
 	@NotNull
 	@PositiveOrZero
+	@Digits(integer = 3, fraction = 2)
+	@Max(100)
 	private BigDecimal carbohydrates;
 
 	@NotNull
