@@ -42,12 +42,12 @@ VALUES ('Chest press', 'Bench Press', 4, 3, 1, 1),
        ('Core workout', 'Plank', 5, 1, 3, 4);
 
 INSERT INTO exercise_target_muscle (priority, exercise_id, target_muscle_id)
-VALUES (1.0, 1, 1),
-       (1.0, 2, 2);
+VALUES (1.00, 1, 1),
+       (1.00, 2, 2);
 
 INSERT INTO user (email, password, username, gender, birthday, activity_level, goal, height, weight)
 VALUES ('test@example.com', '$2a$10$exampleHash', 'test_user', 'MALE', '1990-01-01', 'MODERATELY_ACTIVE',
-        'BUILD_MUSCLE', 180.00, 75.00);
+        'BUILD_MUSCLE', 180.0, 75.0);
 
 INSERT INTO user_exercise (user_id, exercise_id, created_at)
 VALUES (1, 1, NOW()),
@@ -73,10 +73,10 @@ VALUES (1, 60, 1),
        (1, 120, 4);
 
 INSERT INTO workout_set_exercise (exercise_id, workout_set_id, repetitions, weight, order_index)
-VALUES (1, 1, 10, 50.00, 1),
-       (2, 1, 12, 30.00, 2),
-       (3, 2, 8, 80.00, 1),
-       (4, 3, 15, 20.00, 1),
-       (1, 4, 12, 55.00, 2),
-       (3, 4, 10, 90.00, 3),
-       (2, 5, 3, 0.00, 1);
+VALUES (1, 1, 10, 50.0, 1),
+       (2, 1, 12, 30.0, 2),
+       (3, 2, 8, 80.0, 1),
+       (4, 3, 15, 20.0, 1),
+       (1, 4, 12, 55.0, 2),
+       (3, 4, 10, 90.0, 3),
+       (2, 5, 3, 0.0, 1);
