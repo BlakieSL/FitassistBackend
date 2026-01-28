@@ -53,7 +53,7 @@ public abstract class GenericSavedService<T, U, R> {
 		U userEntity = createUserEntity(user, entity, type);
 		userEntityRepository.save(userEntity);
 
-		return new InteractionResponseDto(true, countByEntityIdAndType(entityId, type));
+		return toResponseDto(entityId, type, true, oppositeType);
 	}
 
 	@Transactional
@@ -62,7 +62,20 @@ public abstract class GenericSavedService<T, U, R> {
 		U userEntity = findUserEntity(userId, entityId, type);
 		userEntityRepository.delete(userEntity);
 
-		return new InteractionResponseDto(false, countByEntityIdAndType(entityId, type));
+		return toResponseDto(entityId, type, false, null);
+	}
+
+	private InteractionResponseDto toResponseDto(int entityId, TypeOfInteraction type, boolean interacted,
+			TypeOfInteraction oppositeType) {
+		InteractionResponseDto response = new InteractionResponseDto();
+
+		type.mapInteraction(response, interacted, countByEntityIdAndType(entityId, type));
+
+		if (oppositeType != null) {
+			oppositeType.mapInteraction(response, false, countByEntityIdAndType(entityId, oppositeType));
+		}
+
+		return response;
 	}
 
 	protected abstract long countByEntityIdAndType(int entityId, TypeOfInteraction type);
