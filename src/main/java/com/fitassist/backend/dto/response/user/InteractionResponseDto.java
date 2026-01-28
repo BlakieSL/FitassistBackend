@@ -1,14 +1,22 @@
 package com.fitassist.backend.dto.response.user;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-@AllArgsConstructor
+@Setter
 public class InteractionResponseDto {
 
-	private boolean interacted;
+	private Boolean liked;
 
-	private long count;
+	private Long likesCount;
+
+	private Boolean disliked;
+
+	private Long dislikesCount;
+
+	private Boolean saved;
+
+	private Long savesCount;
 
 }

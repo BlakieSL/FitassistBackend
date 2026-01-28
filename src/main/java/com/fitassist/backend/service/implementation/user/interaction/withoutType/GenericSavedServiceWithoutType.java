@@ -4,6 +4,7 @@ import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.response.user.InteractionResponseDto;
 import com.fitassist.backend.exception.NotUniqueRecordException;
 import com.fitassist.backend.exception.RecordNotFoundException;
+import com.fitassist.backend.model.user.TypeOfInteraction;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
@@ -49,7 +50,7 @@ public abstract class GenericSavedServiceWithoutType<T, U, R> implements SavedSe
 		U userEntity = createUserEntity(user, entity);
 		userEntityRepository.save(userEntity);
 
-		return new InteractionResponseDto(true, countByEntityId(entityId));
+		return toResponseDto(true, countByEntityId(entityId));
 	}
 
 	@Override
@@ -59,7 +60,13 @@ public abstract class GenericSavedServiceWithoutType<T, U, R> implements SavedSe
 		U userEntity = findUserEntity(userId, entityId);
 		userEntityRepository.delete(userEntity);
 
-		return new InteractionResponseDto(false, countByEntityId(entityId));
+		return toResponseDto(false, countByEntityId(entityId));
+	}
+
+	private InteractionResponseDto toResponseDto(boolean saved, long savesCount) {
+		InteractionResponseDto response = new InteractionResponseDto();
+		TypeOfInteraction.SAVE.mapInteraction(response, saved, savesCount);
+		return response;
 	}
 
 	protected abstract long countByEntityId(int entityId);
