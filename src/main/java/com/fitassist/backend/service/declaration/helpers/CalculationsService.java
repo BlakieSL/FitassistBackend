@@ -8,13 +8,9 @@ import java.math.BigDecimal;
 
 public interface CalculationsService {
 
-	BigDecimal calculateBMR(BigDecimal weight, BigDecimal height, int age, Gender gender);
-
-	BigDecimal calculateTDEE(BigDecimal bmr, ActivityLevel activityLevel);
-
 	BigDecimal calculateCaloricNeeds(BigDecimal weight, BigDecimal height, int age, Gender gender,
 			ActivityLevel activityLevel, Goal goal);
 
-	BigDecimal calculateCaloriesBurned(int time, BigDecimal weight, BigDecimal met);
+	BigDecimal calculateCaloriesBurned(Short time, BigDecimal weight, BigDecimal met);
 
 }
