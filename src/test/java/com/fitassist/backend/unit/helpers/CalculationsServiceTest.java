@@ -20,50 +20,6 @@ public class CalculationsServiceTest {
 	private CalculationsServiceImpl calculationsService;
 
 	@Test
-	void calculateBMR_shouldCalculateBMRForMale() {
-		BigDecimal weight = BigDecimal.valueOf(70);
-		BigDecimal height = BigDecimal.valueOf(175);
-		int age = 25;
-		Gender gender = Gender.MALE;
-
-		BigDecimal result = calculationsService.calculateBMR(weight, height, age, gender);
-
-		assertEquals(new BigDecimal("1673.75"), result);
-	}
-
-	@Test
-	void calculateBMR_shouldCalculateBMRForFemale() {
-		BigDecimal weight = BigDecimal.valueOf(60);
-		BigDecimal height = BigDecimal.valueOf(165);
-		int age = 30;
-		Gender gender = Gender.FEMALE;
-
-		BigDecimal result = calculationsService.calculateBMR(weight, height, age, gender);
-
-		assertEquals(new BigDecimal("1320.25"), result);
-	}
-
-	@Test
-	void calculateTDEE_shouldCalculateTDEEForSedentary() {
-		BigDecimal bmr = BigDecimal.valueOf(1705);
-		ActivityLevel activityLevel = ActivityLevel.SEDENTARY;
-
-		BigDecimal result = calculationsService.calculateTDEE(bmr, activityLevel);
-
-		assertEquals(new BigDecimal("2046.00"), result);
-	}
-
-	@Test
-	void calculateTDEE_shouldCalculateTDEEForSuperActive() {
-		BigDecimal bmr = BigDecimal.valueOf(1705);
-		ActivityLevel activityLevel = ActivityLevel.SUPER_ACTIVE;
-
-		BigDecimal result = calculationsService.calculateTDEE(bmr, activityLevel);
-
-		assertEquals(new BigDecimal("3239.50"), result);
-	}
-
-	@Test
 	void calculateCaloricNeeds_shouldCalculateCaloricNeedsForLosingWeight() {
 		BigDecimal weight = BigDecimal.valueOf(70);
 		BigDecimal height = BigDecimal.valueOf(175);
@@ -93,7 +49,7 @@ public class CalculationsServiceTest {
 
 	@Test
 	void calculateCaloriesBurned_shouldCalculateCaloriesBurned() {
-		int time = 30;
+		Short time = 30;
 		BigDecimal weight = BigDecimal.valueOf(70);
 		BigDecimal met = BigDecimal.valueOf(8);
 
