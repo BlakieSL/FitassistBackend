@@ -1,6 +1,7 @@
 package com.fitassist.backend.unit.auth;
 
 import com.fitassist.backend.auth.JwtService;
+import com.fitassist.backend.auth.TokenProperties;
 import com.fitassist.backend.exception.InvalidRefreshTokenException;
 import com.fitassist.backend.exception.JwtAuthenticationException;
 import com.nimbusds.jwt.JWTParser;
@@ -8,6 +9,7 @@ import com.nimbusds.jwt.SignedJWT;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 
@@ -15,9 +17,13 @@ import java.text.ParseException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class JwtServiceTest {
+
+	@Mock
+	private TokenProperties tokenProperties;
 
 	private JwtService jwtService;
 
@@ -27,10 +33,26 @@ public class JwtServiceTest {
 
 	private List<String> authorities;
 
+	private static final String ACCESS_TOKEN_NAME = "accessToken";
+
+	private static final String REFRESH_TOKEN_NAME = "refreshToken";
+
 	@BeforeEach
 	void setUp() throws Exception {
 		String sharedKey = "thisIsASecretKeyForTestingPurposesThatIsLongEnough";
-		jwtService = new JwtService(sharedKey);
+
+		TokenProperties.TokenConfig accessConfig = new TokenProperties.TokenConfig();
+		accessConfig.setName(ACCESS_TOKEN_NAME);
+		accessConfig.setMaxAge(900);
+
+		TokenProperties.TokenConfig refreshConfig = new TokenProperties.TokenConfig();
+		refreshConfig.setName(REFRESH_TOKEN_NAME);
+		refreshConfig.setMaxAge(604800);
+
+		when(tokenProperties.getAccessToken()).thenReturn(accessConfig);
+		when(tokenProperties.getRefreshToken()).thenReturn(refreshConfig);
+
+		jwtService = new JwtService(sharedKey, tokenProperties);
 		username = "testuser";
 		userId = 1;
 		authorities = List.of("ROLE_USER");
@@ -45,7 +67,7 @@ public class JwtServiceTest {
 		assertEquals(username, signedJWT.getJWTClaimsSet().getSubject());
 		assertEquals(userId, signedJWT.getJWTClaimsSet().getIntegerClaim("userId"));
 		assertEquals(authorities, signedJWT.getJWTClaimsSet().getStringListClaim("authorities"));
-		assertEquals("ACCESS", signedJWT.getJWTClaimsSet().getStringClaim("tokenType"));
+		assertEquals(ACCESS_TOKEN_NAME, signedJWT.getJWTClaimsSet().getStringClaim("tokenType"));
 	}
 
 	@Test
@@ -57,7 +79,7 @@ public class JwtServiceTest {
 		assertEquals(username, signedJWT.getJWTClaimsSet().getSubject());
 		assertEquals(userId, signedJWT.getJWTClaimsSet().getIntegerClaim("userId"));
 		assertEquals(authorities, signedJWT.getJWTClaimsSet().getStringListClaim("authorities"));
-		assertEquals("REFRESH", signedJWT.getJWTClaimsSet().getStringClaim("tokenType"));
+		assertEquals(REFRESH_TOKEN_NAME, signedJWT.getJWTClaimsSet().getStringClaim("tokenType"));
 	}
 
 	@Test
@@ -71,7 +93,7 @@ public class JwtServiceTest {
 	@Test
 	void verifySignature_shouldThrowForInvalidSignature() throws Exception {
 		String differentKey = "differentSecretKeyForTestingThatIsAlsoLongEnough";
-		JwtService differentJwtService = new JwtService(differentKey);
+		JwtService differentJwtService = new JwtService(differentKey, tokenProperties);
 		String token = differentJwtService.createAccessToken(username, userId, authorities);
 		SignedJWT signedJWT = (SignedJWT) JWTParser.parse(token);
 
@@ -88,7 +110,7 @@ public class JwtServiceTest {
 
 	@Test
 	void verifyExpirationTime_shouldThrowForExpiredToken() throws ParseException {
-		String token = jwtService.createSignedJWT(username, userId, authorities, -1, "ACCESS");
+		String token = jwtService.createSignedJWT(username, userId, authorities, -1, ACCESS_TOKEN_NAME);
 		SignedJWT signedJWT = (SignedJWT) JWTParser.parse(token);
 
 		assertThrows(JwtAuthenticationException.class, () -> jwtService.verifyExpirationTime(signedJWT));
@@ -115,12 +137,12 @@ public class JwtServiceTest {
 		assertNotNull(newAccessToken);
 		SignedJWT signedJWT = (SignedJWT) JWTParser.parse(newAccessToken);
 		assertEquals(username, signedJWT.getJWTClaimsSet().getSubject());
-		assertEquals("ACCESS", signedJWT.getJWTClaimsSet().getStringClaim("tokenType"));
+		assertEquals(ACCESS_TOKEN_NAME, signedJWT.getJWTClaimsSet().getStringClaim("tokenType"));
 	}
 
 	@Test
 	void refreshAccessToken_shouldThrowForExpiredRefreshToken() {
-		String expiredToken = jwtService.createSignedJWT(username, userId, authorities, -1, "REFRESH");
+		String expiredToken = jwtService.createSignedJWT(username, userId, authorities, -1, REFRESH_TOKEN_NAME);
 
 		assertThrows(JwtAuthenticationException.class, () -> jwtService.refreshAccessToken(expiredToken));
 	}
