@@ -8,12 +8,6 @@ public abstract class LocalizedException extends RuntimeException {
 
 	private final Object[] args;
 
-	protected LocalizedException(String key, Object... args) {
-		super(null, null, false, false);
-		this.messageKey = key;
-		this.args = args;
-	}
-
 	protected LocalizedException(String key, Throwable cause, Object... args) {
 		super(null, cause, false, false);
 		this.messageKey = key;

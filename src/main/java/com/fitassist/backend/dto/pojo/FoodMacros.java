@@ -30,8 +30,4 @@ public class FoodMacros implements Serializable {
 		return FoodMacros.of(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
 	}
 
-	public static FoodMacros withoutCalories(FoodMacros foodMacros) {
-		return FoodMacros.of(null, foodMacros.getProtein(), foodMacros.getFat(), foodMacros.getCarbohydrates());
-	}
-
 }

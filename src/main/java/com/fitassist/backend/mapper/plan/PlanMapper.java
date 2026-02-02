@@ -6,16 +6,12 @@ import com.fitassist.backend.dto.request.plan.workout.WorkoutNestedUpdateDto;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.dto.response.plan.PlanResponseDto;
 import com.fitassist.backend.dto.response.plan.PlanSummaryDto;
-import com.fitassist.backend.exception.RecordNotFoundException;
+import com.fitassist.backend.mapper.context.PlanMappingContext;
 import com.fitassist.backend.mapper.helper.CommonMappingHelper;
 import com.fitassist.backend.model.plan.Plan;
-import com.fitassist.backend.model.plan.PlanCategory;
 import com.fitassist.backend.model.plan.PlanCategoryAssociation;
 import com.fitassist.backend.model.text.PlanInstruction;
-import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.model.workout.Workout;
-import com.fitassist.backend.repository.PlanCategoryRepository;
-import com.fitassist.backend.repository.UserRepository;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,17 +22,19 @@ import java.util.Set;
 @Mapper(componentModel = "spring", uses = { WorkoutMapper.class, CommonMappingHelper.class })
 public abstract class PlanMapper {
 
-	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
-	private PlanCategoryRepository planCategoryRepository;
-
-	@Autowired
 	private WorkoutMapper workoutMapper;
 
-	@Autowired
 	private CommonMappingHelper commonMappingHelper;
+
+	@Autowired
+	public void setWorkoutMapper(WorkoutMapper workoutMapper) {
+		this.workoutMapper = workoutMapper;
+	}
+
+	@Autowired
+	public void setCommonMappingHelper(CommonMappingHelper commonMappingHelper) {
+		this.commonMappingHelper = commonMappingHelper;
+	}
 
 	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
 	@Mapping(target = "likesCount", ignore = true)
@@ -67,14 +65,14 @@ public abstract class PlanMapper {
 	public abstract PlanSummaryDto toSummaryDto(Plan plan);
 
 	@Mapping(target = "planCategoryAssociations", ignore = true)
-	@Mapping(target = "user", expression = "java(userIdToUser(userId))")
+	@Mapping(target = "user", expression = "java(context.getUser())")
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "userPlans", ignore = true)
 	@Mapping(target = "planInstructions", ignore = true)
 	@Mapping(target = "views", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "mediaList", ignore = true)
-	public abstract Plan toEntity(PlanCreateDto dto, @Context int userId);
+	public abstract Plan toEntity(PlanCreateDto dto, @Context PlanMappingContext context);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "planCategoryAssociations", ignore = true)
@@ -86,10 +84,11 @@ public abstract class PlanMapper {
 	@Mapping(target = "views", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "mediaList", ignore = true)
-	public abstract void updatePlan(@MappingTarget Plan plan, PlanUpdateDto planUpdateDto);
+	public abstract void updatePlan(@MappingTarget Plan plan, PlanUpdateDto planUpdateDto,
+			@Context PlanMappingContext context);
 
 	@AfterMapping
-	protected void setAssociations(@MappingTarget Plan plan, PlanCreateDto dto) {
+	protected void setAssociations(@MappingTarget Plan plan, PlanCreateDto dto, @Context PlanMappingContext context) {
 		if (dto.getInstructions() != null) {
 			List<PlanInstruction> instructions = dto.getInstructions()
 				.stream()
@@ -100,8 +99,8 @@ public abstract class PlanMapper {
 			plan.getPlanInstructions().addAll(instructions);
 		}
 
-		if (dto.getCategoryIds() != null) {
-			List<PlanCategoryAssociation> categories = planCategoryRepository.findAllByIdIn(dto.getCategoryIds())
+		if (context.getCategories() != null && !context.getCategories().isEmpty()) {
+			List<PlanCategoryAssociation> categories = context.getCategories()
 				.stream()
 				.map(category -> PlanCategoryAssociation.createWithPlanAndCategory(plan, category))
 				.toList();
@@ -113,13 +112,13 @@ public abstract class PlanMapper {
 	}
 
 	@AfterMapping
-	protected void updateAssociations(@MappingTarget Plan plan, PlanUpdateDto dto) {
-		if (dto.getCategoryIds() != null) {
+	protected void updateAssociations(@MappingTarget Plan plan, PlanUpdateDto dto,
+			@Context PlanMappingContext context) {
+		if (context.getCategories() != null) {
 			plan.getPlanCategoryAssociations().clear();
 
-			List<PlanCategory> categories = planCategoryRepository.findAllByIdIn(dto.getCategoryIds());
-
-			List<PlanCategoryAssociation> associations = categories.stream()
+			List<PlanCategoryAssociation> associations = context.getCategories()
+				.stream()
 				.map(category -> PlanCategoryAssociation.createWithPlanAndCategory(plan, category))
 				.toList();
 
@@ -170,11 +169,6 @@ public abstract class PlanMapper {
 		}
 
 		dto.setTotalWeeks((int) Math.ceil(currentDay / 7.0));
-	}
-
-	@Named("userIdToUser")
-	protected User userIdToUser(Integer userId) {
-		return userRepository.findById(userId).orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
 	}
 
 	@Named("mapAssociationsToCategoryResponseDto")

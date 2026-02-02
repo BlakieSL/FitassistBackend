@@ -14,13 +14,17 @@ import com.fitassist.backend.event.event.Plan.PlanCreateEvent;
 import com.fitassist.backend.event.event.Plan.PlanDeleteEvent;
 import com.fitassist.backend.event.event.Plan.PlanUpdateEvent;
 import com.fitassist.backend.exception.RecordNotFoundException;
+import com.fitassist.backend.mapper.context.PlanMappingContext;
 import com.fitassist.backend.mapper.plan.PlanMapper;
 import com.fitassist.backend.model.plan.Plan;
+import com.fitassist.backend.model.plan.PlanCategory;
 import com.fitassist.backend.model.plan.PlanStructureType;
+import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.EquipmentRepository;
 import com.fitassist.backend.repository.PlanCategoryRepository;
 import com.fitassist.backend.repository.PlanRepository;
 import com.fitassist.backend.repository.TextRepository;
+import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
@@ -41,6 +45,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -68,11 +73,14 @@ public class PlanServiceImpl implements PlanService {
 
 	private final EquipmentRepository equipmentRepository;
 
+	private final UserRepository userRepository;
+
 	public PlanServiceImpl(PlanMapper planMapper, JsonPatchService jsonPatchService,
 			ValidationService validationService, ApplicationEventPublisher applicationEventPublisher,
 			RepositoryHelper repositoryHelper, PlanRepository planRepository, TextRepository textRepository,
 			SpecificationDependencies dependencies, PlanPopulationService planPopulationService,
-			PlanCategoryRepository planCategoryRepository, EquipmentRepository equipmentRepository) {
+			PlanCategoryRepository planCategoryRepository, EquipmentRepository equipmentRepository,
+			UserRepository userRepository) {
 		this.planMapper = planMapper;
 		this.jsonPatchService = jsonPatchService;
 		this.validationService = validationService;
@@ -84,32 +92,69 @@ public class PlanServiceImpl implements PlanService {
 		this.planPopulationService = planPopulationService;
 		this.planCategoryRepository = planCategoryRepository;
 		this.equipmentRepository = equipmentRepository;
+		this.userRepository = userRepository;
 	}
 
 	@Override
 	@Transactional
 	public PlanResponseDto createPlan(PlanCreateDto request) {
-		int userId = AuthorizationUtil.getUserId();
-		Plan mapped = planMapper.toEntity(request, userId);
+		PlanMappingContext context = prepareCreateContext(request);
+		Plan mapped = planMapper.toEntity(request, context);
 		Plan saved = planRepository.save(mapped);
-		applicationEventPublisher.publishEvent(PlanCreateEvent.of(this, saved));
 
+		applicationEventPublisher.publishEvent(PlanCreateEvent.of(this, saved));
 		planRepository.flush();
 
 		return findAndMap(saved.getId());
+	}
+
+	private PlanResponseDto findAndMap(int planId) {
+		Plan plan = planRepository.findByIdWithDetails(planId)
+			.orElseThrow(() -> RecordNotFoundException.of(Plan.class, planId));
+
+		PlanResponseDto dto = planMapper.toResponseDto(plan);
+		planPopulationService.populate(dto);
+
+		return dto;
+	}
+
+	private PlanMappingContext prepareCreateContext(PlanCreateDto request) {
+		int userId = AuthorizationUtil.getUserId();
+		User user = userRepository.findById(userId).orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
+
+		List<PlanCategory> categories = findCategories(request.getCategoryIds());
+
+		return PlanMappingContext.forCreate(user, categories);
+	}
+
+	private List<PlanCategory> findCategories(List<Integer> categoryIds) {
+		if (categoryIds == null || categoryIds.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return planCategoryRepository.findAllByIdIn(categoryIds);
 	}
 
 	@Override
 	@Transactional
 	public void updatePlan(int planId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
 		Plan plan = find(planId);
-		PlanUpdateDto patchedPlanUpdateDto = applyPatchToPlan(patch);
-
+		PlanUpdateDto patchedPlanUpdateDto = jsonPatchService.createFromPatch(patch, PlanUpdateDto.class);
 		validationService.validate(patchedPlanUpdateDto);
-		planMapper.updatePlan(plan, patchedPlanUpdateDto);
-		Plan savedPlan = planRepository.save(plan);
 
+		PlanMappingContext context = prepareUpdateContext(patchedPlanUpdateDto);
+		planMapper.updatePlan(plan, patchedPlanUpdateDto, context);
+
+		Plan savedPlan = planRepository.save(plan);
 		applicationEventPublisher.publishEvent(PlanUpdateEvent.of(this, savedPlan));
+	}
+
+	private Plan find(int planId) {
+		return repositoryHelper.find(planRepository, Plan.class, planId);
+	}
+
+	private PlanMappingContext prepareUpdateContext(PlanUpdateDto dto) {
+		List<PlanCategory> categories = findCategories(dto.getCategoryIds());
+		return PlanMappingContext.forUpdate(categories);
 	}
 
 	@Override
@@ -136,7 +181,6 @@ public class PlanServiceImpl implements PlanService {
 		Specification<Plan> specification = specificationBuilder.build();
 
 		Page<Plan> planPage = planRepository.findAll(specification, pageable);
-
 		List<PlanSummaryDto> summaries = planPage.getContent().stream().map(planMapper::toSummaryDto).toList();
 
 		planPopulationService.populate(summaries);
@@ -157,36 +201,19 @@ public class PlanServiceImpl implements PlanService {
 
 	@Override
 	public PlanCategoriesResponseDto getAllPlanCategories() {
-		var structureTypes = List.of(PlanStructureType.values());
+		List<PlanStructureType> structureTypes = List.of(PlanStructureType.values());
 
-		var categories = planCategoryRepository.findAll()
+		List<CategoryResponseDto> categories = planCategoryRepository.findAll()
 			.stream()
 			.map(category -> new CategoryResponseDto(category.getId(), category.getName()))
 			.toList();
 
-		var equipments = equipmentRepository.findAll()
+		List<CategoryResponseDto> equipments = equipmentRepository.findAll()
 			.stream()
 			.map(equipment -> new CategoryResponseDto(equipment.getId(), equipment.getName()))
 			.toList();
 
 		return new PlanCategoriesResponseDto(structureTypes, categories, equipments);
-	}
-
-	private Plan find(int planId) {
-		return repositoryHelper.find(planRepository, Plan.class, planId);
-	}
-
-	private PlanResponseDto findAndMap(int planId) {
-		Plan plan = planRepository.findByIdWithDetails(planId)
-			.orElseThrow(() -> RecordNotFoundException.of(Plan.class, planId));
-		PlanResponseDto dto = planMapper.toResponseDto(plan);
-		planPopulationService.populate(dto);
-
-		return dto;
-	}
-
-	private PlanUpdateDto applyPatchToPlan(JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
-		return jsonPatchService.createFromPatch(patch, PlanUpdateDto.class);
 	}
 
 }
