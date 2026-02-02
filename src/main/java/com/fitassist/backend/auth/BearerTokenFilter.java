@@ -9,8 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -18,18 +16,16 @@ import java.util.Optional;
 
 public class BearerTokenFilter extends HttpFilter {
 
-	private static final String ACCESS_TOKEN_TYPE = "ACCESS";
-
-	private final AuthenticationFailureHandler failureHandler;
-
 	private final JwtService jwtService;
 
 	private final CookieService cookieService;
 
-	public BearerTokenFilter(JwtService jwtService, CookieService cookieService) {
+	private final TokenProperties tokenProperties;
+
+	public BearerTokenFilter(JwtService jwtService, CookieService cookieService, TokenProperties tokenProperties) {
 		this.jwtService = jwtService;
 		this.cookieService = cookieService;
-		failureHandler = new SimpleUrlAuthenticationFailureHandler();
+		this.tokenProperties = tokenProperties;
 	}
 
 	@Override
@@ -49,8 +45,7 @@ public class BearerTokenFilter extends HttpFilter {
 			chain.doFilter(request, response);
 		}
 		catch (JwtAuthenticationException | ParseException e) {
-			failureHandler.onAuthenticationFailure(request, response,
-					new JwtAuthenticationException("Bearer token could not be parsed or is invalid"));
+			throw new JwtAuthenticationException("Bearer token could not be parsed or is invalid");
 		}
 	}
 
@@ -62,7 +57,7 @@ public class BearerTokenFilter extends HttpFilter {
 
 	private void validateTokenType(SignedJWT signedJwt) throws ParseException {
 		String tokenType = signedJwt.getJWTClaimsSet().getStringClaim("tokenType");
-		if (!ACCESS_TOKEN_TYPE.equals(tokenType)) {
+		if (!tokenProperties.getAccessToken().getName().equals(tokenType)) {
 			throw new JwtAuthenticationException("Invalid token type for authorization");
 		}
 	}

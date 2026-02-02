@@ -36,7 +36,6 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
 			.toList();
 
 		Integer userId = userServiceImpl.getUserIdByEmail(authentication.getName());
-
 		String accessToken = jwtService.createAccessToken(authentication.getName(), userId, authorities);
 		String refreshToken = jwtService.createRefreshToken(authentication.getName(), userId, authorities);
 
