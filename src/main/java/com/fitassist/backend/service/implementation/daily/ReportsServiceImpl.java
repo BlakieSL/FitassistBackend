@@ -11,8 +11,10 @@ import com.fitassist.backend.dto.response.reports.UserActionCountsDto;
 import com.fitassist.backend.mapper.FoodMapper;
 import com.fitassist.backend.mapper.daily.DailyActivityMapper;
 import com.fitassist.backend.model.daily.DailyCart;
+import com.fitassist.backend.model.daily.DailyCartActivity;
 import com.fitassist.backend.repository.DailyCartRepository;
 import com.fitassist.backend.service.declaration.daily.ReportsService;
+import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
@@ -33,11 +35,14 @@ public class ReportsServiceImpl implements ReportsService {
 
 	private final FoodMapper foodMapper;
 
+	private final CalculationsService calculationsService;
+
 	public ReportsServiceImpl(DailyCartRepository dailyCartRepository, DailyActivityMapper dailyActivityMapper,
-			FoodMapper foodMapper) {
+			FoodMapper foodMapper, CalculationsService calculationsService) {
 		this.dailyCartRepository = dailyCartRepository;
 		this.dailyActivityMapper = dailyActivityMapper;
 		this.foodMapper = foodMapper;
+		this.calculationsService = calculationsService;
 	}
 
 	@Override
@@ -50,7 +55,7 @@ public class ReportsServiceImpl implements ReportsService {
 		BigDecimal caloriesBurned = dailyCartRepository.findByUserIdAndDateWithActivityAssociations(userId, date)
 			.map(cart -> cart.getDailyCartActivities()
 				.stream()
-				.map(dailyActivityMapper::toActivityCalculatedResponseDto)
+				.map(calculationsService::toCalculatedResponseDto)
 				.map(ActivityCalculatedResponseDto::getCaloriesBurned)
 				.reduce(BigDecimal.ZERO, BigDecimal::add))
 			.orElse(BigDecimal.ZERO);
@@ -80,7 +85,7 @@ public class ReportsServiceImpl implements ReportsService {
 			.collect(Collectors.toMap(DailyCart::getDate,
 					cart -> cart.getDailyCartActivities()
 						.stream()
-						.map(dailyActivityMapper::toActivityCalculatedResponseDto)
+						.map(calculationsService::toCalculatedResponseDto)
 						.map(ActivityCalculatedResponseDto::getCaloriesBurned)
 						.reduce(BigDecimal.ZERO, BigDecimal::add)));
 

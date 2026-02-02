@@ -1,5 +1,8 @@
 package com.fitassist.backend.service.implementation.helpers;
 
+import com.fitassist.backend.dto.response.activity.ActivityCalculatedResponseDto;
+import com.fitassist.backend.mapper.daily.DailyActivityMapper;
+import com.fitassist.backend.model.daily.DailyCartActivity;
 import com.fitassist.backend.model.user.ActivityLevel;
 import com.fitassist.backend.model.user.Gender;
 import com.fitassist.backend.model.user.Goal;
@@ -16,13 +19,17 @@ public final class CalculationsServiceImpl implements CalculationsService {
 
 	private static final BigDecimal MET_DIVISOR = BigDecimal.valueOf(200);
 
+	private final DailyActivityMapper dailyActivityMapper;
+
+	public CalculationsServiceImpl(DailyActivityMapper dailyActivityMapper) {
+		this.dailyActivityMapper = dailyActivityMapper;
+	}
+
 	@Override
 	public BigDecimal calculateCaloricNeeds(BigDecimal weight, BigDecimal height, int age, Gender gender,
 			ActivityLevel activityLevel, Goal goal) {
 		BigDecimal bmr = gender.calculateBMR(weight, height, age);
-		BigDecimal tdee = bmr.multiply(activityLevel.getActivityFactor()); // Total Daily
-																			// Energy
-																			// Expenditure
+		BigDecimal tdee = bmr.multiply(activityLevel.getActivityFactor());
 
 		return goal.normalizeBasedOnGoal(tdee).setScale(1, RoundingMode.HALF_UP);
 	}
@@ -33,6 +40,15 @@ public final class CalculationsServiceImpl implements CalculationsService {
 			.multiply(weight)
 			.multiply(BigDecimal.valueOf(time))
 			.divide(MET_DIVISOR, 1, RoundingMode.HALF_UP);
+	}
+
+	@Override
+	public ActivityCalculatedResponseDto toCalculatedResponseDto(DailyCartActivity dailyCartActivity) {
+		ActivityCalculatedResponseDto dto = dailyActivityMapper.toActivityCalculatedResponseDto(dailyCartActivity);
+		dto.setCaloriesBurned(calculateCaloriesBurned(dailyCartActivity.getTime(), dailyCartActivity.getWeight(),
+				dailyCartActivity.getActivity().getMet()));
+
+		return dto;
 	}
 
 }

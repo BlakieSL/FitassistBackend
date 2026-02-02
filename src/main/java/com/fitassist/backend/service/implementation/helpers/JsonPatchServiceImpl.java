@@ -30,9 +30,7 @@ public class JsonPatchServiceImpl implements JsonPatchService {
 	public <T> T createFromPatch(JsonMergePatch patch, Class<T> beanClass)
 			throws JsonPatchException, JsonProcessingException {
 		ObjectNode emptyNode = objectMapper.createObjectNode();
-
 		JsonNode patchedNode = patch.apply(emptyNode);
-
 		return objectMapper.treeToValue(patchedNode, beanClass);
 	}
 

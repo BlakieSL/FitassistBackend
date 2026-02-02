@@ -1,4 +1,4 @@
-package com.fitassist.backend.dto.response.other;
+package com.fitassist.backend.dto.response;
 
 import com.fitassist.backend.model.media.MediaConnectedEntity;
 import lombok.AllArgsConstructor;

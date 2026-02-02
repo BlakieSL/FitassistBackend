@@ -1,7 +1,7 @@
 package com.fitassist.backend.unit.media;
 
 import com.fitassist.backend.dto.request.media.MediaCreateDto;
-import com.fitassist.backend.dto.response.other.MediaResponseDto;
+import com.fitassist.backend.dto.response.MediaResponseDto;
 import com.fitassist.backend.event.event.Media.MediaDeleteEvent;
 import com.fitassist.backend.event.event.Media.MediaUpdateEvent;
 import com.fitassist.backend.exception.RecordNotFoundException;

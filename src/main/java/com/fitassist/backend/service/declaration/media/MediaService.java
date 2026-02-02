@@ -1,7 +1,7 @@
 package com.fitassist.backend.service.declaration.media;
 
 import com.fitassist.backend.dto.request.media.MediaCreateDto;
-import com.fitassist.backend.dto.response.other.MediaResponseDto;
+import com.fitassist.backend.dto.response.MediaResponseDto;
 import com.fitassist.backend.model.media.MediaConnectedEntity;
 
 import java.util.List;

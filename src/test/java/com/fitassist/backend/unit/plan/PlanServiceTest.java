@@ -12,16 +12,21 @@ import com.fitassist.backend.event.event.Plan.PlanCreateEvent;
 import com.fitassist.backend.event.event.Plan.PlanDeleteEvent;
 import com.fitassist.backend.event.event.Plan.PlanUpdateEvent;
 import com.fitassist.backend.exception.RecordNotFoundException;
+import com.fitassist.backend.mapper.context.PlanMappingContext;
 import com.fitassist.backend.mapper.plan.PlanMapper;
 import com.fitassist.backend.model.plan.Plan;
-import com.fitassist.backend.repository.PlanCategoryAssociationRepository;
+import com.fitassist.backend.model.user.User;
+import com.fitassist.backend.repository.EquipmentRepository;
+import com.fitassist.backend.repository.PlanCategoryRepository;
 import com.fitassist.backend.repository.PlanRepository;
 import com.fitassist.backend.repository.TextRepository;
+import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.declaration.plan.PlanPopulationService;
 import com.fitassist.backend.service.implementation.plan.PlanServiceImpl;
+import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.junit.jupiter.api.AfterEach;
@@ -60,7 +65,13 @@ public class PlanServiceTest {
 	private PlanRepository planRepository;
 
 	@Mock
-	private PlanCategoryAssociationRepository planCategoryAssociationRepository;
+	private PlanCategoryRepository planCategoryRepository;
+
+	@Mock
+	private EquipmentRepository equipmentRepository;
+
+	@Mock
+	private UserRepository userRepository;
 
 	@Mock
 	private JsonPatchService jsonPatchService;
@@ -75,12 +86,17 @@ public class PlanServiceTest {
 	private TextRepository textRepository;
 
 	@Mock
+	private SpecificationDependencies dependencies;
+
+	@Mock
 	private PlanPopulationService planPopulationService;
 
 	@InjectMocks
 	private PlanServiceImpl planService;
 
 	private Plan plan;
+
+	private User user;
 
 	private PlanCreateDto createDto;
 
@@ -105,6 +121,7 @@ public class PlanServiceTest {
 	@BeforeEach
 	void setUp() {
 		plan = new Plan();
+		user = new User();
 		createDto = new PlanCreateDto();
 		responseDto = new PlanResponseDto();
 		summaryDto = new PlanSummaryDto();
@@ -128,7 +145,8 @@ public class PlanServiceTest {
 	void createPlan_shouldCreatePlan() {
 		plan.setId(planId);
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(planMapper.toEntity(createDto, userId)).thenReturn(plan);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(planMapper.toEntity(eq(createDto), any(PlanMappingContext.class))).thenReturn(plan);
 		when(planRepository.save(plan)).thenReturn(plan);
 		when(planRepository.findByIdWithDetails(planId)).thenReturn(Optional.of(plan));
 		when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
@@ -144,7 +162,8 @@ public class PlanServiceTest {
 		plan.setId(planId);
 		ArgumentCaptor<PlanCreateEvent> eventCaptor = ArgumentCaptor.forClass(PlanCreateEvent.class);
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(planMapper.toEntity(createDto, userId)).thenReturn(plan);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(planMapper.toEntity(eq(createDto), any(PlanMappingContext.class))).thenReturn(plan);
 		when(planRepository.save(plan)).thenReturn(plan);
 		when(planRepository.findByIdWithDetails(planId)).thenReturn(Optional.of(plan));
 		when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
@@ -156,6 +175,16 @@ public class PlanServiceTest {
 	}
 
 	@Test
+	void createPlan_shouldThrowExceptionWhenUserNotFound() {
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> planService.createPlan(createDto));
+
+		verify(planRepository, never()).save(any());
+	}
+
+	@Test
 	void updatePlan_shouldUpdate() throws JsonPatchException, JsonProcessingException {
 		when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
 		when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class)).thenReturn(patchedDto);
@@ -164,7 +193,7 @@ public class PlanServiceTest {
 		planService.updatePlan(planId, patch);
 
 		verify(validationService).validate(patchedDto);
-		verify(planMapper).updatePlan(plan, patchedDto);
+		verify(planMapper).updatePlan(eq(plan), eq(patchedDto), any(PlanMappingContext.class));
 		verify(planRepository).save(plan);
 	}
 
@@ -223,6 +252,7 @@ public class PlanServiceTest {
 
 		planService.deletePlan(planId);
 
+		verify(textRepository).deleteByPlanId(planId);
 		verify(planRepository).delete(plan);
 		verify(eventPublisher).publishEvent(any(PlanDeleteEvent.class));
 	}
@@ -234,6 +264,7 @@ public class PlanServiceTest {
 
 		assertThrows(RecordNotFoundException.class, () -> planService.deletePlan(planId));
 
+		verify(textRepository, never()).deleteByPlanId(anyInt());
 		verify(planRepository, never()).delete(plan);
 		verify(eventPublisher, never()).publishEvent(any());
 	}

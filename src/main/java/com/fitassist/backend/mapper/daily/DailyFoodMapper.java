@@ -30,9 +30,9 @@ public abstract class DailyFoodMapper {
 		BigDecimal factor = quantity.divide(divisor, 10, RoundingMode.HALF_UP);
 
 		BigDecimal calories = food.getCalories().multiply(factor).setScale(1, RoundingMode.HALF_UP);
-		BigDecimal protein = food.getProtein().multiply(factor).setScale(1, RoundingMode.HALF_UP);
-		BigDecimal fat = food.getFat().multiply(factor).setScale(1, RoundingMode.HALF_UP);
-		BigDecimal carbohydrates = food.getCarbohydrates().multiply(factor).setScale(1, RoundingMode.HALF_UP);
+		BigDecimal protein = food.getProtein().multiply(factor).setScale(2, RoundingMode.HALF_UP);
+		BigDecimal fat = food.getFat().multiply(factor).setScale(2, RoundingMode.HALF_UP);
+		BigDecimal carbohydrates = food.getCarbohydrates().multiply(factor).setScale(2, RoundingMode.HALF_UP);
 
 		responseDto.setFoodMacros(FoodMacros.of(calories, protein, fat, carbohydrates));
 	}

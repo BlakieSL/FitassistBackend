@@ -1,5 +1,7 @@
 package com.fitassist.backend.service.declaration.helpers;
 
+import com.fitassist.backend.dto.response.activity.ActivityCalculatedResponseDto;
+import com.fitassist.backend.model.daily.DailyCartActivity;
 import com.fitassist.backend.model.user.ActivityLevel;
 import com.fitassist.backend.model.user.Gender;
 import com.fitassist.backend.model.user.Goal;
@@ -12,5 +14,7 @@ public interface CalculationsService {
 			ActivityLevel activityLevel, Goal goal);
 
 	BigDecimal calculateCaloriesBurned(Short time, BigDecimal weight, BigDecimal met);
+
+	ActivityCalculatedResponseDto toCalculatedResponseDto(DailyCartActivity dailyCartActivity);
 
 }
