@@ -1,6 +1,6 @@
 package com.fitassist.backend.validation.media;
 
-import com.fitassist.backend.config.ContextProvider;
+import com.fitassist.backend.validation.ContextProvider;
 import com.fitassist.backend.dto.request.media.MediaCreateDto;
 import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.repository.MediaRepository;

@@ -1,6 +1,6 @@
 package com.fitassist.backend.unit.validation;
 
-import com.fitassist.backend.config.ContextProvider;
+import com.fitassist.backend.validation.ContextProvider;
 import com.fitassist.backend.dto.request.user.UserUpdateDto;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.UserRepository;

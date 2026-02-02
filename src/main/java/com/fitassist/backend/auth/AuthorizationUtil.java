@@ -8,54 +8,45 @@ import java.util.Optional;
 @Service
 public class AuthorizationUtil {
 
-	public static boolean isOwnerOrAdmin(Integer ownerId) {
-		if (isAdmin()) {
-			return true;
-		}
-
-		Integer currentUserId = getUserId();
-		return Optional.ofNullable(ownerId).map(id -> id.equals(currentUserId)).orElse(false);
+	public static int getUserId() {
+		return getAuthToken().map(CustomAuthenticationToken::getUserId).orElse(-1);
 	}
 
-	public static int getUserId() {
+	private static Optional<CustomAuthenticationToken> getAuthToken() {
 		var auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth instanceof CustomAuthenticationToken) {
-			return ((CustomAuthenticationToken) auth).getUserId();
+		if (auth instanceof CustomAuthenticationToken token) {
+			return Optional.of(token);
 		}
-		return -1;
+		return Optional.empty();
 	}
 
 	public static boolean isAdmin() {
-		var auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth instanceof CustomAuthenticationToken) {
-			return ((CustomAuthenticationToken) auth).getAuthorities()
-				.stream()
-				.anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
-		}
-		return false;
+		return hasRole("ROLE_ADMIN");
 	}
 
 	public static boolean isModerator() {
+		return hasRole("ROLE_MODERATOR");
+	}
+
+	private static boolean hasRole(String role) {
 		var auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth instanceof CustomAuthenticationToken) {
-			return ((CustomAuthenticationToken) auth).getAuthorities()
-				.stream()
-				.anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_MODERATOR"));
-		}
-		return false;
+		return auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(role));
 	}
 
 	public static boolean isAdminOrModerator() {
 		return isAdmin() || isModerator();
 	}
 
-	public static boolean isOwnerOrAdminOrModerator(Integer ownerId) {
-		if (isAdminOrModerator()) {
-			return true;
-		}
+	public static boolean isOwnerOrAdmin(Integer ownerId) {
+		return isAdmin() || isOwner(ownerId);
+	}
 
-		Integer currentUserId = getUserId();
-		return Optional.ofNullable(ownerId).map(id -> id.equals(currentUserId)).orElse(false);
+	public static boolean isOwnerOrAdminOrModerator(Integer ownerId) {
+		return isAdminOrModerator() || isOwner(ownerId);
+	}
+
+	private static boolean isOwner(Integer ownerId) {
+		return ownerId != null && ownerId.equals(getUserId());
 	}
 
 }

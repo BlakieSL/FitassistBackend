@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Profile;
 @Slf4j
 @Configuration
 @Profile("!test")
-public class DevAwsEmailConfig {
+public class DevEmailMockConfig {
 
 	@ConditionalOnProperty(name = "spring.cloud.aws.ses.enabled", havingValue = "false", matchIfMissing = true)
 	@Bean

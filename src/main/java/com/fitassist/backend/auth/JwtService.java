@@ -21,28 +21,29 @@ import java.util.List;
 @Service
 public class JwtService {
 
-	private static final String ACCESS_TOKEN_TYPE = "ACCESS";
-
-	private static final String REFRESH_TOKEN_TYPE = "REFRESH";
-
 	private final JWSAlgorithm algorithm = JWSAlgorithm.HS256;
 
 	private final JWSSigner signer;
 
 	private final JWSVerifier verifier;
 
-	public JwtService(@Value("${jws.sharedKey}") String sharedKey) throws Exception {
+	private final TokenProperties tokenProperties;
+
+	public JwtService(@Value("${jws.sharedKey}") String sharedKey, TokenProperties tokenProperties) throws Exception {
 		byte[] sharedKeyBytes = sharedKey.getBytes();
 		this.signer = new MACSigner(sharedKeyBytes);
 		this.verifier = new MACVerifier(sharedKeyBytes);
+		this.tokenProperties = tokenProperties;
 	}
 
 	public String createAccessToken(String username, Integer userId, List<String> authorities) {
-		return createSignedJWT(username, userId, authorities, 15, ACCESS_TOKEN_TYPE);
+		var config = tokenProperties.getAccessToken();
+		return createSignedJWT(username, userId, authorities, config.getDurationMinutes(), config.getName());
 	}
 
 	public String createRefreshToken(String username, Integer userId, List<String> authorities) {
-		return createSignedJWT(username, userId, authorities, 60 * 24 * 7, REFRESH_TOKEN_TYPE);
+		var config = tokenProperties.getRefreshToken();
+		return createSignedJWT(username, userId, authorities, config.getDurationMinutes(), config.getName());
 	}
 
 	public String refreshAccessToken(String refreshToken) {

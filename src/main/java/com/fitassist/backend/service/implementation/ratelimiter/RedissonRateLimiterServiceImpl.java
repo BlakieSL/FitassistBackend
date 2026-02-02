@@ -33,12 +33,6 @@ public class RedissonRateLimiterServiceImpl implements RedissonRateLimiterServic
 		return rateLimiter.tryAcquire(1);
 	}
 
-	@Override
-	public boolean isAllowed(String key) {
-		RRateLimiter rateLimiter = getRateLimiterForKey(key);
-		return rateLimiter.tryAcquire(1);
-	}
-
 	private RRateLimiter getRateLimiterForUserId(int userId) {
 		return rateLimiters.computeIfAbsent(userId, this::createRateLimiterForUserId);
 	}
@@ -49,6 +43,12 @@ public class RedissonRateLimiterServiceImpl implements RedissonRateLimiterServic
 		rateLimiter.setRate(RateType.OVERALL, rateLimitConfig.getUserRate(), rateLimitConfig.getUserInterval(),
 				RateIntervalUnit.MINUTES);
 		return rateLimiter;
+	}
+
+	@Override
+	public boolean isAllowed(String key) {
+		RRateLimiter rateLimiter = getRateLimiterForKey(key);
+		return rateLimiter.tryAcquire(1);
 	}
 
 	private RRateLimiter getRateLimiterForKey(String key) {

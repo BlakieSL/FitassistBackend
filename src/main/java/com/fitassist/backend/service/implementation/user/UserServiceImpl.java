@@ -1,7 +1,7 @@
 package com.fitassist.backend.service.implementation.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fitassist.backend.auth.UserDetailsHelper;
+import com.fitassist.backend.auth.UserDetailsBuilder;
 import com.fitassist.backend.dto.pojo.AuthorDto;
 import com.fitassist.backend.dto.pojo.UserCredentialsDto;
 import com.fitassist.backend.dto.request.user.UserCreateDto;
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return findUserCredentialsByEmail(username).map(UserDetailsHelper::buildUserDetails)
+		return findUserCredentialsByEmail(username).map(UserDetailsBuilder::buildUserDetails)
 			.orElseThrow(() -> RecordNotFoundException.of(User.class, username));
 	}
 
