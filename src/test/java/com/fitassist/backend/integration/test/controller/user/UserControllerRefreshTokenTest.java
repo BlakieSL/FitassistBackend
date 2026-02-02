@@ -1,7 +1,7 @@
 package com.fitassist.backend.integration.test.controller.user;
 
-import com.fitassist.backend.auth.CookieService;
 import com.fitassist.backend.auth.JwtService;
+import com.fitassist.backend.auth.TokenProperties;
 import com.fitassist.backend.integration.config.MockAwsS3Config;
 import com.fitassist.backend.integration.config.MockAwsSesConfig;
 import com.fitassist.backend.integration.config.MockRedisConfig;
@@ -44,7 +44,7 @@ public class UserControllerRefreshTokenTest {
 	private JwtService jwtService;
 
 	@Autowired
-	private CookieService cookieService;
+	private TokenProperties tokenProperties;
 
 	@Value("${jws.sharedKey}")
 	private String sharedKey;
@@ -57,8 +57,8 @@ public class UserControllerRefreshTokenTest {
 
 		mockMvc
 			.perform(post("/api/users/refresh-token")
-				.cookie(new Cookie(cookieService.getRefreshTokenCookieName(), validRefreshToken)))
-			.andExpectAll(status().isOk(), cookie().exists(cookieService.getAccessTokenCookieName()));
+				.cookie(new Cookie(tokenProperties.getRefreshToken().getName(), validRefreshToken)))
+			.andExpectAll(status().isOk(), cookie().exists(tokenProperties.getAccessToken().getName()));
 	}
 
 	@WithAnonymousUser
@@ -69,7 +69,7 @@ public class UserControllerRefreshTokenTest {
 
 		mockMvc
 			.perform(post("/api/users/refresh-token")
-				.cookie(new Cookie(cookieService.getRefreshTokenCookieName(), invalidToken)))
+				.cookie(new Cookie(tokenProperties.getRefreshToken().getName(), invalidToken)))
 			.andExpectAll(status().isBadRequest());
 	}
 
@@ -89,7 +89,7 @@ public class UserControllerRefreshTokenTest {
 
 		mockMvc
 			.perform(post("/api/users/refresh-token")
-				.cookie(new Cookie(cookieService.getRefreshTokenCookieName(), expiredToken.serialize())))
+				.cookie(new Cookie(tokenProperties.getRefreshToken().getName(), expiredToken.serialize())))
 			.andExpectAll(status().isUnauthorized());
 	}
 
@@ -110,7 +110,7 @@ public class UserControllerRefreshTokenTest {
 
 		mockMvc
 			.perform(post("/api/users/refresh-token")
-				.cookie(new Cookie(cookieService.getRefreshTokenCookieName(), tamperedToken.serialize())))
+				.cookie(new Cookie(tokenProperties.getRefreshToken().getName(), tamperedToken.serialize())))
 			.andExpectAll(status().isUnauthorized());
 	}
 
@@ -129,7 +129,7 @@ public class UserControllerRefreshTokenTest {
 
 		mockMvc
 			.perform(post("/api/users/refresh-token")
-				.cookie(new Cookie(cookieService.getRefreshTokenCookieName(), tokenWithMissingClaims.serialize())))
+				.cookie(new Cookie(tokenProperties.getRefreshToken().getName(), tokenWithMissingClaims.serialize())))
 			.andExpectAll(status().isBadRequest());
 	}
 
@@ -145,10 +145,10 @@ public class UserControllerRefreshTokenTest {
 	@DisplayName("POST - /logout - Should clear auth cookies")
 	void logoutSuccess() throws Exception {
 		mockMvc.perform(post("/api/users/logout"))
-			.andExpectAll(status().isOk(), cookie().exists(cookieService.getAccessTokenCookieName()),
-					cookie().exists(cookieService.getRefreshTokenCookieName()),
-					cookie().maxAge(cookieService.getAccessTokenCookieName(), 0),
-					cookie().maxAge(cookieService.getRefreshTokenCookieName(), 0));
+			.andExpectAll(status().isOk(), cookie().exists(tokenProperties.getAccessToken().getName()),
+					cookie().exists(tokenProperties.getRefreshToken().getName()),
+					cookie().maxAge(tokenProperties.getAccessToken().getName(), 0),
+					cookie().maxAge(tokenProperties.getRefreshToken().getName(), 0));
 	}
 
 }

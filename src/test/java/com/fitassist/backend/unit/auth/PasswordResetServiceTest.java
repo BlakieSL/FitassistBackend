@@ -1,6 +1,7 @@
 package com.fitassist.backend.unit.auth;
 
 import com.fitassist.backend.auth.JwtService;
+import com.fitassist.backend.auth.TokenProperties;
 import com.fitassist.backend.dto.request.auth.PasswordResetDto;
 import com.fitassist.backend.dto.request.auth.PasswordResetRequestDto;
 import com.fitassist.backend.dto.request.email.EmailRequestDto;
@@ -43,6 +44,9 @@ public class PasswordResetServiceTest {
 	@Mock
 	private PasswordEncoder passwordEncoder;
 
+	@Mock
+	private TokenProperties tokenProperties;
+
 	@InjectMocks
 	private PasswordResetServiceImpl passwordResetService;
 
@@ -53,6 +57,8 @@ public class PasswordResetServiceTest {
 	private Integer userId;
 
 	private String resetToken;
+
+	private static final String SHARED_KEY = "afdadsfadsfsdafSADFJIkcvxla;j'sdkf[weokgfam,;adsfksdhqpwier";
 
 	@BeforeEach
 	void setUp() {
@@ -66,8 +72,23 @@ public class PasswordResetServiceTest {
 		user.setUsername("testuser");
 		user.setPassword("oldPassword");
 
+		TokenProperties.TokenConfig accessConfig = new TokenProperties.TokenConfig();
+		accessConfig.setName("accessToken");
+		accessConfig.setMaxAge(900);
+
+		TokenProperties.TokenConfig refreshConfig = new TokenProperties.TokenConfig();
+		refreshConfig.setName("refreshToken");
+		refreshConfig.setMaxAge(604800);
+
+		lenient().when(tokenProperties.getAccessToken()).thenReturn(accessConfig);
+		lenient().when(tokenProperties.getRefreshToken()).thenReturn(refreshConfig);
+
 		ReflectionTestUtils.setField(passwordResetService, "frontendUrl", "http://localhost:3000");
 		ReflectionTestUtils.setField(passwordResetService, "fromEmail", "noreply@fitassist.com");
+	}
+
+	private JwtService createRealJwtService() throws Exception {
+		return new JwtService(SHARED_KEY, tokenProperties);
 	}
 
 	@Test
@@ -107,8 +128,7 @@ public class PasswordResetServiceTest {
 
 	@Test
 	void resetPassword_shouldUpdatePasswordForValidToken() throws Exception {
-		String sharedKey = "thisIsASecretKeyForTestingPurposesThatIsLongEnough";
-		JwtService realJwtService = new JwtService(sharedKey);
+		JwtService realJwtService = createRealJwtService();
 		String validToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), 20,
 				"PASSWORD_RESET");
 
@@ -130,8 +150,7 @@ public class PasswordResetServiceTest {
 
 	@Test
 	void resetPassword_shouldThrowForExpiredToken() throws Exception {
-		String sharedKey = "thisIsASecretKeyForTestingPurposesThatIsLongEnough";
-		JwtService realJwtService = new JwtService(sharedKey);
+		JwtService realJwtService = createRealJwtService();
 		String expiredToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), -1,
 				"PASSWORD_RESET");
 
@@ -149,8 +168,7 @@ public class PasswordResetServiceTest {
 
 	@Test
 	void resetPassword_shouldThrowForInvalidTokenType() throws Exception {
-		String sharedKey = "thisIsASecretKeyForTestingPurposesThatIsLongEnough";
-		JwtService realJwtService = new JwtService(sharedKey);
+		JwtService realJwtService = createRealJwtService();
 		String accessToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), 20, "ACCESS");
 
 		PasswordResetDto resetDto = new PasswordResetDto();
@@ -178,8 +196,7 @@ public class PasswordResetServiceTest {
 
 	@Test
 	void resetPassword_shouldThrowWhenUserNotFound() throws Exception {
-		String sharedKey = "thisIsASecretKeyForTestingPurposesThatIsLongEnough";
-		JwtService realJwtService = new JwtService(sharedKey);
+		JwtService realJwtService = createRealJwtService();
 		String validToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), 20,
 				"PASSWORD_RESET");
 
@@ -199,8 +216,7 @@ public class PasswordResetServiceTest {
 
 	@Test
 	void resetPassword_shouldThrowWhenUserIdMismatch() throws Exception {
-		String sharedKey = "thisIsASecretKeyForTestingPurposesThatIsLongEnough";
-		JwtService realJwtService = new JwtService(sharedKey);
+		JwtService realJwtService = createRealJwtService();
 		String validToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), 20,
 				"PASSWORD_RESET");
 
