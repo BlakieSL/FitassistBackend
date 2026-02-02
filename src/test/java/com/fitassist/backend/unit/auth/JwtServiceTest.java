@@ -17,7 +17,7 @@ import java.text.ParseException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
 public class JwtServiceTest {
@@ -49,8 +49,8 @@ public class JwtServiceTest {
 		refreshConfig.setName(REFRESH_TOKEN_NAME);
 		refreshConfig.setMaxAge(604800);
 
-		when(tokenProperties.getAccessToken()).thenReturn(accessConfig);
-		when(tokenProperties.getRefreshToken()).thenReturn(refreshConfig);
+		lenient().when(tokenProperties.getAccessToken()).thenReturn(accessConfig);
+		lenient().when(tokenProperties.getRefreshToken()).thenReturn(refreshConfig);
 
 		jwtService = new JwtService(sharedKey, tokenProperties);
 		username = "testuser";
