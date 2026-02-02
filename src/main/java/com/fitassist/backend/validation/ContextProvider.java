@@ -1,4 +1,4 @@
-package com.fitassist.backend.config;
+package com.fitassist.backend.validation;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

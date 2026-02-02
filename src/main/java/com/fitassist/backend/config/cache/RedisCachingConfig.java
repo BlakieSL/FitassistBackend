@@ -34,12 +34,11 @@ public class RedisCachingConfig {
 		caffeineManager
 			.setCaffeine(Caffeine.newBuilder().maximumSize(5000).expireAfterWrite(2, TimeUnit.MINUTES).recordStats());
 
-		JdkSerializationRedisSerializer jdkSerializer = new JdkSerializationRedisSerializer();
-
 		RedisCacheConfiguration redisCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
 			.entryTtl(Duration.ofMinutes(15))
 			.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-			.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jdkSerializer));
+			.serializeValuesWith(
+					RedisSerializationContext.SerializationPair.fromSerializer(new JdkSerializationRedisSerializer()));
 
 		RedisCacheManager redisManager = RedisCacheManager.builder(redisConnectionFactory)
 			.cacheDefaults(redisCacheConfig)

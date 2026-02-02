@@ -4,7 +4,7 @@ import com.fitassist.backend.dto.pojo.UserCredentialsDto;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class UserDetailsHelper {
+public class UserDetailsBuilder {
 
 	public static UserDetails buildUserDetails(UserCredentialsDto dto) {
 		return User.builder()

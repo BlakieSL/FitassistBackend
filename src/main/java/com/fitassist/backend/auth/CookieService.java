@@ -3,76 +3,55 @@ package com.fitassist.backend.auth;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
 
 import java.util.Optional;
 
 @Service
-@ConfigurationProperties(prefix = "cookie")
-@Getter
-@Setter
 public class CookieService {
 
-	private TokenConfig accessToken;
+	private final TokenProperties tokenProperties;
 
-	private TokenConfig refreshToken;
-
-	private TokenConfig rateLimit;
-
-	@Getter
-	@Setter
-	public static class TokenConfig {
-
-		private String name;
-
-		private int maxAge;
-
+	public CookieService(TokenProperties tokenProperties) {
+		this.tokenProperties = tokenProperties;
 	}
 
 	public void setAccessTokenCookie(HttpServletResponse response, String value) {
-		Cookie cookie = createSecureCookie(accessToken.getName(), value, accessToken.getMaxAge());
+		var config = tokenProperties.getAccessToken();
+		Cookie cookie = createSecureCookie(config.getName(), value, config.getMaxAge());
 		response.addCookie(cookie);
 	}
 
 	public Optional<String> getAccessTokenFromCookie(HttpServletRequest request) {
-		return getCookieValue(request, accessToken.getName());
+		return getCookieValue(request, tokenProperties.getAccessToken().getName());
 	}
 
 	public void setRefreshTokenCookie(HttpServletResponse response, String value) {
-		Cookie cookie = createSecureCookie(refreshToken.getName(), value, refreshToken.getMaxAge());
+		var config = tokenProperties.getRefreshToken();
+		Cookie cookie = createSecureCookie(config.getName(), value, config.getMaxAge());
 		response.addCookie(cookie);
 	}
 
 	public Optional<String> getRefreshTokenFromCookie(HttpServletRequest request) {
-		return getCookieValue(request, refreshToken.getName());
+		return getCookieValue(request, tokenProperties.getRefreshToken().getName());
 	}
 
 	public void setRateLimitCookie(HttpServletResponse response, String value) {
-		Cookie cookie = createSecureCookie(rateLimit.getName(), value, rateLimit.getMaxAge());
+		var config = tokenProperties.getRateLimit();
+		Cookie cookie = createSecureCookie(config.getName(), value, config.getMaxAge());
 		response.addCookie(cookie);
 	}
 
 	public Optional<String> getRateLimitCookie(HttpServletRequest request) {
-		return getCookieValue(request, rateLimit.getName());
+		return getCookieValue(request, tokenProperties.getRateLimit().getName());
 	}
 
 	public void clearAuthCookies(HttpServletResponse response) {
-		Cookie accessTokenCookie = createSecureCookie(accessToken.getName(), "", 0);
-		Cookie refreshTokenCookie = createSecureCookie(refreshToken.getName(), "", 0);
+		Cookie accessTokenCookie = createSecureCookie(tokenProperties.getAccessToken().getName(), "", 0);
+		Cookie refreshTokenCookie = createSecureCookie(tokenProperties.getRefreshToken().getName(), "", 0);
 		response.addCookie(accessTokenCookie);
 		response.addCookie(refreshTokenCookie);
-	}
-
-	public String getAccessTokenCookieName() {
-		return accessToken.getName();
-	}
-
-	public String getRefreshTokenCookieName() {
-		return refreshToken.getName();
 	}
 
 	private Cookie createSecureCookie(String key, String value, int maxAge) {

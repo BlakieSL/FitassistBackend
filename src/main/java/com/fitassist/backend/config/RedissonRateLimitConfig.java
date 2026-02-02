@@ -37,8 +37,8 @@ public class RedissonRateLimitConfig {
 		Config config = new Config();
 		config.useSingleServer()
 			.setAddress("redis://" + redisHost + ":" + redisPort)
-			.setConnectionMinimumIdleSize(10)
-			.setConnectTimeout(10000);
+			.setTimeout(1500)
+			.setRetryAttempts(2);
 		return Redisson.create(config);
 	}
 
