@@ -18,6 +18,7 @@ import com.fitassist.backend.repository.DailyCartActivityRepository;
 import com.fitassist.backend.repository.DailyCartRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.daily.DailyActivityService;
+import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
@@ -50,10 +51,13 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 
 	private final UserRepository userRepository;
 
+	private final CalculationsService calculationsService;
+
 	public DailyActivityServiceImpl(DailyCartRepository dailyCartRepository, UserRepository userRepository,
 			ActivityRepository activityRepository, JsonPatchService jsonPatchService,
 			ValidationService validationService, DailyActivityMapper dailyActivityMapper,
-			RepositoryHelper repositoryHelper, DailyCartActivityRepository dailyCartActivityRepository) {
+			RepositoryHelper repositoryHelper, DailyCartActivityRepository dailyCartActivityRepository,
+			CalculationsService calculationsService) {
 		this.dailyCartRepository = dailyCartRepository;
 		this.userRepository = userRepository;
 		this.activityRepository = activityRepository;
@@ -62,6 +66,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 		this.dailyActivityMapper = dailyActivityMapper;
 		this.repositoryHelper = repositoryHelper;
 		this.dailyCartActivityRepository = dailyCartActivityRepository;
+		this.calculationsService = calculationsService;
 	}
 
 	@Override
@@ -104,7 +109,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 		return dailyCartRepository.findByUserIdAndDateWithActivityAssociations(userId, date)
 			.map(dailyCart -> dailyCart.getDailyCartActivities()
 				.stream()
-				.map(dailyActivityMapper::toActivityCalculatedResponseDto)
+				.map(calculationsService::toCalculatedResponseDto)
 				.collect(Collectors.teeing(Collectors.toList(),
 						Collectors.reducing(BigDecimal.ZERO, ActivityCalculatedResponseDto::getCaloriesBurned,
 								BigDecimal::add),
