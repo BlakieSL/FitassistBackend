@@ -299,12 +299,14 @@ public class ActivityServiceTest {
 		when(repositoryHelper.find(activityRepository, Activity.class, activityId)).thenReturn(activity);
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 		when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-		when(calculationsService.toCalculatedResponseDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime()))
+		when(calculationsService.toCalculatedResponseDto(activity, BigDecimal.valueOf(80),
+				calculateRequestDto.getTime()))
 			.thenReturn(calculatedResponseDto);
 
 		ActivityCalculatedResponseDto result = activityService.calculateCaloriesBurned(activityId, calculateRequestDto);
 
-		verify(calculationsService).toCalculatedResponseDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime());
+		verify(calculationsService).toCalculatedResponseDto(activity, BigDecimal.valueOf(80),
+				calculateRequestDto.getTime());
 		assertEquals(calculatedResponseDto, result);
 	}
 
@@ -312,12 +314,14 @@ public class ActivityServiceTest {
 	void calculateCaloriesBurned_shouldCalculateCaloriesForActivityWeightInRequest() {
 		calculateRequestDto.setWeight(BigDecimal.valueOf(80));
 		when(repositoryHelper.find(activityRepository, Activity.class, activityId)).thenReturn(activity);
-		when(calculationsService.toCalculatedResponseDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime()))
+		when(calculationsService.toCalculatedResponseDto(activity, BigDecimal.valueOf(80),
+				calculateRequestDto.getTime()))
 			.thenReturn(calculatedResponseDto);
 
 		ActivityCalculatedResponseDto result = activityService.calculateCaloriesBurned(activityId, calculateRequestDto);
 
-		verify(calculationsService).toCalculatedResponseDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime());
+		verify(calculationsService).toCalculatedResponseDto(activity, BigDecimal.valueOf(80),
+				calculateRequestDto.getTime());
 		assertEquals(calculatedResponseDto, result);
 	}
 
@@ -326,12 +330,14 @@ public class ActivityServiceTest {
 		user.setWeight(BigDecimal.valueOf(70));
 		calculateRequestDto.setWeight(BigDecimal.valueOf(80));
 		when(repositoryHelper.find(activityRepository, Activity.class, activityId)).thenReturn(activity);
-		when(calculationsService.toCalculatedResponseDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime()))
+		when(calculationsService.toCalculatedResponseDto(activity, BigDecimal.valueOf(80),
+				calculateRequestDto.getTime()))
 			.thenReturn(calculatedResponseDto);
 
 		ActivityCalculatedResponseDto result = activityService.calculateCaloriesBurned(activityId, calculateRequestDto);
 
-		verify(calculationsService).toCalculatedResponseDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime());
+		verify(calculationsService).toCalculatedResponseDto(activity, BigDecimal.valueOf(80),
+				calculateRequestDto.getTime());
 		assertEquals(calculatedResponseDto, result);
 	}
 
@@ -341,11 +347,10 @@ public class ActivityServiceTest {
 			.thenThrow(RecordNotFoundException.of(Activity.class, activityId));
 
 		assertThrows(RecordNotFoundException.class,
-			() -> activityService.calculateCaloriesBurned(activityId, calculateRequestDto));
+				() -> activityService.calculateCaloriesBurned(activityId, calculateRequestDto));
 
 		verifyNoInteractions(calculationsService);
 	}
-
 
 	@Test
 	void getActivity_shouldReturnActivityWhenFound() {
