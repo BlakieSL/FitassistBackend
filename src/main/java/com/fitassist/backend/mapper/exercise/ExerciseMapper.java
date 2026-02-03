@@ -77,16 +77,16 @@ public abstract class ExerciseMapper {
 	@Mapping(target = "exerciseTips", ignore = true)
 	@Mapping(target = "mediaList", ignore = true)
 	public abstract void updateExerciseFromDto(@MappingTarget Exercise exercise, ExerciseUpdateDto request,
-											   @Context ExerciseMappingContext context);
+			@Context ExerciseMappingContext context);
 
 	@AfterMapping
 	protected void setExerciseAssociations(@MappingTarget Exercise exercise, ExerciseCreateDto dto,
-										   @Context ExerciseMappingContext context) {
+			@Context ExerciseMappingContext context) {
 		if (dto.getInstructions() != null) {
 			List<ExerciseInstruction> instructions = dto.getInstructions()
 				.stream()
 				.map(instructionDto -> ExerciseInstruction.of(instructionDto.getOrderIndex(), instructionDto.getTitle(),
-					instructionDto.getText(), exercise))
+						instructionDto.getText(), exercise))
 				.toList();
 
 			exercise.getExerciseInstructions().addAll(instructions);
@@ -113,7 +113,7 @@ public abstract class ExerciseMapper {
 
 	@AfterMapping
 	protected void updateAssociations(@MappingTarget Exercise exercise, ExerciseUpdateDto dto,
-									  @Context ExerciseMappingContext context) {
+			@Context ExerciseMappingContext context) {
 		if (context.getExpertiseLevel() != null) {
 			exercise.setExpertiseLevel(context.getExpertiseLevel());
 		}
@@ -143,22 +143,21 @@ public abstract class ExerciseMapper {
 
 		if (dto.getInstructions() != null) {
 			commonMappingHelper.updateTextAssociations(exercise.getExerciseInstructions(), dto.getInstructions(),
-				instructionDto -> ExerciseInstruction.of(instructionDto.getOrderIndex(), instructionDto.getTitle(),
-					instructionDto.getText(), exercise));
+					instructionDto -> ExerciseInstruction.of(instructionDto.getOrderIndex(), instructionDto.getTitle(),
+							instructionDto.getText(), exercise));
 		}
 
 		if (dto.getTips() != null) {
 			commonMappingHelper.updateTextAssociations(exercise.getExerciseTips(), dto.getTips(),
-				tipDto -> ExerciseTip.of(tipDto.getOrderIndex(), tipDto.getTitle(), tipDto.getText(), exercise));
+					tipDto -> ExerciseTip.of(tipDto.getOrderIndex(), tipDto.getTitle(), tipDto.getText(), exercise));
 		}
 	}
 
 	@Named("mapTargetMusclesToDto")
-	protected List<TargetMuscleResponseDto> mapTargetMusclesToDto(
-		Set<ExerciseTargetMuscle> associations) {
+	protected List<TargetMuscleResponseDto> mapTargetMusclesToDto(Set<ExerciseTargetMuscle> associations) {
 		return associations.stream()
 			.map(association -> TargetMuscleResponseDto.create(association.getTargetMuscle().getId(),
-				association.getTargetMuscle().getName(), association.getPriority()))
+					association.getTargetMuscle().getName(), association.getPriority()))
 			.toList();
 	}
 
@@ -186,7 +185,7 @@ public abstract class ExerciseMapper {
 	protected List<TextResponseDto> mapInstructionsToDto(Set<ExerciseInstruction> instructions) {
 		return instructions.stream()
 			.map(instruction -> new TextResponseDto(instruction.getId(), instruction.getOrderIndex(),
-				instruction.getText(), instruction.getTitle()))
+					instruction.getText(), instruction.getTitle()))
 			.toList();
 	}
 

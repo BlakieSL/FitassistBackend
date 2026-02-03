@@ -159,8 +159,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 	}
 
 	private User findUser(int userId) {
-		return userRepository.findById(userId)
-			.orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
+		return userRepository.findById(userId).orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
 	}
 
 	private ThreadCategory findCategory(Integer categoryId) {

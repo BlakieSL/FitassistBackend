@@ -19,4 +19,5 @@ public interface CalculationsService {
 	ActivityCalculatedResponseDto toCalculatedResponseDto(DailyCartActivity dailyCartActivity);
 
 	ActivityCalculatedResponseDto toCalculatedResponseDto(Activity activity, BigDecimal weight, Short time);
+
 }

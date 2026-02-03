@@ -93,8 +93,7 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	private User findUser(int userId) {
-		return userRepository.findById(userId)
-			.orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
+		return userRepository.findById(userId).orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
 	}
 
 	private ForumThread findThread(int threadId) {

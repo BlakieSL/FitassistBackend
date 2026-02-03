@@ -22,6 +22,7 @@ public final class CalculationsServiceImpl implements CalculationsService {
 	private static final BigDecimal MET_DIVISOR = BigDecimal.valueOf(200);
 
 	private final DailyActivityMapper dailyActivityMapper;
+
 	private final ActivityMapper activityMapper;
 
 	public CalculationsServiceImpl(DailyActivityMapper dailyActivityMapper, ActivityMapper activityMapper) {
