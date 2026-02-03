@@ -5,7 +5,7 @@ import com.fitassist.backend.dto.response.exercise.ExerciseSummaryDto;
 import com.fitassist.backend.dto.response.user.InteractionResponseDto;
 import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.ExerciseMapper;
+import com.fitassist.backend.mapper.exercise.ExerciseMapper;
 import com.fitassist.backend.model.exercise.Exercise;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.model.user.UserExercise;

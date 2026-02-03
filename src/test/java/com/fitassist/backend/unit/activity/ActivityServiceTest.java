@@ -14,16 +14,21 @@ import com.fitassist.backend.event.event.Activity.ActivityCreateEvent;
 import com.fitassist.backend.event.event.Activity.ActivityDeleteEvent;
 import com.fitassist.backend.event.event.Activity.ActivityUpdateEvent;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.ActivityMapper;
+import com.fitassist.backend.mapper.activity.ActivityMapper;
+import com.fitassist.backend.mapper.activity.ActivityMappingContext;
 import com.fitassist.backend.model.activity.Activity;
+import com.fitassist.backend.model.activity.ActivityCategory;
 import com.fitassist.backend.model.user.User;
+import com.fitassist.backend.repository.ActivityCategoryRepository;
 import com.fitassist.backend.repository.ActivityRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.activity.ActivityPopulationService;
+import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.implementation.activity.ActivityServiceImpl;
+import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.junit.jupiter.api.AfterEach;
@@ -72,15 +77,26 @@ public class ActivityServiceTest {
 	private ActivityRepository activityRepository;
 
 	@Mock
+	private ActivityCategoryRepository activityCategoryRepository;
+
+	@Mock
 	private ActivityPopulationService activityPopulationService;
 
 	@Mock
 	private UserRepository userRepository;
 
+	@Mock
+	private SpecificationDependencies dependencies;
+
+	@Mock
+	private CalculationsService calculationsService;
+
 	@InjectMocks
 	private ActivityServiceImpl activityService;
 
 	private Activity activity;
+
+	private ActivityCategory activityCategory;
 
 	private ActivityCreateDto createDto;
 
@@ -95,6 +111,8 @@ public class ActivityServiceTest {
 	private int activityId;
 
 	private int userId;
+
+	private int categoryId;
 
 	private User user;
 
@@ -111,12 +129,14 @@ public class ActivityServiceTest {
 	@BeforeEach
 	void setUp() {
 		activity = new Activity();
+		activityCategory = new ActivityCategory();
 		createDto = new ActivityCreateDto();
 		responseDto = new ActivitySummaryDto();
 		detailedResponseDto = new ActivityResponseDto();
 		patchedDto = new ActivityUpdateDto();
 		activityId = 1;
 		userId = 1;
+		categoryId = 1;
 		user = new User();
 		calculatedResponseDto = new ActivityCalculatedResponseDto();
 		calculateRequestDto = new CalculateActivityCaloriesRequestDto();
@@ -124,6 +144,8 @@ public class ActivityServiceTest {
 		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
 		filter = new FilterDto();
 		pageable = PageRequest.of(0, 100);
+
+		createDto.setCategoryId(categoryId);
 	}
 
 	@AfterEach
@@ -136,7 +158,8 @@ public class ActivityServiceTest {
 	@Test
 	void createActivity_shouldCreateActivityAndPublish() {
 		activity.setId(activityId);
-		when(activityMapper.toEntity(createDto)).thenReturn(activity);
+		when(activityCategoryRepository.findById(categoryId)).thenReturn(Optional.of(activityCategory));
+		when(activityMapper.toEntity(eq(createDto), any(ActivityMappingContext.class))).thenReturn(activity);
 		when(activityRepository.save(activity)).thenReturn(activity);
 		when(activityRepository.findByIdWithMedia(activityId)).thenReturn(Optional.of(activity));
 		when(activityMapper.toDetailedResponseDto(activity)).thenReturn(detailedResponseDto);
@@ -152,7 +175,8 @@ public class ActivityServiceTest {
 		ArgumentCaptor<ActivityCreateEvent> eventCaptor = ArgumentCaptor.forClass(ActivityCreateEvent.class);
 
 		activity.setId(activityId);
-		when(activityMapper.toEntity(createDto)).thenReturn(activity);
+		when(activityCategoryRepository.findById(categoryId)).thenReturn(Optional.of(activityCategory));
+		when(activityMapper.toEntity(eq(createDto), any(ActivityMappingContext.class))).thenReturn(activity);
 		when(activityRepository.save(activity)).thenReturn(activity);
 		when(activityRepository.findByIdWithMedia(activityId)).thenReturn(Optional.of(activity));
 		when(activityMapper.toDetailedResponseDto(activity)).thenReturn(detailedResponseDto);
@@ -161,6 +185,15 @@ public class ActivityServiceTest {
 
 		verify(eventPublisher).publishEvent(eventCaptor.capture());
 		assertEquals(activity, eventCaptor.getValue().getActivity());
+	}
+
+	@Test
+	void createActivity_shouldThrowExceptionWhenCategoryNotFound() {
+		when(activityCategoryRepository.findById(categoryId)).thenReturn(Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> activityService.createActivity(createDto));
+
+		verify(activityRepository, never()).save(any());
 	}
 
 	@Test
@@ -174,7 +207,7 @@ public class ActivityServiceTest {
 		activityService.updateActivity(activityId, patch);
 
 		verify(validationService).validate(patchedDto);
-		verify(activityMapper).updateActivityFromDto(activity, patchedDto);
+		verify(activityMapper).updateActivityFromDto(eq(activity), eq(patchedDto), any(ActivityMappingContext.class));
 		verify(activityRepository).save(activity);
 	}
 
@@ -201,7 +234,7 @@ public class ActivityServiceTest {
 
 		assertThrows(RecordNotFoundException.class, () -> activityService.updateActivity(activityId, patch));
 
-		verifyNoInteractions(activityMapper, jsonPatchService, validationService, activityMapper, eventPublisher);
+		verifyNoInteractions(activityMapper, jsonPatchService, validationService, eventPublisher);
 		verify(activityRepository, never()).save(activity);
 	}
 
@@ -266,12 +299,12 @@ public class ActivityServiceTest {
 		when(repositoryHelper.find(activityRepository, Activity.class, activityId)).thenReturn(activity);
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 		when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-		when(activityMapper.toCalculatedDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime()))
+		when(calculationsService.toCalculatedResponseDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime()))
 			.thenReturn(calculatedResponseDto);
 
 		ActivityCalculatedResponseDto result = activityService.calculateCaloriesBurned(activityId, calculateRequestDto);
 
-		verify(activityMapper).toCalculatedDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime());
+		verify(calculationsService).toCalculatedResponseDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime());
 		assertEquals(calculatedResponseDto, result);
 	}
 
@@ -279,26 +312,26 @@ public class ActivityServiceTest {
 	void calculateCaloriesBurned_shouldCalculateCaloriesForActivityWeightInRequest() {
 		calculateRequestDto.setWeight(BigDecimal.valueOf(80));
 		when(repositoryHelper.find(activityRepository, Activity.class, activityId)).thenReturn(activity);
-		when(activityMapper.toCalculatedDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime()))
+		when(calculationsService.toCalculatedResponseDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime()))
 			.thenReturn(calculatedResponseDto);
 
 		ActivityCalculatedResponseDto result = activityService.calculateCaloriesBurned(activityId, calculateRequestDto);
 
-		verify(activityMapper).toCalculatedDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime());
+		verify(calculationsService).toCalculatedResponseDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime());
 		assertEquals(calculatedResponseDto, result);
 	}
 
 	@Test
 	void calculateCaloriesBurned_shouldCalculateCaloriesForActivityUsingWeightInRequestEvenIfAlreadySaved() {
-		user.setWeight(BigDecimal.valueOf(80));
+		user.setWeight(BigDecimal.valueOf(70));
 		calculateRequestDto.setWeight(BigDecimal.valueOf(80));
 		when(repositoryHelper.find(activityRepository, Activity.class, activityId)).thenReturn(activity);
-		when(activityMapper.toCalculatedDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime()))
+		when(calculationsService.toCalculatedResponseDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime()))
 			.thenReturn(calculatedResponseDto);
 
 		ActivityCalculatedResponseDto result = activityService.calculateCaloriesBurned(activityId, calculateRequestDto);
 
-		verify(activityMapper).toCalculatedDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime());
+		verify(calculationsService).toCalculatedResponseDto(activity, BigDecimal.valueOf(80), calculateRequestDto.getTime());
 		assertEquals(calculatedResponseDto, result);
 	}
 
@@ -308,10 +341,11 @@ public class ActivityServiceTest {
 			.thenThrow(RecordNotFoundException.of(Activity.class, activityId));
 
 		assertThrows(RecordNotFoundException.class,
-				() -> activityService.calculateCaloriesBurned(activityId, calculateRequestDto));
+			() -> activityService.calculateCaloriesBurned(activityId, calculateRequestDto));
 
-		verifyNoInteractions(activityMapper);
+		verifyNoInteractions(calculationsService);
 	}
+
 
 	@Test
 	void getActivity_shouldReturnActivityWhenFound() {

@@ -12,15 +12,11 @@ import com.fitassist.backend.event.event.Plan.PlanCreateEvent;
 import com.fitassist.backend.event.event.Plan.PlanDeleteEvent;
 import com.fitassist.backend.event.event.Plan.PlanUpdateEvent;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.context.PlanMappingContext;
 import com.fitassist.backend.mapper.plan.PlanMapper;
+import com.fitassist.backend.mapper.plan.PlanMappingContext;
 import com.fitassist.backend.model.plan.Plan;
 import com.fitassist.backend.model.user.User;
-import com.fitassist.backend.repository.EquipmentRepository;
-import com.fitassist.backend.repository.PlanCategoryRepository;
-import com.fitassist.backend.repository.PlanRepository;
-import com.fitassist.backend.repository.TextRepository;
-import com.fitassist.backend.repository.UserRepository;
+import com.fitassist.backend.repository.*;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
@@ -69,6 +65,9 @@ public class PlanServiceTest {
 
 	@Mock
 	private EquipmentRepository equipmentRepository;
+
+	@Mock
+	private ExerciseRepository exerciseRepository;
 
 	@Mock
 	private UserRepository userRepository;

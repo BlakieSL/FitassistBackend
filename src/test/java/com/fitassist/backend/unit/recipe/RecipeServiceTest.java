@@ -13,13 +13,18 @@ import com.fitassist.backend.event.event.Recipe.RecipeDeleteEvent;
 import com.fitassist.backend.event.event.Recipe.RecipeUpdateEvent;
 import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.mapper.recipe.RecipeMapper;
+import com.fitassist.backend.mapper.recipe.RecipeMappingContext;
 import com.fitassist.backend.model.recipe.Recipe;
+import com.fitassist.backend.model.user.User;
+import com.fitassist.backend.repository.RecipeCategoryRepository;
 import com.fitassist.backend.repository.RecipeRepository;
+import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.declaration.recipe.RecipePopulationService;
 import com.fitassist.backend.service.implementation.recipe.RecipeServiceImpl;
+import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.junit.jupiter.api.AfterEach;
@@ -58,6 +63,12 @@ public class RecipeServiceTest {
 	private RecipeRepository recipeRepository;
 
 	@Mock
+	private RecipeCategoryRepository recipeCategoryRepository;
+
+	@Mock
+	private UserRepository userRepository;
+
+	@Mock
 	private RecipePopulationService recipePopulationService;
 
 	@Mock
@@ -69,10 +80,15 @@ public class RecipeServiceTest {
 	@Mock
 	private ApplicationEventPublisher eventPublisher;
 
+	@Mock
+	private SpecificationDependencies dependencies;
+
 	@InjectMocks
 	private RecipeServiceImpl recipeService;
 
 	private Recipe recipe;
+
+	private User user;
 
 	private RecipeCreateDto createDto;
 
@@ -95,6 +111,7 @@ public class RecipeServiceTest {
 	@BeforeEach
 	void setUp() {
 		recipe = new Recipe();
+		user = new User();
 		createDto = new RecipeCreateDto();
 		responseDto = new RecipeResponseDto();
 		summaryDto = new RecipeSummaryDto();
@@ -117,7 +134,8 @@ public class RecipeServiceTest {
 	void createRecipe_shouldCreateRecipe() {
 		recipe.setId(recipeId);
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(recipeMapper.toEntity(createDto, userId)).thenReturn(recipe);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(recipeMapper.toEntity(eq(createDto), any(RecipeMappingContext.class))).thenReturn(recipe);
 		when(recipeRepository.save(recipe)).thenReturn(recipe);
 		when(recipeRepository.findByIdWithDetails(recipeId)).thenReturn(Optional.of(recipe));
 		when(recipeMapper.toResponseDto(recipe)).thenReturn(responseDto);
@@ -133,7 +151,8 @@ public class RecipeServiceTest {
 		ArgumentCaptor<RecipeCreateEvent> eventCaptor = ArgumentCaptor.forClass(RecipeCreateEvent.class);
 		recipe.setId(recipeId);
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(recipeMapper.toEntity(createDto, userId)).thenReturn(recipe);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(recipeMapper.toEntity(eq(createDto), any(RecipeMappingContext.class))).thenReturn(recipe);
 		when(recipeRepository.save(recipe)).thenReturn(recipe);
 		when(recipeRepository.findByIdWithDetails(recipeId)).thenReturn(Optional.of(recipe));
 		when(recipeMapper.toResponseDto(recipe)).thenReturn(responseDto);
@@ -145,6 +164,16 @@ public class RecipeServiceTest {
 	}
 
 	@Test
+	void createRecipe_shouldThrowExceptionWhenUserNotFound() {
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> recipeService.createRecipe(createDto));
+
+		verify(recipeRepository, never()).save(any());
+	}
+
+	@Test
 	void updateRecipe_shouldUpdateRecipe() throws JsonPatchException, JsonProcessingException {
 		when(repositoryHelper.find(recipeRepository, Recipe.class, recipeId)).thenReturn(recipe);
 		when(jsonPatchService.createFromPatch(patch, RecipeUpdateDto.class)).thenReturn(patchedDto);
@@ -153,7 +182,7 @@ public class RecipeServiceTest {
 		recipeService.updateRecipe(recipeId, patch);
 
 		verify(validationService).validate(patchedDto);
-		verify(recipeMapper).updateRecipe(recipe, patchedDto);
+		verify(recipeMapper).updateRecipe(eq(recipe), eq(patchedDto), any(RecipeMappingContext.class));
 		verify(recipeRepository).save(recipe);
 	}
 

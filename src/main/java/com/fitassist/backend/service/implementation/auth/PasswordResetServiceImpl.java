@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.Collections;
-import java.util.List;
 
 @Service
 public class PasswordResetServiceImpl implements PasswordResetService {

@@ -5,7 +5,7 @@ import com.fitassist.backend.dto.response.exercise.ExerciseSummaryDto;
 import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
 import com.fitassist.backend.exception.NotUniqueRecordException;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.ExerciseMapper;
+import com.fitassist.backend.mapper.exercise.ExerciseMapper;
 import com.fitassist.backend.model.exercise.Exercise;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.user.User;
