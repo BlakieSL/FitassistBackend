@@ -16,6 +16,7 @@ import com.fitassist.backend.repository.ActivityRepository;
 import com.fitassist.backend.repository.DailyCartActivityRepository;
 import com.fitassist.backend.repository.DailyCartRepository;
 import com.fitassist.backend.repository.UserRepository;
+import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
@@ -71,6 +72,9 @@ public class DailyActivityServiceTest {
 
 	@Mock
 	private UserRepository userRepository;
+
+	@Mock
+	private CalculationsService calculationsService;
 
 	@InjectMocks
 	private DailyActivityServiceImpl dailyActivityService;
@@ -273,7 +277,7 @@ public class DailyActivityServiceTest {
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 		when(dailyCartRepository.findByUserIdAndDateWithActivityAssociations(USER_ID, LocalDate.now()))
 			.thenReturn(Optional.of(dailyCart));
-		when(dailyActivityMapper.toActivityCalculatedResponseDto(dailyCartActivity)).thenReturn(calculatedResponseDto);
+		when(calculationsService.toCalculatedResponseDto(dailyCartActivity)).thenReturn(calculatedResponseDto);
 
 		DailyActivitiesResponseDto result = dailyActivityService.getActivitiesFromDailyCart(LocalDate.now());
 
