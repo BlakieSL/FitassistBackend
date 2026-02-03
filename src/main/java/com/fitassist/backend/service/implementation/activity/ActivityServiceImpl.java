@@ -69,13 +69,15 @@ public class ActivityServiceImpl implements ActivityService {
 	private final UserRepository userRepository;
 
 	private final SpecificationDependencies dependencies;
+
 	private final CalculationsService calculationsService;
 
 	public ActivityServiceImpl(RepositoryHelper repositoryHelper, ActivityMapper activityMapper,
-							   ValidationService validationService, JsonPatchService jsonPatchService,
-							   ApplicationEventPublisher eventPublisher, ActivityRepository activityRepository,
-							   ActivityCategoryRepository activityCategoryRepository, ActivityPopulationService activityPopulationService,
-							   UserRepository userRepository, SpecificationDependencies dependencies, CalculationsService calculationsService) {
+			ValidationService validationService, JsonPatchService jsonPatchService,
+			ApplicationEventPublisher eventPublisher, ActivityRepository activityRepository,
+			ActivityCategoryRepository activityCategoryRepository, ActivityPopulationService activityPopulationService,
+			UserRepository userRepository, SpecificationDependencies dependencies,
+			CalculationsService calculationsService) {
 		this.repositoryHelper = repositoryHelper;
 		this.activityMapper = activityMapper;
 		this.validationService = validationService;
