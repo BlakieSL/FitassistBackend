@@ -5,50 +5,37 @@ import com.fitassist.backend.dto.request.plan.workoutSetExercise.WorkoutSetExerc
 import com.fitassist.backend.dto.response.plan.WorkoutSetExerciseResponseDto;
 import com.fitassist.backend.model.exercise.Exercise;
 import com.fitassist.backend.model.workout.WorkoutSetExercise;
-import com.fitassist.backend.repository.ExerciseRepository;
-import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring")
 public abstract class WorkoutSetExerciseMapper {
-
-	@Autowired
-	private ExerciseRepository exerciseRepository;
-
-	@Autowired
-	private RepositoryHelper repositoryHelper;
 
 	@Mapping(target = "exerciseId", source = "exercise.id")
 	@Mapping(target = "exerciseName", source = "exercise.name")
 	public abstract WorkoutSetExerciseResponseDto toResponseDto(WorkoutSetExercise workoutSetExercise);
 
-	// this is used when creating WorkoutSet and need to create new nested
-	// WorkoutSetExercise
 	@Mapping(target = "workoutSet", ignore = true)
-	@Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExerciseIdToExercise")
 	@Mapping(target = "id", ignore = true)
-	public abstract WorkoutSetExercise toEntityFromNested(WorkoutSetExerciseNestedCreateDto createDto);
+	@Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExercise")
+	public abstract WorkoutSetExercise toEntityFromNested(WorkoutSetExerciseNestedCreateDto dto,
+			@Context PlanMappingContext context);
 
-	// this is used when updating WorkoutSet and need to create new nested
-	// WorkoutSetExercise
 	@Mapping(target = "workoutSet", ignore = true)
-	@Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExerciseIdToExercise")
 	@Mapping(target = "id", ignore = true)
-	public abstract WorkoutSetExercise toEntityFromNested(WorkoutSetExerciseNestedUpdateDto updateDto);
+	@Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExercise")
+	public abstract WorkoutSetExercise toEntityFromNested(WorkoutSetExerciseNestedUpdateDto dto,
+			@Context PlanMappingContext context);
 
-	// this is used when updating WorkoutSet and need to update existing nested
-	// WorkoutSetExercise
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "workoutSet", ignore = true)
-	@Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExerciseIdToExercise")
+	@Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExercise")
 	public abstract void updateWorkoutSetExerciseNested(@MappingTarget WorkoutSetExercise exercise,
-			WorkoutSetExerciseNestedUpdateDto dto);
+			WorkoutSetExerciseNestedUpdateDto dto, @Context PlanMappingContext context);
 
-	@Named("mapExerciseIdToExercise")
-	protected Exercise mapExerciseIdToExercise(int exerciseId) {
-		return repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId);
+	@Named("mapExercise")
+	protected Exercise mapExercise(Integer exerciseId, @Context PlanMappingContext context) {
+		return context.getExercise(exerciseId);
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.fitassist.backend.mapper;
+package com.fitassist.backend.mapper.food;
 
 import com.fitassist.backend.dto.pojo.DateFoodMacros;
 import com.fitassist.backend.dto.pojo.FoodMacros;
@@ -8,13 +8,10 @@ import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.dto.response.food.FoodCalculatedMacrosResponseDto;
 import com.fitassist.backend.dto.response.food.FoodResponseDto;
 import com.fitassist.backend.dto.response.food.FoodSummaryDto;
-import com.fitassist.backend.mapper.helper.CommonMappingHelper;
+import com.fitassist.backend.mapper.CommonMappingHelper;
 import com.fitassist.backend.model.food.Food;
 import com.fitassist.backend.model.food.FoodCategory;
-import com.fitassist.backend.repository.FoodCategoryRepository;
-import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -22,12 +19,6 @@ import java.math.RoundingMode;
 
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class FoodMapper {
-
-	@Autowired
-	private RepositoryHelper repositoryHelper;
-
-	@Autowired
-	private FoodCategoryRepository foodCategoryRepository;
 
 	@Mapping(target = "foodMacros", ignore = true)
 	@Mapping(target = "category", source = "foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
@@ -40,26 +31,27 @@ public abstract class FoodMapper {
 
 	@Mapping(target = "foodMacros", ignore = true)
 	@Mapping(target = "category", source = "foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
-	@Mapping(target = "quantity", expression = "java(factor.multiply(new BigDecimal(100)))")
+	@Mapping(target = "quantity", expression = "java(factor.multiply(BigDecimal.valueOf(100)))")
 	@Mapping(target = "dailyItemId", ignore = true)
 	public abstract FoodCalculatedMacrosResponseDto toDtoWithFactor(Food food, @Context BigDecimal factor);
 
-	@Mapping(target = "foodCategory", source = "categoryId", qualifiedByName = "categoryIdToFoodCategory")
+	@Mapping(target = "foodCategory", expression = "java(context.getCategory())")
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "dailyCartFoods", ignore = true)
 	@Mapping(target = "recipeFoods", ignore = true)
 	@Mapping(target = "userFoods", ignore = true)
 	@Mapping(target = "mediaList", ignore = true)
-	public abstract Food toEntity(FoodCreateDto dto);
+	public abstract Food toEntity(FoodCreateDto dto, @Context FoodMappingContext context);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-	@Mapping(target = "foodCategory", source = "categoryId", qualifiedByName = "categoryIdToFoodCategory")
+	@Mapping(target = "foodCategory", ignore = true)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "dailyCartFoods", ignore = true)
 	@Mapping(target = "recipeFoods", ignore = true)
 	@Mapping(target = "userFoods", ignore = true)
 	@Mapping(target = "mediaList", ignore = true)
-	public abstract void updateFood(@MappingTarget Food food, FoodUpdateDto request);
+	public abstract void updateFood(@MappingTarget Food food, FoodUpdateDto request,
+			@Context FoodMappingContext context);
 
 	@Mapping(target = "foodMacros", ignore = true)
 	@Mapping(target = "category", source = "foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
@@ -96,13 +88,16 @@ public abstract class FoodMapper {
 		dto.setFoodMacros(createFoodMacros(food));
 	}
 
-	private FoodMacros createFoodMacros(Food food) {
-		return FoodMacros.of(food.getCalories(), food.getProtein(), food.getFat(), food.getCarbohydrates());
+	@AfterMapping
+	protected void updateFoodCategory(@MappingTarget Food food, FoodUpdateDto dto,
+			@Context FoodMappingContext context) {
+		if (dto.getCategoryId() != null) {
+			food.setFoodCategory(context.getCategory());
+		}
 	}
 
-	@Named("categoryIdToFoodCategory")
-	protected FoodCategory categoryIdToFoodCategory(int categoryId) {
-		return repositoryHelper.find(foodCategoryRepository, FoodCategory.class, categoryId);
+	private FoodMacros createFoodMacros(Food food) {
+		return FoodMacros.of(food.getCalories(), food.getProtein(), food.getFat(), food.getCarbohydrates());
 	}
 
 	@Named("mapFoodCategoryToResponseDto")

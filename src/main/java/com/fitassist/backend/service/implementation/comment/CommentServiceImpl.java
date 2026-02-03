@@ -10,9 +10,14 @@ import com.fitassist.backend.dto.response.comment.CommentAncestryDto;
 import com.fitassist.backend.dto.response.comment.CommentResponseDto;
 import com.fitassist.backend.dto.response.comment.CommentSummaryDto;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.CommentMapper;
+import com.fitassist.backend.mapper.comment.CommentMapper;
+import com.fitassist.backend.mapper.comment.CommentMappingContext;
 import com.fitassist.backend.model.thread.Comment;
+import com.fitassist.backend.model.thread.ForumThread;
+import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.CommentRepository;
+import com.fitassist.backend.repository.ForumThreadRepository;
+import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.comment.CommentPopulationService;
 import com.fitassist.backend.service.declaration.comment.CommentService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
@@ -44,17 +49,24 @@ public class CommentServiceImpl implements CommentService {
 
 	private final CommentRepository commentRepository;
 
+	private final ForumThreadRepository forumThreadRepository;
+
+	private final UserRepository userRepository;
+
 	private final SpecificationDependencies dependencies;
 
 	private final CommentPopulationService commentPopulationService;
 
 	public CommentServiceImpl(JsonPatchService jsonPatchService, ValidationService validationService,
-			CommentMapper commentMapper, CommentRepository commentRepository, SpecificationDependencies dependencies,
-			CommentPopulationService commentPopulationService) {
+			CommentMapper commentMapper, CommentRepository commentRepository,
+			ForumThreadRepository forumThreadRepository, UserRepository userRepository,
+			SpecificationDependencies dependencies, CommentPopulationService commentPopulationService) {
 		this.jsonPatchService = jsonPatchService;
 		this.validationService = validationService;
 		this.commentMapper = commentMapper;
 		this.commentRepository = commentRepository;
+		this.forumThreadRepository = forumThreadRepository;
+		this.userRepository = userRepository;
 		this.dependencies = dependencies;
 		this.commentPopulationService = commentPopulationService;
 	}
@@ -62,13 +74,40 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	@Transactional
 	public CommentResponseDto createComment(CommentCreateDto createDto) {
-		int userId = AuthorizationUtil.getUserId();
-		Comment mapped = commentMapper.toEntity(createDto, userId);
+		CommentMappingContext context = prepareCreateContext(createDto);
+		Comment mapped = commentMapper.toEntity(createDto, context);
 		Comment saved = commentRepository.save(mapped);
 
 		commentRepository.flush();
 
 		return findAndMap(saved.getId());
+	}
+
+	private CommentMappingContext prepareCreateContext(CommentCreateDto createDto) {
+		int userId = AuthorizationUtil.getUserId();
+		User user = findUser(userId);
+		ForumThread thread = findThread(createDto.getThreadId());
+		Comment parentComment = findParentComment(createDto.getParentCommentId());
+
+		return new CommentMappingContext(user, thread, parentComment);
+	}
+
+	private User findUser(int userId) {
+		return userRepository.findById(userId)
+			.orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
+	}
+
+	private ForumThread findThread(int threadId) {
+		return forumThreadRepository.findById(threadId)
+			.orElseThrow(() -> RecordNotFoundException.of(ForumThread.class, threadId));
+	}
+
+	private Comment findParentComment(Integer parentCommentId) {
+		if (parentCommentId == null) {
+			return null;
+		}
+		return commentRepository.findById(parentCommentId)
+			.orElseThrow(() -> RecordNotFoundException.of(Comment.class, parentCommentId));
 	}
 
 	@Override

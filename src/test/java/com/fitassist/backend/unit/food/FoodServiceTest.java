@@ -13,10 +13,13 @@ import com.fitassist.backend.event.event.Food.FoodCreateEvent;
 import com.fitassist.backend.event.event.Food.FoodDeleteEvent;
 import com.fitassist.backend.event.event.Food.FoodUpdateEvent;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.FoodMapper;
+import com.fitassist.backend.mapper.food.FoodMapper;
+import com.fitassist.backend.mapper.food.FoodMappingContext;
 import com.fitassist.backend.mapper.recipe.RecipeMapper;
 import com.fitassist.backend.model.food.Food;
+import com.fitassist.backend.model.food.FoodCategory;
 import com.fitassist.backend.model.recipe.Recipe;
+import com.fitassist.backend.repository.FoodCategoryRepository;
 import com.fitassist.backend.repository.FoodRepository;
 import com.fitassist.backend.repository.RecipeRepository;
 import com.fitassist.backend.service.declaration.food.FoodPopulationService;
@@ -72,6 +75,9 @@ public class FoodServiceTest {
 	private FoodRepository foodRepository;
 
 	@Mock
+	private FoodCategoryRepository foodCategoryRepository;
+
+	@Mock
 	private RecipeRepository recipeRepository;
 
 	@Mock
@@ -103,6 +109,10 @@ public class FoodServiceTest {
 
 	private int foodId;
 
+	private int categoryId;
+
+	private FoodCategory foodCategory;
+
 	private FilterDto filter;
 
 	private CalculateFoodMacrosRequestDto calculateRequestDto;
@@ -117,16 +127,21 @@ public class FoodServiceTest {
 		detailedResponseDto = new FoodResponseDto();
 		patchedDto = new FoodUpdateDto();
 		foodId = 1;
+		categoryId = 1;
+		foodCategory = new FoodCategory();
 		filter = new FilterDto();
 		patch = mock(JsonMergePatch.class);
 		calculateRequestDto = new CalculateFoodMacrosRequestDto();
 		calculatedResponseDto = new FoodCalculatedMacrosResponseDto();
+
+		createDto.setCategoryId(categoryId);
 	}
 
 	@Test
 	void createFood_shouldCreateFoodAndPopulate() {
 		food.setId(foodId);
-		when(foodMapper.toEntity(createDto)).thenReturn(food);
+		when(foodCategoryRepository.findById(categoryId)).thenReturn(Optional.of(foodCategory));
+		when(foodMapper.toEntity(eq(createDto), any(FoodMappingContext.class))).thenReturn(food);
 		when(foodRepository.save(food)).thenReturn(food);
 		when(foodRepository.findByIdWithMedia(foodId)).thenReturn(Optional.of(food));
 		when(foodMapper.toDetailedResponseDto(food)).thenReturn(detailedResponseDto);
@@ -142,7 +157,8 @@ public class FoodServiceTest {
 		ArgumentCaptor<FoodCreateEvent> eventCaptor = ArgumentCaptor.forClass(FoodCreateEvent.class);
 
 		food.setId(foodId);
-		when(foodMapper.toEntity(createDto)).thenReturn(food);
+		when(foodCategoryRepository.findById(categoryId)).thenReturn(Optional.of(foodCategory));
+		when(foodMapper.toEntity(eq(createDto), any(FoodMappingContext.class))).thenReturn(food);
 		when(foodRepository.save(food)).thenReturn(food);
 		when(foodRepository.findByIdWithMedia(foodId)).thenReturn(Optional.of(food));
 		when(foodMapper.toDetailedResponseDto(food)).thenReturn(detailedResponseDto);
@@ -151,6 +167,15 @@ public class FoodServiceTest {
 
 		verify(eventPublisher).publishEvent(eventCaptor.capture());
 		assertEquals(food, eventCaptor.getValue().getFood());
+	}
+
+	@Test
+	void createFood_shouldThrowExceptionWhenCategoryNotFound() {
+		when(foodCategoryRepository.findById(categoryId)).thenReturn(Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> foodService.createFood(createDto));
+
+		verify(foodRepository, never()).save(any());
 	}
 
 	@Test
@@ -164,7 +189,7 @@ public class FoodServiceTest {
 		foodService.updateFood(foodId, patch);
 
 		verify(validationService).validate(patchedDto);
-		verify(foodMapper).updateFood(food, patchedDto);
+		verify(foodMapper).updateFood(eq(food), eq(patchedDto), any(FoodMappingContext.class));
 		verify(foodRepository).save(food);
 	}
 
@@ -181,6 +206,7 @@ public class FoodServiceTest {
 		foodService.updateFood(foodId, patch);
 
 		verify(eventPublisher).publishEvent(eventCaptor.capture());
+		verify(foodMapper).updateFood(eq(food), eq(patchedDto), any(FoodMappingContext.class));
 		assertEquals(food, eventCaptor.getValue().getFood());
 	}
 

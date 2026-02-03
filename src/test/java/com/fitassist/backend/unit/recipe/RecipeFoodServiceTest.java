@@ -6,7 +6,7 @@ import com.fitassist.backend.dto.request.recipe.RecipeFoodUpdateDto;
 import com.fitassist.backend.dto.response.food.FoodSummaryDto;
 import com.fitassist.backend.exception.NotUniqueRecordException;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.FoodMapper;
+import com.fitassist.backend.mapper.food.FoodMapper;
 import com.fitassist.backend.mapper.recipe.RecipeFoodMapper;
 import com.fitassist.backend.mapper.recipe.RecipeMapper;
 import com.fitassist.backend.model.food.Food;

@@ -4,7 +4,6 @@ import com.fitassist.backend.dto.request.plan.workout.WorkoutNestedUpdateDto;
 import com.fitassist.backend.dto.request.text.TextUpdateDto;
 import com.fitassist.backend.model.plan.PlanStructureType;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

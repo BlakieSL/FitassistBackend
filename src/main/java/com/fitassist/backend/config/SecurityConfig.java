@@ -1,15 +1,11 @@
 package com.fitassist.backend.config;
 
-import com.fitassist.backend.auth.BearerTokenFilter;
-import com.fitassist.backend.auth.CookieService;
-import com.fitassist.backend.auth.JwtAuthenticationFilter;
-import com.fitassist.backend.auth.JwtService;
-import com.fitassist.backend.auth.RateLimitingFilter;
-import com.fitassist.backend.auth.TokenProperties;
+import com.fitassist.backend.auth.*;
 import com.fitassist.backend.service.implementation.user.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -20,11 +16,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.http.HttpMethod;
 
 @Configuration
 @EnableMethodSecurity

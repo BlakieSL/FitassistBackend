@@ -5,13 +5,16 @@ import com.fitassist.backend.dto.request.complaint.ComplaintCreateDto;
 import com.fitassist.backend.dto.request.complaint.ComplaintSubClass;
 import com.fitassist.backend.dto.response.comment.ComplaintResponseDto;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.ComplaintMapper;
+import com.fitassist.backend.mapper.complaint.ComplaintMapper;
+import com.fitassist.backend.mapper.complaint.ComplaintMappingContext;
 import com.fitassist.backend.model.complaint.CommentComplaint;
 import com.fitassist.backend.model.complaint.ComplaintStatus;
 import com.fitassist.backend.model.complaint.ThreadComplaint;
 import com.fitassist.backend.model.media.MediaConnectedEntity;
-import com.fitassist.backend.repository.ComplaintRepository;
-import com.fitassist.backend.repository.MediaRepository;
+import com.fitassist.backend.model.thread.Comment;
+import com.fitassist.backend.model.thread.ForumThread;
+import com.fitassist.backend.model.user.User;
+import com.fitassist.backend.repository.*;
 import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import com.fitassist.backend.service.implementation.complaint.ComplaintServiceImpl;
 import org.junit.jupiter.api.AfterEach;
@@ -28,6 +31,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,8 +44,19 @@ public class ComplaintServiceTest {
 
 	private static final int INVALID_COMPLAINT_ID = 999;
 
+	private static final int PARENT_ID = 10;
+
 	@Mock
 	private ComplaintRepository complaintRepository;
+
+	@Mock
+	private CommentRepository commentRepository;
+
+	@Mock
+	private ForumThreadRepository forumThreadRepository;
+
+	@Mock
+	private UserRepository userRepository;
 
 	@Mock
 	private ComplaintMapper complaintMapper;
@@ -62,16 +78,26 @@ public class ComplaintServiceTest {
 
 	private ComplaintResponseDto responseDto;
 
+	private User user;
+
+	private Comment comment;
+
+	private ForumThread thread;
+
 	private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
 
 	@BeforeEach
 	void setUp() {
 		createDto = new ComplaintCreateDto();
+		createDto.setParentId(PARENT_ID);
 		commentComplaint = new CommentComplaint();
 		commentComplaint.setId(COMPLAINT_ID);
 		threadComplaint = new ThreadComplaint();
 		threadComplaint.setId(COMPLAINT_ID);
 		responseDto = new ComplaintResponseDto();
+		user = new User();
+		comment = new Comment();
+		thread = new ForumThread();
 		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
 	}
 
@@ -86,7 +112,10 @@ public class ComplaintServiceTest {
 	void createComplaint_shouldCreateCommentComplaint() {
 		createDto.setSubClass(ComplaintSubClass.COMMENT_COMPLAINT);
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-		when(complaintMapper.toCommentComplaint(createDto, USER_ID)).thenReturn(commentComplaint);
+		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+		when(commentRepository.findById(PARENT_ID)).thenReturn(Optional.of(comment));
+		when(complaintMapper.toCommentComplaint(eq(createDto), any(ComplaintMappingContext.class)))
+			.thenReturn(commentComplaint);
 		when(complaintRepository.save(commentComplaint)).thenReturn(commentComplaint);
 		when(complaintRepository.findById(COMPLAINT_ID)).thenReturn(Optional.of(commentComplaint));
 		when(complaintMapper.toResponseDto(commentComplaint)).thenReturn(responseDto);
@@ -105,7 +134,10 @@ public class ComplaintServiceTest {
 	void createComplaint_shouldCreateThreadComplaint() {
 		createDto.setSubClass(ComplaintSubClass.THREAD_COMPLAINT);
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
-		when(complaintMapper.toThreadComplaint(createDto, USER_ID)).thenReturn(threadComplaint);
+		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+		when(forumThreadRepository.findById(PARENT_ID)).thenReturn(Optional.of(thread));
+		when(complaintMapper.toThreadComplaint(eq(createDto), any(ComplaintMappingContext.class)))
+			.thenReturn(threadComplaint);
 		when(complaintRepository.save(threadComplaint)).thenReturn(threadComplaint);
 		when(complaintRepository.findById(COMPLAINT_ID)).thenReturn(Optional.of(threadComplaint));
 		when(complaintMapper.toResponseDto(threadComplaint)).thenReturn(responseDto);
@@ -118,6 +150,44 @@ public class ComplaintServiceTest {
 		verify(complaintRepository).save(threadComplaint);
 		verify(complaintRepository).findById(COMPLAINT_ID);
 		verify(complaintMapper).toResponseDto(threadComplaint);
+	}
+
+	@Test
+	void createComplaint_shouldThrowExceptionWhenUserNotFound() {
+		createDto.setSubClass(ComplaintSubClass.COMMENT_COMPLAINT);
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+		when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> complaintService.createComplaint(createDto));
+
+		verifyNoInteractions(complaintMapper);
+		verifyNoInteractions(complaintRepository);
+	}
+
+	@Test
+	void createComplaint_shouldThrowExceptionWhenCommentNotFound() {
+		createDto.setSubClass(ComplaintSubClass.COMMENT_COMPLAINT);
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+		when(commentRepository.findById(PARENT_ID)).thenReturn(Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> complaintService.createComplaint(createDto));
+
+		verifyNoInteractions(complaintMapper);
+		verifyNoInteractions(complaintRepository);
+	}
+
+	@Test
+	void createComplaint_shouldThrowExceptionWhenThreadNotFound() {
+		createDto.setSubClass(ComplaintSubClass.THREAD_COMPLAINT);
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+		when(forumThreadRepository.findById(PARENT_ID)).thenReturn(Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> complaintService.createComplaint(createDto));
+
+		verifyNoInteractions(complaintMapper);
+		verifyNoInteractions(complaintRepository);
 	}
 
 	@Test

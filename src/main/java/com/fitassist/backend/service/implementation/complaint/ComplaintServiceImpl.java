@@ -5,14 +5,17 @@ import com.fitassist.backend.dto.request.complaint.ComplaintCreateDto;
 import com.fitassist.backend.dto.response.comment.ComplaintResponseDto;
 import com.fitassist.backend.exception.InvalidFilterValueException;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.ComplaintMapper;
+import com.fitassist.backend.mapper.complaint.ComplaintMapper;
+import com.fitassist.backend.mapper.complaint.ComplaintMappingContext;
 import com.fitassist.backend.model.complaint.CommentComplaint;
 import com.fitassist.backend.model.complaint.ComplaintBase;
 import com.fitassist.backend.model.complaint.ComplaintStatus;
 import com.fitassist.backend.model.complaint.ThreadComplaint;
 import com.fitassist.backend.model.media.MediaConnectedEntity;
-import com.fitassist.backend.repository.ComplaintRepository;
-import com.fitassist.backend.repository.MediaRepository;
+import com.fitassist.backend.model.thread.Comment;
+import com.fitassist.backend.model.thread.ForumThread;
+import com.fitassist.backend.model.user.User;
+import com.fitassist.backend.repository.*;
 import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import com.fitassist.backend.service.declaration.complaint.ComplaintService;
 import org.springframework.data.domain.Page;
@@ -29,14 +32,24 @@ public class ComplaintServiceImpl implements ComplaintService {
 
 	private final ComplaintRepository complaintRepository;
 
+	private final CommentRepository commentRepository;
+
+	private final ForumThreadRepository forumThreadRepository;
+
+	private final UserRepository userRepository;
+
 	private final MediaRepository mediaRepository;
 
 	private final AwsS3Service s3Service;
 
 	public ComplaintServiceImpl(ComplaintMapper complaintMapper, ComplaintRepository complaintRepository,
-			MediaRepository mediaRepository, AwsS3Service s3Service) {
+			CommentRepository commentRepository, ForumThreadRepository forumThreadRepository,
+			UserRepository userRepository, MediaRepository mediaRepository, AwsS3Service s3Service) {
 		this.complaintMapper = complaintMapper;
 		this.complaintRepository = complaintRepository;
+		this.commentRepository = commentRepository;
+		this.forumThreadRepository = forumThreadRepository;
+		this.userRepository = userRepository;
 		this.mediaRepository = mediaRepository;
 		this.s3Service = s3Service;
 	}
@@ -44,16 +57,17 @@ public class ComplaintServiceImpl implements ComplaintService {
 	@Transactional
 	@Override
 	public ComplaintResponseDto createComplaint(ComplaintCreateDto complaintCreateDto) {
-		int userId = AuthorizationUtil.getUserId();
 		ComplaintBase savedComplaint;
 
 		switch (complaintCreateDto.getSubClass()) {
 			case COMMENT_COMPLAINT -> {
-				CommentComplaint complaint = complaintMapper.toCommentComplaint(complaintCreateDto, userId);
+				ComplaintMappingContext context = prepareCommentComplaintContext(complaintCreateDto);
+				CommentComplaint complaint = complaintMapper.toCommentComplaint(complaintCreateDto, context);
 				savedComplaint = complaintRepository.save(complaint);
 			}
 			case THREAD_COMPLAINT -> {
-				ThreadComplaint complaint = complaintMapper.toThreadComplaint(complaintCreateDto, userId);
+				ComplaintMappingContext context = prepareThreadComplaintContext(complaintCreateDto);
+				ThreadComplaint complaint = complaintMapper.toThreadComplaint(complaintCreateDto, context);
 				savedComplaint = complaintRepository.save(complaint);
 			}
 			default -> throw new InvalidFilterValueException(
@@ -61,6 +75,33 @@ public class ComplaintServiceImpl implements ComplaintService {
 		}
 
 		return getComplaintById(savedComplaint.getId());
+	}
+
+	private ComplaintMappingContext prepareCommentComplaintContext(ComplaintCreateDto createDto) {
+		User user = findUser();
+		Comment comment = findComment(createDto.getParentId());
+		return ComplaintMappingContext.forCommentComplaint(user, comment);
+	}
+
+	private ComplaintMappingContext prepareThreadComplaintContext(ComplaintCreateDto createDto) {
+		User user = findUser();
+		ForumThread thread = findThread(createDto.getParentId());
+		return ComplaintMappingContext.forThreadComplaint(user, thread);
+	}
+
+	private User findUser() {
+		int userId = AuthorizationUtil.getUserId();
+		return userRepository.findById(userId).orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
+	}
+
+	private Comment findComment(int commentId) {
+		return commentRepository.findById(commentId)
+			.orElseThrow(() -> RecordNotFoundException.of(Comment.class, commentId));
+	}
+
+	private ForumThread findThread(int threadId) {
+		return forumThreadRepository.findById(threadId)
+			.orElseThrow(() -> RecordNotFoundException.of(ForumThread.class, threadId));
 	}
 
 	@Transactional

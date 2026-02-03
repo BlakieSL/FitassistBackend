@@ -15,13 +15,17 @@ import com.fitassist.backend.event.event.Activity.ActivityDeleteEvent;
 import com.fitassist.backend.event.event.Activity.ActivityUpdateEvent;
 import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.exception.WeightRequiredException;
-import com.fitassist.backend.mapper.ActivityMapper;
+import com.fitassist.backend.mapper.activity.ActivityMapper;
+import com.fitassist.backend.mapper.activity.ActivityMappingContext;
 import com.fitassist.backend.model.activity.Activity;
+import com.fitassist.backend.model.activity.ActivityCategory;
 import com.fitassist.backend.model.user.User;
+import com.fitassist.backend.repository.ActivityCategoryRepository;
 import com.fitassist.backend.repository.ActivityRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.activity.ActivityPopulationService;
 import com.fitassist.backend.service.declaration.activity.ActivityService;
+import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
@@ -58,32 +62,38 @@ public class ActivityServiceImpl implements ActivityService {
 
 	private final ActivityRepository activityRepository;
 
+	private final ActivityCategoryRepository activityCategoryRepository;
+
 	private final ActivityPopulationService activityPopulationService;
 
 	private final UserRepository userRepository;
 
 	private final SpecificationDependencies dependencies;
+	private final CalculationsService calculationsService;
 
 	public ActivityServiceImpl(RepositoryHelper repositoryHelper, ActivityMapper activityMapper,
-			ValidationService validationService, JsonPatchService jsonPatchService,
-			ApplicationEventPublisher eventPublisher, ActivityRepository activityRepository,
-			ActivityPopulationService activityPopulationService, UserRepository userRepository,
-			SpecificationDependencies dependencies) {
+							   ValidationService validationService, JsonPatchService jsonPatchService,
+							   ApplicationEventPublisher eventPublisher, ActivityRepository activityRepository,
+							   ActivityCategoryRepository activityCategoryRepository, ActivityPopulationService activityPopulationService,
+							   UserRepository userRepository, SpecificationDependencies dependencies, CalculationsService calculationsService) {
 		this.repositoryHelper = repositoryHelper;
 		this.activityMapper = activityMapper;
 		this.validationService = validationService;
 		this.jsonPatchService = jsonPatchService;
 		this.eventPublisher = eventPublisher;
 		this.activityRepository = activityRepository;
+		this.activityCategoryRepository = activityCategoryRepository;
 		this.activityPopulationService = activityPopulationService;
 		this.userRepository = userRepository;
 		this.dependencies = dependencies;
+		this.calculationsService = calculationsService;
 	}
 
 	@Override
 	@Transactional
 	public ActivityResponseDto createActivity(ActivityCreateDto dto) {
-		Activity saved = activityRepository.save(activityMapper.toEntity(dto));
+		ActivityMappingContext context = prepareCreateContext(dto);
+		Activity saved = activityRepository.save(activityMapper.toEntity(dto, context));
 
 		activityRepository.flush();
 
@@ -98,15 +108,30 @@ public class ActivityServiceImpl implements ActivityService {
 		return responseDto;
 	}
 
+	private ActivityMappingContext prepareCreateContext(ActivityCreateDto dto) {
+		ActivityCategory category = findCategory(dto.getCategoryId());
+		return new ActivityMappingContext(category);
+	}
+
+	private ActivityCategory findCategory(Integer categoryId) {
+		if (categoryId == null) {
+			return null;
+		}
+		return activityCategoryRepository.findById(categoryId)
+			.orElseThrow(() -> RecordNotFoundException.of(ActivityCategory.class, categoryId));
+	}
+
 	@Override
 	@Transactional
 	public void updateActivity(int activityId, JsonMergePatch patch)
 			throws JsonPatchException, JsonProcessingException {
 		Activity activity = findActivity(activityId);
 		ActivityUpdateDto patched = applyPatchToActivity(patch);
-
 		validationService.validate(patched);
-		activityMapper.updateActivityFromDto(activity, patched);
+
+		ActivityMappingContext context = prepareUpdateContext(patched);
+		activityMapper.updateActivityFromDto(activity, patched, context);
+
 		Activity saved = activityRepository.save(activity);
 
 		activityRepository.flush();
@@ -115,6 +140,11 @@ public class ActivityServiceImpl implements ActivityService {
 			.orElseThrow(() -> RecordNotFoundException.of(Activity.class, saved.getId()));
 
 		eventPublisher.publishEvent(ActivityUpdateEvent.of(this, refetchedActivity));
+	}
+
+	private ActivityMappingContext prepareUpdateContext(ActivityUpdateDto dto) {
+		ActivityCategory category = findCategory(dto.getCategoryId());
+		return new ActivityMappingContext(category);
 	}
 
 	@Override
@@ -132,7 +162,7 @@ public class ActivityServiceImpl implements ActivityService {
 		Activity activity = findActivity(activityId);
 		BigDecimal weight = resolveWeightForCalculation(request);
 
-		return activityMapper.toCalculatedDto(activity, weight, request.getTime());
+		return calculationsService.toCalculatedResponseDto(activity, weight, request.getTime());
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.fitassist.backend.mapper.helper;
+package com.fitassist.backend.mapper;
 
 import com.fitassist.backend.dto.pojo.AuthorDto;
 import com.fitassist.backend.dto.pojo.MediaImagesDto;

@@ -6,8 +6,7 @@ import com.fitassist.backend.dto.request.plan.workout.WorkoutNestedUpdateDto;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.dto.response.plan.PlanResponseDto;
 import com.fitassist.backend.dto.response.plan.PlanSummaryDto;
-import com.fitassist.backend.mapper.context.PlanMappingContext;
-import com.fitassist.backend.mapper.helper.CommonMappingHelper;
+import com.fitassist.backend.mapper.CommonMappingHelper;
 import com.fitassist.backend.model.plan.Plan;
 import com.fitassist.backend.model.plan.PlanCategoryAssociation;
 import com.fitassist.backend.model.text.PlanInstruction;
@@ -99,7 +98,7 @@ public abstract class PlanMapper {
 			plan.getPlanInstructions().addAll(instructions);
 		}
 
-		if (context.getCategories() != null && !context.getCategories().isEmpty()) {
+		if (context.getCategories() != null) {
 			List<PlanCategoryAssociation> categories = context.getCategories()
 				.stream()
 				.map(category -> PlanCategoryAssociation.createWithPlanAndCategory(plan, category))
@@ -147,10 +146,10 @@ public abstract class PlanMapper {
 					existingWorkouts.stream()
 						.filter(workout -> workout.getId().equals(workoutDto.getId()))
 						.findFirst()
-						.ifPresent(workout -> workoutMapper.updateWorkoutNested(workout, workoutDto));
+						.ifPresent(workout -> workoutMapper.updateWorkoutNested(workout, workoutDto, context));
 				}
 				else {
-					Workout newWorkout = workoutMapper.toEntityFromNested(workoutDto);
+					Workout newWorkout = workoutMapper.toEntityFromNested(workoutDto, context);
 					newWorkout.setPlan(plan);
 					existingWorkouts.add(newWorkout);
 				}

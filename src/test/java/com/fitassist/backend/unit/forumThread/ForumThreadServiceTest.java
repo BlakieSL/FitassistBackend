@@ -7,9 +7,14 @@ import com.fitassist.backend.dto.request.forumThread.ForumThreadUpdateDto;
 import com.fitassist.backend.dto.response.forumThread.ForumThreadResponseDto;
 import com.fitassist.backend.dto.response.forumThread.ForumThreadSummaryDto;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.ForumThreadMapper;
+import com.fitassist.backend.mapper.forumThread.ForumThreadMapper;
+import com.fitassist.backend.mapper.forumThread.ForumThreadMappingContext;
 import com.fitassist.backend.model.thread.ForumThread;
+import com.fitassist.backend.model.thread.ThreadCategory;
+import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.ForumThreadRepository;
+import com.fitassist.backend.repository.ThreadCategoryRepository;
+import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
@@ -26,6 +31,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -50,6 +57,12 @@ public class ForumThreadServiceTest {
 	private ForumThreadRepository forumThreadRepository;
 
 	@Mock
+	private UserRepository userRepository;
+
+	@Mock
+	private ThreadCategoryRepository threadCategoryRepository;
+
+	@Mock
 	private SpecificationDependencies dependencies;
 
 	@Mock
@@ -72,6 +85,14 @@ public class ForumThreadServiceTest {
 
 	private int threadId;
 
+	private int userId;
+
+	private int categoryId;
+
+	private User user;
+
+	private ThreadCategory threadCategory;
+
 	private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
 
 	@BeforeEach
@@ -82,8 +103,14 @@ public class ForumThreadServiceTest {
 		summaryDto = new ForumThreadSummaryDto();
 		patchedDto = new ForumThreadUpdateDto();
 		threadId = 1;
+		userId = 1;
+		categoryId = 1;
+		user = new User();
+		threadCategory = new ThreadCategory();
 		patch = mock(JsonMergePatch.class);
 		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
+
+		createDto.setThreadCategoryId(categoryId);
 	}
 
 	@AfterEach
@@ -95,10 +122,11 @@ public class ForumThreadServiceTest {
 
 	@Test
 	void createForumThread_shouldCreateForumThread() {
-		int userId = 1;
 		forumThread.setId(threadId);
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(forumThreadMapper.toEntity(createDto, userId)).thenReturn(forumThread);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(threadCategoryRepository.findById(categoryId)).thenReturn(Optional.of(threadCategory));
+		when(forumThreadMapper.toEntity(eq(createDto), any(ForumThreadMappingContext.class))).thenReturn(forumThread);
 		when(forumThreadRepository.save(forumThread)).thenReturn(forumThread);
 		when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId)).thenReturn(forumThread);
 		when(forumThreadMapper.toResponseDto(forumThread)).thenReturn(responseDto);
@@ -110,6 +138,27 @@ public class ForumThreadServiceTest {
 	}
 
 	@Test
+	void createForumThread_shouldThrowExceptionWhenUserNotFound() {
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> forumThreadService.createForumThread(createDto));
+
+		verify(forumThreadRepository, never()).save(any());
+	}
+
+	@Test
+	void createForumThread_shouldThrowExceptionWhenCategoryNotFound() {
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(threadCategoryRepository.findById(categoryId)).thenReturn(Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> forumThreadService.createForumThread(createDto));
+
+		verify(forumThreadRepository, never()).save(any());
+	}
+
+	@Test
 	void updateForumThread_shouldUpdate() throws JsonPatchException, JsonProcessingException {
 		when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId)).thenReturn(forumThread);
 		when(jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class)).thenReturn(patchedDto);
@@ -118,7 +167,7 @@ public class ForumThreadServiceTest {
 		forumThreadService.updateForumThread(threadId, patch);
 
 		verify(validationService).validate(patchedDto);
-		verify(forumThreadMapper).update(forumThread, patchedDto);
+		verify(forumThreadMapper).update(eq(forumThread), eq(patchedDto), any(ForumThreadMappingContext.class));
 		verify(forumThreadRepository).save(forumThread);
 	}
 

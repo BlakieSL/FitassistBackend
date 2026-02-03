@@ -1,8 +1,6 @@
 package com.fitassist.backend.model.recipe;
 
 import com.fitassist.backend.model.IndexedEntity;
-import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
-import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.text.RecipeInstruction;
 import com.fitassist.backend.model.user.User;
@@ -20,6 +18,9 @@ import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
+import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
 
 @Entity
 @Table(name = "recipe")

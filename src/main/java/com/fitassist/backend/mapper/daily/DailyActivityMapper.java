@@ -4,7 +4,9 @@ import com.fitassist.backend.dto.response.activity.ActivityCalculatedResponseDto
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.model.activity.ActivityCategory;
 import com.fitassist.backend.model.daily.DailyCartActivity;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public abstract class DailyActivityMapper {

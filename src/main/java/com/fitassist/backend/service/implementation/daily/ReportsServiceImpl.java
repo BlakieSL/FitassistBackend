@@ -8,10 +8,9 @@ import com.fitassist.backend.dto.response.activity.ActivityCalculatedResponseDto
 import com.fitassist.backend.dto.response.reports.DailyReportResponseDto;
 import com.fitassist.backend.dto.response.reports.PeriodicReportResponseDto;
 import com.fitassist.backend.dto.response.reports.UserActionCountsDto;
-import com.fitassist.backend.mapper.FoodMapper;
 import com.fitassist.backend.mapper.daily.DailyActivityMapper;
+import com.fitassist.backend.mapper.food.FoodMapper;
 import com.fitassist.backend.model.daily.DailyCart;
-import com.fitassist.backend.model.daily.DailyCartActivity;
 import com.fitassist.backend.repository.DailyCartRepository;
 import com.fitassist.backend.service.declaration.daily.ReportsService;
 import com.fitassist.backend.service.declaration.helpers.CalculationsService;

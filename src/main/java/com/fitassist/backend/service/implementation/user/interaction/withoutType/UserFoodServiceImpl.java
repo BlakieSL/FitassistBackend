@@ -5,7 +5,7 @@ import com.fitassist.backend.dto.response.food.FoodSummaryDto;
 import com.fitassist.backend.dto.response.user.InteractionResponseDto;
 import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.FoodMapper;
+import com.fitassist.backend.mapper.food.FoodMapper;
 import com.fitassist.backend.model.food.Food;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.model.user.UserFood;

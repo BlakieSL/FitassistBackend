@@ -14,9 +14,10 @@ import com.fitassist.backend.event.event.Exercise.ExerciseCreateEvent;
 import com.fitassist.backend.event.event.Exercise.ExerciseDeleteEvent;
 import com.fitassist.backend.event.event.Exercise.ExerciseUpdateEvent;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.ExerciseMapper;
+import com.fitassist.backend.mapper.exercise.ExerciseMapper;
+import com.fitassist.backend.mapper.exercise.ExerciseMappingContext;
 import com.fitassist.backend.mapper.plan.PlanMapper;
-import com.fitassist.backend.model.exercise.Exercise;
+import com.fitassist.backend.model.exercise.*;
 import com.fitassist.backend.repository.*;
 import com.fitassist.backend.service.declaration.exercise.ExercisePopulationService;
 import com.fitassist.backend.service.declaration.exercise.ExerciseService;
@@ -109,7 +110,8 @@ public class ExerciseServiceImpl implements ExerciseService {
 	@Override
 	@Transactional
 	public ExerciseResponseDto createExercise(ExerciseCreateDto dto) {
-		Exercise saved = exerciseRepository.save(exerciseMapper.toEntity(dto));
+		ExerciseMappingContext context = prepareCreateContext(dto);
+		Exercise saved = exerciseRepository.save(exerciseMapper.toEntity(dto, context));
 
 		exerciseRepository.flush();
 
@@ -118,6 +120,16 @@ public class ExerciseServiceImpl implements ExerciseService {
 		applicationEventPublisher.publishEvent(ExerciseCreateEvent.of(this, exerciseWithMediaAndCategories));
 
 		return findAndMap(saved.getId());
+	}
+
+	private ExerciseMappingContext prepareCreateContext(ExerciseCreateDto dto) {
+		ExpertiseLevel expertiseLevel = findExpertiseLevel(dto.getExpertiseLevelId());
+		MechanicsType mechanicsType = findMechanicsType(dto.getMechanicsTypeId());
+		ForceType forceType = findForceType(dto.getForceTypeId());
+		Equipment equipment = findEquipment(dto.getEquipmentId());
+		List<TargetMuscle> targetMuscles = findTargetMuscles(dto.getTargetMusclesIds());
+
+		return new ExerciseMappingContext(expertiseLevel, mechanicsType, forceType, equipment, targetMuscles);
 	}
 
 	@Override
@@ -129,13 +141,25 @@ public class ExerciseServiceImpl implements ExerciseService {
 		ExerciseUpdateDto patchedExerciseUpdateDto = applyPatchToExercise(patch);
 
 		validationService.validate(patchedExerciseUpdateDto);
-		exerciseMapper.updateExerciseFromDto(exercise, patchedExerciseUpdateDto);
+
+		ExerciseMappingContext context = prepareUpdateContext(patchedExerciseUpdateDto);
+		exerciseMapper.updateExerciseFromDto(exercise, patchedExerciseUpdateDto, context);
 		Exercise saved = exerciseRepository.save(exercise);
 
 		Exercise exerciseWithMediaAndCategories = exerciseRepository.findByIdWithAssociationsForIndexing(saved.getId())
 			.orElseThrow(() -> RecordNotFoundException.of(Exercise.class, saved.getId()));
 
 		applicationEventPublisher.publishEvent(ExerciseUpdateEvent.of(this, exerciseWithMediaAndCategories));
+	}
+
+	private ExerciseMappingContext prepareUpdateContext(ExerciseUpdateDto dto) {
+		ExpertiseLevel expertiseLevel = findExpertiseLevel(dto.getExpertiseLevelId());
+		MechanicsType mechanicsType = findMechanicsType(dto.getMechanicsTypeId());
+		ForceType forceType = findForceType(dto.getForceTypeId());
+		Equipment equipment = findEquipment(dto.getEquipmentId());
+		List<TargetMuscle> targetMuscles = findTargetMuscles(dto.getTargetMuscleIds());
+
+		return new ExerciseMappingContext(expertiseLevel, mechanicsType, forceType, equipment, targetMuscles);
 	}
 
 	@Override
@@ -233,6 +257,45 @@ public class ExerciseServiceImpl implements ExerciseService {
 	private ExerciseUpdateDto applyPatchToExercise(JsonMergePatch patch)
 			throws JsonPatchException, JsonProcessingException {
 		return jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class);
+	}
+
+	private ExpertiseLevel findExpertiseLevel(Integer expertiseLevelId) {
+		if (expertiseLevelId == null) {
+			return null;
+		}
+		return expertiseLevelRepository.findById(expertiseLevelId)
+			.orElseThrow(() -> RecordNotFoundException.of(ExpertiseLevel.class, expertiseLevelId));
+	}
+
+	private MechanicsType findMechanicsType(Integer mechanicsTypeId) {
+		if (mechanicsTypeId == null) {
+			return null;
+		}
+		return mechanicsTypeRepository.findById(mechanicsTypeId)
+			.orElseThrow(() -> RecordNotFoundException.of(MechanicsType.class, mechanicsTypeId));
+	}
+
+	private ForceType findForceType(Integer forceTypeId) {
+		if (forceTypeId == null) {
+			return null;
+		}
+		return forceTypeRepository.findById(forceTypeId)
+			.orElseThrow(() -> RecordNotFoundException.of(ForceType.class, forceTypeId));
+	}
+
+	private Equipment findEquipment(Integer equipmentId) {
+		if (equipmentId == null) {
+			return null;
+		}
+		return equipmentRepository.findById(equipmentId)
+			.orElseThrow(() -> RecordNotFoundException.of(Equipment.class, equipmentId));
+	}
+
+	private List<TargetMuscle> findTargetMuscles(List<Integer> targetMuscleIds) {
+		if (targetMuscleIds == null || targetMuscleIds.isEmpty()) {
+			return null;
+		}
+		return targetMuscleRepository.findAllById(targetMuscleIds);
 	}
 
 }

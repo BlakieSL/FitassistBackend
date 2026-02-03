@@ -7,9 +7,15 @@ import com.fitassist.backend.dto.request.forumThread.ForumThreadCreateDto;
 import com.fitassist.backend.dto.request.forumThread.ForumThreadUpdateDto;
 import com.fitassist.backend.dto.response.forumThread.ForumThreadResponseDto;
 import com.fitassist.backend.dto.response.forumThread.ForumThreadSummaryDto;
-import com.fitassist.backend.mapper.ForumThreadMapper;
+import com.fitassist.backend.exception.RecordNotFoundException;
+import com.fitassist.backend.mapper.forumThread.ForumThreadMapper;
+import com.fitassist.backend.mapper.forumThread.ForumThreadMappingContext;
 import com.fitassist.backend.model.thread.ForumThread;
+import com.fitassist.backend.model.thread.ThreadCategory;
+import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.ForumThreadRepository;
+import com.fitassist.backend.repository.ThreadCategoryRepository;
+import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.forumthread.ForumThreadService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
@@ -43,19 +49,26 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 
 	private final ForumThreadRepository forumThreadRepository;
 
+	private final UserRepository userRepository;
+
+	private final ThreadCategoryRepository threadCategoryRepository;
+
 	private final SpecificationDependencies dependencies;
 
 	private final ForumThreadPopulationService forumThreadPopulationService;
 
 	public ForumThreadServiceImpl(JsonPatchService jsonPatchService, ValidationService validationService,
 			ForumThreadMapper forumThreadMapper, RepositoryHelper repositoryHelper,
-			ForumThreadRepository forumThreadRepository, SpecificationDependencies dependencies,
+			ForumThreadRepository forumThreadRepository, UserRepository userRepository,
+			ThreadCategoryRepository threadCategoryRepository, SpecificationDependencies dependencies,
 			ForumThreadPopulationService forumThreadPopulationService) {
 		this.jsonPatchService = jsonPatchService;
 		this.validationService = validationService;
 		this.forumThreadMapper = forumThreadMapper;
 		this.repositoryHelper = repositoryHelper;
 		this.forumThreadRepository = forumThreadRepository;
+		this.userRepository = userRepository;
+		this.threadCategoryRepository = threadCategoryRepository;
 		this.dependencies = dependencies;
 		this.forumThreadPopulationService = forumThreadPopulationService;
 	}
@@ -63,13 +76,20 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 	@Override
 	@Transactional
 	public ForumThreadResponseDto createForumThread(ForumThreadCreateDto createDto) {
-		int userId = AuthorizationUtil.getUserId();
-		ForumThread mapped = forumThreadMapper.toEntity(createDto, userId);
+		ForumThreadMappingContext context = prepareCreateContext(createDto);
+		ForumThread mapped = forumThreadMapper.toEntity(createDto, context);
 		ForumThread saved = forumThreadRepository.save(mapped);
 
 		forumThreadRepository.flush();
 
 		return findAndMap(saved.getId());
+	}
+
+	private ForumThreadMappingContext prepareCreateContext(ForumThreadCreateDto dto) {
+		int userId = AuthorizationUtil.getUserId();
+		User user = findUser(userId);
+		ThreadCategory category = findCategory(dto.getThreadCategoryId());
+		return new ForumThreadMappingContext(user, category);
 	}
 
 	@Override
@@ -80,8 +100,15 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 		ForumThreadUpdateDto patched = applyPatchToForumThread(patch);
 
 		validationService.validate(patched);
-		forumThreadMapper.update(thread, patched);
+
+		ForumThreadMappingContext context = prepareUpdateContext(patched);
+		forumThreadMapper.update(thread, patched, context);
 		forumThreadRepository.save(thread);
+	}
+
+	private ForumThreadMappingContext prepareUpdateContext(ForumThreadUpdateDto dto) {
+		ThreadCategory category = findCategory(dto.getThreadCategoryId());
+		return new ForumThreadMappingContext(null, category);
 	}
 
 	@Override
@@ -129,6 +156,19 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 		forumThreadPopulationService.populate(summaries);
 
 		return new PageImpl<>(summaries, pageable, threadPage.getTotalElements());
+	}
+
+	private User findUser(int userId) {
+		return userRepository.findById(userId)
+			.orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
+	}
+
+	private ThreadCategory findCategory(Integer categoryId) {
+		if (categoryId == null) {
+			return null;
+		}
+		return threadCategoryRepository.findById(categoryId)
+			.orElseThrow(() -> RecordNotFoundException.of(ThreadCategory.class, categoryId));
 	}
 
 }

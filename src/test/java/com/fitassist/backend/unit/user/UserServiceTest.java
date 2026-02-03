@@ -14,6 +14,7 @@ import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
+import com.fitassist.backend.service.declaration.user.UserPopulationService;
 import com.fitassist.backend.service.implementation.helpers.JsonPatchServiceImpl;
 import com.fitassist.backend.service.implementation.user.UserServiceImpl;
 import com.github.fge.jsonpatch.JsonPatchException;
@@ -59,6 +60,9 @@ public class UserServiceTest {
 
 	@Mock
 	private CalculationsService calculationsService;
+
+	@Mock
+	private UserPopulationService userPopulationService;
 
 	@InjectMocks
 	private UserServiceImpl userService;
@@ -108,6 +112,7 @@ public class UserServiceTest {
 		verify(roleRepository).findByName(RoleEnum.USER);
 		verify(userRepository).save(user);
 		verify(userMapper).toResponse(user);
+		verify(userPopulationService).populate(responseDto);
 	}
 
 	@Test

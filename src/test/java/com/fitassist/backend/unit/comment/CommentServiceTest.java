@@ -6,14 +6,19 @@ import com.fitassist.backend.dto.request.comment.CommentCreateDto;
 import com.fitassist.backend.dto.request.comment.CommentUpdateDto;
 import com.fitassist.backend.dto.response.comment.CommentResponseDto;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.CommentMapper;
+import com.fitassist.backend.mapper.comment.CommentMapper;
+import com.fitassist.backend.mapper.comment.CommentMappingContext;
 import com.fitassist.backend.model.thread.Comment;
+import com.fitassist.backend.model.thread.ForumThread;
+import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.CommentRepository;
+import com.fitassist.backend.repository.ForumThreadRepository;
+import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.comment.CommentPopulationService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
-import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.implementation.comment.CommentServiceImpl;
+import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.junit.jupiter.api.AfterEach;
@@ -34,6 +39,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,10 +56,16 @@ public class CommentServiceTest {
 	private CommentMapper commentMapper;
 
 	@Mock
-	private RepositoryHelper repositoryHelper;
+	private CommentRepository commentRepository;
 
 	@Mock
-	private CommentRepository commentRepository;
+	private ForumThreadRepository forumThreadRepository;
+
+	@Mock
+	private UserRepository userRepository;
+
+	@Mock
+	private SpecificationDependencies dependencies;
 
 	@Mock
 	private CommentPopulationService commentPopulationService;
@@ -70,7 +83,15 @@ public class CommentServiceTest {
 
 	private CommentUpdateDto patchedDto;
 
+	private User user;
+
+	private ForumThread thread;
+
 	private int commentId;
+
+	private int userId;
+
+	private int threadId;
 
 	private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
 
@@ -80,7 +101,12 @@ public class CommentServiceTest {
 		createDto = new CommentCreateDto();
 		responseDto = new CommentResponseDto();
 		patchedDto = new CommentUpdateDto();
+		user = new User();
+		thread = new ForumThread();
 		commentId = 1;
+		userId = 1;
+		threadId = 1;
+		createDto.setThreadId(threadId);
 		patch = mock(JsonMergePatch.class);
 		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
 	}
@@ -94,10 +120,11 @@ public class CommentServiceTest {
 
 	@Test
 	void createComment_shouldCreateComment() {
-		int userId = 1;
 		comment.setId(commentId);
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(commentMapper.toEntity(createDto, userId)).thenReturn(comment);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(forumThreadRepository.findById(threadId)).thenReturn(Optional.of(thread));
+		when(commentMapper.toEntity(eq(createDto), any(CommentMappingContext.class))).thenReturn(comment);
 		when(commentRepository.save(comment)).thenReturn(comment);
 		when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
 		when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
@@ -106,6 +133,43 @@ public class CommentServiceTest {
 
 		assertEquals(responseDto, result);
 		verify(commentPopulationService).populate(responseDto);
+	}
+
+	@Test
+	void createComment_shouldThrowExceptionWhenUserNotFound() {
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> commentService.createComment(createDto));
+
+		verifyNoInteractions(commentMapper);
+		verifyNoInteractions(commentRepository);
+	}
+
+	@Test
+	void createComment_shouldThrowExceptionWhenThreadNotFound() {
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(forumThreadRepository.findById(threadId)).thenReturn(Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> commentService.createComment(createDto));
+
+		verifyNoInteractions(commentMapper);
+		verifyNoInteractions(commentRepository);
+	}
+
+	@Test
+	void createComment_shouldThrowExceptionWhenParentCommentNotFound() {
+		int parentCommentId = 99;
+		createDto.setParentCommentId(parentCommentId);
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(forumThreadRepository.findById(threadId)).thenReturn(Optional.of(thread));
+		when(commentRepository.findById(parentCommentId)).thenReturn(Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> commentService.createComment(createDto));
+
+		verifyNoInteractions(commentMapper);
 	}
 
 	@Test
@@ -185,7 +249,6 @@ public class CommentServiceTest {
 
 	@Test
 	void getTopCommentsForThread_shouldReturnTopComments() {
-		int threadId = 1;
 		Pageable pageable = PageRequest.of(0, 100);
 		List<Comment> comments = List.of(comment);
 		Page<Comment> commentPage = new PageImpl<>(comments, pageable, comments.size());

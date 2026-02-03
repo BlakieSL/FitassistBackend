@@ -18,6 +18,7 @@ import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
+import com.fitassist.backend.service.declaration.user.UserPopulationService;
 import com.fitassist.backend.service.declaration.user.UserService;
 import com.fitassist.backend.service.implementation.helpers.JsonPatchServiceImpl;
 import com.github.fge.jsonpatch.JsonPatchException;
@@ -53,9 +54,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	private final CalculationsService calculationsService;
 
+	private final UserPopulationService userPopulationService;
+
 	public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, ValidationService validationService,
 			JsonPatchServiceImpl jsonPatchService, PasswordEncoder passwordEncoder, RepositoryHelper repositoryHelper,
-			RoleRepository roleRepository, CalculationsService calculationsService) {
+			RoleRepository roleRepository, CalculationsService calculationsService,
+			UserPopulationService userPopulationService) {
 		this.userRepository = userRepository;
 		this.userMapper = userMapper;
 		this.validationService = validationService;
@@ -64,6 +68,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		this.repositoryHelper = repositoryHelper;
 		this.roleRepository = roleRepository;
 		this.calculationsService = calculationsService;
+		this.userPopulationService = userPopulationService;
 	}
 
 	@Override
@@ -75,6 +80,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 		User savedUser = userRepository.save(user);
 		UserResponseDto response = userMapper.toResponse(savedUser);
+		userPopulationService.populate(response);
 
 		return calculateCalories(savedUser, response);
 	}
@@ -128,6 +134,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		User user = userRepository.findUserWithRolesById(userId)
 			.orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
 		UserResponseDto response = userMapper.toResponse(user);
+		userPopulationService.populate(response);
 
 		return calculateCalories(user, response);
 	}
@@ -135,7 +142,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	@Override
 	public AuthorDto getPublicUser(int userId) {
 		User user = find(userId);
-		return userMapper.toAuthorDto(user);
+		AuthorDto authorDto = userMapper.toAuthorDto(user);
+		userPopulationService.populate(authorDto);
+
+		return authorDto;
 	}
 
 	@Override

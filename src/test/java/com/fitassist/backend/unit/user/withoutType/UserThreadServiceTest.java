@@ -5,7 +5,7 @@ import com.fitassist.backend.dto.response.forumThread.ForumThreadSummaryDto;
 import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
 import com.fitassist.backend.exception.NotUniqueRecordException;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.ForumThreadMapper;
+import com.fitassist.backend.mapper.forumThread.ForumThreadMapper;
 import com.fitassist.backend.model.thread.ForumThread;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.model.user.UserThread;

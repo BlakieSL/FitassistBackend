@@ -1,9 +1,9 @@
 package com.fitassist.backend.validation.email;
 
-import com.fitassist.backend.validation.ContextProvider;
 import com.fitassist.backend.dto.request.user.UserUpdateDto;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.UserRepository;
+import com.fitassist.backend.validation.ContextProvider;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.FlushModeType;
 import jakarta.validation.ConstraintValidator;

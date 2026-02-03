@@ -1,7 +1,6 @@
 package com.fitassist.backend.model.food;
 
 import com.fitassist.backend.model.IndexedEntity;
-import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
 import com.fitassist.backend.model.daily.DailyCartFood;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.recipe.RecipeFood;
@@ -19,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
 
 @Entity
 @Table(name = "food")

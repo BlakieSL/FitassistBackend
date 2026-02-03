@@ -13,9 +13,10 @@ import com.fitassist.backend.event.event.Exercise.ExerciseCreateEvent;
 import com.fitassist.backend.event.event.Exercise.ExerciseDeleteEvent;
 import com.fitassist.backend.event.event.Exercise.ExerciseUpdateEvent;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.ExerciseMapper;
+import com.fitassist.backend.mapper.exercise.ExerciseMapper;
+import com.fitassist.backend.mapper.exercise.ExerciseMappingContext;
 import com.fitassist.backend.mapper.plan.PlanMapper;
-import com.fitassist.backend.model.exercise.Exercise;
+import com.fitassist.backend.model.exercise.*;
 import com.fitassist.backend.model.plan.Plan;
 import com.fitassist.backend.repository.*;
 import com.fitassist.backend.service.declaration.exercise.ExercisePopulationService;
@@ -121,6 +122,22 @@ public class ExerciseServiceTest {
 
 	private int exerciseId;
 
+	private int expertiseLevelId;
+
+	private int mechanicsTypeId;
+
+	private int forceTypeId;
+
+	private int equipmentId;
+
+	private ExpertiseLevel expertiseLevel;
+
+	private MechanicsType mechanicsType;
+
+	private ForceType forceType;
+
+	private Equipment equipment;
+
 	private FilterDto filter;
 
 	private Pageable pageable;
@@ -135,10 +152,23 @@ public class ExerciseServiceTest {
 		summaryDto = new ExerciseSummaryDto();
 		patchedDto = new ExerciseUpdateDto();
 		exerciseId = 1;
+		expertiseLevelId = 1;
+		mechanicsTypeId = 2;
+		forceTypeId = 3;
+		equipmentId = 4;
+		expertiseLevel = new ExpertiseLevel();
+		mechanicsType = new MechanicsType();
+		forceType = new ForceType();
+		equipment = new Equipment();
 		filter = new FilterDto();
 		pageable = PageRequest.of(0, 100);
 		patch = mock(JsonMergePatch.class);
 		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
+
+		createDto.setExpertiseLevelId(expertiseLevelId);
+		createDto.setMechanicsTypeId(mechanicsTypeId);
+		createDto.setForceTypeId(forceTypeId);
+		createDto.setEquipmentId(equipmentId);
 	}
 
 	@AfterEach
@@ -151,7 +181,11 @@ public class ExerciseServiceTest {
 	@Test
 	void createExercise_shouldCreateExerciseAndPublish() {
 		exercise.setId(exerciseId);
-		when(exerciseMapper.toEntity(createDto)).thenReturn(exercise);
+		when(expertiseLevelRepository.findById(expertiseLevelId)).thenReturn(Optional.of(expertiseLevel));
+		when(mechanicsTypeRepository.findById(mechanicsTypeId)).thenReturn(Optional.of(mechanicsType));
+		when(forceTypeRepository.findById(forceTypeId)).thenReturn(Optional.of(forceType));
+		when(equipmentRepository.findById(equipmentId)).thenReturn(Optional.of(equipment));
+		when(exerciseMapper.toEntity(eq(createDto), any(ExerciseMappingContext.class))).thenReturn(exercise);
 		when(exerciseRepository.save(exercise)).thenReturn(exercise);
 		when(exerciseRepository.findByIdWithAssociationsForIndexing(exerciseId)).thenReturn(Optional.of(exercise));
 		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
@@ -169,7 +203,11 @@ public class ExerciseServiceTest {
 		ArgumentCaptor<ExerciseCreateEvent> eventCaptor = ArgumentCaptor.forClass(ExerciseCreateEvent.class);
 
 		exercise.setId(exerciseId);
-		when(exerciseMapper.toEntity(createDto)).thenReturn(exercise);
+		when(expertiseLevelRepository.findById(expertiseLevelId)).thenReturn(Optional.of(expertiseLevel));
+		when(mechanicsTypeRepository.findById(mechanicsTypeId)).thenReturn(Optional.of(mechanicsType));
+		when(forceTypeRepository.findById(forceTypeId)).thenReturn(Optional.of(forceType));
+		when(equipmentRepository.findById(equipmentId)).thenReturn(Optional.of(equipment));
+		when(exerciseMapper.toEntity(eq(createDto), any(ExerciseMappingContext.class))).thenReturn(exercise);
 		when(exerciseRepository.save(exercise)).thenReturn(exercise);
 		when(exerciseRepository.findByIdWithAssociationsForIndexing(exerciseId)).thenReturn(Optional.of(exercise));
 		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
@@ -179,6 +217,15 @@ public class ExerciseServiceTest {
 
 		verify(eventPublisher).publishEvent(eventCaptor.capture());
 		assertEquals(exercise, eventCaptor.getValue().getExercise());
+	}
+
+	@Test
+	void createExercise_shouldThrowExceptionWhenExpertiseLevelNotFound() {
+		when(expertiseLevelRepository.findById(expertiseLevelId)).thenReturn(Optional.empty());
+
+		assertThrows(RecordNotFoundException.class, () -> exerciseService.createExercise(createDto));
+
+		verify(exerciseRepository, never()).save(any());
 	}
 
 	@Test
@@ -192,7 +239,7 @@ public class ExerciseServiceTest {
 		exerciseService.updateExercise(exerciseId, patch);
 
 		verify(validationService).validate(patchedDto);
-		verify(exerciseMapper).updateExerciseFromDto(exercise, patchedDto);
+		verify(exerciseMapper).updateExerciseFromDto(eq(exercise), eq(patchedDto), any(ExerciseMappingContext.class));
 		verify(exerciseRepository).save(exercise);
 	}
 
@@ -209,6 +256,7 @@ public class ExerciseServiceTest {
 		exerciseService.updateExercise(exerciseId, patch);
 
 		verify(eventPublisher).publishEvent(eventCaptor.capture());
+		verify(exerciseMapper).updateExerciseFromDto(eq(exercise), eq(patchedDto), any(ExerciseMappingContext.class));
 		assertEquals(exercise, eventCaptor.getValue().getExercise());
 	}
 
