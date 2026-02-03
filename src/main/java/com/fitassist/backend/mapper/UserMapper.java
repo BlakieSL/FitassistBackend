@@ -5,15 +5,10 @@ import com.fitassist.backend.dto.pojo.UserCredentialsDto;
 import com.fitassist.backend.dto.request.user.UserCreateDto;
 import com.fitassist.backend.dto.request.user.UserUpdateDto;
 import com.fitassist.backend.dto.response.user.UserResponseDto;
-import com.fitassist.backend.mapper.helper.CommonMappingHelper;
-import com.fitassist.backend.model.media.MediaConnectedEntity;
 import com.fitassist.backend.model.user.Role;
 import com.fitassist.backend.model.user.RoleEnum;
 import com.fitassist.backend.model.user.User;
-import com.fitassist.backend.repository.MediaRepository;
-import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,22 +16,17 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring", uses = CommonMappingHelper.class)
 public abstract class UserMapper {
 
-	@Autowired
-	private MediaRepository mediaRepository;
-
-	@Autowired
-	private AwsS3Service s3Service;
-
 	@Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToRolesNames")
 	public abstract UserCredentialsDto toDetails(User user);
 
 	@Mapping(target = "calculatedCalories", ignore = true)
-	@Mapping(target = "userImageUrl", expression = "java(getUserImageUrl(user))")
+	@Mapping(target = "userImageUrl", ignore = true)
 	@Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToRoleEnums")
 	public abstract UserResponseDto toResponse(User user);
 
 	@Mapping(source = "user", target = ".", qualifiedByName = "userToAuthorDto")
-	@Mapping(target = "imageUrl", expression = "java(getUserImageUrl(user))")
+	@Mapping(target = "imageUrl", ignore = true)
+	@Mapping(target = "imageName", ignore = true)
 	public abstract AuthorDto toAuthorDto(User user);
 
 	@Mapping(target = "password", ignore = true)
@@ -96,12 +86,6 @@ public abstract class UserMapper {
 		}
 
 		return dto.getEmail().substring(0, dto.getEmail().indexOf("@"));
-	}
-
-	String getUserImageUrl(User user) {
-		return mediaRepository.findFirstByParentIdAndParentTypeOrderByIdAsc(user.getId(), MediaConnectedEntity.USER)
-			.map(media -> s3Service.getImage(media.getImageName()))
-			.orElse(null);
 	}
 
 }

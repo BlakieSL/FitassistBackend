@@ -1,6 +1,7 @@
 package com.fitassist.backend.service.declaration.helpers;
 
 import com.fitassist.backend.dto.response.activity.ActivityCalculatedResponseDto;
+import com.fitassist.backend.model.activity.Activity;
 import com.fitassist.backend.model.daily.DailyCartActivity;
 import com.fitassist.backend.model.user.ActivityLevel;
 import com.fitassist.backend.model.user.Gender;
@@ -17,4 +18,5 @@ public interface CalculationsService {
 
 	ActivityCalculatedResponseDto toCalculatedResponseDto(DailyCartActivity dailyCartActivity);
 
+	ActivityCalculatedResponseDto toCalculatedResponseDto(Activity activity, BigDecimal weight, Short time);
 }

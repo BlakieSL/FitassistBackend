@@ -9,16 +9,11 @@ import com.fitassist.backend.dto.response.food.IngredientResponseDto;
 import com.fitassist.backend.dto.response.recipe.RecipeResponseDto;
 import com.fitassist.backend.dto.response.recipe.RecipeSummaryDto;
 import com.fitassist.backend.dto.response.text.TextResponseDto;
-import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.helper.CommonMappingHelper;
+import com.fitassist.backend.mapper.CommonMappingHelper;
 import com.fitassist.backend.model.recipe.Recipe;
-import com.fitassist.backend.model.recipe.RecipeCategory;
 import com.fitassist.backend.model.recipe.RecipeCategoryAssociation;
 import com.fitassist.backend.model.recipe.RecipeFood;
 import com.fitassist.backend.model.text.RecipeInstruction;
-import com.fitassist.backend.model.user.User;
-import com.fitassist.backend.repository.RecipeCategoryRepository;
-import com.fitassist.backend.repository.UserRepository;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,14 +26,12 @@ import java.util.Set;
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class RecipeMapper {
 
-	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
-	private RecipeCategoryRepository recipeCategoryRepository;
-
-	@Autowired
 	private CommonMappingHelper commonMappingHelper;
+
+	@Autowired
+	private void setCommonMappingHelper(CommonMappingHelper commonMappingHelper) {
+		this.commonMappingHelper = commonMappingHelper;
+	}
 
 	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
 	@Mapping(target = "likesCount", ignore = true)
@@ -71,7 +64,7 @@ public abstract class RecipeMapper {
 	public abstract RecipeSummaryDto toSummaryDto(Recipe recipe);
 
 	@Mapping(target = "recipeCategoryAssociations", ignore = true)
-	@Mapping(target = "user", expression = "java(userIdToUser(userId))")
+	@Mapping(target = "user", expression = "java(context.getUser())")
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "userRecipes", ignore = true)
 	@Mapping(target = "recipeFoods", ignore = true)
@@ -79,7 +72,7 @@ public abstract class RecipeMapper {
 	@Mapping(target = "views", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "mediaList", ignore = true)
-	public abstract Recipe toEntity(RecipeCreateDto dto, @Context int userId);
+	public abstract Recipe toEntity(RecipeCreateDto dto, @Context RecipeMappingContext context);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "recipeCategoryAssociations", ignore = true)
@@ -91,10 +84,12 @@ public abstract class RecipeMapper {
 	@Mapping(target = "views", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "mediaList", ignore = true)
-	public abstract void updateRecipe(@MappingTarget Recipe recipe, RecipeUpdateDto request);
+	public abstract void updateRecipe(@MappingTarget Recipe recipe, RecipeUpdateDto request,
+			@Context RecipeMappingContext context);
 
 	@AfterMapping
-	protected void setRecipeAssociations(@MappingTarget Recipe recipe, RecipeCreateDto dto) {
+	protected void setRecipeAssociations(@MappingTarget Recipe recipe, RecipeCreateDto dto,
+			@Context RecipeMappingContext context) {
 		if (dto.getInstructions() != null) {
 			List<RecipeInstruction> instructions = dto.getInstructions()
 				.stream()
@@ -105,10 +100,9 @@ public abstract class RecipeMapper {
 			recipe.getRecipeInstructions().addAll(instructions);
 		}
 
-		if (dto.getCategoryIds() != null) {
-			List<RecipeCategory> categories = recipeCategoryRepository.findAllByIdIn(dto.getCategoryIds());
-
-			List<RecipeCategoryAssociation> associations = categories.stream()
+		if (context.getCategories() != null) {
+			List<RecipeCategoryAssociation> associations = context.getCategories()
+				.stream()
 				.map(category -> RecipeCategoryAssociation.createWithRecipeAndCategory(recipe, category))
 				.toList();
 
@@ -117,13 +111,13 @@ public abstract class RecipeMapper {
 	}
 
 	@AfterMapping
-	protected void updateAssociations(@MappingTarget Recipe recipe, RecipeUpdateDto dto) {
-		if (dto.getCategoryIds() != null) {
+	protected void updateAssociations(@MappingTarget Recipe recipe, RecipeUpdateDto dto,
+			@Context RecipeMappingContext context) {
+		if (context.getCategories() != null) {
 			recipe.getRecipeCategoryAssociations().clear();
 
-			List<RecipeCategory> categories = recipeCategoryRepository.findAllByIdIn(dto.getCategoryIds());
-
-			List<RecipeCategoryAssociation> associations = categories.stream()
+			List<RecipeCategoryAssociation> associations = context.getCategories()
+				.stream()
 				.map(category -> RecipeCategoryAssociation.createWithRecipeAndCategory(recipe, category))
 				.toList();
 
@@ -157,11 +151,6 @@ public abstract class RecipeMapper {
 			.map(association -> new CategoryResponseDto(association.getRecipeCategory().getId(),
 					association.getRecipeCategory().getName()))
 			.toList();
-	}
-
-	@Named("userIdToUser")
-	protected User userIdToUser(Integer userId) {
-		return userRepository.findById(userId).orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
 	}
 
 	@Named("mapInstructionsToDto")

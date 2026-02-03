@@ -4,7 +4,7 @@ import com.fitassist.backend.dto.response.comment.CommentResponseDto;
 import com.fitassist.backend.dto.response.comment.CommentSummaryDto;
 import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
 import com.fitassist.backend.exception.NotSupportedInteractionTypeException;
-import com.fitassist.backend.mapper.CommentMapper;
+import com.fitassist.backend.mapper.comment.CommentMapper;
 import com.fitassist.backend.model.thread.Comment;
 import com.fitassist.backend.model.user.TypeOfInteraction;
 import com.fitassist.backend.model.user.User;

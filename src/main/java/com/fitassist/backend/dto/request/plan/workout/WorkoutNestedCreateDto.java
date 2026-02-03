@@ -11,7 +11,6 @@ import lombok.Setter;
 import java.util.List;
 
 import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
-import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
 
 @Getter
 @Setter

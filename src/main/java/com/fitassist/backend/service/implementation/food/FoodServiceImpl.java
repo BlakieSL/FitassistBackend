@@ -13,9 +13,12 @@ import com.fitassist.backend.event.event.Food.FoodCreateEvent;
 import com.fitassist.backend.event.event.Food.FoodDeleteEvent;
 import com.fitassist.backend.event.event.Food.FoodUpdateEvent;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.FoodMapper;
+import com.fitassist.backend.mapper.food.FoodMapper;
+import com.fitassist.backend.mapper.food.FoodMappingContext;
 import com.fitassist.backend.mapper.recipe.RecipeMapper;
 import com.fitassist.backend.model.food.Food;
+import com.fitassist.backend.model.food.FoodCategory;
+import com.fitassist.backend.repository.FoodCategoryRepository;
 import com.fitassist.backend.repository.FoodRepository;
 import com.fitassist.backend.repository.RecipeRepository;
 import com.fitassist.backend.service.declaration.food.FoodPopulationService;
@@ -60,6 +63,8 @@ public class FoodServiceImpl implements FoodService {
 
 	private final FoodRepository foodRepository;
 
+	private final FoodCategoryRepository foodCategoryRepository;
+
 	private final RecipeRepository recipeRepository;
 
 	private final FoodPopulationService foodPopulationService;
@@ -69,14 +74,15 @@ public class FoodServiceImpl implements FoodService {
 	private final SpecificationDependencies dependencies;
 
 	public FoodServiceImpl(ApplicationEventPublisher applicationEventPublisher, ValidationService validationService,
-			JsonPatchService jsonPatchService, FoodRepository foodRepository, RecipeRepository recipeRepository,
-			FoodMapper foodMapper, RecipeMapper recipeMapper, RepositoryHelper repositoryHelper,
-			FoodPopulationService foodPopulationService, RecipePopulationService recipePopulationService,
-			SpecificationDependencies dependencies) {
+			JsonPatchService jsonPatchService, FoodRepository foodRepository,
+			FoodCategoryRepository foodCategoryRepository, RecipeRepository recipeRepository, FoodMapper foodMapper,
+			RecipeMapper recipeMapper, RepositoryHelper repositoryHelper, FoodPopulationService foodPopulationService,
+			RecipePopulationService recipePopulationService, SpecificationDependencies dependencies) {
 		this.applicationEventPublisher = applicationEventPublisher;
 		this.validationService = validationService;
 		this.jsonPatchService = jsonPatchService;
 		this.foodRepository = foodRepository;
+		this.foodCategoryRepository = foodCategoryRepository;
 		this.recipeRepository = recipeRepository;
 		this.foodMapper = foodMapper;
 		this.recipeMapper = recipeMapper;
@@ -89,7 +95,8 @@ public class FoodServiceImpl implements FoodService {
 	@Override
 	@Transactional
 	public FoodResponseDto createFood(FoodCreateDto request) {
-		Food saved = foodRepository.save(foodMapper.toEntity(request));
+		FoodMappingContext context = prepareCreateContext(request);
+		Food saved = foodRepository.save(foodMapper.toEntity(request, context));
 
 		foodRepository.flush();
 
@@ -103,6 +110,11 @@ public class FoodServiceImpl implements FoodService {
 		return dto;
 	}
 
+	private FoodMappingContext prepareCreateContext(FoodCreateDto dto) {
+		FoodCategory category = findCategory(dto.getCategoryId());
+		return new FoodMappingContext(category);
+	}
+
 	@Override
 	@Transactional
 	public void updateFood(int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
@@ -110,7 +122,9 @@ public class FoodServiceImpl implements FoodService {
 		FoodUpdateDto patchedFoodUpdateDto = applyPatchToFood(patch);
 
 		validationService.validate(patchedFoodUpdateDto);
-		foodMapper.updateFood(food, patchedFoodUpdateDto);
+
+		FoodMappingContext context = prepareUpdateContext(patchedFoodUpdateDto);
+		foodMapper.updateFood(food, patchedFoodUpdateDto, context);
 		Food saved = foodRepository.save(food);
 
 		foodRepository.flush();
@@ -119,6 +133,11 @@ public class FoodServiceImpl implements FoodService {
 			.orElseThrow(() -> RecordNotFoundException.of(Food.class, saved.getId()));
 
 		applicationEventPublisher.publishEvent(FoodUpdateEvent.of(this, refetchedFood));
+	}
+
+	private FoodMappingContext prepareUpdateContext(FoodUpdateDto dto) {
+		FoodCategory category = findCategory(dto.getCategoryId());
+		return new FoodMappingContext(category);
 	}
 
 	@Override
@@ -190,6 +209,14 @@ public class FoodServiceImpl implements FoodService {
 
 	private FoodUpdateDto applyPatchToFood(JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
 		return jsonPatchService.createFromPatch(patch, FoodUpdateDto.class);
+	}
+
+	private FoodCategory findCategory(Integer categoryId) {
+		if (categoryId == null) {
+			return null;
+		}
+		return foodCategoryRepository.findById(categoryId)
+			.orElseThrow(() -> RecordNotFoundException.of(FoodCategory.class, categoryId));
 	}
 
 }

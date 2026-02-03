@@ -6,6 +6,8 @@ import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.dto.request.filter.FilterDto;
 import com.fitassist.backend.dto.request.plan.PlanCreateDto;
 import com.fitassist.backend.dto.request.plan.PlanUpdateDto;
+import com.fitassist.backend.dto.request.plan.workoutSetExercise.WorkoutSetExerciseNestedCreateDto;
+import com.fitassist.backend.dto.request.plan.workoutSetExercise.WorkoutSetExerciseNestedUpdateDto;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.dto.response.plan.PlanCategoriesResponseDto;
 import com.fitassist.backend.dto.response.plan.PlanResponseDto;
@@ -14,17 +16,14 @@ import com.fitassist.backend.event.event.Plan.PlanCreateEvent;
 import com.fitassist.backend.event.event.Plan.PlanDeleteEvent;
 import com.fitassist.backend.event.event.Plan.PlanUpdateEvent;
 import com.fitassist.backend.exception.RecordNotFoundException;
-import com.fitassist.backend.mapper.context.PlanMappingContext;
 import com.fitassist.backend.mapper.plan.PlanMapper;
+import com.fitassist.backend.mapper.plan.PlanMappingContext;
+import com.fitassist.backend.model.exercise.Exercise;
 import com.fitassist.backend.model.plan.Plan;
 import com.fitassist.backend.model.plan.PlanCategory;
 import com.fitassist.backend.model.plan.PlanStructureType;
 import com.fitassist.backend.model.user.User;
-import com.fitassist.backend.repository.EquipmentRepository;
-import com.fitassist.backend.repository.PlanCategoryRepository;
-import com.fitassist.backend.repository.PlanRepository;
-import com.fitassist.backend.repository.TextRepository;
-import com.fitassist.backend.repository.UserRepository;
+import com.fitassist.backend.repository.*;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
@@ -45,8 +44,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class PlanServiceImpl implements PlanService {
@@ -73,6 +73,8 @@ public class PlanServiceImpl implements PlanService {
 
 	private final EquipmentRepository equipmentRepository;
 
+	private final ExerciseRepository exerciseRepository;
+
 	private final UserRepository userRepository;
 
 	public PlanServiceImpl(PlanMapper planMapper, JsonPatchService jsonPatchService,
@@ -80,7 +82,7 @@ public class PlanServiceImpl implements PlanService {
 			RepositoryHelper repositoryHelper, PlanRepository planRepository, TextRepository textRepository,
 			SpecificationDependencies dependencies, PlanPopulationService planPopulationService,
 			PlanCategoryRepository planCategoryRepository, EquipmentRepository equipmentRepository,
-			UserRepository userRepository) {
+			ExerciseRepository exerciseRepository, UserRepository userRepository) {
 		this.planMapper = planMapper;
 		this.jsonPatchService = jsonPatchService;
 		this.validationService = validationService;
@@ -92,6 +94,7 @@ public class PlanServiceImpl implements PlanService {
 		this.planPopulationService = planPopulationService;
 		this.planCategoryRepository = planCategoryRepository;
 		this.equipmentRepository = equipmentRepository;
+		this.exerciseRepository = exerciseRepository;
 		this.userRepository = userRepository;
 	}
 
@@ -123,8 +126,9 @@ public class PlanServiceImpl implements PlanService {
 		User user = userRepository.findById(userId).orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
 
 		List<PlanCategory> categories = findCategories(request.getCategoryIds());
+		List<Exercise> exercises = exerciseRepository.findAllById(extractExerciseIds(request));
 
-		return PlanMappingContext.forCreate(user, categories);
+		return PlanMappingContext.forCreate(user, categories, exercises);
 	}
 
 	private List<PlanCategory> findCategories(List<Integer> categoryIds) {
@@ -132,6 +136,18 @@ public class PlanServiceImpl implements PlanService {
 			return Collections.emptyList();
 		}
 		return planCategoryRepository.findAllByIdIn(categoryIds);
+	}
+
+	private Set<Integer> extractExerciseIds(PlanCreateDto request) {
+		if (request.getWorkouts() == null) {
+			return Collections.emptySet();
+		}
+		return request.getWorkouts()
+			.stream()
+			.flatMap(w -> Stream.ofNullable(w.getWorkoutSets()).flatMap(Collection::stream))
+			.flatMap(ws -> Stream.ofNullable(ws.getWorkoutSetExercises()).flatMap(Collection::stream))
+			.map(WorkoutSetExerciseNestedCreateDto::getExerciseId)
+			.collect(Collectors.toSet());
 	}
 
 	@Override
@@ -154,7 +170,22 @@ public class PlanServiceImpl implements PlanService {
 
 	private PlanMappingContext prepareUpdateContext(PlanUpdateDto dto) {
 		List<PlanCategory> categories = findCategories(dto.getCategoryIds());
-		return PlanMappingContext.forUpdate(categories);
+		List<Exercise> exercises = exerciseRepository.findAllById(extractExerciseIds(dto));
+
+		return PlanMappingContext.forUpdate(categories, exercises);
+	}
+
+	private Set<Integer> extractExerciseIds(PlanUpdateDto request) {
+		if (request.getWorkouts() == null) {
+			return Collections.emptySet();
+		}
+		return request.getWorkouts()
+			.stream()
+			.flatMap(w -> Stream.ofNullable(w.getWorkoutSets()).flatMap(Collection::stream))
+			.flatMap(ws -> Stream.ofNullable(ws.getWorkoutSetExercises()).flatMap(Collection::stream))
+			.map(WorkoutSetExerciseNestedUpdateDto::getExerciseId)
+			.filter(Objects::nonNull)
+			.collect(Collectors.toSet());
 	}
 
 	@Override

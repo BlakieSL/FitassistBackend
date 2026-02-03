@@ -13,8 +13,13 @@ import com.fitassist.backend.event.event.Recipe.RecipeDeleteEvent;
 import com.fitassist.backend.event.event.Recipe.RecipeUpdateEvent;
 import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.mapper.recipe.RecipeMapper;
+import com.fitassist.backend.mapper.recipe.RecipeMappingContext;
 import com.fitassist.backend.model.recipe.Recipe;
+import com.fitassist.backend.model.recipe.RecipeCategory;
+import com.fitassist.backend.model.user.User;
+import com.fitassist.backend.repository.RecipeCategoryRepository;
 import com.fitassist.backend.repository.RecipeRepository;
+import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
@@ -35,6 +40,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -52,6 +58,10 @@ public class RecipeServiceImpl implements RecipeService {
 
 	private final RecipeRepository recipeRepository;
 
+	private final RecipeCategoryRepository recipeCategoryRepository;
+
+	private final UserRepository userRepository;
+
 	private final RecipePopulationService recipePopulationService;
 
 	private final SpecificationDependencies dependencies;
@@ -59,6 +69,7 @@ public class RecipeServiceImpl implements RecipeService {
 	public RecipeServiceImpl(RecipeMapper recipeMapper, JsonPatchService jsonPatchService,
 			ValidationService validationService, ApplicationEventPublisher applicationEventPublisher,
 			RepositoryHelper repositoryHelper, RecipeRepository recipeRepository,
+			RecipeCategoryRepository recipeCategoryRepository, UserRepository userRepository,
 			RecipePopulationService recipePopulationService, SpecificationDependencies dependencies) {
 		this.recipeMapper = recipeMapper;
 		this.jsonPatchService = jsonPatchService;
@@ -66,6 +77,8 @@ public class RecipeServiceImpl implements RecipeService {
 		this.applicationEventPublisher = applicationEventPublisher;
 		this.repositoryHelper = repositoryHelper;
 		this.recipeRepository = recipeRepository;
+		this.recipeCategoryRepository = recipeCategoryRepository;
+		this.userRepository = userRepository;
 		this.recipePopulationService = recipePopulationService;
 		this.dependencies = dependencies;
 	}
@@ -73,14 +86,30 @@ public class RecipeServiceImpl implements RecipeService {
 	@Override
 	@Transactional
 	public RecipeResponseDto createRecipe(RecipeCreateDto request) {
-		int userId = AuthorizationUtil.getUserId();
-		Recipe mapped = recipeMapper.toEntity(request, userId);
+		RecipeMappingContext context = prepareCreateContext(request);
+		Recipe mapped = recipeMapper.toEntity(request, context);
 		Recipe saved = recipeRepository.save(mapped);
-		applicationEventPublisher.publishEvent(RecipeCreateEvent.of(this, saved));
 
+		applicationEventPublisher.publishEvent(RecipeCreateEvent.of(this, saved));
 		recipeRepository.flush();
 
 		return findAndMap(saved.getId());
+	}
+
+	private RecipeMappingContext prepareCreateContext(RecipeCreateDto request) {
+		int userId = AuthorizationUtil.getUserId();
+		User user = userRepository.findById(userId).orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
+
+		List<RecipeCategory> categories = findCategories(request.getCategoryIds());
+
+		return RecipeMappingContext.forCreate(user, categories);
+	}
+
+	private List<RecipeCategory> findCategories(List<Integer> categoryIds) {
+		if (categoryIds == null || categoryIds.isEmpty()) {
+			return Collections.emptyList();
+		}
+		return recipeCategoryRepository.findAllByIdIn(categoryIds);
 	}
 
 	@Override
@@ -88,12 +117,19 @@ public class RecipeServiceImpl implements RecipeService {
 	public void updateRecipe(int recipeId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
 		Recipe recipe = find(recipeId);
 		RecipeUpdateDto patchedRecipeUpdateDto = applyPatchToRecipe(patch);
-
 		validationService.validate(patchedRecipeUpdateDto);
-		recipeMapper.updateRecipe(recipe, patchedRecipeUpdateDto);
-		Recipe savedRecipe = recipeRepository.save(recipe);
 
+		RecipeMappingContext context = prepareUpdateContext(patchedRecipeUpdateDto);
+		recipeMapper.updateRecipe(recipe, patchedRecipeUpdateDto, context);
+
+		Recipe savedRecipe = recipeRepository.save(recipe);
 		applicationEventPublisher.publishEvent(RecipeUpdateEvent.of(this, savedRecipe));
+	}
+
+	private RecipeMappingContext prepareUpdateContext(RecipeUpdateDto dto) {
+		List<RecipeCategory> categories = findCategories(dto.getCategoryIds());
+
+		return RecipeMappingContext.forUpdate(categories);
 	}
 
 	@Override
