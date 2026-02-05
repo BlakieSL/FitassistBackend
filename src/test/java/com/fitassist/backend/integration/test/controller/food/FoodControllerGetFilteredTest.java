@@ -75,7 +75,7 @@ public class FoodControllerGetFilteredTest {
 	@Test
 	@DisplayName("POST - /filter - Should return filtered foods by Protein")
 	void getFilteredFoodsByProtein() throws Exception {
-		FilterCriteria criteria = FilterCriteria.of("PROTEIN", new BigDecimal("5.0"), FilterOperation.GREATER_THAN);
+		FilterCriteria criteria = FilterCriteria.of("PROTEIN", BigDecimal.valueOf(5.0), FilterOperation.GREATER_THAN);
 		FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
 		mockMvc
@@ -90,7 +90,7 @@ public class FoodControllerGetFilteredTest {
 	@Test
 	@DisplayName("POST - /filter - Should return filtered foods by Fat")
 	void getFilteredFoodsByFat() throws Exception {
-		FilterCriteria criteria = FilterCriteria.of("FAT", new BigDecimal("3.0"), FilterOperation.GREATER_THAN);
+		FilterCriteria criteria = FilterCriteria.of("FAT", BigDecimal.valueOf(3.0), FilterOperation.GREATER_THAN);
 		FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
 		mockMvc
@@ -106,7 +106,8 @@ public class FoodControllerGetFilteredTest {
 	@Test
 	@DisplayName("POST - /filter - Should return filtered foods by Carbohydrates")
 	void getFilteredFoodsByCarbohydrates() throws Exception {
-		FilterCriteria criteria = FilterCriteria.of("CARBOHYDRATES", new BigDecimal("20.0"), FilterOperation.LESS_THAN);
+		FilterCriteria criteria = FilterCriteria.of("CARBOHYDRATES", BigDecimal.valueOf(20.0),
+				FilterOperation.LESS_THAN);
 		FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
 		mockMvc
@@ -136,7 +137,7 @@ public class FoodControllerGetFilteredTest {
 	@Test
 	@DisplayName("POST - /filter - Should return paginated filtered foods with custom pagination")
 	void getFilteredFoods_WithPagination() throws Exception {
-		FilterCriteria criteria = FilterCriteria.of("PROTEIN", new BigDecimal("0.0"), FilterOperation.GREATER_THAN);
+		FilterCriteria criteria = FilterCriteria.of("PROTEIN", BigDecimal.valueOf(0.0), FilterOperation.GREATER_THAN);
 		FilterDto filterDto = FilterDto.of(List.of(criteria), FilterDataOption.AND);
 
 		mockMvc

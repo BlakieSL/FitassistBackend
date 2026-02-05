@@ -281,7 +281,7 @@ public class FoodServiceTest {
 	@Test
 	void calculateFoodMacros_shouldCalculateMacrosForFood() {
 		when(repositoryHelper.find(foodRepository, Food.class, foodId)).thenReturn(food);
-		when(foodMapper.toDtoWithFactor(eq(food), argThat(x -> x.compareTo(new BigDecimal("1.2")) == 0)))
+		when(foodMapper.toDtoWithFactor(eq(food), argThat(x -> x.compareTo(BigDecimal.valueOf(1.2)) == 0)))
 			.thenReturn(calculatedResponseDto);
 
 		CalculateFoodMacrosRequestDto request = new CalculateFoodMacrosRequestDto();
@@ -290,7 +290,7 @@ public class FoodServiceTest {
 		FoodCalculatedMacrosResponseDto result = foodService.calculateFoodMacros(foodId, request);
 
 		assertEquals(calculatedResponseDto, result);
-		verify(foodMapper).toDtoWithFactor(eq(food), argThat(x -> x.compareTo(new BigDecimal("1.2")) == 0));
+		verify(foodMapper).toDtoWithFactor(eq(food), argThat(x -> x.compareTo(BigDecimal.valueOf(1.2)) == 0));
 	}
 
 	@Test

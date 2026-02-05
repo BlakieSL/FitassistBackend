@@ -18,7 +18,7 @@ public class CookieService {
 	}
 
 	public void setAccessTokenCookie(HttpServletResponse response, String value) {
-		var config = tokenProperties.getAccessToken();
+		TokenProperties.TokenConfig config = tokenProperties.getAccessToken();
 		Cookie cookie = createSecureCookie(config.getName(), value, config.getMaxAge());
 		response.addCookie(cookie);
 	}
@@ -28,7 +28,7 @@ public class CookieService {
 	}
 
 	public void setRefreshTokenCookie(HttpServletResponse response, String value) {
-		var config = tokenProperties.getRefreshToken();
+		TokenProperties.TokenConfig config = tokenProperties.getRefreshToken();
 		Cookie cookie = createSecureCookie(config.getName(), value, config.getMaxAge());
 		response.addCookie(cookie);
 	}
@@ -38,7 +38,7 @@ public class CookieService {
 	}
 
 	public void setRateLimitCookie(HttpServletResponse response, String value) {
-		var config = tokenProperties.getRateLimit();
+		TokenProperties.TokenConfig config = tokenProperties.getRateLimit();
 		Cookie cookie = createSecureCookie(config.getName(), value, config.getMaxAge());
 		response.addCookie(cookie);
 	}

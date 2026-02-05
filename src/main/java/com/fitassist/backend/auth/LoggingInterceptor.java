@@ -21,8 +21,8 @@ public class LoggingInterceptor implements HandlerInterceptor {
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, @NotNull Object handler,
 			Exception ex) {
-		var duration = System.currentTimeMillis() - (long) request.getAttribute("startTime");
-		var userId = AuthorizationUtil.getUserId();
+		long duration = System.currentTimeMillis() - (long) request.getAttribute("startTime");
+		int userId = AuthorizationUtil.getUserId();
 
 		log.atInfo()
 			.addKeyValue("userId", userId)

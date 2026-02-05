@@ -19,19 +19,19 @@ public class GenericSpecificationHelper {
 	}
 
 	public static <T> Predicate buildPredicateEntityProperty(PredicateContext<T> context, String joinProperty) {
-		var value = validateAndGetId(context.criteria());
+		int value = validateAndGetId(context.criteria());
 		return buildIdBasedPredicate(context.builder(), context.criteria(),
 				context.root().get(joinProperty).get(ID_FIELD), value);
 	}
 
 	public static <T, J> Predicate buildPredicateJoinProperty(PredicateContext<T> context, Join<T, J> join,
 			String subJoinProperty) {
-		var value = validateAndGetId(context.criteria());
+		int value = validateAndGetId(context.criteria());
 		return buildCollectionIdBasedPredicate(context.builder(), context.criteria(), join, subJoinProperty, value);
 	}
 
 	public static <T> Predicate buildPredicateNumericProperty(PredicateContext<T> context, Path<BigDecimal> path) {
-		var value = validateAndGetBigDecimal(context.criteria());
+		BigDecimal value = validateAndGetBigDecimal(context.criteria());
 		return buildNumericBasedPredicate(context.builder(), context.criteria(), path, value);
 	}
 
@@ -41,12 +41,12 @@ public class GenericSpecificationHelper {
 
 	public static <T> Predicate buildSavedByUserPredicate(PredicateContext<T> context, String userEntityJoinField,
 			String typeFieldName, Object typeValue) {
-		var userId = validateAndGetId(context.criteria());
-		var userEntityJoin = context.root().join(userEntityJoinField, JoinType.INNER);
-		var userPredicate = context.builder().equal(userEntityJoin.get(USER_FIELD).get(ID_FIELD), userId);
+		int userId = validateAndGetId(context.criteria());
+		Join<T, ?> userEntityJoin = context.root().join(userEntityJoinField, JoinType.INNER);
+		Predicate userPredicate = context.builder().equal(userEntityJoin.get(USER_FIELD).get(ID_FIELD), userId);
 
 		if (typeFieldName != null && typeValue != null) {
-			var typePredicate = context.builder().equal(userEntityJoin.get(typeFieldName), typeValue);
+			Predicate typePredicate = context.builder().equal(userEntityJoin.get(typeFieldName), typeValue);
 			return context.builder().and(userPredicate, typePredicate);
 		}
 		return userPredicate;
@@ -54,10 +54,10 @@ public class GenericSpecificationHelper {
 
 	public static <T> Predicate buildPredicateUserEntityInteractionRange(PredicateContext<T> context,
 			String joinProperty, String targetTypeFieldName, Object typeValue) {
-		var subquery = context.builder().createQuery(Long.class).subquery(Long.class);
-		var subRoot = subquery.from(context.root().getModel().getJavaType());
-		var subJoin = subRoot.join(joinProperty, JoinType.LEFT);
-		var subqueryPredicates = new ArrayList<Predicate>();
+		Subquery<Long> subquery = context.builder().createQuery(Long.class).subquery(Long.class);
+		Root<?> subRoot = subquery.from(context.root().getModel().getJavaType());
+		Join<?, ?> subJoin = subRoot.join(joinProperty, JoinType.LEFT);
+		ArrayList<Predicate> subqueryPredicates = new ArrayList<Predicate>();
 
 		subqueryPredicates.add(context.builder().equal(subRoot.get(ID_FIELD), context.root().get(ID_FIELD)));
 
@@ -78,7 +78,7 @@ public class GenericSpecificationHelper {
 
 	private static Predicate createRangePredicate(Expression<Long> countExpression, CriteriaBuilder builder,
 			FilterCriteria criteria) {
-		var value = validateAndGetLong(criteria);
+		Long value = validateAndGetLong(criteria);
 		return switch (criteria.getOperation()) {
 			case GREATER_THAN -> builder.greaterThan(countExpression, value);
 			case GREATER_THAN_EQUAL -> builder.greaterThanOrEqualTo(countExpression, value);
@@ -89,7 +89,7 @@ public class GenericSpecificationHelper {
 	}
 
 	public static int validateAndGetId(FilterCriteria criteria) {
-		var value = criteria.getValue();
+		Object value = criteria.getValue();
 		try {
 			return ((Number) value).intValue();
 		}
@@ -99,15 +99,15 @@ public class GenericSpecificationHelper {
 	}
 
 	private static BigDecimal validateAndGetBigDecimal(FilterCriteria criteria) {
-		var value = criteria.getValue();
+		Object value = criteria.getValue();
 		if (value instanceof Number number) {
-			return new BigDecimal(number.toString());
+			return BigDecimal.valueOf(number.doubleValue());
 		}
 		throw new InvalidFilterValueException(value + " , class: " + value.getClass().getName());
 	}
 
 	private static Long validateAndGetLong(FilterCriteria criteria) {
-		var value = criteria.getValue();
+		Object value = criteria.getValue();
 		try {
 			return ((Number) value).longValue();
 		}

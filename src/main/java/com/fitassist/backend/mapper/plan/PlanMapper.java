@@ -6,6 +6,7 @@ import com.fitassist.backend.dto.request.plan.workout.WorkoutNestedUpdateDto;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.dto.response.plan.PlanResponseDto;
 import com.fitassist.backend.dto.response.plan.PlanSummaryDto;
+import com.fitassist.backend.dto.response.plan.WorkoutResponseDto;
 import com.fitassist.backend.mapper.CommonMappingHelper;
 import com.fitassist.backend.model.plan.Plan;
 import com.fitassist.backend.model.plan.PlanCategoryAssociation;
@@ -160,7 +161,7 @@ public abstract class PlanMapper {
 	@AfterMapping
 	protected void calculateTotalWeeks(@MappingTarget PlanResponseDto dto, Plan plan) {
 		int currentDay = 0;
-		for (var workoutDto : dto.getWorkouts()) {
+		for (WorkoutResponseDto workoutDto : dto.getWorkouts()) {
 			workoutDto.setWeekIndex((currentDay / 7) + 1);
 			workoutDto.setDayOfWeekIndex((currentDay % 7) + 1);
 

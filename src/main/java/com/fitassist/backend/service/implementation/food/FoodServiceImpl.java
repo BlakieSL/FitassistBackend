@@ -9,6 +9,7 @@ import com.fitassist.backend.dto.request.food.FoodUpdateDto;
 import com.fitassist.backend.dto.response.food.FoodCalculatedMacrosResponseDto;
 import com.fitassist.backend.dto.response.food.FoodResponseDto;
 import com.fitassist.backend.dto.response.food.FoodSummaryDto;
+import com.fitassist.backend.dto.response.recipe.RecipeSummaryDto;
 import com.fitassist.backend.event.event.Food.FoodCreateEvent;
 import com.fitassist.backend.event.event.Food.FoodDeleteEvent;
 import com.fitassist.backend.event.event.Food.FoodUpdateEvent;
@@ -153,7 +154,7 @@ public class FoodServiceImpl implements FoodService {
 	public FoodCalculatedMacrosResponseDto calculateFoodMacros(int id, CalculateFoodMacrosRequestDto request) {
 		Food food = find(id);
 		BigDecimal quantity = request.getQuantity();
-		BigDecimal divisor = new BigDecimal("100");
+		BigDecimal divisor = BigDecimal.valueOf(100);
 
 		BigDecimal factor = quantity.divide(divisor, 10, RoundingMode.HALF_UP);
 
@@ -165,7 +166,7 @@ public class FoodServiceImpl implements FoodService {
 	public FoodResponseDto getFood(int id) {
 		FoodResponseDto dto = findAndMap(id);
 
-		var summaries = recipeRepository.findAllWithDetailsByFoodId(id)
+		List<RecipeSummaryDto> summaries = recipeRepository.findAllWithDetailsByFoodId(id)
 			.stream()
 			.map(recipeMapper::toSummaryDto)
 			.toList();

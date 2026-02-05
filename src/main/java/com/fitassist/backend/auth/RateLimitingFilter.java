@@ -1,6 +1,7 @@
 package com.fitassist.backend.auth;
 
 import com.fitassist.backend.service.declaration.ratelimiter.RedissonRateLimiterService;
+import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -78,7 +79,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 
 	private UserInfo parseToken(String token) {
 		try {
-			var claims = SignedJWT.parse(token).getJWTClaimsSet();
+			JWTClaimsSet claims = SignedJWT.parse(token).getJWTClaimsSet();
 			return new UserInfo(claims.getIntegerClaim("userId"), claims.getStringListClaim("authorities"));
 		}
 		catch (Exception e) {

@@ -79,7 +79,7 @@ public class DailyActivityControllerTest {
 
 		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
 		request.setTime((short) 30);
-		request.setWeight(new BigDecimal("75.5"));
+		request.setWeight(BigDecimal.valueOf(75.5));
 		request.setDate(LocalDate.of(2023, 10, 6));
 
 		mockMvc
@@ -96,7 +96,7 @@ public class DailyActivityControllerTest {
 
 		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
 		request.setTime((short) 20);
-		request.setWeight(new BigDecimal("72.0"));
+		request.setWeight(BigDecimal.valueOf(72.0));
 		request.setDate(LocalDate.of(2023, 10, 5));
 
 		mockMvc
@@ -118,7 +118,7 @@ public class DailyActivityControllerTest {
 
 		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
 		request.setTime((short) 30);
-		request.setWeight(new BigDecimal("75.0"));
+		request.setWeight(BigDecimal.valueOf(75.0));
 		request.setDate(LocalDate.of(2023, 10, 6));
 
 		mockMvc
@@ -135,7 +135,7 @@ public class DailyActivityControllerTest {
 
 		DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
 		updateDto.setTime((short) 40);
-		updateDto.setWeight(new BigDecimal("80.0"));
+		updateDto.setWeight(BigDecimal.valueOf(80.0));
 
 		mockMvc
 			.perform(patch("/api/daily-activities/modify-activity/1").contentType(MediaType.APPLICATION_JSON)

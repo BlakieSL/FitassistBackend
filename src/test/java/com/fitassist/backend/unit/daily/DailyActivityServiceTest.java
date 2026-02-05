@@ -105,12 +105,12 @@ public class DailyActivityServiceTest {
 		dailyCartActivity.setId(1);
 		dailyCartActivity.setTime((short) 30);
 		createDto.setTime((short) 60);
-		createDto.setWeight(new BigDecimal("75.00"));
+		createDto.setWeight(BigDecimal.valueOf(75.00));
 		createDto.setDate(LocalDate.now());
 
 		User user = new User();
 		user.setId(USER_ID);
-		user.setWeight(new BigDecimal("70.00"));
+		user.setWeight(BigDecimal.valueOf(70.00));
 		dailyCart.setUser(user);
 	}
 
@@ -201,7 +201,7 @@ public class DailyActivityServiceTest {
 	void updateDailyActivityItem_shouldUpdate() throws JsonPatchException, JsonProcessingException {
 		DailyActivityItemUpdateDto patchedDto = new DailyActivityItemUpdateDto();
 		patchedDto.setTime((short) 120);
-		patchedDto.setWeight(new BigDecimal("80.00"));
+		patchedDto.setWeight(BigDecimal.valueOf(80.00));
 
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 		when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID))
@@ -268,7 +268,7 @@ public class DailyActivityServiceTest {
 		user.setId(USER_ID);
 		user.setWeight(BigDecimal.valueOf(70));
 		dailyCart.setUser(user);
-		dailyCartActivity.setWeight(new BigDecimal("75.00"));
+		dailyCartActivity.setWeight(BigDecimal.valueOf(75.00));
 		dailyCart.getDailyCartActivities().add(dailyCartActivity);
 
 		ActivityCalculatedResponseDto calculatedResponseDto = new ActivityCalculatedResponseDto();

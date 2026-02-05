@@ -31,6 +31,7 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -151,7 +152,7 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	public Page<CommentResponseDto> getTopCommentsForThread(int threadId, Pageable pageable) {
-		var sortOrder = pageable.getSort().isSorted() ? pageable.getSort().stream().toList().getFirst() : null;
+		Sort.Order sortOrder = pageable.getSort().isSorted() ? pageable.getSort().stream().toList().getFirst() : null;
 
 		List<Comment> comments;
 		long total;
@@ -195,7 +196,7 @@ public class CommentServiceImpl implements CommentService {
 		Map<Integer, CommentResponseDto> dtoMap = new HashMap<>();
 		List<CommentResponseDto> flatList = new ArrayList<>();
 
-		for (var row : results) {
+		for (Object[] row : results) {
 			CommentResponseDto dto = new CommentResponseDto();
 			dto.setId((Integer) row[0]);
 			dto.setText((String) row[1]);
@@ -215,7 +216,7 @@ public class CommentServiceImpl implements CommentService {
 
 		commentPopulationService.populateList(flatList);
 
-		for (var dto : dtoMap.values()) {
+		for (CommentResponseDto dto : dtoMap.values()) {
 			Integer parentId = dto.getParentCommentId();
 			if (parentId != null && dtoMap.containsKey(parentId)) {
 				dtoMap.get(parentId).getReplies().add(dto);
@@ -240,7 +241,7 @@ public class CommentServiceImpl implements CommentService {
 		Integer threadId = null;
 		List<Integer> ancestorIds = new ArrayList<>();
 
-		for (var row : results) {
+		for (Object[] row : results) {
 			ancestorIds.add((Integer) row[0]);
 			threadId = (Integer) row[1];
 		}

@@ -89,8 +89,8 @@ public class MediaControllerTest {
 		MockMultipartFile mockImage = new MockMultipartFile("image", "test.jpg", "image/jpeg",
 				"fake-image-content".getBytes());
 
-		var parentType = MediaConnectedEntity.FOOD.name();
-		var parentId = "1";
+		String parentType = MediaConnectedEntity.FOOD.name();
+		String parentId = "1";
 
 		mockMvc
 			.perform(
@@ -108,8 +108,8 @@ public class MediaControllerTest {
 		MockMultipartFile mockImage = new MockMultipartFile("image", "test.jpg", "image/jpeg",
 				"fake-image-content".getBytes());
 
-		var parentType = MediaConnectedEntity.RECIPE.name();
-		var parentId = "1";
+		String parentType = MediaConnectedEntity.RECIPE.name();
+		String parentId = "1";
 
 		mockMvc
 			.perform(
@@ -126,8 +126,8 @@ public class MediaControllerTest {
 		MockMultipartFile mockImage = new MockMultipartFile("image", "test.jpg", "image/jpeg",
 				"fake-image-content".getBytes());
 
-		var parentType = MediaConnectedEntity.FOOD.name();
-		var parentId = "1";
+		String parentType = MediaConnectedEntity.FOOD.name();
+		String parentId = "1";
 
 		mockMvc
 			.perform(

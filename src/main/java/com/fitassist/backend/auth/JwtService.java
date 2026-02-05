@@ -37,12 +37,12 @@ public class JwtService {
 	}
 
 	public String createAccessToken(String username, Integer userId, List<String> authorities) {
-		var config = tokenProperties.getAccessToken();
+		TokenProperties.TokenConfig config = tokenProperties.getAccessToken();
 		return createSignedJWT(username, userId, authorities, config.getDurationMinutes(), config.getName());
 	}
 
 	public String createRefreshToken(String username, Integer userId, List<String> authorities) {
-		var config = tokenProperties.getRefreshToken();
+		TokenProperties.TokenConfig config = tokenProperties.getRefreshToken();
 		return createSignedJWT(username, userId, authorities, config.getDurationMinutes(), config.getName());
 	}
 

@@ -30,7 +30,7 @@ public class CalculationsServiceTest {
 
 		BigDecimal result = calculationsService.calculateCaloricNeeds(weight, height, age, gender, activityLevel, goal);
 
-		assertEquals(new BigDecimal("2394.3"), result);
+		assertEquals(BigDecimal.valueOf(2394.3), result);
 	}
 
 	@Test
@@ -44,7 +44,7 @@ public class CalculationsServiceTest {
 
 		BigDecimal result = calculationsService.calculateCaloricNeeds(weight, height, age, gender, activityLevel, goal);
 
-		assertEquals(new BigDecimal("2477.4"), result);
+		assertEquals(BigDecimal.valueOf(2477.4), result);
 	}
 
 	@Test
@@ -55,7 +55,7 @@ public class CalculationsServiceTest {
 
 		BigDecimal result = calculationsService.calculateCaloriesBurned(time, weight, met);
 
-		assertEquals(new BigDecimal("294.0"), result);
+		assertEquals(BigDecimal.valueOf(294.0), result);
 	}
 
 }

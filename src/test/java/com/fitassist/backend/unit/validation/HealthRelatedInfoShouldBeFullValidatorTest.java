@@ -45,8 +45,8 @@ public class HealthRelatedInfoShouldBeFullValidatorTest {
 	@Test
 	void isValid_shouldReturnTrueWhenAllFieldsAreSet() {
 		User user = new User();
-		user.setHeight(new BigDecimal("175.5"));
-		user.setWeight(new BigDecimal("80.3"));
+		user.setHeight(BigDecimal.valueOf(175.5));
+		user.setWeight(BigDecimal.valueOf(80.3));
 		user.setGoal(Goal.LOSE_WEIGHT);
 		user.setActivityLevel(ActivityLevel.MODERATELY_ACTIVE);
 
@@ -58,7 +58,7 @@ public class HealthRelatedInfoShouldBeFullValidatorTest {
 	@Test
 	void isValid_shouldReturnFalseWhenOnlyHeightIsSet() {
 		User user = new User();
-		user.setHeight(new BigDecimal("175.5"));
+		user.setHeight(BigDecimal.valueOf(175.5));
 		user.setWeight(null);
 		user.setGoal(null);
 		user.setActivityLevel(null);
@@ -72,7 +72,7 @@ public class HealthRelatedInfoShouldBeFullValidatorTest {
 	void isValid_shouldReturnFalseWhenOnlyWeightIsSet() {
 		User user = new User();
 		user.setHeight(null);
-		user.setWeight(new BigDecimal("80.3"));
+		user.setWeight(BigDecimal.valueOf(80.3));
 		user.setGoal(null);
 		user.setActivityLevel(null);
 
@@ -111,7 +111,7 @@ public class HealthRelatedInfoShouldBeFullValidatorTest {
 	void isValid_shouldReturnFalseWhenHeightIsMissing() {
 		User user = new User();
 		user.setHeight(null);
-		user.setWeight(new BigDecimal("80.3"));
+		user.setWeight(BigDecimal.valueOf(80.3));
 		user.setGoal(Goal.MAINTAIN_WEIGHT);
 		user.setActivityLevel(ActivityLevel.LIGHTLY_ACTIVE);
 
@@ -123,7 +123,7 @@ public class HealthRelatedInfoShouldBeFullValidatorTest {
 	@Test
 	void isValid_shouldReturnFalseWhenWeightIsMissing() {
 		User user = new User();
-		user.setHeight(new BigDecimal("175.5"));
+		user.setHeight(BigDecimal.valueOf(175.5));
 		user.setWeight(null);
 		user.setGoal(Goal.LOSE_WEIGHT);
 		user.setActivityLevel(ActivityLevel.SEDENTARY);
@@ -136,8 +136,8 @@ public class HealthRelatedInfoShouldBeFullValidatorTest {
 	@Test
 	void isValid_shouldReturnFalseWhenGoalIsMissing() {
 		User user = new User();
-		user.setHeight(new BigDecimal("175.5"));
-		user.setWeight(new BigDecimal("80.3"));
+		user.setHeight(BigDecimal.valueOf(175.5));
+		user.setWeight(BigDecimal.valueOf(80.3));
 		user.setGoal(null);
 		user.setActivityLevel(ActivityLevel.SUPER_ACTIVE);
 
@@ -149,8 +149,8 @@ public class HealthRelatedInfoShouldBeFullValidatorTest {
 	@Test
 	void isValid_shouldReturnFalseWhenActivityLevelIsMissing() {
 		User user = new User();
-		user.setHeight(new BigDecimal("175.5"));
-		user.setWeight(new BigDecimal("80.3"));
+		user.setHeight(BigDecimal.valueOf(175.5));
+		user.setWeight(BigDecimal.valueOf(80.3));
 		user.setGoal(Goal.BUILD_MUSCLE);
 		user.setActivityLevel(null);
 
@@ -162,7 +162,7 @@ public class HealthRelatedInfoShouldBeFullValidatorTest {
 	@Test
 	void isValid_shouldReturnFalseWhenMultipleFieldsAreMissing() {
 		User user = new User();
-		user.setHeight(new BigDecimal("175.5"));
+		user.setHeight(BigDecimal.valueOf(175.5));
 		user.setWeight(null);
 		user.setGoal(null);
 		user.setActivityLevel(ActivityLevel.MODERATELY_ACTIVE);

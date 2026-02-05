@@ -26,8 +26,8 @@ public class CommonMappingHelper {
 
 	@Named("mapMediaListToImagesDto")
 	public MediaImagesDto mapMediaListToImagesDto(List<Media> mediaList) {
-		var dto = new MediaImagesDto();
-		var imageNames = mediaList.stream().map(Media::getImageName).toList();
+		MediaImagesDto dto = new MediaImagesDto();
+		List<String> imageNames = mediaList.stream().map(Media::getImageName).toList();
 
 		dto.setImageNames(imageNames);
 
@@ -36,7 +36,7 @@ public class CommonMappingHelper {
 
 	@Named("userToAuthorDto")
 	public AuthorDto userToAuthorDto(User user) {
-		var authorDto = new AuthorDto();
+		AuthorDto authorDto = new AuthorDto();
 		authorDto.setId(user.getId());
 		authorDto.setUsername(user.getUsername());
 		return authorDto;

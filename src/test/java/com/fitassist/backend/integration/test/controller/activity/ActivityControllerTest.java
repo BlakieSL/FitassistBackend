@@ -298,7 +298,7 @@ public class ActivityControllerTest {
 	void calculateActivityCaloriesBurnedWithHealthInfo() throws Exception {
 		CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto();
 		request.setTime((short) 60);
-		request.setWeight(new BigDecimal("80.0"));
+		request.setWeight(BigDecimal.valueOf(80.0));
 
 		mockMvc
 			.perform(post("/api/activities/1/calculate-calories").contentType(MediaType.APPLICATION_JSON)
@@ -327,7 +327,7 @@ public class ActivityControllerTest {
 	void calculateActivityCaloriesBurnedNotFound() throws Exception {
 		CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto();
 		request.setTime((short) 60);
-		request.setWeight(new BigDecimal("80.0"));
+		request.setWeight(BigDecimal.valueOf(80.0));
 
 		mockMvc
 			.perform(post("/api/activities/999/calculate-calories").contentType(MediaType.APPLICATION_JSON)
