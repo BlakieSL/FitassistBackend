@@ -40,8 +40,8 @@ public class UserHealthRelatedInfoTest extends MySqlRedisAwsContainers {
 	@DisplayName("validate - Should validate user when full health-related information provided")
 	public void validateUserWithFullHealthInfo() {
 		User user = createBasicUser();
-		user.setHeight(new BigDecimal("180.5"));
-		user.setWeight(new BigDecimal("75.5"));
+		user.setHeight(BigDecimal.valueOf(180.5));
+		user.setWeight(BigDecimal.valueOf(75.5));
 		user.setGoal(Goal.LOSE_WEIGHT);
 		user.setActivityLevel(ActivityLevel.MODERATELY_ACTIVE);
 
@@ -62,8 +62,8 @@ public class UserHealthRelatedInfoTest extends MySqlRedisAwsContainers {
 	@DisplayName("validate - Should not validate user when provided partial health-related information")
 	public void validateUserWithPartialHealthInfo() {
 		User user = createBasicUser();
-		user.setHeight(new BigDecimal("180.5"));
-		user.setWeight(new BigDecimal("75.5"));
+		user.setHeight(BigDecimal.valueOf(180.5));
+		user.setWeight(BigDecimal.valueOf(75.5));
 		Set<ConstraintViolation<User>> violations = validator.validate(user);
 
 		assertFalse(violations.isEmpty());

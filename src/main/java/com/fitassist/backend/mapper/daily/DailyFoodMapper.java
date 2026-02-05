@@ -26,7 +26,7 @@ public abstract class DailyFoodMapper {
 			DailyCartFood dailyCartFood) {
 		Food food = dailyCartFood.getFood();
 		BigDecimal quantity = dailyCartFood.getQuantity();
-		BigDecimal divisor = new BigDecimal("100");
+		BigDecimal divisor = BigDecimal.valueOf(100);
 		BigDecimal factor = quantity.divide(divisor, 10, RoundingMode.HALF_UP);
 
 		BigDecimal calories = food.getCalories().multiply(factor).setScale(1, RoundingMode.HALF_UP);

@@ -21,7 +21,7 @@ public class FilterCriteria {
 	private Boolean isPublic;
 
 	public static FilterCriteria of(String filterKey, Object value, FilterOperation operation) {
-		var criteria = new FilterCriteria();
+		FilterCriteria criteria = new FilterCriteria();
 		criteria.setFilterKey(filterKey);
 		criteria.setValue(value);
 		criteria.setOperation(operation);

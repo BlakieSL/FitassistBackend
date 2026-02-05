@@ -80,7 +80,7 @@ public class UserControllerTest {
 	@Test
 	@DisplayName("POST - /register - Should register a new user")
 	void registerUser() throws Exception {
-		var request = UserCreateDto.of("newUser", "newUser@gmail.com", "Dimas@123", Gender.FEMALE,
+		UserCreateDto request = UserCreateDto.of("newUser", "newUser@gmail.com", "Dimas@123", Gender.FEMALE,
 				LocalDate.of(2020, 1, 1));
 
 		mockMvc
@@ -242,7 +242,7 @@ public class UserControllerTest {
 		Utils.setUserContext(1);
 		int id = 1;
 
-		var updateDto = new UserUpdateDto();
+		UserUpdateDto updateDto = new UserUpdateDto();
 		updateDto.setUsername("updatedUserPut");
 		updateDto.setEmail("user1@gmail.com");
 		updateDto.setGender(Gender.MALE);
@@ -264,7 +264,7 @@ public class UserControllerTest {
 		Utils.setAdminContext(2);
 		int id = 1;
 
-		var updateDto = new UserUpdateDto();
+		UserUpdateDto updateDto = new UserUpdateDto();
 		updateDto.setUsername("updatedByAdmin");
 		updateDto.setEmail("adminupdated@gmail.com");
 		updateDto.setGender(Gender.FEMALE);
@@ -287,7 +287,7 @@ public class UserControllerTest {
 		Utils.setUserContext(3);
 		int id = 1;
 
-		var updateDto = new UserUpdateDto();
+		UserUpdateDto updateDto = new UserUpdateDto();
 		updateDto.setUsername("shouldNotUpdate");
 
 		mockMvc
@@ -303,7 +303,7 @@ public class UserControllerTest {
 		Utils.setAdminContext(1);
 		int id = 999;
 
-		var updateDto = new UserUpdateDto();
+		UserUpdateDto updateDto = new UserUpdateDto();
 		updateDto.setUsername("shouldNotUpdate");
 
 		mockMvc
@@ -319,7 +319,7 @@ public class UserControllerTest {
 		Utils.setUserContext(1);
 		int id = 1;
 
-		var updateDto = new UserUpdateDto();
+		UserUpdateDto updateDto = new UserUpdateDto();
 		updateDto.setUsername("thisUsernameIsWayTooLongAndShouldFailValidation");
 		updateDto.setEmail("invalid-email");
 
@@ -336,7 +336,7 @@ public class UserControllerTest {
 		Utils.setUserContext(1);
 		int id = 1;
 
-		var updateDto = new UserUpdateDto();
+		UserUpdateDto updateDto = new UserUpdateDto();
 		updateDto.setUsername("partialUpdate");
 
 		mockMvc

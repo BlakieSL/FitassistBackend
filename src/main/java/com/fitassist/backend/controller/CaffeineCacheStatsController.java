@@ -40,7 +40,7 @@ public class CaffeineCacheStatsController {
 		for (String cacheName : CACHE_NAMES_LIST) {
 			Cache cache = cacheManager.getCache(cacheName);
 			if (cache instanceof CaffeineCache caffeineCache) {
-				var nativeCache = caffeineCache.getNativeCache();
+				com.github.benmanes.caffeine.cache.Cache<Object, Object> nativeCache = caffeineCache.getNativeCache();
 				CacheStats stats = nativeCache.stats();
 
 				totalHits += stats.hitCount();
