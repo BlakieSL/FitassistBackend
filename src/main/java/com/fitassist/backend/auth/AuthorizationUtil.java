@@ -1,5 +1,6 @@
 package com.fitassist.backend.auth;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ public class AuthorizationUtil {
 	}
 
 	private static Optional<CustomAuthenticationToken> getAuthToken() {
-		var auth = SecurityContextHolder.getContext().getAuthentication();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth instanceof CustomAuthenticationToken token) {
 			return Optional.of(token);
 		}
@@ -29,7 +30,7 @@ public class AuthorizationUtil {
 	}
 
 	private static boolean hasRole(String role) {
-		var auth = SecurityContextHolder.getContext().getAuthentication();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		return auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(role));
 	}
 

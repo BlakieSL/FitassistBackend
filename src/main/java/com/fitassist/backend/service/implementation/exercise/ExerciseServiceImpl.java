@@ -212,27 +212,27 @@ public class ExerciseServiceImpl implements ExerciseService {
 
 	@Override
 	public ExerciseCategoriesResponseDto getAllExerciseCategories() {
-		var equipments = equipmentRepository.findAll()
+		List<CategoryResponseDto> equipments = equipmentRepository.findAll()
 			.stream()
 			.map(equipment -> new CategoryResponseDto(equipment.getId(), equipment.getName()))
 			.toList();
 
-		var expertiseLevels = expertiseLevelRepository.findAll()
+		List<CategoryResponseDto> expertiseLevels = expertiseLevelRepository.findAll()
 			.stream()
 			.map(expertiseLevel -> new CategoryResponseDto(expertiseLevel.getId(), expertiseLevel.getName()))
 			.toList();
 
-		var forceTypes = forceTypeRepository.findAll()
+		List<CategoryResponseDto> forceTypes = forceTypeRepository.findAll()
 			.stream()
 			.map(forceType -> new CategoryResponseDto(forceType.getId(), forceType.getName()))
 			.toList();
 
-		var mechanicsTypes = mechanicsTypeRepository.findAll()
+		List<CategoryResponseDto> mechanicsTypes = mechanicsTypeRepository.findAll()
 			.stream()
 			.map(mechanicsType -> new CategoryResponseDto(mechanicsType.getId(), mechanicsType.getName()))
 			.toList();
 
-		var targetMuscles = targetMuscleRepository.findAll()
+		List<CategoryResponseDto> targetMuscles = targetMuscleRepository.findAll()
 			.stream()
 			.map(targetMuscle -> new CategoryResponseDto(targetMuscle.getId(), targetMuscle.getName()))
 			.toList();
