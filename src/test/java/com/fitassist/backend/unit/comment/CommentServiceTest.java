@@ -220,11 +220,11 @@ public class CommentServiceTest {
 
 	@Test
 	void deleteComment_shouldDelete() {
-		doNothing().when(commentRepository).deleteCommentDirectly(commentId);
+		doNothing().when(commentRepository).deleteById(commentId);
 
 		commentService.deleteComment(commentId);
 
-		verify(commentRepository).deleteCommentDirectly(commentId);
+		verify(commentRepository).deleteById(commentId);
 	}
 
 	@Test
