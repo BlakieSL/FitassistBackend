@@ -17,7 +17,8 @@ public class Utils {
 	}
 
 	private static void setContext(int userId, String role) {
-		CustomAuthenticationToken auth = new CustomAuthenticationToken("admin", userId, null, List.of(new SimpleGrantedAuthority(role)));
+		CustomAuthenticationToken auth = new CustomAuthenticationToken("admin", userId, null,
+				List.of(new SimpleGrantedAuthority(role)));
 		SecurityContextHolder.getContext().setAuthentication(auth);
 	}
 
