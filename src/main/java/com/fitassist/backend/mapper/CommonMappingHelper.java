@@ -45,7 +45,8 @@ public class CommonMappingHelper {
 
 	public <T extends TextBase> void updateTextAssociations(Set<T> existingItems, List<TextUpdateDto> newItems,
 			Function<TextUpdateDto, T> creator) {
-		Map<Integer, T> existingItemsMap = existingItems.stream().collect(Collectors.toMap(T::getId, Function.identity()));
+		Map<Integer, T> existingItemsMap = existingItems.stream()
+			.collect(Collectors.toMap(T::getId, Function.identity()));
 
 		List<T> updatedItems = newItems.stream().map(dto -> {
 			if (shouldUpdate(dto, existingItemsMap)) {
