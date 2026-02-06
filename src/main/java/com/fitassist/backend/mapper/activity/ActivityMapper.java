@@ -9,6 +9,8 @@ import com.fitassist.backend.mapper.CommonMappingHelper;
 import com.fitassist.backend.model.activity.Activity;
 import org.mapstruct.*;
 
+import java.util.Optional;
+
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class ActivityMapper {
 
@@ -52,9 +54,7 @@ public abstract class ActivityMapper {
 	@AfterMapping
 	protected void updateCategory(@MappingTarget Activity activity, ActivityUpdateDto request,
 			@Context ActivityMappingContext context) {
-		if (context.getCategory() != null) {
-			activity.setActivityCategory(context.getCategory());
-		}
+		Optional.ofNullable(context.getCategory()).ifPresent(activity::setActivityCategory);
 	}
 
 }

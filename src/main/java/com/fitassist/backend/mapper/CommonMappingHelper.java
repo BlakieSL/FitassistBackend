@@ -12,10 +12,11 @@ import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class CommonMappingHelper {
@@ -39,36 +40,32 @@ public class CommonMappingHelper {
 
 	@Named("mapCategoryToResponse")
 	public CategoryResponseDto mapCategoryToResponse(CategoryEntity category) {
-		return Optional.ofNullable(category)
-			.map(c -> new CategoryResponseDto(c.getId(), c.getName()))
-			.orElse(null);
+		return Optional.ofNullable(category).map(c -> new CategoryResponseDto(c.getId(), c.getName())).orElse(null);
 	}
 
 	public <T extends TextBase> void updateTextAssociations(Set<T> existingItems, List<TextUpdateDto> newItems,
 			Function<TextUpdateDto, T> creator) {
+		Map<Integer, T> existingItemsMap = existingItems.stream().collect(Collectors.toMap(T::getId, Function.identity()));
 
-		List<Integer> updatedIds = newItems.stream().map(TextUpdateDto::getId).filter(Objects::nonNull).toList();
-		existingItems.removeIf(item -> !updatedIds.contains(item.getId()));
-
-		for (TextUpdateDto dto : newItems) {
-			if (dto.getId() != null) {
-				existingItems.stream().filter(item -> item.getId().equals(dto.getId())).findFirst().ifPresent(item -> {
-					if (dto.getOrderIndex() != null) {
-						item.setOrderIndex(dto.getOrderIndex());
-					}
-					if (dto.getText() != null) {
-						item.setText(dto.getText());
-					}
-					if (dto.getTitle() != null) {
-						item.setTitle(dto.getTitle());
-					}
-				});
+		List<T> updatedItems = newItems.stream().map(dto -> {
+			if (shouldUpdate(dto, existingItemsMap)) {
+				T existingItem = existingItemsMap.get(dto.getId());
+				Optional.ofNullable(dto.getOrderIndex()).ifPresent(existingItem::setOrderIndex);
+				Optional.ofNullable(dto.getText()).ifPresent(existingItem::setText);
+				Optional.ofNullable(dto.getTitle()).ifPresent(existingItem::setTitle);
+				return existingItem;
 			}
 			else {
-				T newItem = creator.apply(dto);
-				existingItems.add(newItem);
+				return creator.apply(dto);
 			}
-		}
+		}).toList();
+
+		existingItems.clear();
+		existingItems.addAll(updatedItems);
+	}
+
+	private <T extends TextBase> boolean shouldUpdate(TextUpdateDto dto, Map<Integer, T> existingMap) {
+		return dto.getId() != null && existingMap.containsKey(dto.getId());
 	}
 
 }
