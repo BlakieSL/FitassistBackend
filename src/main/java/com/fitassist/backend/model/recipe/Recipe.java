@@ -24,8 +24,8 @@ import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
 
 @Entity
 @Table(name = "recipe")
-@NamedEntityGraph(name = "Recipe.withoutAssociations", attributeNodes = {})
-@NamedEntityGraph(name = "Recipe.summary",
+@NamedEntityGraph(name = Recipe.GRAPH_BASE, attributeNodes = {})
+@NamedEntityGraph(name = Recipe.GRAPH_SUMMARY,
 		attributeNodes = { @NamedAttributeNode("user"), @NamedAttributeNode("mediaList"),
 				@NamedAttributeNode(value = "recipeCategoryAssociations", subgraph = "rca-subgraph") },
 		subgraphs = { @NamedSubgraph(name = "rca-subgraph", attributeNodes = @NamedAttributeNode("recipeCategory")) })
@@ -34,6 +34,10 @@ import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Recipe implements IndexedEntity {
+
+	public static final String GRAPH_BASE = "Recipe.base";
+
+	public static final String GRAPH_SUMMARY = "Recipe.summary";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -12,9 +12,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static com.fitassist.backend.model.daily.DailyCart.*;
+
 public interface DailyCartRepository extends JpaRepository<DailyCart, Integer> {
 
-	@EntityGraph(value = "DailyCart.withoutAssociations")
+	@EntityGraph(value = GRAPH_BASE)
 	Optional<DailyCart> findByUserIdAndDate(int userId, LocalDate date);
 
 	@Query("""

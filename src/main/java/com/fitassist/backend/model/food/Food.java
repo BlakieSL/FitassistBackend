@@ -23,14 +23,18 @@ import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
 
 @Entity
 @Table(name = "food")
-@NamedEntityGraph(name = "Food.withoutAssociations", attributeNodes = {})
-@NamedEntityGraph(name = "Food.summary",
+@NamedEntityGraph(name = Food.GRAPH_BASE, attributeNodes = {})
+@NamedEntityGraph(name = Food.GRAPH_SUMMARY,
 		attributeNodes = { @NamedAttributeNode("foodCategory"), @NamedAttributeNode("mediaList") })
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Food implements IndexedEntity {
+
+	public static final String GRAPH_BASE = "Food.base";
+
+	public static final String GRAPH_SUMMARY = "Food.summary";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

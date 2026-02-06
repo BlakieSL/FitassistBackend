@@ -12,20 +12,22 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.List;
 import java.util.Optional;
 
+import static com.fitassist.backend.model.thread.ForumThread.*;
+
 public interface ForumThreadRepository
 		extends JpaRepository<ForumThread, Integer>, JpaSpecificationExecutor<ForumThread> {
 
-	@EntityGraph(value = "ForumThread.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@NotNull
 	@Override
 	Page<ForumThread> findAll(Specification<ForumThread> spec, @NotNull Pageable pageable);
 
-	@EntityGraph(value = "ForumThread.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@NotNull
 	@Override
 	Optional<ForumThread> findById(@NotNull Integer id);
 
-	@EntityGraph(value = "ForumThread.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@NotNull
 	List<ForumThread> findAll();
 

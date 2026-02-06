@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_food")
-@NamedEntityGraph(name = "UserFood.withFoodDetails",
+@NamedEntityGraph(name = UserFood.GRAPH_WITH_FOOD_DETAILS,
 		attributeNodes = { @NamedAttributeNode(value = "food", subgraph = "food-subgraph") },
 		subgraphs = { @NamedSubgraph(name = "food-subgraph",
 				attributeNodes = { @NamedAttributeNode("foodCategory"), @NamedAttributeNode("mediaList") }) })
@@ -22,6 +22,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserFood {
+
+	public static final String GRAPH_WITH_FOOD_DETAILS = "UserFood.withFoodDetails";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
