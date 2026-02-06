@@ -148,7 +148,7 @@ public class PlanServiceTest {
 		when(planMapper.toEntity(eq(createDto), any(PlanMappingContext.class))).thenReturn(plan);
 		when(planRepository.save(plan)).thenReturn(plan);
 		when(planRepository.findByIdWithDetails(planId)).thenReturn(Optional.of(plan));
-		when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
+		when(planMapper.toResponse(plan)).thenReturn(responseDto);
 
 		PlanResponseDto result = planService.createPlan(createDto);
 
@@ -165,7 +165,7 @@ public class PlanServiceTest {
 		when(planMapper.toEntity(eq(createDto), any(PlanMappingContext.class))).thenReturn(plan);
 		when(planRepository.save(plan)).thenReturn(plan);
 		when(planRepository.findByIdWithDetails(planId)).thenReturn(Optional.of(plan));
-		when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
+		when(planMapper.toResponse(plan)).thenReturn(responseDto);
 
 		planService.createPlan(createDto);
 
@@ -192,7 +192,7 @@ public class PlanServiceTest {
 		planService.updatePlan(planId, patch);
 
 		verify(validationService).validate(patchedDto);
-		verify(planMapper).updatePlan(eq(plan), eq(patchedDto), any(PlanMappingContext.class));
+		verify(planMapper).update(eq(plan), eq(patchedDto), any(PlanMappingContext.class));
 		verify(planRepository).save(plan);
 	}
 
@@ -271,7 +271,7 @@ public class PlanServiceTest {
 	@Test
 	void getPlan_shouldReturnPlanWhenFound() {
 		when(planRepository.findByIdWithDetails(planId)).thenReturn(Optional.of(plan));
-		when(planMapper.toResponseDto(plan)).thenReturn(responseDto);
+		when(planMapper.toResponse(plan)).thenReturn(responseDto);
 
 		PlanResponseDto result = planService.getPlan(planId);
 
@@ -293,14 +293,14 @@ public class PlanServiceTest {
 		Page<Plan> planPage = new PageImpl<>(List.of(plan), pageable, 1);
 
 		when(planRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(planPage);
-		when(planMapper.toSummaryDto(plan)).thenReturn(summaryDto);
+		when(planMapper.toSummary(plan)).thenReturn(summaryDto);
 
 		Page<PlanSummaryDto> result = planService.getFilteredPlans(filter, pageable);
 
 		assertEquals(1, result.getTotalElements());
 		assertSame(summaryDto, result.getContent().get(0));
 		verify(planRepository).findAll(any(Specification.class), eq(pageable));
-		verify(planMapper).toSummaryDto(plan);
+		verify(planMapper).toSummary(plan);
 		verify(planPopulationService).populate(anyList());
 	}
 

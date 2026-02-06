@@ -115,7 +115,7 @@ public class PlanServiceImpl implements PlanService {
 		Plan plan = planRepository.findByIdWithDetails(planId)
 			.orElseThrow(() -> RecordNotFoundException.of(Plan.class, planId));
 
-		PlanResponseDto dto = planMapper.toResponseDto(plan);
+		PlanResponseDto dto = planMapper.toResponse(plan);
 		planPopulationService.populate(dto);
 
 		return dto;
@@ -158,7 +158,7 @@ public class PlanServiceImpl implements PlanService {
 		validationService.validate(patchedPlanUpdateDto);
 
 		PlanMappingContext context = prepareUpdateContext(patchedPlanUpdateDto);
-		planMapper.updatePlan(plan, patchedPlanUpdateDto, context);
+		planMapper.update(plan, patchedPlanUpdateDto, context);
 
 		Plan savedPlan = planRepository.save(plan);
 		applicationEventPublisher.publishEvent(PlanUpdateEvent.of(this, savedPlan));
@@ -212,7 +212,7 @@ public class PlanServiceImpl implements PlanService {
 		Specification<Plan> specification = specificationBuilder.build();
 
 		Page<Plan> planPage = planRepository.findAll(specification, pageable);
-		List<PlanSummaryDto> summaries = planPage.getContent().stream().map(planMapper::toSummaryDto).toList();
+		List<PlanSummaryDto> summaries = planPage.getContent().stream().map(planMapper::toSummary).toList();
 
 		planPopulationService.populate(summaries);
 

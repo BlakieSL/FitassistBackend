@@ -93,11 +93,6 @@ public class Recipe implements IndexedEntity {
 	@SQLRestriction("parentType = 'RECIPE'")
 	private List<Media> mediaList = new ArrayList<>();
 
-	@Override
-	public String getClassName() {
-		return this.getClass().getSimpleName();
-	}
-
 	@PrePersist
 	protected void onCreate() {
 		createdAt = LocalDateTime.now();

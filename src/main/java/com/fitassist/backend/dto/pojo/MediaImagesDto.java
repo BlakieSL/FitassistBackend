@@ -19,4 +19,8 @@ public class MediaImagesDto implements Serializable {
 
 	private List<String> imageUrls = new ArrayList<>();
 
+	public static MediaImagesDto ofNames(List<String> names) {
+		return new MediaImagesDto(names, null);
+	}
+
 }

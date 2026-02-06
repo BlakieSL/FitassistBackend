@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring", uses = CommonMappingHelper.class)
 public abstract class UserMapper {
 
-	@Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToRolesNames")
+	@Mapping(source = "roles", target = "roles", qualifiedByName = "mapRolesToNames")
 	public abstract UserCredentialsDto toDetails(User user);
 
 	@Mapping(target = "calculatedCalories", ignore = true)
 	@Mapping(target = "userImageUrl", ignore = true)
-	@Mapping(source = "roles", target = "roles", qualifiedByName = "rolesToRoleEnums")
+	@Mapping(source = "roles", target = "roles", qualifiedByName = "mapRolesToEnums")
 	public abstract UserResponseDto toResponse(User user);
 
 	@Mapping(source = "user", target = ".", qualifiedByName = "userToAuthorDto")
@@ -67,15 +67,15 @@ public abstract class UserMapper {
 	@Mapping(target = "recipes", ignore = true)
 	@Mapping(target = "plans", ignore = true)
 	@Mapping(target = "mediaList", ignore = true)
-	public abstract void updateUserFromDto(@MappingTarget User user, UserUpdateDto request);
+	public abstract void update(@MappingTarget User user, UserUpdateDto request);
 
-	@Named("rolesToRolesNames")
-	Set<String> rolesToRolesNames(Set<Role> roles) {
+	@Named("mapRolesToNames")
+	Set<String> mapRolesToNames(Set<Role> roles) {
 		return roles.stream().map(role -> role.getName().name()).collect(Collectors.toSet());
 	}
 
-	@Named("rolesToRoleEnums")
-	Set<RoleEnum> rolesToRoleEnums(Set<Role> roles) {
+	@Named("mapRolesToEnums")
+	Set<RoleEnum> mapRolesToEnums(Set<Role> roles) {
 		return roles.stream().map(Role::getName).collect(Collectors.toSet());
 	}
 

@@ -3,6 +3,7 @@ package com.fitassist.backend.dto.response.food;
 import com.fitassist.backend.dto.pojo.FoodMacros;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
+import com.fitassist.backend.model.food.Food;
 import lombok.*;
 
 import java.io.Serializable;
@@ -47,5 +48,9 @@ public class FoodSummaryDto implements UserEntitySummaryResponseDto, Serializabl
 	private long savesCount;
 
 	private Boolean saved;
+
+	public static FoodMacros createFoodMacros(Food food) {
+		return FoodMacros.of(food.getCalories(), food.getProtein(), food.getFat(), food.getCarbohydrates());
+	}
 
 }

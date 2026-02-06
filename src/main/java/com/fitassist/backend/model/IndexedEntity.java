@@ -6,6 +6,8 @@ public interface IndexedEntity {
 
 	String getName();
 
-	String getClassName();
+	default String getClassName() {
+		return this.getClass().getSimpleName();
+	}
 
 }

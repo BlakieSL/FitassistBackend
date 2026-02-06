@@ -104,7 +104,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 		eventPublisher.publishEvent(ActivityCreateEvent.of(this, activity));
 
-		ActivityResponseDto responseDto = activityMapper.toDetailedResponseDto(activity);
+		ActivityResponseDto responseDto = activityMapper.toResponse(activity);
 		activityPopulationService.populate(responseDto);
 
 		return responseDto;
@@ -132,7 +132,7 @@ public class ActivityServiceImpl implements ActivityService {
 		validationService.validate(patched);
 
 		ActivityMappingContext context = prepareUpdateContext(patched);
-		activityMapper.updateActivityFromDto(activity, patched, context);
+		activityMapper.update(activity, patched, context);
 
 		Activity saved = activityRepository.save(activity);
 
@@ -182,10 +182,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 		Page<Activity> activityPage = activityRepository.findAll(specification, pageable);
 
-		List<ActivitySummaryDto> summaries = activityPage.getContent()
-			.stream()
-			.map(activityMapper::toSummaryDto)
-			.toList();
+		List<ActivitySummaryDto> summaries = activityPage.getContent().stream().map(activityMapper::toSummary).toList();
 
 		activityPopulationService.populate(summaries);
 
@@ -209,7 +206,7 @@ public class ActivityServiceImpl implements ActivityService {
 	private ActivityResponseDto findAndMap(int activityId) {
 		Activity activity = activityRepository.findByIdWithMedia(activityId)
 			.orElseThrow(() -> RecordNotFoundException.of(Activity.class, activityId));
-		ActivityResponseDto dto = activityMapper.toDetailedResponseDto(activity);
+		ActivityResponseDto dto = activityMapper.toResponse(activity);
 		activityPopulationService.populate(dto);
 		return dto;
 	}

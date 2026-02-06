@@ -143,7 +143,7 @@ public class CommentServiceImpl implements CommentService {
 
 		Page<Comment> commentPage = commentRepository.findAll(specification, pageable);
 
-		List<CommentSummaryDto> summaries = commentPage.getContent().stream().map(commentMapper::toSummaryDto).toList();
+		List<CommentSummaryDto> summaries = commentPage.getContent().stream().map(commentMapper::toSummary).toList();
 
 		commentPopulationService.populate(summaries);
 
@@ -178,7 +178,7 @@ public class CommentServiceImpl implements CommentService {
 			total = commentPage.getTotalElements();
 		}
 
-		List<CommentResponseDto> dtos = comments.stream().map(commentMapper::toResponseDto).toList();
+		List<CommentResponseDto> dtos = comments.stream().map(commentMapper::toResponse).toList();
 
 		commentPopulationService.populateList(dtos);
 
@@ -257,7 +257,7 @@ public class CommentServiceImpl implements CommentService {
 	private CommentResponseDto findAndMap(int commentId) {
 		Comment comment = commentRepository.findById(commentId)
 			.orElseThrow(() -> new RecordNotFoundException(Comment.class, commentId));
-		CommentResponseDto dto = commentMapper.toResponseDto(comment);
+		CommentResponseDto dto = commentMapper.toResponse(comment);
 		commentPopulationService.populate(dto);
 
 		return dto;

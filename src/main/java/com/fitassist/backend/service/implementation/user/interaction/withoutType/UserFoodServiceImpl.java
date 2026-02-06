@@ -33,7 +33,7 @@ public class UserFoodServiceImpl extends GenericSavedServiceWithoutType<Food, Us
 	public UserFoodServiceImpl(UserRepository userRepository, JpaRepository<Food, Integer> entityRepository,
 			JpaRepository<UserFood, Integer> userEntityRepository, FoodMapper mapper,
 			FoodPopulationService foodPopulationService) {
-		super(userRepository, entityRepository, userEntityRepository, mapper::toSummaryDto, Food.class);
+		super(userRepository, entityRepository, userEntityRepository, mapper::toSummary, Food.class);
 		this.foodMapper = mapper;
 		this.foodPopulationService = foodPopulationService;
 	}
@@ -61,7 +61,7 @@ public class UserFoodServiceImpl extends GenericSavedServiceWithoutType<Food, Us
 				pageable);
 
 		List<FoodSummaryDto> summaries = userFoodPage.getContent().stream().map(uf -> {
-			FoodSummaryDto dto = foodMapper.toSummaryDto(uf.getFood());
+			FoodSummaryDto dto = foodMapper.toSummary(uf.getFood());
 			dto.setInteractionCreatedAt(uf.getCreatedAt());
 			return dto;
 		}).toList();

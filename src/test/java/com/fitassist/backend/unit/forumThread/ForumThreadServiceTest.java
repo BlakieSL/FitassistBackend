@@ -129,7 +129,7 @@ public class ForumThreadServiceTest {
 		when(forumThreadMapper.toEntity(eq(createDto), any(ForumThreadMappingContext.class))).thenReturn(forumThread);
 		when(forumThreadRepository.save(forumThread)).thenReturn(forumThread);
 		when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId)).thenReturn(forumThread);
-		when(forumThreadMapper.toResponseDto(forumThread)).thenReturn(responseDto);
+		when(forumThreadMapper.toResponse(forumThread)).thenReturn(responseDto);
 
 		ForumThreadResponseDto result = forumThreadService.createForumThread(createDto);
 
@@ -217,7 +217,7 @@ public class ForumThreadServiceTest {
 	@Test
 	void getForumThread_shouldReturnForumThreadWhenFound() {
 		when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId)).thenReturn(forumThread);
-		when(forumThreadMapper.toResponseDto(forumThread)).thenReturn(responseDto);
+		when(forumThreadMapper.toResponse(forumThread)).thenReturn(responseDto);
 
 		ForumThreadResponseDto result = forumThreadService.getForumThread(threadId);
 

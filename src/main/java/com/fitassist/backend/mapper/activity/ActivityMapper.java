@@ -14,26 +14,26 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class ActivityMapper {
 
-	@Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
+	@Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapCategoryToResponse")
 	@Mapping(target = "images", source = "mediaList", qualifiedByName = "mapMediaListToImagesDto")
 	@Mapping(target = "savesCount", ignore = true)
 	@Mapping(target = "saved", ignore = true)
-	public abstract ActivityResponseDto toDetailedResponseDto(Activity activity);
+	public abstract ActivityResponseDto toResponse(Activity activity);
 
-	@Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
+	@Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapCategoryToResponse")
 	@Mapping(target = "imageName", source = "mediaList", qualifiedByName = "mapMediaToFirstImageName")
 	@Mapping(target = "firstImageUrl", ignore = true)
 	@Mapping(target = "interactionCreatedAt", ignore = true)
 	@Mapping(target = "savesCount", ignore = true)
 	@Mapping(target = "saved", ignore = true)
-	public abstract ActivitySummaryDto toSummaryDto(Activity activity);
+	public abstract ActivitySummaryDto toSummary(Activity activity);
 
-	@Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapActivityCategoryToResponseDto")
+	@Mapping(target = "category", source = "activityCategory", qualifiedByName = "mapCategoryToResponse")
 	@Mapping(target = "dailyItemId", ignore = true)
 	@Mapping(target = "caloriesBurned", ignore = true)
 	@Mapping(target = "time", ignore = true)
 	@Mapping(target = "weight", ignore = true)
-	public abstract ActivityCalculatedResponseDto toCalculatedDto(Activity activity);
+	public abstract ActivityCalculatedResponseDto toCalculated(Activity activity);
 
 	@Mapping(target = "activityCategory", expression = "java(context.getCategory())")
 	@Mapping(target = "id", ignore = true)
@@ -48,7 +48,7 @@ public abstract class ActivityMapper {
 	@Mapping(target = "dailyCartActivities", ignore = true)
 	@Mapping(target = "userActivities", ignore = true)
 	@Mapping(target = "mediaList", ignore = true)
-	public abstract void updateActivityFromDto(@MappingTarget Activity activity, ActivityUpdateDto request,
+	public abstract void update(@MappingTarget Activity activity, ActivityUpdateDto request,
 			@Context ActivityMappingContext context);
 
 	@AfterMapping
@@ -59,8 +59,8 @@ public abstract class ActivityMapper {
 		}
 	}
 
-	@Named("mapActivityCategoryToResponseDto")
-	protected CategoryResponseDto mapActivityCategoryToResponseDto(ActivityCategory category) {
+	@Named("mapCategoryToResponse")
+	protected CategoryResponseDto mapCategoryToResponse(ActivityCategory category) {
 		return new CategoryResponseDto(category.getId(), category.getName());
 	}
 

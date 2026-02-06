@@ -213,16 +213,16 @@ public class UserCommentServiceTest {
 		Page<UserComment> userCommentPage = new PageImpl<>(List.of(uc1, uc2), pageable, 2);
 		when(userCommentRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
 			.thenReturn(userCommentPage);
-		when(commentMapper.toSummaryDto(comment1)).thenReturn(dto1);
-		when(commentMapper.toSummaryDto(comment2)).thenReturn(dto2);
+		when(commentMapper.toSummary(comment1)).thenReturn(dto1);
+		when(commentMapper.toSummary(comment2)).thenReturn(dto2);
 
 		Page<UserEntitySummaryResponseDto> result = userCommentService.getAllFromUser(userId, type, pageable);
 
 		assertEquals(2, result.getContent().size());
 		assertEquals(2, result.getTotalElements());
 		verify(userCommentRepository).findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class));
-		verify(commentMapper).toSummaryDto(comment1);
-		verify(commentMapper).toSummaryDto(comment2);
+		verify(commentMapper).toSummary(comment1);
+		verify(commentMapper).toSummary(comment2);
 		verify(commentPopulationService).populate(any(List.class));
 	}
 

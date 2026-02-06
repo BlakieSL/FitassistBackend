@@ -15,6 +15,7 @@ import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
@@ -27,29 +28,29 @@ public abstract class ExerciseMapper {
 		this.commonMappingHelper = commonMappingHelper;
 	}
 
-	@Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseLevelToDto")
-	@Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsTypeToDto")
-	@Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceTypeToDto")
-	@Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToDto")
+	@Mapping(target = "targetMuscles", source = "exerciseTargetMuscles", qualifiedByName = "mapTargetMusclesToResponse")
+	@Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseLevelToResponse")
+	@Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsTypeToResponse")
+	@Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceTypeToResponse")
+	@Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToResponse")
+	@Mapping(target = "instructions", source = "exerciseInstructions", qualifiedByName = "mapInstructionsToResponse")
+	@Mapping(target = "tips", source = "exerciseTips", qualifiedByName = "mapTipsToResponse")
+	@Mapping(target = "imageUrls", ignore = true)
+	@Mapping(target = "plans", ignore = true)
+	@Mapping(target = "savesCount", ignore = true)
+	@Mapping(target = "saved", ignore = true)
+	public abstract ExerciseResponseDto toResponse(Exercise exercise);
+
+	@Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseLevelToResponse")
+	@Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsTypeToResponse")
+	@Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceTypeToResponse")
+	@Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToResponse")
 	@Mapping(target = "imageName", source = "mediaList", qualifiedByName = "mapMediaToFirstImageName")
 	@Mapping(target = "firstImageUrl", ignore = true)
 	@Mapping(target = "interactionCreatedAt", ignore = true)
 	@Mapping(target = "savesCount", ignore = true)
 	@Mapping(target = "saved", ignore = true)
-	public abstract ExerciseSummaryDto toSummaryDto(Exercise exercise);
-
-	@Mapping(target = "targetMuscles", source = "exerciseTargetMuscles", qualifiedByName = "mapTargetMusclesToDto")
-	@Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseLevelToDto")
-	@Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsTypeToDto")
-	@Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceTypeToDto")
-	@Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToDto")
-	@Mapping(target = "instructions", source = "exerciseInstructions", qualifiedByName = "mapInstructionsToDto")
-	@Mapping(target = "tips", source = "exerciseTips", qualifiedByName = "mapTipsToDto")
-	@Mapping(target = "imageUrls", ignore = true)
-	@Mapping(target = "plans", ignore = true)
-	@Mapping(target = "savesCount", ignore = true)
-	@Mapping(target = "saved", ignore = true)
-	public abstract ExerciseResponseDto toResponseDto(Exercise exercise);
+	public abstract ExerciseSummaryDto toSummary(Exercise exercise);
 
 	@Mapping(target = "exerciseTargetMuscles", ignore = true)
 	@Mapping(target = "expertiseLevel", expression = "java(context.getExpertiseLevel())")
@@ -64,29 +65,14 @@ public abstract class ExerciseMapper {
 	@Mapping(target = "mediaList", ignore = true)
 	public abstract Exercise toEntity(ExerciseCreateDto dto, @Context ExerciseMappingContext context);
 
-	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-	@Mapping(target = "exerciseTargetMuscles", ignore = true)
-	@Mapping(target = "expertiseLevel", ignore = true)
-	@Mapping(target = "mechanicsType", ignore = true)
-	@Mapping(target = "forceType", ignore = true)
-	@Mapping(target = "equipment", ignore = true)
-	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "userExercises", ignore = true)
-	@Mapping(target = "workoutSetExercises", ignore = true)
-	@Mapping(target = "exerciseInstructions", ignore = true)
-	@Mapping(target = "exerciseTips", ignore = true)
-	@Mapping(target = "mediaList", ignore = true)
-	public abstract void updateExerciseFromDto(@MappingTarget Exercise exercise, ExerciseUpdateDto request,
-			@Context ExerciseMappingContext context);
-
 	@AfterMapping
-	protected void setExerciseAssociations(@MappingTarget Exercise exercise, ExerciseCreateDto dto,
+	protected void setAssociations(@MappingTarget Exercise exercise, ExerciseCreateDto dto,
 			@Context ExerciseMappingContext context) {
 		if (dto.getInstructions() != null) {
 			List<ExerciseInstruction> instructions = dto.getInstructions()
 				.stream()
-				.map(instructionDto -> ExerciseInstruction.of(instructionDto.getOrderIndex(), instructionDto.getTitle(),
-						instructionDto.getText(), exercise))
+				.map(instDto -> ExerciseInstruction.of(instDto.getOrderIndex(), instDto.getTitle(), instDto.getText(),
+						exercise))
 				.toList();
 
 			exercise.getExerciseInstructions().addAll(instructions);
@@ -104,12 +90,27 @@ public abstract class ExerciseMapper {
 		if (context.getTargetMuscles() != null) {
 			List<ExerciseTargetMuscle> targetMuscles = context.getTargetMuscles()
 				.stream()
-				.map(tm -> ExerciseTargetMuscle.createWithTargetMuscleExercise(tm, exercise))
+				.map(targetMuscle -> ExerciseTargetMuscle.createWithTargetMuscleExercise(targetMuscle, exercise))
 				.toList();
 
 			exercise.getExerciseTargetMuscles().addAll(targetMuscles);
 		}
 	}
+
+	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "exerciseTargetMuscles", ignore = true)
+	@Mapping(target = "expertiseLevel", ignore = true)
+	@Mapping(target = "mechanicsType", ignore = true)
+	@Mapping(target = "forceType", ignore = true)
+	@Mapping(target = "equipment", ignore = true)
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "userExercises", ignore = true)
+	@Mapping(target = "workoutSetExercises", ignore = true)
+	@Mapping(target = "exerciseInstructions", ignore = true)
+	@Mapping(target = "exerciseTips", ignore = true)
+	@Mapping(target = "mediaList", ignore = true)
+	public abstract void update(@MappingTarget Exercise exercise, ExerciseUpdateDto request,
+			@Context ExerciseMappingContext context);
 
 	@AfterMapping
 	protected void updateAssociations(@MappingTarget Exercise exercise, ExerciseUpdateDto dto,
@@ -135,7 +136,7 @@ public abstract class ExerciseMapper {
 
 			List<ExerciseTargetMuscle> targetMuscles = context.getTargetMuscles()
 				.stream()
-				.map(tm -> ExerciseTargetMuscle.createWithTargetMuscleExercise(tm, exercise))
+				.map(targetMuscle -> ExerciseTargetMuscle.createWithTargetMuscleExercise(targetMuscle, exercise))
 				.toList();
 
 			exercise.getExerciseTargetMuscles().addAll(targetMuscles);
@@ -143,8 +144,8 @@ public abstract class ExerciseMapper {
 
 		if (dto.getInstructions() != null) {
 			commonMappingHelper.updateTextAssociations(exercise.getExerciseInstructions(), dto.getInstructions(),
-					instructionDto -> ExerciseInstruction.of(instructionDto.getOrderIndex(), instructionDto.getTitle(),
-							instructionDto.getText(), exercise));
+					instDto -> ExerciseInstruction.of(instDto.getOrderIndex(), instDto.getTitle(), instDto.getText(),
+							exercise));
 		}
 
 		if (dto.getTips() != null) {
@@ -153,44 +154,46 @@ public abstract class ExerciseMapper {
 		}
 	}
 
-	@Named("mapTargetMusclesToDto")
-	protected List<TargetMuscleResponseDto> mapTargetMusclesToDto(Set<ExerciseTargetMuscle> associations) {
+	@Named("mapTargetMusclesToResponse")
+	protected List<TargetMuscleResponseDto> mapTargetMusclesToResponse(Set<ExerciseTargetMuscle> associations) {
 		return associations.stream()
 			.map(association -> TargetMuscleResponseDto.create(association.getTargetMuscle().getId(),
 					association.getTargetMuscle().getName(), association.getPriority()))
 			.toList();
 	}
 
-	@Named("mapExpertiseLevelToDto")
-	protected CategoryResponseDto mapExpertiseLevelToDto(ExpertiseLevel expertiseLevel) {
+	@Named("mapExpertiseLevelToResponse")
+	protected CategoryResponseDto mapExpertiseLevelToResponse(ExpertiseLevel expertiseLevel) {
 		return new CategoryResponseDto(expertiseLevel.getId(), expertiseLevel.getName());
 	}
 
-	@Named("mapMechanicsTypeToDto")
-	protected CategoryResponseDto mapMechanicsTypeToDto(MechanicsType mechanicsType) {
-		return mechanicsType != null ? new CategoryResponseDto(mechanicsType.getId(), mechanicsType.getName()) : null;
+	@Named("mapMechanicsTypeToResponse")
+	protected CategoryResponseDto mapMechanicsTypeToResponse(MechanicsType mechanicsType) {
+		return Optional.ofNullable(mechanicsType)
+			.map(mt -> new CategoryResponseDto(mt.getId(), mt.getName()))
+			.orElse(null);
 	}
 
-	@Named("mapForceTypeToDto")
-	protected CategoryResponseDto mapForceTypeToDto(ForceType forceType) {
-		return forceType != null ? new CategoryResponseDto(forceType.getId(), forceType.getName()) : null;
+	@Named("mapForceTypeToResponse")
+	protected CategoryResponseDto mapForceTypeToResponse(ForceType forceType) {
+		return Optional.ofNullable(forceType).map(ft -> new CategoryResponseDto(ft.getId(), ft.getName())).orElse(null);
 	}
 
-	@Named("mapEquipmentToDto")
-	protected CategoryResponseDto mapEquipmentToDto(Equipment equipment) {
-		return equipment != null ? new CategoryResponseDto(equipment.getId(), equipment.getName()) : null;
+	@Named("mapEquipmentToResponse")
+	protected CategoryResponseDto mapEquipmentToResponse(Equipment equipment) {
+		return Optional.ofNullable(equipment).map(e -> new CategoryResponseDto(e.getId(), e.getName())).orElse(null);
 	}
 
-	@Named("mapInstructionsToDto")
-	protected List<TextResponseDto> mapInstructionsToDto(Set<ExerciseInstruction> instructions) {
+	@Named("mapInstructionsToResponse")
+	protected List<TextResponseDto> mapInstructionsToResponse(Set<ExerciseInstruction> instructions) {
 		return instructions.stream()
 			.map(instruction -> new TextResponseDto(instruction.getId(), instruction.getOrderIndex(),
 					instruction.getText(), instruction.getTitle()))
 			.toList();
 	}
 
-	@Named("mapTipsToDto")
-	protected List<TextResponseDto> mapTipsToDto(Set<ExerciseTip> tips) {
+	@Named("mapTipsToResponse")
+	protected List<TextResponseDto> mapTipsToResponse(Set<ExerciseTip> tips) {
 		return tips.stream()
 			.map(tip -> new TextResponseDto(tip.getId(), tip.getOrderIndex(), tip.getText(), tip.getTitle()))
 			.toList();

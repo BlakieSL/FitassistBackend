@@ -92,7 +92,7 @@ public class FoodCategoryServiceTest {
 	void createCategory_shouldCreate() {
 		when(mapper.toEntity(createDto)).thenReturn(category);
 		when(repository.save(category)).thenReturn(category);
-		when(mapper.toResponseDto(category)).thenReturn(responseDto);
+		when(mapper.toResponse(category)).thenReturn(responseDto);
 
 		CategoryResponseDto result = foodCategoryService.createCategory(createDto);
 
@@ -105,7 +105,7 @@ public class FoodCategoryServiceTest {
 
 		when(mapper.toEntity(createDto)).thenReturn(category);
 		when(repository.save(category)).thenReturn(category);
-		when(mapper.toResponseDto(category)).thenReturn(responseDto);
+		when(mapper.toResponse(category)).thenReturn(responseDto);
 		when(cacheKeyGenerator.generateCacheKey()).thenReturn(cacheKey);
 
 		foodCategoryService.createCategory(createDto);
@@ -123,7 +123,7 @@ public class FoodCategoryServiceTest {
 		foodCategoryService.updateCategory(categoryId, patch);
 
 		verify(validationService).validate(patchedDto);
-		verify(mapper).updateEntityFromDto(category, patchedDto);
+		verify(mapper).update(category, patchedDto);
 		verify(repository).save(category);
 	}
 
@@ -240,12 +240,12 @@ public class FoodCategoryServiceTest {
 		when(cacheManager.getCache("allCategories")).thenReturn(cache);
 		when(cache.get(cacheKey)).thenReturn(null);
 		when(repository.findAll()).thenReturn(List.of(category));
-		when(mapper.toResponseDto(category)).thenReturn(responseDto);
+		when(mapper.toResponse(category)).thenReturn(responseDto);
 
 		List<CategoryResponseDto> result = foodCategoryService.getAllCategories();
 
 		verify(repository).findAll();
-		verify(mapper).toResponseDto(category);
+		verify(mapper).toResponse(category);
 		verify(applicationEventPublisher).publishEvent(eventCaptor.capture());
 		assertEquals(cacheKey, eventCaptor.getValue().getCacheKey());
 		assertEquals(fetchedCategories, result);
@@ -305,7 +305,7 @@ public class FoodCategoryServiceTest {
 	void getCategory_shouldReturnCategoryWhenFound() {
 		int categoryId = 1;
 		when(repository.findById(categoryId)).thenReturn(Optional.of(category));
-		when(mapper.toResponseDto(category)).thenReturn(responseDto);
+		when(mapper.toResponse(category)).thenReturn(responseDto);
 
 		CategoryResponseDto result = foodCategoryService.getCategory(categoryId);
 

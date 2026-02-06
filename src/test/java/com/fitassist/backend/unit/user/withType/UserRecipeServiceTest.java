@@ -210,8 +210,8 @@ public class UserRecipeServiceTest {
 		when(userRecipeRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
 			.thenReturn(userRecipePage);
 		when(recipeRepository.findByIdsWithDetails(any())).thenReturn(List.of(recipe1, recipe2));
-		when(recipeMapper.toSummaryDto(recipe1)).thenReturn(dto1);
-		when(recipeMapper.toSummaryDto(recipe2)).thenReturn(dto2);
+		when(recipeMapper.toSummary(recipe1)).thenReturn(dto1);
+		when(recipeMapper.toSummary(recipe2)).thenReturn(dto2);
 
 		Page<UserEntitySummaryResponseDto> result = userRecipeService.getAllFromUser(userId, type, pageable);
 

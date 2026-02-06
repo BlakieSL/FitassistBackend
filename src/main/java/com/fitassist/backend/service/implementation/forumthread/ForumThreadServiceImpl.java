@@ -134,7 +134,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 
 	private ForumThreadResponseDto findAndMap(int threadId) {
 		ForumThread thread = find(threadId);
-		ForumThreadResponseDto responseDto = forumThreadMapper.toResponseDto(thread);
+		ForumThreadResponseDto responseDto = forumThreadMapper.toResponse(thread);
 		forumThreadPopulationService.populate(responseDto);
 		return responseDto;
 	}
@@ -150,7 +150,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 
 		List<ForumThreadSummaryDto> summaries = threadPage.getContent()
 			.stream()
-			.map(forumThreadMapper::toSummaryDto)
+			.map(forumThreadMapper::toSummary)
 			.toList();
 
 		forumThreadPopulationService.populate(summaries);

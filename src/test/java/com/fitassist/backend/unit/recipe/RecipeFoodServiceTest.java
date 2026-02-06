@@ -193,7 +193,7 @@ public class RecipeFoodServiceTest {
 	@Test
 	void getFoodsByRecipe_shouldReturnFoodsByRecipe() {
 		when(recipeFoodRepository.findByRecipeId(recipeId)).thenReturn(List.of(recipeFood));
-		when(foodMapper.toSummaryDto(food)).thenReturn(foodSummaryDto);
+		when(foodMapper.toSummary(food)).thenReturn(foodSummaryDto);
 
 		List<FoodSummaryDto> result = recipeFoodService.getFoodsByRecipe(recipeId);
 

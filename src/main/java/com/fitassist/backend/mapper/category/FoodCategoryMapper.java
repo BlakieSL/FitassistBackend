@@ -9,7 +9,7 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public abstract class FoodCategoryMapper implements BaseMapper<FoodCategory> {
 
-	public abstract CategoryResponseDto toResponseDto(FoodCategory category);
+	public abstract CategoryResponseDto toResponse(FoodCategory category);
 
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "foods", ignore = true)
@@ -18,6 +18,6 @@ public abstract class FoodCategoryMapper implements BaseMapper<FoodCategory> {
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "foods", ignore = true)
-	public abstract void updateEntityFromDto(@MappingTarget FoodCategory category, CategoryUpdateDto request);
+	public abstract void update(@MappingTarget FoodCategory category, CategoryUpdateDto request);
 
 }

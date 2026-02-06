@@ -120,7 +120,7 @@ public class RecipeServiceImpl implements RecipeService {
 		validationService.validate(patchedRecipeUpdateDto);
 
 		RecipeMappingContext context = prepareUpdateContext(patchedRecipeUpdateDto);
-		recipeMapper.updateRecipe(recipe, patchedRecipeUpdateDto, context);
+		recipeMapper.update(recipe, patchedRecipeUpdateDto, context);
 
 		Recipe savedRecipe = recipeRepository.save(recipe);
 		applicationEventPublisher.publishEvent(RecipeUpdateEvent.of(this, savedRecipe));
@@ -155,7 +155,7 @@ public class RecipeServiceImpl implements RecipeService {
 		Specification<Recipe> specification = specificationBuilder.build();
 
 		Page<Recipe> recipePage = recipeRepository.findAll(specification, pageable);
-		List<RecipeSummaryDto> summaries = recipePage.getContent().stream().map(recipeMapper::toSummaryDto).toList();
+		List<RecipeSummaryDto> summaries = recipePage.getContent().stream().map(recipeMapper::toSummary).toList();
 		recipePopulationService.populate(summaries);
 
 		return new PageImpl<>(summaries, pageable, recipePage.getTotalElements());
@@ -181,7 +181,7 @@ public class RecipeServiceImpl implements RecipeService {
 		Recipe recipe = recipeRepository.findByIdWithDetails(recipeId)
 			.orElseThrow(() -> RecordNotFoundException.of(Recipe.class, recipeId));
 
-		RecipeResponseDto dto = recipeMapper.toResponseDto(recipe);
+		RecipeResponseDto dto = recipeMapper.toResponse(recipe);
 		recipePopulationService.populate(dto);
 		return dto;
 	}

@@ -33,7 +33,7 @@ public class UserExerciseServiceImpl extends GenericSavedServiceWithoutType<Exer
 	public UserExerciseServiceImpl(UserRepository userRepository, JpaRepository<Exercise, Integer> entityRepository,
 			JpaRepository<UserExercise, Integer> userEntityRepository, ExerciseMapper mapper,
 			ExercisePopulationService exercisePopulationService) {
-		super(userRepository, entityRepository, userEntityRepository, mapper::toSummaryDto, Exercise.class);
+		super(userRepository, entityRepository, userEntityRepository, mapper::toSummary, Exercise.class);
 		this.exerciseMapper = mapper;
 		this.exercisePopulationService = exercisePopulationService;
 	}
@@ -61,7 +61,7 @@ public class UserExerciseServiceImpl extends GenericSavedServiceWithoutType<Exer
 			.findAllByUserIdWithMedia(userId, pageable);
 
 		List<ExerciseSummaryDto> summaries = userExercisePage.getContent().stream().map(ue -> {
-			ExerciseSummaryDto dto = exerciseMapper.toSummaryDto(ue.getExercise());
+			ExerciseSummaryDto dto = exerciseMapper.toSummary(ue.getExercise());
 			dto.setInteractionCreatedAt(ue.getCreatedAt());
 			return dto;
 		}).toList();

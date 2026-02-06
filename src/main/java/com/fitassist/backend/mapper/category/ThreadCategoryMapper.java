@@ -9,7 +9,7 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public abstract class ThreadCategoryMapper implements BaseMapper<ThreadCategory> {
 
-	public abstract CategoryResponseDto toResponseDto(ThreadCategory category);
+	public abstract CategoryResponseDto toResponse(ThreadCategory category);
 
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "threads", ignore = true)
@@ -18,6 +18,6 @@ public abstract class ThreadCategoryMapper implements BaseMapper<ThreadCategory>
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "threads", ignore = true)
-	public abstract void updateEntityFromDto(@MappingTarget ThreadCategory category, CategoryUpdateDto request);
+	public abstract void update(@MappingTarget ThreadCategory category, CategoryUpdateDto request);
 
 }

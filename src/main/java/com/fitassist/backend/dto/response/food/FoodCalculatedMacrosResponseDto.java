@@ -22,9 +22,9 @@ public class FoodCalculatedMacrosResponseDto implements Serializable {
 
 	private String name;
 
-	private FoodMacros foodMacros;
-
 	private CategoryResponseDto category;
+
+	private FoodMacros foodMacros;
 
 	private BigDecimal quantity;
 

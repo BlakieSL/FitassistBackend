@@ -46,7 +46,20 @@ public abstract class RecipeMapper {
 	@Mapping(target = "instructions", source = "recipeInstructions", qualifiedByName = "mapInstructionsToDto")
 	@Mapping(target = "imageUrls", ignore = true)
 	@Mapping(target = "foods", source = "recipeFoods", qualifiedByName = "mapFoodsToDto")
-	public abstract RecipeResponseDto toResponseDto(Recipe recipe);
+	public abstract RecipeResponseDto toResponse(Recipe recipe);
+
+	@AfterMapping
+	protected void calculateTotalCalories(@MappingTarget RecipeResponseDto dto) {
+		List<RecipeFoodDto> foods = Objects.requireNonNullElse(dto.getFoods(), List.of());
+
+		BigDecimal totalCalories = foods.stream()
+			.map(food -> food.getQuantity()
+				.multiply(food.getIngredient().getFoodMacros().getCalories())
+				.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP))
+			.reduce(BigDecimal.ZERO, BigDecimal::add);
+
+		dto.setTotalCalories(totalCalories);
+	}
 
 	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
 	@Mapping(target = "firstImageName", source = "mediaList", qualifiedByName = "mapMediaToFirstImageName")
@@ -61,7 +74,7 @@ public abstract class RecipeMapper {
 	@Mapping(target = "categories", source = "recipeCategoryAssociations",
 			qualifiedByName = "mapAssociationsToCategoryResponseDto")
 	@Mapping(target = "interactionCreatedAt", ignore = true)
-	public abstract RecipeSummaryDto toSummaryDto(Recipe recipe);
+	public abstract RecipeSummaryDto toSummary(Recipe recipe);
 
 	@Mapping(target = "recipeCategoryAssociations", ignore = true)
 	@Mapping(target = "user", expression = "java(context.getUser())")
@@ -74,21 +87,8 @@ public abstract class RecipeMapper {
 	@Mapping(target = "mediaList", ignore = true)
 	public abstract Recipe toEntity(RecipeCreateDto dto, @Context RecipeMappingContext context);
 
-	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-	@Mapping(target = "recipeCategoryAssociations", ignore = true)
-	@Mapping(target = "recipeInstructions", ignore = true)
-	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "user", ignore = true)
-	@Mapping(target = "userRecipes", ignore = true)
-	@Mapping(target = "recipeFoods", ignore = true)
-	@Mapping(target = "views", ignore = true)
-	@Mapping(target = "createdAt", ignore = true)
-	@Mapping(target = "mediaList", ignore = true)
-	public abstract void updateRecipe(@MappingTarget Recipe recipe, RecipeUpdateDto request,
-			@Context RecipeMappingContext context);
-
 	@AfterMapping
-	protected void setRecipeAssociations(@MappingTarget Recipe recipe, RecipeCreateDto dto,
+	protected void setAssociations(@MappingTarget Recipe recipe, RecipeCreateDto dto,
 			@Context RecipeMappingContext context) {
 		if (dto.getInstructions() != null) {
 			List<RecipeInstruction> instructions = dto.getInstructions()
@@ -110,6 +110,19 @@ public abstract class RecipeMapper {
 		}
 	}
 
+	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "recipeCategoryAssociations", ignore = true)
+	@Mapping(target = "recipeInstructions", ignore = true)
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "user", ignore = true)
+	@Mapping(target = "userRecipes", ignore = true)
+	@Mapping(target = "recipeFoods", ignore = true)
+	@Mapping(target = "views", ignore = true)
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "mediaList", ignore = true)
+	public abstract void update(@MappingTarget Recipe recipe, RecipeUpdateDto request,
+			@Context RecipeMappingContext context);
+
 	@AfterMapping
 	protected void updateAssociations(@MappingTarget Recipe recipe, RecipeUpdateDto dto,
 			@Context RecipeMappingContext context) {
@@ -129,19 +142,6 @@ public abstract class RecipeMapper {
 					instructionDto -> RecipeInstruction.of(instructionDto.getOrderIndex(), instructionDto.getTitle(),
 							instructionDto.getText(), recipe));
 		}
-	}
-
-	@AfterMapping
-	protected void calculateTotalCalories(@MappingTarget RecipeResponseDto dto) {
-		List<RecipeFoodDto> foods = Objects.requireNonNullElse(dto.getFoods(), List.of());
-
-		BigDecimal totalCalories = foods.stream()
-			.map(food -> food.getQuantity()
-				.multiply(food.getIngredient().getFoodMacros().getCalories())
-				.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP))
-			.reduce(BigDecimal.ZERO, BigDecimal::add);
-
-		dto.setTotalCalories(totalCalories);
 	}
 
 	@Named("mapAssociationsToCategoryResponseDto")

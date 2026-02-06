@@ -7,10 +7,10 @@ import org.mapstruct.MappingTarget;
 
 public interface BaseMapper<T> {
 
-	CategoryResponseDto toResponseDto(T entity);
+	CategoryResponseDto toResponse(T entity);
 
 	T toEntity(CategoryCreateDto request);
 
-	void updateEntityFromDto(@MappingTarget T entity, CategoryUpdateDto request);
+	void update(@MappingTarget T entity, CategoryUpdateDto request);
 
 }

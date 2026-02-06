@@ -210,8 +210,8 @@ public class UserPlanServiceTest {
 		when(userPlanRepository.findAllByUserIdAndType(eq(userId), eq(type), any(Pageable.class)))
 			.thenReturn(userPlanPage);
 		when(planRepository.findByIdsWithDetails(any())).thenReturn(List.of(plan1, plan2));
-		when(planMapper.toSummaryDto(plan1)).thenReturn(dto1);
-		when(planMapper.toSummaryDto(plan2)).thenReturn(dto2);
+		when(planMapper.toSummary(plan1)).thenReturn(dto1);
+		when(planMapper.toSummary(plan2)).thenReturn(dto2);
 
 		Page<UserEntitySummaryResponseDto> result = userPlanService.getAllFromUser(userId, type, pageable);
 

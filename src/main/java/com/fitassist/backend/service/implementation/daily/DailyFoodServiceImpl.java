@@ -16,6 +16,7 @@ import com.fitassist.backend.repository.DailyCartRepository;
 import com.fitassist.backend.repository.FoodRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.daily.DailyFoodService;
+import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
@@ -47,10 +48,12 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 
 	private final UserRepository userRepository;
 
+	private final CalculationsService calculationsService;
+
 	public DailyFoodServiceImpl(ValidationService validationService, RepositoryHelper repositoryHelper,
 			DailyCartRepository dailyCartRepository, FoodRepository foodRepository, UserRepository userRepository,
 			JsonPatchService jsonPatchService, DailyFoodMapper dailyFoodMapper,
-			DailyCartFoodRepository dailyCartFoodRepository) {
+			DailyCartFoodRepository dailyCartFoodRepository, CalculationsService calculationsService) {
 		this.validationService = validationService;
 		this.repositoryHelper = repositoryHelper;
 		this.dailyCartRepository = dailyCartRepository;
@@ -59,6 +62,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 		this.jsonPatchService = jsonPatchService;
 		this.dailyFoodMapper = dailyFoodMapper;
 		this.dailyCartFoodRepository = dailyCartFoodRepository;
+		this.calculationsService = calculationsService;
 	}
 
 	@Override
@@ -97,10 +101,8 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 		int userId = AuthorizationUtil.getUserId();
 
 		return dailyCartRepository.findByUserIdAndDateWithFoodAssociations(userId, date)
-			.map(dailyCart -> DailyFoodsResponseDto.create(dailyCart.getDailyCartFoods()
-				.stream()
-				.map(dailyFoodMapper::toFoodCalculatedMacrosResponseDto)
-				.toList()))
+			.map(dailyCart -> DailyFoodsResponseDto.create(
+					dailyCart.getDailyCartFoods().stream().map(calculationsService::toCalculatedResponseDto).toList()))
 			.orElse(DailyFoodsResponseDto.of(Collections.emptyList()));
 	}
 

@@ -94,9 +94,4 @@ public class Exercise implements IndexedEntity {
 	@SQLRestriction("parentType = 'EXERCISE'")
 	private List<Media> mediaList = new ArrayList<>();
 
-	@Override
-	public String getClassName() {
-		return this.getClass().getSimpleName();
-	}
-
 }

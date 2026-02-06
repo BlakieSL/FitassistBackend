@@ -19,27 +19,19 @@ public class CommonMappingHelper {
 
 	@Named("mapMediaToFirstImageName")
 	public String mapMediaToFirstImageName(List<Media> mediaList) {
-		if (mediaList.isEmpty())
-			return null;
-		return mediaList.getFirst().getImageName();
+		return mediaList.stream().findFirst().map(Media::getImageName).orElse(null);
 	}
 
 	@Named("mapMediaListToImagesDto")
 	public MediaImagesDto mapMediaListToImagesDto(List<Media> mediaList) {
-		MediaImagesDto dto = new MediaImagesDto();
 		List<String> imageNames = mediaList.stream().map(Media::getImageName).toList();
 
-		dto.setImageNames(imageNames);
-
-		return dto;
+		return MediaImagesDto.ofNames(imageNames);
 	}
 
 	@Named("userToAuthorDto")
 	public AuthorDto userToAuthorDto(User user) {
-		AuthorDto authorDto = new AuthorDto();
-		authorDto.setId(user.getId());
-		authorDto.setUsername(user.getUsername());
-		return authorDto;
+		return AuthorDto.withoutImage(user.getId(), user.getUsername());
 	}
 
 	public <T extends TextBase> void updateTextAssociations(Set<T> existingItems, List<TextUpdateDto> newItems,

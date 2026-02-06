@@ -127,7 +127,7 @@ public class CommentServiceTest {
 		when(commentMapper.toEntity(eq(createDto), any(CommentMappingContext.class))).thenReturn(comment);
 		when(commentRepository.save(comment)).thenReturn(comment);
 		when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
-		when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
+		when(commentMapper.toResponse(comment)).thenReturn(responseDto);
 
 		CommentResponseDto result = commentService.createComment(createDto);
 
@@ -230,7 +230,7 @@ public class CommentServiceTest {
 	@Test
 	void getComment_shouldReturnCommentWhenFound() {
 		when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
-		when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
+		when(commentMapper.toResponse(comment)).thenReturn(responseDto);
 
 		CommentResponseDto result = commentService.getComment(commentId);
 
@@ -253,7 +253,7 @@ public class CommentServiceTest {
 		List<Comment> comments = List.of(comment);
 		Page<Comment> commentPage = new PageImpl<>(comments, pageable, comments.size());
 		when(commentRepository.findAllByThreadIdAndParentCommentNull(threadId, pageable)).thenReturn(commentPage);
-		when(commentMapper.toResponseDto(comment)).thenReturn(responseDto);
+		when(commentMapper.toResponse(comment)).thenReturn(responseDto);
 
 		Page<CommentResponseDto> result = commentService.getTopCommentsForThread(threadId, pageable);
 

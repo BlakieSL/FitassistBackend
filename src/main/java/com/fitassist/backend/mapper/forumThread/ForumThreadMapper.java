@@ -13,23 +13,23 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class ForumThreadMapper {
 
+	@Mapping(target = "category", source = "threadCategory", qualifiedByName = "mapCategoryToResponse")
+	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
 	@Mapping(target = "savesCount", ignore = true)
 	@Mapping(target = "commentsCount", ignore = true)
-	@Mapping(target = "category", source = "threadCategory", qualifiedByName = "threadCategoryToCategoryResponseDto")
-	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
 	@Mapping(target = "saved", ignore = true)
-	public abstract ForumThreadResponseDto toResponseDto(ForumThread forumThread);
+	public abstract ForumThreadResponseDto toResponse(ForumThread forumThread);
 
+	@Mapping(target = "category", source = "threadCategory", qualifiedByName = "mapCategoryToResponse")
+	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
 	@Mapping(target = "savesCount", ignore = true)
 	@Mapping(target = "commentsCount", ignore = true)
-	@Mapping(target = "category", source = "threadCategory", qualifiedByName = "threadCategoryToCategoryResponseDto")
-	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
 	@Mapping(target = "saved", ignore = true)
 	@Mapping(target = "interactionCreatedAt", ignore = true)
-	public abstract ForumThreadSummaryDto toSummaryDto(ForumThread forumThread);
+	public abstract ForumThreadSummaryDto toSummary(ForumThread forumThread);
 
-	@Mapping(target = "user", expression = "java(context.getUser())")
 	@Mapping(target = "threadCategory", expression = "java(context.getCategory())")
+	@Mapping(target = "user", expression = "java(context.getUser())")
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "views", ignore = true)
@@ -60,8 +60,8 @@ public abstract class ForumThreadMapper {
 		}
 	}
 
-	@Named("threadCategoryToCategoryResponseDto")
-	protected CategoryResponseDto threadCategoryToCategoryResponseDto(ThreadCategory threadCategory) {
+	@Named("mapCategoryToResponse")
+	protected CategoryResponseDto mapCategoryToResponse(ThreadCategory threadCategory) {
 		return new CategoryResponseDto(threadCategory.getId(), threadCategory.getName());
 	}
 

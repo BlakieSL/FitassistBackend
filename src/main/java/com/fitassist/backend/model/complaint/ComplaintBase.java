@@ -38,4 +38,8 @@ public abstract class ComplaintBase {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
+	public abstract String getDiscriminatorValue();
+
+	public abstract Integer getAssociatedId();
+
 }

@@ -17,6 +17,7 @@ import com.fitassist.backend.repository.DailyCartFoodRepository;
 import com.fitassist.backend.repository.DailyCartRepository;
 import com.fitassist.backend.repository.FoodRepository;
 import com.fitassist.backend.repository.UserRepository;
+import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
@@ -72,6 +73,9 @@ public class DailyFoodServiceTest {
 
 	@Mock
 	private UserRepository userRepository;
+
+	@Mock
+	private CalculationsService calculationsService;
 
 	@InjectMocks
 	private DailyFoodServiceImpl dailyFoodService;
@@ -254,15 +258,15 @@ public class DailyFoodServiceTest {
 		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 		when(dailyCartRepository.findByUserIdAndDateWithFoodAssociations(USER_ID, LocalDate.now()))
 			.thenReturn(Optional.of(dailyCart));
-		when(dailyFoodMapper.toFoodCalculatedMacrosResponseDto(dailyCartFood)).thenReturn(calculatedResponseDto);
+		when(calculationsService.toCalculatedResponseDto(dailyCartFood)).thenReturn(calculatedResponseDto);
 
 		DailyFoodsResponseDto result = dailyFoodService.getFoodFromDailyCart(LocalDate.now());
 
 		assertEquals(1, result.getFoods().size());
-		assertEquals(BigDecimal.valueOf(100.0), result.getTotalCalories());
-		assertEquals(BigDecimal.valueOf(20.0), result.getTotalCarbohydrates());
-		assertEquals(BigDecimal.valueOf(10.0), result.getTotalProtein());
-		assertEquals(BigDecimal.valueOf(5.0), result.getTotalFat());
+		assertEquals(BigDecimal.valueOf(100.0).setScale(1), result.getTotalCalories());
+		assertEquals(BigDecimal.valueOf(20.0).setScale(2), result.getTotalCarbohydrates());
+		assertEquals(BigDecimal.valueOf(10.0).setScale(2), result.getTotalProtein());
+		assertEquals(BigDecimal.valueOf(5.0).setScale(2), result.getTotalFat());
 	}
 
 	@Test

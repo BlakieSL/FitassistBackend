@@ -140,14 +140,14 @@ public class UserServiceTest {
 		when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
 		when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class))).thenReturn(updateDto);
 		doNothing().when(validationService).validate(updateDto);
-		doNothing().when(userMapper).updateUserFromDto(user, updateDto);
+		doNothing().when(userMapper).update(user, updateDto);
 		when(userRepository.save(user)).thenReturn(user);
 
 		userService.updateUser(userId, patch);
 
 		verify(repositoryHelper, times(1)).find(userRepository, User.class, userId);
 		verify(validationService).validate(updateDto);
-		verify(userMapper).updateUserFromDto(user, updateDto);
+		verify(userMapper).update(user, updateDto);
 		verify(userRepository).save(user);
 		verify(passwordEncoder, never()).matches(anyString(), anyString());
 	}
@@ -162,7 +162,7 @@ public class UserServiceTest {
 		when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
 		when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class))).thenReturn(updateDto);
 		doNothing().when(validationService).validate(updateDto);
-		doNothing().when(userMapper).updateUserFromDto(user, updateDto);
+		doNothing().when(userMapper).update(user, updateDto);
 		when(userRepository.save(user)).thenReturn(user);
 
 		when(passwordEncoder.matches(eq("currentPassword"), eq(currentEncodedPassword))).thenReturn(true);
@@ -171,7 +171,7 @@ public class UserServiceTest {
 
 		verify(repositoryHelper, times(1)).find(userRepository, User.class, userId);
 		verify(validationService).validate(updateDto);
-		verify(userMapper).updateUserFromDto(user, updateDto);
+		verify(userMapper).update(user, updateDto);
 		verify(userRepository).save(user);
 	}
 
@@ -216,14 +216,14 @@ public class UserServiceTest {
 		when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
 		when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class))).thenReturn(updateDto);
 		doNothing().when(validationService).validate(updateDto);
-		doNothing().when(userMapper).updateUserFromDto(user, updateDto);
+		doNothing().when(userMapper).update(user, updateDto);
 		when(userRepository.save(user)).thenReturn(user);
 
 		userService.updateUser(userId, patch);
 
 		verify(repositoryHelper, times(1)).find(userRepository, User.class, userId);
 		verify(validationService).validate(updateDto);
-		verify(userMapper).updateUserFromDto(user, updateDto);
+		verify(userMapper).update(user, updateDto);
 		verify(userRepository).save(user);
 		verify(passwordEncoder, never()).matches(any(), any());
 	}
