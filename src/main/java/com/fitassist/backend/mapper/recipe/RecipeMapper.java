@@ -33,7 +33,7 @@ public abstract class RecipeMapper {
 		this.commonMappingHelper = commonMappingHelper;
 	}
 
-	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
+	@Mapping(target = "author", source = "user", qualifiedByName = "mapUserToAuthorDto")
 	@Mapping(target = "likesCount", ignore = true)
 	@Mapping(target = "dislikesCount", ignore = true)
 	@Mapping(target = "savesCount", ignore = true)
@@ -42,10 +42,11 @@ public abstract class RecipeMapper {
 	@Mapping(target = "saved", ignore = true)
 	@Mapping(target = "totalCalories", ignore = true)
 	@Mapping(target = "categories", source = "recipeCategoryAssociations",
-			qualifiedByName = "mapAssociationsToCategoryResponseDto")
-	@Mapping(target = "instructions", source = "recipeInstructions", qualifiedByName = "mapInstructionsToDto")
+			qualifiedByName = "mapRecipeCategoryAssociationsToResponse")
+	@Mapping(target = "instructions", source = "recipeInstructions",
+			qualifiedByName = "mapRecipeInstructionsToResponse")
 	@Mapping(target = "imageUrls", ignore = true)
-	@Mapping(target = "foods", source = "recipeFoods", qualifiedByName = "mapFoodsToDto")
+	@Mapping(target = "foods", source = "recipeFoods", qualifiedByName = "mapRecipeFoodsToDto")
 	public abstract RecipeResponseDto toResponse(Recipe recipe);
 
 	@AfterMapping
@@ -61,7 +62,7 @@ public abstract class RecipeMapper {
 		dto.setTotalCalories(totalCalories);
 	}
 
-	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
+	@Mapping(target = "author", source = "user", qualifiedByName = "mapUserToAuthorDto")
 	@Mapping(target = "firstImageName", source = "mediaList", qualifiedByName = "mapMediaToFirstImageName")
 	@Mapping(target = "firstImageUrl", ignore = true)
 	@Mapping(target = "likesCount", ignore = true)
@@ -72,7 +73,7 @@ public abstract class RecipeMapper {
 	@Mapping(target = "saved", ignore = true)
 	@Mapping(target = "ingredientsCount", ignore = true)
 	@Mapping(target = "categories", source = "recipeCategoryAssociations",
-			qualifiedByName = "mapAssociationsToCategoryResponseDto")
+			qualifiedByName = "mapRecipeCategoryAssociationsToResponse")
 	@Mapping(target = "interactionCreatedAt", ignore = true)
 	public abstract RecipeSummaryDto toSummary(Recipe recipe);
 
@@ -144,28 +145,27 @@ public abstract class RecipeMapper {
 		}
 	}
 
-	@Named("mapAssociationsToCategoryResponseDto")
-	protected List<CategoryResponseDto> mapAssociationsToCategoryResponseDto(
+	@Named("mapRecipeCategoryAssociationsToResponse")
+	protected List<CategoryResponseDto> mapRecipeCategoryAssociationsToResponse(
 			Set<RecipeCategoryAssociation> associations) {
 		return associations.stream()
-			.map(association -> new CategoryResponseDto(association.getRecipeCategory().getId(),
-					association.getRecipeCategory().getName()))
+			.map(association -> commonMappingHelper.mapCategoryToResponse(association.getRecipeCategory()))
 			.toList();
 	}
 
-	@Named("mapInstructionsToDto")
-	protected List<TextResponseDto> mapInstructionsToDto(Set<RecipeInstruction> instructions) {
+	@Named("mapRecipeInstructionsToResponse")
+	protected List<TextResponseDto> mapRecipeInstructionsToResponse(Set<RecipeInstruction> instructions) {
 		return instructions.stream()
 			.map(instruction -> new TextResponseDto(instruction.getId(), instruction.getOrderIndex(),
 					instruction.getText(), instruction.getTitle()))
 			.toList();
 	}
 
-	@Named("mapFoodsToDto")
-	protected List<RecipeFoodDto> mapFoodsToDto(Set<RecipeFood> foods) {
+	@Named("mapRecipeFoodsToDto")
+	protected List<RecipeFoodDto> mapRecipeFoodsToDto(Set<RecipeFood> foods) {
 		return foods.stream().map(recipeFood -> {
-			CategoryResponseDto categoryDto = new CategoryResponseDto(recipeFood.getFood().getFoodCategory().getId(),
-					recipeFood.getFood().getFoodCategory().getName());
+			CategoryResponseDto categoryDto = commonMappingHelper
+				.mapCategoryToResponse(recipeFood.getFood().getFoodCategory());
 
 			FoodMacros macros = FoodMacros.of(recipeFood.getFood().getCalories(), recipeFood.getFood().getProtein(),
 					recipeFood.getFood().getFat(), recipeFood.getFood().getCarbohydrates());

@@ -5,10 +5,8 @@ import com.fitassist.backend.dto.request.activity.ActivityUpdateDto;
 import com.fitassist.backend.dto.response.activity.ActivityCalculatedResponseDto;
 import com.fitassist.backend.dto.response.activity.ActivityResponseDto;
 import com.fitassist.backend.dto.response.activity.ActivitySummaryDto;
-import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.mapper.CommonMappingHelper;
 import com.fitassist.backend.model.activity.Activity;
-import com.fitassist.backend.model.activity.ActivityCategory;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
@@ -57,11 +55,6 @@ public abstract class ActivityMapper {
 		if (context.getCategory() != null) {
 			activity.setActivityCategory(context.getCategory());
 		}
-	}
-
-	@Named("mapCategoryToResponse")
-	protected CategoryResponseDto mapCategoryToResponse(ActivityCategory category) {
-		return new CategoryResponseDto(category.getId(), category.getName());
 	}
 
 }

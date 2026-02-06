@@ -1,14 +1,12 @@
 package com.fitassist.backend.mapper.daily;
 
 import com.fitassist.backend.dto.response.activity.ActivityCalculatedResponseDto;
-import com.fitassist.backend.dto.response.category.CategoryResponseDto;
-import com.fitassist.backend.model.activity.ActivityCategory;
+import com.fitassist.backend.mapper.CommonMappingHelper;
 import com.fitassist.backend.model.daily.DailyCartActivity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class DailyActivityMapper {
 
 	@Mapping(target = "dailyItemId", source = "id")
@@ -18,10 +16,5 @@ public abstract class DailyActivityMapper {
 	@Mapping(target = "category", source = "activity.activityCategory", qualifiedByName = "mapCategoryToResponse")
 	@Mapping(target = "caloriesBurned", ignore = true)
 	public abstract ActivityCalculatedResponseDto toResponse(DailyCartActivity dailyCartActivity);
-
-	@Named("mapCategoryToResponse")
-	protected CategoryResponseDto mapCategoryToResponse(ActivityCategory category) {
-		return new CategoryResponseDto(category.getId(), category.getName());
-	}
 
 }

@@ -14,7 +14,7 @@ import java.util.Optional;
 public abstract class CommentMapper {
 
 	@Mapping(target = "threadId", source = "thread.id")
-	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
+	@Mapping(target = "author", source = "user", qualifiedByName = "mapUserToAuthorDto")
 	@Mapping(target = "parentCommentId", source = "parentComment", qualifiedByName = "mapParentCommentToId")
 	@Mapping(target = "replies", ignore = true)
 	@Mapping(target = "repliesCount", ignore = true)
@@ -24,7 +24,7 @@ public abstract class CommentMapper {
 	@Mapping(target = "disliked", ignore = true)
 	public abstract CommentResponseDto toResponse(Comment comment);
 
-	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
+	@Mapping(target = "author", source = "user", qualifiedByName = "mapUserToAuthorDto")
 	@Mapping(target = "threadId", source = "thread.id")
 	@Mapping(target = "likesCount", ignore = true)
 	@Mapping(target = "dislikesCount", ignore = true)

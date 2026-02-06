@@ -36,8 +36,9 @@ public abstract class PlanMapper {
 		this.commonMappingHelper = commonMappingHelper;
 	}
 
-	@Mapping(target = "categories", source = "planCategoryAssociations", qualifiedByName = "mapCategoriesToResponses")
-	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
+	@Mapping(target = "categories", source = "planCategoryAssociations",
+			qualifiedByName = "mapPlanCategoryAssociationsToResponse")
+	@Mapping(target = "author", source = "user", qualifiedByName = "mapUserToAuthorDto")
 	@Mapping(target = "instructions", source = "planInstructions")
 	@Mapping(target = "likesCount", ignore = true)
 	@Mapping(target = "dislikesCount", ignore = true)
@@ -62,8 +63,9 @@ public abstract class PlanMapper {
 		dto.setTotalWeeks((int) Math.ceil(currentDay / 7.0));
 	}
 
-	@Mapping(target = "categories", source = "planCategoryAssociations", qualifiedByName = "mapCategoriesToResponses")
-	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
+	@Mapping(target = "categories", source = "planCategoryAssociations",
+			qualifiedByName = "mapPlanCategoryAssociationsToResponse")
+	@Mapping(target = "author", source = "user", qualifiedByName = "mapUserToAuthorDto")
 	@Mapping(target = "firstImageName", source = "mediaList", qualifiedByName = "mapMediaToFirstImageName")
 	@Mapping(target = "firstImageUrl", ignore = true)
 	@Mapping(target = "likesCount", ignore = true)
@@ -169,11 +171,11 @@ public abstract class PlanMapper {
 		}
 	}
 
-	@Named("mapCategoriesToResponses")
-	protected List<CategoryResponseDto> mapCategoriesToResponses(Set<PlanCategoryAssociation> associations) {
+	@Named("mapPlanCategoryAssociationsToResponse")
+	protected List<CategoryResponseDto> mapPlanCategoryAssociationsToResponse(
+			Set<PlanCategoryAssociation> associations) {
 		return associations.stream()
-			.map(association -> new CategoryResponseDto(association.getPlanCategory().getId(),
-					association.getPlanCategory().getName()))
+			.map(association -> commonMappingHelper.mapCategoryToResponse(association.getPlanCategory()))
 			.toList();
 	}
 

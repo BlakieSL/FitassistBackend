@@ -13,15 +13,15 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class ForumThreadMapper {
 
-	@Mapping(target = "category", source = "threadCategory", qualifiedByName = "mapCategoryToResponse")
-	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
+	@Mapping(target = "category", source = "threadCategory", qualifiedByName = "mapThreadCategoryToResponse")
+	@Mapping(target = "author", source = "user", qualifiedByName = "mapUserToAuthorDto")
 	@Mapping(target = "savesCount", ignore = true)
 	@Mapping(target = "commentsCount", ignore = true)
 	@Mapping(target = "saved", ignore = true)
 	public abstract ForumThreadResponseDto toResponse(ForumThread forumThread);
 
-	@Mapping(target = "category", source = "threadCategory", qualifiedByName = "mapCategoryToResponse")
-	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
+	@Mapping(target = "category", source = "threadCategory", qualifiedByName = "mapThreadCategoryToResponse")
+	@Mapping(target = "author", source = "user", qualifiedByName = "mapUserToAuthorDto")
 	@Mapping(target = "savesCount", ignore = true)
 	@Mapping(target = "commentsCount", ignore = true)
 	@Mapping(target = "saved", ignore = true)
@@ -60,8 +60,8 @@ public abstract class ForumThreadMapper {
 		}
 	}
 
-	@Named("mapCategoryToResponse")
-	protected CategoryResponseDto mapCategoryToResponse(ThreadCategory threadCategory) {
+	@Named("mapThreadCategoryToResponse")
+	protected CategoryResponseDto mapThreadCategoryToResponse(ThreadCategory threadCategory) {
 		return new CategoryResponseDto(threadCategory.getId(), threadCategory.getName());
 	}
 
