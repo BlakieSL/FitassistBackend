@@ -92,7 +92,7 @@ public class UserPlanServiceImpl extends GenericSavedService<Plan, UserPlan, Pla
 		if (!entity.getIsPublic()) {
 			throw new NotSupportedInteractionTypeException("Cannot save private plan");
 		}
-		return UserPlan.createWithUserPlanType(user, entity, type);
+		return UserPlan.of(user, entity, type);
 	}
 
 	@Override

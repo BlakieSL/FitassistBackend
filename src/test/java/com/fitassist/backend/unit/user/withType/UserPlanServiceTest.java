@@ -159,7 +159,7 @@ public class UserPlanServiceTest {
 		int userId = 1;
 		int planId = 100;
 		TypeOfInteraction type = TypeOfInteraction.SAVE;
-		UserPlan userPlan = UserPlan.createWithUserPlanType(new User(), new Plan(), type);
+		UserPlan userPlan = UserPlan.of(new User(), new Plan(), type);
 
 		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 		when(userPlanRepository.findByUserIdAndPlanIdAndType(userId, planId, type)).thenReturn(Optional.of(userPlan));
@@ -197,8 +197,8 @@ public class UserPlanServiceTest {
 		User user = new User();
 		user.setId(userId);
 
-		UserPlan userPlan1 = UserPlan.createWithUserPlanType(user, plan1, type);
-		UserPlan userPlan2 = UserPlan.createWithUserPlanType(user, plan2, type);
+		UserPlan userPlan1 = UserPlan.of(user, plan1, type);
+		UserPlan userPlan2 = UserPlan.of(user, plan2, type);
 
 		PlanSummaryDto dto1 = new PlanSummaryDto();
 		dto1.setId(1);
