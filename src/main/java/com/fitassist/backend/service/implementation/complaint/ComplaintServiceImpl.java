@@ -118,7 +118,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 	public Page<ComplaintResponseDto> getAllComplaints(Pageable pageable) {
 		Page<ComplaintBase> complaints = complaintRepository.findAll(pageable);
 		return complaints.map(complaint -> {
-			ComplaintResponseDto dto = complaintMapper.toResponseDto(complaint);
+			ComplaintResponseDto dto = complaintMapper.toResponse(complaint);
 			populateImageUrls(dto, complaint);
 			return dto;
 		});
@@ -137,7 +137,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 	public ComplaintResponseDto getComplaintById(int complaintId) {
 		ComplaintBase complaint = complaintRepository.findById(complaintId)
 			.orElseThrow(() -> RecordNotFoundException.of(ComplaintBase.class, complaintId));
-		ComplaintResponseDto dto = complaintMapper.toResponseDto(complaint);
+		ComplaintResponseDto dto = complaintMapper.toResponse(complaint);
 		populateImageUrls(dto, complaint);
 		return dto;
 	}

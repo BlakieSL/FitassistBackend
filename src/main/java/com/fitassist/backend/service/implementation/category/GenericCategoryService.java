@@ -61,7 +61,7 @@ public abstract class GenericCategoryService<T> {
 		T savedCategory = repository.save(category);
 
 		applicationEventPublisher.publishEvent(CategoryClearCacheEvent.of(this, cacheKeyGenerator.generateCacheKey()));
-		return mapper.toResponseDto(savedCategory);
+		return mapper.toResponse(savedCategory);
 	}
 
 	@Transactional
@@ -71,7 +71,7 @@ public abstract class GenericCategoryService<T> {
 		CategoryUpdateDto patchedCategory = applyPatchToCategory(patch);
 
 		validationService.validate(patchedCategory);
-		mapper.updateEntityFromDto(category, patchedCategory);
+		mapper.update(category, patchedCategory);
 		repository.save(category);
 
 		applicationEventPublisher.publishEvent(CategoryClearCacheEvent.of(this, cacheKeyGenerator.generateCacheKey()));
@@ -92,7 +92,7 @@ public abstract class GenericCategoryService<T> {
 		return getCachedCategories(cacheKey).orElseGet(() -> {
 			List<CategoryResponseDto> categoryResponseDtos = repository.findAll()
 				.stream()
-				.map(mapper::toResponseDto)
+				.map(mapper::toResponse)
 				.toList();
 
 			applicationEventPublisher.publishEvent(CategoryCreateCacheEvent.of(this, cacheKey, categoryResponseDtos));
@@ -102,7 +102,7 @@ public abstract class GenericCategoryService<T> {
 	}
 
 	public CategoryResponseDto getCategory(int categoryId) {
-		return mapper.toResponseDto(find(categoryId));
+		return mapper.toResponse(find(categoryId));
 	}
 
 	private T find(int categoryId) {

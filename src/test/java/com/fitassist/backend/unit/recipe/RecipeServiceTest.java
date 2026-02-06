@@ -138,7 +138,7 @@ public class RecipeServiceTest {
 		when(recipeMapper.toEntity(eq(createDto), any(RecipeMappingContext.class))).thenReturn(recipe);
 		when(recipeRepository.save(recipe)).thenReturn(recipe);
 		when(recipeRepository.findByIdWithDetails(recipeId)).thenReturn(Optional.of(recipe));
-		when(recipeMapper.toResponseDto(recipe)).thenReturn(responseDto);
+		when(recipeMapper.toResponse(recipe)).thenReturn(responseDto);
 
 		RecipeResponseDto result = recipeService.createRecipe(createDto);
 
@@ -155,7 +155,7 @@ public class RecipeServiceTest {
 		when(recipeMapper.toEntity(eq(createDto), any(RecipeMappingContext.class))).thenReturn(recipe);
 		when(recipeRepository.save(recipe)).thenReturn(recipe);
 		when(recipeRepository.findByIdWithDetails(recipeId)).thenReturn(Optional.of(recipe));
-		when(recipeMapper.toResponseDto(recipe)).thenReturn(responseDto);
+		when(recipeMapper.toResponse(recipe)).thenReturn(responseDto);
 
 		recipeService.createRecipe(createDto);
 
@@ -182,7 +182,7 @@ public class RecipeServiceTest {
 		recipeService.updateRecipe(recipeId, patch);
 
 		verify(validationService).validate(patchedDto);
-		verify(recipeMapper).updateRecipe(eq(recipe), eq(patchedDto), any(RecipeMappingContext.class));
+		verify(recipeMapper).update(eq(recipe), eq(patchedDto), any(RecipeMappingContext.class));
 		verify(recipeRepository).save(recipe);
 	}
 
@@ -259,7 +259,7 @@ public class RecipeServiceTest {
 	@Test
 	void getRecipe_shouldReturnRecipeWhenFound() {
 		when(recipeRepository.findByIdWithDetails(recipeId)).thenReturn(Optional.of(recipe));
-		when(recipeMapper.toResponseDto(recipe)).thenReturn(responseDto);
+		when(recipeMapper.toResponse(recipe)).thenReturn(responseDto);
 
 		RecipeResponseDto result = recipeService.getRecipe(recipeId);
 
@@ -284,14 +284,14 @@ public class RecipeServiceTest {
 		Page<Recipe> recipePage = new PageImpl<>(recipes, pageable, recipes.size());
 
 		when(recipeRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(recipePage);
-		when(recipeMapper.toSummaryDto(recipe)).thenReturn(summaryDto);
+		when(recipeMapper.toSummary(recipe)).thenReturn(summaryDto);
 
 		Page<RecipeSummaryDto> result = recipeService.getFilteredRecipes(filter, pageable);
 
 		assertEquals(1, result.getContent().size());
 		assertSame(summaryDto, result.getContent().get(0));
 		verify(recipeRepository).findAll(any(Specification.class), eq(pageable));
-		verify(recipeMapper).toSummaryDto(recipe);
+		verify(recipeMapper).toSummary(recipe);
 		verify(recipePopulationService).populate(anyList());
 	}
 

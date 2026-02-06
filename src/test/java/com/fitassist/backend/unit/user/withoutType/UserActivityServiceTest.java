@@ -180,14 +180,14 @@ public class UserActivityServiceTest {
 		Page<UserActivity> userActivityPage = new PageImpl<>(List.of(ua1, ua2), pageable, 2);
 
 		when(userActivityRepository.findAllByUserIdWithMedia(eq(userId), eq(pageable))).thenReturn(userActivityPage);
-		when(activityMapper.toSummaryDto(activity1)).thenReturn(dto1);
-		when(activityMapper.toSummaryDto(activity2)).thenReturn(dto2);
+		when(activityMapper.toSummary(activity1)).thenReturn(dto1);
+		when(activityMapper.toSummary(activity2)).thenReturn(dto2);
 
 		Page<UserEntitySummaryResponseDto> result = userActivityService.getAllFromUser(userId, pageable);
 
 		assertEquals(2, result.getTotalElements());
 		assertEquals(2, result.getContent().size());
-		verify(activityMapper, times(2)).toSummaryDto(any(Activity.class));
+		verify(activityMapper, times(2)).toSummary(any(Activity.class));
 		verify(activityPopulationService).populate(anyList());
 	}
 

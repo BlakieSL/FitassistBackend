@@ -21,4 +21,8 @@ public class AuthorDto implements Serializable {
 
 	private String imageUrl;
 
+	public static AuthorDto withoutImage(Integer id, String username) {
+		return new AuthorDto(id, username, null, null);
+	}
+
 }

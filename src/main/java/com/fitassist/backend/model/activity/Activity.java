@@ -67,11 +67,6 @@ public class Activity implements IndexedEntity {
 	@SQLRestriction("parentType = 'ACTIVITY'")
 	private List<Media> mediaList = new ArrayList<>();
 
-	@Override
-	public String getClassName() {
-		return this.getClass().getSimpleName();
-	}
-
 	public static Activity of(int id, String name, BigDecimal met) {
 		Activity activity = new Activity();
 		activity.setId(id);

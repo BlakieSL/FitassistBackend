@@ -31,7 +31,7 @@ public class UserThreadServiceImpl
 	public UserThreadServiceImpl(UserThreadRepository userThreadRepository, ForumThreadRepository forumThreadRepository,
 			UserRepository userRepository, ForumThreadMapper forumThreadMapper,
 			ForumThreadPopulationService forumThreadPopulationService) {
-		super(userRepository, forumThreadRepository, userThreadRepository, forumThreadMapper::toSummaryDto,
+		super(userRepository, forumThreadRepository, userThreadRepository, forumThreadMapper::toSummary,
 				ForumThread.class);
 		this.forumThreadMapper = forumThreadMapper;
 		this.forumThreadPopulationService = forumThreadPopulationService;
@@ -43,7 +43,7 @@ public class UserThreadServiceImpl
 				pageable);
 
 		List<ForumThreadSummaryDto> summaries = userThreadPage.getContent().stream().map(ut -> {
-			ForumThreadSummaryDto dto = forumThreadMapper.toSummaryDto(ut.getForumThread());
+			ForumThreadSummaryDto dto = forumThreadMapper.toSummary(ut.getForumThread());
 			dto.setInteractionCreatedAt(ut.getCreatedAt());
 			return dto;
 		}).toList();

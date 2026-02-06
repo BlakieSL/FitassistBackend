@@ -44,7 +44,7 @@ public class UserCommentServiceImpl extends GenericSavedService<Comment, UserCom
 			.findAllByUserIdAndType(userId, type, pageable);
 
 		List<CommentSummaryDto> summaries = userCommentPage.getContent().stream().map(uc -> {
-			CommentSummaryDto dto = commentMapper.toSummaryDto(uc.getComment());
+			CommentSummaryDto dto = commentMapper.toSummary(uc.getComment());
 			dto.setInteractionCreatedAt(uc.getCreatedAt());
 			return dto;
 		}).toList();

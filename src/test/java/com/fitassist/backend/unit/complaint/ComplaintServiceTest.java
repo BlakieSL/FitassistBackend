@@ -118,7 +118,7 @@ public class ComplaintServiceTest {
 			.thenReturn(commentComplaint);
 		when(complaintRepository.save(commentComplaint)).thenReturn(commentComplaint);
 		when(complaintRepository.findById(COMPLAINT_ID)).thenReturn(Optional.of(commentComplaint));
-		when(complaintMapper.toResponseDto(commentComplaint)).thenReturn(responseDto);
+		when(complaintMapper.toResponse(commentComplaint)).thenReturn(responseDto);
 		when(mediaRepository.findByParentIdAndParentType(COMPLAINT_ID, MediaConnectedEntity.COMMENT_COMPLAINT))
 			.thenReturn(Collections.emptyList());
 
@@ -127,7 +127,7 @@ public class ComplaintServiceTest {
 		assertEquals(responseDto, result);
 		verify(complaintRepository).save(commentComplaint);
 		verify(complaintRepository).findById(COMPLAINT_ID);
-		verify(complaintMapper).toResponseDto(commentComplaint);
+		verify(complaintMapper).toResponse(commentComplaint);
 	}
 
 	@Test
@@ -140,7 +140,7 @@ public class ComplaintServiceTest {
 			.thenReturn(threadComplaint);
 		when(complaintRepository.save(threadComplaint)).thenReturn(threadComplaint);
 		when(complaintRepository.findById(COMPLAINT_ID)).thenReturn(Optional.of(threadComplaint));
-		when(complaintMapper.toResponseDto(threadComplaint)).thenReturn(responseDto);
+		when(complaintMapper.toResponse(threadComplaint)).thenReturn(responseDto);
 		when(mediaRepository.findByParentIdAndParentType(COMPLAINT_ID, MediaConnectedEntity.THREAD_COMPLAINT))
 			.thenReturn(Collections.emptyList());
 
@@ -149,7 +149,7 @@ public class ComplaintServiceTest {
 		assertEquals(responseDto, result);
 		verify(complaintRepository).save(threadComplaint);
 		verify(complaintRepository).findById(COMPLAINT_ID);
-		verify(complaintMapper).toResponseDto(threadComplaint);
+		verify(complaintMapper).toResponse(threadComplaint);
 	}
 
 	@Test

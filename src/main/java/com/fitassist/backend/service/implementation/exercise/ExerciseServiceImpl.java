@@ -143,7 +143,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 		validationService.validate(patchedExerciseUpdateDto);
 
 		ExerciseMappingContext context = prepareUpdateContext(patchedExerciseUpdateDto);
-		exerciseMapper.updateExerciseFromDto(exercise, patchedExerciseUpdateDto, context);
+		exerciseMapper.update(exercise, patchedExerciseUpdateDto, context);
 		Exercise saved = exerciseRepository.save(exercise);
 
 		Exercise exerciseWithMediaAndCategories = exerciseRepository.findByIdWithAssociationsForIndexing(saved.getId())
@@ -178,7 +178,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
 		List<PlanSummaryDto> planSummaries = planRepository.findByExerciseIdWithDetails(exerciseId)
 			.stream()
-			.map(planMapper::toSummaryDto)
+			.map(planMapper::toSummary)
 			.toList();
 		planPopulationService.populate(planSummaries);
 		dto.setPlans(planSummaries);
@@ -195,10 +195,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
 		Page<Exercise> exercisePage = exerciseRepository.findAll(specification, pageable);
 
-		List<ExerciseSummaryDto> summaries = exercisePage.getContent()
-			.stream()
-			.map(exerciseMapper::toSummaryDto)
-			.toList();
+		List<ExerciseSummaryDto> summaries = exercisePage.getContent().stream().map(exerciseMapper::toSummary).toList();
 
 		exercisePopulationService.populate(summaries);
 
@@ -248,7 +245,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 	private ExerciseResponseDto findAndMap(int exerciseId) {
 		Exercise exercise = exerciseRepository.findByIdWithDetails(exerciseId)
 			.orElseThrow(() -> RecordNotFoundException.of(Exercise.class, exerciseId));
-		ExerciseResponseDto dto = exerciseMapper.toResponseDto(exercise);
+		ExerciseResponseDto dto = exerciseMapper.toResponse(exercise);
 		exercisePopulationService.populate(dto);
 
 		return dto;

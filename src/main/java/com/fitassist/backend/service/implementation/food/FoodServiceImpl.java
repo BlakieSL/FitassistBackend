@@ -24,6 +24,7 @@ import com.fitassist.backend.repository.FoodRepository;
 import com.fitassist.backend.repository.RecipeRepository;
 import com.fitassist.backend.service.declaration.food.FoodPopulationService;
 import com.fitassist.backend.service.declaration.food.FoodService;
+import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
@@ -74,11 +75,14 @@ public class FoodServiceImpl implements FoodService {
 
 	private final SpecificationDependencies dependencies;
 
+	private final CalculationsService calculationsService;
+
 	public FoodServiceImpl(ApplicationEventPublisher applicationEventPublisher, ValidationService validationService,
 			JsonPatchService jsonPatchService, FoodRepository foodRepository,
 			FoodCategoryRepository foodCategoryRepository, RecipeRepository recipeRepository, FoodMapper foodMapper,
 			RecipeMapper recipeMapper, RepositoryHelper repositoryHelper, FoodPopulationService foodPopulationService,
-			RecipePopulationService recipePopulationService, SpecificationDependencies dependencies) {
+			RecipePopulationService recipePopulationService, SpecificationDependencies dependencies,
+			CalculationsService calculationsService) {
 		this.applicationEventPublisher = applicationEventPublisher;
 		this.validationService = validationService;
 		this.jsonPatchService = jsonPatchService;
@@ -91,6 +95,7 @@ public class FoodServiceImpl implements FoodService {
 		this.foodPopulationService = foodPopulationService;
 		this.recipePopulationService = recipePopulationService;
 		this.dependencies = dependencies;
+		this.calculationsService = calculationsService;
 	}
 
 	@Override
@@ -106,7 +111,7 @@ public class FoodServiceImpl implements FoodService {
 
 		applicationEventPublisher.publishEvent(FoodCreateEvent.of(this, food));
 
-		FoodResponseDto dto = foodMapper.toDetailedResponseDto(food);
+		FoodResponseDto dto = foodMapper.toResponse(food);
 		foodPopulationService.populate(dto);
 		return dto;
 	}
@@ -125,7 +130,7 @@ public class FoodServiceImpl implements FoodService {
 		validationService.validate(patchedFoodUpdateDto);
 
 		FoodMappingContext context = prepareUpdateContext(patchedFoodUpdateDto);
-		foodMapper.updateFood(food, patchedFoodUpdateDto, context);
+		foodMapper.update(food, patchedFoodUpdateDto, context);
 		Food saved = foodRepository.save(food);
 
 		foodRepository.flush();
@@ -158,7 +163,7 @@ public class FoodServiceImpl implements FoodService {
 
 		BigDecimal factor = quantity.divide(divisor, 10, RoundingMode.HALF_UP);
 
-		return foodMapper.toDtoWithFactor(food, factor);
+		return calculationsService.toCalculatedResponseDto(food, factor);
 	}
 
 	@Override
@@ -168,7 +173,7 @@ public class FoodServiceImpl implements FoodService {
 
 		List<RecipeSummaryDto> summaries = recipeRepository.findAllWithDetailsByFoodId(id)
 			.stream()
-			.map(recipeMapper::toSummaryDto)
+			.map(recipeMapper::toSummary)
 			.toList();
 		recipePopulationService.populate(summaries);
 		dto.setRecipes(summaries);
@@ -184,7 +189,7 @@ public class FoodServiceImpl implements FoodService {
 
 		Page<Food> foodPage = foodRepository.findAll(specification, pageable);
 
-		List<FoodSummaryDto> summaries = foodPage.getContent().stream().map(foodMapper::toSummaryDto).toList();
+		List<FoodSummaryDto> summaries = foodPage.getContent().stream().map(foodMapper::toSummary).toList();
 
 		foodPopulationService.populate(summaries);
 
@@ -203,7 +208,7 @@ public class FoodServiceImpl implements FoodService {
 	private FoodResponseDto findAndMap(int foodId) {
 		Food food = foodRepository.findByIdWithMedia(foodId)
 			.orElseThrow(() -> RecordNotFoundException.of(Food.class, foodId));
-		FoodResponseDto dto = foodMapper.toDetailedResponseDto(food);
+		FoodResponseDto dto = foodMapper.toResponse(food);
 		foodPopulationService.populate(dto);
 		return dto;
 	}

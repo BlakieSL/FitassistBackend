@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 		validatePasswordIfPresent(user, patchedUserUpdateDto);
 		validationService.validate(patchedUserUpdateDto);
-		userMapper.updateUserFromDto(user, patchedUserUpdateDto);
+		userMapper.update(user, patchedUserUpdateDto);
 		hashPasswordIfPresent(user, patchedUserUpdateDto);
 		userRepository.save(user);
 	}
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 		validatePasswordIfPresent(user, updateDto);
 		validationService.validate(updateDto);
-		userMapper.updateUserFromDto(user, updateDto);
+		userMapper.update(user, updateDto);
 		hashPasswordIfPresent(user, updateDto);
 		userRepository.save(user);
 	}

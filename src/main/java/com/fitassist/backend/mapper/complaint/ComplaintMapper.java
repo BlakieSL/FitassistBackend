@@ -12,6 +12,12 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public abstract class ComplaintMapper {
 
+	@Mapping(target = "userId", source = "user.id")
+	@Mapping(target = "discriminatorValue", source = "discriminatorValue")
+	@Mapping(target = "associatedId", source = "associatedId")
+	@Mapping(target = "imageUrls", ignore = true)
+	public abstract ComplaintResponseDto toResponse(ComplaintBase complaint);
+
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "status", ignore = true)
 	@Mapping(target = "user", expression = "java(context.getUser())")
@@ -27,33 +33,5 @@ public abstract class ComplaintMapper {
 	@Mapping(target = "mediaList", ignore = true)
 	public abstract ThreadComplaint toThreadComplaint(ComplaintCreateDto createDto,
 			@Context ComplaintMappingContext context);
-
-	@Mapping(target = "userId", source = "user.id")
-	@Mapping(target = "discriminatorValue", expression = "java(getDiscriminatorValue(complaint))")
-	@Mapping(target = "associatedId", expression = "java(getAssociatedId(complaint))")
-	@Mapping(target = "imageUrls", ignore = true)
-	public abstract ComplaintResponseDto toResponseDto(ComplaintBase complaint);
-
-	protected String getDiscriminatorValue(ComplaintBase complaint) {
-		if (complaint instanceof CommentComplaint) {
-			return "COMMENT_COMPLAINT";
-		}
-		else if (complaint instanceof ThreadComplaint) {
-			return "THREAD_COMPLAINT";
-		}
-		return null;
-	}
-
-	protected Integer getAssociatedId(ComplaintBase complaint) {
-		if (complaint instanceof CommentComplaint) {
-			return ((CommentComplaint) complaint).getComment() != null
-					? ((CommentComplaint) complaint).getComment().getId() : null;
-		}
-		else if (complaint instanceof ThreadComplaint) {
-			return ((ThreadComplaint) complaint).getThread() != null ? ((ThreadComplaint) complaint).getThread().getId()
-					: null;
-		}
-		return null;
-	}
 
 }

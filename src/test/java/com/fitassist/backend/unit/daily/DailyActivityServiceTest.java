@@ -301,7 +301,7 @@ public class DailyActivityServiceTest {
 
 		assertTrue(result.getActivities().isEmpty());
 		assertEquals(BigDecimal.ZERO, result.getTotalCaloriesBurned());
-		verify(dailyActivityMapper, never()).toActivityCalculatedResponseDto(any());
+		verify(dailyActivityMapper, never()).toResponse(any());
 	}
 
 }

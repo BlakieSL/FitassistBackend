@@ -33,7 +33,7 @@ public class UserActivityServiceImpl extends GenericSavedServiceWithoutType<Acti
 	public UserActivityServiceImpl(UserRepository userRepository, JpaRepository<Activity, Integer> entityRepository,
 			JpaRepository<UserActivity, Integer> userEntityRepository, ActivityMapper mapper,
 			ActivityPopulationService activityPopulationService) {
-		super(userRepository, entityRepository, userEntityRepository, mapper::toSummaryDto, Activity.class);
+		super(userRepository, entityRepository, userEntityRepository, mapper::toSummary, Activity.class);
 		this.activityMapper = mapper;
 		this.activityPopulationService = activityPopulationService;
 	}
@@ -61,7 +61,7 @@ public class UserActivityServiceImpl extends GenericSavedServiceWithoutType<Acti
 			.findAllByUserIdWithMedia(userId, pageable);
 
 		List<ActivitySummaryDto> summaries = userActivityPage.getContent().stream().map(ua -> {
-			ActivitySummaryDto dto = activityMapper.toSummaryDto(ua.getActivity());
+			ActivitySummaryDto dto = activityMapper.toSummary(ua.getActivity());
 			dto.setInteractionCreatedAt(ua.getCreatedAt());
 			return dto;
 		}).toList();
