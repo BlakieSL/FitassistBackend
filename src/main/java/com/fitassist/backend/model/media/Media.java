@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import static com.fitassist.backend.model.SchemaConstants.MAX_IMAGE_NAME_LENGTH;
+
 @UniqueUserMedia
 @Entity
 @Table(name = "media")
@@ -21,8 +23,6 @@ public class Media {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-
-	private static final int MAX_IMAGE_NAME_LENGTH = 500;
 
 	@NotNull
 	@Size(max = MAX_IMAGE_NAME_LENGTH)

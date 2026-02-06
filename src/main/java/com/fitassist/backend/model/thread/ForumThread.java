@@ -81,8 +81,8 @@ public class ForumThread {
 	private List<Media> mediaList = new ArrayList<>();
 
 	@PrePersist
-	public void prePersist() {
-		this.createdAt = LocalDateTime.now();
+	protected void onCreate() {
+		createdAt = LocalDateTime.now();
 	}
 
 	public static ForumThread of(Integer id, User user) {

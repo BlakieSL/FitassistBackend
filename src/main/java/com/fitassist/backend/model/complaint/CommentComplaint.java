@@ -15,12 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@DiscriminatorValue("COMMENT_COMPLAINT")
+@DiscriminatorValue(CommentComplaint.DISCRIMINATOR_VALUE)
 @Getter
 @Setter
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 public class CommentComplaint extends ComplaintBase {
+
+	public static final String DISCRIMINATOR_VALUE = "COMMENT_COMPLAINT";
 
 	@NotNull
 	@ManyToOne
@@ -30,12 +32,12 @@ public class CommentComplaint extends ComplaintBase {
 	@OneToMany
 	@JoinColumn(name = "parent_id", insertable = false, updatable = false,
 			foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	@SQLRestriction("parentType = 'COMMENT_COMPLAINT'")
+	@SQLRestriction("parentType = '" + DISCRIMINATOR_VALUE + "'")
 	private List<Media> mediaList = new ArrayList<>();
 
 	@Override
 	public String getDiscriminatorValue() {
-		return "COMMENT_COMPLAINT";
+		return DISCRIMINATOR_VALUE;
 	}
 
 	@Override

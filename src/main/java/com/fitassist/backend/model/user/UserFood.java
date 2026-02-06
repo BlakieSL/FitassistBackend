@@ -1,7 +1,9 @@
 package com.fitassist.backend.model.user;
 
+import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import com.fitassist.backend.model.food.Food;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,10 +27,12 @@ public class UserFood {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "food_id", nullable = false)
 	private Food food;

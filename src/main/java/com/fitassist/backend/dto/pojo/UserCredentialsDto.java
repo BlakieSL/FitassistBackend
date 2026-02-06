@@ -10,13 +10,15 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.util.Set;
 
+import static com.fitassist.backend.model.SchemaConstants.EMAIL_MAX_LENGTH;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserCredentialsDto implements Serializable {
 
-	@Size(max = 50)
+	@Size(max = EMAIL_MAX_LENGTH)
 	@Email
 	private String email;
 
