@@ -4,20 +4,18 @@ import com.fitassist.backend.dto.pojo.DateFoodMacros;
 import com.fitassist.backend.dto.pojo.FoodMacros;
 import com.fitassist.backend.dto.request.food.FoodCreateDto;
 import com.fitassist.backend.dto.request.food.FoodUpdateDto;
-import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.dto.response.food.FoodCalculatedMacrosResponseDto;
 import com.fitassist.backend.dto.response.food.FoodResponseDto;
 import com.fitassist.backend.dto.response.food.FoodSummaryDto;
 import com.fitassist.backend.mapper.CommonMappingHelper;
 import com.fitassist.backend.model.food.Food;
-import com.fitassist.backend.model.food.FoodCategory;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class FoodMapper {
 
 	@Mapping(target = "foodMacros", ignore = true)
-	@Mapping(target = "category", source = "foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
+	@Mapping(target = "category", source = "foodCategory", qualifiedByName = "mapCategoryToResponse")
 	@Mapping(target = "images", source = "mediaList", qualifiedByName = "mapMediaListToImagesDto")
 	@Mapping(target = "recipes", ignore = true)
 	@Mapping(target = "savesCount", ignore = true)
@@ -30,7 +28,7 @@ public abstract class FoodMapper {
 	}
 
 	@Mapping(target = "foodMacros", ignore = true)
-	@Mapping(target = "category", source = "foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
+	@Mapping(target = "category", source = "foodCategory", qualifiedByName = "mapCategoryToResponse")
 	@Mapping(target = "imageName", source = "mediaList", qualifiedByName = "mapMediaToFirstImageName")
 	@Mapping(target = "firstImageUrl", ignore = true)
 	@Mapping(target = "interactionCreatedAt", ignore = true)
@@ -43,7 +41,7 @@ public abstract class FoodMapper {
 		dto.setFoodMacros(FoodSummaryDto.createFoodMacros(food));
 	}
 
-	@Mapping(target = "category", source = "foodCategory", qualifiedByName = "mapFoodCategoryToResponseDto")
+	@Mapping(target = "category", source = "foodCategory", qualifiedByName = "mapCategoryToResponse")
 	@Mapping(target = "foodMacros", ignore = true)
 	@Mapping(target = "quantity", ignore = true)
 	@Mapping(target = "dailyItemId", ignore = true)
@@ -74,11 +72,6 @@ public abstract class FoodMapper {
 		if (dto.getCategoryId() != null) {
 			food.setFoodCategory(context.getCategory());
 		}
-	}
-
-	@Named("mapFoodCategoryToResponseDto")
-	protected CategoryResponseDto mapFoodCategoryToResponseDto(FoodCategory category) {
-		return new CategoryResponseDto(category.getId(), category.getName());
 	}
 
 }

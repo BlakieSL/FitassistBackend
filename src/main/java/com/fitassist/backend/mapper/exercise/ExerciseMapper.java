@@ -24,15 +24,15 @@ public abstract class ExerciseMapper {
 	private CommonMappingHelper commonMappingHelper;
 
 	@Autowired
-	private void setCommonMappingHelper(CommonMappingHelper commonMappingHelper) {
+	public void setCommonMappingHelper(CommonMappingHelper commonMappingHelper) {
 		this.commonMappingHelper = commonMappingHelper;
 	}
 
 	@Mapping(target = "targetMuscles", source = "exerciseTargetMuscles", qualifiedByName = "mapTargetMusclesToResponse")
-	@Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseLevelToResponse")
-	@Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsTypeToResponse")
-	@Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceTypeToResponse")
-	@Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToResponse")
+	@Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapCategoryToResponse")
+	@Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapCategoryToResponse")
+	@Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapCategoryToResponse")
+	@Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapCategoryToResponse")
 	@Mapping(target = "instructions", source = "exerciseInstructions", qualifiedByName = "mapInstructionsToResponse")
 	@Mapping(target = "tips", source = "exerciseTips", qualifiedByName = "mapTipsToResponse")
 	@Mapping(target = "imageUrls", ignore = true)
@@ -41,10 +41,10 @@ public abstract class ExerciseMapper {
 	@Mapping(target = "saved", ignore = true)
 	public abstract ExerciseResponseDto toResponse(Exercise exercise);
 
-	@Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapExpertiseLevelToResponse")
-	@Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapMechanicsTypeToResponse")
-	@Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapForceTypeToResponse")
-	@Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapEquipmentToResponse")
+	@Mapping(target = "expertiseLevel", source = "expertiseLevel", qualifiedByName = "mapCategoryToResponse")
+	@Mapping(target = "mechanicsType", source = "mechanicsType", qualifiedByName = "mapCategoryToResponse")
+	@Mapping(target = "forceType", source = "forceType", qualifiedByName = "mapCategoryToResponse")
+	@Mapping(target = "equipment", source = "equipment", qualifiedByName = "mapCategoryToResponse")
 	@Mapping(target = "imageName", source = "mediaList", qualifiedByName = "mapMediaToFirstImageName")
 	@Mapping(target = "firstImageUrl", ignore = true)
 	@Mapping(target = "interactionCreatedAt", ignore = true)
@@ -160,28 +160,6 @@ public abstract class ExerciseMapper {
 			.map(association -> TargetMuscleResponseDto.create(association.getTargetMuscle().getId(),
 					association.getTargetMuscle().getName(), association.getPriority()))
 			.toList();
-	}
-
-	@Named("mapExpertiseLevelToResponse")
-	protected CategoryResponseDto mapExpertiseLevelToResponse(ExpertiseLevel expertiseLevel) {
-		return new CategoryResponseDto(expertiseLevel.getId(), expertiseLevel.getName());
-	}
-
-	@Named("mapMechanicsTypeToResponse")
-	protected CategoryResponseDto mapMechanicsTypeToResponse(MechanicsType mechanicsType) {
-		return Optional.ofNullable(mechanicsType)
-			.map(mt -> new CategoryResponseDto(mt.getId(), mt.getName()))
-			.orElse(null);
-	}
-
-	@Named("mapForceTypeToResponse")
-	protected CategoryResponseDto mapForceTypeToResponse(ForceType forceType) {
-		return Optional.ofNullable(forceType).map(ft -> new CategoryResponseDto(ft.getId(), ft.getName())).orElse(null);
-	}
-
-	@Named("mapEquipmentToResponse")
-	protected CategoryResponseDto mapEquipmentToResponse(Equipment equipment) {
-		return Optional.ofNullable(equipment).map(e -> new CategoryResponseDto(e.getId(), e.getName())).orElse(null);
 	}
 
 	@Named("mapInstructionsToResponse")

@@ -80,7 +80,7 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 
-    maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+    maxParallelForks = 1
     forkEvery = 100
 
     jvmArgs = ['-XX:+UseG1GC', '-Xmx4g', '-XX:+UseStringDeduplication']
