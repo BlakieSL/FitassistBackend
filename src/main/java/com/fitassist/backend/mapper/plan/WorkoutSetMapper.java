@@ -23,29 +23,27 @@ public abstract class WorkoutSetMapper {
 		this.workoutSetExerciseMapper = workoutSetExerciseMapper;
 	}
 
-	public abstract WorkoutSetResponseDto toResponseDto(WorkoutSet workoutSet);
+	public abstract WorkoutSetResponseDto toResponse(WorkoutSet workoutSet);
 
 	@Mapping(target = "workout", ignore = true)
 	@Mapping(target = "id", ignore = true)
-	public abstract WorkoutSet toEntityFromNested(WorkoutSetNestedCreateDto createDto,
-			@Context PlanMappingContext context);
+	public abstract WorkoutSet toEntity(WorkoutSetNestedCreateDto createDto, @Context PlanMappingContext context);
 
 	@AfterMapping
-	protected void setWorkoutSetAssociations(@MappingTarget WorkoutSet workoutSet, WorkoutSetNestedCreateDto dto) {
+	protected void setAssociations(@MappingTarget WorkoutSet workoutSet, WorkoutSetNestedCreateDto dto) {
 		workoutSet.getWorkoutSetExercises().forEach(exercise -> exercise.setWorkoutSet(workoutSet));
 	}
 
 	@Mapping(target = "workout", ignore = true)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "workoutSetExercises", ignore = true)
-	public abstract WorkoutSet toEntityFromNested(WorkoutSetNestedUpdateDto updateDto,
-			@Context PlanMappingContext context);
+	public abstract WorkoutSet toEntity(WorkoutSetNestedUpdateDto updateDto, @Context PlanMappingContext context);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "workout", ignore = true)
 	@Mapping(target = "workoutSetExercises", ignore = true)
-	public abstract void updateWorkoutSetNested(@MappingTarget WorkoutSet workoutSet, WorkoutSetNestedUpdateDto dto,
+	public abstract void update(@MappingTarget WorkoutSet workoutSet, WorkoutSetNestedUpdateDto dto,
 			@Context PlanMappingContext context);
 
 	@AfterMapping
@@ -61,7 +59,7 @@ public abstract class WorkoutSetMapper {
 		if (isNew) {
 			List<WorkoutSetExercise> exercises = dto.getWorkoutSetExercises()
 				.stream()
-				.map(exerciseDto -> workoutSetExerciseMapper.toEntityFromNested(exerciseDto, context))
+				.map(exerciseDto -> workoutSetExerciseMapper.toEntity(exerciseDto, context))
 				.peek(exercise -> exercise.setWorkoutSet(workoutSet))
 				.toList();
 			existingExercises.addAll(exercises);
@@ -80,11 +78,10 @@ public abstract class WorkoutSetMapper {
 					existingExercises.stream()
 						.filter(exercise -> exercise.getId().equals(exerciseDto.getId()))
 						.findFirst()
-						.ifPresent(exercise -> workoutSetExerciseMapper.updateWorkoutSetExerciseNested(exercise,
-								exerciseDto, context));
+						.ifPresent(exercise -> workoutSetExerciseMapper.update(exercise, exerciseDto, context));
 				}
 				else {
-					WorkoutSetExercise newExercise = workoutSetExerciseMapper.toEntityFromNested(exerciseDto, context);
+					WorkoutSetExercise newExercise = workoutSetExerciseMapper.toEntity(exerciseDto, context);
 					newExercise.setWorkoutSet(workoutSet);
 					existingExercises.add(newExercise);
 				}

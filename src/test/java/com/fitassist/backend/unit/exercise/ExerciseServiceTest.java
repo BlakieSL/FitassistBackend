@@ -189,7 +189,7 @@ public class ExerciseServiceTest {
 		when(exerciseRepository.save(exercise)).thenReturn(exercise);
 		when(exerciseRepository.findByIdWithAssociationsForIndexing(exerciseId)).thenReturn(Optional.of(exercise));
 		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
-		when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
+		when(exerciseMapper.toResponse(exercise)).thenReturn(responseDto);
 
 		ExerciseResponseDto result = exerciseService.createExercise(createDto);
 
@@ -211,7 +211,7 @@ public class ExerciseServiceTest {
 		when(exerciseRepository.save(exercise)).thenReturn(exercise);
 		when(exerciseRepository.findByIdWithAssociationsForIndexing(exerciseId)).thenReturn(Optional.of(exercise));
 		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
-		when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
+		when(exerciseMapper.toResponse(exercise)).thenReturn(responseDto);
 
 		exerciseService.createExercise(createDto);
 
@@ -239,7 +239,7 @@ public class ExerciseServiceTest {
 		exerciseService.updateExercise(exerciseId, patch);
 
 		verify(validationService).validate(patchedDto);
-		verify(exerciseMapper).updateExerciseFromDto(eq(exercise), eq(patchedDto), any(ExerciseMappingContext.class));
+		verify(exerciseMapper).update(eq(exercise), eq(patchedDto), any(ExerciseMappingContext.class));
 		verify(exerciseRepository).save(exercise);
 	}
 
@@ -256,7 +256,7 @@ public class ExerciseServiceTest {
 		exerciseService.updateExercise(exerciseId, patch);
 
 		verify(eventPublisher).publishEvent(eventCaptor.capture());
-		verify(exerciseMapper).updateExerciseFromDto(eq(exercise), eq(patchedDto), any(ExerciseMappingContext.class));
+		verify(exerciseMapper).update(eq(exercise), eq(patchedDto), any(ExerciseMappingContext.class));
 		assertEquals(exercise, eventCaptor.getValue().getExercise());
 	}
 
@@ -335,18 +335,18 @@ public class ExerciseServiceTest {
 		planSummaryDto.setId(1);
 
 		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
-		when(exerciseMapper.toResponseDto(exercise)).thenReturn(responseDto);
+		when(exerciseMapper.toResponse(exercise)).thenReturn(responseDto);
 		when(planRepository.findByExerciseIdWithDetails(exerciseId)).thenReturn(List.of(plan));
-		when(planMapper.toSummaryDto(plan)).thenReturn(planSummaryDto);
+		when(planMapper.toSummary(plan)).thenReturn(planSummaryDto);
 
 		ExerciseResponseDto result = exerciseService.getExercise(exerciseId);
 
 		assertEquals(responseDto, result);
 		verify(exerciseRepository).findByIdWithDetails(exerciseId);
-		verify(exerciseMapper).toResponseDto(exercise);
+		verify(exerciseMapper).toResponse(exercise);
 		verify(exercisePopulationService).populate(responseDto);
 		verify(planRepository).findByExerciseIdWithDetails(exerciseId);
-		verify(planMapper).toSummaryDto(plan);
+		verify(planMapper).toSummary(plan);
 		verify(planPopulationService).populate(any(List.class));
 	}
 
@@ -365,14 +365,14 @@ public class ExerciseServiceTest {
 		Page<Exercise> exercisePage = new PageImpl<>(List.of(exercise), pageable, 1);
 
 		when(exerciseRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(exercisePage);
-		when(exerciseMapper.toSummaryDto(exercise)).thenReturn(summaryDto);
+		when(exerciseMapper.toSummary(exercise)).thenReturn(summaryDto);
 
 		Page<ExerciseSummaryDto> result = exerciseService.getFilteredExercises(filter, pageable);
 
 		assertEquals(1, result.getTotalElements());
 		assertSame(summaryDto, result.getContent().get(0));
 		verify(exerciseRepository).findAll(any(Specification.class), eq(pageable));
-		verify(exerciseMapper).toSummaryDto(exercise);
+		verify(exerciseMapper).toSummary(exercise);
 	}
 
 	@Test

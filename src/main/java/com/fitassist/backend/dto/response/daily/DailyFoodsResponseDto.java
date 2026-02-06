@@ -40,17 +40,17 @@ public class DailyFoodsResponseDto implements Serializable {
 		BigDecimal totalCarbohydrates = foods.stream()
 			.map(food -> food.getFoodMacros().getCarbohydrates())
 			.reduce(BigDecimal.ZERO, BigDecimal::add)
-			.setScale(1, RoundingMode.HALF_UP);
+			.setScale(2, RoundingMode.HALF_UP);
 
 		BigDecimal totalProtein = foods.stream()
 			.map(food -> food.getFoodMacros().getProtein())
 			.reduce(BigDecimal.ZERO, BigDecimal::add)
-			.setScale(1, RoundingMode.HALF_UP);
+			.setScale(2, RoundingMode.HALF_UP);
 
 		BigDecimal totalFat = foods.stream()
 			.map(food -> food.getFoodMacros().getFat())
 			.reduce(BigDecimal.ZERO, BigDecimal::add)
-			.setScale(1, RoundingMode.HALF_UP);
+			.setScale(2, RoundingMode.HALF_UP);
 
 		return new DailyFoodsResponseDto(foods, totalCalories, totalCarbohydrates, totalProtein, totalFat);
 	}

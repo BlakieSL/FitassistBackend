@@ -15,14 +15,14 @@ public abstract class CommentMapper {
 
 	@Mapping(target = "threadId", source = "thread.id")
 	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
-	@Mapping(target = "parentCommentId", source = "parentComment", qualifiedByName = "parentCommentToParentCommentId")
+	@Mapping(target = "parentCommentId", source = "parentComment", qualifiedByName = "mapParentCommentToId")
 	@Mapping(target = "replies", ignore = true)
 	@Mapping(target = "repliesCount", ignore = true)
 	@Mapping(target = "likesCount", ignore = true)
 	@Mapping(target = "dislikesCount", ignore = true)
 	@Mapping(target = "liked", ignore = true)
 	@Mapping(target = "disliked", ignore = true)
-	public abstract CommentResponseDto toResponseDto(Comment comment);
+	public abstract CommentResponseDto toResponse(Comment comment);
 
 	@Mapping(target = "author", source = "user", qualifiedByName = "userToAuthorDto")
 	@Mapping(target = "threadId", source = "thread.id")
@@ -32,7 +32,7 @@ public abstract class CommentMapper {
 	@Mapping(target = "disliked", ignore = true)
 	@Mapping(target = "repliesCount", ignore = true)
 	@Mapping(target = "interactionCreatedAt", ignore = true)
-	public abstract CommentSummaryDto toSummaryDto(Comment comment);
+	public abstract CommentSummaryDto toSummary(Comment comment);
 
 	@Mapping(target = "thread", expression = "java(context.getThread())")
 	@Mapping(target = "user", expression = "java(context.getUser())")
@@ -57,8 +57,8 @@ public abstract class CommentMapper {
 	@Mapping(target = "complaints", ignore = true)
 	public abstract void update(@MappingTarget Comment comment, CommentUpdateDto updateDto);
 
-	@Named("parentCommentToParentCommentId")
-	protected Integer parentCommentToParentCommentId(Comment parentComment) {
+	@Named("mapParentCommentToId")
+	protected Integer mapParentCommentToId(Comment parentComment) {
 		return Optional.ofNullable(parentComment).map(Comment::getId).orElse(null);
 	}
 

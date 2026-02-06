@@ -23,6 +23,7 @@ import com.fitassist.backend.repository.FoodCategoryRepository;
 import com.fitassist.backend.repository.FoodRepository;
 import com.fitassist.backend.repository.RecipeRepository;
 import com.fitassist.backend.service.declaration.food.FoodPopulationService;
+import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
@@ -92,6 +93,9 @@ public class FoodServiceTest {
 	@Mock
 	private SpecificationDependencies dependencies;
 
+	@Mock
+	private CalculationsService calculationsService;
+
 	@InjectMocks
 	private FoodServiceImpl foodService;
 
@@ -144,7 +148,7 @@ public class FoodServiceTest {
 		when(foodMapper.toEntity(eq(createDto), any(FoodMappingContext.class))).thenReturn(food);
 		when(foodRepository.save(food)).thenReturn(food);
 		when(foodRepository.findByIdWithMedia(foodId)).thenReturn(Optional.of(food));
-		when(foodMapper.toDetailedResponseDto(food)).thenReturn(detailedResponseDto);
+		when(foodMapper.toResponse(food)).thenReturn(detailedResponseDto);
 
 		FoodResponseDto result = foodService.createFood(createDto);
 
@@ -161,7 +165,7 @@ public class FoodServiceTest {
 		when(foodMapper.toEntity(eq(createDto), any(FoodMappingContext.class))).thenReturn(food);
 		when(foodRepository.save(food)).thenReturn(food);
 		when(foodRepository.findByIdWithMedia(foodId)).thenReturn(Optional.of(food));
-		when(foodMapper.toDetailedResponseDto(food)).thenReturn(detailedResponseDto);
+		when(foodMapper.toResponse(food)).thenReturn(detailedResponseDto);
 
 		foodService.createFood(createDto);
 
@@ -189,7 +193,7 @@ public class FoodServiceTest {
 		foodService.updateFood(foodId, patch);
 
 		verify(validationService).validate(patchedDto);
-		verify(foodMapper).updateFood(eq(food), eq(patchedDto), any(FoodMappingContext.class));
+		verify(foodMapper).update(eq(food), eq(patchedDto), any(FoodMappingContext.class));
 		verify(foodRepository).save(food);
 	}
 
@@ -206,7 +210,7 @@ public class FoodServiceTest {
 		foodService.updateFood(foodId, patch);
 
 		verify(eventPublisher).publishEvent(eventCaptor.capture());
-		verify(foodMapper).updateFood(eq(food), eq(patchedDto), any(FoodMappingContext.class));
+		verify(foodMapper).update(eq(food), eq(patchedDto), any(FoodMappingContext.class));
 		assertEquals(food, eventCaptor.getValue().getFood());
 	}
 
@@ -281,7 +285,8 @@ public class FoodServiceTest {
 	@Test
 	void calculateFoodMacros_shouldCalculateMacrosForFood() {
 		when(repositoryHelper.find(foodRepository, Food.class, foodId)).thenReturn(food);
-		when(foodMapper.toDtoWithFactor(eq(food), argThat(x -> x.compareTo(BigDecimal.valueOf(1.2)) == 0)))
+		when(calculationsService.toCalculatedResponseDto(eq(food),
+				argThat(x -> x.compareTo(BigDecimal.valueOf(1.2)) == 0)))
 			.thenReturn(calculatedResponseDto);
 
 		CalculateFoodMacrosRequestDto request = new CalculateFoodMacrosRequestDto();
@@ -290,7 +295,8 @@ public class FoodServiceTest {
 		FoodCalculatedMacrosResponseDto result = foodService.calculateFoodMacros(foodId, request);
 
 		assertEquals(calculatedResponseDto, result);
-		verify(foodMapper).toDtoWithFactor(eq(food), argThat(x -> x.compareTo(BigDecimal.valueOf(1.2)) == 0));
+		verify(calculationsService).toCalculatedResponseDto(eq(food),
+				argThat(x -> x.compareTo(BigDecimal.valueOf(1.2)) == 0));
 	}
 
 	@Test
@@ -300,24 +306,24 @@ public class FoodServiceTest {
 
 		assertThrows(RecordNotFoundException.class, () -> foodService.calculateFoodMacros(foodId, calculateRequestDto));
 
-		verifyNoInteractions(foodMapper);
+		verifyNoInteractions(calculationsService);
 	}
 
 	@Test
 	void getFood_shouldReturnFoodWhenFound() {
 		Recipe recipe = new Recipe();
 		when(foodRepository.findByIdWithMedia(foodId)).thenReturn(Optional.of(food));
-		when(foodMapper.toDetailedResponseDto(food)).thenReturn(detailedResponseDto);
+		when(foodMapper.toResponse(food)).thenReturn(detailedResponseDto);
 		when(recipeRepository.findAllWithDetailsByFoodId(foodId)).thenReturn(List.of(recipe));
 
 		FoodResponseDto result = foodService.getFood(foodId);
 
 		assertEquals(detailedResponseDto, result);
 		verify(foodRepository).findByIdWithMedia(foodId);
-		verify(foodMapper).toDetailedResponseDto(food);
+		verify(foodMapper).toResponse(food);
 		verify(foodPopulationService).populate(detailedResponseDto);
 		verify(recipeRepository).findAllWithDetailsByFoodId(foodId);
-		verify(recipeMapper).toSummaryDto(recipe);
+		verify(recipeMapper).toSummary(recipe);
 		verify(recipePopulationService).populate(anyList());
 	}
 
@@ -337,14 +343,14 @@ public class FoodServiceTest {
 		Page<Food> foodPage = new PageImpl<>(List.of(food), pageable, 1);
 
 		when(foodRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(foodPage);
-		when(foodMapper.toSummaryDto(food)).thenReturn(responseDto);
+		when(foodMapper.toSummary(food)).thenReturn(responseDto);
 
 		Page<FoodSummaryDto> result = foodService.getFilteredFoods(filter, pageable);
 
 		assertEquals(1, result.getTotalElements());
 		assertSame(responseDto, result.getContent().get(0));
 		verify(foodRepository).findAll(any(Specification.class), eq(pageable));
-		verify(foodMapper).toSummaryDto(food);
+		verify(foodMapper).toSummary(food);
 	}
 
 	@Test

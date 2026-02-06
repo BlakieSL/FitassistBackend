@@ -162,7 +162,7 @@ public class ActivityServiceTest {
 		when(activityMapper.toEntity(eq(createDto), any(ActivityMappingContext.class))).thenReturn(activity);
 		when(activityRepository.save(activity)).thenReturn(activity);
 		when(activityRepository.findByIdWithMedia(activityId)).thenReturn(Optional.of(activity));
-		when(activityMapper.toDetailedResponseDto(activity)).thenReturn(detailedResponseDto);
+		when(activityMapper.toResponse(activity)).thenReturn(detailedResponseDto);
 
 		ActivityResponseDto result = activityService.createActivity(createDto);
 
@@ -179,7 +179,7 @@ public class ActivityServiceTest {
 		when(activityMapper.toEntity(eq(createDto), any(ActivityMappingContext.class))).thenReturn(activity);
 		when(activityRepository.save(activity)).thenReturn(activity);
 		when(activityRepository.findByIdWithMedia(activityId)).thenReturn(Optional.of(activity));
-		when(activityMapper.toDetailedResponseDto(activity)).thenReturn(detailedResponseDto);
+		when(activityMapper.toResponse(activity)).thenReturn(detailedResponseDto);
 
 		activityService.createActivity(createDto);
 
@@ -207,7 +207,7 @@ public class ActivityServiceTest {
 		activityService.updateActivity(activityId, patch);
 
 		verify(validationService).validate(patchedDto);
-		verify(activityMapper).updateActivityFromDto(eq(activity), eq(patchedDto), any(ActivityMappingContext.class));
+		verify(activityMapper).update(eq(activity), eq(patchedDto), any(ActivityMappingContext.class));
 		verify(activityRepository).save(activity);
 	}
 
@@ -355,13 +355,13 @@ public class ActivityServiceTest {
 	@Test
 	void getActivity_shouldReturnActivityWhenFound() {
 		when(activityRepository.findByIdWithMedia(activityId)).thenReturn(Optional.of(activity));
-		when(activityMapper.toDetailedResponseDto(activity)).thenReturn(detailedResponseDto);
+		when(activityMapper.toResponse(activity)).thenReturn(detailedResponseDto);
 
 		ActivityResponseDto result = activityService.getActivity(activityId);
 
 		assertEquals(detailedResponseDto, result);
 		verify(activityRepository).findByIdWithMedia(activityId);
-		verify(activityMapper).toDetailedResponseDto(activity);
+		verify(activityMapper).toResponse(activity);
 		verify(activityPopulationService).populate(detailedResponseDto);
 	}
 
@@ -379,14 +379,14 @@ public class ActivityServiceTest {
 		Page<Activity> activityPage = new PageImpl<>(List.of(activity), pageable, 1);
 
 		when(activityRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(activityPage);
-		when(activityMapper.toSummaryDto(activity)).thenReturn(responseDto);
+		when(activityMapper.toSummary(activity)).thenReturn(responseDto);
 
 		Page<ActivitySummaryDto> result = activityService.getFilteredActivities(filter, pageable);
 
 		assertEquals(1, result.getTotalElements());
 		assertSame(responseDto, result.getContent().get(0));
 		verify(activityRepository).findAll(any(Specification.class), eq(pageable));
-		verify(activityMapper).toSummaryDto(activity);
+		verify(activityMapper).toSummary(activity);
 	}
 
 	@Test

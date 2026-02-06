@@ -89,9 +89,4 @@ public class Food implements IndexedEntity {
 	@SQLRestriction("parentType = 'FOOD'")
 	private List<Media> mediaList = new ArrayList<>();
 
-	@Override
-	public String getClassName() {
-		return this.getClass().getSimpleName();
-	}
-
 }

@@ -71,7 +71,7 @@ public class UserPlanServiceImpl extends GenericSavedService<Plan, UserPlan, Pla
 
 		List<PlanSummaryDto> summaries = userPlanPage.getContent().stream().map(up -> {
 			Plan plan = planMap.get(up.getPlan().getId());
-			PlanSummaryDto dto = planMapper.toSummaryDto(plan);
+			PlanSummaryDto dto = planMapper.toSummary(plan);
 			dto.setInteractionCreatedAt(up.getCreatedAt());
 			return dto;
 		}).toList();

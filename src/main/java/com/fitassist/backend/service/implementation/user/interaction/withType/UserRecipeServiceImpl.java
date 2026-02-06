@@ -72,7 +72,7 @@ public class UserRecipeServiceImpl extends GenericSavedService<Recipe, UserRecip
 
 		List<RecipeSummaryDto> summaries = userRecipePage.getContent().stream().map(ur -> {
 			Recipe recipe = recipeMap.get(ur.getRecipe().getId());
-			RecipeSummaryDto dto = recipeMapper.toSummaryDto(recipe);
+			RecipeSummaryDto dto = recipeMapper.toSummary(recipe);
 			dto.setInteractionCreatedAt(ur.getCreatedAt());
 			return dto;
 		}).toList();

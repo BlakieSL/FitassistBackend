@@ -162,7 +162,7 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 		List<FoodSummaryDto> summaries = recipeFoodRepository.findByRecipeId(recipeId)
 			.stream()
 			.map(RecipeFood::getFood)
-			.map(foodMapper::toSummaryDto)
+			.map(foodMapper::toSummary)
 			.toList();
 
 		foodPopulationService.populate(summaries);

@@ -188,14 +188,14 @@ public class UserExerciseServiceTest {
 
 		Page<UserExercise> page = new PageImpl<>(List.of(ue1, ue2));
 		when(userExerciseRepository.findAllByUserIdWithMedia(eq(userId), any(Pageable.class))).thenReturn(page);
-		when(exerciseMapper.toSummaryDto(exercise1)).thenReturn(dto1);
-		when(exerciseMapper.toSummaryDto(exercise2)).thenReturn(dto2);
+		when(exerciseMapper.toSummary(exercise1)).thenReturn(dto1);
+		when(exerciseMapper.toSummary(exercise2)).thenReturn(dto2);
 
 		Page<UserEntitySummaryResponseDto> result = userExerciseService.getAllFromUser(userId, pageable);
 
 		assertEquals(2, result.getContent().size());
 		assertEquals(2, result.getTotalElements());
-		verify(exerciseMapper, times(2)).toSummaryDto(any(Exercise.class));
+		verify(exerciseMapper, times(2)).toSummary(any(Exercise.class));
 		verify(exercisePopulationService).populate(anyList());
 	}
 

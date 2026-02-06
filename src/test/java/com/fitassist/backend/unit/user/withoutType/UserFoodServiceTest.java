@@ -189,14 +189,14 @@ public class UserFoodServiceTest {
 		Page<UserFood> userFoodPage = new PageImpl<>(List.of(uf1, uf2), pageable, 2);
 
 		when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), eq(pageable))).thenReturn(userFoodPage);
-		when(foodMapper.toSummaryDto(food1)).thenReturn(dto1);
-		when(foodMapper.toSummaryDto(food2)).thenReturn(dto2);
+		when(foodMapper.toSummary(food1)).thenReturn(dto1);
+		when(foodMapper.toSummary(food2)).thenReturn(dto2);
 
 		Page<UserEntitySummaryResponseDto> result = userFoodService.getAllFromUser(userId, pageable);
 
 		assertEquals(2, result.getTotalElements());
 		assertEquals(2, result.getContent().size());
-		verify(foodMapper, times(2)).toSummaryDto(any(Food.class));
+		verify(foodMapper, times(2)).toSummary(any(Food.class));
 	}
 
 	@Test
@@ -245,15 +245,15 @@ public class UserFoodServiceTest {
 		Page<UserFood> userFoodPage = new PageImpl<>(List.of(uf1, uf2), pageable, 2);
 
 		when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), eq(pageable))).thenReturn(userFoodPage);
-		when(foodMapper.toSummaryDto(food1)).thenReturn(dto1);
-		when(foodMapper.toSummaryDto(food2)).thenReturn(dto2);
+		when(foodMapper.toSummary(food1)).thenReturn(dto1);
+		when(foodMapper.toSummary(food2)).thenReturn(dto2);
 
 		Page<UserEntitySummaryResponseDto> result = userFoodService.getAllFromUser(userId, pageable);
 
 		assertNotNull(result);
 		assertEquals(2, result.getContent().size());
-		verify(foodMapper).toSummaryDto(food1);
-		verify(foodMapper).toSummaryDto(food2);
+		verify(foodMapper).toSummary(food1);
+		verify(foodMapper).toSummary(food2);
 	}
 
 }
