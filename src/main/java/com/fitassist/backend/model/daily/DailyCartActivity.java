@@ -13,12 +13,14 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "daily_cart_activity")
-@NamedEntityGraph(name = "DailyCartActivity.withoutAssociations", attributeNodes = {})
+@NamedEntityGraph(name = DailyCartActivity.GRAPH_BASE, attributeNodes = {})
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class DailyCartActivity {
+
+	public static final String GRAPH_BASE = "DailyCartActivity.base";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

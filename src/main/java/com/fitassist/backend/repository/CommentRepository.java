@@ -11,19 +11,21 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
+import static com.fitassist.backend.model.thread.Comment.*;
+
 public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaSpecificationExecutor<Comment> {
 
-	@EntityGraph(value = "Comment.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@NotNull
 	@Override
 	Page<Comment> findAll(Specification<Comment> spec, @NotNull Pageable pageable);
 
-	@EntityGraph(value = "Comment.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@NotNull
 	@Override
 	Optional<Comment> findById(@NotNull Integer id);
 
-	@EntityGraph(value = "Comment.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	Page<Comment> findAllByThreadIdAndParentCommentNull(int threadId, Pageable pageable);
 
 	@Query(value = """
@@ -111,7 +113,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaS
 	List<Integer> findTopCommentIdsSortedByLikesCount(@Param("threadId") int threadId,
 			@Param("direction") String direction, @Param("limit") int limit, @Param("offset") int offset);
 
-	@EntityGraph(value = "Comment.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@Query("SELECT c FROM Comment c WHERE c.id IN :ids")
 	List<Comment> findAllByIds(@Param("ids") List<Integer> ids);
 

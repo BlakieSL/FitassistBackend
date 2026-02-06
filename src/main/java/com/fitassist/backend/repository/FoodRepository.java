@@ -14,13 +14,15 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
+import static com.fitassist.backend.model.food.Food.*;
+
 public interface FoodRepository extends JpaRepository<Food, Integer>, JpaSpecificationExecutor<Food> {
 
-	@EntityGraph(value = "Food.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@NotNull
 	Page<Food> findAll(Specification<Food> spec, @NotNull Pageable pageable);
 
-	@EntityGraph(value = "Food.withoutAssociations")
+	@EntityGraph(value = GRAPH_BASE)
 	@Query("SELECT f FROM Food f")
 	List<Food> findAllWithoutAssociations();
 
@@ -32,7 +34,7 @@ public interface FoodRepository extends JpaRepository<Food, Integer>, JpaSpecifi
 			""")
 	Optional<Food> findByIdWithMedia(@Param("id") int id);
 
-	@EntityGraph(value = "Food.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@NotNull
 	List<Food> findAll();
 

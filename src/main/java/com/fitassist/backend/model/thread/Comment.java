@@ -24,15 +24,21 @@ import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
 
 @Entity
 @Table(name = "comment")
-@NamedEntityGraph(name = "Comment.withoutAssociations", attributeNodes = {})
-@NamedEntityGraph(name = "Comment.withAssociations", includeAllAttributes = true)
-@NamedEntityGraph(name = "Comment.summary",
+@NamedEntityGraph(name = Comment.GRAPH_BASE, attributeNodes = {})
+@NamedEntityGraph(name = Comment.GRAPH_DETAIL, includeAllAttributes = true)
+@NamedEntityGraph(name = Comment.GRAPH_SUMMARY,
 		attributeNodes = { @NamedAttributeNode("user"), @NamedAttributeNode("thread") })
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Comment {
+
+	public static final String GRAPH_BASE = "Comment.base";
+
+	public static final String GRAPH_SUMMARY = "Comment.summary";
+
+	public static final String GRAPH_DETAIL = "Comment.detail";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

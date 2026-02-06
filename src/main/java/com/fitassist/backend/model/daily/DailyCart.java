@@ -14,12 +14,14 @@ import java.util.List;
 
 @Entity
 @Table(name = "daily_cart")
-@NamedEntityGraph(name = "DailyCart.withAssociations", attributeNodes = {})
+@NamedEntityGraph(name = DailyCart.GRAPH_BASE, attributeNodes = {})
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class DailyCart {
+
+	public static final String GRAPH_BASE = "DailyCart.base";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

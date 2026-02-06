@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.*;
 import java.util.List;
 import java.util.Optional;
 
+import static com.fitassist.backend.model.recipe.Recipe.*;
+
 public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpecificationExecutor<Recipe> {
 
 	@Modifying
@@ -20,11 +22,11 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
 	@Query("SELECT r.views FROM Recipe r WHERE r.id = :recipeId")
 	Long getViews(@Param("recipeId") int recipeId);
 
-	@EntityGraph(value = "Recipe.withoutAssociations")
+	@EntityGraph(value = GRAPH_BASE)
 	@Query("SELECT r FROM Recipe r WHERE r.isPublic = true")
 	List<Recipe> findAllWithoutAssociations();
 
-	@EntityGraph(value = "Recipe.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@NotNull
 	Page<Recipe> findAll(Specification<Recipe> spec, @NotNull Pageable pageable);
 
@@ -42,7 +44,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
 			""")
 	Optional<Recipe> findByIdWithDetails(@Param("recipeId") int recipeId);
 
-	@EntityGraph(value = "Recipe.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@Query("""
 			    SELECT r
 			    FROM Recipe r
@@ -51,7 +53,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpe
 			""")
 	List<Recipe> findAllWithDetailsByFoodId(@Param("foodId") int foodId);
 
-	@EntityGraph(value = "Recipe.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@Query("""
 			    SELECT r
 			    FROM Recipe r

@@ -22,16 +22,22 @@ import static com.fitassist.backend.model.SchemaConstants.NAME_MAX_LENGTH;
 
 @Entity
 @Table(name = "activity")
-@NamedEntityGraph(name = "Activity.withoutAssociations", attributeNodes = {})
-@NamedEntityGraph(name = "Activity.withAssociations",
+@NamedEntityGraph(name = Activity.GRAPH_BASE, attributeNodes = {})
+@NamedEntityGraph(name = Activity.GRAPH_DETAIL,
 		attributeNodes = { @NamedAttributeNode("dailyCartActivities"), @NamedAttributeNode("userActivities") })
-@NamedEntityGraph(name = "Activity.summary",
+@NamedEntityGraph(name = Activity.GRAPH_SUMMARY,
 		attributeNodes = { @NamedAttributeNode("activityCategory"), @NamedAttributeNode("mediaList") })
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Activity implements IndexedEntity {
+
+	public static final String GRAPH_BASE = "Activity.base";
+
+	public static final String GRAPH_SUMMARY = "Activity.summary";
+
+	public static final String GRAPH_DETAIL = "Activity.detail";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

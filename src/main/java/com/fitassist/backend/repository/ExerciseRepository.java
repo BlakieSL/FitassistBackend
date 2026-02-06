@@ -13,14 +13,16 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
+import static com.fitassist.backend.model.exercise.Exercise.*;
+
 public interface ExerciseRepository extends JpaRepository<Exercise, Integer>, JpaSpecificationExecutor<Exercise> {
 
-	@EntityGraph(value = "Exercise.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@NotNull
 	@Override
 	Page<Exercise> findAll(Specification<Exercise> spec, @NotNull Pageable pageable);
 
-	@EntityGraph(value = "Exercise.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@NotNull
 	@Override
 	List<Exercise> findAll();

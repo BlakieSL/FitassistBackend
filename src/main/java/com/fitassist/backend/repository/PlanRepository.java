@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.*;
 import java.util.List;
 import java.util.Optional;
 
+import static com.fitassist.backend.model.plan.Plan.*;
+
 public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecificationExecutor<Plan> {
 
 	@Query("""
@@ -29,7 +31,7 @@ public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecifi
 	Optional<Plan> findByIdWithDetails(@Param("planId") int planId);
 
 	@Override
-	@EntityGraph(value = "Plan.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@NotNull
 	Page<Plan> findAll(Specification<Plan> spec, @NotNull Pageable pageable);
 
@@ -37,11 +39,11 @@ public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecifi
 	@Query("UPDATE Plan p SET p.views = p.views + 1 WHERE p.id = :planId")
 	void incrementViews(@Param("planId") int planId);
 
-	@EntityGraph(value = "Plan.withoutAssociations")
+	@EntityGraph(value = GRAPH_BASE)
 	@Query("SELECT p FROM Plan p WHERE p.isPublic = true")
 	List<Plan> findAllWithoutAssociations();
 
-	@EntityGraph(value = "Plan.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@Query("""
 			    SELECT p
 			    FROM Plan p
@@ -54,7 +56,7 @@ public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecifi
 			""")
 	List<Plan> findByExerciseIdWithDetails(@Param("exerciseId") int exerciseId);
 
-	@EntityGraph(value = "Plan.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@Query("""
 			    SELECT p
 			    FROM Plan p

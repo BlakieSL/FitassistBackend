@@ -24,8 +24,8 @@ import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
 
 @Entity
 @Table(name = "plan")
-@NamedEntityGraph(name = "Plan.withoutAssociations", attributeNodes = {})
-@NamedEntityGraph(name = "Plan.summary",
+@NamedEntityGraph(name = Plan.GRAPH_BASE, attributeNodes = {})
+@NamedEntityGraph(name = Plan.GRAPH_SUMMARY,
 		attributeNodes = { @NamedAttributeNode("user"), @NamedAttributeNode("mediaList"),
 				@NamedAttributeNode(value = "planCategoryAssociations", subgraph = "pca-subgraph") },
 		subgraphs = { @NamedSubgraph(name = "pca-subgraph", attributeNodes = @NamedAttributeNode("planCategory")) })
@@ -34,6 +34,10 @@ import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Plan implements IndexedEntity {
+
+	public static final String GRAPH_BASE = "Plan.base";
+
+	public static final String GRAPH_SUMMARY = "Plan.summary";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
