@@ -10,14 +10,16 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
+import static com.fitassist.backend.model.complaint.ComplaintBase.*;
+
 public interface ComplaintRepository extends JpaRepository<ComplaintBase, Integer> {
 
-	@EntityGraph(value = "ComplaintBase.withoutAssociations")
+	@EntityGraph(value = GRAPH_BASE)
 	@NotNull
 	@Override
 	Optional<ComplaintBase> findById(@NotNull Integer id);
 
-	@EntityGraph(value = "ComplaintBase.withoutAssociations")
+	@EntityGraph(value = GRAPH_BASE)
 	@Query("SELECT cb FROM ComplaintBase cb")
 	@NotNull
 	@Override

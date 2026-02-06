@@ -13,23 +13,25 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
+import static com.fitassist.backend.model.activity.Activity.*;
+
 public interface ActivityRepository extends JpaRepository<Activity, Integer>, JpaSpecificationExecutor<Activity> {
 
-	@EntityGraph(value = "Activity.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@NotNull
 	@Override
 	Page<Activity> findAll(Specification<Activity> spec, @NotNull Pageable pageable);
 
-	@EntityGraph(value = "Activity.summary")
+	@EntityGraph(value = GRAPH_SUMMARY)
 	@NotNull
 	@Override
 	List<Activity> findAll();
 
-	@EntityGraph(value = "Activity.withoutAssociations")
+	@EntityGraph(value = GRAPH_BASE)
 	@Query("SELECT a FROM Activity a")
 	List<Activity> findAllWithoutAssociations();
 
-	@EntityGraph(value = "Activity.withAssociations")
+	@EntityGraph(value = GRAPH_DETAIL)
 	@Query("SELECT a FROM Activity a WHERE a.id = :id")
 	Optional<Activity> findByIdWithAssociations(int id);
 

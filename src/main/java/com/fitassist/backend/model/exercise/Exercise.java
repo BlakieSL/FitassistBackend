@@ -23,8 +23,8 @@ import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
 
 @Entity
 @Table(name = "exercise")
-@NamedEntityGraph(name = "Exercise.withoutAssociations", attributeNodes = {})
-@NamedEntityGraph(name = "Exercise.summary",
+@NamedEntityGraph(name = Exercise.GRAPH_BASE, attributeNodes = {})
+@NamedEntityGraph(name = Exercise.GRAPH_SUMMARY,
 		attributeNodes = { @NamedAttributeNode("equipment"), @NamedAttributeNode("expertiseLevel"),
 				@NamedAttributeNode("forceType"), @NamedAttributeNode("mechanicsType"),
 				@NamedAttributeNode(value = "exerciseTargetMuscles", subgraph = "etm-subgraph"),
@@ -35,6 +35,10 @@ import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Exercise implements IndexedEntity {
+
+	public static final String GRAPH_BASE = "Exercise.base";
+
+	public static final String GRAPH_SUMMARY = "Exercise.summary";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

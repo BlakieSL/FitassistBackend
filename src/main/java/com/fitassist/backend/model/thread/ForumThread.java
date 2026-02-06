@@ -25,14 +25,18 @@ import static com.fitassist.backend.model.SchemaConstants.TEXT_MAX_LENGTH;
 
 @Entity
 @Table(name = "thread")
-@NamedEntityGraph(name = "Thread.withoutAssociations", attributeNodes = {})
-@NamedEntityGraph(name = "ForumThread.summary",
+@NamedEntityGraph(name = ForumThread.GRAPH_BASE, attributeNodes = {})
+@NamedEntityGraph(name = ForumThread.GRAPH_SUMMARY,
 		attributeNodes = { @NamedAttributeNode("user"), @NamedAttributeNode("threadCategory") })
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ForumThread {
+
+	public static final String GRAPH_BASE = "ForumThread.base";
+
+	public static final String GRAPH_SUMMARY = "ForumThread.summary";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

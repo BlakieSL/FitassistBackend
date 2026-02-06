@@ -12,12 +12,14 @@ import lombok.Setter;
 @Table(name = "complaint")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-@NamedEntityGraph(name = "ComplaintBase.withoutAssociations", attributeNodes = {})
+@NamedEntityGraph(name = ComplaintBase.GRAPH_BASE, attributeNodes = {})
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public abstract class ComplaintBase {
+
+	public static final String GRAPH_BASE = "ComplaintBase.base";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
