@@ -7,11 +7,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface MediaMapper {
+public abstract class MediaMapper {
 
-	MediaResponseDto toDto(Media media, String imageUrl);
+	public abstract MediaResponseDto toDto(Media media, String imageUrl);
 
 	@Mapping(target = "id", ignore = true)
-	Media toEntity(MediaCreateDto dto, String imageName);
+	public abstract Media toEntity(MediaCreateDto dto, String imageName);
 
 }

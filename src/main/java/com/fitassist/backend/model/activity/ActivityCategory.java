@@ -1,5 +1,6 @@
 package com.fitassist.backend.model.activity;
 
+import com.fitassist.backend.model.CategoryEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -19,7 +20,7 @@ import static com.fitassist.backend.model.SchemaConstants.CATEGORY_NAME_MAX_LENG
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ActivityCategory {
+public class ActivityCategory implements CategoryEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

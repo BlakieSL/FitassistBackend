@@ -16,25 +16,25 @@ public abstract class WorkoutSetExerciseMapper {
 
 	@Mapping(target = "workoutSet", ignore = true)
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExercise")
+	@Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExerciseIdToExercise")
 	public abstract WorkoutSetExercise toEntity(WorkoutSetExerciseNestedCreateDto dto,
 			@Context PlanMappingContext context);
 
 	@Mapping(target = "workoutSet", ignore = true)
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExercise")
+	@Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExerciseIdToExercise")
 	public abstract WorkoutSetExercise toEntity(WorkoutSetExerciseNestedUpdateDto dto,
 			@Context PlanMappingContext context);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "workoutSet", ignore = true)
-	@Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExercise")
+	@Mapping(target = "exercise", source = "exerciseId", qualifiedByName = "mapExerciseIdToExercise")
 	public abstract void update(@MappingTarget WorkoutSetExercise exercise, WorkoutSetExerciseNestedUpdateDto dto,
 			@Context PlanMappingContext context);
 
-	@Named("mapExercise")
-	protected Exercise mapExercise(Integer exerciseId, @Context PlanMappingContext context) {
+	@Named("mapExerciseIdToExercise")
+	protected Exercise mapExerciseIdToExercise(Integer exerciseId, @Context PlanMappingContext context) {
 		return context.getExercise(exerciseId);
 	}
 

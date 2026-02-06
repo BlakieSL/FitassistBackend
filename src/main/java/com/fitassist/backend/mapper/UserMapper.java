@@ -24,7 +24,7 @@ public abstract class UserMapper {
 	@Mapping(source = "roles", target = "roles", qualifiedByName = "mapRolesToEnums")
 	public abstract UserResponseDto toResponse(User user);
 
-	@Mapping(source = "user", target = ".", qualifiedByName = "userToAuthorDto")
+	@Mapping(source = "user", target = ".", qualifiedByName = "mapUserToAuthorDto")
 	@Mapping(target = "imageUrl", ignore = true)
 	@Mapping(target = "imageName", ignore = true)
 	public abstract AuthorDto toAuthorDto(User user);

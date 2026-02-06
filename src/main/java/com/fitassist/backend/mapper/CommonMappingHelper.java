@@ -3,6 +3,8 @@ package com.fitassist.backend.mapper;
 import com.fitassist.backend.dto.pojo.AuthorDto;
 import com.fitassist.backend.dto.pojo.MediaImagesDto;
 import com.fitassist.backend.dto.request.text.TextUpdateDto;
+import com.fitassist.backend.dto.response.category.CategoryResponseDto;
+import com.fitassist.backend.model.CategoryEntity;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.text.TextBase;
 import com.fitassist.backend.model.user.User;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -29,9 +32,16 @@ public class CommonMappingHelper {
 		return MediaImagesDto.ofNames(imageNames);
 	}
 
-	@Named("userToAuthorDto")
-	public AuthorDto userToAuthorDto(User user) {
+	@Named("mapUserToAuthorDto")
+	public AuthorDto mapUserToAuthorDto(User user) {
 		return AuthorDto.withoutImage(user.getId(), user.getUsername());
+	}
+
+	@Named("mapCategoryToResponse")
+	public CategoryResponseDto mapCategoryToResponse(CategoryEntity category) {
+		return Optional.ofNullable(category)
+			.map(c -> new CategoryResponseDto(c.getId(), c.getName()))
+			.orElse(null);
 	}
 
 	public <T extends TextBase> void updateTextAssociations(Set<T> existingItems, List<TextUpdateDto> newItems,
