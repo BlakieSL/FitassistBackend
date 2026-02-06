@@ -77,8 +77,8 @@ public class Comment {
 	private List<Media> mediaList = new ArrayList<>();
 
 	@PrePersist
-	public void prePersist() {
-		this.createdAt = LocalDateTime.now();
+	protected void onCreate() {
+		createdAt = LocalDateTime.now();
 	}
 
 	public static Comment of(Integer id, User user) {

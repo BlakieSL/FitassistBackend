@@ -45,13 +45,11 @@ public class UserRecipe {
 		createdAt = LocalDateTime.now();
 	}
 
-	public static UserRecipe createWithUserRecipeType(User user, Recipe recipe, TypeOfInteraction type) {
-
+	public static UserRecipe of(User user, Recipe recipe, TypeOfInteraction type) {
 		UserRecipe userRecipe = new UserRecipe();
 		userRecipe.setUser(user);
 		userRecipe.setRecipe(recipe);
 		userRecipe.setType(type);
-
 		return userRecipe;
 	}
 

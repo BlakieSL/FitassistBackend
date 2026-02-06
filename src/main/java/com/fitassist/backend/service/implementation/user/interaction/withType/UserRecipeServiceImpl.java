@@ -93,7 +93,7 @@ public class UserRecipeServiceImpl extends GenericSavedService<Recipe, UserRecip
 		if (!entity.getIsPublic()) {
 			throw new NotSupportedInteractionTypeException("Cannot save private recipe");
 		}
-		return UserRecipe.createWithUserRecipeType(user, entity, type);
+		return UserRecipe.of(user, entity, type);
 	}
 
 	@Override

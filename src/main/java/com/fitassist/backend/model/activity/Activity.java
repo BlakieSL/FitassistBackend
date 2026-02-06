@@ -43,7 +43,6 @@ public class Activity implements IndexedEntity {
 	private String name;
 
 	@NotNull
-	@Positive
 	@Min(1)
 	@Max(25)
 	@Digits(integer = 2, fraction = 1)

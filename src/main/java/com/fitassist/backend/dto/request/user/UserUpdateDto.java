@@ -15,6 +15,9 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import static com.fitassist.backend.model.SchemaConstants.EMAIL_MAX_LENGTH;
+import static com.fitassist.backend.model.SchemaConstants.USERNAME_MAX_LENGTH;
+
 @Getter
 @Setter
 @UniqueEmailDomain
@@ -22,10 +25,10 @@ public class UserUpdateDto {
 
 	private Integer id;
 
-	@Size(max = 40)
+	@Size(max = USERNAME_MAX_LENGTH)
 	private String username;
 
-	@Size(max = 50)
+	@Size(max = EMAIL_MAX_LENGTH)
 	@Email
 	private String email;
 

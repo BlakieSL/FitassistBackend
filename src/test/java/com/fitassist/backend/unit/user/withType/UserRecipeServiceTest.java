@@ -158,7 +158,7 @@ public class UserRecipeServiceTest {
 		int userId = 1;
 		int recipeId = 100;
 		TypeOfInteraction type = TypeOfInteraction.SAVE;
-		UserRecipe userRecipe = UserRecipe.createWithUserRecipeType(new User(), new Recipe(), type);
+		UserRecipe userRecipe = UserRecipe.of(new User(), new Recipe(), type);
 
 		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 		when(userRecipeRepository.findByUserIdAndRecipeIdAndType(userId, recipeId, type))
@@ -197,8 +197,8 @@ public class UserRecipeServiceTest {
 		User user = new User();
 		user.setId(userId);
 
-		UserRecipe userRecipe1 = UserRecipe.createWithUserRecipeType(user, recipe1, type);
-		UserRecipe userRecipe2 = UserRecipe.createWithUserRecipeType(user, recipe2, type);
+		UserRecipe userRecipe1 = UserRecipe.of(user, recipe1, type);
+		UserRecipe userRecipe2 = UserRecipe.of(user, recipe2, type);
 
 		RecipeSummaryDto dto1 = new RecipeSummaryDto();
 		dto1.setId(1);

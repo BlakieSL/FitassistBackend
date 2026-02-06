@@ -45,13 +45,11 @@ public class UserPlan {
 		createdAt = LocalDateTime.now();
 	}
 
-	public static UserPlan createWithUserPlanType(User user, Plan plan, TypeOfInteraction type) {
-
+	public static UserPlan of(User user, Plan plan, TypeOfInteraction type) {
 		UserPlan userPlan = new UserPlan();
 		userPlan.setUser(user);
 		userPlan.setPlan(plan);
 		userPlan.setType(type);
-
 		return userPlan;
 	}
 
