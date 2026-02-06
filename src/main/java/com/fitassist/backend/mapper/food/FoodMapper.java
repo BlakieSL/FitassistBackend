@@ -11,6 +11,8 @@ import com.fitassist.backend.mapper.CommonMappingHelper;
 import com.fitassist.backend.model.food.Food;
 import org.mapstruct.*;
 
+import java.util.Optional;
+
 @Mapper(componentModel = "spring", uses = { CommonMappingHelper.class })
 public abstract class FoodMapper {
 
@@ -69,9 +71,7 @@ public abstract class FoodMapper {
 	@AfterMapping
 	protected void updateFoodCategory(@MappingTarget Food food, FoodUpdateDto dto,
 			@Context FoodMappingContext context) {
-		if (dto.getCategoryId() != null) {
-			food.setFoodCategory(context.getCategory());
-		}
+		Optional.ofNullable(context.getCategory()).ifPresent(food::setFoodCategory);
 	}
 
 }

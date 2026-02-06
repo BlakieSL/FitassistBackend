@@ -2,13 +2,13 @@ package com.fitassist.backend.mapper.exercise;
 
 import com.fitassist.backend.dto.request.exercise.ExerciseCreateDto;
 import com.fitassist.backend.dto.request.exercise.ExerciseUpdateDto;
-import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.dto.response.exercise.ExerciseResponseDto;
 import com.fitassist.backend.dto.response.exercise.ExerciseSummaryDto;
 import com.fitassist.backend.dto.response.exercise.TargetMuscleResponseDto;
 import com.fitassist.backend.dto.response.text.TextResponseDto;
 import com.fitassist.backend.mapper.CommonMappingHelper;
-import com.fitassist.backend.model.exercise.*;
+import com.fitassist.backend.model.exercise.Exercise;
+import com.fitassist.backend.model.exercise.ExerciseTargetMuscle;
 import com.fitassist.backend.model.text.ExerciseInstruction;
 import com.fitassist.backend.model.text.ExerciseTip;
 import org.mapstruct.*;
@@ -115,21 +115,10 @@ public abstract class ExerciseMapper {
 	@AfterMapping
 	protected void updateAssociations(@MappingTarget Exercise exercise, ExerciseUpdateDto dto,
 			@Context ExerciseMappingContext context) {
-		if (context.getExpertiseLevel() != null) {
-			exercise.setExpertiseLevel(context.getExpertiseLevel());
-		}
-
-		if (dto.getMechanicsTypeId() != null) {
-			exercise.setMechanicsType(context.getMechanicsType());
-		}
-
-		if (dto.getForceTypeId() != null) {
-			exercise.setForceType(context.getForceType());
-		}
-
-		if (dto.getEquipmentId() != null) {
-			exercise.setEquipment(context.getEquipment());
-		}
+		Optional.ofNullable(context.getExpertiseLevel()).ifPresent(exercise::setExpertiseLevel);
+		Optional.ofNullable(context.getMechanicsType()).ifPresent(exercise::setMechanicsType);
+		Optional.ofNullable(context.getForceType()).ifPresent(exercise::setForceType);
+		Optional.ofNullable(context.getEquipment()).ifPresent(exercise::setEquipment);
 
 		if (context.getTargetMuscles() != null) {
 			exercise.getExerciseTargetMuscles().clear();
