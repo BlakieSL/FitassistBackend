@@ -70,3 +70,7 @@ cookie:
   rate-limit:
     name: rateLimitId
     max-age: 300
+
+password-reset:
+  token-type: resetToken
+  token-duration-minutes: 20

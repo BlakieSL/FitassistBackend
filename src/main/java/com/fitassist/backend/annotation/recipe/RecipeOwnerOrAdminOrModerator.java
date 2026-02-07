@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@authAnnotationServiceImpl.isRecipeOwnerOrAdminOrModerator(#recipeId)")
+@PreAuthorize("@authAnnotationService.isRecipeOwnerOrAdminOrModerator(#recipeId)")
 public @interface RecipeOwnerOrAdminOrModerator {
 
 }

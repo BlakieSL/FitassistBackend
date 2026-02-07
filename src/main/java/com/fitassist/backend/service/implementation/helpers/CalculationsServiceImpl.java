@@ -62,6 +62,13 @@ public final class CalculationsServiceImpl implements CalculationsService {
 		return dto;
 	}
 
+	private BigDecimal calculateCaloriesBurned(Short time, BigDecimal weight, BigDecimal met) {
+		return met.multiply(MET_CONSTANT)
+			.multiply(weight)
+			.multiply(BigDecimal.valueOf(time))
+			.divide(MET_DIVISOR, 1, RoundingMode.HALF_UP);
+	}
+
 	@Override
 	public ActivityCalculatedResponseDto toCalculatedResponseDto(Activity activity, BigDecimal weight, Short time) {
 		ActivityCalculatedResponseDto dto = activityMapper.toCalculated(activity);
@@ -74,30 +81,11 @@ public final class CalculationsServiceImpl implements CalculationsService {
 		return dto;
 	}
 
-	private BigDecimal calculateCaloriesBurned(Short time, BigDecimal weight, BigDecimal met) {
-		return met.multiply(MET_CONSTANT)
-			.multiply(weight)
-			.multiply(BigDecimal.valueOf(time))
-			.divide(MET_DIVISOR, 1, RoundingMode.HALF_UP);
-	}
-
 	@Override
 	public FoodCalculatedMacrosResponseDto toCalculatedResponseDto(Food food, BigDecimal factor) {
 		FoodCalculatedMacrosResponseDto dto = foodMapper.toCalculated(food);
 		dto.setFoodMacros(calculateFoodMacros(food, factor));
 		dto.setQuantity(factor.multiply(BigDecimal.valueOf(100)));
-
-		return dto;
-	}
-
-	@Override
-	public FoodCalculatedMacrosResponseDto toCalculatedResponseDto(DailyCartFood dailyCartFood) {
-		Food food = dailyCartFood.getFood();
-		BigDecimal quantity = dailyCartFood.getQuantity();
-		BigDecimal factor = quantity.divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
-
-		FoodCalculatedMacrosResponseDto dto = dailyFoodMapper.toResponse(dailyCartFood);
-		dto.setFoodMacros(calculateFoodMacros(food, factor));
 
 		return dto;
 	}
@@ -109,6 +97,18 @@ public final class CalculationsServiceImpl implements CalculationsService {
 		BigDecimal carbohydrates = food.getCarbohydrates().multiply(factor).setScale(2, RoundingMode.HALF_UP);
 
 		return FoodMacros.of(calories, protein, fat, carbohydrates);
+	}
+
+	@Override
+	public FoodCalculatedMacrosResponseDto toCalculatedResponseDto(DailyCartFood dailyCartFood) {
+		Food food = dailyCartFood.getFood();
+		BigDecimal quantity = dailyCartFood.getQuantity();
+		BigDecimal factor = quantity.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
+
+		FoodCalculatedMacrosResponseDto dto = dailyFoodMapper.toResponse(dailyCartFood);
+		dto.setFoodMacros(calculateFoodMacros(food, factor));
+
+		return dto;
 	}
 
 }

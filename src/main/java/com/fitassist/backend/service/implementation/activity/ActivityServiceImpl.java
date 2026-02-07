@@ -144,6 +144,15 @@ public class ActivityServiceImpl implements ActivityService {
 		eventPublisher.publishEvent(ActivityUpdateEvent.of(this, refetchedActivity));
 	}
 
+	private Activity findActivity(int activityId) {
+		return repositoryHelper.find(activityRepository, Activity.class, activityId);
+	}
+
+	private ActivityUpdateDto applyPatchToActivity(JsonMergePatch patch)
+			throws JsonPatchException, JsonProcessingException {
+		return jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class);
+	}
+
 	private ActivityMappingContext prepareUpdateContext(ActivityUpdateDto dto) {
 		ActivityCategory category = findCategory(dto.getCategoryId());
 		return new ActivityMappingContext(category);
@@ -158,6 +167,11 @@ public class ActivityServiceImpl implements ActivityService {
 		eventPublisher.publishEvent(ActivityDeleteEvent.of(this, activity));
 	}
 
+	private Activity findActivityWithAssociations(int activityId) {
+		return activityRepository.findByIdWithAssociations(activityId)
+			.orElseThrow(() -> new RecordNotFoundException(Activity.class, activityId));
+	}
+
 	@Override
 	public ActivityCalculatedResponseDto calculateCaloriesBurned(int activityId,
 			CalculateActivityCaloriesRequestDto request) {
@@ -165,59 +179,6 @@ public class ActivityServiceImpl implements ActivityService {
 		BigDecimal weight = resolveWeightForCalculation(request);
 
 		return calculationsService.toCalculatedResponseDto(activity, weight, request.getTime());
-	}
-
-	@Override
-	@Cacheable(value = CacheNames.ACTIVITIES, key = "#activityId")
-	public ActivityResponseDto getActivity(int activityId) {
-		return findAndMap(activityId);
-	}
-
-	@Override
-	public Page<ActivitySummaryDto> getFilteredActivities(FilterDto filter, Pageable pageable) {
-		SpecificationFactory<Activity> activityFactory = ActivitySpecification::new;
-		SpecificationBuilder<Activity> specificationBuilder = SpecificationBuilder.of(filter, activityFactory,
-				dependencies);
-		Specification<Activity> specification = specificationBuilder.build();
-
-		Page<Activity> activityPage = activityRepository.findAll(specification, pageable);
-
-		List<ActivitySummaryDto> summaries = activityPage.getContent().stream().map(activityMapper::toSummary).toList();
-
-		activityPopulationService.populate(summaries);
-
-		return new PageImpl<>(summaries, pageable, activityPage.getTotalElements());
-	}
-
-	@Override
-	public List<Activity> getAllActivityEntities() {
-		return activityRepository.findAll();
-	}
-
-	private ActivityUpdateDto applyPatchToActivity(JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
-		return jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class);
-	}
-
-	private Activity findActivity(int activityId) {
-		return repositoryHelper.find(activityRepository, Activity.class, activityId);
-	}
-
-	private ActivityResponseDto findAndMap(int activityId) {
-		Activity activity = activityRepository.findByIdWithMedia(activityId)
-			.orElseThrow(() -> RecordNotFoundException.of(Activity.class, activityId));
-		ActivityResponseDto dto = activityMapper.toResponse(activity);
-		activityPopulationService.populate(dto);
-		return dto;
-	}
-
-	private Activity findActivityWithAssociations(int activityId) {
-		return activityRepository.findByIdWithAssociations(activityId)
-			.orElseThrow(() -> new RecordNotFoundException(Activity.class, activityId));
-	}
-
-	private User findUser(int userId) {
-		return repositoryHelper.find(userRepository, User.class, userId);
 	}
 
 	private BigDecimal resolveWeightForCalculation(CalculateActivityCaloriesRequestDto request) {
@@ -234,6 +195,44 @@ public class ActivityServiceImpl implements ActivityService {
 
 		throw new WeightRequiredException("Weight is required for calorie calculation. "
 				+ "Please provide it in the request or set it in your profile.");
+	}
+
+	private User findUser(int userId) {
+		return repositoryHelper.find(userRepository, User.class, userId);
+	}
+
+	@Override
+	@Cacheable(value = CacheNames.ACTIVITIES, key = "#activityId")
+	public ActivityResponseDto getActivity(int activityId) {
+		return findAndMap(activityId);
+	}
+
+	private ActivityResponseDto findAndMap(int activityId) {
+		Activity activity = activityRepository.findByIdWithMedia(activityId)
+			.orElseThrow(() -> RecordNotFoundException.of(Activity.class, activityId));
+		ActivityResponseDto dto = activityMapper.toResponse(activity);
+		activityPopulationService.populate(dto);
+
+		return dto;
+	}
+
+	@Override
+	public Page<ActivitySummaryDto> getFilteredActivities(FilterDto filter, Pageable pageable) {
+		SpecificationFactory<Activity> activityFactory = ActivitySpecification::new;
+		SpecificationBuilder<Activity> specificationBuilder = SpecificationBuilder.of(filter, activityFactory,
+				dependencies);
+		Specification<Activity> specification = specificationBuilder.build();
+
+		Page<Activity> activityPage = activityRepository.findAll(specification, pageable);
+		List<ActivitySummaryDto> summaries = activityPage.getContent().stream().map(activityMapper::toSummary).toList();
+		activityPopulationService.populate(summaries);
+
+		return new PageImpl<>(summaries, pageable, activityPage.getTotalElements());
+	}
+
+	@Override
+	public List<Activity> getAllActivityEntities() {
+		return activityRepository.findAll();
 	}
 
 }

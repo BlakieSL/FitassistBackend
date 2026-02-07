@@ -6,6 +6,7 @@ import com.fitassist.backend.dto.response.search.*;
 import com.fitassist.backend.exception.InvalidFilterValueException;
 import com.fitassist.backend.service.declaration.aws.AwsS3Service;
 import com.fitassist.backend.service.declaration.search.LuceneSearchService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 public class LuceneSearchServiceImpl implements LuceneSearchService {
 
@@ -73,7 +75,7 @@ public class LuceneSearchServiceImpl implements LuceneSearchService {
 			}
 		}
 		catch (IOException e) {
-			e.printStackTrace();
+			log.error("Failed to search index", e);
 		}
 		return results;
 	}

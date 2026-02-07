@@ -65,10 +65,10 @@ public class CommentServiceGetRepliesTest {
 	}
 
 	@Test
-	void getReplies_shouldSortRepliesById() {
+	void getReplies_shouldReturnRepliesInRepositoryOrder() {
 		when(commentRepository.findCommentHierarchy(1))
-			.thenReturn(List.of(new Object[] { 3, "Reply 2", 10, 101, 1, timestamp, "user2" },
-					new Object[] { 2, "Reply 1", 10, 100, 1, timestamp, "user1" },
+			.thenReturn(List.of(new Object[] { 2, "Reply 1", 10, 100, 1, timestamp, "user1" },
+					new Object[] { 3, "Reply 2", 10, 101, 1, timestamp, "user2" },
 					new Object[] { 4, "Nested reply", 10, 102, 2, timestamp, "user3" }));
 
 		List<CommentResponseDto> result = commentService.getReplies(1);

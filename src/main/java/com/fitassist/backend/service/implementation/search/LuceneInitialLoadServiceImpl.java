@@ -9,21 +9,19 @@ import com.fitassist.backend.service.declaration.recipe.RecipeService;
 import com.fitassist.backend.service.declaration.search.LuceneIndexService;
 import com.fitassist.backend.service.declaration.search.LuceneInitialLoadService;
 import jakarta.annotation.PreDestroy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
+@Slf4j
 @Service
 public class LuceneInitialLoadServiceImpl implements LuceneInitialLoadService {
 
@@ -41,8 +39,6 @@ public class LuceneInitialLoadServiceImpl implements LuceneInitialLoadService {
 
 	private final PlanService planService;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LuceneInitialLoadServiceImpl.class);
-
 	@Value("${lucene.enabled}")
 	private Boolean luceneEnabled;
 
@@ -59,9 +55,9 @@ public class LuceneInitialLoadServiceImpl implements LuceneInitialLoadService {
 
 	@PreDestroy
 	public void clearIndexOnShutdown() {
-		LOGGER.info("Application shutting down. Clearing Lucene index directory");
+		log.info("Application shutting down. Clearing Lucene index directory");
 		clearIndexDirectory();
-		LOGGER.info("Lucene index directory cleared.");
+		log.info("Lucene index directory cleared.");
 	}
 
 	@EventListener(ApplicationReadyEvent.class)
@@ -82,30 +78,21 @@ public class LuceneInitialLoadServiceImpl implements LuceneInitialLoadService {
 				luceneIndexService.indexEntities(allEntities);
 			}
 			catch (Exception e) {
-				e.printStackTrace();
+				log.error("Failed to index entities", e);
 			}
 		}
 	}
 
 	@Override
 	public void clearIndexDirectory() {
-		Path indexPath = Paths.get(PATH);
-		if (Files.exists(indexPath)) {
-			try (Stream<Path> files = Files.walk(indexPath)) {
-				files.sorted(Comparator.reverseOrder()).forEach(this::deleteFile);
+		File indexDir = new File(PATH);
+		if (indexDir.exists()) {
+			try {
+				FileUtils.cleanDirectory(indexDir);
 			}
 			catch (IOException e) {
-				e.printStackTrace();
+				log.error("Failed to clear index directory", e);
 			}
-		}
-	}
-
-	private void deleteFile(Path path) {
-		try {
-			Files.delete(path);
-		}
-		catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 

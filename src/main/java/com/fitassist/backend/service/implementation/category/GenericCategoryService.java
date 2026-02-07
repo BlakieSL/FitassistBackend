@@ -39,8 +39,6 @@ public abstract class GenericCategoryService<T> {
 
 	protected final BaseMapper<T> mapper;
 
-	protected abstract boolean hasAssociatedEntities(int categoryId);
-
 	protected abstract Class<T> getEntityClass();
 
 	protected GenericCategoryService(ValidationService validationService, JsonPatchService jsonPatchService,
@@ -77,6 +75,11 @@ public abstract class GenericCategoryService<T> {
 		applicationEventPublisher.publishEvent(CategoryClearCacheEvent.of(this, cacheKeyGenerator.generateCacheKey()));
 	}
 
+	private CategoryUpdateDto applyPatchToCategory(JsonMergePatch patch)
+			throws JsonPatchException, JsonProcessingException {
+		return jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class);
+	}
+
 	@Transactional
 	public void deleteCategory(int categoryId) {
 		T category = find(categoryId);
@@ -101,20 +104,6 @@ public abstract class GenericCategoryService<T> {
 		});
 	}
 
-	public CategoryResponseDto getCategory(int categoryId) {
-		return mapper.toResponse(find(categoryId));
-	}
-
-	private T find(int categoryId) {
-		return repository.findById(categoryId)
-			.orElseThrow(() -> RecordNotFoundException.of(getEntityClass(), categoryId));
-	}
-
-	private CategoryUpdateDto applyPatchToCategory(JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
-		return jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class);
-	}
-
 	private Optional<List<CategoryResponseDto>> getCachedCategories(String cacheKey) {
 		Cache cache = Objects.requireNonNull(cacheManager.getCache("allCategories"));
 		Cache.ValueWrapper cachedValue = cache.get(cacheKey);
@@ -125,6 +114,15 @@ public abstract class GenericCategoryService<T> {
 		catch (ClassCastException exception) {
 			return Optional.empty();
 		}
+	}
+
+	public CategoryResponseDto getCategory(int categoryId) {
+		return mapper.toResponse(find(categoryId));
+	}
+
+	private T find(int categoryId) {
+		return repository.findById(categoryId)
+			.orElseThrow(() -> RecordNotFoundException.of(getEntityClass(), categoryId));
 	}
 
 }

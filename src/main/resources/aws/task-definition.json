@@ -63,6 +63,14 @@
         {
           "name": "RATE_LIMITER_USER_INTERVAL",
           "value": "5"
+        },
+        {
+          "name": "PASSWORD_RESET_TOKEN_TYPE",
+          "value": "PASSWORD_RESET"
+        },
+        {
+          "name": "PASSWORD_RESET_TOKEN_DURATION_MINUTES",
+          "value": "20"
         }
       ],
       "secrets": [

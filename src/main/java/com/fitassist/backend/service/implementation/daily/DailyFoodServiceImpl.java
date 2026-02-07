@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collections;
+import java.util.List;
 
 @Service
 public class DailyFoodServiceImpl implements DailyFoodService {
@@ -76,34 +76,13 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 		dailyCartRepository.save(dailyCart);
 	}
 
-	@Override
-	@Transactional
-	public void removeFoodFromDailyCart(int dailyCartFoodId) {
-		DailyCartFood dailyCartFood = findWithoutAssociations(dailyCartFoodId);
-		dailyCartFoodRepository.delete(dailyCartFood);
+	private DailyCart getOrCreateDailyCartForUser(int userId, LocalDate date) {
+		return dailyCartRepository.findByUserIdAndDate(userId, date).orElseGet(() -> createDailyCart(userId, date));
 	}
 
-	@Override
-	@Transactional
-	public void updateDailyFoodItem(int dailyCartFoodId, JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
-		DailyCartFood dailyCartFood = findWithoutAssociations(dailyCartFoodId);
-
-		DailyCartFoodUpdateDto patchedDto = applyPatchToDailyFoodItem(patch);
-		validationService.validate(patchedDto);
-
-		updateAmount(dailyCartFood, patchedDto.getQuantity());
-		dailyCartFoodRepository.save(dailyCartFood);
-	}
-
-	@Override
-	public DailyFoodsResponseDto getFoodFromDailyCart(LocalDate date) {
-		int userId = AuthorizationUtil.getUserId();
-
-		return dailyCartRepository.findByUserIdAndDateWithFoodAssociations(userId, date)
-			.map(dailyCart -> DailyFoodsResponseDto.create(
-					dailyCart.getDailyCartFoods().stream().map(calculationsService::toCalculatedResponseDto).toList()))
-			.orElse(DailyFoodsResponseDto.of(Collections.emptyList()));
+	public DailyCart createDailyCart(int userId, LocalDate date) {
+		User user = repositoryHelper.find(userRepository, User.class, userId);
+		return dailyCartRepository.save(DailyCart.of(user, date));
 	}
 
 	private void updateOrAddDailyFoodItem(DailyCart dailyCart, Food food, BigDecimal quantity) {
@@ -117,13 +96,29 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 			});
 	}
 
-	private void updateAmount(DailyCartFood dailyCartFood, BigDecimal quantity) {
-		dailyCartFood.setQuantity(quantity);
+	@Override
+	@Transactional
+	public void removeFoodFromDailyCart(int dailyCartFoodId) {
+		DailyCartFood dailyCartFood = findWithoutAssociations(dailyCartFoodId);
+		dailyCartFoodRepository.delete(dailyCartFood);
 	}
 
-	public DailyCart createDailyCart(int userId, LocalDate date) {
-		User user = repositoryHelper.find(userRepository, User.class, userId);
-		return dailyCartRepository.save(DailyCart.of(user, date));
+	private DailyCartFood findWithoutAssociations(int dailyCartFoodId) {
+		return dailyCartFoodRepository.findByIdWithoutAssociations(dailyCartFoodId)
+			.orElseThrow(() -> new RecordNotFoundException(DailyCartFood.class, dailyCartFoodId));
+	}
+
+	@Override
+	@Transactional
+	public void updateDailyFoodItem(int dailyCartFoodId, JsonMergePatch patch)
+			throws JsonPatchException, JsonProcessingException {
+		DailyCartFood dailyCartFood = findWithoutAssociations(dailyCartFoodId);
+
+		DailyCartFoodUpdateDto patchedDto = applyPatchToDailyFoodItem(patch);
+		validationService.validate(patchedDto);
+
+		dailyCartFood.setQuantity(patchedDto.getQuantity());
+		dailyCartFoodRepository.save(dailyCartFood);
 	}
 
 	private DailyCartFoodUpdateDto applyPatchToDailyFoodItem(JsonMergePatch patch)
@@ -131,13 +126,13 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 		return jsonPatchService.createFromPatch(patch, DailyCartFoodUpdateDto.class);
 	}
 
-	private DailyCart getOrCreateDailyCartForUser(int userId, LocalDate date) {
-		return dailyCartRepository.findByUserIdAndDate(userId, date).orElseGet(() -> createDailyCart(userId, date));
-	}
-
-	private DailyCartFood findWithoutAssociations(int dailyCartFoodId) {
-		return dailyCartFoodRepository.findByIdWithoutAssociations(dailyCartFoodId)
-			.orElseThrow(() -> new RecordNotFoundException(DailyCartFood.class, dailyCartFoodId));
+	@Override
+	public DailyFoodsResponseDto getFoodFromDailyCart(LocalDate date) {
+		int userId = AuthorizationUtil.getUserId();
+		return dailyCartRepository.findByUserIdAndDateWithFoodAssociations(userId, date)
+			.map(dailyCart -> DailyFoodsResponseDto.create(
+					dailyCart.getDailyCartFoods().stream().map(calculationsService::toCalculatedResponseDto).toList()))
+			.orElse(DailyFoodsResponseDto.of(List.of()));
 	}
 
 }

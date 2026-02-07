@@ -34,8 +34,9 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
 
 	@Override
 	public void populate(List<CommentSummaryDto> comments) {
-		if (comments.isEmpty())
+		if (comments.isEmpty()) {
 			return;
+		}
 
 		int userId = AuthorizationUtil.getUserId();
 
@@ -45,35 +46,12 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
 		populateCountsAndInteractionsForSummaries(comments, commentIds, userId);
 	}
 
-	@Override
-	public void populate(CommentResponseDto comment) {
-		if (comment == null)
-			return;
-
-		int userId = AuthorizationUtil.getUserId();
-
-		populateAuthorImage(comment);
-		populateCountsAndInteractions(comment, userId);
-	}
-
-	@Override
-	public void populateList(List<CommentResponseDto> comments) {
-		if (comments.isEmpty())
-			return;
-
-		int userId = AuthorizationUtil.getUserId();
-
-		List<Integer> commentIds = comments.stream().map(CommentResponseDto::getId).toList();
-
-		populateAuthorImages(comments);
-		populateCountsAndInteractions(comments, commentIds, userId);
-	}
-
 	private void populateAuthorImagesForSummaries(List<CommentSummaryDto> comments) {
 		List<Integer> authorIds = comments.stream().map(comment -> comment.getAuthor().getId()).toList();
 
-		if (authorIds.isEmpty())
+		if (authorIds.isEmpty()) {
 			return;
+		}
 
 		Map<Integer, String> authorImageMap = mediaRepository
 			.findFirstMediaByParentIds(authorIds, MediaConnectedEntity.USER)
@@ -115,9 +93,22 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
 		});
 	}
 
-	private void populateAuthorImage(CommentResponseDto comment) {
-		if (comment.getAuthor() == null)
+	@Override
+	public void populate(CommentResponseDto comment) {
+		if (comment == null) {
 			return;
+		}
+
+		int userId = AuthorizationUtil.getUserId();
+
+		populateAuthorImage(comment);
+		populateCountsAndInteractions(comment, userId);
+	}
+
+	private void populateAuthorImage(CommentResponseDto comment) {
+		if (comment.getAuthor() == null) {
+			return;
+		}
 
 		mediaRepository
 			.findFirstByParentIdAndParentTypeOrderByIdAsc(comment.getAuthor().getId(), MediaConnectedEntity.USER)
@@ -148,14 +139,29 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
 		comment.setRepliesCount(counts.repliesCount());
 	}
 
+	@Override
+	public void populateList(List<CommentResponseDto> comments) {
+		if (comments.isEmpty()) {
+			return;
+		}
+
+		int userId = AuthorizationUtil.getUserId();
+
+		List<Integer> commentIds = comments.stream().map(CommentResponseDto::getId).toList();
+
+		populateAuthorImages(comments);
+		populateCountsAndInteractions(comments, commentIds, userId);
+	}
+
 	private void populateAuthorImages(List<CommentResponseDto> comments) {
 		List<Integer> authorIds = comments.stream()
 			.filter(c -> c.getAuthor() != null)
 			.map(comment -> comment.getAuthor().getId())
 			.toList();
 
-		if (authorIds.isEmpty())
+		if (authorIds.isEmpty()) {
 			return;
+		}
 
 		Map<Integer, String> authorImageMap = mediaRepository
 			.findFirstMediaByParentIds(authorIds, MediaConnectedEntity.USER)
@@ -163,8 +169,9 @@ public class CommentPopulationServiceImpl implements CommentPopulationService {
 			.collect(Collectors.toMap(Media::getParentId, Media::getImageName));
 
 		comments.forEach(comment -> {
-			if (comment.getAuthor() == null)
+			if (comment.getAuthor() == null) {
 				return;
+			}
 			String imageName = authorImageMap.get(comment.getAuthor().getId());
 			if (imageName != null) {
 				comment.getAuthor().setImageName(imageName);

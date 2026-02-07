@@ -99,6 +99,14 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 		recipeFoodRepository.saveAll(recipeFoods);
 	}
 
+	private void validateNotYetAdded(int recipeId, List<Integer> foodIds) {
+		List<RecipeFood> existingRecipeFoods = recipeFoodRepository.findByRecipeIdAndFoodIds(recipeId, foodIds);
+		if (!existingRecipeFoods.isEmpty()) {
+			int existingFoodId = existingRecipeFoods.getFirst().getFood().getId();
+			throw new NotUniqueRecordException(RecipeFood.class, recipeId, existingFoodId);
+		}
+	}
+
 	@Override
 	@CacheEvict(value = { CacheNames.RECIPES }, key = "#recipeId")
 	@Transactional
@@ -127,14 +135,6 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 		recipeRepository.save(recipe);
 	}
 
-	private void validateNotYetAdded(int recipeId, List<Integer> foodIds) {
-		List<RecipeFood> existingRecipeFoods = recipeFoodRepository.findByRecipeIdAndFoodIds(recipeId, foodIds);
-		if (!existingRecipeFoods.isEmpty()) {
-			int existingFoodId = existingRecipeFoods.getFirst().getFood().getId();
-			throw new NotUniqueRecordException(RecipeFood.class, recipeId, existingFoodId);
-		}
-	}
-
 	@Override
 	@CacheEvict(value = { CacheNames.RECIPES }, key = "#recipeId")
 	@Transactional
@@ -147,6 +147,11 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 		validationService.validate(patchedDto);
 		recipeFoodMapper.update(recipeFood, patchedDto);
 		recipeFoodRepository.save(recipeFood);
+	}
+
+	private RecipeFood find(int recipeId, int foodId) {
+		return recipeFoodRepository.findByRecipeIdAndFoodId(recipeId, foodId)
+			.orElseThrow(() -> RecordNotFoundException.of(RecipeFood.class, foodId, recipeId));
 	}
 
 	@Override
@@ -168,11 +173,6 @@ public class RecipeFoodServiceImpl implements RecipeFoodService {
 		foodPopulationService.populate(summaries);
 
 		return summaries;
-	}
-
-	private RecipeFood find(int recipeId, int foodId) {
-		return recipeFoodRepository.findByRecipeIdAndFoodId(recipeId, foodId)
-			.orElseThrow(() -> RecordNotFoundException.of(RecipeFood.class, foodId, recipeId));
 	}
 
 }

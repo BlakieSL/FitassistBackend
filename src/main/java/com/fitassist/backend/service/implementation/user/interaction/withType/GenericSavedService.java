@@ -56,15 +56,6 @@ public abstract class GenericSavedService<T, U, R> {
 		return toResponseDto(entityId, type, true, oppositeType);
 	}
 
-	@Transactional
-	public InteractionResponseDto deleteFromUser(int entityId, TypeOfInteraction type) {
-		int userId = AuthorizationUtil.getUserId();
-		U userEntity = findUserEntity(userId, entityId, type);
-		userEntityRepository.delete(userEntity);
-
-		return toResponseDto(entityId, type, false, null);
-	}
-
 	private InteractionResponseDto toResponseDto(int entityId, TypeOfInteraction type, boolean interacted,
 			TypeOfInteraction oppositeType) {
 		InteractionResponseDto response = new InteractionResponseDto();
@@ -76,6 +67,15 @@ public abstract class GenericSavedService<T, U, R> {
 		}
 
 		return response;
+	}
+
+	@Transactional
+	public InteractionResponseDto deleteFromUser(int entityId, TypeOfInteraction type) {
+		int userId = AuthorizationUtil.getUserId();
+		U userEntity = findUserEntity(userId, entityId, type);
+		userEntityRepository.delete(userEntity);
+
+		return toResponseDto(entityId, type, false, null);
 	}
 
 	protected abstract long countByEntityIdAndType(int entityId, TypeOfInteraction type);

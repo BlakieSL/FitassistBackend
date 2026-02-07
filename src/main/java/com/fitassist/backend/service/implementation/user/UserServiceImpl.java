@@ -85,6 +85,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		return calculateCalories(savedUser, response);
 	}
 
+	private UserResponseDto calculateCalories(User user, UserResponseDto response) {
+		if (hasRequiredData(user)) {
+			int age = Period.between(user.getBirthday(), LocalDate.now()).getYears();
+			BigDecimal calories = calculationsService.calculateCaloricNeeds(user.getWeight(), user.getHeight(), age,
+					user.getGender(), user.getActivityLevel(), user.getGoal());
+			response.setCalculatedCalories(calories);
+		}
+		return response;
+	}
+
+	private boolean hasRequiredData(User user) {
+		return user.getWeight() != null && user.getHeight() != null && user.getActivityLevel() != null
+				&& user.getGoal() != null && user.getBirthday() != null && user.getGender() != null;
+	}
+
 	private void addDefaultRole(User user) {
 		Role role = roleRepository.findByName(RoleEnum.USER)
 			.orElseThrow(() -> new RecordNotFoundException(Role.class, RoleEnum.USER.name()));
@@ -98,17 +113,51 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		userRepository.delete(user);
 	}
 
+	private User find(int userId) {
+		return repositoryHelper.find(userRepository, User.class, userId);
+	}
+
 	@Override
 	@Transactional
 	public void updateUser(int userId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
 		User user = find(userId);
-		UserUpdateDto patchedUserUpdateDto = applyPatchToUser(patch, userId);
+		UserUpdateDto patchedUserUpdateDto = applyPatchToUser(patch);
 
 		validatePasswordIfPresent(user, patchedUserUpdateDto);
 		validationService.validate(patchedUserUpdateDto);
 		userMapper.update(user, patchedUserUpdateDto);
 		hashPasswordIfPresent(user, patchedUserUpdateDto);
+
 		userRepository.save(user);
+	}
+
+	private UserUpdateDto applyPatchToUser(JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+		return jsonPatchService.createFromPatch(patch, UserUpdateDto.class);
+	}
+
+	private void validatePasswordIfPresent(User user, UserUpdateDto dto) {
+		if (isPasswordChangeRequested(dto)) {
+			validateOldPassword(user, dto.getOldPassword());
+		}
+	}
+
+	private boolean isPasswordChangeRequested(UserUpdateDto dto) {
+		if (dto.getOldPassword() == null && dto.getPassword() != null) {
+			throw new IllegalArgumentException("Old password is required when changing to a new password.");
+		}
+		return dto.getOldPassword() != null && dto.getPassword() != null;
+	}
+
+	private void validateOldPassword(User user, String oldPassword) {
+		if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+			throw new IllegalArgumentException("Old password does not match");
+		}
+	}
+
+	private void hashPasswordIfPresent(User user, UserUpdateDto dto) {
+		if (dto.getPassword() != null) {
+			user.setPassword(passwordEncoder.encode(dto.getPassword()));
+		}
 	}
 
 	@Override
@@ -120,6 +169,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		validationService.validate(updateDto);
 		userMapper.update(user, updateDto);
 		hashPasswordIfPresent(user, updateDto);
+
 		userRepository.save(user);
 	}
 
@@ -127,6 +177,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		return findUserCredentialsByEmail(username).map(UserDetailsBuilder::buildUserDetails)
 			.orElseThrow(() -> RecordNotFoundException.of(User.class, username));
+	}
+
+	private Optional<UserCredentialsDto> findUserCredentialsByEmail(String email) {
+		return userRepository.findUserWithRolesByEmail(email).map(userMapper::toDetails);
 	}
 
 	@Override
@@ -153,59 +207,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		return userRepository.findByEmail(email)
 			.map(User::getId)
 			.orElseThrow(() -> RecordNotFoundException.of(User.class, email));
-	}
-
-	private UserUpdateDto applyPatchToUser(JsonMergePatch patch, int userId)
-			throws JsonPatchException, JsonProcessingException {
-		return jsonPatchService.createFromPatch(patch, UserUpdateDto.class);
-	}
-
-	private void validatePasswordIfPresent(User user, UserUpdateDto dto) {
-		if (isPasswordChangeRequested(dto)) {
-			validateOldPassword(user, dto.getOldPassword());
-		}
-	}
-
-	private boolean isPasswordChangeRequested(UserUpdateDto dto) {
-		if (dto.getOldPassword() == null && dto.getPassword() != null) {
-			throw new IllegalArgumentException("Old password is required when changing to a new password.");
-		}
-		return dto.getOldPassword() != null && dto.getPassword() != null;
-	}
-
-	private void hashPasswordIfPresent(User user, UserUpdateDto dto) {
-		if (dto.getPassword() != null) {
-			user.setPassword(passwordEncoder.encode(dto.getPassword()));
-		}
-	}
-
-	private void validateOldPassword(User user, String oldPassword) {
-		if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
-			throw new IllegalArgumentException("Old password does not match");
-		}
-	}
-
-	private Optional<UserCredentialsDto> findUserCredentialsByEmail(String email) {
-		return userRepository.findUserWithRolesByEmail(email).map(userMapper::toDetails);
-	}
-
-	private User find(int userId) {
-		return repositoryHelper.find(userRepository, User.class, userId);
-	}
-
-	private UserResponseDto calculateCalories(User user, UserResponseDto response) {
-		if (hasRequiredData(user)) {
-			int age = Period.between(user.getBirthday(), LocalDate.now()).getYears();
-			BigDecimal calories = calculationsService.calculateCaloricNeeds(user.getWeight(), user.getHeight(), age,
-					user.getGender(), user.getActivityLevel(), user.getGoal());
-			response.setCalculatedCalories(calories);
-		}
-		return response;
-	}
-
-	private boolean hasRequiredData(User user) {
-		return user.getWeight() != null && user.getHeight() != null && user.getActivityLevel() != null
-				&& user.getGoal() != null && user.getBirthday() != null && user.getGender() != null;
 	}
 
 }

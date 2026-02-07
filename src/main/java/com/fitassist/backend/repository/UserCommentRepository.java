@@ -60,7 +60,7 @@ public interface UserCommentRepository extends JpaRepository<UserComment, Intege
 			    JOIN FETCH c.thread t
 			    JOIN FETCH c.user
 			    WHERE uc.user.id = :userId
-			    AND uc.type = :type
+			    	AND uc.type = :type
 			""")
 	Page<UserComment> findAllByUserIdAndType(@Param("userId") int userId, @Param("type") TypeOfInteraction type,
 			Pageable pageable);

@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@authAnnotationServiceImpl.isForumThreadOwnerOrAdminOrModerator(#forumThreadId)")
+@PreAuthorize("@authAnnotationService.isForumThreadOwnerOrAdminOrModerator(#forumThreadId)")
 public @interface ThreadOwnerOrAdminOrModerator {
 
 }

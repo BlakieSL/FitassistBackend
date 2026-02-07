@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@authAnnotationServiceImpl.isCommentOwnerOrAdminOrModerator(#commentId)")
+@PreAuthorize("@authAnnotationService.isCommentOwnerOrAdminOrModerator(#commentId)")
 public @interface CommentOwnerOrAdminOrModerator {
 
 }

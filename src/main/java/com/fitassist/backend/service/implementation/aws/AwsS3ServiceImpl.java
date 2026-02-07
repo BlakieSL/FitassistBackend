@@ -32,9 +32,7 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 	@Override
 	public String uploadImage(byte[] imageBytes) {
 		String uniqueFileName = UUID.randomUUID() + ".jpg";
-
 		PutObjectRequest request = PutObjectRequest.builder().bucket(bucketName).key(uniqueFileName).build();
-
 		s3Client.putObject(request, RequestBody.fromBytes(imageBytes));
 
 		return uniqueFileName;
@@ -45,19 +43,19 @@ public class AwsS3ServiceImpl implements AwsS3Service {
 		return generatePresignedUrl(imageName);
 	}
 
-	@Override
-	public void deleteImage(String imageName) {
-		DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder().bucket(bucketName).key(imageName).build();
-
-		s3Client.deleteObject(deleteRequest);
-	}
-
 	private String generatePresignedUrl(String keyName) {
 		return s3Presigner
 			.presignGetObject(builder -> builder.signatureDuration(Duration.ofMinutes(10))
 				.getObjectRequest(getObjectRequestBuilder -> getObjectRequestBuilder.bucket(bucketName).key(keyName)))
 			.url()
 			.toString();
+	}
+
+	@Override
+	public void deleteImage(String imageName) {
+		DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder().bucket(bucketName).key(imageName).build();
+
+		s3Client.deleteObject(deleteRequest);
 	}
 
 }

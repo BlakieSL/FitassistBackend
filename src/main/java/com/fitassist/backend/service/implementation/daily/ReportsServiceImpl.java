@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,7 +77,7 @@ public class ReportsServiceImpl implements ReportsService {
 		Map<LocalDate, DateFoodMacros> foodMacrosByDate = dailyCartRepository
 			.findAggregatedFoodMacrosByUserIdAndDateRange(userId, startDate, endDate)
 			.stream()
-			.collect(Collectors.toMap(DateFoodMacros::getDate, macros -> macros));
+			.collect(Collectors.toMap(DateFoodMacros::getDate, Function.identity()));
 
 		Map<LocalDate, BigDecimal> caloriesBurnedByDate = dailyCartRepository
 			.findByUserIdAndDateRangeWithActivityAssociations(userId, startDate, endDate)
@@ -89,13 +90,13 @@ public class ReportsServiceImpl implements ReportsService {
 						.reduce(BigDecimal.ZERO, BigDecimal::add)));
 
 		List<DailyReportResponseDto> dailyReports = startDate.datesUntil(endDate.plusDays(1))
-			.map(date -> createDailyReport(date, foodMacrosByDate.get(date), caloriesBurnedByDate.get(date)))
+			.map(date -> toResponse(date, foodMacrosByDate.get(date), caloriesBurnedByDate.get(date)))
 			.collect(Collectors.toList());
 
 		return calculatePeriodicReport(dailyReports);
 	}
 
-	private DailyReportResponseDto createDailyReport(LocalDate date, DateFoodMacros dateFoodMacros,
+	private DailyReportResponseDto toResponse(LocalDate date, DateFoodMacros dateFoodMacros,
 			BigDecimal caloriesBurned) {
 		FoodMacros foodMacros = Optional.ofNullable(dateFoodMacros)
 			.map(foodMapper::toFoodMacros)
@@ -108,7 +109,6 @@ public class ReportsServiceImpl implements ReportsService {
 
 	private PeriodicReportResponseDto calculatePeriodicReport(List<DailyReportResponseDto> dailyReports) {
 		int totalDays = dailyReports.size();
-
 		DailyReportResponseDto first = dailyReports.getFirst();
 
 		BigDecimal sumConsumed = first.getTotalCaloriesConsumed();
@@ -132,9 +132,6 @@ public class ReportsServiceImpl implements ReportsService {
 			BigDecimal consumed = report.getTotalCaloriesConsumed();
 			BigDecimal burned = report.getTotalCaloriesBurned();
 			BigDecimal net = report.getNetCalories();
-			BigDecimal protein = report.getMacros().getProtein();
-			BigDecimal fat = report.getMacros().getFat();
-			BigDecimal carbs = report.getMacros().getCarbohydrates();
 
 			sumConsumed = sumConsumed.add(consumed);
 			maxConsumed = maxConsumed.max(consumed);
@@ -148,20 +145,20 @@ public class ReportsServiceImpl implements ReportsService {
 			maxNet = maxNet.max(net);
 			minNet = minNet.min(net);
 
-			sumProtein = sumProtein.add(protein);
-			sumFat = sumFat.add(fat);
-			sumCarbs = sumCarbs.add(carbs);
+			sumProtein = sumProtein.add(report.getMacros().getProtein());
+			sumFat = sumFat.add(report.getMacros().getFat());
+			sumCarbs = sumCarbs.add(report.getMacros().getCarbohydrates());
 		}
 
-		BigDecimal totalDaysDivisor = BigDecimal.valueOf(totalDays);
+		BigDecimal divisor = BigDecimal.valueOf(totalDays);
 
-		BigDecimal avgConsumed = sumConsumed.divide(totalDaysDivisor, 2, RoundingMode.HALF_UP);
-		BigDecimal avgBurned = sumBurned.divide(totalDaysDivisor, 2, RoundingMode.HALF_UP);
-		BigDecimal avgNet = sumNet.divide(totalDaysDivisor, 2, RoundingMode.HALF_UP);
+		BigDecimal avgConsumed = sumConsumed.divide(divisor, 2, RoundingMode.HALF_UP);
+		BigDecimal avgBurned = sumBurned.divide(divisor, 2, RoundingMode.HALF_UP);
+		BigDecimal avgNet = sumNet.divide(divisor, 2, RoundingMode.HALF_UP);
 
-		BigDecimal avgProtein = sumProtein.divide(totalDaysDivisor, 2, RoundingMode.HALF_UP);
-		BigDecimal avgFat = sumFat.divide(totalDaysDivisor, 2, RoundingMode.HALF_UP);
-		BigDecimal avgCarbs = sumCarbs.divide(totalDaysDivisor, 2, RoundingMode.HALF_UP);
+		BigDecimal avgProtein = sumProtein.divide(divisor, 2, RoundingMode.HALF_UP);
+		BigDecimal avgFat = sumFat.divide(divisor, 2, RoundingMode.HALF_UP);
+		BigDecimal avgCarbs = sumCarbs.divide(divisor, 2, RoundingMode.HALF_UP);
 
 		ReportStats stats = new ReportStats(avgConsumed, maxConsumed, minConsumed, avgBurned, maxBurned, minBurned,
 				avgNet, maxNet, minNet);

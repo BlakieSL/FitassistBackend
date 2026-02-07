@@ -12,7 +12,7 @@ import com.fitassist.backend.model.thread.ForumThread;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.*;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
-import com.fitassist.backend.service.implementation.annotation.AuthAnnotationServiceImpl;
+import com.fitassist.backend.service.implementation.annotation.AuthAnnotationService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,7 +56,7 @@ public class AuthAnnotationServiceTest {
 	private ThreadComplaintRepository threadComplaintRepository;
 
 	@InjectMocks
-	private AuthAnnotationServiceImpl authAnnotationService;
+	private AuthAnnotationService authAnnotationService;
 
 	private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
 

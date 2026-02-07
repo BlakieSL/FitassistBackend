@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,13 +35,54 @@ public class ForumThreadPopulationServiceImpl implements ForumThreadPopulationSe
 
 	@Override
 	public void populate(List<ForumThreadSummaryDto> threads) {
-		if (threads.isEmpty())
+		if (threads.isEmpty()) {
 			return;
+		}
 
 		List<Integer> threadIds = threads.stream().map(ForumThreadSummaryDto::getId).toList();
 
 		fetchAndPopulateAuthorImages(threads);
 		fetchAndPopulateUserInteractionAndCounts(threads, threadIds);
+	}
+
+	private void fetchAndPopulateAuthorImages(List<ForumThreadSummaryDto> threads) {
+		List<Integer> authorIds = threads.stream().map(thread -> thread.getAuthor().getId()).toList();
+
+		if (authorIds.isEmpty()) {
+			return;
+		}
+
+		Map<Integer, String> authorImageMap = mediaRepository
+			.findFirstMediaByParentIds(authorIds, MediaConnectedEntity.USER)
+			.stream()
+			.collect(Collectors.toMap(Media::getParentId, Media::getImageName));
+
+		threads.forEach(thread -> {
+			String imageName = authorImageMap.get(thread.getAuthor().getId());
+			if (imageName != null) {
+				thread.getAuthor().setImageName(imageName);
+				thread.getAuthor().setImageUrl(s3Service.getImage(imageName));
+			}
+		});
+	}
+
+	private void fetchAndPopulateUserInteractionAndCounts(List<ForumThreadSummaryDto> threads,
+			List<Integer> threadIds) {
+		int userId = AuthorizationUtil.getUserId();
+
+		Map<Integer, ForumThreadCountsProjection> countsMap = userThreadRepository
+			.findCountsAndInteractionsByThreadIds(userId, threadIds)
+			.stream()
+			.collect(Collectors.toMap(ForumThreadCountsProjection::getThreadId, Function.identity()));
+
+		threads.forEach(thread -> {
+			ForumThreadCountsProjection counts = countsMap.get(thread.getId());
+			if (counts != null) {
+				thread.setSavesCount(counts.savesCount());
+				thread.setCommentsCount(counts.commentsCount());
+				thread.setSaved(counts.isSaved());
+			}
+		});
 	}
 
 	@Override
@@ -64,51 +106,13 @@ public class ForumThreadPopulationServiceImpl implements ForumThreadPopulationSe
 		ForumThreadCountsProjection result = userThreadRepository.findCountsAndInteractionsByThreadId(userId,
 				thread.getId());
 
-		if (result == null)
+		if (result == null) {
 			return;
+		}
 
 		thread.setSaved(result.isSaved());
 		thread.setSavesCount(result.savesCount());
 		thread.setCommentsCount(result.commentsCount());
-	}
-
-	private void fetchAndPopulateAuthorImages(List<ForumThreadSummaryDto> threads) {
-		List<Integer> authorIds = threads.stream().map(thread -> thread.getAuthor().getId()).toList();
-
-		if (authorIds.isEmpty())
-			return;
-
-		Map<Integer, String> authorImageMap = mediaRepository
-			.findFirstMediaByParentIds(authorIds, MediaConnectedEntity.USER)
-			.stream()
-			.collect(Collectors.toMap(Media::getParentId, Media::getImageName));
-
-		threads.forEach(thread -> {
-			String imageName = authorImageMap.get(thread.getAuthor().getId());
-			if (imageName != null) {
-				thread.getAuthor().setImageName(imageName);
-				thread.getAuthor().setImageUrl(s3Service.getImage(imageName));
-			}
-		});
-	}
-
-	private void fetchAndPopulateUserInteractionAndCounts(List<ForumThreadSummaryDto> threads,
-			List<Integer> threadIds) {
-		int userId = AuthorizationUtil.getUserId();
-
-		Map<Integer, ForumThreadCountsProjection> countsMap = userThreadRepository
-			.findCountsAndInteractionsByThreadIds(userId, threadIds)
-			.stream()
-			.collect(Collectors.toMap(ForumThreadCountsProjection::getThreadId, projection -> projection));
-
-		threads.forEach(thread -> {
-			ForumThreadCountsProjection counts = countsMap.get(thread.getId());
-			if (counts != null) {
-				thread.setSavesCount(counts.savesCount());
-				thread.setCommentsCount(counts.commentsCount());
-				thread.setSaved(counts.isSaved());
-			}
-		});
 	}
 
 }

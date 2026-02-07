@@ -60,6 +60,10 @@ public class PasswordResetServiceTest {
 
 	private static final String SHARED_KEY = "afdadsfadsfsdafSADFJIkcvxla;j'sdkf[weokgfam,;adsfksdhqpwier";
 
+	private static final String PASSWORD_RESET_TOKEN_TYPE = "PASSWORD_RESET";
+
+	private static final long PASSWORD_RESET_TOKEN_DURATION = 20L;
+
 	@BeforeEach
 	void setUp() {
 		email = "test@example.com";
@@ -85,10 +89,23 @@ public class PasswordResetServiceTest {
 
 		ReflectionTestUtils.setField(passwordResetService, "frontendUrl", "http://localhost:3000");
 		ReflectionTestUtils.setField(passwordResetService, "fromEmail", "noreply@fitassist.com");
+		ReflectionTestUtils.setField(passwordResetService, "passwordResetTokenType", PASSWORD_RESET_TOKEN_TYPE);
+		ReflectionTestUtils.setField(passwordResetService, "passwordResetTokenDurationMinutes",
+				PASSWORD_RESET_TOKEN_DURATION);
 	}
 
 	private JwtService createRealJwtService() throws Exception {
 		return new JwtService(SHARED_KEY, tokenProperties);
+	}
+
+	private PasswordResetServiceImpl createServiceWithRealJwt() throws Exception {
+		PasswordResetServiceImpl service = new PasswordResetServiceImpl(createRealJwtService(), emailService,
+				userRepository, passwordEncoder);
+		ReflectionTestUtils.setField(service, "frontendUrl", "http://localhost:3000");
+		ReflectionTestUtils.setField(service, "fromEmail", "noreply@fitassist.com");
+		ReflectionTestUtils.setField(service, "passwordResetTokenType", PASSWORD_RESET_TOKEN_TYPE);
+		ReflectionTestUtils.setField(service, "passwordResetTokenDurationMinutes", PASSWORD_RESET_TOKEN_DURATION);
+		return service;
 	}
 
 	@Test
@@ -97,8 +114,8 @@ public class PasswordResetServiceTest {
 		request.setEmail(email);
 
 		when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-		when(jwtService.createSignedJWT(eq(email), eq(userId), eq(Collections.emptyList()), eq(20L),
-				eq("PASSWORD_RESET")))
+		when(jwtService.createSignedJWT(eq(email), eq(userId), eq(Collections.emptyList()),
+				eq(PASSWORD_RESET_TOKEN_DURATION), eq(PASSWORD_RESET_TOKEN_TYPE)))
 			.thenReturn(resetToken);
 
 		passwordResetService.requestPasswordReset(request);
@@ -128,16 +145,13 @@ public class PasswordResetServiceTest {
 
 	@Test
 	void resetPassword_shouldUpdatePasswordForValidToken() throws Exception {
-		JwtService realJwtService = createRealJwtService();
-		String validToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), 20,
-				"PASSWORD_RESET");
+		PasswordResetServiceImpl serviceWithRealJwt = createServiceWithRealJwt();
+		String validToken = createRealJwtService().createSignedJWT(email, userId, Collections.emptyList(),
+				PASSWORD_RESET_TOKEN_DURATION, PASSWORD_RESET_TOKEN_TYPE);
 
 		PasswordResetDto resetDto = new PasswordResetDto();
 		resetDto.setToken(validToken);
 		resetDto.setNewPassword("newPassword123");
-
-		PasswordResetServiceImpl serviceWithRealJwt = new PasswordResetServiceImpl(realJwtService, emailService,
-				userRepository, passwordEncoder);
 
 		when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 		when(passwordEncoder.encode("newPassword123")).thenReturn("encodedNewPassword");
@@ -150,16 +164,13 @@ public class PasswordResetServiceTest {
 
 	@Test
 	void resetPassword_shouldThrowForExpiredToken() throws Exception {
-		JwtService realJwtService = createRealJwtService();
-		String expiredToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), -1,
-				"PASSWORD_RESET");
+		PasswordResetServiceImpl serviceWithRealJwt = createServiceWithRealJwt();
+		String expiredToken = createRealJwtService().createSignedJWT(email, userId, Collections.emptyList(), -1,
+				PASSWORD_RESET_TOKEN_TYPE);
 
 		PasswordResetDto resetDto = new PasswordResetDto();
 		resetDto.setToken(expiredToken);
 		resetDto.setNewPassword("newPassword123");
-
-		PasswordResetServiceImpl serviceWithRealJwt = new PasswordResetServiceImpl(realJwtService, emailService,
-				userRepository, passwordEncoder);
 
 		assertThrows(JwtAuthenticationException.class, () -> serviceWithRealJwt.resetPassword(resetDto));
 
@@ -168,15 +179,13 @@ public class PasswordResetServiceTest {
 
 	@Test
 	void resetPassword_shouldThrowForInvalidTokenType() throws Exception {
-		JwtService realJwtService = createRealJwtService();
-		String accessToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), 20, "ACCESS");
+		PasswordResetServiceImpl serviceWithRealJwt = createServiceWithRealJwt();
+		String accessToken = createRealJwtService().createSignedJWT(email, userId, Collections.emptyList(),
+				PASSWORD_RESET_TOKEN_DURATION, "ACCESS");
 
 		PasswordResetDto resetDto = new PasswordResetDto();
 		resetDto.setToken(accessToken);
 		resetDto.setNewPassword("newPassword123");
-
-		PasswordResetServiceImpl serviceWithRealJwt = new PasswordResetServiceImpl(realJwtService, emailService,
-				userRepository, passwordEncoder);
 
 		assertThrows(JwtAuthenticationException.class, () -> serviceWithRealJwt.resetPassword(resetDto));
 
@@ -196,16 +205,13 @@ public class PasswordResetServiceTest {
 
 	@Test
 	void resetPassword_shouldThrowWhenUserNotFound() throws Exception {
-		JwtService realJwtService = createRealJwtService();
-		String validToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), 20,
-				"PASSWORD_RESET");
+		PasswordResetServiceImpl serviceWithRealJwt = createServiceWithRealJwt();
+		String validToken = createRealJwtService().createSignedJWT(email, userId, Collections.emptyList(),
+				PASSWORD_RESET_TOKEN_DURATION, PASSWORD_RESET_TOKEN_TYPE);
 
 		PasswordResetDto resetDto = new PasswordResetDto();
 		resetDto.setToken(validToken);
 		resetDto.setNewPassword("newPassword123");
-
-		PasswordResetServiceImpl serviceWithRealJwt = new PasswordResetServiceImpl(realJwtService, emailService,
-				userRepository, passwordEncoder);
 
 		when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
@@ -216,9 +222,9 @@ public class PasswordResetServiceTest {
 
 	@Test
 	void resetPassword_shouldThrowWhenUserIdMismatch() throws Exception {
-		JwtService realJwtService = createRealJwtService();
-		String validToken = realJwtService.createSignedJWT(email, userId, Collections.emptyList(), 20,
-				"PASSWORD_RESET");
+		PasswordResetServiceImpl serviceWithRealJwt = createServiceWithRealJwt();
+		String validToken = createRealJwtService().createSignedJWT(email, userId, Collections.emptyList(),
+				PASSWORD_RESET_TOKEN_DURATION, PASSWORD_RESET_TOKEN_TYPE);
 
 		PasswordResetDto resetDto = new PasswordResetDto();
 		resetDto.setToken(validToken);
@@ -227,9 +233,6 @@ public class PasswordResetServiceTest {
 		User differentUser = new User();
 		differentUser.setId(999);
 		differentUser.setEmail(email);
-
-		PasswordResetServiceImpl serviceWithRealJwt = new PasswordResetServiceImpl(realJwtService, emailService,
-				userRepository, passwordEncoder);
 
 		when(userRepository.findByEmail(email)).thenReturn(Optional.of(differentUser));
 

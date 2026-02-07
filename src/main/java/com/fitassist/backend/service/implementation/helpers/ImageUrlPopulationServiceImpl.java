@@ -18,8 +18,9 @@ public class ImageUrlPopulationServiceImpl implements ImageUrlPopulationService 
 
 	@Override
 	public void populateImageUrls(MediaImagesDto images) {
-		if (images == null || images.getImageNames() == null)
+		if (images == null || images.getImageNames() == null) {
 			return;
+		}
 
 		List<String> urls = images.getImageNames().stream().map(s3Service::getImage).toList();
 		images.setImageUrls(urls);
