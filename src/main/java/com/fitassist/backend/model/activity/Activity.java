@@ -3,7 +3,7 @@ package com.fitassist.backend.model.activity;
 import com.fitassist.backend.model.IndexedEntity;
 import com.fitassist.backend.model.daily.DailyCartActivity;
 import com.fitassist.backend.model.media.Media;
-import com.fitassist.backend.model.user.UserActivity;
+import com.fitassist.backend.model.user.interactions.UserActivity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

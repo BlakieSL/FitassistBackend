@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-import static com.fitassist.backend.model.complaint.ComplaintBase.*;
+import static com.fitassist.backend.model.complaint.ComplaintBase.GRAPH_BASE;
 
 public interface ComplaintRepository extends JpaRepository<ComplaintBase, Integer> {
 

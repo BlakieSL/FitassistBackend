@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ActivityCategoryRepository extends JpaRepository<ActivityCategory, Integer> {
 
-	boolean existsByIdAndActivitiesIsNotEmpty(Integer id);
+	boolean existsByIdAndActivitiesIsNotEmpty(int id);
 
 }

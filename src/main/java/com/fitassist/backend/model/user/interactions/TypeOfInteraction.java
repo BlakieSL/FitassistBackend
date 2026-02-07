@@ -1,4 +1,4 @@
-package com.fitassist.backend.model.user;
+package com.fitassist.backend.model.user.interactions;
 
 import com.fitassist.backend.dto.response.user.InteractionResponseDto;
 

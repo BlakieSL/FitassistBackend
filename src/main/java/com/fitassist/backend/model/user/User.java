@@ -7,6 +7,7 @@ import com.fitassist.backend.model.plan.Plan;
 import com.fitassist.backend.model.recipe.Recipe;
 import com.fitassist.backend.model.thread.Comment;
 import com.fitassist.backend.model.thread.ForumThread;
+import com.fitassist.backend.model.user.interactions.*;
 import com.fitassist.backend.validation.ValidationGroups;
 import com.fitassist.backend.validation.email.UniqueEmailDomain;
 import com.fitassist.backend.validation.health.HealthInfoShouldBeFullDomain;

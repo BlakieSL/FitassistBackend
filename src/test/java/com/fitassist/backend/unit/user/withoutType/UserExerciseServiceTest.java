@@ -9,7 +9,7 @@ import com.fitassist.backend.mapper.exercise.ExerciseMapper;
 import com.fitassist.backend.model.exercise.Exercise;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.user.User;
-import com.fitassist.backend.model.user.UserExercise;
+import com.fitassist.backend.model.user.interactions.UserExercise;
 import com.fitassist.backend.repository.ExerciseRepository;
 import com.fitassist.backend.repository.UserExerciseRepository;
 import com.fitassist.backend.repository.UserRepository;

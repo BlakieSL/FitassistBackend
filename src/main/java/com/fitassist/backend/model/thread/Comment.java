@@ -3,7 +3,7 @@ package com.fitassist.backend.model.thread;
 import com.fitassist.backend.model.complaint.CommentComplaint;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.user.User;
-import com.fitassist.backend.model.user.UserComment;
+import com.fitassist.backend.model.user.interactions.UserComment;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

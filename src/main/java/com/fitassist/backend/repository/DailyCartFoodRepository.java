@@ -7,11 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-import static com.fitassist.backend.model.daily.DailyCartFood.*;
+import static com.fitassist.backend.model.daily.DailyCartFood.GRAPH_BASE;
 
 public interface DailyCartFoodRepository extends JpaRepository<DailyCartFood, Integer> {
-
-	Optional<DailyCartFood> findByDailyCartIdAndFoodId(int dailyCartId, int foodId);
 
 	@EntityGraph(value = GRAPH_BASE)
 	@Query("""
@@ -25,5 +23,7 @@ public interface DailyCartFoodRepository extends JpaRepository<DailyCartFood, In
 	@EntityGraph(value = GRAPH_BASE)
 	@Query("SELECT dcf FROM DailyCartFood dcf WHERE dcf.id = :id")
 	Optional<DailyCartFood> findByIdWithoutAssociations(int id);
+
+	Optional<DailyCartFood> findByDailyCartIdAndFoodId(int dailyCartId, int foodId);
 
 }
