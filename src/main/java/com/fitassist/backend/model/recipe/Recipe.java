@@ -4,7 +4,7 @@ import com.fitassist.backend.model.IndexedEntity;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.text.RecipeInstruction;
 import com.fitassist.backend.model.user.User;
-import com.fitassist.backend.model.user.UserRecipe;
+import com.fitassist.backend.model.user.interactions.UserRecipe;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;

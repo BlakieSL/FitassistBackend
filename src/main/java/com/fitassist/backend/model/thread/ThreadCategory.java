@@ -1,37 +1,22 @@
 package com.fitassist.backend.model.thread;
 
-import com.fitassist.backend.model.CategoryEntity;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
+import com.fitassist.backend.model.CategoryBase;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.fitassist.backend.model.SchemaConstants.CATEGORY_NAME_MAX_LENGTH;
-
 @Entity
 @Table(name = "thread_category")
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class ThreadCategory implements CategoryEntity {
+public class ThreadCategory extends CategoryBase {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-
-	@NotBlank
-	@Size(max = CATEGORY_NAME_MAX_LENGTH)
-	@Column(nullable = false, length = CATEGORY_NAME_MAX_LENGTH)
-	private String name;
-
-	@OneToMany(mappedBy = "threadCategory", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "threadCategory")
 	private final Set<ForumThread> threads = new HashSet<>();
 
 }

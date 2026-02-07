@@ -1,7 +1,7 @@
 package com.fitassist.backend.repository;
 
 import com.fitassist.backend.dto.pojo.projection.thread.ForumThreadCountsProjection;
-import com.fitassist.backend.model.user.UserThread;
+import com.fitassist.backend.model.user.interactions.UserThread;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -2,7 +2,7 @@ package com.fitassist.backend.controller.user;
 
 import com.fitassist.backend.dto.response.user.InteractionResponseDto;
 import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
-import com.fitassist.backend.model.user.TypeOfInteraction;
+import com.fitassist.backend.model.user.interactions.TypeOfInteraction;
 import com.fitassist.backend.service.declaration.selector.SavedSelectorService;
 import com.fitassist.backend.service.declaration.user.SavedService;
 import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
