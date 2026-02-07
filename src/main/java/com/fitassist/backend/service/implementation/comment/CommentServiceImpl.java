@@ -37,7 +37,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -84,6 +87,15 @@ public class CommentServiceImpl implements CommentService {
 		return findAndMap(saved.getId());
 	}
 
+	private CommentResponseDto findAndMap(int commentId) {
+		Comment comment = commentRepository.findById(commentId)
+			.orElseThrow(() -> new RecordNotFoundException(Comment.class, commentId));
+		CommentResponseDto dto = commentMapper.toResponse(comment);
+		commentPopulationService.populate(dto);
+
+		return dto;
+	}
+
 	private CommentMappingContext prepareCreateContext(CommentCreateDto createDto) {
 		int userId = AuthorizationUtil.getUserId();
 		User user = findUser(userId);
@@ -123,6 +135,11 @@ public class CommentServiceImpl implements CommentService {
 		commentRepository.save(comment);
 	}
 
+	private CommentUpdateDto applyPatchToComment(JsonMergePatch patch)
+			throws JsonPatchException, JsonProcessingException {
+		return jsonPatchService.createFromPatch(patch, CommentUpdateDto.class);
+	}
+
 	@Override
 	@Transactional
 	public void deleteComment(int commentId) {
@@ -142,9 +159,7 @@ public class CommentServiceImpl implements CommentService {
 		Specification<Comment> specification = specificationBuilder.build();
 
 		Page<Comment> commentPage = commentRepository.findAll(specification, pageable);
-
 		List<CommentSummaryDto> summaries = commentPage.getContent().stream().map(commentMapper::toSummary).toList();
-
 		commentPopulationService.populate(summaries);
 
 		return new PageImpl<>(summaries, pageable, commentPage.getTotalElements());
@@ -160,16 +175,7 @@ public class CommentServiceImpl implements CommentService {
 		if (sortOrder != null && "likesCount".equals(sortOrder.getProperty())) {
 			List<Integer> ids = commentRepository.findTopCommentIdsSortedByLikesCount(threadId,
 					sortOrder.getDirection().name(), pageable.getPageSize(), (int) pageable.getOffset());
-
 			comments = commentRepository.findAllByIds(ids);
-
-			Map<Integer, Integer> idToPosition = new HashMap<>();
-			for (int i = 0; i < ids.size(); i++) {
-				idToPosition.put(ids.get(i), i);
-			}
-
-			comments.sort(Comparator.comparingInt(c -> idToPosition.get(c.getId())));
-
 			total = commentRepository.countTopCommentsByThreadId(threadId);
 		}
 		else {
@@ -179,7 +185,6 @@ public class CommentServiceImpl implements CommentService {
 		}
 
 		List<CommentResponseDto> dtos = comments.stream().map(commentMapper::toResponse).toList();
-
 		commentPopulationService.populateList(dtos);
 
 		return new PageImpl<>(dtos, pageable, total);
@@ -190,11 +195,11 @@ public class CommentServiceImpl implements CommentService {
 		List<Object[]> results = commentRepository.findCommentHierarchy(commentId);
 
 		if (results.isEmpty()) {
-			return Collections.emptyList();
+			return List.of();
 		}
 
-		Map<Integer, CommentResponseDto> dtoMap = new HashMap<>();
-		List<CommentResponseDto> flatList = new ArrayList<>();
+		Map<Integer, CommentResponseDto> dtoMap = new LinkedHashMap<>();
+		List<CommentResponseDto> dtoList = new ArrayList<>();
 
 		for (Object[] row : results) {
 			CommentResponseDto dto = new CommentResponseDto();
@@ -211,10 +216,10 @@ public class CommentServiceImpl implements CommentService {
 			dto.setAuthor(author);
 
 			dtoMap.put(dto.getId(), dto);
-			flatList.add(dto);
+			dtoList.add(dto);
 		}
 
-		commentPopulationService.populateList(flatList);
+		commentPopulationService.populateList(dtoList);
 
 		for (CommentResponseDto dto : dtoMap.values()) {
 			Integer parentId = dto.getParentCommentId();
@@ -226,7 +231,6 @@ public class CommentServiceImpl implements CommentService {
 		return dtoMap.values()
 			.stream()
 			.filter(dto -> dto.getParentCommentId() != null && dto.getParentCommentId() == commentId)
-			.sorted(Comparator.comparing(CommentResponseDto::getId))
 			.toList();
 	}
 
@@ -247,20 +251,6 @@ public class CommentServiceImpl implements CommentService {
 		}
 
 		return new CommentAncestryDto(threadId, ancestorIds);
-	}
-
-	private CommentUpdateDto applyPatchToComment(JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
-		return jsonPatchService.createFromPatch(patch, CommentUpdateDto.class);
-	}
-
-	private CommentResponseDto findAndMap(int commentId) {
-		Comment comment = commentRepository.findById(commentId)
-			.orElseThrow(() -> new RecordNotFoundException(Comment.class, commentId));
-		CommentResponseDto dto = commentMapper.toResponse(comment);
-		commentPopulationService.populate(dto);
-
-		return dto;
 	}
 
 }

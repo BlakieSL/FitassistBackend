@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +34,7 @@ public class FoodPopulationServiceImpl implements FoodPopulationService {
 	@Override
 	public void populate(FoodResponseDto food) {
 		int userId = AuthorizationUtil.getUserId();
+
 		SavesProjection savesData = userFoodRepository.findCountsAndInteractionsByFoodId(food.getId(), userId);
 		food.setSavesCount(savesData.savesCount());
 		food.setSaved(savesData.isSaved());
@@ -42,8 +44,9 @@ public class FoodPopulationServiceImpl implements FoodPopulationService {
 
 	@Override
 	public void populate(List<FoodSummaryDto> foods) {
-		if (foods.isEmpty())
+		if (foods.isEmpty()) {
 			return;
+		}
 
 		List<Integer> foodIds = foods.stream().map(FoodSummaryDto::getId).toList();
 
@@ -64,7 +67,7 @@ public class FoodPopulationServiceImpl implements FoodPopulationService {
 
 		Map<Integer, SavesProjection> countsMap = userFoodRepository.findCountsAndInteractionsByFoodIds(userId, foodIds)
 			.stream()
-			.collect(Collectors.toMap(SavesProjection::getEntityId, projection -> projection));
+			.collect(Collectors.toMap(SavesProjection::getEntityId, Function.identity()));
 
 		foods.forEach(food -> {
 			SavesProjection counts = countsMap.get(food.getId());

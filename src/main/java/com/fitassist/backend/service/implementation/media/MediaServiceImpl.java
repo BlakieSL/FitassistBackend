@@ -68,6 +68,29 @@ public class MediaServiceImpl implements MediaService {
 		return mediaMapper.toDto(savedMedia, imageUrl);
 	}
 
+	private void deleteExistingUserMediaIfNeeded(MediaCreateDto request) {
+		if (request.getParentType() == MediaConnectedEntity.USER) {
+			mediaRepository
+				.findFirstByParentIdAndParentTypeOrderByIdAsc(request.getParentId(), MediaConnectedEntity.USER)
+				.ifPresent(existingMedia -> {
+					String imageName = existingMedia.getImageName();
+					mediaRepository.delete(existingMedia);
+					mediaRepository.flush();
+					s3Service.deleteImage(imageName);
+					applicationEventPublisher.publishEvent(MediaDeleteEvent.of(this, existingMedia));
+				});
+		}
+	}
+
+	private byte[] multipartFileToBytes(MultipartFile file) {
+		try {
+			return file.getBytes();
+		}
+		catch (IOException e) {
+			throw new FileProcessingException("Failed to process the image file", e);
+		}
+	}
+
 	@Override
 	@Transactional
 	public void deleteMedia(int mediaId) {
@@ -76,10 +99,13 @@ public class MediaServiceImpl implements MediaService {
 
 		mediaRepository.delete(media);
 		mediaRepository.flush();
-
 		s3Service.deleteImage(imageName);
 
 		applicationEventPublisher.publishEvent(MediaDeleteEvent.of(this, media));
+	}
+
+	private Media find(int mediaId) {
+		return repositoryHelper.find(mediaRepository, Media.class, mediaId);
 	}
 
 	@Override
@@ -107,33 +133,6 @@ public class MediaServiceImpl implements MediaService {
 		String imageUrl = s3Service.getImage(media.getImageName());
 
 		return mediaMapper.toDto(media, imageUrl);
-	}
-
-	private Media find(int mediaId) {
-		return repositoryHelper.find(mediaRepository, Media.class, mediaId);
-	}
-
-	private byte[] multipartFileToBytes(MultipartFile file) {
-		try {
-			return file.getBytes();
-		}
-		catch (IOException e) {
-			throw new FileProcessingException("Failed to process the image file", e);
-		}
-	}
-
-	private void deleteExistingUserMediaIfNeeded(MediaCreateDto request) {
-		if (request.getParentType() == MediaConnectedEntity.USER) {
-			mediaRepository
-				.findFirstByParentIdAndParentTypeOrderByIdAsc(request.getParentId(), MediaConnectedEntity.USER)
-				.ifPresent(existingMedia -> {
-					String imageName = existingMedia.getImageName();
-					mediaRepository.delete(existingMedia);
-					mediaRepository.flush();
-					s3Service.deleteImage(imageName);
-					applicationEventPublisher.publishEvent(MediaDeleteEvent.of(this, existingMedia));
-				});
-		}
 	}
 
 }

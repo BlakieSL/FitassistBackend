@@ -113,12 +113,22 @@ public class FoodServiceImpl implements FoodService {
 
 		FoodResponseDto dto = foodMapper.toResponse(food);
 		foodPopulationService.populate(dto);
+
 		return dto;
 	}
 
 	private FoodMappingContext prepareCreateContext(FoodCreateDto dto) {
 		FoodCategory category = findCategory(dto.getCategoryId());
 		return new FoodMappingContext(category);
+	}
+
+	private FoodCategory findCategory(Integer categoryId) {
+		if (categoryId == null) {
+			return null;
+		}
+
+		return foodCategoryRepository.findById(categoryId)
+			.orElseThrow(() -> RecordNotFoundException.of(FoodCategory.class, categoryId));
 	}
 
 	@Override
@@ -141,6 +151,10 @@ public class FoodServiceImpl implements FoodService {
 		applicationEventPublisher.publishEvent(FoodUpdateEvent.of(this, refetchedFood));
 	}
 
+	private FoodUpdateDto applyPatchToFood(JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+		return jsonPatchService.createFromPatch(patch, FoodUpdateDto.class);
+	}
+
 	private FoodMappingContext prepareUpdateContext(FoodUpdateDto dto) {
 		FoodCategory category = findCategory(dto.getCategoryId());
 		return new FoodMappingContext(category);
@@ -155,13 +169,17 @@ public class FoodServiceImpl implements FoodService {
 		applicationEventPublisher.publishEvent(FoodDeleteEvent.of(this, food));
 	}
 
+	private Food find(int foodId) {
+		return repositoryHelper.find(foodRepository, Food.class, foodId);
+	}
+
 	@Override
 	public FoodCalculatedMacrosResponseDto calculateFoodMacros(int id, CalculateFoodMacrosRequestDto request) {
 		Food food = find(id);
 		BigDecimal quantity = request.getQuantity();
 		BigDecimal divisor = BigDecimal.valueOf(100);
 
-		BigDecimal factor = quantity.divide(divisor, 10, RoundingMode.HALF_UP);
+		BigDecimal factor = quantity.divide(divisor, 4, RoundingMode.HALF_UP);
 
 		return calculationsService.toCalculatedResponseDto(food, factor);
 	}
@@ -181,30 +199,6 @@ public class FoodServiceImpl implements FoodService {
 		return dto;
 	}
 
-	@Override
-	public Page<FoodSummaryDto> getFilteredFoods(FilterDto filter, Pageable pageable) {
-		SpecificationFactory<Food> foodFactory = FoodSpecification::new;
-		SpecificationBuilder<Food> specificationBuilder = SpecificationBuilder.of(filter, foodFactory, dependencies);
-		Specification<Food> specification = specificationBuilder.build();
-
-		Page<Food> foodPage = foodRepository.findAll(specification, pageable);
-
-		List<FoodSummaryDto> summaries = foodPage.getContent().stream().map(foodMapper::toSummary).toList();
-
-		foodPopulationService.populate(summaries);
-
-		return new PageImpl<>(summaries, pageable, foodPage.getTotalElements());
-	}
-
-	@Override
-	public List<Food> getAllFoodEntities() {
-		return foodRepository.findAll();
-	}
-
-	private Food find(int foodId) {
-		return repositoryHelper.find(foodRepository, Food.class, foodId);
-	}
-
 	private FoodResponseDto findAndMap(int foodId) {
 		Food food = foodRepository.findByIdWithMedia(foodId)
 			.orElseThrow(() -> RecordNotFoundException.of(Food.class, foodId));
@@ -213,16 +207,22 @@ public class FoodServiceImpl implements FoodService {
 		return dto;
 	}
 
-	private FoodUpdateDto applyPatchToFood(JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
-		return jsonPatchService.createFromPatch(patch, FoodUpdateDto.class);
+	@Override
+	public Page<FoodSummaryDto> getFilteredFoods(FilterDto filter, Pageable pageable) {
+		SpecificationFactory<Food> foodFactory = FoodSpecification::new;
+		SpecificationBuilder<Food> specificationBuilder = SpecificationBuilder.of(filter, foodFactory, dependencies);
+		Specification<Food> specification = specificationBuilder.build();
+
+		Page<Food> foodPage = foodRepository.findAll(specification, pageable);
+		List<FoodSummaryDto> summaries = foodPage.getContent().stream().map(foodMapper::toSummary).toList();
+		foodPopulationService.populate(summaries);
+
+		return new PageImpl<>(summaries, pageable, foodPage.getTotalElements());
 	}
 
-	private FoodCategory findCategory(Integer categoryId) {
-		if (categoryId == null) {
-			return null;
-		}
-		return foodCategoryRepository.findById(categoryId)
-			.orElseThrow(() -> RecordNotFoundException.of(FoodCategory.class, categoryId));
+	@Override
+	public List<Food> getAllFoodEntities() {
+		return foodRepository.findAll();
 	}
 
 }

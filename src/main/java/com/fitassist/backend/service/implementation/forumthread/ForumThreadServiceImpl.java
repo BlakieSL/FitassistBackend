@@ -92,6 +92,10 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 		return new ForumThreadMappingContext(user, category);
 	}
 
+	private User findUser(int userId) {
+		return userRepository.findById(userId).orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
+	}
+
 	@Override
 	@Transactional
 	public void updateForumThread(int threadId, JsonMergePatch patch)
@@ -106,9 +110,27 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 		forumThreadRepository.save(thread);
 	}
 
+	private ForumThread find(int threadId) {
+		return repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId);
+	}
+
+	private ForumThreadUpdateDto applyPatchToForumThread(JsonMergePatch patch)
+			throws JsonPatchException, JsonProcessingException {
+		return jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class);
+	}
+
 	private ForumThreadMappingContext prepareUpdateContext(ForumThreadUpdateDto dto) {
 		ThreadCategory category = findCategory(dto.getThreadCategoryId());
 		return new ForumThreadMappingContext(null, category);
+	}
+
+	private ThreadCategory findCategory(Integer categoryId) {
+		if (categoryId == null) {
+			return null;
+		}
+
+		return threadCategoryRepository.findById(categoryId)
+			.orElseThrow(() -> RecordNotFoundException.of(ThreadCategory.class, categoryId));
 	}
 
 	@Override
@@ -121,15 +143,6 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 	@Override
 	public ForumThreadResponseDto getForumThread(int threadId) {
 		return findAndMap(threadId);
-	}
-
-	private ForumThreadUpdateDto applyPatchToForumThread(JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
-		return jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class);
-	}
-
-	private ForumThread find(int threadId) {
-		return repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId);
 	}
 
 	private ForumThreadResponseDto findAndMap(int threadId) {
@@ -156,18 +169,6 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 		forumThreadPopulationService.populate(summaries);
 
 		return new PageImpl<>(summaries, pageable, threadPage.getTotalElements());
-	}
-
-	private User findUser(int userId) {
-		return userRepository.findById(userId).orElseThrow(() -> RecordNotFoundException.of(User.class, userId));
-	}
-
-	private ThreadCategory findCategory(Integer categoryId) {
-		if (categoryId == null) {
-			return null;
-		}
-		return threadCategoryRepository.findById(categoryId)
-			.orElseThrow(() -> RecordNotFoundException.of(ThreadCategory.class, categoryId));
 	}
 
 }

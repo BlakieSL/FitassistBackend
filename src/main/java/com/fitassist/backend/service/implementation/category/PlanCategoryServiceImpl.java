@@ -14,20 +14,12 @@ import org.springframework.stereotype.Service;
 @Service("planCategoryService")
 public class PlanCategoryServiceImpl extends GenericCategoryService<PlanCategory> implements CategoryService {
 
-	private final PlanCategoryRepository planCategoryRepository;
-
 	protected PlanCategoryServiceImpl(ValidationService validationService, JsonPatchService jsonPatchService,
 			CategoryCacheKeyGenerator<PlanCategory> cacheKeyGenerator,
 			ApplicationEventPublisher applicationEventPublisher, CacheManager cacheManager,
 			PlanCategoryRepository planCategoryRepository, PlanCategoryMapper mapper) {
 		super(validationService, jsonPatchService, cacheKeyGenerator, applicationEventPublisher, cacheManager,
 				planCategoryRepository, mapper);
-		this.planCategoryRepository = planCategoryRepository;
-	}
-
-	@Override
-	protected boolean hasAssociatedEntities(int categoryId) {
-		return planCategoryRepository.existsByIdAndPlanCategoryAssociationsIsNotEmpty(categoryId);
 	}
 
 	@Override

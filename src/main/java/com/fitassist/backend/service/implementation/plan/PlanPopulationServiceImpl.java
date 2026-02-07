@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,8 +35,9 @@ public class PlanPopulationServiceImpl implements PlanPopulationService {
 
 	@Override
 	public void populate(List<PlanSummaryDto> plans) {
-		if (plans.isEmpty())
+		if (plans.isEmpty()) {
 			return;
+		}
 
 		List<Integer> planIds = plans.stream().map(PlanSummaryDto::getId).toList();
 
@@ -44,20 +46,12 @@ public class PlanPopulationServiceImpl implements PlanPopulationService {
 		fetchAndPopulateUserInteractionsAndCounts(plans, planIds);
 	}
 
-	@Override
-	public void populate(PlanResponseDto dto) {
-		int userId = AuthorizationUtil.getUserId();
-
-		fetchAndPopulateAuthorImage(dto);
-		fetchAndPopulateImageUrls(dto);
-		fetchAndPopulateUserInteractionsAndCounts(dto, userId);
-	}
-
 	private void fetchAndPopulateAuthorImages(List<PlanSummaryDto> plans) {
 		List<Integer> authorIds = plans.stream().map(plan -> plan.getAuthor().getId()).toList();
 
-		if (authorIds.isEmpty())
+		if (authorIds.isEmpty()) {
 			return;
+		}
 
 		Map<Integer, String> authorImageMap = mediaRepository
 			.findFirstMediaByParentIds(authorIds, MediaConnectedEntity.USER)
@@ -87,7 +81,7 @@ public class PlanPopulationServiceImpl implements PlanPopulationService {
 		Map<Integer, EntityCountsProjection> countsMap = userPlanRepository
 			.findCountsAndInteractionsByPlanIds(userId, planIds)
 			.stream()
-			.collect(Collectors.toMap(EntityCountsProjection::getEntityId, projection -> projection));
+			.collect(Collectors.toMap(EntityCountsProjection::getEntityId, Function.identity()));
 
 		plans.forEach(plan -> {
 			EntityCountsProjection counts = countsMap.get(plan.getId());
@@ -100,6 +94,15 @@ public class PlanPopulationServiceImpl implements PlanPopulationService {
 				plan.setSaved(counts.isSaved());
 			}
 		});
+	}
+
+	@Override
+	public void populate(PlanResponseDto dto) {
+		int userId = AuthorizationUtil.getUserId();
+
+		fetchAndPopulateAuthorImage(dto);
+		fetchAndPopulateImageUrls(dto);
+		fetchAndPopulateUserInteractionsAndCounts(dto, userId);
 	}
 
 	private void fetchAndPopulateAuthorImage(PlanResponseDto plan) {
@@ -123,8 +126,9 @@ public class PlanPopulationServiceImpl implements PlanPopulationService {
 		EntityCountsProjection result = userPlanRepository.findCountsAndInteractionsByPlanId(requestingUserId,
 				plan.getId());
 
-		if (result == null)
+		if (result == null) {
 			return;
+		}
 
 		plan.setLiked(result.isLiked());
 		plan.setDisliked(result.isDisliked());

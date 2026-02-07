@@ -56,8 +56,9 @@ public abstract class RecipeMapper {
 		BigDecimal totalCalories = foods.stream()
 			.map(food -> food.getQuantity()
 				.multiply(food.getIngredient().getFoodMacros().getCalories())
-				.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP))
-			.reduce(BigDecimal.ZERO, BigDecimal::add);
+				.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP))
+			.reduce(BigDecimal.ZERO, BigDecimal::add)
+			.setScale(1, RoundingMode.HALF_UP);
 
 		dto.setTotalCalories(totalCalories);
 	}
