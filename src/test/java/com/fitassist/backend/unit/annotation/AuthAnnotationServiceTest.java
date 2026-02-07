@@ -50,21 +50,6 @@ public class AuthAnnotationServiceTest {
 	private MediaRepository mediaRepository;
 
 	@Mock
-	private RecipeInstructionRepository recipeInstructionRepository;
-
-	@Mock
-	private PlanInstructionRepository planInstructionRepository;
-
-	@Mock
-	private WorkoutRepository workoutRepository;
-
-	@Mock
-	private WorkoutSetExerciseRepository workoutSetExerciseRepository;
-
-	@Mock
-	private WorkoutSetRepository workoutSetRepository;
-
-	@Mock
 	private CommentComplaintRepository commentComplaintRepository;
 
 	@Mock

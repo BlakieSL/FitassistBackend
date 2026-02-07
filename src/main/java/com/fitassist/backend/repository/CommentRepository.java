@@ -5,13 +5,16 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.*;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
-import static com.fitassist.backend.model.thread.Comment.*;
+import static com.fitassist.backend.model.thread.Comment.GRAPH_SUMMARY;
 
 public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaSpecificationExecutor<Comment> {
 
@@ -26,7 +29,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaS
 	Optional<Comment> findById(@NotNull Integer id);
 
 	@EntityGraph(value = GRAPH_SUMMARY)
-	Page<Comment> findAllByThreadIdAndParentCommentNull(int threadId, Pageable pageable);
+	Page<Comment> findAllByThreadIdAndParentCommentNull(int id, Pageable pageable);
 
 	@Query(value = """
 			WITH RECURSIVE comment_tree AS (
@@ -66,10 +69,6 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaS
 			""", nativeQuery = true)
 	List<Object[]> findCommentHierarchy(int commentId);
 
-	@Modifying
-	@Query(nativeQuery = true, value = "DELETE FROM comment WHERE id = :id")
-	void deleteCommentDirectly(int id);
-
 	@Query(value = """
 			WITH RECURSIVE ancestor_tree AS (
 			    SELECT
@@ -104,10 +103,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaS
 			AND c.parent_comment_id IS NULL
 			GROUP BY c.id
 			ORDER BY
-			    CASE
-			        WHEN :direction = 'ASC' THEN COUNT(uc.id)
-			        ELSE -COUNT(uc.id)
-			    END
+			    IF(:direction = 'ASC', COUNT(uc.id), -COUNT(uc.id))
 			LIMIT :limit OFFSET :offset
 			""", nativeQuery = true)
 	List<Integer> findTopCommentIdsSortedByLikesCount(@Param("threadId") int threadId,

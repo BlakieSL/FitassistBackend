@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-import static com.fitassist.backend.model.daily.DailyCartActivity.*;
+import static com.fitassist.backend.model.daily.DailyCartActivity.GRAPH_BASE;
 
 public interface DailyCartActivityRepository extends JpaRepository<DailyCartActivity, Integer> {
 

@@ -2,7 +2,7 @@ package com.fitassist.backend.specification.specification;
 
 import com.fitassist.backend.dto.pojo.FilterCriteria;
 import com.fitassist.backend.model.thread.ForumThread;
-import com.fitassist.backend.model.user.TypeOfInteraction;
+import com.fitassist.backend.model.user.interactions.TypeOfInteraction;
 import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
 import com.fitassist.backend.specification.PredicateContext;
 import com.fitassist.backend.specification.specification.field.ForumThreadField;

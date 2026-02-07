@@ -14,7 +14,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-import static com.fitassist.backend.model.food.Food.*;
+import static com.fitassist.backend.model.food.Food.GRAPH_BASE;
+import static com.fitassist.backend.model.food.Food.GRAPH_SUMMARY;
 
 public interface FoodRepository extends JpaRepository<Food, Integer>, JpaSpecificationExecutor<Food> {
 

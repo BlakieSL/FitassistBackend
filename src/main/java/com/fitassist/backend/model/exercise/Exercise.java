@@ -4,7 +4,7 @@ import com.fitassist.backend.model.IndexedEntity;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.text.ExerciseInstruction;
 import com.fitassist.backend.model.text.ExerciseTip;
-import com.fitassist.backend.model.user.UserExercise;
+import com.fitassist.backend.model.user.interactions.UserExercise;
 import com.fitassist.backend.model.workout.WorkoutSetExercise;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

@@ -7,7 +7,7 @@ import com.fitassist.backend.model.exercise.Exercise;
 import com.fitassist.backend.model.plan.Plan;
 import com.fitassist.backend.model.plan.PlanCategoryAssociation;
 import com.fitassist.backend.model.plan.PlanStructureType;
-import com.fitassist.backend.model.user.TypeOfInteraction;
+import com.fitassist.backend.model.user.interactions.TypeOfInteraction;
 import com.fitassist.backend.model.workout.Workout;
 import com.fitassist.backend.model.workout.WorkoutSet;
 import com.fitassist.backend.model.workout.WorkoutSetExercise;

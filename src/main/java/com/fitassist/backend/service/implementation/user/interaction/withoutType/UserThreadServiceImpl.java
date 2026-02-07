@@ -6,7 +6,7 @@ import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.mapper.forumThread.ForumThreadMapper;
 import com.fitassist.backend.model.thread.ForumThread;
 import com.fitassist.backend.model.user.User;
-import com.fitassist.backend.model.user.UserThread;
+import com.fitassist.backend.model.user.interactions.UserThread;
 import com.fitassist.backend.repository.ForumThreadRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.repository.UserThreadRepository;

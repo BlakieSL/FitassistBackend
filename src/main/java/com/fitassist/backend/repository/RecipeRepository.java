@@ -11,7 +11,8 @@ import org.springframework.data.jpa.repository.*;
 import java.util.List;
 import java.util.Optional;
 
-import static com.fitassist.backend.model.recipe.Recipe.*;
+import static com.fitassist.backend.model.recipe.Recipe.GRAPH_BASE;
+import static com.fitassist.backend.model.recipe.Recipe.GRAPH_SUMMARY;
 
 public interface RecipeRepository extends JpaRepository<Recipe, Integer>, JpaSpecificationExecutor<Recipe> {
 

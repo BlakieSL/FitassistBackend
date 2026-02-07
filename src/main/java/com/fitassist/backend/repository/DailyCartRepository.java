@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static com.fitassist.backend.model.daily.DailyCart.*;
+import static com.fitassist.backend.model.daily.DailyCart.GRAPH_BASE;
 
 public interface DailyCartRepository extends JpaRepository<DailyCart, Integer> {
 

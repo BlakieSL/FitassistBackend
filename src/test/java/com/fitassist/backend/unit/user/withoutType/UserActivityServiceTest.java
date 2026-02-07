@@ -8,7 +8,7 @@ import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.mapper.activity.ActivityMapper;
 import com.fitassist.backend.model.activity.Activity;
 import com.fitassist.backend.model.user.User;
-import com.fitassist.backend.model.user.UserActivity;
+import com.fitassist.backend.model.user.interactions.UserActivity;
 import com.fitassist.backend.repository.ActivityRepository;
 import com.fitassist.backend.repository.UserActivityRepository;
 import com.fitassist.backend.repository.UserRepository;

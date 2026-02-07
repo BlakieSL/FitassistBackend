@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.List;
 import java.util.Optional;
 
-import static com.fitassist.backend.model.thread.ForumThread.*;
+import static com.fitassist.backend.model.thread.ForumThread.GRAPH_SUMMARY;
 
 public interface ForumThreadRepository
 		extends JpaRepository<ForumThread, Integer>, JpaSpecificationExecutor<ForumThread> {

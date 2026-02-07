@@ -4,7 +4,7 @@ import com.fitassist.backend.dto.pojo.AuthorDto;
 import com.fitassist.backend.dto.pojo.MediaImagesDto;
 import com.fitassist.backend.dto.request.text.TextUpdateDto;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
-import com.fitassist.backend.model.CategoryEntity;
+import com.fitassist.backend.model.CategoryBase;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.text.TextBase;
 import com.fitassist.backend.model.user.User;
@@ -39,7 +39,7 @@ public class CommonMappingHelper {
 	}
 
 	@Named("mapCategoryToResponse")
-	public CategoryResponseDto mapCategoryToResponse(CategoryEntity category) {
+	public CategoryResponseDto mapCategoryToResponse(CategoryBase category) {
 		return Optional.ofNullable(category).map(c -> new CategoryResponseDto(c.getId(), c.getName())).orElse(null);
 	}
 

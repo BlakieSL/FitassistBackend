@@ -4,7 +4,7 @@ import com.fitassist.backend.model.IndexedEntity;
 import com.fitassist.backend.model.daily.DailyCartFood;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.recipe.RecipeFood;
-import com.fitassist.backend.model.user.UserFood;
+import com.fitassist.backend.model.user.interactions.UserFood;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

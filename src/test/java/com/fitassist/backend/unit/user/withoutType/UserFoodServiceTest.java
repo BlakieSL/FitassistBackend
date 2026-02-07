@@ -9,7 +9,7 @@ import com.fitassist.backend.mapper.food.FoodMapper;
 import com.fitassist.backend.model.food.Food;
 import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.user.User;
-import com.fitassist.backend.model.user.UserFood;
+import com.fitassist.backend.model.user.interactions.UserFood;
 import com.fitassist.backend.repository.FoodRepository;
 import com.fitassist.backend.repository.UserFoodRepository;
 import com.fitassist.backend.repository.UserRepository;

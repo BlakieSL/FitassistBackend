@@ -11,7 +11,8 @@ import org.springframework.data.jpa.repository.*;
 import java.util.List;
 import java.util.Optional;
 
-import static com.fitassist.backend.model.plan.Plan.*;
+import static com.fitassist.backend.model.plan.Plan.GRAPH_BASE;
+import static com.fitassist.backend.model.plan.Plan.GRAPH_SUMMARY;
 
 public interface PlanRepository extends JpaRepository<Plan, Integer>, JpaSpecificationExecutor<Plan> {
 

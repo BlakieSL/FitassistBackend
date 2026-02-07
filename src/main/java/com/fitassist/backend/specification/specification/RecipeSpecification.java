@@ -4,7 +4,7 @@ import com.fitassist.backend.dto.pojo.FilterCriteria;
 import com.fitassist.backend.model.recipe.Recipe;
 import com.fitassist.backend.model.recipe.RecipeCategoryAssociation;
 import com.fitassist.backend.model.recipe.RecipeFood;
-import com.fitassist.backend.model.user.TypeOfInteraction;
+import com.fitassist.backend.model.user.interactions.TypeOfInteraction;
 import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
 import com.fitassist.backend.specification.PredicateContext;
 import com.fitassist.backend.specification.specification.field.LikesAndSaves;

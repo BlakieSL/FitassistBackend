@@ -8,7 +8,7 @@ import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.mapper.food.FoodMapper;
 import com.fitassist.backend.model.food.Food;
 import com.fitassist.backend.model.user.User;
-import com.fitassist.backend.model.user.UserFood;
+import com.fitassist.backend.model.user.interactions.UserFood;
 import com.fitassist.backend.repository.UserFoodRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.food.FoodPopulationService;

@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-import static com.fitassist.backend.model.exercise.Exercise.*;
+import static com.fitassist.backend.model.exercise.Exercise.GRAPH_SUMMARY;
 
 public interface ExerciseRepository extends JpaRepository<Exercise, Integer>, JpaSpecificationExecutor<Exercise> {
 

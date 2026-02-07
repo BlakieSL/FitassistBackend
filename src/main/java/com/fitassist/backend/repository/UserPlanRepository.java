@@ -1,8 +1,8 @@
 package com.fitassist.backend.repository;
 
 import com.fitassist.backend.dto.pojo.projection.EntityCountsProjection;
-import com.fitassist.backend.model.user.TypeOfInteraction;
-import com.fitassist.backend.model.user.UserPlan;
+import com.fitassist.backend.model.user.interactions.TypeOfInteraction;
+import com.fitassist.backend.model.user.interactions.UserPlan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
