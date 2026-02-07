@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,10 +40,26 @@ public class ExercisePopulationServiceImpl implements ExercisePopulationService 
 		fetchAndPopulateImageUrls(exercise);
 	}
 
+	private void fetchAndPopulateUserInteractionsAndCounts(ExerciseResponseDto exercise, int userId) {
+		SavesProjection savesData = userExerciseRepository.findCountsAndInteractions(exercise.getId(), userId);
+		exercise.setSavesCount(savesData.savesCount());
+		exercise.setSaved(savesData.isSaved());
+	}
+
+	private void fetchAndPopulateImageUrls(ExerciseResponseDto exercise) {
+		List<String> imageUrls = mediaRepository
+			.findByParentIdAndParentType(exercise.getId(), MediaConnectedEntity.EXERCISE)
+			.stream()
+			.map(media -> awsS3Service.getImage(media.getImageName()))
+			.toList();
+		exercise.setImageUrls(imageUrls);
+	}
+
 	@Override
 	public void populate(List<ExerciseSummaryDto> exercises) {
-		if (exercises.isEmpty())
+		if (exercises.isEmpty()) {
 			return;
+		}
 
 		List<Integer> exerciseIds = exercises.stream().map(ExerciseSummaryDto::getId).toList();
 
@@ -65,7 +82,7 @@ public class ExercisePopulationServiceImpl implements ExercisePopulationService 
 		Map<Integer, SavesProjection> countsMap = userExerciseRepository
 			.findCountsAndInteractionsByExerciseIds(userId, exerciseIds)
 			.stream()
-			.collect(Collectors.toMap(SavesProjection::getEntityId, projection -> projection));
+			.collect(Collectors.toMap(SavesProjection::getEntityId, Function.identity()));
 
 		exercises.forEach(exercise -> {
 			SavesProjection counts = countsMap.get(exercise.getId());
@@ -74,21 +91,6 @@ public class ExercisePopulationServiceImpl implements ExercisePopulationService 
 				exercise.setSaved(counts.isSaved());
 			}
 		});
-	}
-
-	private void fetchAndPopulateUserInteractionsAndCounts(ExerciseResponseDto exercise, int userId) {
-		SavesProjection savesData = userExerciseRepository.findCountsAndInteractions(exercise.getId(), userId);
-		exercise.setSavesCount(savesData.savesCount());
-		exercise.setSaved(savesData.isSaved());
-	}
-
-	private void fetchAndPopulateImageUrls(ExerciseResponseDto exercise) {
-		List<String> imageUrls = mediaRepository
-			.findByParentIdAndParentType(exercise.getId(), MediaConnectedEntity.EXERCISE)
-			.stream()
-			.map(media -> awsS3Service.getImage(media.getImageName()))
-			.toList();
-		exercise.setImageUrls(imageUrls);
 	}
 
 }

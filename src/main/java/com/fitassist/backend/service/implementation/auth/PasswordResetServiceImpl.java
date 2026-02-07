@@ -19,14 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
-import java.util.Collections;
+import java.util.List;
 
 @Service
 public class PasswordResetServiceImpl implements PasswordResetService {
-
-	private static final String PASSWORD_RESET_TOKEN_TYPE = "PASSWORD_RESET";
-
-	private static final long PASSWORD_RESET_TOKEN_DURATION_MINUTES = 20;
 
 	private final JwtService jwtService;
 
@@ -41,6 +37,12 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
 	@Value("${app.email.from}")
 	private String fromEmail;
+
+	@Value("${password-reset.token-type}")
+	private String passwordResetTokenType;
+
+	@Value("${password-reset.token-duration-minutes}")
+	private long passwordResetTokenDurationMinutes;
 
 	public PasswordResetServiceImpl(JwtService jwtService, EmailService emailService, UserRepository userRepository,
 			PasswordEncoder passwordEncoder) {
@@ -64,6 +66,30 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 		emailService.sendEmail(emailRequest);
 	}
 
+	private String generatePasswordResetToken(String email, Integer userId) {
+		return jwtService.createSignedJWT(email, userId, List.of(), passwordResetTokenDurationMinutes,
+				passwordResetTokenType);
+	}
+
+	private String buildEmailContent(String username, String resetLink) {
+		return String.format(
+				"""
+							<!DOCTYPE html>
+							<html>
+							<body>
+								<div>
+									<h1>Password Reset Request</h1>
+									<p>Hi %s,</p>
+									<p>We have received a request to reset your password. Click the link below to reset your password:</p>
+									<a href="%s" class="button">Reset Password</a>
+									<p>If you didn't request a password reset, please ignore this email.</p>
+								</div>
+							</body>
+							</html>
+						""",
+				username, resetLink);
+	}
+
 	@Override
 	@Transactional
 	public void resetPassword(PasswordResetDto resetDto) {
@@ -75,7 +101,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 			JWTClaimsSet claims = signedJWT.getJWTClaimsSet();
 
 			String tokenType = claims.getStringClaim("tokenType");
-			if (!PASSWORD_RESET_TOKEN_TYPE.equals(tokenType)) {
+			if (!passwordResetTokenType.equals(tokenType)) {
 				throw new JwtAuthenticationException("Invalid token type for password reset");
 			}
 
@@ -96,39 +122,10 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 			String encodedPassword = passwordEncoder.encode(resetDto.getNewPassword());
 			user.setPassword(encodedPassword);
 			userRepository.save(user);
-
 		}
 		catch (ParseException e) {
 			throw new JwtAuthenticationException("Invalid password reset token");
 		}
-	}
-
-	private String generatePasswordResetToken(String email, Integer userId) {
-		return jwtService.createSignedJWT(email, userId, Collections.emptyList(), PASSWORD_RESET_TOKEN_DURATION_MINUTES,
-				PASSWORD_RESET_TOKEN_TYPE);
-	}
-
-	private String buildEmailContent(String username, String resetLink) {
-		return String.format(
-				"""
-						<!DOCTYPE html>
-						<html>
-						<body>
-						    <div>
-						        <h2>Password Reset Request</h2>
-						        <p>Hello %s,</p>
-						        <p>We received a request to reset your password. Click the button below to reset your password:</p>
-						        <a href="%s" class="button">Reset Password</a>
-						        <p>This link will expire in 20 minutes.</p>
-						        <p>If you didn't request a password reset, please ignore this email.</p>
-						        <div>
-						            <p>This is an automated message, please do not reply.</p>
-						        </div>
-						    </div>
-						</body>
-						</html>
-						""",
-				username, resetLink);
 	}
 
 }

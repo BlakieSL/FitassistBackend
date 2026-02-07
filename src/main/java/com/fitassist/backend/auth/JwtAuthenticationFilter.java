@@ -41,7 +41,6 @@ public class JwtAuthenticationFilter extends HttpFilter {
 		if (!defaultRequestMatcher.matches(request)) {
 			chain.doFilter(request, response);
 		}
-
 		else {
 			try {
 				JwtAuthenticationToken jwtAuthentication = new ObjectMapper().readValue(request.getInputStream(),

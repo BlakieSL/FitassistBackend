@@ -100,24 +100,23 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, JpaS
 			FROM comment c
 			LEFT JOIN user_comment uc ON uc.comment_id = c.id AND uc.type = 'LIKE'
 			WHERE c.thread_id = :threadId
-			AND c.parent_comment_id IS NULL
+				AND c.parent_comment_id IS NULL
 			GROUP BY c.id
-			ORDER BY
-			    IF(:direction = 'ASC', COUNT(uc.id), -COUNT(uc.id))
+			ORDER BY IF(:direction = 'ASC', COUNT(uc.id), -COUNT(uc.id))
 			LIMIT :limit OFFSET :offset
 			""", nativeQuery = true)
 	List<Integer> findTopCommentIdsSortedByLikesCount(@Param("threadId") int threadId,
 			@Param("direction") String direction, @Param("limit") int limit, @Param("offset") int offset);
 
 	@EntityGraph(value = GRAPH_SUMMARY)
-	@Query("SELECT c FROM Comment c WHERE c.id IN :ids")
+	@Query("SELECT c FROM Comment c WHERE c.id IN :ids ORDER BY FIELD(c.id, :ids)")
 	List<Comment> findAllByIds(@Param("ids") List<Integer> ids);
 
 	@Query(value = """
 			SELECT COUNT(DISTINCT c.id)
 			FROM comment c
 			WHERE c.thread_id = :threadId
-			AND c.parent_comment_id IS NULL
+				AND c.parent_comment_id IS NULL
 			""", nativeQuery = true)
 	long countTopCommentsByThreadId(@Param("threadId") int threadId);
 

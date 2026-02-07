@@ -59,8 +59,6 @@ public class ExerciseServiceImpl implements ExerciseService {
 
 	private final ExerciseRepository exerciseRepository;
 
-	private final ExerciseTargetMuscleRepository exerciseTargetMuscleRepository;
-
 	private final PlanRepository planRepository;
 
 	private final EquipmentRepository equipmentRepository;
@@ -82,12 +80,11 @@ public class ExerciseServiceImpl implements ExerciseService {
 	public ExerciseServiceImpl(ExerciseMapper exerciseMapper, PlanMapper planMapper,
 			ValidationService validationService, JsonPatchService jsonPatchService,
 			ApplicationEventPublisher applicationEventPublisher, RepositoryHelper repositoryHelper,
-			ExerciseRepository exerciseRepository, ExerciseTargetMuscleRepository exerciseTargetMuscleRepository,
-			PlanRepository planRepository, EquipmentRepository equipmentRepository,
-			ExpertiseLevelRepository expertiseLevelRepository, ForceTypeRepository forceTypeRepository,
-			MechanicsTypeRepository mechanicsTypeRepository, TargetMuscleRepository targetMuscleRepository,
-			ExercisePopulationService exercisePopulationService, PlanPopulationService planPopulationService,
-			SpecificationDependencies dependencies) {
+			ExerciseRepository exerciseRepository, PlanRepository planRepository,
+			EquipmentRepository equipmentRepository, ExpertiseLevelRepository expertiseLevelRepository,
+			ForceTypeRepository forceTypeRepository, MechanicsTypeRepository mechanicsTypeRepository,
+			TargetMuscleRepository targetMuscleRepository, ExercisePopulationService exercisePopulationService,
+			PlanPopulationService planPopulationService, SpecificationDependencies dependencies) {
 		this.exerciseMapper = exerciseMapper;
 		this.planMapper = planMapper;
 		this.validationService = validationService;
@@ -95,7 +92,6 @@ public class ExerciseServiceImpl implements ExerciseService {
 		this.applicationEventPublisher = applicationEventPublisher;
 		this.repositoryHelper = repositoryHelper;
 		this.exerciseRepository = exerciseRepository;
-		this.exerciseTargetMuscleRepository = exerciseTargetMuscleRepository;
 		this.planRepository = planRepository;
 		this.equipmentRepository = equipmentRepository;
 		this.expertiseLevelRepository = expertiseLevelRepository;
@@ -132,6 +128,15 @@ public class ExerciseServiceImpl implements ExerciseService {
 		return new ExerciseMappingContext(expertiseLevel, mechanicsType, forceType, equipment, targetMuscles);
 	}
 
+	private ExerciseResponseDto findAndMap(int exerciseId) {
+		Exercise exercise = exerciseRepository.findByIdWithDetails(exerciseId)
+			.orElseThrow(() -> RecordNotFoundException.of(Exercise.class, exerciseId));
+		ExerciseResponseDto dto = exerciseMapper.toResponse(exercise);
+		exercisePopulationService.populate(dto);
+
+		return dto;
+	}
+
 	@Override
 	@Transactional
 	public void updateExercise(int exerciseId, JsonMergePatch patch)
@@ -152,6 +157,11 @@ public class ExerciseServiceImpl implements ExerciseService {
 		applicationEventPublisher.publishEvent(ExerciseUpdateEvent.of(this, exerciseWithMediaAndCategories));
 	}
 
+	private ExerciseUpdateDto applyPatchToExercise(JsonMergePatch patch)
+			throws JsonPatchException, JsonProcessingException {
+		return jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class);
+	}
+
 	private ExerciseMappingContext prepareUpdateContext(ExerciseUpdateDto dto) {
 		ExpertiseLevel expertiseLevel = findExpertiseLevel(dto.getExpertiseLevelId());
 		MechanicsType mechanicsType = findMechanicsType(dto.getMechanicsTypeId());
@@ -169,6 +179,10 @@ public class ExerciseServiceImpl implements ExerciseService {
 		exerciseRepository.delete(exercise);
 
 		applicationEventPublisher.publishEvent(ExerciseDeleteEvent.of(this, exercise));
+	}
+
+	private Exercise find(int exerciseId) {
+		return repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId);
 	}
 
 	@Override
@@ -194,9 +208,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 		Specification<Exercise> specification = specificationBuilder.build();
 
 		Page<Exercise> exercisePage = exerciseRepository.findAll(specification, pageable);
-
 		List<ExerciseSummaryDto> summaries = exercisePage.getContent().stream().map(exerciseMapper::toSummary).toList();
-
 		exercisePopulationService.populate(summaries);
 
 		return new PageImpl<>(summaries, pageable, exercisePage.getTotalElements());
@@ -236,24 +248,6 @@ public class ExerciseServiceImpl implements ExerciseService {
 
 		return new ExerciseCategoriesResponseDto(equipments, expertiseLevels, forceTypes, mechanicsTypes,
 				targetMuscles);
-	}
-
-	private Exercise find(int exerciseId) {
-		return repositoryHelper.find(exerciseRepository, Exercise.class, exerciseId);
-	}
-
-	private ExerciseResponseDto findAndMap(int exerciseId) {
-		Exercise exercise = exerciseRepository.findByIdWithDetails(exerciseId)
-			.orElseThrow(() -> RecordNotFoundException.of(Exercise.class, exerciseId));
-		ExerciseResponseDto dto = exerciseMapper.toResponse(exercise);
-		exercisePopulationService.populate(dto);
-
-		return dto;
-	}
-
-	private ExerciseUpdateDto applyPatchToExercise(JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
-		return jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class);
 	}
 
 	private ExpertiseLevel findExpertiseLevel(Integer expertiseLevelId) {

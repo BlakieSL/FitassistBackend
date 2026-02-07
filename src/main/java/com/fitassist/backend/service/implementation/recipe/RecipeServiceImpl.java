@@ -40,7 +40,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -107,9 +106,18 @@ public class RecipeServiceImpl implements RecipeService {
 
 	private List<RecipeCategory> findCategories(List<Integer> categoryIds) {
 		if (categoryIds == null || categoryIds.isEmpty()) {
-			return Collections.emptyList();
+			return List.of();
 		}
 		return recipeCategoryRepository.findAllByIdIn(categoryIds);
+	}
+
+	private RecipeResponseDto findAndMap(int recipeId) {
+		Recipe recipe = recipeRepository.findByIdWithDetails(recipeId)
+			.orElseThrow(() -> RecordNotFoundException.of(Recipe.class, recipeId));
+
+		RecipeResponseDto dto = recipeMapper.toResponse(recipe);
+		recipePopulationService.populate(dto);
+		return dto;
 	}
 
 	@Override
@@ -126,10 +134,19 @@ public class RecipeServiceImpl implements RecipeService {
 		applicationEventPublisher.publishEvent(RecipeUpdateEvent.of(this, savedRecipe));
 	}
 
+	private Recipe find(int recipeId) {
+		return repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
+	}
+
 	private RecipeMappingContext prepareUpdateContext(RecipeUpdateDto dto) {
 		List<RecipeCategory> categories = findCategories(dto.getCategoryIds());
 
 		return RecipeMappingContext.forUpdate(categories);
+	}
+
+	private RecipeUpdateDto applyPatchToRecipe(JsonMergePatch patch)
+			throws JsonPatchException, JsonProcessingException {
+		return jsonPatchService.createFromPatch(patch, RecipeUpdateDto.class);
 	}
 
 	@Override
@@ -171,24 +188,6 @@ public class RecipeServiceImpl implements RecipeService {
 	public Long incrementViews(int recipeId) {
 		recipeRepository.incrementViews(recipeId);
 		return recipeRepository.getViews(recipeId);
-	}
-
-	private Recipe find(int recipeId) {
-		return repositoryHelper.find(recipeRepository, Recipe.class, recipeId);
-	}
-
-	private RecipeResponseDto findAndMap(int recipeId) {
-		Recipe recipe = recipeRepository.findByIdWithDetails(recipeId)
-			.orElseThrow(() -> RecordNotFoundException.of(Recipe.class, recipeId));
-
-		RecipeResponseDto dto = recipeMapper.toResponse(recipe);
-		recipePopulationService.populate(dto);
-		return dto;
-	}
-
-	private RecipeUpdateDto applyPatchToRecipe(JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
-		return jsonPatchService.createFromPatch(patch, RecipeUpdateDto.class);
 	}
 
 }

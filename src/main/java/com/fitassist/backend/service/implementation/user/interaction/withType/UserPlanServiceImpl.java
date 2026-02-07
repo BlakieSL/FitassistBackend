@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service("userPlanService")
@@ -64,10 +65,9 @@ public class UserPlanServiceImpl extends GenericSavedService<Plan, UserPlan, Pla
 				pageable);
 
 		List<Integer> planIds = userPlanPage.getContent().stream().map(up -> up.getPlan().getId()).toList();
-
 		List<Plan> plansWithDetails = ((PlanRepository) entityRepository).findByIdsWithDetails(planIds);
-
-		Map<Integer, Plan> planMap = plansWithDetails.stream().collect(Collectors.toMap(Plan::getId, p -> p));
+		Map<Integer, Plan> planMap = plansWithDetails.stream()
+			.collect(Collectors.toMap(Plan::getId, Function.identity()));
 
 		List<PlanSummaryDto> summaries = userPlanPage.getContent().stream().map(up -> {
 			Plan plan = planMap.get(up.getPlan().getId());

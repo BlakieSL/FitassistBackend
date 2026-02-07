@@ -44,7 +44,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -133,14 +136,14 @@ public class PlanServiceImpl implements PlanService {
 
 	private List<PlanCategory> findCategories(List<Integer> categoryIds) {
 		if (categoryIds == null || categoryIds.isEmpty()) {
-			return Collections.emptyList();
+			return List.of();
 		}
 		return planCategoryRepository.findAllByIdIn(categoryIds);
 	}
 
 	private Set<Integer> extractExerciseIds(PlanCreateDto request) {
 		if (request.getWorkouts() == null) {
-			return Collections.emptySet();
+			return Set.of();
 		}
 		return request.getWorkouts()
 			.stream()
@@ -177,7 +180,7 @@ public class PlanServiceImpl implements PlanService {
 
 	private Set<Integer> extractExerciseIds(PlanUpdateDto request) {
 		if (request.getWorkouts() == null) {
-			return Collections.emptySet();
+			return Set.of();
 		}
 		return request.getWorkouts()
 			.stream()

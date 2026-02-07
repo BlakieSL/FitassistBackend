@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,8 +44,9 @@ public class ActivityPopulationServiceImpl implements ActivityPopulationService 
 
 	@Override
 	public void populate(List<ActivitySummaryDto> activities) {
-		if (activities.isEmpty())
+		if (activities.isEmpty()) {
 			return;
+		}
 
 		List<Integer> activityIds = activities.stream().map(ActivitySummaryDto::getId).toList();
 
@@ -67,7 +69,7 @@ public class ActivityPopulationServiceImpl implements ActivityPopulationService 
 		Map<Integer, SavesProjection> countsMap = userActivityRepository
 			.findCountsAndInteractionsByActivityIds(userId, activityIds)
 			.stream()
-			.collect(Collectors.toMap(SavesProjection::getEntityId, projection -> projection));
+			.collect(Collectors.toMap(SavesProjection::getEntityId, Function.identity()));
 
 		activities.forEach(activity -> {
 			SavesProjection counts = countsMap.get(activity.getId());

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service("userRecipeService")
@@ -65,10 +66,9 @@ public class UserRecipeServiceImpl extends GenericSavedService<Recipe, UserRecip
 				type, pageable);
 
 		List<Integer> recipeIds = userRecipePage.getContent().stream().map(ur -> ur.getRecipe().getId()).toList();
-
 		List<Recipe> recipesWithDetails = ((RecipeRepository) entityRepository).findByIdsWithDetails(recipeIds);
-
-		Map<Integer, Recipe> recipeMap = recipesWithDetails.stream().collect(Collectors.toMap(Recipe::getId, r -> r));
+		Map<Integer, Recipe> recipeMap = recipesWithDetails.stream()
+			.collect(Collectors.toMap(Recipe::getId, Function.identity()));
 
 		List<RecipeSummaryDto> summaries = userRecipePage.getContent().stream().map(ur -> {
 			Recipe recipe = recipeMap.get(ur.getRecipe().getId());

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,8 +40,9 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
 
 	@Override
 	public void populate(List<RecipeSummaryDto> recipes) {
-		if (recipes.isEmpty())
+		if (recipes.isEmpty()) {
 			return;
+		}
 
 		List<Integer> recipeIds = recipes.stream().map(RecipeSummaryDto::getId).toList();
 
@@ -50,21 +52,12 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
 		fetchAndPopulateIngredientsCount(recipes, recipeIds);
 	}
 
-	@Override
-	public void populate(RecipeResponseDto recipe) {
-		int userId = AuthorizationUtil.getUserId();
-
-		fetchAndPopulateAuthorImage(recipe);
-		fetchAndPopulateImageUrls(recipe);
-		fetchAndPopulateUserInteractionsAndCounts(recipe, userId);
-		fetchAndPopulateIngredientImages(recipe);
-	}
-
 	private void fetchAndPopulateAuthorImages(List<RecipeSummaryDto> recipes) {
 		List<Integer> authorIds = recipes.stream().map(recipe -> recipe.getAuthor().getId()).toList();
 
-		if (authorIds.isEmpty())
+		if (authorIds.isEmpty()) {
 			return;
+		}
 
 		Map<Integer, String> authorImageMap = mediaRepository
 			.findFirstMediaByParentIds(authorIds, MediaConnectedEntity.USER)
@@ -94,7 +87,7 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
 		Map<Integer, EntityCountsProjection> countsMap = userRecipeRepository
 			.findCountsAndInteractionsByRecipeIds(userId, recipeIds)
 			.stream()
-			.collect(Collectors.toMap(EntityCountsProjection::getEntityId, projection -> projection));
+			.collect(Collectors.toMap(EntityCountsProjection::getEntityId, Function.identity()));
 
 		recipes.forEach(recipe -> {
 			EntityCountsProjection counts = countsMap.get(recipe.getId());
@@ -116,6 +109,16 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
 					RecipeIngredientCountProjection::getIngredientCount));
 
 		recipes.forEach(recipe -> recipe.setIngredientsCount(ingredientsMap.getOrDefault(recipe.getId(), 0L)));
+	}
+
+	@Override
+	public void populate(RecipeResponseDto recipe) {
+		int userId = AuthorizationUtil.getUserId();
+
+		fetchAndPopulateAuthorImage(recipe);
+		fetchAndPopulateImageUrls(recipe);
+		fetchAndPopulateUserInteractionsAndCounts(recipe, userId);
+		fetchAndPopulateIngredientImages(recipe);
 	}
 
 	private void fetchAndPopulateAuthorImage(RecipeResponseDto recipe) {
@@ -140,8 +143,9 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
 		EntityCountsProjection result = userRecipeRepository.findCountsAndInteractionsByRecipeId(requestingUserId,
 				recipe.getId());
 
-		if (result == null)
+		if (result == null) {
 			return;
+		}
 
 		recipe.setLiked(result.isLiked());
 		recipe.setDisliked(result.isDisliked());
@@ -152,8 +156,9 @@ public class RecipePopulationServiceImpl implements RecipePopulationService {
 	}
 
 	private void fetchAndPopulateIngredientImages(RecipeResponseDto recipe) {
-		if (recipe.getFoods().isEmpty())
+		if (recipe.getFoods().isEmpty()) {
 			return;
+		}
 
 		List<Integer> foodIds = recipe.getFoods().stream().map(food -> food.getIngredient().getId()).toList();
 

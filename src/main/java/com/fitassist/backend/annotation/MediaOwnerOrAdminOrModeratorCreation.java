@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@authAnnotationServiceImpl.isOwnerOrAdminOrModeratorForParentEntity(#request.parentType, #request.parentId)")
+@PreAuthorize("@authAnnotationService.isOwnerOrAdminOrModeratorForParentEntity(#request.parentType, #request.parentId)")
 public @interface MediaOwnerOrAdminOrModeratorCreation {
 
 }

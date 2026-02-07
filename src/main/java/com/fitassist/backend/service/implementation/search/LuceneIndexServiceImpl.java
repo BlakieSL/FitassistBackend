@@ -5,6 +5,7 @@ import com.fitassist.backend.model.activity.Activity;
 import com.fitassist.backend.model.exercise.Exercise;
 import com.fitassist.backend.model.food.Food;
 import com.fitassist.backend.service.declaration.search.LuceneIndexService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.IndexWriter;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 
+@Slf4j
 @Service
 public class LuceneIndexServiceImpl implements LuceneIndexService {
 
@@ -31,7 +33,7 @@ public class LuceneIndexServiceImpl implements LuceneIndexService {
 			}
 		}
 		catch (IOException e) {
-			e.printStackTrace();
+			log.error("Failed to perform index entities", e);
 		}
 	}
 
@@ -41,7 +43,7 @@ public class LuceneIndexServiceImpl implements LuceneIndexService {
 			indexEntity(entity, writer);
 		}
 		catch (IOException e) {
-			e.printStackTrace();
+			log.error("Failed to perform add entity", e);
 		}
 	}
 
@@ -52,7 +54,7 @@ public class LuceneIndexServiceImpl implements LuceneIndexService {
 			indexEntity(entity, writer);
 		}
 		catch (IOException e) {
-			e.printStackTrace();
+			log.error("Failed to update entity", e);
 		}
 	}
 
@@ -62,13 +64,14 @@ public class LuceneIndexServiceImpl implements LuceneIndexService {
 			deleteDocument(entity, writer);
 		}
 		catch (IOException e) {
-			e.printStackTrace();
+			log.error("Failed to delete entity", e);
 		}
 	}
 
 	private IndexWriter getWriter() throws IOException {
 		Directory directory = FSDirectory.open(Paths.get(PATH));
-		IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+		StandardAnalyzer analyzer = new StandardAnalyzer();
+		IndexWriterConfig config = new IndexWriterConfig(analyzer);
 		return new IndexWriter(directory, config);
 	}
 

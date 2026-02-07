@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("@authAnnotationServiceImpl.isPublicPlanOrOwnerOrAdminOrModerator(#planId)")
+@PreAuthorize("@authAnnotationService.isPublicPlanOrOwnerOrAdminOrModerator(#planId)")
 public @interface PublicPlanOrOwnerOrAdminOrModerator {
 
 }

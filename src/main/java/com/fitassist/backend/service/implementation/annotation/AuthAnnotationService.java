@@ -17,7 +17,7 @@ import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthAnnotationServiceImpl {
+public class AuthAnnotationService {
 
 	private final CommentRepository commentRepository;
 
@@ -39,7 +39,7 @@ public class AuthAnnotationServiceImpl {
 
 	private final DailyCartFoodRepository dailyCartFoodRepository;
 
-	public AuthAnnotationServiceImpl(CommentRepository commentRepository, RepositoryHelper repositoryHelper,
+	public AuthAnnotationService(CommentRepository commentRepository, RepositoryHelper repositoryHelper,
 			ForumThreadRepository forumThreadRepository, PlanRepository planRepository,
 			RecipeRepository recipeRepository, MediaRepository mediaRepository,
 			CommentComplaintRepository commentComplaintRepository, ThreadComplaintRepository threadComplaintRepository,
