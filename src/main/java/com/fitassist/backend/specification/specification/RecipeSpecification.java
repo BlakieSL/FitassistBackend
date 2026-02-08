@@ -66,7 +66,7 @@ public class RecipeSpecification extends AbstractSpecification<Recipe, RecipeFie
 			case LIKE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(context,
 					LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.LIKE);
 			case DISLIKE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(context,
-				LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.DISLIKE);
+					LikesAndSaves.USER_RECIPES.getFieldName(), TYPE_FIELD, TypeOfInteraction.DISLIKE);
 		};
 	}
 
