@@ -1,7 +1,7 @@
 package com.fitassist.backend.unit.selector;
 
 import com.fitassist.backend.service.declaration.user.SavedService;
-import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
+import com.fitassist.backend.service.declaration.user.SavedWithoutTypeService;
 import com.fitassist.backend.service.implementation.selector.SavedEntityType;
 import com.fitassist.backend.service.implementation.selector.SavedSelectorServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,16 +26,16 @@ public class SavedSelectorServiceTest {
 	private SavedService userRecipeService;
 
 	@Mock
-	private SavedServiceWithoutType userActivityService;
+	private SavedWithoutTypeService userActivityService;
 
 	@Mock
-	private SavedServiceWithoutType userExerciseService;
+	private SavedWithoutTypeService userExerciseService;
 
 	@Mock
-	private SavedServiceWithoutType userFoodService;
+	private SavedWithoutTypeService userFoodService;
 
 	@Mock
-	private SavedServiceWithoutType userThreadService;
+	private SavedWithoutTypeService userThreadService;
 
 	private SavedSelectorServiceImpl savedSelectorService;
 

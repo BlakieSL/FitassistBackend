@@ -40,7 +40,7 @@ public class ExerciseCreateDto {
 	private Integer forceTypeId;
 
 	@NotEmpty
-	private List<Integer> targetMusclesIds;
+	private List<Integer> targetMuscleIds;
 
 	@Valid
 	private List<TextCreateDto> instructions;

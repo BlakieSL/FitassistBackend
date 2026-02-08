@@ -11,7 +11,7 @@ import com.fitassist.backend.repository.ForumThreadRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.repository.UserThreadRepository;
 import com.fitassist.backend.service.declaration.thread.ForumThreadPopulationService;
-import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
+import com.fitassist.backend.service.declaration.user.SavedWithoutTypeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,15 +20,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service("userThreadService")
-public class UserThreadServiceImpl
-		extends GenericSavedServiceWithoutType<ForumThread, UserThread, ForumThreadSummaryDto>
-		implements SavedServiceWithoutType {
+public class UserThreadImplService
+		extends GenericSavedWithoutTypeService<ForumThread, UserThread, ForumThreadSummaryDto>
+		implements SavedWithoutTypeService {
 
 	private final ForumThreadMapper forumThreadMapper;
 
 	private final ForumThreadPopulationService forumThreadPopulationService;
 
-	public UserThreadServiceImpl(UserThreadRepository userThreadRepository, ForumThreadRepository forumThreadRepository,
+	public UserThreadImplService(UserThreadRepository userThreadRepository, ForumThreadRepository forumThreadRepository,
 			UserRepository userRepository, ForumThreadMapper forumThreadMapper,
 			ForumThreadPopulationService forumThreadPopulationService) {
 		super(userRepository, forumThreadRepository, userThreadRepository, forumThreadMapper::toSummary,

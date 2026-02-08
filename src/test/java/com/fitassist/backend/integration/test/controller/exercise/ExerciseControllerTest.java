@@ -51,7 +51,7 @@ public class ExerciseControllerTest {
 		request.setExpertiseLevelId(1);
 		request.setMechanicsTypeId(1);
 		request.setForceTypeId(1);
-		request.setTargetMusclesIds(List.of(1));
+		request.setTargetMuscleIds(List.of(1));
 		request.setInstructions(Collections.emptyList());
 		request.setTips(Collections.emptyList());
 
@@ -73,7 +73,7 @@ public class ExerciseControllerTest {
 		request.setExpertiseLevelId(1);
 		request.setMechanicsTypeId(1);
 		request.setForceTypeId(1);
-		request.setTargetMusclesIds(List.of(1));
+		request.setTargetMuscleIds(List.of(1));
 		request.setInstructions(Collections.emptyList());
 		request.setTips(Collections.emptyList());
 

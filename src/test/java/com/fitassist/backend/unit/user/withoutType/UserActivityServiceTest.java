@@ -13,7 +13,7 @@ import com.fitassist.backend.repository.ActivityRepository;
 import com.fitassist.backend.repository.UserActivityRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.activity.ActivityPopulationService;
-import com.fitassist.backend.service.implementation.user.interaction.withoutType.UserActivityServiceImpl;
+import com.fitassist.backend.service.implementation.user.interaction.withoutType.UserActivityImplService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,14 +51,14 @@ public class UserActivityServiceTest {
 	@Mock
 	private ActivityPopulationService activityPopulationService;
 
-	private UserActivityServiceImpl userActivityService;
+	private UserActivityImplService userActivityService;
 
 	private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
 	@BeforeEach
 	void setUp() {
 		mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
-		userActivityService = new UserActivityServiceImpl(userRepository, activityRepository, userActivityRepository,
+		userActivityService = new UserActivityImplService(userRepository, activityRepository, userActivityRepository,
 				activityMapper, activityPopulationService);
 	}
 

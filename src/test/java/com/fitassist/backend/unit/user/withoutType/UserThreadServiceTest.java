@@ -13,7 +13,7 @@ import com.fitassist.backend.repository.ForumThreadRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.repository.UserThreadRepository;
 import com.fitassist.backend.service.declaration.thread.ForumThreadPopulationService;
-import com.fitassist.backend.service.implementation.user.interaction.withoutType.UserThreadServiceImpl;
+import com.fitassist.backend.service.implementation.user.interaction.withoutType.UserThreadImplService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,7 +53,7 @@ public class UserThreadServiceTest {
 	private ForumThreadPopulationService forumThreadPopulationService;
 
 	@InjectMocks
-	private UserThreadServiceImpl userThreadService;
+	private UserThreadImplService userThreadService;
 
 	private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 

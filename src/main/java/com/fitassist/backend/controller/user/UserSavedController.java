@@ -5,7 +5,7 @@ import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
 import com.fitassist.backend.model.user.interactions.TypeOfInteraction;
 import com.fitassist.backend.service.declaration.selector.SavedSelectorService;
 import com.fitassist.backend.service.declaration.user.SavedService;
-import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
+import com.fitassist.backend.service.declaration.user.SavedWithoutTypeService;
 import com.fitassist.backend.service.implementation.selector.SavedEntityType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,24 +54,24 @@ public class UserSavedController {
 	public ResponseEntity<Page<UserEntitySummaryResponseDto>> getAllFromUserWithoutType(
 			@PathVariable SavedEntityType itemType, @PathVariable("userId") int userId,
 			@PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-		SavedServiceWithoutType savedServiceWithoutType = savedSelectorService.getServiceWithoutType(itemType);
-		Page<UserEntitySummaryResponseDto> dto = savedServiceWithoutType.getAllFromUser(userId, pageable);
+		SavedWithoutTypeService savedWithoutTypeService = savedSelectorService.getServiceWithoutType(itemType);
+		Page<UserEntitySummaryResponseDto> dto = savedWithoutTypeService.getAllFromUser(userId, pageable);
 		return ResponseEntity.ok(dto);
 	}
 
 	@PostMapping("/item-type/{itemType}/{itemId}")
 	public ResponseEntity<InteractionResponseDto> saveToUserWithoutType(@PathVariable SavedEntityType itemType,
 			@PathVariable int itemId) {
-		SavedServiceWithoutType savedServiceWithoutType = savedSelectorService.getServiceWithoutType(itemType);
-		InteractionResponseDto response = savedServiceWithoutType.saveToUser(itemId);
+		SavedWithoutTypeService savedWithoutTypeService = savedSelectorService.getServiceWithoutType(itemType);
+		InteractionResponseDto response = savedWithoutTypeService.saveToUser(itemId);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
 	@DeleteMapping("/item-type/{itemType}/{itemId}")
 	public ResponseEntity<InteractionResponseDto> deleteFromUserWithoutType(@PathVariable SavedEntityType itemType,
 			@PathVariable int itemId) {
-		SavedServiceWithoutType savedServiceWithoutType = savedSelectorService.getServiceWithoutType(itemType);
-		InteractionResponseDto response = savedServiceWithoutType.deleteFromUser(itemId);
+		SavedWithoutTypeService savedWithoutTypeService = savedSelectorService.getServiceWithoutType(itemType);
+		InteractionResponseDto response = savedWithoutTypeService.deleteFromUser(itemId);
 		return ResponseEntity.ok(response);
 	}
 
