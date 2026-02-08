@@ -1,4 +1,4 @@
-package com.fitassist.backend.controller;
+package com.fitassist.backend.controller.user;
 
 import com.fitassist.backend.dto.request.auth.PasswordResetDto;
 import com.fitassist.backend.dto.request.auth.PasswordResetRequestDto;

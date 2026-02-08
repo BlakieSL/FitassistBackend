@@ -7,13 +7,13 @@ import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.model.user.interactions.TypeOfInteraction;
 import com.fitassist.backend.repository.UserRepository;
-import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
+import com.fitassist.backend.service.declaration.user.SavedWithoutTypeService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.function.Function;
 
-public abstract class GenericSavedServiceWithoutType<T, U, R> implements SavedServiceWithoutType {
+public abstract class GenericSavedWithoutTypeService<T, U, R> implements SavedWithoutTypeService {
 
 	protected final UserRepository userRepository;
 
@@ -25,7 +25,7 @@ public abstract class GenericSavedServiceWithoutType<T, U, R> implements SavedSe
 
 	protected final Class<T> entityType;
 
-	public GenericSavedServiceWithoutType(UserRepository userRepository, JpaRepository<T, Integer> entityRepository,
+	public GenericSavedWithoutTypeService(UserRepository userRepository, JpaRepository<T, Integer> entityRepository,
 			JpaRepository<U, Integer> userEntityRepository, Function<T, R> map, Class<T> entityType) {
 		this.userRepository = userRepository;
 		this.entityRepository = entityRepository;

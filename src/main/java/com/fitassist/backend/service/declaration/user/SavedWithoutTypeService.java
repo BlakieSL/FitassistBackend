@@ -5,7 +5,7 @@ import com.fitassist.backend.dto.response.user.UserEntitySummaryResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface SavedServiceWithoutType {
+public interface SavedWithoutTypeService {
 
 	InteractionResponseDto saveToUser(int entityId);
 

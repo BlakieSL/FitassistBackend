@@ -12,7 +12,7 @@ import com.fitassist.backend.model.user.interactions.UserExercise;
 import com.fitassist.backend.repository.UserExerciseRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.exercise.ExercisePopulationService;
-import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
+import com.fitassist.backend.service.declaration.user.SavedWithoutTypeService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,14 +23,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service("userExerciseService")
-public class UserExerciseServiceImpl extends GenericSavedServiceWithoutType<Exercise, UserExercise, ExerciseSummaryDto>
-		implements SavedServiceWithoutType {
+public class UserExerciseImplService extends GenericSavedWithoutTypeService<Exercise, UserExercise, ExerciseSummaryDto>
+		implements SavedWithoutTypeService {
 
 	private final ExerciseMapper exerciseMapper;
 
 	private final ExercisePopulationService exercisePopulationService;
 
-	public UserExerciseServiceImpl(UserRepository userRepository, JpaRepository<Exercise, Integer> entityRepository,
+	public UserExerciseImplService(UserRepository userRepository, JpaRepository<Exercise, Integer> entityRepository,
 			JpaRepository<UserExercise, Integer> userEntityRepository, ExerciseMapper mapper,
 			ExercisePopulationService exercisePopulationService) {
 		super(userRepository, entityRepository, userEntityRepository, mapper::toSummary, Exercise.class);

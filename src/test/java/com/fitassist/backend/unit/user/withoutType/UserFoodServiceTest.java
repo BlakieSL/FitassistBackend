@@ -14,7 +14,7 @@ import com.fitassist.backend.repository.FoodRepository;
 import com.fitassist.backend.repository.UserFoodRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.food.FoodPopulationService;
-import com.fitassist.backend.service.implementation.user.interaction.withoutType.UserFoodServiceImpl;
+import com.fitassist.backend.service.implementation.user.interaction.withoutType.UserFoodImplService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,14 +52,14 @@ public class UserFoodServiceTest {
 	@Mock
 	private FoodPopulationService foodPopulationService;
 
-	private UserFoodServiceImpl userFoodService;
+	private UserFoodImplService userFoodService;
 
 	private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
 	@BeforeEach
 	void setUp() {
 		mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
-		userFoodService = new UserFoodServiceImpl(userRepository, foodRepository, userFoodRepository, foodMapper,
+		userFoodService = new UserFoodImplService(userRepository, foodRepository, userFoodRepository, foodMapper,
 				foodPopulationService);
 	}
 

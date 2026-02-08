@@ -2,7 +2,7 @@ package com.fitassist.backend.service.implementation.selector;
 
 import com.fitassist.backend.service.declaration.selector.SavedSelectorService;
 import com.fitassist.backend.service.declaration.user.SavedService;
-import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
+import com.fitassist.backend.service.declaration.user.SavedWithoutTypeService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -15,21 +15,21 @@ public class SavedSelectorServiceImpl implements SavedSelectorService {
 
 	private final SavedService userCommentService;
 
-	private final SavedServiceWithoutType userExerciseService;
+	private final SavedWithoutTypeService userExerciseService;
 
-	private final SavedServiceWithoutType userFoodService;
+	private final SavedWithoutTypeService userFoodService;
 
-	private final SavedServiceWithoutType userActivityService;
+	private final SavedWithoutTypeService userActivityService;
 
-	private final SavedServiceWithoutType userThreadService;
+	private final SavedWithoutTypeService userThreadService;
 
 	public SavedSelectorServiceImpl(@Qualifier("userPlanService") SavedService userPlanService,
 			@Qualifier("userRecipeService") SavedService userRecipeService,
 			@Qualifier("userCommentService") SavedService userCommentService,
-			@Qualifier("userExerciseService") SavedServiceWithoutType userExerciseService,
-			@Qualifier("userFoodService") SavedServiceWithoutType userFoodService,
-			@Qualifier("userActivityService") SavedServiceWithoutType userActivityService,
-			@Qualifier("userThreadService") SavedServiceWithoutType userThreadService) {
+			@Qualifier("userExerciseService") SavedWithoutTypeService userExerciseService,
+			@Qualifier("userFoodService") SavedWithoutTypeService userFoodService,
+			@Qualifier("userActivityService") SavedWithoutTypeService userActivityService,
+			@Qualifier("userThreadService") SavedWithoutTypeService userThreadService) {
 		this.userActivityService = userActivityService;
 		this.userExerciseService = userExerciseService;
 		this.userFoodService = userFoodService;
@@ -50,7 +50,7 @@ public class SavedSelectorServiceImpl implements SavedSelectorService {
 	}
 
 	@Override
-	public SavedServiceWithoutType getServiceWithoutType(SavedEntityType savedEntityType) {
+	public SavedWithoutTypeService getServiceWithoutType(SavedEntityType savedEntityType) {
 		return switch (savedEntityType) {
 			case FORUM_THREAD -> userThreadService;
 			case ACTIVITY -> userActivityService;

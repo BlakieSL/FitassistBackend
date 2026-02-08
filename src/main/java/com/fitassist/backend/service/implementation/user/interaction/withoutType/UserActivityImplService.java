@@ -12,7 +12,7 @@ import com.fitassist.backend.model.user.interactions.UserActivity;
 import com.fitassist.backend.repository.UserActivityRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.activity.ActivityPopulationService;
-import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
+import com.fitassist.backend.service.declaration.user.SavedWithoutTypeService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,14 +23,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service("userActivityService")
-public class UserActivityServiceImpl extends GenericSavedServiceWithoutType<Activity, UserActivity, ActivitySummaryDto>
-		implements SavedServiceWithoutType {
+public class UserActivityImplService extends GenericSavedWithoutTypeService<Activity, UserActivity, ActivitySummaryDto>
+		implements SavedWithoutTypeService {
 
 	private final ActivityMapper activityMapper;
 
 	private final ActivityPopulationService activityPopulationService;
 
-	public UserActivityServiceImpl(UserRepository userRepository, JpaRepository<Activity, Integer> entityRepository,
+	public UserActivityImplService(UserRepository userRepository, JpaRepository<Activity, Integer> entityRepository,
 			JpaRepository<UserActivity, Integer> userEntityRepository, ActivityMapper mapper,
 			ActivityPopulationService activityPopulationService) {
 		super(userRepository, entityRepository, userEntityRepository, mapper::toSummary, Activity.class);

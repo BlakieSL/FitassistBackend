@@ -12,7 +12,7 @@ import com.fitassist.backend.model.user.interactions.UserFood;
 import com.fitassist.backend.repository.UserFoodRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.food.FoodPopulationService;
-import com.fitassist.backend.service.declaration.user.SavedServiceWithoutType;
+import com.fitassist.backend.service.declaration.user.SavedWithoutTypeService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,14 +23,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service("userFoodService")
-public class UserFoodServiceImpl extends GenericSavedServiceWithoutType<Food, UserFood, FoodSummaryDto>
-		implements SavedServiceWithoutType {
+public class UserFoodImplService extends GenericSavedWithoutTypeService<Food, UserFood, FoodSummaryDto>
+		implements SavedWithoutTypeService {
 
 	private final FoodMapper foodMapper;
 
 	private final FoodPopulationService foodPopulationService;
 
-	public UserFoodServiceImpl(UserRepository userRepository, JpaRepository<Food, Integer> entityRepository,
+	public UserFoodImplService(UserRepository userRepository, JpaRepository<Food, Integer> entityRepository,
 			JpaRepository<UserFood, Integer> userEntityRepository, FoodMapper mapper,
 			FoodPopulationService foodPopulationService) {
 		super(userRepository, entityRepository, userEntityRepository, mapper::toSummary, Food.class);
