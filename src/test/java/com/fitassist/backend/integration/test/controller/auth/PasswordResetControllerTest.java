@@ -97,8 +97,7 @@ public class PasswordResetControllerTest {
 	@DisplayName("POST - /reset - Should reset password with valid token")
 	void resetPassword_Success() throws Exception {
 
-		String token = jwtService.createSignedJWT("user1@example.com", 1, Collections.emptyList(), 20,
-				"PASSWORD_RESET");
+		String token = jwtService.createSignedJWT("user1@example.com", 1, Collections.emptyList(), 20, "resetToken");
 
 		PasswordResetDto resetDto = new PasswordResetDto();
 		resetDto.setToken(token);
@@ -133,8 +132,7 @@ public class PasswordResetControllerTest {
 	@Test
 	@DisplayName("POST - /reset - Should return 401 for expired token")
 	void resetPassword_ExpiredToken() throws Exception {
-		String token = jwtService.createSignedJWT("user1@example.com", 1, Collections.emptyList(), -1,
-				"PASSWORD_RESET");
+		String token = jwtService.createSignedJWT("user1@example.com", 1, Collections.emptyList(), -1, "resetToken");
 
 		PasswordResetDto resetDto = new PasswordResetDto();
 		resetDto.setToken(token);
@@ -168,8 +166,7 @@ public class PasswordResetControllerTest {
 	@Test
 	@DisplayName("POST - /reset - Should return 400 for weak password")
 	void resetPassword_WeakPassword() throws Exception {
-		String token = jwtService.createSignedJWT("user1@example.com", 1, Collections.emptyList(), 20,
-				"PASSWORD_RESET");
+		String token = jwtService.createSignedJWT("user1@example.com", 1, Collections.emptyList(), 20, "resetToken");
 
 		PasswordResetDto resetDto = new PasswordResetDto();
 		resetDto.setToken(token);
@@ -187,7 +184,7 @@ public class PasswordResetControllerTest {
 	@DisplayName("POST - /reset - Should return 404 for non-existent user in token")
 	void resetPassword_UserNotFoundInToken() throws Exception {
 		String token = jwtService.createSignedJWT("nonexistent@example.com", 999, Collections.emptyList(), 20,
-				"PASSWORD_RESET");
+				"resetToken");
 
 		PasswordResetDto resetDto = new PasswordResetDto();
 		resetDto.setToken(token);
