@@ -123,7 +123,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 		MechanicsType mechanicsType = findMechanicsType(dto.getMechanicsTypeId());
 		ForceType forceType = findForceType(dto.getForceTypeId());
 		Equipment equipment = findEquipment(dto.getEquipmentId());
-		List<TargetMuscle> targetMuscles = findTargetMuscles(dto.getTargetMusclesIds());
+		List<TargetMuscle> targetMuscles = findTargetMuscles(dto.getTargetMuscleIds());
 
 		return new ExerciseMappingContext(expertiseLevel, mechanicsType, forceType, equipment, targetMuscles);
 	}
