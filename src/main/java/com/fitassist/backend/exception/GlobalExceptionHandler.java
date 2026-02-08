@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import java.io.IOException;
 import java.util.List;
@@ -139,6 +140,13 @@ public class GlobalExceptionHandler {
 		String message = "Invalid value for parameter '" + e.getName() + "'. Expected type: "
 				+ Objects.requireNonNull(e.getRequiredType()).getSimpleName();
 		return new ErrorResponseDto(HttpStatus.BAD_REQUEST.value(), message);
+	}
+
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorResponseDto handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+		return new ErrorResponseDto(HttpStatus.BAD_REQUEST.value(), "Malformed JSON request");
 	}
 
 	@ExceptionHandler(AccessDeniedException.class)

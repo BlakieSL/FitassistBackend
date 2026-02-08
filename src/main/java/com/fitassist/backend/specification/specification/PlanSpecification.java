@@ -78,6 +78,8 @@ public class PlanSpecification extends AbstractSpecification<Plan, PlanField> {
 					LikesAndSaves.USER_PLANS.getFieldName(), TYPE_FIELD, TypeOfInteraction.SAVE);
 			case LIKE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(context,
 					LikesAndSaves.USER_PLANS.getFieldName(), TYPE_FIELD, TypeOfInteraction.LIKE);
+			case DISLIKE -> GenericSpecificationHelper.buildPredicateUserEntityInteractionRange(context,
+				LikesAndSaves.USER_PLANS.getFieldName(), TYPE_FIELD, TypeOfInteraction.DISLIKE);
 		};
 	}
 
