@@ -1,6 +1,5 @@
 package com.fitassist.backend.integration.test.controller.search;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitassist.backend.integration.config.MockAwsS3Config;
 import com.fitassist.backend.integration.config.MockAwsSesConfig;
 import com.fitassist.backend.integration.config.MockRedisConfig;

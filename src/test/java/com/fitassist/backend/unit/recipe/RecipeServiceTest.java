@@ -16,7 +16,6 @@ import com.fitassist.backend.mapper.recipe.RecipeMapper;
 import com.fitassist.backend.mapper.recipe.RecipeMappingContext;
 import com.fitassist.backend.model.recipe.Recipe;
 import com.fitassist.backend.model.user.User;
-import com.fitassist.backend.repository.RecipeCategoryRepository;
 import com.fitassist.backend.repository.RecipeRepository;
 import com.fitassist.backend.repository.UserRepository;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
@@ -61,9 +60,6 @@ public class RecipeServiceTest {
 
 	@Mock
 	private RecipeRepository recipeRepository;
-
-	@Mock
-	private RecipeCategoryRepository recipeCategoryRepository;
 
 	@Mock
 	private UserRepository userRepository;
@@ -121,6 +117,7 @@ public class RecipeServiceTest {
 		filter = new FilterDto();
 		patch = mock(JsonMergePatch.class);
 		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 	}
 
 	@AfterEach
@@ -133,7 +130,6 @@ public class RecipeServiceTest {
 	@Test
 	void createRecipe_shouldCreateRecipe() {
 		recipe.setId(recipeId);
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 		when(recipeMapper.toEntity(eq(createDto), any(RecipeMappingContext.class))).thenReturn(recipe);
 		when(recipeRepository.save(recipe)).thenReturn(recipe);
@@ -150,7 +146,6 @@ public class RecipeServiceTest {
 	void createRecipe_shouldPublishEvent() {
 		ArgumentCaptor<RecipeCreateEvent> eventCaptor = ArgumentCaptor.forClass(RecipeCreateEvent.class);
 		recipe.setId(recipeId);
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 		when(recipeMapper.toEntity(eq(createDto), any(RecipeMappingContext.class))).thenReturn(recipe);
 		when(recipeRepository.save(recipe)).thenReturn(recipe);
@@ -165,7 +160,6 @@ public class RecipeServiceTest {
 
 	@Test
 	void createRecipe_shouldThrowExceptionWhenUserNotFound() {
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 		when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
 		assertThrows(RecordNotFoundException.class, () -> recipeService.createRecipe(createDto));
@@ -289,7 +283,7 @@ public class RecipeServiceTest {
 		Page<RecipeSummaryDto> result = recipeService.getFilteredRecipes(filter, pageable);
 
 		assertEquals(1, result.getContent().size());
-		assertSame(summaryDto, result.getContent().get(0));
+		assertSame(summaryDto, result.getContent().getFirst());
 		verify(recipeRepository).findAll(any(Specification.class), eq(pageable));
 		verify(recipeMapper).toSummary(recipe);
 		verify(recipePopulationService).populate(anyList());

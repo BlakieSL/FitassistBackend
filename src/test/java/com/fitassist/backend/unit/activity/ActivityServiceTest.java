@@ -28,7 +28,6 @@ import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.implementation.activity.ActivityServiceImpl;
-import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.junit.jupiter.api.AfterEach;
@@ -86,9 +85,6 @@ public class ActivityServiceTest {
 	private UserRepository userRepository;
 
 	@Mock
-	private SpecificationDependencies dependencies;
-
-	@Mock
 	private CalculationsService calculationsService;
 
 	@InjectMocks
@@ -138,10 +134,10 @@ public class ActivityServiceTest {
 		userId = 1;
 		categoryId = 1;
 		user = new User();
+		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
 		calculatedResponseDto = new ActivityCalculatedResponseDto();
 		calculateRequestDto = new CalculateActivityCaloriesRequestDto();
 		patch = mock(JsonMergePatch.class);
-		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
 		filter = new FilterDto();
 		pageable = PageRequest.of(0, 100);
 
@@ -173,7 +169,6 @@ public class ActivityServiceTest {
 	@Test
 	void createActivity_shouldPublishEvent() {
 		ArgumentCaptor<ActivityCreateEvent> eventCaptor = ArgumentCaptor.forClass(ActivityCreateEvent.class);
-
 		activity.setId(activityId);
 		when(activityCategoryRepository.findById(categoryId)).thenReturn(Optional.of(activityCategory));
 		when(activityMapper.toEntity(eq(createDto), any(ActivityMappingContext.class))).thenReturn(activity);
@@ -384,7 +379,7 @@ public class ActivityServiceTest {
 		Page<ActivitySummaryDto> result = activityService.getFilteredActivities(filter, pageable);
 
 		assertEquals(1, result.getTotalElements());
-		assertSame(responseDto, result.getContent().get(0));
+		assertSame(responseDto, result.getContent().getFirst());
 		verify(activityRepository).findAll(any(Specification.class), eq(pageable));
 		verify(activityMapper).toSummary(activity);
 	}
@@ -408,7 +403,6 @@ public class ActivityServiceTest {
 		criteria.setFilterKey("nonexistentKey");
 		filter.setFilterCriteria(List.of(criteria));
 		Page<Activity> emptyPage = new PageImpl<>(new ArrayList<>(), pageable, 0);
-
 		when(activityRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
 
 		Page<ActivitySummaryDto> result = activityService.getFilteredActivities(filter, pageable);

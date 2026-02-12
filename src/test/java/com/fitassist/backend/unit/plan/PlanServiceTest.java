@@ -298,7 +298,7 @@ public class PlanServiceTest {
 		Page<PlanSummaryDto> result = planService.getFilteredPlans(filter, pageable);
 
 		assertEquals(1, result.getTotalElements());
-		assertSame(summaryDto, result.getContent().get(0));
+		assertSame(summaryDto, result.getContent().getFirst());
 		verify(planRepository).findAll(any(Specification.class), eq(pageable));
 		verify(planMapper).toSummary(plan);
 		verify(planPopulationService).populate(anyList());

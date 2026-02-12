@@ -8,7 +8,6 @@ import com.fitassist.backend.exception.NotUniqueRecordException;
 import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.mapper.food.FoodMapper;
 import com.fitassist.backend.mapper.recipe.RecipeFoodMapper;
-import com.fitassist.backend.mapper.recipe.RecipeMapper;
 import com.fitassist.backend.model.food.Food;
 import com.fitassist.backend.model.recipe.Recipe;
 import com.fitassist.backend.model.recipe.RecipeFood;
@@ -19,7 +18,6 @@ import com.fitassist.backend.service.declaration.food.FoodPopulationService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
-import com.fitassist.backend.service.declaration.recipe.RecipeService;
 import com.fitassist.backend.service.implementation.recipe.RecipeFoodServiceImpl;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
@@ -41,9 +39,6 @@ import static org.mockito.Mockito.*;
 public class RecipeFoodServiceTest {
 
 	@Mock
-	private RecipeService recipeService;
-
-	@Mock
 	private ValidationService validationService;
 
 	@Mock
@@ -51,9 +46,6 @@ public class RecipeFoodServiceTest {
 
 	@Mock
 	private FoodMapper foodMapper;
-
-	@Mock
-	private RecipeMapper recipeMapper;
 
 	@Mock
 	private RecipeFoodMapper recipeFoodMapper;
@@ -198,7 +190,7 @@ public class RecipeFoodServiceTest {
 		List<FoodSummaryDto> result = recipeFoodService.getFoodsByRecipe(recipeId);
 
 		assertEquals(1, result.size());
-		assertSame(foodSummaryDto, result.get(0));
+		assertSame(foodSummaryDto, result.getFirst());
 		verify(foodPopulationService).populate(result);
 	}
 

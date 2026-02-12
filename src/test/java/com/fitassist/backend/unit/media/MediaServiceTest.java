@@ -128,7 +128,7 @@ public class MediaServiceTest {
 		List<MediaResponseDto> result = mediaService.getAllMediaForParent(parentId, parentType);
 
 		assertEquals(1, result.size());
-		assertSame(responseDto, result.get(0));
+		assertSame(responseDto, result.getFirst());
 	}
 
 	@Test

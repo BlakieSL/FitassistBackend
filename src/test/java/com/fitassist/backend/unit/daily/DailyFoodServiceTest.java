@@ -102,6 +102,7 @@ public class DailyFoodServiceTest {
 		createDto.setQuantity(BigDecimal.valueOf(10));
 		patch = mock(JsonMergePatch.class);
 		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 
 		food.setId(1);
 		dailyCart.setId(1);
@@ -118,7 +119,6 @@ public class DailyFoodServiceTest {
 
 	@Test
 	void addFoodToDailyCart_shouldUpdateExistingDailyFoodToDailyCartAmount() {
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 		when(dailyCartRepository.findByUserIdAndDate(anyInt(), any())).thenReturn(Optional.of(dailyCart));
 		when(repositoryHelper.find(foodRepository, Food.class, FOOD_ID)).thenReturn(food);
 		when(dailyCartFoodRepository.findByDailyCartIdAndFoodId(dailyCart.getId(), FOOD_ID))
@@ -131,7 +131,6 @@ public class DailyFoodServiceTest {
 
 	@Test
 	void addFoodToDailyCart_shouldAddNewDailyFoodToDailyCart_whenNotFound() {
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 		when(dailyCartRepository.findByUserIdAndDate(anyInt(), any())).thenReturn(Optional.empty());
 		when(repositoryHelper.find(foodRepository, Food.class, FOOD_ID)).thenReturn(food);
 		when(repositoryHelper.find(userRepository, User.class, USER_ID)).thenReturn(new User());
@@ -152,7 +151,6 @@ public class DailyFoodServiceTest {
 		newDailyCart.setId(1);
 		newDailyCart.setUser(user);
 
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 		when(dailyCartRepository.findByUserIdAndDate(eq(USER_ID), any())).thenReturn(Optional.empty());
 		when(repositoryHelper.find(userRepository, User.class, USER_ID)).thenReturn(user);
 		when(dailyCartRepository.save(any(DailyCart.class))).thenReturn(newDailyCart);
@@ -165,7 +163,7 @@ public class DailyFoodServiceTest {
 		verify(dailyCartRepository, times(2)).save(dailyFoodCaptor.capture());
 		DailyCart savedDailyFood = dailyFoodCaptor.getValue();
 		assertEquals(USER_ID, savedDailyFood.getUser().getId());
-		assertEquals(createDto.getQuantity(), savedDailyFood.getDailyCartFoods().get(0).getQuantity());
+		assertEquals(createDto.getQuantity(), savedDailyFood.getDailyCartFoods().getFirst().getQuantity());
 	}
 
 	@Test
@@ -255,7 +253,6 @@ public class DailyFoodServiceTest {
 				BigDecimal.valueOf(20));
 		calculatedResponseDto.setFoodMacros(foodMacros);
 
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 		when(dailyCartRepository.findByUserIdAndDateWithFoodAssociations(USER_ID, LocalDate.now()))
 			.thenReturn(Optional.of(dailyCart));
 		when(calculationsService.toCalculatedResponseDto(dailyCartFood)).thenReturn(calculatedResponseDto);
@@ -277,7 +274,6 @@ public class DailyFoodServiceTest {
 		DailyCart newDailyCart = DailyCart.createDate(user);
 		newDailyCart.setUser(user);
 
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 		when(dailyCartRepository.findByUserIdAndDateWithFoodAssociations(USER_ID, LocalDate.now()))
 			.thenReturn(Optional.empty());
 

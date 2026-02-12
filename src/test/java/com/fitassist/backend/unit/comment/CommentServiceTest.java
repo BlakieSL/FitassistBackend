@@ -18,7 +18,6 @@ import com.fitassist.backend.service.declaration.comment.CommentPopulationServic
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.implementation.comment.CommentServiceImpl;
-import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.junit.jupiter.api.AfterEach;
@@ -65,9 +64,6 @@ public class CommentServiceTest {
 	private UserRepository userRepository;
 
 	@Mock
-	private SpecificationDependencies dependencies;
-
-	@Mock
 	private CommentPopulationService commentPopulationService;
 
 	@InjectMocks
@@ -109,6 +105,7 @@ public class CommentServiceTest {
 		createDto.setThreadId(threadId);
 		patch = mock(JsonMergePatch.class);
 		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 	}
 
 	@AfterEach
@@ -121,7 +118,6 @@ public class CommentServiceTest {
 	@Test
 	void createComment_shouldCreateComment() {
 		comment.setId(commentId);
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 		when(forumThreadRepository.findById(threadId)).thenReturn(Optional.of(thread));
 		when(commentMapper.toEntity(eq(createDto), any(CommentMappingContext.class))).thenReturn(comment);
@@ -137,7 +133,6 @@ public class CommentServiceTest {
 
 	@Test
 	void createComment_shouldThrowExceptionWhenUserNotFound() {
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 		when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
 		assertThrows(RecordNotFoundException.class, () -> commentService.createComment(createDto));
@@ -148,7 +143,6 @@ public class CommentServiceTest {
 
 	@Test
 	void createComment_shouldThrowExceptionWhenThreadNotFound() {
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 		when(forumThreadRepository.findById(threadId)).thenReturn(Optional.empty());
 
@@ -162,7 +156,6 @@ public class CommentServiceTest {
 	void createComment_shouldThrowExceptionWhenParentCommentNotFound() {
 		int parentCommentId = 99;
 		createDto.setParentCommentId(parentCommentId);
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 		when(forumThreadRepository.findById(threadId)).thenReturn(Optional.of(thread));
 		when(commentRepository.findById(parentCommentId)).thenReturn(Optional.empty());
@@ -258,7 +251,7 @@ public class CommentServiceTest {
 		Page<CommentResponseDto> result = commentService.getTopCommentsForThread(threadId, pageable);
 
 		assertEquals(1, result.getTotalElements());
-		assertEquals(responseDto, result.getContent().get(0));
+		assertEquals(responseDto, result.getContent().getFirst());
 		verify(commentPopulationService).populateList(List.of(responseDto));
 	}
 

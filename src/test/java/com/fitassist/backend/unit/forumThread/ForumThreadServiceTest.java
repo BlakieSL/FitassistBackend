@@ -5,7 +5,6 @@ import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.request.forumThread.ForumThreadCreateDto;
 import com.fitassist.backend.dto.request.forumThread.ForumThreadUpdateDto;
 import com.fitassist.backend.dto.response.forumThread.ForumThreadResponseDto;
-import com.fitassist.backend.dto.response.forumThread.ForumThreadSummaryDto;
 import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.mapper.forumThread.ForumThreadMapper;
 import com.fitassist.backend.mapper.forumThread.ForumThreadMappingContext;
@@ -77,8 +76,6 @@ public class ForumThreadServiceTest {
 
 	private ForumThreadResponseDto responseDto;
 
-	private ForumThreadSummaryDto summaryDto;
-
 	private JsonMergePatch patch;
 
 	private ForumThreadUpdateDto patchedDto;
@@ -100,7 +97,6 @@ public class ForumThreadServiceTest {
 		forumThread = new ForumThread();
 		createDto = new ForumThreadCreateDto();
 		responseDto = new ForumThreadResponseDto();
-		summaryDto = new ForumThreadSummaryDto();
 		patchedDto = new ForumThreadUpdateDto();
 		threadId = 1;
 		userId = 1;
@@ -109,7 +105,7 @@ public class ForumThreadServiceTest {
 		threadCategory = new ThreadCategory();
 		patch = mock(JsonMergePatch.class);
 		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
-
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 		createDto.setThreadCategoryId(categoryId);
 	}
 
@@ -123,7 +119,6 @@ public class ForumThreadServiceTest {
 	@Test
 	void createForumThread_shouldCreateForumThread() {
 		forumThread.setId(threadId);
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 		when(threadCategoryRepository.findById(categoryId)).thenReturn(Optional.of(threadCategory));
 		when(forumThreadMapper.toEntity(eq(createDto), any(ForumThreadMappingContext.class))).thenReturn(forumThread);
@@ -139,7 +134,6 @@ public class ForumThreadServiceTest {
 
 	@Test
 	void createForumThread_shouldThrowExceptionWhenUserNotFound() {
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 		when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
 		assertThrows(RecordNotFoundException.class, () -> forumThreadService.createForumThread(createDto));
@@ -149,7 +143,6 @@ public class ForumThreadServiceTest {
 
 	@Test
 	void createForumThread_shouldThrowExceptionWhenCategoryNotFound() {
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
 		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 		when(threadCategoryRepository.findById(categoryId)).thenReturn(Optional.empty());
 
