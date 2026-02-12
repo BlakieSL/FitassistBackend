@@ -99,6 +99,7 @@ public class ComplaintServiceTest {
 		comment = new Comment();
 		thread = new ForumThread();
 		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
+		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 	}
 
 	@AfterEach
@@ -111,7 +112,6 @@ public class ComplaintServiceTest {
 	@Test
 	void createComplaint_shouldCreateCommentComplaint() {
 		createDto.setSubClass(ComplaintSubClass.COMMENT_COMPLAINT);
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
 		when(commentRepository.findById(PARENT_ID)).thenReturn(Optional.of(comment));
 		when(complaintMapper.toCommentComplaint(eq(createDto), any(ComplaintMappingContext.class)))
@@ -133,7 +133,6 @@ public class ComplaintServiceTest {
 	@Test
 	void createComplaint_shouldCreateThreadComplaint() {
 		createDto.setSubClass(ComplaintSubClass.THREAD_COMPLAINT);
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
 		when(forumThreadRepository.findById(PARENT_ID)).thenReturn(Optional.of(thread));
 		when(complaintMapper.toThreadComplaint(eq(createDto), any(ComplaintMappingContext.class)))
@@ -155,7 +154,6 @@ public class ComplaintServiceTest {
 	@Test
 	void createComplaint_shouldThrowExceptionWhenUserNotFound() {
 		createDto.setSubClass(ComplaintSubClass.COMMENT_COMPLAINT);
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 		when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
 		assertThrows(RecordNotFoundException.class, () -> complaintService.createComplaint(createDto));
@@ -167,7 +165,6 @@ public class ComplaintServiceTest {
 	@Test
 	void createComplaint_shouldThrowExceptionWhenCommentNotFound() {
 		createDto.setSubClass(ComplaintSubClass.COMMENT_COMPLAINT);
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
 		when(commentRepository.findById(PARENT_ID)).thenReturn(Optional.empty());
 
@@ -180,7 +177,6 @@ public class ComplaintServiceTest {
 	@Test
 	void createComplaint_shouldThrowExceptionWhenThreadNotFound() {
 		createDto.setSubClass(ComplaintSubClass.THREAD_COMPLAINT);
-		mockedAuthorizationUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
 		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
 		when(forumThreadRepository.findById(PARENT_ID)).thenReturn(Optional.empty());
 

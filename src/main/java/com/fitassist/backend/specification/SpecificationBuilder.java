@@ -34,7 +34,7 @@ public class SpecificationBuilder<T> {
 			return specificationFactory.createSpecification(new FilterCriteria(), dependencies);
 		}
 
-		Specification<T> result = specificationFactory.createSpecification(criteriaList.get(0), dependencies);
+		Specification<T> result = specificationFactory.createSpecification(criteriaList.getFirst(), dependencies);
 
 		for (int i = 1; i < criteriaList.size(); i++) {
 			Specification<T> spec = specificationFactory.createSpecification(criteriaList.get(i), dependencies);

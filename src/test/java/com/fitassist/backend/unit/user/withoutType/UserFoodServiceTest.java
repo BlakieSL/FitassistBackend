@@ -7,7 +7,6 @@ import com.fitassist.backend.exception.NotUniqueRecordException;
 import com.fitassist.backend.exception.RecordNotFoundException;
 import com.fitassist.backend.mapper.food.FoodMapper;
 import com.fitassist.backend.model.food.Food;
-import com.fitassist.backend.model.media.Media;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.model.user.interactions.UserFood;
 import com.fitassist.backend.repository.FoodRepository;
@@ -37,14 +36,18 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class UserFoodServiceTest {
 
+	private static final int USER_ID = 1;
+
+	private static final int FOOD_ID = 100;
+
 	@Mock
-	private UserFoodRepository userFoodRepository;
+	private UserRepository userRepository;
 
 	@Mock
 	private FoodRepository foodRepository;
 
 	@Mock
-	private UserRepository userRepository;
+	private UserFoodRepository userFoodRepository;
 
 	@Mock
 	private FoodMapper foodMapper;
@@ -56,11 +59,25 @@ public class UserFoodServiceTest {
 
 	private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
+	private User user;
+
+	private Food food;
+
+	private UserFood userFood;
+
 	@BeforeEach
 	void setUp() {
-		mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
 		userFoodService = new UserFoodImplService(userRepository, foodRepository, userFoodRepository, foodMapper,
 				foodPopulationService);
+		mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+
+		user = new User();
+		user.setId(USER_ID);
+		food = new Food();
+		food.setId(FOOD_ID);
+		food.setMediaList(new ArrayList<>());
+		userFood = UserFood.of(user, food);
 	}
 
 	@AfterEach
@@ -72,188 +89,101 @@ public class UserFoodServiceTest {
 
 	@Test
 	public void saveToUser_ShouldSaveToUserWithType() {
-		int userId = 1;
-		int foodId = 100;
-		User user = new User();
-		Food food = new Food();
+		when(userFoodRepository.existsByUserIdAndFoodId(USER_ID, FOOD_ID)).thenReturn(false);
+		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+		when(foodRepository.findById(FOOD_ID)).thenReturn(Optional.of(food));
 
-		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(userFoodRepository.existsByUserIdAndFoodId(userId, foodId)).thenReturn(false);
-		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-		when(foodRepository.findById(foodId)).thenReturn(Optional.of(food));
-
-		userFoodService.saveToUser(foodId);
+		userFoodService.saveToUser(FOOD_ID);
 
 		verify(userFoodRepository).save(any(UserFood.class));
 	}
 
 	@Test
 	public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
-		int userId = 1;
-		int foodId = 100;
+		when(userFoodRepository.existsByUserIdAndFoodId(USER_ID, FOOD_ID)).thenReturn(true);
 
-		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(userFoodRepository.existsByUserIdAndFoodId(userId, foodId)).thenReturn(true);
-
-		assertThrows(NotUniqueRecordException.class, () -> userFoodService.saveToUser(foodId));
+		assertThrows(NotUniqueRecordException.class, () -> userFoodService.saveToUser(FOOD_ID));
 
 		verify(userFoodRepository, never()).save(any());
 	}
 
 	@Test
 	public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
-		int userId = 1;
-		int foodId = 100;
+		when(userFoodRepository.existsByUserIdAndFoodId(USER_ID, FOOD_ID)).thenReturn(false);
+		when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
-		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(userFoodRepository.existsByUserIdAndFoodId(userId, foodId)).thenReturn(false);
-		when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-		assertThrows(RecordNotFoundException.class, () -> userFoodService.saveToUser(foodId));
+		assertThrows(RecordNotFoundException.class, () -> userFoodService.saveToUser(FOOD_ID));
 
 		verify(userFoodRepository, never()).save(any());
 	}
 
 	@Test
 	public void saveToUser_ShouldThrowRecordNotFoundExceptionIfFoodNotFound() {
-		int userId = 1;
-		int foodId = 100;
-		User user = new User();
+		when(userFoodRepository.existsByUserIdAndFoodId(USER_ID, FOOD_ID)).thenReturn(false);
+		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+		when(foodRepository.findById(FOOD_ID)).thenReturn(Optional.empty());
 
-		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(userFoodRepository.existsByUserIdAndFoodId(userId, foodId)).thenReturn(false);
-		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-		when(foodRepository.findById(foodId)).thenReturn(Optional.empty());
-
-		assertThrows(RecordNotFoundException.class, () -> userFoodService.saveToUser(foodId));
+		assertThrows(RecordNotFoundException.class, () -> userFoodService.saveToUser(FOOD_ID));
 
 		verify(userFoodRepository, never()).save(any());
 	}
 
 	@Test
 	public void deleteFromUser_ShouldDeleteFromUser() {
-		int userId = 1;
-		int foodId = 100;
-		UserFood userFood = UserFood.of(new User(), new Food());
+		when(userFoodRepository.findByUserIdAndFoodId(USER_ID, FOOD_ID)).thenReturn(Optional.of(userFood));
 
-		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(userFoodRepository.findByUserIdAndFoodId(userId, foodId)).thenReturn(Optional.of(userFood));
-
-		userFoodService.deleteFromUser(foodId);
+		userFoodService.deleteFromUser(FOOD_ID);
 
 		verify(userFoodRepository).delete(userFood);
 	}
 
 	@Test
 	public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserFoodNotFound() {
-		int userId = 1;
-		int foodId = 100;
+		when(userFoodRepository.findByUserIdAndFoodId(USER_ID, FOOD_ID)).thenReturn(Optional.empty());
 
-		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(userFoodRepository.findByUserIdAndFoodId(userId, foodId)).thenReturn(Optional.empty());
-
-		assertThrows(RecordNotFoundException.class, () -> userFoodService.deleteFromUser(foodId));
+		assertThrows(RecordNotFoundException.class, () -> userFoodService.deleteFromUser(FOOD_ID));
 
 		verify(userFoodRepository, never()).delete(any());
 	}
 
 	@Test
 	public void getAllFromUser_ShouldReturnPagedFoods() {
-		int userId = 1;
 		Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
-
-		Food food1 = new Food();
-		food1.setId(1);
-		food1.setMediaList(new ArrayList<>());
-		Media media1 = new Media();
-		media1.setImageName("food1.jpg");
-		food1.getMediaList().add(media1);
-
 		Food food2 = new Food();
 		food2.setId(2);
 		food2.setMediaList(new ArrayList<>());
-		Media media2 = new Media();
-		media2.setImageName("food2.jpg");
-		food2.getMediaList().add(media2);
-
-		UserFood uf1 = UserFood.of(new User(), food1);
-		UserFood uf2 = UserFood.of(new User(), food2);
+		UserFood uf2 = UserFood.of(user, food2);
 
 		FoodSummaryDto dto1 = new FoodSummaryDto();
-		dto1.setId(1);
-		dto1.setImageName("food1.jpg");
+		dto1.setId(FOOD_ID);
 		FoodSummaryDto dto2 = new FoodSummaryDto();
 		dto2.setId(2);
-		dto2.setImageName("food2.jpg");
 
-		Page<UserFood> userFoodPage = new PageImpl<>(List.of(uf1, uf2), pageable, 2);
+		Page<UserFood> userFoodPage = new PageImpl<>(List.of(userFood, uf2), pageable, 2);
 
-		when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), eq(pageable))).thenReturn(userFoodPage);
-		when(foodMapper.toSummary(food1)).thenReturn(dto1);
+		when(userFoodRepository.findAllByUserIdWithMedia(eq(USER_ID), eq(pageable))).thenReturn(userFoodPage);
+		when(foodMapper.toSummary(food)).thenReturn(dto1);
 		when(foodMapper.toSummary(food2)).thenReturn(dto2);
 
-		Page<UserEntitySummaryResponseDto> result = userFoodService.getAllFromUser(userId, pageable);
+		Page<UserEntitySummaryResponseDto> result = userFoodService.getAllFromUser(USER_ID, pageable);
 
 		assertEquals(2, result.getTotalElements());
 		assertEquals(2, result.getContent().size());
 		verify(foodMapper, times(2)).toSummary(any(Food.class));
+		verify(foodPopulationService).populate(anyList());
 	}
 
 	@Test
 	public void getAllFromUser_ShouldReturnEmptyPageIfNoFoods() {
-		int userId = 1;
 		Pageable pageable = PageRequest.of(0, 10);
 		Page<UserFood> emptyPage = new PageImpl<>(List.of(), pageable, 0);
 
-		when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), eq(pageable))).thenReturn(emptyPage);
+		when(userFoodRepository.findAllByUserIdWithMedia(eq(USER_ID), eq(pageable))).thenReturn(emptyPage);
 
-		Page<UserEntitySummaryResponseDto> result = userFoodService.getAllFromUser(userId, pageable);
+		Page<UserEntitySummaryResponseDto> result = userFoodService.getAllFromUser(USER_ID, pageable);
 
 		assertTrue(result.isEmpty());
 		assertEquals(0, result.getTotalElements());
-	}
-
-	@Test
-	public void getAllFromUser_ShouldPopulateImageUrls() {
-		int userId = 1;
-		Pageable pageable = PageRequest.of(0, 10);
-
-		Food food1 = new Food();
-		food1.setId(1);
-		food1.setMediaList(new ArrayList<>());
-		Media media1 = new Media();
-		media1.setImageName("image1.jpg");
-		food1.getMediaList().add(media1);
-
-		Food food2 = new Food();
-		food2.setId(2);
-		food2.setMediaList(new ArrayList<>());
-		Media media2 = new Media();
-		media2.setImageName("image2.jpg");
-		food2.getMediaList().add(media2);
-
-		UserFood uf1 = UserFood.of(new User(), food1);
-		UserFood uf2 = UserFood.of(new User(), food2);
-
-		FoodSummaryDto dto1 = new FoodSummaryDto();
-		dto1.setId(1);
-		dto1.setImageName("image1.jpg");
-		FoodSummaryDto dto2 = new FoodSummaryDto();
-		dto2.setId(2);
-		dto2.setImageName("image2.jpg");
-
-		Page<UserFood> userFoodPage = new PageImpl<>(List.of(uf1, uf2), pageable, 2);
-
-		when(userFoodRepository.findAllByUserIdWithMedia(eq(userId), eq(pageable))).thenReturn(userFoodPage);
-		when(foodMapper.toSummary(food1)).thenReturn(dto1);
-		when(foodMapper.toSummary(food2)).thenReturn(dto2);
-
-		Page<UserEntitySummaryResponseDto> result = userFoodService.getAllFromUser(userId, pageable);
-
-		assertNotNull(result);
-		assertEquals(2, result.getContent().size());
-		verify(foodMapper).toSummary(food1);
-		verify(foodMapper).toSummary(food2);
 	}
 
 }
