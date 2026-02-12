@@ -11,7 +11,6 @@ import com.fitassist.backend.model.user.RoleEnum;
 import com.fitassist.backend.model.user.User;
 import com.fitassist.backend.repository.RoleRepository;
 import com.fitassist.backend.repository.UserRepository;
-import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.declaration.user.UserPopulationService;
@@ -57,9 +56,6 @@ public class UserServiceTest {
 
 	@Mock
 	private RoleRepository roleRepository;
-
-	@Mock
-	private CalculationsService calculationsService;
 
 	@Mock
 	private UserPopulationService userPopulationService;

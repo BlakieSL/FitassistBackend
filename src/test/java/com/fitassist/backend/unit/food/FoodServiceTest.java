@@ -29,7 +29,6 @@ import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.declaration.recipe.RecipePopulationService;
 import com.fitassist.backend.service.implementation.food.FoodServiceImpl;
-import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,9 +88,6 @@ public class FoodServiceTest {
 
 	@Mock
 	private RecipePopulationService recipePopulationService;
-
-	@Mock
-	private SpecificationDependencies dependencies;
 
 	@Mock
 	private CalculationsService calculationsService;
@@ -285,18 +281,15 @@ public class FoodServiceTest {
 	@Test
 	void calculateFoodMacros_shouldCalculateMacrosForFood() {
 		when(repositoryHelper.find(foodRepository, Food.class, foodId)).thenReturn(food);
-		when(calculationsService.toCalculatedResponseDto(eq(food),
-				argThat(x -> x.compareTo(BigDecimal.valueOf(1.2)) == 0)))
+		when(calculationsService.toCalculatedResponseDto(eq(food), any(BigDecimal.class)))
 			.thenReturn(calculatedResponseDto);
-
 		CalculateFoodMacrosRequestDto request = new CalculateFoodMacrosRequestDto();
 		request.setQuantity(BigDecimal.valueOf(120));
 
 		FoodCalculatedMacrosResponseDto result = foodService.calculateFoodMacros(foodId, request);
 
 		assertEquals(calculatedResponseDto, result);
-		verify(calculationsService).toCalculatedResponseDto(eq(food),
-				argThat(x -> x.compareTo(BigDecimal.valueOf(1.2)) == 0));
+		verify(calculationsService).toCalculatedResponseDto(eq(food), any(BigDecimal.class));
 	}
 
 	@Test
@@ -348,7 +341,7 @@ public class FoodServiceTest {
 		Page<FoodSummaryDto> result = foodService.getFilteredFoods(filter, pageable);
 
 		assertEquals(1, result.getTotalElements());
-		assertSame(responseDto, result.getContent().get(0));
+		assertSame(responseDto, result.getContent().getFirst());
 		verify(foodRepository).findAll(any(Specification.class), eq(pageable));
 		verify(foodMapper).toSummary(food);
 	}

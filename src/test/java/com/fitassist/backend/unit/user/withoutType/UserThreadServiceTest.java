@@ -18,14 +18,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +34,10 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserThreadServiceTest {
+
+	private static final int USER_ID = 1;
+
+	private static final int THREAD_ID = 100;
 
 	@Mock
 	private UserThreadRepository userThreadRepository;
@@ -52,14 +54,29 @@ public class UserThreadServiceTest {
 	@Mock
 	private ForumThreadPopulationService forumThreadPopulationService;
 
-	@InjectMocks
 	private UserThreadImplService userThreadService;
 
 	private MockedStatic<AuthorizationUtil> mockedAuthUtil;
 
+	private User user;
+
+	private ForumThread forumThread;
+
+	private UserThread userThread;
+
 	@BeforeEach
 	void setUp() {
+		userThreadService = new UserThreadImplService(userThreadRepository, forumThreadRepository, userRepository,
+				forumThreadMapper, forumThreadPopulationService);
 		mockedAuthUtil = Mockito.mockStatic(AuthorizationUtil.class);
+		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(USER_ID);
+
+		user = new User();
+		user.setId(USER_ID);
+		forumThread = new ForumThread();
+		forumThread.setId(THREAD_ID);
+		forumThread.setUser(user);
+		userThread = UserThread.of(user, forumThread);
 	}
 
 	@AfterEach
@@ -71,146 +88,101 @@ public class UserThreadServiceTest {
 
 	@Test
 	public void saveToUser_ShouldSaveToUser() {
-		int userId = 1;
-		int threadId = 100;
-		User user = new User();
-		ForumThread thread = new ForumThread();
+		when(userThreadRepository.existsByUserIdAndForumThreadId(USER_ID, THREAD_ID)).thenReturn(false);
+		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+		when(forumThreadRepository.findById(THREAD_ID)).thenReturn(Optional.of(forumThread));
 
-		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(userThreadRepository.existsByUserIdAndForumThreadId(userId, threadId)).thenReturn(false);
-		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-		when(forumThreadRepository.findById(threadId)).thenReturn(Optional.of(thread));
-
-		userThreadService.saveToUser(threadId);
+		userThreadService.saveToUser(THREAD_ID);
 
 		verify(userThreadRepository).save(any(UserThread.class));
 	}
 
 	@Test
 	public void saveToUser_ShouldThrowNotUniqueRecordExceptionIfAlreadySaved() {
-		int userId = 1;
-		int threadId = 100;
+		when(userThreadRepository.existsByUserIdAndForumThreadId(USER_ID, THREAD_ID)).thenReturn(true);
 
-		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(userThreadRepository.existsByUserIdAndForumThreadId(userId, threadId)).thenReturn(true);
-
-		assertThrows(NotUniqueRecordException.class, () -> userThreadService.saveToUser(threadId));
+		assertThrows(NotUniqueRecordException.class, () -> userThreadService.saveToUser(THREAD_ID));
 
 		verify(userThreadRepository, never()).save(any());
 	}
 
 	@Test
 	public void saveToUser_ShouldThrowRecordNotFoundExceptionIfUserNotFound() {
-		int userId = 1;
-		int threadId = 100;
+		when(userThreadRepository.existsByUserIdAndForumThreadId(USER_ID, THREAD_ID)).thenReturn(false);
+		when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
 
-		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(userThreadRepository.existsByUserIdAndForumThreadId(userId, threadId)).thenReturn(false);
-		when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-		assertThrows(RecordNotFoundException.class, () -> userThreadService.saveToUser(threadId));
+		assertThrows(RecordNotFoundException.class, () -> userThreadService.saveToUser(THREAD_ID));
 
 		verify(userThreadRepository, never()).save(any());
 	}
 
 	@Test
 	public void saveToUser_ShouldThrowRecordNotFoundExceptionIfThreadNotFound() {
-		int userId = 1;
-		int threadId = 100;
-		User user = new User();
+		when(userThreadRepository.existsByUserIdAndForumThreadId(USER_ID, THREAD_ID)).thenReturn(false);
+		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+		when(forumThreadRepository.findById(THREAD_ID)).thenReturn(Optional.empty());
 
-		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(userThreadRepository.existsByUserIdAndForumThreadId(userId, threadId)).thenReturn(false);
-		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-		when(forumThreadRepository.findById(threadId)).thenReturn(Optional.empty());
-
-		assertThrows(RecordNotFoundException.class, () -> userThreadService.saveToUser(threadId));
+		assertThrows(RecordNotFoundException.class, () -> userThreadService.saveToUser(THREAD_ID));
 
 		verify(userThreadRepository, never()).save(any());
 	}
 
 	@Test
 	public void deleteFromUser_ShouldDeleteFromUser() {
-		int userId = 1;
-		int threadId = 100;
-		UserThread subscription = new UserThread();
+		when(userThreadRepository.findByUserIdAndForumThreadId(USER_ID, THREAD_ID)).thenReturn(Optional.of(userThread));
 
-		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(userThreadRepository.findByUserIdAndForumThreadId(userId, threadId)).thenReturn(Optional.of(subscription));
+		userThreadService.deleteFromUser(THREAD_ID);
 
-		userThreadService.deleteFromUser(threadId);
-
-		verify(userThreadRepository).delete(subscription);
+		verify(userThreadRepository).delete(userThread);
 	}
 
 	@Test
-	public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfSubscriptionNotFound() {
-		int userId = 1;
-		int threadId = 100;
+	public void deleteFromUser_ShouldThrowRecordNotFoundExceptionIfUserThreadNotFound() {
+		when(userThreadRepository.findByUserIdAndForumThreadId(USER_ID, THREAD_ID)).thenReturn(Optional.empty());
 
-		mockedAuthUtil.when(AuthorizationUtil::getUserId).thenReturn(userId);
-		when(userThreadRepository.findByUserIdAndForumThreadId(userId, threadId)).thenReturn(Optional.empty());
-
-		assertThrows(RecordNotFoundException.class, () -> userThreadService.deleteFromUser(threadId));
+		assertThrows(RecordNotFoundException.class, () -> userThreadService.deleteFromUser(THREAD_ID));
 
 		verify(userThreadRepository, never()).delete(any());
 	}
 
 	@Test
-	public void getAllFromUser_ShouldReturnAllSavedThreadsFromUser() {
-		int userId = 1;
+	public void getAllFromUser_ShouldReturnPagedThreads() {
 		Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
-
-		User user = new User();
-		user.setId(1);
-
-		ForumThread thread1 = new ForumThread();
-		thread1.setId(1);
-		thread1.setUser(user);
 		ForumThread thread2 = new ForumThread();
 		thread2.setId(2);
 		thread2.setUser(user);
-
-		UserThread ut1 = new UserThread();
-		ut1.setForumThread(thread1);
-		ut1.setCreatedAt(LocalDateTime.now());
-		UserThread ut2 = new UserThread();
-		ut2.setForumThread(thread2);
-		ut2.setCreatedAt(LocalDateTime.now());
+		UserThread ut2 = UserThread.of(user, thread2);
 
 		ForumThreadSummaryDto dto1 = new ForumThreadSummaryDto();
-		dto1.setId(1);
+		dto1.setId(THREAD_ID);
 		ForumThreadSummaryDto dto2 = new ForumThreadSummaryDto();
 		dto2.setId(2);
 
-		Page<UserThread> userThreadPage = new PageImpl<>(List.of(ut1, ut2), pageable, 2);
-		when(userThreadRepository.findAllByUserId(eq(userId), any(Pageable.class))).thenReturn(userThreadPage);
-		when(forumThreadMapper.toSummary(thread1)).thenReturn(dto1);
+		Page<UserThread> userThreadPage = new PageImpl<>(List.of(userThread, ut2), pageable, 2);
+
+		when(userThreadRepository.findAllByUserId(eq(USER_ID), eq(pageable))).thenReturn(userThreadPage);
+		when(forumThreadMapper.toSummary(forumThread)).thenReturn(dto1);
 		when(forumThreadMapper.toSummary(thread2)).thenReturn(dto2);
 
-		Page<UserEntitySummaryResponseDto> result = userThreadService.getAllFromUser(userId, pageable);
+		Page<UserEntitySummaryResponseDto> result = userThreadService.getAllFromUser(USER_ID, pageable);
 
-		assertEquals(2, result.getContent().size());
 		assertEquals(2, result.getTotalElements());
-		verify(userThreadRepository).findAllByUserId(eq(userId), any(Pageable.class));
-		verify(forumThreadMapper).toSummary(thread1);
-		verify(forumThreadMapper).toSummary(thread2);
-		verify(forumThreadPopulationService).populate(any(List.class));
+		assertEquals(2, result.getContent().size());
+		verify(forumThreadMapper, times(2)).toSummary(any(ForumThread.class));
+		verify(forumThreadPopulationService).populate(anyList());
 	}
 
 	@Test
-	public void getAllFromUser_ShouldReturnEmptyListIfNoSavedThreads() {
-		int userId = 1;
-		Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
-
+	public void getAllFromUser_ShouldReturnEmptyPageIfNoThreads() {
+		Pageable pageable = PageRequest.of(0, 10);
 		Page<UserThread> emptyPage = new PageImpl<>(List.of(), pageable, 0);
-		when(userThreadRepository.findAllByUserId(eq(userId), any(Pageable.class))).thenReturn(emptyPage);
 
-		Page<UserEntitySummaryResponseDto> result = userThreadService.getAllFromUser(userId, pageable);
+		when(userThreadRepository.findAllByUserId(eq(USER_ID), eq(pageable))).thenReturn(emptyPage);
 
-		assertTrue(result.getContent().isEmpty());
+		Page<UserEntitySummaryResponseDto> result = userThreadService.getAllFromUser(USER_ID, pageable);
+
+		assertTrue(result.isEmpty());
 		assertEquals(0, result.getTotalElements());
-		verify(userThreadRepository).findAllByUserId(eq(userId), any(Pageable.class));
 	}
 
 }

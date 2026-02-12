@@ -1,7 +1,6 @@
 package com.fitassist.backend.unit.exercise;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.pojo.FilterCriteria;
 import com.fitassist.backend.dto.request.exercise.ExerciseCreateDto;
 import com.fitassist.backend.dto.request.exercise.ExerciseUpdateDto;
@@ -28,14 +27,12 @@ import com.fitassist.backend.service.implementation.exercise.ExerciseServiceImpl
 import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -142,8 +139,6 @@ public class ExerciseServiceTest {
 
 	private Pageable pageable;
 
-	private MockedStatic<AuthorizationUtil> mockedAuthorizationUtil;
-
 	@BeforeEach
 	void setUp() {
 		exercise = new Exercise();
@@ -163,19 +158,11 @@ public class ExerciseServiceTest {
 		filter = new FilterDto();
 		pageable = PageRequest.of(0, 100);
 		patch = mock(JsonMergePatch.class);
-		mockedAuthorizationUtil = mockStatic(AuthorizationUtil.class);
 
 		createDto.setExpertiseLevelId(expertiseLevelId);
 		createDto.setMechanicsTypeId(mechanicsTypeId);
 		createDto.setForceTypeId(forceTypeId);
 		createDto.setEquipmentId(equipmentId);
-	}
-
-	@AfterEach
-	void tearDown() {
-		if (mockedAuthorizationUtil != null) {
-			mockedAuthorizationUtil.close();
-		}
 	}
 
 	@Test
@@ -370,7 +357,7 @@ public class ExerciseServiceTest {
 		Page<ExerciseSummaryDto> result = exerciseService.getFilteredExercises(filter, pageable);
 
 		assertEquals(1, result.getTotalElements());
-		assertSame(summaryDto, result.getContent().get(0));
+		assertSame(summaryDto, result.getContent().getFirst());
 		verify(exerciseRepository).findAll(any(Specification.class), eq(pageable));
 		verify(exerciseMapper).toSummary(exercise);
 	}

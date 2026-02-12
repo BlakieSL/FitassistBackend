@@ -59,8 +59,8 @@ public class CommentServiceGetRepliesTest {
 		List<CommentResponseDto> result = commentService.getReplies(1);
 
 		assertEquals(2, result.size());
-		assertEquals(1, result.get(0).getReplies().size());
-		assertEquals(4, result.get(0).getReplies().get(0).getId());
+		assertEquals(1, result.getFirst().getReplies().size());
+		assertEquals(4, result.getFirst().getReplies().getFirst().getId());
 		assertEquals(0, result.get(1).getReplies().size());
 	}
 
@@ -74,7 +74,7 @@ public class CommentServiceGetRepliesTest {
 		List<CommentResponseDto> result = commentService.getReplies(1);
 
 		assertEquals(2, result.size());
-		assertEquals(2, result.get(0).getId());
+		assertEquals(2, result.getFirst().getId());
 		assertEquals(3, result.get(1).getId());
 	}
 
@@ -87,7 +87,7 @@ public class CommentServiceGetRepliesTest {
 		List<CommentResponseDto> result = commentService.getReplies(1);
 
 		assertEquals(1, result.size());
-		assertEquals(2, result.get(0).getId());
+		assertEquals(2, result.getFirst().getId());
 	}
 
 	@Test
@@ -101,10 +101,11 @@ public class CommentServiceGetRepliesTest {
 		List<CommentResponseDto> result = commentService.getReplies(1);
 
 		assertEquals(1, result.size());
-		assertEquals(2, result.get(0).getId());
-		assertEquals(3, result.get(0).getReplies().get(0).getId());
-		assertEquals(4, result.get(0).getReplies().get(0).getReplies().get(0).getId());
-		assertEquals(5, result.get(0).getReplies().get(0).getReplies().get(0).getReplies().get(0).getId());
+		assertEquals(2, result.getFirst().getId());
+		assertEquals(3, result.getFirst().getReplies().getFirst().getId());
+		assertEquals(4, result.getFirst().getReplies().getFirst().getReplies().getFirst().getId());
+		assertEquals(5,
+				result.getFirst().getReplies().getFirst().getReplies().getFirst().getReplies().getFirst().getId());
 	}
 
 	@Test
@@ -118,8 +119,8 @@ public class CommentServiceGetRepliesTest {
 		List<CommentResponseDto> result = commentService.getReplies(1);
 
 		assertEquals(3, result.size());
-		assertEquals(1, result.get(0).getReplies().size());
-		assertEquals(5, result.get(0).getReplies().get(0).getId());
+		assertEquals(1, result.getFirst().getReplies().size());
+		assertEquals(5, result.getFirst().getReplies().getFirst().getId());
 	}
 
 }
