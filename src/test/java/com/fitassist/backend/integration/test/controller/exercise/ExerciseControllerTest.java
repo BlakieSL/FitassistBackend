@@ -43,21 +43,12 @@ public class ExerciseControllerTest {
 	@DisplayName("POST - /api/exercises - Should create a new exercise")
 	void createExercise() throws Exception {
 		Utils.setAdminContext(1);
-
-		ExerciseCreateDto request = new ExerciseCreateDto();
-		request.setName("Test Exercise");
-		request.setDescription("This is a test exercise.");
-		request.setEquipmentId(1);
-		request.setExpertiseLevelId(1);
-		request.setMechanicsTypeId(1);
-		request.setForceTypeId(1);
-		request.setTargetMuscleIds(List.of(1));
-		request.setInstructions(Collections.emptyList());
-		request.setTips(Collections.emptyList());
+		ExerciseCreateDto requestDto = new ExerciseCreateDto("Test Exercise", "This is a test exercise.", 1, 1, 1, 1,
+				List.of(1), List.of(), List.of());
 
 		mockMvc
 			.perform(post("/api/exercises").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request)))
+				.content(objectMapper.writeValueAsString(requestDto)))
 			.andExpectAll(status().isCreated(), jsonPath("$.name").value("Test Exercise"),
 					jsonPath("$.description").value("This is a test exercise."));
 	}
@@ -66,20 +57,12 @@ public class ExerciseControllerTest {
 	@DisplayName("POST - /api/exercises - Non-admin user should get 403 Forbidden")
 	void createExerciseAsUserShouldForbid() throws Exception {
 		Utils.setUserContext(1);
-		ExerciseCreateDto request = new ExerciseCreateDto();
-		request.setName("Test Exercise");
-		request.setDescription("This is a test exercise.");
-		request.setEquipmentId(1);
-		request.setExpertiseLevelId(1);
-		request.setMechanicsTypeId(1);
-		request.setForceTypeId(1);
-		request.setTargetMuscleIds(List.of(1));
-		request.setInstructions(Collections.emptyList());
-		request.setTips(Collections.emptyList());
+		ExerciseCreateDto requestDto = new ExerciseCreateDto("Test Exercise", "This is a test exercise.", 1, 1, 1, 1,
+				List.of(1), List.of(), List.of());
 
 		mockMvc
 			.perform(post("/api/exercises").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request)))
+				.content(objectMapper.writeValueAsString(requestDto)))
 			.andExpect(status().isForbidden());
 	}
 
@@ -112,8 +95,6 @@ public class ExerciseControllerTest {
 		Utils.setUserContext(1);
 		ExerciseUpdateDto updateDto = new ExerciseUpdateDto();
 		updateDto.setName("Updated Exercise");
-		updateDto.setDescription("This is an updated test exercise.");
-		updateDto.setEquipmentId(2);
 
 		mockMvc
 			.perform(patch("/api/exercises/1").contentType(MediaType.APPLICATION_JSON)
@@ -127,8 +108,6 @@ public class ExerciseControllerTest {
 		Utils.setAdminContext(1);
 		ExerciseUpdateDto updateDto = new ExerciseUpdateDto();
 		updateDto.setName("Updated Exercise");
-		updateDto.setDescription("This is an updated test exercise.");
-		updateDto.setEquipmentId(2);
 
 		mockMvc
 			.perform(patch("/api/exercises/999").contentType(MediaType.APPLICATION_JSON)
@@ -143,7 +122,6 @@ public class ExerciseControllerTest {
 		Utils.setAdminContext(1);
 
 		mockMvc.perform(delete("/api/exercises/5")).andExpect(status().isNoContent());
-
 		mockMvc.perform(get("/api/exercises/5")).andExpect(status().isNotFound());
 	}
 

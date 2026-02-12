@@ -54,8 +54,7 @@ public class PasswordResetControllerTest {
 	@Test
 	@DisplayName("POST - /request - Should send password reset email for existing user")
 	void requestPasswordReset_Success() throws Exception {
-		PasswordResetRequestDto request = new PasswordResetRequestDto();
-		request.setEmail("user1@example.com");
+		PasswordResetRequestDto request = new PasswordResetRequestDto("user1@example.com");
 
 		mockMvc
 			.perform(post("/api/password-reset/request").contentType(MediaType.APPLICATION_JSON)
@@ -68,8 +67,7 @@ public class PasswordResetControllerTest {
 	@Test
 	@DisplayName("POST - /request - Should return 404 for non-existent user")
 	void requestPasswordReset_UserNotFound() throws Exception {
-		PasswordResetRequestDto request = new PasswordResetRequestDto();
-		request.setEmail("nonexistent@example.com");
+		PasswordResetRequestDto request = new PasswordResetRequestDto("nonexistent@example.com");
 
 		mockMvc
 			.perform(post("/api/password-reset/request").contentType(MediaType.APPLICATION_JSON)
@@ -82,8 +80,7 @@ public class PasswordResetControllerTest {
 	@Test
 	@DisplayName("POST - /request - Should return 400 for invalid email")
 	void requestPasswordReset_InvalidEmail() throws Exception {
-		PasswordResetRequestDto request = new PasswordResetRequestDto();
-		request.setEmail("invalid-email");
+		PasswordResetRequestDto request = new PasswordResetRequestDto("invalid-email");
 
 		mockMvc
 			.perform(post("/api/password-reset/request").contentType(MediaType.APPLICATION_JSON)
@@ -96,12 +93,8 @@ public class PasswordResetControllerTest {
 	@Test
 	@DisplayName("POST - /reset - Should reset password with valid token")
 	void resetPassword_Success() throws Exception {
-
 		String token = jwtService.createSignedJWT("user1@example.com", 1, Collections.emptyList(), 20, "resetToken");
-
-		PasswordResetDto resetDto = new PasswordResetDto();
-		resetDto.setToken(token);
-		resetDto.setNewPassword("NewPassword123!");
+		PasswordResetDto resetDto = new PasswordResetDto(token, "NewPassword123!");
 
 		mockMvc
 			.perform(post("/api/password-reset/reset").contentType(MediaType.APPLICATION_JSON)
@@ -117,9 +110,7 @@ public class PasswordResetControllerTest {
 	@Test
 	@DisplayName("POST - /reset - Should return 401 for invalid token")
 	void resetPassword_InvalidToken() throws Exception {
-		PasswordResetDto resetDto = new PasswordResetDto();
-		resetDto.setToken("invalid-token");
-		resetDto.setNewPassword("NewPassword123!");
+		PasswordResetDto resetDto = new PasswordResetDto("invalid-token", "NewPassword123!");
 
 		mockMvc
 			.perform(post("/api/password-reset/reset").contentType(MediaType.APPLICATION_JSON)
@@ -133,10 +124,7 @@ public class PasswordResetControllerTest {
 	@DisplayName("POST - /reset - Should return 401 for expired token")
 	void resetPassword_ExpiredToken() throws Exception {
 		String token = jwtService.createSignedJWT("user1@example.com", 1, Collections.emptyList(), -1, "resetToken");
-
-		PasswordResetDto resetDto = new PasswordResetDto();
-		resetDto.setToken(token);
-		resetDto.setNewPassword("NewPassword123!");
+		PasswordResetDto resetDto = new PasswordResetDto(token, "NewPassword123!");
 
 		mockMvc
 			.perform(post("/api/password-reset/reset").contentType(MediaType.APPLICATION_JSON)
@@ -150,10 +138,7 @@ public class PasswordResetControllerTest {
 	@DisplayName("POST - /reset - Should return 401 for wrong token type")
 	void resetPassword_WrongTokenType() throws Exception {
 		String token = jwtService.createAccessToken("user1@example.com", 1, Collections.singletonList("ROLE_USER"));
-
-		PasswordResetDto resetDto = new PasswordResetDto();
-		resetDto.setToken(token);
-		resetDto.setNewPassword("NewPassword123!");
+		PasswordResetDto resetDto = new PasswordResetDto(token, "NewPassword123!");
 
 		mockMvc
 			.perform(post("/api/password-reset/reset").contentType(MediaType.APPLICATION_JSON)
@@ -167,10 +152,7 @@ public class PasswordResetControllerTest {
 	@DisplayName("POST - /reset - Should return 400 for weak password")
 	void resetPassword_WeakPassword() throws Exception {
 		String token = jwtService.createSignedJWT("user1@example.com", 1, Collections.emptyList(), 20, "resetToken");
-
-		PasswordResetDto resetDto = new PasswordResetDto();
-		resetDto.setToken(token);
-		resetDto.setNewPassword("weak");
+		PasswordResetDto resetDto = new PasswordResetDto(token, "weak");
 
 		mockMvc
 			.perform(post("/api/password-reset/reset").contentType(MediaType.APPLICATION_JSON)
@@ -185,10 +167,7 @@ public class PasswordResetControllerTest {
 	void resetPassword_UserNotFoundInToken() throws Exception {
 		String token = jwtService.createSignedJWT("nonexistent@example.com", 999, Collections.emptyList(), 20,
 				"resetToken");
-
-		PasswordResetDto resetDto = new PasswordResetDto();
-		resetDto.setToken(token);
-		resetDto.setNewPassword("NewPassword123!");
+		PasswordResetDto resetDto = new PasswordResetDto(token, "NewPassword123!");
 
 		mockMvc
 			.perform(post("/api/password-reset/reset").contentType(MediaType.APPLICATION_JSON)

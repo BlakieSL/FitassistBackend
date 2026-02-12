@@ -55,9 +55,10 @@ public class RecipeControllerFilterTest {
 	void filterPrivateRecipesByCategory() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("CATEGORY", 1, FilterOperation.EQUAL, false);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(3)));
 	}
 
@@ -67,9 +68,10 @@ public class RecipeControllerFilterTest {
 	void filterRecipesByCategory() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("CATEGORY", 1, FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(2)));
 	}
 
@@ -79,9 +81,10 @@ public class RecipeControllerFilterTest {
 	void filterRecipesByCategoryNotEqual() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("CATEGORY", 1, FilterOperation.NOT_EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(2)));
 	}
 
@@ -91,9 +94,10 @@ public class RecipeControllerFilterTest {
 	void filterRecipesByFood() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("FOODS", 2, FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(2)),
 					jsonPath("$.content[*].name", containsInAnyOrder("Grilled Chicken", "Chicken Rice Bowl")),
 					jsonPath("$.content[*].foods[?(@.id == 2)].name", everyItem(is("Chicken Breast"))));
@@ -105,9 +109,10 @@ public class RecipeControllerFilterTest {
 	void filterRecipesByFoodNotEqual() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("FOODS", 2, FilterOperation.NOT_EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(2)));
 	}
 
@@ -117,9 +122,10 @@ public class RecipeControllerFilterTest {
 	void filterRecipesBySave() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("SAVE", 0, FilterOperation.GREATER_THAN);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(2)));
 	}
 
@@ -129,55 +135,11 @@ public class RecipeControllerFilterTest {
 	void filterRecipesByLike() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("LIKE", 1, FilterOperation.LESS_THAN_EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(4)));
-	}
-
-	@RecipeSql
-	@Test
-	@DisplayName("POST - /filter - Should return 400, when invalid filter key")
-	void filterRecipesInvalidKey() throws Exception {
-		Utils.setUserContext(1);
-		FilterDto filterDto = buildFilterDto("INVALID_KEY", "value", FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
-
-		mockMvc.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON).content(json))
-			.andExpectAll(status().isBadRequest());
-	}
-
-	@RecipeSql
-	@Test
-	@DisplayName("POST - /filter - Should return 400, when invalid filter value")
-	void filterRecipesInvalidValue() throws Exception {
-		Utils.setUserContext(1);
-		FilterDto filterDto = buildFilterDto("CATEGORY", "invalid", FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
-
-		mockMvc.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON).content(json))
-			.andExpectAll(status().isBadRequest());
-	}
-
-	@RecipeSql
-	@Test
-	@DisplayName("POST - /filter - Should return 400, when invalid filter operation")
-	void filterRecipesInvalidOperation() throws Exception {
-		Utils.setUserContext(1);
-
-		String requestJson = """
-				{
-				    "filterCriteria": [{
-				        "filterKey": "CATEGORY",
-				        "value": 1,
-				        "operation": "CONTAINS"
-				    }],
-				    "dataOption": "AND"
-				}
-				""";
-
-		mockMvc.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON).content(requestJson))
-			.andExpectAll(status().isBadRequest());
 	}
 
 	@RecipeSql
@@ -186,9 +148,10 @@ public class RecipeControllerFilterTest {
 	void filterRecipesCreatedByUser1() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("CREATED_BY_USER", 1, FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(2)),
 					jsonPath("$.content[*].name", containsInAnyOrder("Vegetable Stir Fry", "Grilled Chicken")));
 	}
@@ -199,10 +162,57 @@ public class RecipeControllerFilterTest {
 	void filterRecipesCreatedByUserNoResults() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("CREATED_BY_USER", 999, FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(0)));
+	}
+
+	@RecipeSql
+	@Test
+	@DisplayName("POST - /filter - Should return 400, when invalid filter key")
+	void filterRecipesInvalidKey() throws Exception {
+		Utils.setUserContext(1);
+		FilterDto filterDto = buildFilterDto("INVALID_KEY", "value", FilterOperation.EQUAL);
+
+		mockMvc
+			.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
+			.andExpectAll(status().isBadRequest());
+	}
+
+	@RecipeSql
+	@Test
+	@DisplayName("POST - /filter - Should return 400, when invalid filter value")
+	void filterRecipesInvalidValue() throws Exception {
+		Utils.setUserContext(1);
+		FilterDto filterDto = buildFilterDto("CATEGORY", "invalid", FilterOperation.EQUAL);
+
+		mockMvc
+			.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
+			.andExpectAll(status().isBadRequest());
+	}
+
+	@RecipeSql
+	@Test
+	@DisplayName("POST - /filter - Should return 400, when invalid filter operation")
+	void filterRecipesInvalidOperation() throws Exception {
+		Utils.setUserContext(1);
+		String filterDto = """
+				{
+				    "filterCriteria": [{
+				        "filterKey": "CATEGORY",
+				        "value": 1,
+				        "operation": "CONTAINS"
+				    }],
+				    "dataOption": "AND"
+				}
+				""";
+
+		mockMvc.perform(post("/api/recipes/filter").contentType(MediaType.APPLICATION_JSON).content(filterDto))
+			.andExpectAll(status().isBadRequest());
 	}
 
 }

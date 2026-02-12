@@ -41,9 +41,7 @@ public class CommentControllerTest {
 	@DisplayName("POST - / - Should create a comment")
 	public void createComment() throws Exception {
 		Utils.setUserContext(1);
-		CommentCreateDto requestBody = new CommentCreateDto();
-		requestBody.setText("This is a test comment");
-		requestBody.setThreadId(1);
+		CommentCreateDto requestBody = new CommentCreateDto("This is a test comment", 1, null);
 
 		mockMvc
 			.perform(post("/api/comments").contentType(MediaType.APPLICATION_JSON)
@@ -56,12 +54,11 @@ public class CommentControllerTest {
 	@DisplayName("PATCH - /{commentId} - Should update a comment when admin")
 	public void updateComment() throws Exception {
 		Utils.setAdminContext(1);
-		CommentUpdateDto updateDto = new CommentUpdateDto();
-		updateDto.setText("Updated comment text");
+		CommentUpdateDto updateDto = new CommentUpdateDto("Updated comment text");
 
 		mockMvc
 			.perform(patch("/api/comments/1").content(objectMapper.writeValueAsString(updateDto))
-				.contentType("application/merge-patch+json"))
+				.contentType(MediaType.APPLICATION_JSON))
 			.andExpectAll(status().isNoContent());
 	}
 
@@ -70,12 +67,11 @@ public class CommentControllerTest {
 	@DisplayName("PATCH - /{commentId} - Should update a comment when owner")
 	public void updateCommentAsOwner() throws Exception {
 		Utils.setUserContext(2);
-		CommentUpdateDto updateDto = new CommentUpdateDto();
-		updateDto.setText("Updated comment text");
+		CommentUpdateDto updateDto = new CommentUpdateDto("Updated comment text");
 
 		mockMvc
 			.perform(patch("/api/comments/1").content(objectMapper.writeValueAsString(updateDto))
-				.contentType("application/merge-patch+json"))
+				.contentType(MediaType.APPLICATION_JSON))
 			.andExpectAll(status().isNoContent());
 	}
 
@@ -83,12 +79,11 @@ public class CommentControllerTest {
 	@DisplayName("PATCH - /{commentId} - Should return 404 when comment does not exist")
 	public void updateCommentNotFound() throws Exception {
 		Utils.setUserContext(1);
-		CommentUpdateDto updateDto = new CommentUpdateDto();
-		updateDto.setText("Updated comment text");
+		CommentUpdateDto updateDto = new CommentUpdateDto("Updated comment text");
 
 		mockMvc
 			.perform(patch("/api/comments/999").content(objectMapper.writeValueAsString(updateDto))
-				.contentType("application/merge-patch+json"))
+				.contentType(MediaType.APPLICATION_JSON))
 			.andExpectAll(status().isNotFound());
 	}
 
@@ -97,12 +92,11 @@ public class CommentControllerTest {
 	@DisplayName("PATCH - /{commentId} - Should return 403 when not owner or admin")
 	public void updateCommentNotOwnerOrAdmin() throws Exception {
 		Utils.setUserContext(3);
-		CommentUpdateDto updateDto = new CommentUpdateDto();
-		updateDto.setText("Updated comment text");
+		CommentUpdateDto updateDto = new CommentUpdateDto("Updated comment text");
 
 		mockMvc
 			.perform(patch("/api/comments/1").content(objectMapper.writeValueAsString(updateDto))
-				.contentType("application/merge-patch+json"))
+				.contentType(MediaType.APPLICATION_JSON))
 			.andExpectAll(status().isForbidden());
 	}
 

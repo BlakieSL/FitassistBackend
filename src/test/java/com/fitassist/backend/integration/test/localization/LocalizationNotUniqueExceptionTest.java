@@ -28,7 +28,7 @@ public class LocalizationNotUniqueExceptionTest {
 
 	@Test
 	@DisplayName("Test NotUniqueRecordException localization - en")
-	public void testNotUniqueRecordExceptionEn() throws Exception {
+	public void testNotUniqueRecordExceptionEn() {
 		LocaleContextHolder.setLocale(Locale.ENGLISH);
 
 		try {
@@ -41,7 +41,7 @@ public class LocalizationNotUniqueExceptionTest {
 
 	@Test
 	@DisplayName("Test NotUniqueRecordException localization - pl")
-	public void testNotUniqueRecordExceptionPl() throws Exception {
+	public void testNotUniqueRecordExceptionPl() {
 		LocaleContextHolder.setLocale(Locale.forLanguageTag("pl"));
 
 		try {
@@ -54,7 +54,7 @@ public class LocalizationNotUniqueExceptionTest {
 
 	@Test
 	@DisplayName("Test NotUniqueRecordException localization - ru")
-	public void testNotUniqueRecordExceptionRu() throws Exception {
+	public void testNotUniqueRecordExceptionRu() {
 		LocaleContextHolder.setLocale(Locale.forLanguageTag("ru"));
 
 		try {

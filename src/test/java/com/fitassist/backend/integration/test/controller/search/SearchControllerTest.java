@@ -31,9 +31,6 @@ public class SearchControllerTest {
 	private MockMvc mockMvc;
 
 	@Autowired
-	private ObjectMapper objectMapper;
-
-	@Autowired
 	private LuceneInitialLoadService luceneInitialLoadService;
 
 	@AfterEach

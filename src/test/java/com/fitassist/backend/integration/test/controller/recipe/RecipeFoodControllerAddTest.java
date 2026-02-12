@@ -40,7 +40,6 @@ public class RecipeFoodControllerAddTest {
 	@DisplayName("POST - /add - Should add food to recipe, When user is owner")
 	void addFoodToRecipe() throws Exception {
 		Utils.setUserContext(1);
-
 		RecipeFoodCreateDto request = new RecipeFoodCreateDto(
 				List.of(new RecipeFoodCreateDto.FoodQuantityPair(1, BigDecimal.valueOf(100))));
 
@@ -55,7 +54,6 @@ public class RecipeFoodControllerAddTest {
 	@DisplayName("POST - /add - Should add food to recipe, When user is admin")
 	void addFoodToRecipeAsAdmin() throws Exception {
 		Utils.setAdminContext(2);
-
 		RecipeFoodCreateDto request = new RecipeFoodCreateDto(
 				List.of(new RecipeFoodCreateDto.FoodQuantityPair(1, BigDecimal.valueOf(100))));
 
@@ -70,7 +68,6 @@ public class RecipeFoodControllerAddTest {
 	@DisplayName("POST - /add - Should add multiple foods to recipe, When user is owner")
 	void addMultipleFoodsToRecipe() throws Exception {
 		Utils.setUserContext(1);
-
 		RecipeFoodCreateDto request = new RecipeFoodCreateDto(
 				List.of(new RecipeFoodCreateDto.FoodQuantityPair(1, BigDecimal.valueOf(100)),
 						new RecipeFoodCreateDto.FoodQuantityPair(2, BigDecimal.valueOf(150))));
@@ -86,7 +83,6 @@ public class RecipeFoodControllerAddTest {
 	@DisplayName("POST - /add - Should return 403, When user is not owner or admin")
 	void addFoodToRecipeNotOwnerOrAdmin() throws Exception {
 		Utils.setUserContext(3);
-
 		RecipeFoodCreateDto request = new RecipeFoodCreateDto(
 				List.of(new RecipeFoodCreateDto.FoodQuantityPair(1, BigDecimal.valueOf(100))));
 
@@ -101,7 +97,6 @@ public class RecipeFoodControllerAddTest {
 	@DisplayName("POST - /add - Should return 404, When recipe does not exist")
 	void addFoodToRecipeNotFound() throws Exception {
 		Utils.setAdminContext(2);
-
 		RecipeFoodCreateDto request = new RecipeFoodCreateDto(
 				List.of(new RecipeFoodCreateDto.FoodQuantityPair(1, BigDecimal.valueOf(100))));
 
@@ -116,7 +111,6 @@ public class RecipeFoodControllerAddTest {
 	@DisplayName("POST - /add - Should return 404, When food does not exist")
 	void addFoodToRecipeFoodNotFound() throws Exception {
 		Utils.setAdminContext(2);
-
 		RecipeFoodCreateDto request = new RecipeFoodCreateDto(
 				List.of(new RecipeFoodCreateDto.FoodQuantityPair(999, BigDecimal.valueOf(100))));
 
@@ -131,7 +125,6 @@ public class RecipeFoodControllerAddTest {
 	@DisplayName("POST - /add - Should return 409, When food is already added to recipe")
 	void addFoodToRecipeAlreadyAdded() throws Exception {
 		Utils.setUserContext(1);
-
 		RecipeFoodCreateDto request = new RecipeFoodCreateDto(
 				List.of(new RecipeFoodCreateDto.FoodQuantityPair(1, BigDecimal.valueOf(100))));
 
