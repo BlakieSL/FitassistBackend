@@ -76,11 +76,8 @@ public class DailyActivityControllerTest {
 	@DisplayName("POST - /add/{activityId} - Should add a daily activity to the user's cart")
 	void addDailyActivityToUser() throws Exception {
 		Utils.setUserContext(1);
-
-		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
-		request.setTime((short) 30);
-		request.setWeight(BigDecimal.valueOf(75.5));
-		request.setDate(LocalDate.of(2023, 10, 6));
+		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto((short) 30, BigDecimal.valueOf(75.5),
+				LocalDate.of(2023, 10, 6));
 
 		mockMvc
 			.perform(post("/api/daily-activities/add/3").contentType(MediaType.APPLICATION_JSON)
@@ -93,11 +90,8 @@ public class DailyActivityControllerTest {
 	@DisplayName("POST - /add/{activityId} - Should increase time if activity already exists")
 	void addDailyActivityToUserAlreadyExists() throws Exception {
 		Utils.setUserContext(1);
-
-		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
-		request.setTime((short) 20);
-		request.setWeight(BigDecimal.valueOf(72.0));
-		request.setDate(LocalDate.of(2023, 10, 5));
+		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto((short) 20, BigDecimal.valueOf(72.0),
+				LocalDate.of(2023, 10, 5));
 
 		mockMvc
 			.perform(post("/api/daily-activities/add/1").contentType(MediaType.APPLICATION_JSON)
@@ -115,11 +109,8 @@ public class DailyActivityControllerTest {
 	@DisplayName("POST - /add/{activityId} - Should return 404 when activity does not exist")
 	void addDailyActivityToUserNotFound() throws Exception {
 		Utils.setUserContext(1);
-
-		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
-		request.setTime((short) 30);
-		request.setWeight(BigDecimal.valueOf(75.0));
-		request.setDate(LocalDate.of(2023, 10, 6));
+		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto((short) 30, BigDecimal.valueOf(75.5),
+				LocalDate.of(2023, 10, 6));
 
 		mockMvc
 			.perform(post("/api/daily-activities/add/999").contentType(MediaType.APPLICATION_JSON)
@@ -132,10 +123,7 @@ public class DailyActivityControllerTest {
 	@DisplayName("PATCH - /modify-activity/{activityId} - Should update daily activity item")
 	void updateDailyCartActivity() throws Exception {
 		Utils.setUserContext(1);
-
-		DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
-		updateDto.setTime((short) 40);
-		updateDto.setWeight(BigDecimal.valueOf(80.0));
+		DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto((short) 40, BigDecimal.valueOf(80.0));
 
 		mockMvc
 			.perform(patch("/api/daily-activities/modify-activity/1").contentType(MediaType.APPLICATION_JSON)
@@ -153,7 +141,6 @@ public class DailyActivityControllerTest {
 	@DisplayName("PATCH - /modify-activity/{activityId} - Should return 404 when daily activity item does not exist")
 	void updateDailyCartActivityNotFound() throws Exception {
 		Utils.setUserContext(1);
-
 		DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
 
 		mockMvc
@@ -167,9 +154,7 @@ public class DailyActivityControllerTest {
 	@DisplayName("PATCH - /modify-activity/{activityId} - Should return 400 when patch is invalid")
 	void updateDailyCartActivityInvalidPatch() throws Exception {
 		Utils.setUserContext(1);
-
-		DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
-		updateDto.setTime((short) -10);
+		DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto((short) -10, null);
 
 		mockMvc
 			.perform(patch("/api/daily-activities/modify-activity/1").contentType(MediaType.APPLICATION_JSON)
@@ -182,9 +167,7 @@ public class DailyActivityControllerTest {
 	@DisplayName("PATCH - /modify-activity/{activityId} - Should return 403 when user is not owner")
 	void updateNotOwnerAdmin() throws Exception {
 		Utils.setUserContext(2);
-
-		DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto();
-		updateDto.setTime((short) 40);
+		DailyActivityItemUpdateDto updateDto = new DailyActivityItemUpdateDto((short) 40, null);
 
 		mockMvc
 			.perform(patch("/api/daily-activities/modify-activity/1").contentType(MediaType.APPLICATION_JSON)
@@ -209,7 +192,6 @@ public class DailyActivityControllerTest {
 	@DisplayName("DELETE - /remove/{dailyActivityItemId} - Should return 404 when daily activity item does not exist")
 	void removeActivityFromDailyCartActivityNotFound() throws Exception {
 		Utils.setUserContext(1);
-
 		mockMvc.perform(delete("/api/daily-activities/remove/999")).andExpect(status().isNotFound());
 	}
 
@@ -218,7 +200,6 @@ public class DailyActivityControllerTest {
 	@DisplayName("DELETE - /remove/{dailyActivityItemId} - Should return 403 when user is not owner")
 	void removeNotOwnerAdmin() throws Exception {
 		Utils.setUserContext(2);
-
 		mockMvc.perform(delete("/api/daily-activities/remove/1")).andExpect(status().isForbidden());
 	}
 
@@ -227,10 +208,8 @@ public class DailyActivityControllerTest {
 	@DisplayName("POST - /add/{activityId} - Should return 400 when weight is not provided and user has no weight")
 	void addDailyActivityNoWeightAvailable() throws Exception {
 		Utils.setUserContext(2);
-
-		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto();
-		request.setTime((short) 30);
-		request.setDate(LocalDate.of(2023, 10, 6));
+		DailyActivityItemCreateDto request = new DailyActivityItemCreateDto((short) 30, null,
+				LocalDate.of(2023, 10, 6));
 
 		mockMvc
 			.perform(post("/api/daily-activities/add/3").contentType(MediaType.APPLICATION_JSON)

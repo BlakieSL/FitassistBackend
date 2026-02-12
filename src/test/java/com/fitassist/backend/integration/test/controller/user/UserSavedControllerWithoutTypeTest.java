@@ -30,9 +30,6 @@ public class UserSavedControllerWithoutTypeTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@Autowired
-	private ObjectMapper objectMapper;
-
 	@WithMockUser
 	@UserSavedSql
 	@Test
@@ -83,7 +80,6 @@ public class UserSavedControllerWithoutTypeTest {
 	@DisplayName("POST - /item-type/{itemType}/{itemId} - Should save an item to user")
 	void saveToUser() throws Exception {
 		Utils.setUserContext(1);
-
 		mockMvc.perform(post("/api/user-saved/item-type/EXERCISE/2")).andExpectAll(status().isCreated());
 	}
 
@@ -92,7 +88,6 @@ public class UserSavedControllerWithoutTypeTest {
 	@DisplayName("POST - /item-type/{itemType}/{itemId} - Should return 409 when item already saved")
 	void saveToUserAlreadySaved() throws Exception {
 		Utils.setUserContext(1);
-
 		mockMvc.perform(post("/api/user-saved/item-type/EXERCISE/1")).andExpectAll(status().isConflict());
 	}
 
@@ -101,7 +96,6 @@ public class UserSavedControllerWithoutTypeTest {
 	@DisplayName("POST - /item-type/{itemType}/{itemId}- Should return 404 when item not found")
 	void saveToUserNotFound() throws Exception {
 		Utils.setUserContext(1);
-
 		mockMvc.perform(post("/api/user-saved/item-type/EXERCISE/999")).andExpectAll(status().isNotFound());
 	}
 
@@ -110,7 +104,6 @@ public class UserSavedControllerWithoutTypeTest {
 	@DisplayName("DELETE - /item-type/{itemType}/{itemId} - Should delete an item from user")
 	void deleteFromUser() throws Exception {
 		Utils.setUserContext(1);
-
 		mockMvc.perform(delete("/api/user-saved/item-type/EXERCISE/1")).andExpectAll(status().isOk());
 	}
 
@@ -119,7 +112,6 @@ public class UserSavedControllerWithoutTypeTest {
 	@DisplayName("DELETE - /item-type/{itemType}/{itemId} - Should return 404 when item not found")
 	void deleteFromUserNotFound() throws Exception {
 		Utils.setUserContext(1);
-
 		mockMvc.perform(delete("/api/user-saved/item-type/EXERCISE/999")).andExpectAll(status().isNotFound());
 	}
 

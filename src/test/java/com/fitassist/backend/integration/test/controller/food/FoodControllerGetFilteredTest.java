@@ -198,7 +198,7 @@ public class FoodControllerGetFilteredTest {
 	@Test
 	@DisplayName("POST - /filter - Should return 400 when operation is invalid")
 	void getFilteredFoodsByInvalidOperation() throws Exception {
-		String requestJson = """
+		String filterDto = """
 				{
 				    "filterCriteria": [{
 				        "filterKey": "CALORIES",
@@ -209,7 +209,7 @@ public class FoodControllerGetFilteredTest {
 				}
 				""";
 
-		mockMvc.perform(post("/api/foods/filter").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+		mockMvc.perform(post("/api/foods/filter").contentType(MediaType.APPLICATION_JSON).content(filterDto))
 			.andExpectAll(status().isBadRequest());
 	}
 

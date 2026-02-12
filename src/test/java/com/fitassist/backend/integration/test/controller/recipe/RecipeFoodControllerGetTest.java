@@ -29,15 +29,11 @@ public class RecipeFoodControllerGetTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@Autowired
-	private ObjectMapper objectMapper;
-
 	@RecipeFoodSql
 	@Test
 	@DisplayName("GET - /{recipeId}/foods - Should get foods by recipe when owner")
 	void getFoodsByRecipe_ShouldReturnFoodsWhenOwner() throws Exception {
 		Utils.setUserContext(1);
-
 		mockMvc.perform(get("/api/recipe-food/1/foods")).andExpectAll(status().isOk(), jsonPath("$", hasSize(1)));
 	}
 
@@ -46,7 +42,6 @@ public class RecipeFoodControllerGetTest {
 	@DisplayName("GET - /{recipeId}/foods - Should get foods by recipe when admin")
 	void getFoodsByRecipe_ShouldReturnFoodsWhenAdmin() throws Exception {
 		Utils.setAdminContext(2);
-
 		mockMvc.perform(get("/api/recipe-food/1/foods")).andExpectAll(status().isOk(), jsonPath("$", hasSize(1)));
 	}
 
@@ -55,7 +50,6 @@ public class RecipeFoodControllerGetTest {
 	@DisplayName("GET - /{recipeId}/foods - Should get foods by recipe when public")
 	void getFoodsByRecipe_ShouldReturnFoodsWhenPublic() throws Exception {
 		Utils.setUserContext(1);
-
 		mockMvc.perform(get("/api/recipe-food/1/foods")).andExpectAll(status().isOk(), jsonPath("$", hasSize(1)));
 	}
 
@@ -64,7 +58,6 @@ public class RecipeFoodControllerGetTest {
 	@DisplayName("GET - /{recipeId}/foods - Should return 403 when not owner or admin")
 	void getFoodsByRecipe_ShouldReturnForbiddenWhenNotOwnerOrAdmin() throws Exception {
 		Utils.setUserContext(3);
-
 		mockMvc.perform(get("/api/recipe-food/4/foods")).andExpectAll(status().isForbidden());
 	}
 

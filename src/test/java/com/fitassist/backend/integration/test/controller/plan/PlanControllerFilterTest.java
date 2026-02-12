@@ -42,12 +42,12 @@ public class PlanControllerFilterTest {
 
 	private FilterDto buildFilterDto(String filterKey, Object value, FilterOperation operation) {
 		FilterCriteria criteria = FilterCriteria.of(filterKey, value, operation);
-		return FilterDto.of(new ArrayList<>(List.of(criteria)), FilterDataOption.AND);
+		return FilterDto.of(List.of(criteria), FilterDataOption.AND);
 	}
 
 	private FilterDto buildFilterDto(String filterKey, Object value, FilterOperation operation, Boolean isPublic) {
 		FilterCriteria criteria = FilterCriteria.of(filterKey, value, operation, isPublic);
-		return FilterDto.of(new ArrayList<>(List.of(criteria)), FilterDataOption.AND);
+		return FilterDto.of(List.of(criteria), FilterDataOption.AND);
 	}
 
 	@PlanSql
@@ -56,9 +56,10 @@ public class PlanControllerFilterTest {
 	void filterPrivatePlansByStructureType() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("STRUCTURE_TYPE", "WEEKLY_SPLIT", FilterOperation.EQUAL, false);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(3)));
 	}
 
@@ -68,9 +69,10 @@ public class PlanControllerFilterTest {
 	void filterPlansByPlanStructureType() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("STRUCTURE_TYPE", "WEEKLY_SPLIT", FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(2)));
 	}
 
@@ -80,9 +82,10 @@ public class PlanControllerFilterTest {
 	void filterPlansByPlanCategory() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("CATEGORY", 1, FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(1)),
 					jsonPath("$.content[0].name", is("Beginner Strength")),
 					jsonPath("$.content[*].categories[?(@.id == 1)].name", everyItem(is("Strength Training"))));
@@ -94,9 +97,10 @@ public class PlanControllerFilterTest {
 	void filterPlansByPlanCategoryNotEqual() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("CATEGORY", 1, FilterOperation.NOT_EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(3)));
 	}
 
@@ -106,9 +110,10 @@ public class PlanControllerFilterTest {
 	void filterPlansByPlanLike() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("LIKE", 0, FilterOperation.GREATER_THAN);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(2)));
 	}
 
@@ -118,9 +123,10 @@ public class PlanControllerFilterTest {
 	void filterPlansByPlanSave() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("SAVE", 1, FilterOperation.LESS_THAN_EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(4)));
 	}
 
@@ -130,55 +136,11 @@ public class PlanControllerFilterTest {
 	void filterPlansByPlanEquipment() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("EQUIPMENT", 1, FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(2)));
-	}
-
-	@PlanSql
-	@Test
-	@DisplayName("POST - /filter - Should return 400, when invalid filter key")
-	void filterPlansInvalidFilterKey() throws Exception {
-		Utils.setUserContext(1);
-		FilterDto filterDto = buildFilterDto("invalidKey", "value", FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
-
-		mockMvc.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON).content(json))
-			.andExpect(status().isBadRequest());
-	}
-
-	@PlanSql
-	@Test
-	@DisplayName("POST - /filter - Should return 400, when invalid filter value")
-	void filterPlansInvalidFilterValue() throws Exception {
-		Utils.setUserContext(1);
-		FilterDto filterDto = buildFilterDto("STRUCTURE_TYPE", "invalidValue", FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
-
-		mockMvc.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON).content(json))
-			.andExpect(status().isBadRequest());
-	}
-
-	@PlanSql
-	@Test
-	@DisplayName("POST - /filter - Should return 400, when invalid filter operation")
-	void filterPlansInvalidFilterOperation() throws Exception {
-		Utils.setUserContext(1);
-
-		String requestJson = """
-				{
-				    "filterCriteria": [{
-				        "filterKey": "STRUCTURE_TYPE",
-				        "value": "WEEKLY_SPLIT",
-				        "operation": "CONTAINS"
-				    }],
-				    "dataOption": "AND"
-				}
-				""";
-
-		mockMvc.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON).content(requestJson))
-			.andExpect(status().isBadRequest());
 	}
 
 	@PlanSql
@@ -187,9 +149,10 @@ public class PlanControllerFilterTest {
 	void filterPlansSavedByUser() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("SAVED_BY_USER", 1, FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(1)),
 					jsonPath("$.content[0].name", is("Fat Burner")));
 	}
@@ -200,9 +163,10 @@ public class PlanControllerFilterTest {
 	void filterPlansLikedByUser() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("LIKED_BY_USER", 1, FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(1)),
 					jsonPath("$.content[0].name", is("Cardio Blast")));
 	}
@@ -213,9 +177,10 @@ public class PlanControllerFilterTest {
 	void filterPlansDislikedByUser() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("DISLIKED_BY_USER", 1, FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(1)),
 					jsonPath("$.content[0].name", is("Fat Burner")));
 	}
@@ -226,9 +191,10 @@ public class PlanControllerFilterTest {
 	void filterPlansCreatedByUser1() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("CREATED_BY_USER", 1, FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(2)),
 					jsonPath("$.content[*].name", containsInAnyOrder("Beginner Strength", "Muscle Gain Diet")));
 	}
@@ -239,10 +205,58 @@ public class PlanControllerFilterTest {
 	void filterPlansCreatedByUserNoResults() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("CREATED_BY_USER", 999, FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(0)));
+	}
+
+	@PlanSql
+	@Test
+	@DisplayName("POST - /filter - Should return 400, when invalid filter key")
+	void filterPlansInvalidFilterKey() throws Exception {
+		Utils.setUserContext(1);
+		FilterDto filterDto = buildFilterDto("invalidKey", "value", FilterOperation.EQUAL);
+
+		mockMvc
+			.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
+			.andExpect(status().isBadRequest());
+	}
+
+	@PlanSql
+	@Test
+	@DisplayName("POST - /filter - Should return 400, when invalid filter value")
+	void filterPlansInvalidFilterValue() throws Exception {
+		Utils.setUserContext(1);
+		FilterDto filterDto = buildFilterDto("STRUCTURE_TYPE", "invalidValue", FilterOperation.EQUAL);
+
+		mockMvc
+			.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
+			.andExpect(status().isBadRequest());
+	}
+
+	@PlanSql
+	@Test
+	@DisplayName("POST - /filter - Should return 400, when invalid filter operation")
+	void filterPlansInvalidFilterOperation() throws Exception {
+		Utils.setUserContext(1);
+
+		String filterDto = """
+				{
+				    "filterCriteria": [{
+				        "filterKey": "STRUCTURE_TYPE",
+				        "value": "WEEKLY_SPLIT",
+				        "operation": "CONTAINS"
+				    }],
+				    "dataOption": "AND"
+				}
+				""";
+
+		mockMvc.perform(post("/api/plans/filter").contentType(MediaType.APPLICATION_JSON).content(filterDto))
+			.andExpect(status().isBadRequest());
 	}
 
 }

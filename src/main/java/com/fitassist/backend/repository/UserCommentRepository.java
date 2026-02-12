@@ -39,10 +39,10 @@ public interface UserCommentRepository extends JpaRepository<UserComment, Intege
 			    )
 			    SELECT
 			        c.id as commentId,
-			        COALESCE(SUM(CASE WHEN uc.type = 'LIKE' THEN 1 ELSE 0 END), 0) as likesCount,
-			        COALESCE(SUM(CASE WHEN uc.type = 'DISLIKE' THEN 1 ELSE 0 END), 0) as dislikesCount,
-			        MAX(CASE WHEN uc.type = 'LIKE' AND uc.user_id = :userId THEN 1 ELSE 0 END) as isLiked,
-			        MAX(CASE WHEN uc.type = 'DISLIKE' AND uc.user_id = :userId THEN 1 ELSE 0 END) as isDisliked,
+			        COALESCE(SUM(IF(uc.type = 'LIKE', 1, 0)), 0) as likesCount,
+			        COALESCE(SUM(IF(uc.type = 'DISLIKE', 1, 0)), 0) as dislikesCount,
+			        MAX(IF(uc.type = 'LIKE' AND uc.user_id = :userId, 1, 0)) as isLiked,
+			        MAX(IF(uc.type = 'DISLIKE' AND uc.user_id = :userId, 1, 0)) as isDisliked,
 			        COALESCE(rc.reply_count, 0) as repliesCount
 			    FROM comment c
 			    LEFT JOIN user_comment uc ON uc.comment_id = c.id

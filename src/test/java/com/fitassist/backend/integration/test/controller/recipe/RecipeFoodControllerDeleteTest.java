@@ -27,9 +27,6 @@ public class RecipeFoodControllerDeleteTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@Autowired
-	private ObjectMapper objectMapper;
-
 	@RecipeFoodSql
 	@Test
 	@DisplayName("DELETE - /remove/{receipeId}/{foodId} - Should delete food from recipe, When user is owner")

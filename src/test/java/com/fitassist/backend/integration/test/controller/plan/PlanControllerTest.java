@@ -44,11 +44,8 @@ public class PlanControllerTest {
 	@DisplayName("POST - / - Should create a new plan")
 	void createPlan() throws Exception {
 		Utils.setUserContext(1);
-		PlanCreateDto createDto = new PlanCreateDto();
-		createDto.setName("Test Plan");
-		createDto.setDescription("A test plan description");
-		createDto.setPlanStructureType(PlanStructureType.WEEKLY_SPLIT);
-		createDto.setCategoryIds(List.of(1));
+		PlanCreateDto createDto = new PlanCreateDto("Test Plan", "A test plan description", false,
+				PlanStructureType.WEEKLY_SPLIT, List.of(1), null, null);
 
 		mockMvc
 			.perform(post("/api/plans").contentType(MediaType.APPLICATION_JSON)
@@ -154,7 +151,6 @@ public class PlanControllerTest {
 	@DisplayName("GET - /{id} - Should retrieve an existing plan with all fields")
 	void getPlan() throws Exception {
 		Utils.setUserContext(2);
-
 		mockMvc.perform(get("/api/plans/1"))
 			.andExpectAll(status().isOk(), jsonPath("$.id").value(1), jsonPath("$.name").value("Beginner Strength"),
 					jsonPath("$.description").value("Beginner workout plan"), jsonPath("$.isPublic").value(true),

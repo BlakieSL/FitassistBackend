@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor(staticName = "of")
+@AllArgsConstructor
 @NoArgsConstructor
 public class ComplaintCreateDto {
 

@@ -28,21 +28,18 @@ public class RecipeFoodControllerPatchTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@Autowired
-	private ObjectMapper objectMapper;
-
 	@RecipeFoodSql
 	@Test
 	@DisplayName("PATCH - /{recipeId}/modify/{foodId} - Should update food in recipe when owner")
 	public void updateFoodRecipe_ShouldUpdateFoodInRecipe() throws Exception {
 		Utils.setUserContext(1);
-		String request = """
+		String updateDto = """
 				{
 				    "quantity": 300
 				}
 				""";
 
-		mockMvc.perform(patch("/api/recipe-food/1/modify/1").contentType(MediaType.APPLICATION_JSON).content(request))
+		mockMvc.perform(patch("/api/recipe-food/1/modify/1").contentType(MediaType.APPLICATION_JSON).content(updateDto))
 			.andExpectAll(status().isNoContent());
 	}
 
@@ -51,13 +48,13 @@ public class RecipeFoodControllerPatchTest {
 	@DisplayName("PATCH - /{recipeId}/modify/{foodId} - Should update food in recipe when admin")
 	public void updateFoodRecipe_ShouldUpdateFoodInRecipeWhenAdmin() throws Exception {
 		Utils.setAdminContext(2);
-		String request = """
+		String updateDto = """
 				{
 				    "quantity": 300
 				}
 				""";
 
-		mockMvc.perform(patch("/api/recipe-food/1/modify/1").contentType(MediaType.APPLICATION_JSON).content(request))
+		mockMvc.perform(patch("/api/recipe-food/1/modify/1").contentType(MediaType.APPLICATION_JSON).content(updateDto))
 			.andExpectAll(status().isNoContent());
 	}
 
@@ -66,14 +63,13 @@ public class RecipeFoodControllerPatchTest {
 	@DisplayName("PATCH - /{recipeId}/modify/{foodId} - Should return 403 when not owner or admin")
 	public void updateFoodRecipe_ShouldReturn403WhenNotOwnerOrAdmin() throws Exception {
 		Utils.setUserContext(3);
-
-		String request = """
+		String updateDto = """
 				{
 				    "quantity": 300
 				}
 				""";
 
-		mockMvc.perform(patch("/api/recipe-food/1/modify/1").contentType(MediaType.APPLICATION_JSON).content(request))
+		mockMvc.perform(patch("/api/recipe-food/1/modify/1").contentType(MediaType.APPLICATION_JSON).content(updateDto))
 			.andExpectAll(status().isForbidden());
 	}
 
@@ -82,13 +78,13 @@ public class RecipeFoodControllerPatchTest {
 	@DisplayName("PATCH - /{recipeId}/modify/{foodId} - Should return 404 when recipe food not found")
 	public void updateFoodRecipe_ShouldReturn404WhenRecipeFoodNotFound() throws Exception {
 		Utils.setUserContext(1);
-		String request = """
+		String updateDto = """
 				{
 				    "quantity": 300
 				}
 				""";
 
-		mockMvc.perform(patch("/api/recipe-food/5/modify/9").contentType(MediaType.APPLICATION_JSON).content(request))
+		mockMvc.perform(patch("/api/recipe-food/5/modify/9").contentType(MediaType.APPLICATION_JSON).content(updateDto))
 			.andExpectAll(status().isNotFound());
 	}
 

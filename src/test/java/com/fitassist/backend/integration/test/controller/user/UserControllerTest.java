@@ -43,7 +43,6 @@ public class UserControllerTest {
 	@DisplayName("GET - /{id} - Should retrieve a user by id when owner")
 	void getUser() throws Exception {
 		Utils.setUserContext(1);
-
 		mockMvc.perform(get("/api/users/1"))
 			.andExpectAll(status().isOk(), jsonPath("$.id").value(1), jsonPath("$.username").value("user1"));
 	}
@@ -62,7 +61,6 @@ public class UserControllerTest {
 	@DisplayName("GET - /{id} - Should return 404 when not found")
 	void getNonExistentUser() throws Exception {
 		Utils.setAdminContext(2);
-
 		mockMvc.perform(get("/api/users/999")).andExpect(status().isNotFound());
 	}
 
@@ -71,7 +69,6 @@ public class UserControllerTest {
 	@DisplayName("GET - /{id} - Should return 403 when not owner or admin")
 	void getUserForbidden() throws Exception {
 		Utils.setUserContext(2);
-
 		mockMvc.perform(get("/api/users/1")).andExpect(status().isForbidden());
 	}
 
@@ -82,7 +79,6 @@ public class UserControllerTest {
 	void registerUser() throws Exception {
 		UserCreateDto request = UserCreateDto.of("newUser", "newUser@gmail.com", "Dimas@123", Gender.FEMALE,
 				LocalDate.of(2020, 1, 1));
-
 		mockMvc
 			.perform(post("/api/users/register").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request)))
@@ -112,7 +108,6 @@ public class UserControllerTest {
 	@DisplayName("PATCH - /{id} - Should update user when admin")
 	void updateUserAsAdmin() throws Exception {
 		Utils.setAdminContext(2);
-
 		int id = 1;
 		UserUpdateDto updateDto = new UserUpdateDto();
 		updateDto.setEmail("updated1@gmail.com");
@@ -131,7 +126,6 @@ public class UserControllerTest {
 	@DisplayName("PATCH - /{id} - Should return 403 when not owner or admin")
 	void updateUserForbidden() throws Exception {
 		Utils.setUserContext(3);
-
 		int id = 1;
 		UserUpdateDto updateDto = new UserUpdateDto();
 		updateDto.setUsername("updatedUser1");
@@ -147,7 +141,6 @@ public class UserControllerTest {
 	@DisplayName("PATCH - /{id} - Should return 404 when user not found")
 	void updateUserNotFound() throws Exception {
 		Utils.setAdminContext(1);
-
 		int id = 999;
 		UserUpdateDto updateDto = new UserUpdateDto();
 		updateDto.setUsername("updatedUser1");
@@ -163,7 +156,6 @@ public class UserControllerTest {
 	@DisplayName("PATCH - /{id} - Should return 400 when invalid patch request")
 	void updateUserInvalidPatch() throws Exception {
 		Utils.setUserContext(1);
-
 		int id = 1;
 		UserUpdateDto updateDto = new UserUpdateDto();
 		updateDto.setUsername("updatedUser1updatedUser1updatedUser1updatedUser1");
@@ -179,15 +171,14 @@ public class UserControllerTest {
 	@DisplayName("PATCH - /{id} - Should ignore invalid fields in patch")
 	void updateUserIgnoreInvalidFields() throws Exception {
 		Utils.setUserContext(1);
-
 		int id = 1;
-		String patch = """
+		String updateDto = """
 				{
 				    "invalidFieldName": "updatedUser1"
 				}
 				""";
 
-		mockMvc.perform(patch("/api/users/{id}", id).contentType(MediaType.APPLICATION_JSON).content(patch))
+		mockMvc.perform(patch("/api/users/{id}", id).contentType(MediaType.APPLICATION_JSON).content(updateDto))
 			.andExpectAll(status().isNoContent());
 	}
 
@@ -199,7 +190,6 @@ public class UserControllerTest {
 		int id = 1;
 
 		mockMvc.perform(delete("/api/users/{id}", id)).andExpectAll(status().isNoContent());
-
 		mockMvc.perform(get("/api/users/{id}", id)).andExpect(status().isNotFound());
 	}
 
@@ -211,7 +201,6 @@ public class UserControllerTest {
 		int id = 1;
 
 		mockMvc.perform(delete("/api/users/{id}", id)).andExpectAll(status().isNoContent());
-
 		mockMvc.perform(get("/api/users/{id}", id)).andExpect(status().isNotFound());
 	}
 
@@ -241,7 +230,6 @@ public class UserControllerTest {
 	void updateUserSimple() throws Exception {
 		Utils.setUserContext(1);
 		int id = 1;
-
 		UserUpdateDto updateDto = new UserUpdateDto();
 		updateDto.setUsername("updatedUserPut");
 		updateDto.setEmail("user1@gmail.com");
@@ -263,7 +251,6 @@ public class UserControllerTest {
 	void updateUserSimpleAsAdmin() throws Exception {
 		Utils.setAdminContext(2);
 		int id = 1;
-
 		UserUpdateDto updateDto = new UserUpdateDto();
 		updateDto.setUsername("updatedByAdmin");
 		updateDto.setEmail("adminupdated@gmail.com");
@@ -282,11 +269,29 @@ public class UserControllerTest {
 
 	@UserSql
 	@Test
+	@DisplayName("PUT - /{id} - Should update only provided fields")
+	void updateUserSimplePartialUpdate() throws Exception {
+		Utils.setUserContext(1);
+		int id = 1;
+		UserUpdateDto updateDto = new UserUpdateDto();
+		updateDto.setUsername("partialUpdate");
+
+		mockMvc
+			.perform(put("/api/users/{id}", id).contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(updateDto)))
+			.andExpectAll(status().isNoContent());
+
+		mockMvc.perform(get("/api/users/{id}", id))
+			.andExpectAll(status().isOk(), jsonPath("$.username").value("partialUpdate"),
+					jsonPath("$.email").value("user1@example.com"));
+	}
+
+	@UserSql
+	@Test
 	@DisplayName("PUT - /{id} - Should return 403 when not owner or admin")
 	void updateUserSimpleForbidden() throws Exception {
 		Utils.setUserContext(3);
 		int id = 1;
-
 		UserUpdateDto updateDto = new UserUpdateDto();
 		updateDto.setUsername("shouldNotUpdate");
 
@@ -302,7 +307,6 @@ public class UserControllerTest {
 	void updateUserSimpleNotFound() throws Exception {
 		Utils.setAdminContext(1);
 		int id = 999;
-
 		UserUpdateDto updateDto = new UserUpdateDto();
 		updateDto.setUsername("shouldNotUpdate");
 
@@ -318,7 +322,6 @@ public class UserControllerTest {
 	void updateUserSimpleInvalidData() throws Exception {
 		Utils.setUserContext(1);
 		int id = 1;
-
 		UserUpdateDto updateDto = new UserUpdateDto();
 		updateDto.setUsername("thisUsernameIsWayTooLongAndShouldFailValidation");
 		updateDto.setEmail("invalid-email");
@@ -327,26 +330,6 @@ public class UserControllerTest {
 			.perform(put("/api/users/{id}", id).contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(updateDto)))
 			.andExpectAll(status().isBadRequest());
-	}
-
-	@UserSql
-	@Test
-	@DisplayName("PUT - /{id} - Should update only provided fields")
-	void updateUserSimplePartialUpdate() throws Exception {
-		Utils.setUserContext(1);
-		int id = 1;
-
-		UserUpdateDto updateDto = new UserUpdateDto();
-		updateDto.setUsername("partialUpdate");
-
-		mockMvc
-			.perform(put("/api/users/{id}", id).contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(updateDto)))
-			.andExpectAll(status().isNoContent());
-
-		mockMvc.perform(get("/api/users/{id}", id))
-			.andExpectAll(status().isOk(), jsonPath("$.username").value("partialUpdate"),
-					jsonPath("$.email").value("user1@example.com"));
 	}
 
 }

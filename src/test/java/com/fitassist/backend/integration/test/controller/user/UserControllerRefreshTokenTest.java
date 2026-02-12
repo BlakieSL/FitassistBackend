@@ -106,7 +106,7 @@ public class UserControllerRefreshTokenTest {
 			.build();
 
 		SignedJWT tamperedToken = new SignedJWT(signedJWT.getHeader(), tamperedClaimsSet);
-		tamperedToken.sign(new MACSigner("INVALID_SHARED_KEY_FOR_TESTING_PURPOSE".getBytes()));
+		tamperedToken.sign(new MACSigner("asdfdsafui23piufdksanv;cxapqseoiufiajsdfnasd;fa".getBytes()));
 
 		mockMvc
 			.perform(post("/api/users/refresh-token")

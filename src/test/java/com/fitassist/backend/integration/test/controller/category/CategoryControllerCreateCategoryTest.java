@@ -38,8 +38,8 @@ public class CategoryControllerCreateCategoryTest {
 	@DisplayName("POST /FOOD - Should create a food category")
 	void createFoodCategory() throws Exception {
 		Utils.setAdminContext(1);
-		String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("New Food Category"));
-		mockMvc.perform(post("/api/categories/FOOD").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+		String requestDto = objectMapper.writeValueAsString(new CategoryCreateDto("New Food Category"));
+		mockMvc.perform(post("/api/categories/FOOD").contentType(MediaType.APPLICATION_JSON).content(requestDto))
 			.andExpectAll(status().isCreated(), jsonPath("$.name").value("New Food Category"));
 	}
 
@@ -48,8 +48,8 @@ public class CategoryControllerCreateCategoryTest {
 	@DisplayName("POST /FOOD - Non-admin user should get 403 Forbidden")
 	void createFoodCategoryAsUserShouldForbid() throws Exception {
 		Utils.setUserContext(1);
-		String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("User Food Category"));
-		mockMvc.perform(post("/api/categories/FOOD").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+		String requestDto = objectMapper.writeValueAsString(new CategoryCreateDto("New Food Category"));
+		mockMvc.perform(post("/api/categories/FOOD").contentType(MediaType.APPLICATION_JSON).content(requestDto))
 			.andExpect(status().isForbidden());
 	}
 
@@ -58,8 +58,8 @@ public class CategoryControllerCreateCategoryTest {
 	@DisplayName("POST /ACTIVITY - Should create an activity category")
 	void createActivityCategory() throws Exception {
 		Utils.setAdminContext(1);
-		String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("New Activity Category"));
-		mockMvc.perform(post("/api/categories/ACTIVITY").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+		String requestDto = objectMapper.writeValueAsString(new CategoryCreateDto("New Activity Category"));
+		mockMvc.perform(post("/api/categories/ACTIVITY").contentType(MediaType.APPLICATION_JSON).content(requestDto))
 			.andExpectAll(status().isCreated(), jsonPath("$.name").value("New Activity Category"));
 	}
 
@@ -68,8 +68,8 @@ public class CategoryControllerCreateCategoryTest {
 	@DisplayName("POST /ACTIVITY - Non-admin user should get 403 Forbidden")
 	void createActivityCategoryAsUserShouldForbid() throws Exception {
 		Utils.setUserContext(1);
-		String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("User Activity Category"));
-		mockMvc.perform(post("/api/categories/ACTIVITY").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+		String requestDto = objectMapper.writeValueAsString(new CategoryCreateDto("New Activity Category"));
+		mockMvc.perform(post("/api/categories/ACTIVITY").contentType(MediaType.APPLICATION_JSON).content(requestDto))
 			.andExpect(status().isForbidden());
 	}
 
@@ -78,8 +78,8 @@ public class CategoryControllerCreateCategoryTest {
 	@DisplayName("POST /RECIPE - Should create a recipe category")
 	void createRecipeCategory() throws Exception {
 		Utils.setAdminContext(1);
-		String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("New Recipe Category"));
-		mockMvc.perform(post("/api/categories/RECIPE").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+		String requestDto = objectMapper.writeValueAsString(new CategoryCreateDto("New Recipe Category"));
+		mockMvc.perform(post("/api/categories/RECIPE").contentType(MediaType.APPLICATION_JSON).content(requestDto))
 			.andExpectAll(status().isCreated(), jsonPath("$.name").value("New Recipe Category"));
 	}
 
@@ -88,8 +88,8 @@ public class CategoryControllerCreateCategoryTest {
 	@DisplayName("POST /RECIPE - Non-admin user should get 403 Forbidden")
 	void createRecipeCategoryAsUserShouldForbid() throws Exception {
 		Utils.setUserContext(1);
-		String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("User Recipe Category"));
-		mockMvc.perform(post("/api/categories/RECIPE").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+		String requestDto = objectMapper.writeValueAsString(new CategoryCreateDto("New Recipe Category"));
+		mockMvc.perform(post("/api/categories/RECIPE").contentType(MediaType.APPLICATION_JSON).content(requestDto))
 			.andExpect(status().isForbidden());
 	}
 
@@ -98,8 +98,8 @@ public class CategoryControllerCreateCategoryTest {
 	@DisplayName("POST /PLAN - Should create a plan category")
 	void createPlanCategory() throws Exception {
 		Utils.setAdminContext(1);
-		String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("New Plan Category"));
-		mockMvc.perform(post("/api/categories/PLAN").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+		String requestDto = objectMapper.writeValueAsString(new CategoryCreateDto("New Plan Category"));
+		mockMvc.perform(post("/api/categories/PLAN").contentType(MediaType.APPLICATION_JSON).content(requestDto))
 			.andExpectAll(status().isCreated(), jsonPath("$.name").value("New Plan Category"));
 	}
 
@@ -108,8 +108,8 @@ public class CategoryControllerCreateCategoryTest {
 	@DisplayName("POST /PLAN - Non-admin user should get 403 Forbidden")
 	void createPlanCategoryAsUserShouldForbid() throws Exception {
 		Utils.setUserContext(1);
-		String requestBody = objectMapper.writeValueAsString(new CategoryCreateDto("User Plan Category"));
-		mockMvc.perform(post("/api/categories/PLAN").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+		String requestDto = objectMapper.writeValueAsString(new CategoryCreateDto("New Plan Category"));
+		mockMvc.perform(post("/api/categories/PLAN").contentType(MediaType.APPLICATION_JSON).content(requestDto))
 			.andExpect(status().isForbidden());
 	}
 

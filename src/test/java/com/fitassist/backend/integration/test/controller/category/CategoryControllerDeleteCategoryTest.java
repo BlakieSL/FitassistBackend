@@ -33,7 +33,6 @@ public class CategoryControllerDeleteCategoryTest {
 	void deleteFoodCategory() throws Exception {
 		Utils.setAdminContext(1);
 		mockMvc.perform(delete("/api/categories/FOOD/6")).andExpect(status().isNoContent());
-
 		mockMvc.perform(get("/api/categories/FOOD/6")).andExpect(status().isNotFound());
 	}
 

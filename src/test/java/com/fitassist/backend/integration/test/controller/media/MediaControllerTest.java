@@ -86,9 +86,7 @@ public class MediaControllerTest {
 	@DisplayName("POST - / - Should create media, when user is admin")
 	public void createMedia() throws Exception {
 		Utils.setAdminContext(1);
-		MockMultipartFile mockImage = new MockMultipartFile("image", "test.jpg", "image/jpeg",
-				"fake-image-content".getBytes());
-
+		MockMultipartFile mockImage = new MockMultipartFile("image", "test.jpg", "image/jpeg", "fake".getBytes());
 		String parentType = MediaConnectedEntity.FOOD.name();
 		String parentId = "1";
 
@@ -104,10 +102,7 @@ public class MediaControllerTest {
 	@DisplayName("POST - / - Should create media, when user is owner")
 	public void createMediaAsOwner() throws Exception {
 		Utils.setUserContext(1);
-
-		MockMultipartFile mockImage = new MockMultipartFile("image", "test.jpg", "image/jpeg",
-				"fake-image-content".getBytes());
-
+		MockMultipartFile mockImage = new MockMultipartFile("image", "test.jpg", "image/jpeg", "fake".getBytes());
 		String parentType = MediaConnectedEntity.RECIPE.name();
 		String parentId = "1";
 
@@ -125,7 +120,6 @@ public class MediaControllerTest {
 		Utils.setUserContext(1);
 		MockMultipartFile mockImage = new MockMultipartFile("image", "test.jpg", "image/jpeg",
 				"fake-image-content".getBytes());
-
 		String parentType = MediaConnectedEntity.FOOD.name();
 		String parentId = "1";
 
@@ -140,7 +134,6 @@ public class MediaControllerTest {
 	@DisplayName("DELETE - /{mediaId} - Should delete media when user is owner")
 	public void deleteMediaAsOwner() throws Exception {
 		Utils.setUserContext(1);
-
 		mockMvc.perform(delete("/api/media/3")).andExpectAll(status().isNoContent());
 	}
 
@@ -149,7 +142,6 @@ public class MediaControllerTest {
 	@DisplayName("DELETE - /{mediaId} - Should delete media when user is admin")
 	public void deleteMediaAsAdmin() throws Exception {
 		Utils.setAdminContext(1);
-
 		mockMvc.perform(delete("/api/media/1")).andExpectAll(status().isNoContent());
 	}
 
@@ -158,7 +150,6 @@ public class MediaControllerTest {
 	@DisplayName("DELETE - /{mediaId} - Should return 403 when user is not owner or admin")
 	public void deleteMediaWithoutPermission() throws Exception {
 		Utils.setUserContext(2);
-
 		mockMvc.perform(delete("/api/media/1")).andExpectAll(status().isForbidden());
 	}
 
@@ -167,7 +158,6 @@ public class MediaControllerTest {
 	@DisplayName("DELETE - /{mediaId} - Should return 404 when media does not exist")
 	public void deleteNonExistingMedia() throws Exception {
 		Utils.setAdminContext(1);
-
 		mockMvc.perform(delete("/api/media/999")).andExpectAll(status().isNotFound());
 	}
 
@@ -175,9 +165,7 @@ public class MediaControllerTest {
 	@DisplayName("POST - / - Should create user profile image when user has no existing image")
 	public void createUserProfileImageWhenNoExistingImage() throws Exception {
 		Utils.setUserContext(1);
-
-		MockMultipartFile mockImage = new MockMultipartFile("image", "profile.jpg", "image/jpeg",
-				"fake-profile-image-content".getBytes());
+		MockMultipartFile mockImage = new MockMultipartFile("image", "profile.jpg", "image/jpeg", "fake".getBytes());
 
 		mockMvc
 			.perform(multipart("/api/media").file(mockImage)
@@ -192,9 +180,8 @@ public class MediaControllerTest {
 	@DisplayName("POST - / - Should replace existing user profile image when uploading a new one")
 	public void createSecondUserProfileImageShouldReplaceOldOne() throws Exception {
 		Utils.setUserContext(2);
-
 		MockMultipartFile mockImage = new MockMultipartFile("image", "new-profile.jpg", "image/jpeg",
-				"fake-new-profile-image".getBytes());
+				"fake".getBytes());
 
 		mockMvc
 			.perform(multipart("/api/media").file(mockImage)
@@ -209,9 +196,7 @@ public class MediaControllerTest {
 	@DisplayName("POST - / - Should allow multiple images for non-user entities")
 	public void createMultipleImagesForNonUserEntity() throws Exception {
 		Utils.setAdminContext(1);
-
-		MockMultipartFile mockImage = new MockMultipartFile("image", "food2.jpg", "image/jpeg",
-				"fake-second-food-image".getBytes());
+		MockMultipartFile mockImage = new MockMultipartFile("image", "food2.jpg", "image/jpeg", "fake".getBytes());
 
 		mockMvc
 			.perform(multipart("/api/media").file(mockImage)

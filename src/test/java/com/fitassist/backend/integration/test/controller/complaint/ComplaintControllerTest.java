@@ -39,10 +39,8 @@ public class ComplaintControllerTest {
 	@DisplayName("POST - / - Should create a thread complaint")
 	public void createThreadComplaint() throws Exception {
 		Utils.setUserContext(1);
-		ComplaintCreateDto requestBody = new ComplaintCreateDto();
-		requestBody.setReason(ComplaintReason.INAPPROPRIATE_CONTENT);
-		requestBody.setParentId(1);
-		requestBody.setSubClass(ComplaintSubClass.THREAD_COMPLAINT);
+		ComplaintCreateDto requestBody = new ComplaintCreateDto(ComplaintReason.INAPPROPRIATE_CONTENT, 1,
+				ComplaintSubClass.THREAD_COMPLAINT);
 
 		mockMvc
 			.perform(post("/api/complaint").contentType(MediaType.APPLICATION_JSON)
@@ -55,10 +53,8 @@ public class ComplaintControllerTest {
 	@DisplayName("POST - / - Should create a comment complaint")
 	public void createComplaint() throws Exception {
 		Utils.setUserContext(1);
-		ComplaintCreateDto requestBody = new ComplaintCreateDto();
-		requestBody.setReason(ComplaintReason.INAPPROPRIATE_CONTENT);
-		requestBody.setParentId(1);
-		requestBody.setSubClass(ComplaintSubClass.COMMENT_COMPLAINT);
+		ComplaintCreateDto requestBody = new ComplaintCreateDto(ComplaintReason.INAPPROPRIATE_CONTENT, 1,
+				ComplaintSubClass.COMMENT_COMPLAINT);
 
 		mockMvc
 			.perform(post("/api/complaint").contentType(MediaType.APPLICATION_JSON)

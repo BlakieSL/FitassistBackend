@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -42,16 +43,12 @@ public class FoodControllerTest {
 	@DisplayName("POST - / - Should create a new food when user is admin")
 	void createFood_ShouldCreateNewFood_WhenUserIsAdmin() throws Exception {
 		Utils.setAdminContext(1);
-		FoodCreateDto dto = new FoodCreateDto();
-		dto.setName("Apple");
-		dto.setCalories(BigDecimal.valueOf(95));
-		dto.setProtein(BigDecimal.valueOf(0.5));
-		dto.setFat(BigDecimal.valueOf(0.3));
-		dto.setCarbohydrates(BigDecimal.valueOf(25.0));
-		dto.setCategoryId(1);
+		FoodCreateDto dto = new FoodCreateDto("Apple", BigDecimal.valueOf(95), BigDecimal.valueOf(0.5),
+				BigDecimal.valueOf(0.3), BigDecimal.valueOf(25.0), 1);
 
 		mockMvc
-			.perform(post("/api/foods").contentType("application/json").content(objectMapper.writeValueAsString(dto)))
+			.perform(post("/api/foods").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(dto)))
 			.andExpectAll(status().isCreated(), jsonPath("$.id").exists(), jsonPath("$.name").value("Apple"),
 					jsonPath("$.foodMacros.calories").value(95));
 	}
@@ -60,16 +57,12 @@ public class FoodControllerTest {
 	@DisplayName("POST - / - Should return 403 when user is not admin")
 	void createFood_ShouldReturn403_WhenUserIsNotAdmin() throws Exception {
 		Utils.setUserContext(1);
-		FoodCreateDto dto = new FoodCreateDto();
-		dto.setName("Apple");
-		dto.setCalories(BigDecimal.valueOf(95));
-		dto.setProtein(BigDecimal.valueOf(0.5));
-		dto.setFat(BigDecimal.valueOf(0.3));
-		dto.setCarbohydrates(BigDecimal.valueOf(25.0));
-		dto.setCategoryId(1);
+		FoodCreateDto dto = new FoodCreateDto("Apple", BigDecimal.valueOf(95), BigDecimal.valueOf(0.5),
+				BigDecimal.valueOf(0.3), BigDecimal.valueOf(25.0), 1);
 
 		mockMvc
-			.perform(post("/api/foods").contentType("application/json").content(objectMapper.writeValueAsString(dto)))
+			.perform(post("/api/foods").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(dto)))
 			.andExpectAll(status().isForbidden());
 	}
 
@@ -82,7 +75,7 @@ public class FoodControllerTest {
 		updateDto.setName("Updated Food");
 
 		mockMvc
-			.perform(patch("/api/foods/1").contentType("application/json-patch+json")
+			.perform(patch("/api/foods/1").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(updateDto)))
 			.andExpectAll(status().isNoContent());
 	}
@@ -95,7 +88,7 @@ public class FoodControllerTest {
 		updateDto.setName("Updated Food");
 
 		mockMvc
-			.perform(patch("/api/foods/1").contentType("application/json-patch+json")
+			.perform(patch("/api/foods/1").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(updateDto)))
 			.andExpectAll(status().isForbidden());
 	}
@@ -108,7 +101,7 @@ public class FoodControllerTest {
 		updateDto.setName("Updated Food");
 
 		mockMvc
-			.perform(patch("/api/foods/999").contentType("application/json-patch+json")
+			.perform(patch("/api/foods/999").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(updateDto)))
 			.andExpectAll(status().isNotFound());
 	}
@@ -174,10 +167,10 @@ public class FoodControllerTest {
 	@DisplayName("POST - /{id}/calculate-macros - Should calculate food macros")
 	void calculateFoodMacros_ShouldCalculateMacros_WhenRequestIsValid() throws Exception {
 		Utils.setUserContext(1);
-		CalculateFoodMacrosRequestDto request = new CalculateFoodMacrosRequestDto();
-		request.setQuantity(BigDecimal.valueOf(100));
+		CalculateFoodMacrosRequestDto request = new CalculateFoodMacrosRequestDto(BigDecimal.valueOf(100));
+
 		mockMvc
-			.perform(post("/api/foods/1/calculate-macros").contentType("application/json")
+			.perform(post("/api/foods/1/calculate-macros").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request)))
 			.andExpectAll(status().isOk(), jsonPath("$.foodMacros.calories").value(95));
 	}
@@ -187,11 +180,10 @@ public class FoodControllerTest {
 	@DisplayName("POST - /{id}/calculate-macros - Should return 404 when food does not exist")
 	void calculateFoodMacros_ShouldReturn404_WhenFoodDoesNotExist() throws Exception {
 		Utils.setUserContext(1);
-		CalculateFoodMacrosRequestDto request = new CalculateFoodMacrosRequestDto();
-		request.setQuantity(BigDecimal.valueOf(100));
+		CalculateFoodMacrosRequestDto request = new CalculateFoodMacrosRequestDto(BigDecimal.valueOf(100));
 
 		mockMvc
-			.perform(post("/api/foods/999/calculate-macros").contentType("application/json")
+			.perform(post("/api/foods/999/calculate-macros").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request)))
 			.andExpectAll(status().isNotFound());
 	}

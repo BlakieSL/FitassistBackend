@@ -48,10 +48,7 @@ public class ActivityControllerTest {
 	void createActivityAdmin() throws Exception {
 		Utils.setAdminContext(1);
 
-		ActivityCreateDto dto = new ActivityCreateDto();
-		dto.setName("Swimming");
-		dto.setMet(BigDecimal.valueOf(7.5));
-		dto.setCategoryId(1);
+		ActivityCreateDto dto = new ActivityCreateDto("Swimming", BigDecimal.valueOf(7.5), 1);
 
 		mockMvc
 			.perform(post("/api/activities").contentType(MediaType.APPLICATION_JSON)
@@ -65,10 +62,7 @@ public class ActivityControllerTest {
 	void createActivityNotAdmin() throws Exception {
 		Utils.setUserContext(1);
 
-		ActivityCreateDto dto = new ActivityCreateDto();
-		dto.setName("Swimming");
-		dto.setMet(BigDecimal.valueOf(7.5));
-		dto.setCategoryId(1);
+		ActivityCreateDto dto = new ActivityCreateDto("Swimming", BigDecimal.valueOf(7.5), 1);
 
 		mockMvc
 			.perform(post("/api/activities").contentType(MediaType.APPLICATION_JSON)
@@ -82,10 +76,7 @@ public class ActivityControllerTest {
 	void updateActivityAdmin() throws Exception {
 		Utils.setAdminContext(1);
 
-		ActivityCreateDto dto = new ActivityCreateDto();
-		dto.setName("Cycling");
-		dto.setMet(BigDecimal.valueOf(8.0));
-		dto.setCategoryId(2);
+		ActivityCreateDto dto = new ActivityCreateDto("Cycling", BigDecimal.valueOf(8.0), 2);
 
 		mockMvc
 			.perform(patch("/api/activities/1").contentType(MediaType.APPLICATION_JSON)
@@ -98,10 +89,7 @@ public class ActivityControllerTest {
 	void updateActivityNotAdmin() throws Exception {
 		Utils.setUserContext(1);
 
-		ActivityCreateDto dto = new ActivityCreateDto();
-		dto.setName("Cycling");
-		dto.setMet(BigDecimal.valueOf(8.0));
-		dto.setCategoryId(2);
+		ActivityCreateDto dto = new ActivityCreateDto("Cycling", BigDecimal.valueOf(8.0), 2);
 
 		mockMvc
 			.perform(patch("/api/activities/1").contentType(MediaType.APPLICATION_JSON)
@@ -114,10 +102,7 @@ public class ActivityControllerTest {
 	void updateActivityNotFound() throws Exception {
 		Utils.setAdminContext(1);
 
-		ActivityCreateDto dto = new ActivityCreateDto();
-		dto.setName("Cycling");
-		dto.setMet(BigDecimal.valueOf(8.0));
-		dto.setCategoryId(2);
+		ActivityCreateDto dto = new ActivityCreateDto("Cycling", BigDecimal.valueOf(8.0), 2);
 
 		mockMvc
 			.perform(patch("/api/activities/999").contentType(MediaType.APPLICATION_JSON)
@@ -131,10 +116,7 @@ public class ActivityControllerTest {
 	void updateActivityInvalidPatch() throws Exception {
 		Utils.setAdminContext(1);
 
-		ActivityCreateDto dto = new ActivityCreateDto();
-		dto.setName("Cycling");
-		dto.setMet(BigDecimal.valueOf(-1));
-		dto.setCategoryId(2);
+		ActivityCreateDto dto = new ActivityCreateDto("Cycling", BigDecimal.valueOf(-1), 2);
 
 		mockMvc
 			.perform(patch("/api/activities/1").contentType(MediaType.APPLICATION_JSON)
@@ -282,8 +264,7 @@ public class ActivityControllerTest {
 	@DisplayName("POST - /{id}/calculate-calories - Should calculate calories burned for an activity heath-related information already saved")
 	void calculateActivityCaloriesBurned() throws Exception {
 		Utils.setUserContext(1);
-		CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto();
-		request.setTime((short) 60);
+		CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto((short) 60, null);
 
 		mockMvc
 			.perform(post("/api/activities/1/calculate-calories").contentType(MediaType.APPLICATION_JSON)
@@ -296,9 +277,8 @@ public class ActivityControllerTest {
 	@Test
 	@DisplayName("POST - /{id}/calculate-calories - Should calculate calories burned for an activity with health-related information provided in request")
 	void calculateActivityCaloriesBurnedWithHealthInfo() throws Exception {
-		CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto();
-		request.setTime((short) 60);
-		request.setWeight(BigDecimal.valueOf(80.0));
+		CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto((short) 60,
+				BigDecimal.valueOf(80.0));
 
 		mockMvc
 			.perform(post("/api/activities/1/calculate-calories").contentType(MediaType.APPLICATION_JSON)
@@ -311,8 +291,7 @@ public class ActivityControllerTest {
 	@DisplayName("POST - /{id}/calculate-calories - Should return 400 when health-related information is not provided nor already saved")
 	void calculateActivityCaloriesBurnedWithoutHealthInfo() throws Exception {
 		Utils.setUserContext(2);
-		CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto();
-		request.setTime((short) 60);
+		CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto((short) 60, null);
 
 		mockMvc
 			.perform(post("/api/activities/1/calculate-calories").contentType(MediaType.APPLICATION_JSON)
@@ -325,9 +304,8 @@ public class ActivityControllerTest {
 	@Test
 	@DisplayName("POST - /{id}/calculate-calories - Should return 404 when activity does not exist")
 	void calculateActivityCaloriesBurnedNotFound() throws Exception {
-		CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto();
-		request.setTime((short) 60);
-		request.setWeight(BigDecimal.valueOf(80.0));
+		CalculateActivityCaloriesRequestDto request = new CalculateActivityCaloriesRequestDto((short) 60,
+				BigDecimal.valueOf(80.0));
 
 		mockMvc
 			.perform(post("/api/activities/999/calculate-calories").contentType(MediaType.APPLICATION_JSON)

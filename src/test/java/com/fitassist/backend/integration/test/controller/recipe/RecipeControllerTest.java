@@ -43,11 +43,8 @@ public class RecipeControllerTest {
 	@DisplayName("POST - / - Should create a new recipe")
 	void createRecipe() throws Exception {
 		Utils.setUserContext(1);
-		RecipeCreateDto createDto = new RecipeCreateDto();
-		createDto.setName("Test Recipe");
-		createDto.setDescription("A new test recipe");
-		createDto.setMinutesToPrepare((short) 30);
-		createDto.setCategoryIds(List.of(1, 3));
+		RecipeCreateDto createDto = new RecipeCreateDto("Test Recipe", "A new test recipe", (short) 30, false,
+				List.of(1, 3), null);
 
 		mockMvc
 			.perform(post("/api/recipes").contentType(MediaType.APPLICATION_JSON)
@@ -61,16 +58,14 @@ public class RecipeControllerTest {
 	void updateRecipe() throws Exception {
 		Utils.setUserContext(1);
 		RecipeUpdateDto updateDto = new RecipeUpdateDto();
-		updateDto.setName("Updated Stir Fry");
-		updateDto.setDescription("Updated description");
+		updateDto.setName("Updated name");
 
 		mockMvc
 			.perform(patch("/api/recipes/1").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(updateDto)))
 			.andExpect(status().isNoContent());
 
-		mockMvc.perform(get("/api/recipes/1"))
-			.andExpectAll(status().isOk(), jsonPath("$.name").value("Updated Stir Fry"));
+		mockMvc.perform(get("/api/recipes/1")).andExpectAll(status().isOk(), jsonPath("$.name").value("Updated name"));
 	}
 
 	@RecipeSql
@@ -79,14 +74,14 @@ public class RecipeControllerTest {
 	void updateRecipeAsAdmin() throws Exception {
 		Utils.setAdminContext(2);
 		RecipeUpdateDto updateDto = new RecipeUpdateDto();
-		updateDto.setName("Admin Updated Recipe");
+		updateDto.setName("Updated name");
 
 		mockMvc
 			.perform(patch("/api/recipes/1").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(updateDto)))
 			.andExpect(status().isNoContent());
 
-		mockMvc.perform(get("/api/recipes/1")).andExpect(jsonPath("$.name").value("Admin Updated Recipe"));
+		mockMvc.perform(get("/api/recipes/1")).andExpect(jsonPath("$.name").value("Updated name"));
 	}
 
 	@RecipeSql
@@ -95,7 +90,7 @@ public class RecipeControllerTest {
 	void updateRecipeNotOwnerOrAdmin() throws Exception {
 		Utils.setUserContext(3);
 		RecipeUpdateDto updateDto = new RecipeUpdateDto();
-		updateDto.setName("Unauthorized Update");
+		updateDto.setName("Updated name");
 
 		mockMvc
 			.perform(patch("/api/recipes/1").contentType(MediaType.APPLICATION_JSON)
@@ -108,7 +103,7 @@ public class RecipeControllerTest {
 	void updateRecipeNotFound() throws Exception {
 		Utils.setUserContext(1);
 		RecipeUpdateDto updateDto = new RecipeUpdateDto();
-		updateDto.setName("Missing Recipe");
+		updateDto.setName("Updated name");
 
 		mockMvc
 			.perform(patch("/api/recipes/999").contentType(MediaType.APPLICATION_JSON)
@@ -121,8 +116,8 @@ public class RecipeControllerTest {
 	@DisplayName("DELETE - /{id} - Should delete an existing recipe when owner")
 	void deleteRecipe() throws Exception {
 		Utils.setUserContext(1);
-		mockMvc.perform(delete("/api/recipes/1")).andExpect(status().isNoContent());
 
+		mockMvc.perform(delete("/api/recipes/1")).andExpect(status().isNoContent());
 		mockMvc.perform(get("/api/recipes/1")).andExpect(status().isNotFound());
 	}
 

@@ -30,9 +30,6 @@ public class UserSavedControllerWithTypeTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@Autowired
-	private ObjectMapper objectMapper;
-
 	@WithMockUser
 	@UserSavedSql
 	@Test
@@ -98,7 +95,6 @@ public class UserSavedControllerWithTypeTest {
 	@DisplayName("POST - /item-type/{itemType}/{itemId}/type/{type} - Should SAVE an item to user")
 	void saveToUserSave() throws Exception {
 		Utils.setUserContext(3);
-
 		mockMvc.perform(post("/api/user-saved/item-type/PLAN/3/type/SAVE")).andExpectAll(status().isCreated());
 	}
 
@@ -107,7 +103,6 @@ public class UserSavedControllerWithTypeTest {
 	@DisplayName("POST - /item-type/{itemType}/{itemId}/type/{type} - Should LIKE an item to user")
 	void saveToUserLike() throws Exception {
 		Utils.setUserContext(3);
-
 		mockMvc.perform(post("/api/user-saved/item-type/PLAN/3/type/LIKE")).andExpectAll(status().isCreated());
 	}
 
@@ -116,7 +111,6 @@ public class UserSavedControllerWithTypeTest {
 	@DisplayName("POST - /item-type/{itemType}/{itemId}/type/{type} - Should return 409 when item already SAVED")
 	void saveToUserAlreadySaved() throws Exception {
 		Utils.setUserContext(1);
-
 		mockMvc.perform(post("/api/user-saved/item-type/PLAN/1/type/SAVE")).andExpectAll(status().isConflict());
 	}
 
@@ -125,7 +119,6 @@ public class UserSavedControllerWithTypeTest {
 	@DisplayName("POST - /item-type/{itemType}/{itemId}/type/{type} - Should return 409 when item already LIKED")
 	void saveToUserAlreadyLiked() throws Exception {
 		Utils.setUserContext(1);
-
 		mockMvc.perform(post("/api/user-saved/item-type/COMMENT/3/type/LIKE")).andExpectAll(status().isConflict());
 	}
 
@@ -134,7 +127,6 @@ public class UserSavedControllerWithTypeTest {
 	@DisplayName("POST - /item-type/{itemType}/{itemId}/type/{type} - Should save when item already liked but not saved")
 	void saveToUserLikeNotSaved() throws Exception {
 		Utils.setUserContext(1);
-
 		mockMvc.perform(post("/api/user-saved/item-type/PLAN/1/type/LIKE")).andExpectAll(status().isCreated());
 	}
 
@@ -143,7 +135,6 @@ public class UserSavedControllerWithTypeTest {
 	@DisplayName("POST - /item-type/{itemType}/{itemId}/type/{type} - Should return 400 when trying to SAVE comment(forbidden interaction for this entity")
 	void saveToUserSAVEComment() throws Exception {
 		Utils.setUserContext(2);
-
 		mockMvc.perform(post("/api/user-saved/item-type/COMMENT/1/type/SAVE")).andExpectAll(status().isBadRequest());
 	}
 
@@ -152,15 +143,7 @@ public class UserSavedControllerWithTypeTest {
 	@DisplayName("POST - /item-type/{itemType}/{itemId}/type/{type} - Should like when item already saved but not liked")
 	void saveToUserSaveNotLiked() throws Exception {
 		Utils.setUserContext(1);
-
 		mockMvc.perform(post("/api/user-saved/item-type/PLAN/1/type/LIKE")).andExpectAll(status().isCreated());
-	}
-
-	@UserSavedSql
-	@Test
-	@DisplayName("POST - /item-type/{itemType}/{itemId}/type/{type} - Should return 404 when item not found")
-	void saveToUserNotFound() throws Exception {
-		Utils.setUserContext(1);
 	}
 
 	@UserSavedSql
@@ -168,7 +151,6 @@ public class UserSavedControllerWithTypeTest {
 	@DisplayName("DELETE - /item-type/{itemType}/{itemId}/type/{type} - Should delete an item from user")
 	void deleteFromUser() throws Exception {
 		Utils.setUserContext(1);
-
 		mockMvc.perform(delete("/api/user-saved/item-type/PLAN/1/type/SAVE")).andExpectAll(status().isOk());
 	}
 
@@ -177,7 +159,6 @@ public class UserSavedControllerWithTypeTest {
 	@DisplayName("DELETE - /item-type/{itemType}/{itemId}/type/{type} - Should return 404 when item not found")
 	void deleteFromUserNotFound() throws Exception {
 		Utils.setUserContext(1);
-
 		mockMvc.perform(delete("/api/user-saved/item-type/PLAN/999/type/SAVE")).andExpectAll(status().isNotFound());
 	}
 
