@@ -14,7 +14,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@AllArgsConstructor(staticName = "of")
+@AllArgsConstructor
 @NoArgsConstructor
 public class DailyActivityItemCreateDto {
 

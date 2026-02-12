@@ -74,10 +74,7 @@ public class DailyFoodControllerTest {
 	@DisplayName("POST - /add/{foodId} - Should add a daily food to the user's cart")
 	void addDailyFoodToUser() throws Exception {
 		Utils.setUserContext(1);
-
-		DailyCartFoodCreateDto request = new DailyCartFoodCreateDto();
-		request.setQuantity(BigDecimal.valueOf(2.5));
-		request.setDate(LocalDate.of(2025, 4, 4));
+		DailyCartFoodCreateDto request = new DailyCartFoodCreateDto(BigDecimal.valueOf(2.5), LocalDate.of(2025, 4, 4));
 
 		mockMvc
 			.perform(post("/api/cart/add/4").contentType(MediaType.APPLICATION_JSON)
@@ -94,10 +91,7 @@ public class DailyFoodControllerTest {
 	@DisplayName("POST - /add/{foodId} - Should increase quantity if food already exists")
 	void addDailyFoodToUserAlreadyExists() throws Exception {
 		Utils.setUserContext(1);
-
-		DailyCartFoodCreateDto request = new DailyCartFoodCreateDto();
-		request.setQuantity(BigDecimal.valueOf(1.0));
-		request.setDate(LocalDate.of(2025, 4, 1));
+		DailyCartFoodCreateDto request = new DailyCartFoodCreateDto(BigDecimal.valueOf(1.0), LocalDate.of(2025, 4, 1));
 
 		mockMvc
 			.perform(post("/api/cart/add/1").contentType(MediaType.APPLICATION_JSON)
@@ -114,10 +108,7 @@ public class DailyFoodControllerTest {
 	@DisplayName("POST - /add/{foodId} - Should return 404 when food does not exist")
 	void addDailyFoodToUserNotFound() throws Exception {
 		Utils.setUserContext(1);
-
-		DailyCartFoodCreateDto request = new DailyCartFoodCreateDto();
-		request.setQuantity(BigDecimal.valueOf(1.0));
-		request.setDate(LocalDate.of(2025, 4, 4));
+		DailyCartFoodCreateDto request = new DailyCartFoodCreateDto(BigDecimal.valueOf(1.0), LocalDate.of(2025, 4, 4));
 
 		mockMvc
 			.perform(post("/api/cart/add/999").contentType(MediaType.APPLICATION_JSON)
@@ -143,7 +134,6 @@ public class DailyFoodControllerTest {
 	@DisplayName("DELETE - /remove/{dailyCartFoodId} - Should return 404 when food item does not exist")
 	void removeFoodFromDailyCartNotFound() throws Exception {
 		Utils.setUserContext(1);
-
 		mockMvc.perform(delete("/api/cart/remove/999")).andExpect(status().isNotFound());
 	}
 
@@ -152,7 +142,6 @@ public class DailyFoodControllerTest {
 	@DisplayName("DELETE - /remove/{dailyCartFoodId} - Should return 403 when not owner")
 	void removeFoodFromDailyCartForbidden() throws Exception {
 		Utils.setUserContext(2);
-
 		mockMvc.perform(delete("/api/cart/remove/1")).andExpect(status().isForbidden());
 	}
 
@@ -161,8 +150,7 @@ public class DailyFoodControllerTest {
 	@DisplayName("PATCH - /update/{dailyCartFoodId} - Should update a food item in the daily cart")
 	void updateDailyCartFood() throws Exception {
 		Utils.setUserContext(1);
-
-		DailyCartFoodUpdateDto updateDto = DailyCartFoodUpdateDto.of(BigDecimal.valueOf(3.0));
+		DailyCartFoodUpdateDto updateDto = new DailyCartFoodUpdateDto(BigDecimal.valueOf(3.0));
 
 		mockMvc
 			.perform(patch("/api/cart/update/1").contentType(MediaType.APPLICATION_JSON)
@@ -174,7 +162,6 @@ public class DailyFoodControllerTest {
 	@DisplayName("PATCH - /update/{dailyCartFoodId} - Should return 404 when food item does not exist")
 	void updateDailyCartFoodNotFound() throws Exception {
 		Utils.setUserContext(1);
-
 		DailyCartFoodUpdateDto updateDto = new DailyCartFoodUpdateDto();
 
 		mockMvc
@@ -188,8 +175,7 @@ public class DailyFoodControllerTest {
 	@DisplayName("PATCH - /update/{dailyCartFoodId} - Should return 403 when not owner")
 	void updateDailyCartFoodForbidden() throws Exception {
 		Utils.setUserContext(2);
-
-		DailyCartFoodUpdateDto updateDto = DailyCartFoodUpdateDto.of(BigDecimal.valueOf(3.0));
+		DailyCartFoodUpdateDto updateDto = new DailyCartFoodUpdateDto(BigDecimal.valueOf(3.0));
 
 		mockMvc
 			.perform(patch("/api/cart/update/1").contentType(MediaType.APPLICATION_JSON)

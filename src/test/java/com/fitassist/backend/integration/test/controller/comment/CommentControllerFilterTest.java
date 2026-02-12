@@ -50,9 +50,10 @@ public class CommentControllerFilterTest {
 	void filterCommentsCreatedByUser1() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("CREATED_BY_USER", 1, FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/comments/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/comments/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(2)));
 	}
 
@@ -62,9 +63,10 @@ public class CommentControllerFilterTest {
 	void filterCommentsCreatedByUserNoResults() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("CREATED_BY_USER", 999, FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/comments/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/comments/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpectAll(status().isOk(), jsonPath("$.content", hasSize(0)));
 	}
 
@@ -74,9 +76,10 @@ public class CommentControllerFilterTest {
 	void filterCommentsInvalidKey() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("INVALID_KEY", 1, FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/comments/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/comments/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpect(status().isBadRequest());
 	}
 
@@ -86,9 +89,10 @@ public class CommentControllerFilterTest {
 	void filterCommentsInvalidValue() throws Exception {
 		Utils.setUserContext(1);
 		FilterDto filterDto = buildFilterDto("CREATED_BY_USER", "invalid", FilterOperation.EQUAL);
-		String json = objectMapper.writeValueAsString(filterDto);
 
-		mockMvc.perform(post("/api/comments/filter").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc
+			.perform(post("/api/comments/filter").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(filterDto)))
 			.andExpect(status().isBadRequest());
 	}
 
@@ -98,7 +102,7 @@ public class CommentControllerFilterTest {
 	void filterCommentsInvalidOperation() throws Exception {
 		Utils.setUserContext(1);
 
-		String requestJson = """
+		String filterDto = """
 				{
 				    "filterCriteria": [{
 				        "filterKey": "CREATED_BY_USER",
@@ -109,7 +113,7 @@ public class CommentControllerFilterTest {
 				}
 				""";
 
-		mockMvc.perform(post("/api/comments/filter").contentType(MediaType.APPLICATION_JSON).content(requestJson))
+		mockMvc.perform(post("/api/comments/filter").contentType(MediaType.APPLICATION_JSON).content(filterDto))
 			.andExpect(status().isBadRequest());
 	}
 

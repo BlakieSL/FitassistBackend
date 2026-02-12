@@ -12,8 +12,8 @@ public class VirtualThreadsController {
 
 	@GetMapping("/thread-info")
 	public Map<String, Object> threadInfo() {
-		Thread t = Thread.currentThread();
-		return Map.of("id", t.threadId(), "isVirtual", t.isVirtual(), "name", t.getName());
+		Thread thread = Thread.currentThread();
+		return Map.of("id", thread.threadId(), "isVirtual", thread.isVirtual(), "name", thread.getName());
 	}
 
 }

@@ -15,6 +15,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Import({ MockAwsS3Config.class, MockRedisConfig.class, MockAwsSesConfig.class })
@@ -38,11 +40,8 @@ public class ThreadControllerTest {
 			ResponseEntity<String> response = restTemplate
 				.getForEntity(baseUrl + port + "/api/virtual-threads/thread-info", String.class);
 
-			LOGGER.info("RESPONSE STATUS: {}", response.getStatusCode());
-			LOGGER.info("RESPONSE BODY: {}", response.getBody());
-
 			assertTrue(response.getStatusCode().is2xxSuccessful());
-			assertTrue(response.getBody().contains("\"isVirtual\":true"));
+			assertTrue(Objects.requireNonNull(response.getBody()).contains("\"isVirtual\":true"));
 
 		}
 		catch (Exception e) {
