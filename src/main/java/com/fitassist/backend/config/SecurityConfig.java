@@ -2,6 +2,7 @@ package com.fitassist.backend.config;
 
 import com.fitassist.backend.auth.*;
 import com.fitassist.backend.service.implementation.user.UserServiceImpl;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
@@ -35,6 +37,9 @@ public class SecurityConfig {
 	private final CookieService cookieService;
 
 	private final TokenProperties tokenProperties;
+
+	@Value("${app.csrf.cookie-secure}")
+	private boolean csrfCookieSecure;
 
 	public SecurityConfig(JwtService jwtService, @Lazy UserServiceImpl userServiceImpl,
 			@Lazy RateLimitingFilter rateLimitingFilter, CorsConfigurationSource corsConfigurationSource,
@@ -64,7 +69,13 @@ public class SecurityConfig {
 				request -> request.requestMatchers(requestMatcher).permitAll().anyRequest().authenticated())
 			.cors((cors) -> cors.configurationSource(corsConfigurationSource))
 			.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.csrf(csrf -> csrf.spa().ignoringRequestMatchers(requestMatcher))
+			.csrf(csrf -> {
+				CookieCsrfTokenRepository repo = CookieCsrfTokenRepository.withHttpOnlyFalse();
+				if (csrfCookieSecure) {
+					repo.setCookieCustomizer(cookie -> cookie.sameSite("None").secure(true));
+				}
+				csrf.csrfTokenRepository(repo).ignoringRequestMatchers(requestMatcher);
+			})
 			.addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 			.addFilterAfter(bearerTokenFilter, JwtAuthenticationFilter.class);
