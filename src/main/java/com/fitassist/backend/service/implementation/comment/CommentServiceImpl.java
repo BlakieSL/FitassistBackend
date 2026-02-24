@@ -36,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -205,7 +206,7 @@ public class CommentServiceImpl implements CommentService {
 			dto.setText((String) row[1]);
 			dto.setThreadId((Integer) row[2]);
 			dto.setParentCommentId((Integer) row[4]);
-			dto.setCreatedAt(((Timestamp) row[5]).toLocalDateTime());
+			dto.setCreatedAt(row[5] instanceof Timestamp ts ? ts.toLocalDateTime() : (LocalDateTime) row[5]);
 			dto.setReplies(new ArrayList<>());
 
 			AuthorDto author = new AuthorDto();
