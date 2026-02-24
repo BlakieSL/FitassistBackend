@@ -10,7 +10,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -65,7 +66,9 @@ public class SecurityConfig {
 				request -> request.requestMatchers(requestMatcher).permitAll().anyRequest().authenticated())
 			.cors((cors) -> cors.configurationSource(corsConfigurationSource))
 			.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.csrf(AbstractHttpConfigurer::disable)
+			.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+				.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+				.ignoringRequestMatchers(requestMatcher))
 			.addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 			.addFilterAfter(bearerTokenFilter, JwtAuthenticationFilter.class);
