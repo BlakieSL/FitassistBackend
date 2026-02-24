@@ -1,14 +1,13 @@
 package com.fitassist.backend.service.declaration.plan;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.dto.request.filter.FilterDto;
 import com.fitassist.backend.dto.request.plan.PlanCreateDto;
 import com.fitassist.backend.dto.response.plan.PlanCategoriesResponseDto;
 import com.fitassist.backend.dto.response.plan.PlanResponseDto;
 import com.fitassist.backend.dto.response.plan.PlanSummaryDto;
 import com.fitassist.backend.model.plan.Plan;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,7 +17,7 @@ public interface PlanService {
 
 	PlanResponseDto createPlan(PlanCreateDto planDto);
 
-	void updatePlan(int planId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+	void updatePlan(int planId, JsonMergePatch patch) throws JacksonException;
 
 	void deletePlan(int planId);
 

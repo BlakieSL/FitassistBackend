@@ -1,12 +1,11 @@
 package com.fitassist.backend.controller.daily;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.annotation.DailyCartOwner;
 import com.fitassist.backend.dto.request.activity.DailyActivityItemCreateDto;
 import com.fitassist.backend.dto.response.daily.DailyActivitiesResponseDto;
 import com.fitassist.backend.service.declaration.daily.DailyActivityService;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +41,7 @@ public class DailyActivityController {
 	@DailyCartOwner
 	@PatchMapping("/modify-activity/{dailyActivityItemId}")
 	public ResponseEntity<Void> updateDailyCartActivity(@PathVariable int dailyActivityItemId,
-			@RequestBody JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+			@RequestBody JsonMergePatch patch) throws JacksonException {
 		dailyActivityService.updateDailyActivityItem(dailyActivityItemId, patch);
 		return ResponseEntity.noContent().build();
 	}

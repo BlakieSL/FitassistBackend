@@ -1,6 +1,6 @@
 package com.fitassist.backend.service.implementation.plan;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.dto.request.filter.FilterDto;
@@ -33,8 +33,7 @@ import com.fitassist.backend.service.implementation.specification.SpecificationD
 import com.fitassist.backend.specification.SpecificationBuilder;
 import com.fitassist.backend.specification.SpecificationFactory;
 import com.fitassist.backend.specification.specification.PlanSpecification;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -155,7 +154,7 @@ public class PlanServiceImpl implements PlanService {
 
 	@Override
 	@Transactional
-	public void updatePlan(int planId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+	public void updatePlan(int planId, JsonMergePatch patch) throws JacksonException {
 		Plan plan = find(planId);
 		PlanUpdateDto patchedPlanUpdateDto = jsonPatchService.createFromPatch(patch, PlanUpdateDto.class);
 		validationService.validate(patchedPlanUpdateDto);

@@ -38,9 +38,6 @@ s3:
 lucene:
   enabled: true
 
-jws:
-  sharedKey: ${JWT_SECRET_KEY}
-
 rate-limiter:
   user-rate: ${RATE_LIMITER_USER_RATE}
   user-interval: ${RATE_LIMITER_USER_INTERVAL}

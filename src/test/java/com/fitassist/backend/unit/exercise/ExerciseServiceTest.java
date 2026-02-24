@@ -1,6 +1,6 @@
 package com.fitassist.backend.unit.exercise;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.dto.pojo.FilterCriteria;
 import com.fitassist.backend.dto.request.exercise.ExerciseCreateDto;
 import com.fitassist.backend.dto.request.exercise.ExerciseUpdateDto;
@@ -25,8 +25,7 @@ import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.declaration.plan.PlanPopulationService;
 import com.fitassist.backend.service.implementation.exercise.ExerciseServiceImpl;
 import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -216,7 +215,7 @@ public class ExerciseServiceTest {
 	}
 
 	@Test
-	void updateExercise_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+	void updateExercise_shouldUpdate() throws JacksonException {
 		exercise.setId(exerciseId);
 		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
 		when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class)).thenReturn(patchedDto);
@@ -231,7 +230,7 @@ public class ExerciseServiceTest {
 	}
 
 	@Test
-	void updateExercise_shouldPublishEvent() throws JsonPatchException, JsonProcessingException {
+	void updateExercise_shouldPublishEvent() throws JacksonException {
 		ArgumentCaptor<ExerciseUpdateEvent> eventCaptor = ArgumentCaptor.forClass(ExerciseUpdateEvent.class);
 
 		exercise.setId(exerciseId);
@@ -258,18 +257,18 @@ public class ExerciseServiceTest {
 	}
 
 	@Test
-	void updateExercise_shouldThrowExceptionWhenPatchFails() throws JsonPatchException, JsonProcessingException {
+	void updateExercise_shouldThrowExceptionWhenPatchFails() throws JacksonException {
 		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
-		when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class)).thenThrow(JsonPatchException.class);
+		when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class)).thenThrow(JacksonException.class);
 
-		assertThrows(JsonPatchException.class, () -> exerciseService.updateExercise(exerciseId, patch));
+		assertThrows(JacksonException.class, () -> exerciseService.updateExercise(exerciseId, patch));
 
 		verifyNoInteractions(validationService, eventPublisher);
 		verify(exerciseRepository, never()).save(exercise);
 	}
 
 	@Test
-	void updateExercise_shouldThrowExceptionWhenValidationFails() throws JsonPatchException, JsonProcessingException {
+	void updateExercise_shouldThrowExceptionWhenValidationFails() throws JacksonException {
 		when(exerciseRepository.findByIdWithDetails(exerciseId)).thenReturn(Optional.of(exercise));
 		when(jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class)).thenReturn(patchedDto);
 

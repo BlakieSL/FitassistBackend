@@ -1,6 +1,6 @@
 package com.fitassist.backend.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.annotation.AdminOnly;
 import com.fitassist.backend.dto.request.filter.FilterDto;
 import com.fitassist.backend.dto.request.food.CalculateFoodMacrosRequestDto;
@@ -9,8 +9,7 @@ import com.fitassist.backend.dto.response.food.FoodCalculatedMacrosResponseDto;
 import com.fitassist.backend.dto.response.food.FoodResponseDto;
 import com.fitassist.backend.dto.response.food.FoodSummaryDto;
 import com.fitassist.backend.service.declaration.food.FoodService;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +39,7 @@ public class FoodController {
 	@AdminOnly
 	@PatchMapping("/{id}")
 	public ResponseEntity<Void> updateFood(@PathVariable int id, @RequestBody JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+			throws JacksonException {
 		foodService.updateFood(id, patch);
 		return ResponseEntity.noContent().build();
 	}

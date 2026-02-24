@@ -1,6 +1,6 @@
 package com.fitassist.backend.integration.test.controller.complaint;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.fitassist.backend.dto.request.complaint.ComplaintCreateDto;
 import com.fitassist.backend.dto.request.complaint.ComplaintSubClass;
 import com.fitassist.backend.integration.config.MockAwsS3Config;

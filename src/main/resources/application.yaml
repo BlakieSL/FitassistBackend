@@ -13,6 +13,11 @@ spring:
   config:
     import: optional:file:.env.properties
 
+  data:
+    redis:
+      repositories:
+        enabled: false
+
   jpa:
     hibernate:
       naming:
@@ -74,3 +79,6 @@ cookie:
 password-reset:
   token-type: resetToken
   token-duration-minutes: 20
+
+jws:
+  sharedKey: ${JWT_SECRET_KEY}

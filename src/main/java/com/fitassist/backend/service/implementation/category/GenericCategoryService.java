@@ -1,6 +1,6 @@
 package com.fitassist.backend.service.implementation.category;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.dto.request.category.CategoryCreateDto;
 import com.fitassist.backend.dto.request.category.CategoryUpdateDto;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
@@ -11,8 +11,7 @@ import com.fitassist.backend.mapper.category.BaseMapper;
 import com.fitassist.backend.service.declaration.category.CategoryCacheKeyGenerator;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
@@ -63,8 +62,7 @@ public abstract class GenericCategoryService<T> {
 	}
 
 	@Transactional
-	public void updateCategory(int categoryId, JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+	public void updateCategory(int categoryId, JsonMergePatch patch) throws JacksonException {
 		T category = find(categoryId);
 		CategoryUpdateDto patchedCategory = applyPatchToCategory(patch);
 
@@ -75,8 +73,7 @@ public abstract class GenericCategoryService<T> {
 		applicationEventPublisher.publishEvent(CategoryClearCacheEvent.of(this, cacheKeyGenerator.generateCacheKey()));
 	}
 
-	private CategoryUpdateDto applyPatchToCategory(JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+	private CategoryUpdateDto applyPatchToCategory(JsonMergePatch patch) throws JacksonException {
 		return jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class);
 	}
 

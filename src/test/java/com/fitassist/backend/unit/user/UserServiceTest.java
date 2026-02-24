@@ -16,8 +16,8 @@ import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.declaration.user.UserPopulationService;
 import com.fitassist.backend.service.implementation.helpers.JsonPatchServiceImpl;
 import com.fitassist.backend.service.implementation.user.UserServiceImpl;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import tools.jackson.core.JacksonException;
+import jakarta.json.JsonMergePatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -183,9 +183,9 @@ public class UserServiceTest {
 	@Test
 	void updateUser_ShouldThrowExceptionWhenPatchFails() throws Exception {
 		when(repositoryHelper.find(userRepository, User.class, userId)).thenReturn(user);
-		when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class))).thenThrow(JsonPatchException.class);
+		when(jsonPatchService.createFromPatch(eq(patch), eq(UserUpdateDto.class))).thenThrow(JacksonException.class);
 
-		assertThrows(JsonPatchException.class, () -> userService.updateUser(userId, patch));
+		assertThrows(JacksonException.class, () -> userService.updateUser(userId, patch));
 
 		verify(userRepository, never()).save(user);
 	}

@@ -1,6 +1,6 @@
 package com.fitassist.backend.service.implementation.recipe;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.dto.request.filter.FilterDto;
@@ -29,8 +29,7 @@ import com.fitassist.backend.service.implementation.specification.SpecificationD
 import com.fitassist.backend.specification.SpecificationBuilder;
 import com.fitassist.backend.specification.SpecificationFactory;
 import com.fitassist.backend.specification.specification.RecipeSpecification;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -122,7 +121,7 @@ public class RecipeServiceImpl implements RecipeService {
 
 	@Override
 	@Transactional
-	public void updateRecipe(int recipeId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+	public void updateRecipe(int recipeId, JsonMergePatch patch) throws JacksonException {
 		Recipe recipe = find(recipeId);
 		RecipeUpdateDto patchedRecipeUpdateDto = applyPatchToRecipe(patch);
 		validationService.validate(patchedRecipeUpdateDto);
@@ -144,8 +143,7 @@ public class RecipeServiceImpl implements RecipeService {
 		return RecipeMappingContext.forUpdate(categories);
 	}
 
-	private RecipeUpdateDto applyPatchToRecipe(JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+	private RecipeUpdateDto applyPatchToRecipe(JsonMergePatch patch) throws JacksonException {
 		return jsonPatchService.createFromPatch(patch, RecipeUpdateDto.class);
 	}
 

@@ -1,6 +1,6 @@
 package com.fitassist.backend.controller.recipe;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.annotation.recipe.PublicRecipeOrOwnerOrAdminOrModerator;
 import com.fitassist.backend.annotation.recipe.RecipeOwnerOrAdminOrModerator;
 import com.fitassist.backend.dto.request.filter.FilterDto;
@@ -8,8 +8,7 @@ import com.fitassist.backend.dto.request.recipe.RecipeCreateDto;
 import com.fitassist.backend.dto.response.recipe.RecipeResponseDto;
 import com.fitassist.backend.dto.response.recipe.RecipeSummaryDto;
 import com.fitassist.backend.service.declaration.recipe.RecipeService;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +37,7 @@ public class RecipeController {
 	@RecipeOwnerOrAdminOrModerator
 	@PatchMapping("/{recipeId}")
 	public ResponseEntity<Void> updateRecipe(@PathVariable int recipeId, @RequestBody JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+			throws JacksonException {
 		recipeService.updateRecipe(recipeId, patch);
 		return ResponseEntity.noContent().build();
 	}

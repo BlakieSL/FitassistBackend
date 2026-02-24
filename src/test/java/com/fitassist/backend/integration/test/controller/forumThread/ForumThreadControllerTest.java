@@ -1,6 +1,6 @@
 package com.fitassist.backend.integration.test.controller.forumThread;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.fitassist.backend.dto.request.forumThread.ForumThreadCreateDto;
 import com.fitassist.backend.dto.request.forumThread.ForumThreadUpdateDto;
 import com.fitassist.backend.integration.config.MockAwsS3Config;

@@ -1,13 +1,15 @@
 package com.fitassist.backend.service.implementation.helpers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.Json;
+import jakarta.json.JsonMergePatch;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonValue;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+
+import java.io.StringReader;
 
 @Service
 public class JsonPatchServiceImpl implements JsonPatchService {
@@ -19,19 +21,23 @@ public class JsonPatchServiceImpl implements JsonPatchService {
 	}
 
 	@Override
-	public <T> T applyPatch(JsonMergePatch patch, Object targetBean, Class<T> beanClass)
-			throws JsonPatchException, JsonProcessingException {
-		JsonNode targetNode = objectMapper.valueToTree(targetBean);
-		JsonNode patchedNode = patch.apply(targetNode);
-		return objectMapper.treeToValue(patchedNode, beanClass);
+	public <T> T applyPatch(JsonMergePatch patch, Object targetBean, Class<T> beanClass) throws JacksonException {
+		String targetJson = objectMapper.writeValueAsString(targetBean);
+		JsonValue targetValue = readJsonValue(targetJson);
+		JsonValue patchedValue = patch.apply(targetValue);
+		return objectMapper.readValue(patchedValue.toString(), beanClass);
 	}
 
 	@Override
-	public <T> T createFromPatch(JsonMergePatch patch, Class<T> beanClass)
-			throws JsonPatchException, JsonProcessingException {
-		ObjectNode emptyNode = objectMapper.createObjectNode();
-		JsonNode patchedNode = patch.apply(emptyNode);
-		return objectMapper.treeToValue(patchedNode, beanClass);
+	public <T> T createFromPatch(JsonMergePatch patch, Class<T> beanClass) throws JacksonException {
+		JsonValue patchedValue = patch.apply(JsonValue.EMPTY_JSON_OBJECT);
+		return objectMapper.readValue(patchedValue.toString(), beanClass);
+	}
+
+	private JsonValue readJsonValue(String json) {
+		try (JsonReader reader = Json.createReader(new StringReader(json))) {
+			return reader.readValue();
+		}
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.fitassist.backend.unit.category;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.dto.request.category.CategoryCreateDto;
 import com.fitassist.backend.dto.request.category.CategoryUpdateDto;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
@@ -14,8 +14,7 @@ import com.fitassist.backend.service.declaration.category.CategoryCacheKeyGenera
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.implementation.category.ThreadCategoryServiceImpl;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -115,7 +114,7 @@ public class ThreadCategoryServiceTest {
 	}
 
 	@Test
-	void updateCategory_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+	void updateCategory_shouldUpdate() throws JacksonException {
 		int categoryId = 1;
 		when(repository.findById(categoryId)).thenReturn(Optional.of(category));
 		when(jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class)).thenReturn(patchedDto);
@@ -128,7 +127,7 @@ public class ThreadCategoryServiceTest {
 	}
 
 	@Test
-	void updateCategory_shouldPublishEvent() throws JsonPatchException, JsonProcessingException {
+	void updateCategory_shouldPublishEvent() throws JacksonException {
 		int categoryId = 1;
 		ArgumentCaptor<CategoryClearCacheEvent> eventCaptor = ArgumentCaptor.forClass(CategoryClearCacheEvent.class);
 
@@ -155,19 +154,19 @@ public class ThreadCategoryServiceTest {
 	}
 
 	@Test
-	void updateCategory_shouldThrowExceptionWhenPatchFails() throws JsonPatchException, JsonProcessingException {
+	void updateCategory_shouldThrowExceptionWhenPatchFails() throws JacksonException {
 		int categoryId = 1;
 		when(repository.findById(categoryId)).thenReturn(Optional.of(category));
-		when(jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class)).thenThrow(JsonPatchException.class);
+		when(jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class)).thenThrow(JacksonException.class);
 
-		assertThrows(JsonPatchException.class, () -> threadCategoryService.updateCategory(categoryId, patch));
+		assertThrows(JacksonException.class, () -> threadCategoryService.updateCategory(categoryId, patch));
 
 		verifyNoInteractions(validationService, applicationEventPublisher, cacheKeyGenerator);
 		verify(repository, never()).save(category);
 	}
 
 	@Test
-	void updateCategory_shouldThrowExceptionWhenValidationFails() throws JsonPatchException, JsonProcessingException {
+	void updateCategory_shouldThrowExceptionWhenValidationFails() throws JacksonException {
 		int categoryId = 1;
 		when(repository.findById(categoryId)).thenReturn(Optional.of(category));
 		when(jsonPatchService.createFromPatch(patch, CategoryUpdateDto.class)).thenReturn(patchedDto);

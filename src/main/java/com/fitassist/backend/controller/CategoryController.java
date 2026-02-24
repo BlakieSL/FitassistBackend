@@ -1,14 +1,13 @@
 package com.fitassist.backend.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.annotation.AdminOnly;
 import com.fitassist.backend.dto.request.category.CategoryCreateDto;
 import com.fitassist.backend.dto.response.category.CategoryResponseDto;
 import com.fitassist.backend.service.declaration.category.CategoryService;
 import com.fitassist.backend.service.declaration.selector.CategorySelectorService;
 import com.fitassist.backend.service.implementation.selector.CategoryType;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,7 +51,7 @@ public class CategoryController {
 	@AdminOnly
 	@PatchMapping("/{categoryType}/{id}")
 	public ResponseEntity<Void> updateCategory(@PathVariable CategoryType categoryType, @PathVariable int id,
-			@RequestBody JsonMergePatch patch) throws JsonProcessingException, JsonPatchException {
+			@RequestBody JsonMergePatch patch) throws JacksonException {
 		CategoryService categoryService = categorySelectorService.getService(categoryType);
 		categoryService.updateCategory(id, patch);
 		return ResponseEntity.noContent().build();

@@ -1,9 +1,8 @@
 package com.fitassist.backend.exception;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.dto.response.error.ErrorResponseDto;
 import com.fitassist.backend.dto.response.error.ValidationErrorDto;
-import com.github.fge.jsonpatch.JsonPatchException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -89,17 +88,10 @@ public class GlobalExceptionHandler {
 		return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
 	}
 
-	@ExceptionHandler(JsonPatchException.class)
+	@ExceptionHandler(JacksonException.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
-	public ErrorResponseDto handleJsonPatchException(JsonPatchException e) {
-		return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
-	}
-
-	@ExceptionHandler(JsonProcessingException.class)
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	@ResponseBody
-	public ErrorResponseDto handleJsonProcessingException(JsonProcessingException e) {
+	public ErrorResponseDto handleJacksonException(JacksonException e) {
 		return new ErrorResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
 	}
 
