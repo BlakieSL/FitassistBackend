@@ -1,6 +1,6 @@
 package com.fitassist.backend.service.implementation.user;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.auth.UserDetailsBuilder;
 import com.fitassist.backend.dto.pojo.AuthorDto;
 import com.fitassist.backend.dto.pojo.UserCredentialsDto;
@@ -21,8 +21,7 @@ import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.declaration.user.UserPopulationService;
 import com.fitassist.backend.service.declaration.user.UserService;
 import com.fitassist.backend.service.implementation.helpers.JsonPatchServiceImpl;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -119,7 +118,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	@Transactional
-	public void updateUser(int userId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+	public void updateUser(int userId, JsonMergePatch patch) throws JacksonException {
 		User user = find(userId);
 		UserUpdateDto patchedUserUpdateDto = applyPatchToUser(patch);
 
@@ -131,7 +130,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		userRepository.save(user);
 	}
 
-	private UserUpdateDto applyPatchToUser(JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+	private UserUpdateDto applyPatchToUser(JsonMergePatch patch) throws JacksonException {
 		return jsonPatchService.createFromPatch(patch, UserUpdateDto.class);
 	}
 

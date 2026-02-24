@@ -1,6 +1,6 @@
 package com.fitassist.backend.service.implementation.food;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.dto.request.filter.FilterDto;
 import com.fitassist.backend.dto.request.food.CalculateFoodMacrosRequestDto;
@@ -33,8 +33,7 @@ import com.fitassist.backend.service.implementation.specification.SpecificationD
 import com.fitassist.backend.specification.SpecificationBuilder;
 import com.fitassist.backend.specification.SpecificationFactory;
 import com.fitassist.backend.specification.specification.FoodSpecification;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -133,7 +132,7 @@ public class FoodServiceImpl implements FoodService {
 
 	@Override
 	@Transactional
-	public void updateFood(int foodId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+	public void updateFood(int foodId, JsonMergePatch patch) throws JacksonException {
 		Food food = find(foodId);
 		FoodUpdateDto patchedFoodUpdateDto = applyPatchToFood(patch);
 
@@ -151,7 +150,7 @@ public class FoodServiceImpl implements FoodService {
 		applicationEventPublisher.publishEvent(FoodUpdateEvent.of(this, refetchedFood));
 	}
 
-	private FoodUpdateDto applyPatchToFood(JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+	private FoodUpdateDto applyPatchToFood(JsonMergePatch patch) throws JacksonException {
 		return jsonPatchService.createFromPatch(patch, FoodUpdateDto.class);
 	}
 

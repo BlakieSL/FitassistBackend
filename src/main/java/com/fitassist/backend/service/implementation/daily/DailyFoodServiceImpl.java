@@ -1,6 +1,6 @@
 package com.fitassist.backend.service.implementation.daily;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.request.food.DailyCartFoodCreateDto;
 import com.fitassist.backend.dto.request.food.DailyCartFoodUpdateDto;
@@ -20,8 +20,7 @@ import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -110,8 +109,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 
 	@Override
 	@Transactional
-	public void updateDailyFoodItem(int dailyCartFoodId, JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+	public void updateDailyFoodItem(int dailyCartFoodId, JsonMergePatch patch) throws JacksonException {
 		DailyCartFood dailyCartFood = findWithoutAssociations(dailyCartFoodId);
 
 		DailyCartFoodUpdateDto patchedDto = applyPatchToDailyFoodItem(patch);
@@ -121,8 +119,7 @@ public class DailyFoodServiceImpl implements DailyFoodService {
 		dailyCartFoodRepository.save(dailyCartFood);
 	}
 
-	private DailyCartFoodUpdateDto applyPatchToDailyFoodItem(JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+	private DailyCartFoodUpdateDto applyPatchToDailyFoodItem(JsonMergePatch patch) throws JacksonException {
 		return jsonPatchService.createFromPatch(patch, DailyCartFoodUpdateDto.class);
 	}
 

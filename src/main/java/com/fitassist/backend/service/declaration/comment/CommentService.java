@@ -1,13 +1,12 @@
 package com.fitassist.backend.service.declaration.comment;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.dto.request.comment.CommentCreateDto;
 import com.fitassist.backend.dto.request.filter.FilterDto;
 import com.fitassist.backend.dto.response.comment.CommentAncestryDto;
 import com.fitassist.backend.dto.response.comment.CommentResponseDto;
 import com.fitassist.backend.dto.response.comment.CommentSummaryDto;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,7 +16,7 @@ public interface CommentService {
 
 	CommentResponseDto createComment(CommentCreateDto createDto);
 
-	void updateComment(int commentId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+	void updateComment(int commentId, JsonMergePatch patch) throws JacksonException;
 
 	void deleteComment(int commentId);
 

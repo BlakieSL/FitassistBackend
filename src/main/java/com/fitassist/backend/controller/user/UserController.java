@@ -1,6 +1,6 @@
 package com.fitassist.backend.controller.user;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.annotation.AccountOwnerOrAdmin;
 import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.auth.CookieService;
@@ -11,8 +11,7 @@ import com.fitassist.backend.dto.request.user.UserUpdateDto;
 import com.fitassist.backend.dto.response.user.UserResponseDto;
 import com.fitassist.backend.exception.InvalidRefreshTokenException;
 import com.fitassist.backend.service.declaration.user.UserService;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -81,7 +80,7 @@ public class UserController {
 	@AccountOwnerOrAdmin
 	@PatchMapping("/{id}")
 	public ResponseEntity<Void> updateUser(@PathVariable int id, @RequestBody JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+			throws JacksonException {
 		userService.updateUser(id, patch);
 		return ResponseEntity.noContent().build();
 	}

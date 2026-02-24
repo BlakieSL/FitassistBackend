@@ -1,12 +1,11 @@
 package com.fitassist.backend.service.declaration.user;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.dto.pojo.AuthorDto;
 import com.fitassist.backend.dto.request.user.UserCreateDto;
 import com.fitassist.backend.dto.request.user.UserUpdateDto;
 import com.fitassist.backend.dto.response.user.UserResponseDto;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 
 public interface UserService {
 
@@ -14,7 +13,7 @@ public interface UserService {
 
 	void deleteUser(int id);
 
-	void updateUser(int userId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException;
+	void updateUser(int userId, JsonMergePatch patch) throws JacksonException;
 
 	void updateUserSimple(int userId, UserUpdateDto updateDto);
 

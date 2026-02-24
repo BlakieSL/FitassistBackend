@@ -1,6 +1,6 @@
 package com.fitassist.backend.unit.activity;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.pojo.FilterCriteria;
 import com.fitassist.backend.dto.request.activity.ActivityCreateDto;
@@ -28,8 +28,7 @@ import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.implementation.activity.ActivityServiceImpl;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -192,7 +191,7 @@ public class ActivityServiceTest {
 	}
 
 	@Test
-	void updateActivity_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+	void updateActivity_shouldUpdate() throws JacksonException {
 		activity.setId(activityId);
 		when(repositoryHelper.find(activityRepository, Activity.class, activityId)).thenReturn(activity);
 		when(jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class)).thenReturn(patchedDto);
@@ -207,7 +206,7 @@ public class ActivityServiceTest {
 	}
 
 	@Test
-	void updateActivity_shouldPublishEvent() throws JsonPatchException, JsonProcessingException {
+	void updateActivity_shouldPublishEvent() throws JacksonException {
 		ArgumentCaptor<ActivityUpdateEvent> eventCaptor = ArgumentCaptor.forClass(ActivityUpdateEvent.class);
 
 		activity.setId(activityId);
@@ -234,18 +233,18 @@ public class ActivityServiceTest {
 	}
 
 	@Test
-	void updateActivity_shouldThrowExceptionWhenPatchFails() throws JsonPatchException, JsonProcessingException {
+	void updateActivity_shouldThrowExceptionWhenPatchFails() throws JacksonException {
 		when(repositoryHelper.find(activityRepository, Activity.class, activityId)).thenReturn(activity);
-		when(jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class)).thenThrow(JsonPatchException.class);
+		when(jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class)).thenThrow(JacksonException.class);
 
-		assertThrows(JsonPatchException.class, () -> activityService.updateActivity(activityId, patch));
+		assertThrows(JacksonException.class, () -> activityService.updateActivity(activityId, patch));
 
 		verifyNoInteractions(validationService, eventPublisher);
 		verify(activityRepository, never()).save(activity);
 	}
 
 	@Test
-	void updateActivity_shouldThrowExceptionWhenValidationFails() throws JsonPatchException, JsonProcessingException {
+	void updateActivity_shouldThrowExceptionWhenValidationFails() throws JacksonException {
 		when(repositoryHelper.find(activityRepository, Activity.class, activityId)).thenReturn(activity);
 		when(jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class)).thenReturn(patchedDto);
 

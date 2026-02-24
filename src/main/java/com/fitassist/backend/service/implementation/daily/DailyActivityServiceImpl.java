@@ -1,6 +1,6 @@
 package com.fitassist.backend.service.implementation.daily;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.request.activity.DailyActivityItemCreateDto;
 import com.fitassist.backend.dto.request.activity.DailyActivityItemUpdateDto;
@@ -21,8 +21,7 @@ import com.fitassist.backend.service.declaration.helpers.CalculationsService;
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -125,8 +124,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 
 	@Override
 	@Transactional
-	public void updateDailyActivityItem(int dailyActivityItemId, JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+	public void updateDailyActivityItem(int dailyActivityItemId, JsonMergePatch patch) throws JacksonException {
 		DailyCartActivity dailyCartActivity = findWithoutAssociations(dailyActivityItemId);
 		DailyActivityItemUpdateDto patchedDto = applyPatchToDailyActivityItem(patch);
 		validationService.validate(patchedDto);
@@ -137,8 +135,7 @@ public class DailyActivityServiceImpl implements DailyActivityService {
 		dailyCartActivityRepository.save(dailyCartActivity);
 	}
 
-	private DailyActivityItemUpdateDto applyPatchToDailyActivityItem(JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+	private DailyActivityItemUpdateDto applyPatchToDailyActivityItem(JsonMergePatch patch) throws JacksonException {
 		return jsonPatchService.createFromPatch(patch, DailyActivityItemUpdateDto.class);
 	}
 

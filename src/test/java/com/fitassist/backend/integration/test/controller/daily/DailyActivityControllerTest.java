@@ -1,6 +1,6 @@
 package com.fitassist.backend.integration.test.controller.daily;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.fitassist.backend.dto.request.activity.DailyActivityItemCreateDto;
 import com.fitassist.backend.dto.request.activity.DailyActivityItemUpdateDto;
 import com.fitassist.backend.integration.config.MockAwsS3Config;

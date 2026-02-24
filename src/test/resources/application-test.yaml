@@ -51,7 +51,7 @@ lucene:
   enabled: false
 
 jws:
-  sharedKey: ***REMOVED***
+  sharedKey: 234gfgjkldfsipo[2u3j,.ga/slf[awoegafgasg
 
 rate-limiter:
   user-rate: 10000
