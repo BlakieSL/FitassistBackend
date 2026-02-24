@@ -1,6 +1,6 @@
 package com.fitassist.backend.unit.forumThread;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.request.forumThread.ForumThreadCreateDto;
 import com.fitassist.backend.dto.request.forumThread.ForumThreadUpdateDto;
@@ -20,8 +20,7 @@ import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.declaration.thread.ForumThreadPopulationService;
 import com.fitassist.backend.service.implementation.forumthread.ForumThreadServiceImpl;
 import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -152,7 +151,7 @@ public class ForumThreadServiceTest {
 	}
 
 	@Test
-	void updateForumThread_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+	void updateForumThread_shouldUpdate() throws JacksonException {
 		when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId)).thenReturn(forumThread);
 		when(jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class)).thenReturn(patchedDto);
 		when(forumThreadRepository.save(forumThread)).thenReturn(forumThread);
@@ -176,8 +175,7 @@ public class ForumThreadServiceTest {
 	}
 
 	@Test
-	void updateForumThread_shouldThrowExceptionWhenValidationFails()
-			throws JsonPatchException, JsonProcessingException {
+	void updateForumThread_shouldThrowExceptionWhenValidationFails() throws JacksonException {
 		when(repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId)).thenReturn(forumThread);
 		when(jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class)).thenReturn(patchedDto);
 

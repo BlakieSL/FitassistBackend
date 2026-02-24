@@ -1,7 +1,8 @@
 package com.fitassist.backend.integration.test.controller.exercise;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.fitassist.backend.dto.request.exercise.ExerciseCreateDto;
 import com.fitassist.backend.dto.request.exercise.ExerciseUpdateDto;
 import com.fitassist.backend.integration.config.MockAwsS3Config;
@@ -75,7 +76,10 @@ public class ExerciseControllerTest {
 		updateDto.setDescription("This is an updated test exercise.");
 		updateDto.setEquipmentId(2);
 
-		ObjectMapper patchMapper = objectMapper.copy().setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		ObjectMapper patchMapper = JsonMapper.builder()
+			.changeDefaultPropertyInclusion(v -> com.fasterxml.jackson.annotation.JsonInclude.Value
+				.construct(JsonInclude.Include.NON_NULL, JsonInclude.Include.NON_NULL))
+			.build();
 
 		mockMvc
 			.perform(patch("/api/exercises/1").contentType(MediaType.APPLICATION_JSON)

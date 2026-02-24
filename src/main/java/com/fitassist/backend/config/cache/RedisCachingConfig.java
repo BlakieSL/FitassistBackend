@@ -1,9 +1,7 @@
 package com.fitassist.backend.config.cache;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
@@ -21,7 +19,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-@EnableAutoConfiguration(exclude = RedisRepositoriesAutoConfiguration.class)
 @Configuration
 @EnableCaching
 public class RedisCachingConfig {

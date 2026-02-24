@@ -97,7 +97,7 @@ public class GenericSpecificationHelper {
 
 	public static <T> Predicate buildPredicateUserEntityInteractionRange(PredicateContext<T> context,
 			String joinProperty, String targetTypeFieldName, Object typeValue) {
-		Subquery<Long> subquery = context.builder().createQuery(Long.class).subquery(Long.class);
+		Subquery<Long> subquery = context.query().subquery(Long.class);
 		Root<?> subRoot = subquery.from(context.root().getModel().getJavaType());
 		Join<?, ?> subJoin = subRoot.join(joinProperty, JoinType.LEFT);
 		List<Predicate> subqueryPredicates = new ArrayList<>();

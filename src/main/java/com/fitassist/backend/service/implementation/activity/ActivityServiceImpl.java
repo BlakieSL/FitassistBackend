@@ -1,6 +1,6 @@
 package com.fitassist.backend.service.implementation.activity;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.dto.request.activity.ActivityCreateDto;
@@ -33,8 +33,7 @@ import com.fitassist.backend.service.implementation.specification.SpecificationD
 import com.fitassist.backend.specification.SpecificationBuilder;
 import com.fitassist.backend.specification.SpecificationFactory;
 import com.fitassist.backend.specification.specification.ActivitySpecification;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -125,8 +124,7 @@ public class ActivityServiceImpl implements ActivityService {
 
 	@Override
 	@Transactional
-	public void updateActivity(int activityId, JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+	public void updateActivity(int activityId, JsonMergePatch patch) throws JacksonException {
 		Activity activity = findActivity(activityId);
 		ActivityUpdateDto patched = applyPatchToActivity(patch);
 		validationService.validate(patched);
@@ -148,8 +146,7 @@ public class ActivityServiceImpl implements ActivityService {
 		return repositoryHelper.find(activityRepository, Activity.class, activityId);
 	}
 
-	private ActivityUpdateDto applyPatchToActivity(JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+	private ActivityUpdateDto applyPatchToActivity(JsonMergePatch patch) throws JacksonException {
 		return jsonPatchService.createFromPatch(patch, ActivityUpdateDto.class);
 	}
 

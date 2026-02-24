@@ -1,79 +1,68 @@
 package com.fitassist.backend.unit.helpers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitassist.backend.service.implementation.helpers.JsonPatchServiceImpl;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.Json;
+import jakarta.json.JsonMergePatch;
+import jakarta.json.JsonObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.datatype.jsonp.JSONPModule;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class JsonPatchServiceTest {
 
-	@Mock
-	private ObjectMapper objectMapper;
-
-	@InjectMocks
 	private JsonPatchServiceImpl jsonPatchService;
-
-	private JsonMergePatch patch;
-
-	private Object targetBean;
-
-	private JsonNode targetNode;
-
-	private JsonNode patchedNode;
-
-	private Class<Object> beanClass;
 
 	@BeforeEach
 	void setUp() {
-		patch = mock(JsonMergePatch.class);
-		targetBean = new Object();
-		targetNode = mock(JsonNode.class);
-		patchedNode = mock(JsonNode.class);
-		beanClass = Object.class;
+		jsonPatchService = new JsonPatchServiceImpl(JsonMapper.builder().addModule(new JSONPModule()).build());
 	}
 
 	@Test
-	void applyPatch_shouldApplyPatchAndReturnPatchedBean() throws JsonPatchException, JsonProcessingException {
-		when(objectMapper.valueToTree(targetBean)).thenReturn(targetNode);
-		when(patch.apply(targetNode)).thenReturn(patchedNode);
-		when(objectMapper.treeToValue(patchedNode, beanClass)).thenReturn(targetBean);
+	void applyPatch_shouldApplyPatchAndReturnPatchedBean() throws JacksonException {
+		JsonObject patchJson = Json.createObjectBuilder().add("name", "Updated").build();
+		JsonMergePatch patch = Json.createMergePatch(patchJson);
 
-		Object result = jsonPatchService.applyPatch(patch, targetBean, beanClass);
+		TestBean target = new TestBean("Original");
+		TestBean result = jsonPatchService.applyPatch(patch, target, TestBean.class);
 
-		assertEquals(targetBean, result);
-		verify(objectMapper).valueToTree(targetBean);
-		verify(patch).apply(targetNode);
-		verify(objectMapper).treeToValue(patchedNode, beanClass);
+		assertEquals("Updated", result.name());
 	}
 
 	@Test
-	void applyPatch_shouldThrowJsonPatchException() throws JsonPatchException {
-		when(objectMapper.valueToTree(targetBean)).thenReturn(targetNode);
-		when(patch.apply(targetNode)).thenThrow(JsonPatchException.class);
+	void createFromPatch_shouldCreateBeanFromPatch() throws JacksonException {
+		JsonObject patchJson = Json.createObjectBuilder().add("name", "Created").build();
+		JsonMergePatch patch = Json.createMergePatch(patchJson);
 
-		assertThrows(JsonPatchException.class, () -> jsonPatchService.applyPatch(patch, targetBean, beanClass));
+		TestBean result = jsonPatchService.createFromPatch(patch, TestBean.class);
+
+		assertEquals("Created", result.name());
 	}
 
 	@Test
-	void applyPatch_shouldThrowJsonProcessingException() throws JsonPatchException, JsonProcessingException {
-		when(objectMapper.valueToTree(targetBean)).thenReturn(targetNode);
-		when(patch.apply(targetNode)).thenReturn(patchedNode);
-		when(objectMapper.treeToValue(patchedNode, beanClass)).thenThrow(JsonProcessingException.class);
+	void applyPatch_shouldThrowJacksonException_whenDeserializationFails() {
+		JsonObject patchJson = Json.createObjectBuilder().add("name", "Updated").build();
+		JsonMergePatch patch = Json.createMergePatch(patchJson);
 
-		assertThrows(JsonProcessingException.class, () -> jsonPatchService.applyPatch(patch, targetBean, beanClass));
+		assertThrows(JacksonException.class,
+				() -> jsonPatchService.applyPatch(patch, new TestBean("Original"), Undeserializable.class));
+	}
+
+	private record TestBean(String name) {
+	}
+
+	private static final class Undeserializable {
+
+		private Undeserializable(String ignored, int alsoIgnored) {
+		}
+
 	}
 
 }

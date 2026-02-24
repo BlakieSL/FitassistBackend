@@ -1,6 +1,6 @@
 package com.fitassist.backend.integration.test.controller.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.fitassist.backend.dto.request.user.UserCreateDto;
 import com.fitassist.backend.dto.request.user.UserUpdateDto;
 import com.fitassist.backend.integration.config.MockAwsS3Config;

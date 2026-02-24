@@ -1,6 +1,6 @@
 package com.fitassist.backend.service.implementation.comment;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.pojo.AuthorDto;
 import com.fitassist.backend.dto.request.comment.CommentCreateDto;
@@ -26,8 +26,7 @@ import com.fitassist.backend.service.implementation.specification.SpecificationD
 import com.fitassist.backend.specification.SpecificationBuilder;
 import com.fitassist.backend.specification.SpecificationFactory;
 import com.fitassist.backend.specification.specification.CommentSpecification;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -124,7 +124,7 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	@Transactional
-	public void updateComment(int commentId, JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+	public void updateComment(int commentId, JsonMergePatch patch) throws JacksonException {
 		Comment comment = commentRepository.findById(commentId)
 			.orElseThrow(() -> new RecordNotFoundException(Comment.class, commentId));
 
@@ -135,8 +135,7 @@ public class CommentServiceImpl implements CommentService {
 		commentRepository.save(comment);
 	}
 
-	private CommentUpdateDto applyPatchToComment(JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+	private CommentUpdateDto applyPatchToComment(JsonMergePatch patch) throws JacksonException {
 		return jsonPatchService.createFromPatch(patch, CommentUpdateDto.class);
 	}
 
@@ -207,7 +206,7 @@ public class CommentServiceImpl implements CommentService {
 			dto.setText((String) row[1]);
 			dto.setThreadId((Integer) row[2]);
 			dto.setParentCommentId((Integer) row[4]);
-			dto.setCreatedAt(((Timestamp) row[5]).toLocalDateTime());
+			dto.setCreatedAt(row[5] instanceof Timestamp ts ? ts.toLocalDateTime() : (LocalDateTime) row[5]);
 			dto.setReplies(new ArrayList<>());
 
 			AuthorDto author = new AuthorDto();

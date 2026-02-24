@@ -1,7 +1,8 @@
 package com.fitassist.backend.integration.test.controller.search;
 
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import com.fitassist.backend.integration.config.MockMvcConfig;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlMergeMode;
@@ -14,7 +15,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
-@AutoConfigureMockMvc
+@Import(MockMvcConfig.class)
 @ActiveProfiles({ "test", "test-lucene" })
 @SpringBootTest
 @Sql(scripts = { "classpath:${schema.name}/schema/drop-schema.sql",

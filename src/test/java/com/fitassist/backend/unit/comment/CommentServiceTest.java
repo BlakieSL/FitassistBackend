@@ -1,6 +1,6 @@
 package com.fitassist.backend.unit.comment;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.request.comment.CommentCreateDto;
 import com.fitassist.backend.dto.request.comment.CommentUpdateDto;
@@ -18,8 +18,7 @@ import com.fitassist.backend.service.declaration.comment.CommentPopulationServic
 import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.implementation.comment.CommentServiceImpl;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -166,7 +165,7 @@ public class CommentServiceTest {
 	}
 
 	@Test
-	void updateComment_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+	void updateComment_shouldUpdate() throws JacksonException {
 		when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
 		when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class)).thenReturn(patchedDto);
 
@@ -188,18 +187,18 @@ public class CommentServiceTest {
 	}
 
 	@Test
-	void updateComment_shouldThrowExceptionWhenPatchFails() throws JsonPatchException, JsonProcessingException {
+	void updateComment_shouldThrowExceptionWhenPatchFails() throws JacksonException {
 		when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
-		when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class)).thenThrow(JsonPatchException.class);
+		when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class)).thenThrow(JacksonException.class);
 
-		assertThrows(JsonPatchException.class, () -> commentService.updateComment(commentId, patch));
+		assertThrows(JacksonException.class, () -> commentService.updateComment(commentId, patch));
 
 		verifyNoInteractions(validationService);
 		verify(commentRepository, never()).save(comment);
 	}
 
 	@Test
-	void updateComment_shouldThrowExceptionWhenValidationFails() throws JsonPatchException, JsonProcessingException {
+	void updateComment_shouldThrowExceptionWhenValidationFails() throws JacksonException {
 		when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
 		when(jsonPatchService.createFromPatch(patch, CommentUpdateDto.class)).thenReturn(patchedDto);
 

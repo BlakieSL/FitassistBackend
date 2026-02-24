@@ -1,6 +1,6 @@
 package com.fitassist.backend.service.implementation.exercise;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.config.cache.CacheNames;
 import com.fitassist.backend.dto.request.exercise.ExerciseCreateDto;
 import com.fitassist.backend.dto.request.exercise.ExerciseUpdateDto;
@@ -29,8 +29,7 @@ import com.fitassist.backend.service.implementation.specification.SpecificationD
 import com.fitassist.backend.specification.SpecificationBuilder;
 import com.fitassist.backend.specification.SpecificationFactory;
 import com.fitassist.backend.specification.specification.ExerciseSpecification;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -139,8 +138,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
 	@Override
 	@Transactional
-	public void updateExercise(int exerciseId, JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+	public void updateExercise(int exerciseId, JsonMergePatch patch) throws JacksonException {
 		Exercise exercise = exerciseRepository.findByIdWithDetails(exerciseId)
 			.orElseThrow(() -> RecordNotFoundException.of(Exercise.class, exerciseId));
 		ExerciseUpdateDto patchedExerciseUpdateDto = applyPatchToExercise(patch);
@@ -157,8 +155,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 		applicationEventPublisher.publishEvent(ExerciseUpdateEvent.of(this, exerciseWithMediaAndCategories));
 	}
 
-	private ExerciseUpdateDto applyPatchToExercise(JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+	private ExerciseUpdateDto applyPatchToExercise(JsonMergePatch patch) throws JacksonException {
 		return jsonPatchService.createFromPatch(patch, ExerciseUpdateDto.class);
 	}
 

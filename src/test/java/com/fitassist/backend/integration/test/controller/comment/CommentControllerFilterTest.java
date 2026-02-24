@@ -1,6 +1,6 @@
 package com.fitassist.backend.integration.test.controller.comment;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.fitassist.backend.dto.pojo.FilterCriteria;
 import com.fitassist.backend.dto.request.filter.FilterDto;
 import com.fitassist.backend.integration.config.MockAwsS3Config;

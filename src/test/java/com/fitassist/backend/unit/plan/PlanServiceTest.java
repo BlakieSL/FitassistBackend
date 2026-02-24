@@ -1,6 +1,6 @@
 package com.fitassist.backend.unit.plan;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.pojo.FilterCriteria;
 import com.fitassist.backend.dto.request.filter.FilterDto;
@@ -23,8 +23,7 @@ import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.declaration.plan.PlanPopulationService;
 import com.fitassist.backend.service.implementation.plan.PlanServiceImpl;
 import com.fitassist.backend.service.implementation.specification.SpecificationDependencies;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -184,7 +183,7 @@ public class PlanServiceTest {
 	}
 
 	@Test
-	void updatePlan_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+	void updatePlan_shouldUpdate() throws JacksonException {
 		when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
 		when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class)).thenReturn(patchedDto);
 		when(planRepository.save(plan)).thenReturn(plan);
@@ -197,7 +196,7 @@ public class PlanServiceTest {
 	}
 
 	@Test
-	void updatePlan_shouldPublish() throws JsonPatchException, JsonProcessingException {
+	void updatePlan_shouldPublish() throws JacksonException {
 		ArgumentCaptor<PlanUpdateEvent> eventCaptor = ArgumentCaptor.forClass(PlanUpdateEvent.class);
 		when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
 		when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class)).thenReturn(patchedDto);
@@ -221,18 +220,18 @@ public class PlanServiceTest {
 	}
 
 	@Test
-	void updatePlan_shouldThrowExceptionWhenPatchFails() throws JsonPatchException, JsonProcessingException {
+	void updatePlan_shouldThrowExceptionWhenPatchFails() throws JacksonException {
 		when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
-		when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class)).thenThrow(JsonPatchException.class);
+		when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class)).thenThrow(JacksonException.class);
 
-		assertThrows(JsonPatchException.class, () -> planService.updatePlan(planId, patch));
+		assertThrows(JacksonException.class, () -> planService.updatePlan(planId, patch));
 
 		verifyNoInteractions(validationService, eventPublisher);
 		verify(planRepository, never()).save(plan);
 	}
 
 	@Test
-	void updatePlan_shouldThrowExceptionWhenValidationFails() throws JsonPatchException, JsonProcessingException {
+	void updatePlan_shouldThrowExceptionWhenValidationFails() throws JacksonException {
 		when(repositoryHelper.find(planRepository, Plan.class, planId)).thenReturn(plan);
 		when(jsonPatchService.createFromPatch(patch, PlanUpdateDto.class)).thenReturn(patchedDto);
 

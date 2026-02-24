@@ -1,6 +1,6 @@
 package com.fitassist.backend.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.annotation.plan.PlanOwnerOrAdminOrModerator;
 import com.fitassist.backend.annotation.plan.PublicPlanOrOwnerOrAdminOrModerator;
 import com.fitassist.backend.dto.request.filter.FilterDto;
@@ -9,8 +9,7 @@ import com.fitassist.backend.dto.response.plan.PlanCategoriesResponseDto;
 import com.fitassist.backend.dto.response.plan.PlanResponseDto;
 import com.fitassist.backend.dto.response.plan.PlanSummaryDto;
 import com.fitassist.backend.service.declaration.plan.PlanService;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +38,7 @@ public class PlanController {
 	@PlanOwnerOrAdminOrModerator
 	@PatchMapping("/{planId}")
 	public ResponseEntity<Void> updatePlan(@PathVariable int planId, @RequestBody JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+			throws JacksonException {
 		planService.updatePlan(planId, patch);
 		return ResponseEntity.noContent().build();
 	}

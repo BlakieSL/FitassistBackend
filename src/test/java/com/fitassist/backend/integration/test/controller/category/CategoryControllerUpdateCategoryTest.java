@@ -1,6 +1,6 @@
 package com.fitassist.backend.integration.test.controller.category;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.fitassist.backend.dto.request.category.CategoryCreateDto;
 import com.fitassist.backend.integration.config.MockAwsS3Config;
 import com.fitassist.backend.integration.config.MockAwsSesConfig;
