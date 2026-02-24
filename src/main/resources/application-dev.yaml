@@ -43,6 +43,8 @@ rate-limiter:
 app:
   frontend:
     url: http://localhost:5173
+  csrf:
+    cookie-secure: false
   email:
     from: ${EMAIL_FROM}
 
