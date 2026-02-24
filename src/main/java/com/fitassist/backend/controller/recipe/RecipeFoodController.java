@@ -1,12 +1,11 @@
 package com.fitassist.backend.controller.recipe;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.annotation.recipe.RecipeOwnerOrAdminOrModerator;
 import com.fitassist.backend.dto.request.recipe.RecipeFoodCreateDto;
 import com.fitassist.backend.dto.response.food.FoodSummaryDto;
 import com.fitassist.backend.service.declaration.recipe.RecipeFoodService;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +49,7 @@ public class RecipeFoodController {
 	@RecipeOwnerOrAdminOrModerator
 	@PatchMapping("/{recipeId}/modify/{foodId}")
 	public ResponseEntity<Void> updateFoodRecipe(@PathVariable int recipeId, @PathVariable int foodId,
-			@RequestBody JsonMergePatch patch) throws JsonPatchException, JsonProcessingException {
+			@RequestBody JsonMergePatch patch) throws JacksonException {
 		recipeFoodService.updateFoodRecipe(recipeId, foodId, patch);
 		return ResponseEntity.noContent().build();
 	}

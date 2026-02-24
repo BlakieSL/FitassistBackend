@@ -1,6 +1,6 @@
 package com.fitassist.backend.unit.daily;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.pojo.FoodMacros;
 import com.fitassist.backend.dto.request.food.DailyCartFoodCreateDto;
@@ -22,8 +22,7 @@ import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.implementation.daily.DailyFoodServiceImpl;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -184,7 +183,7 @@ public class DailyFoodServiceTest {
 	}
 
 	@Test
-	void updateDailyFoodItem_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+	void updateDailyFoodItem_shouldUpdate() throws JacksonException {
 		DailyCartFoodUpdateDto patchedDto = new DailyCartFoodUpdateDto();
 		patchedDto.setQuantity(BigDecimal.valueOf(120));
 
@@ -211,20 +210,19 @@ public class DailyFoodServiceTest {
 	}
 
 	@Test
-	void updateDailyFoodItem_shouldThrowException_whenPatchFails() throws JsonPatchException, JsonProcessingException {
+	void updateDailyFoodItem_shouldThrowException_whenPatchFails() throws JacksonException {
 		when(dailyCartFoodRepository.findByIdWithoutAssociations(FOOD_ID)).thenReturn(Optional.of(dailyCartFood));
-		doThrow(JsonPatchException.class).when(jsonPatchService)
+		doThrow(JacksonException.class).when(jsonPatchService)
 			.createFromPatch(any(JsonMergePatch.class), eq(DailyCartFoodUpdateDto.class));
 
-		assertThrows(JsonPatchException.class, () -> dailyFoodService.updateDailyFoodItem(FOOD_ID, patch));
+		assertThrows(JacksonException.class, () -> dailyFoodService.updateDailyFoodItem(FOOD_ID, patch));
 
 		verifyNoInteractions(validationService);
 		verify(dailyCartFoodRepository, never()).save(any());
 	}
 
 	@Test
-	void updateDailyFoodItem_shouldThrowException_whenPatchValidationFails()
-			throws JsonPatchException, JsonProcessingException {
+	void updateDailyFoodItem_shouldThrowException_whenPatchValidationFails() throws JacksonException {
 		DailyCartFoodUpdateDto patchedDto = new DailyCartFoodUpdateDto();
 		patchedDto.setQuantity(BigDecimal.valueOf(120));
 

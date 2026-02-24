@@ -1,10 +1,9 @@
 package com.fitassist.backend.service.declaration.daily;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.dto.request.food.DailyCartFoodCreateDto;
 import com.fitassist.backend.dto.response.daily.DailyFoodsResponseDto;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 
 import java.time.LocalDate;
 
@@ -14,8 +13,7 @@ public interface DailyFoodService {
 
 	void removeFoodFromDailyCart(int dailyCartFoodId);
 
-	void updateDailyFoodItem(int dailyCartFoodId, JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException;
+	void updateDailyFoodItem(int dailyCartFoodId, JsonMergePatch patch) throws JacksonException;
 
 	DailyFoodsResponseDto getFoodFromDailyCart(LocalDate date);
 

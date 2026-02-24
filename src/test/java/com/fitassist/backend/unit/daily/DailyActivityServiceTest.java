@@ -1,6 +1,6 @@
 package com.fitassist.backend.unit.daily;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.request.activity.DailyActivityItemCreateDto;
 import com.fitassist.backend.dto.request.activity.DailyActivityItemUpdateDto;
@@ -21,8 +21,7 @@ import com.fitassist.backend.service.declaration.helpers.JsonPatchService;
 import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.implementation.daily.DailyActivityServiceImpl;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -195,7 +194,7 @@ public class DailyActivityServiceTest {
 	}
 
 	@Test
-	void updateDailyActivityItem_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+	void updateDailyActivityItem_shouldUpdate() throws JacksonException {
 		DailyActivityItemUpdateDto patchedDto = new DailyActivityItemUpdateDto();
 		patchedDto.setTime((short) 120);
 		patchedDto.setWeight(BigDecimal.valueOf(80.00));
@@ -225,22 +224,20 @@ public class DailyActivityServiceTest {
 	}
 
 	@Test
-	void updateDailyActivityItem_shouldThrowException_whenPatchFails()
-			throws JsonPatchException, JsonProcessingException {
+	void updateDailyActivityItem_shouldThrowException_whenPatchFails() throws JacksonException {
 		when(dailyCartActivityRepository.findByIdWithoutAssociations(ACTIVITY_ID))
 			.thenReturn(Optional.of(dailyCartActivity));
-		doThrow(JsonPatchException.class).when(jsonPatchService)
+		doThrow(JacksonException.class).when(jsonPatchService)
 			.createFromPatch(any(JsonMergePatch.class), eq(DailyActivityItemUpdateDto.class));
 
-		assertThrows(JsonPatchException.class, () -> dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch));
+		assertThrows(JacksonException.class, () -> dailyActivityService.updateDailyActivityItem(ACTIVITY_ID, patch));
 
 		verifyNoInteractions(validationService);
 		verify(dailyCartActivityRepository, never()).save(any());
 	}
 
 	@Test
-	void updateDailyActivityItem_shouldThrowException_whenPatchValidationFails()
-			throws JsonPatchException, JsonProcessingException {
+	void updateDailyActivityItem_shouldThrowException_whenPatchValidationFails() throws JacksonException {
 		DailyActivityItemUpdateDto patchedDto = new DailyActivityItemUpdateDto();
 		patchedDto.setTime((short) 120);
 

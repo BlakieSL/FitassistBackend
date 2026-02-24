@@ -1,6 +1,6 @@
 package com.fitassist.backend.integration.test.controller.plan;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.fitassist.backend.dto.request.plan.PlanCreateDto;
 import com.fitassist.backend.dto.request.plan.PlanUpdateDto;
 import com.fitassist.backend.integration.config.MockAwsS3Config;

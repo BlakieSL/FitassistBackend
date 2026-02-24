@@ -1,6 +1,6 @@
 package com.fitassist.backend.service.implementation.forumthread;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.auth.AuthorizationUtil;
 import com.fitassist.backend.dto.request.filter.FilterDto;
 import com.fitassist.backend.dto.request.forumThread.ForumThreadCreateDto;
@@ -25,8 +25,7 @@ import com.fitassist.backend.service.implementation.specification.SpecificationD
 import com.fitassist.backend.specification.SpecificationBuilder;
 import com.fitassist.backend.specification.SpecificationFactory;
 import com.fitassist.backend.specification.specification.ForumThreadSpecification;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -98,8 +97,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 
 	@Override
 	@Transactional
-	public void updateForumThread(int threadId, JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+	public void updateForumThread(int threadId, JsonMergePatch patch) throws JacksonException {
 		ForumThread thread = find(threadId);
 		ForumThreadUpdateDto patched = applyPatchToForumThread(patch);
 
@@ -114,8 +112,7 @@ public class ForumThreadServiceImpl implements ForumThreadService {
 		return repositoryHelper.find(forumThreadRepository, ForumThread.class, threadId);
 	}
 
-	private ForumThreadUpdateDto applyPatchToForumThread(JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+	private ForumThreadUpdateDto applyPatchToForumThread(JsonMergePatch patch) throws JacksonException {
 		return jsonPatchService.createFromPatch(patch, ForumThreadUpdateDto.class);
 	}
 

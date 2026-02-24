@@ -1,6 +1,6 @@
 package com.fitassist.backend.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.annotation.AdminOnly;
 import com.fitassist.backend.dto.request.exercise.ExerciseCreateDto;
 import com.fitassist.backend.dto.request.filter.FilterDto;
@@ -8,8 +8,7 @@ import com.fitassist.backend.dto.response.exercise.ExerciseCategoriesResponseDto
 import com.fitassist.backend.dto.response.exercise.ExerciseResponseDto;
 import com.fitassist.backend.dto.response.exercise.ExerciseSummaryDto;
 import com.fitassist.backend.service.declaration.exercise.ExerciseService;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +38,7 @@ public class ExerciseController {
 	@AdminOnly
 	@PatchMapping("/{id}")
 	public ResponseEntity<Void> updateExercise(@PathVariable int id, @RequestBody JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+			throws JacksonException {
 		exerciseService.updateExercise(id, patch);
 		return ResponseEntity.noContent().build();
 	}

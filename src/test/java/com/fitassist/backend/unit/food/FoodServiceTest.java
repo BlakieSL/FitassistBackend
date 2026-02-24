@@ -1,6 +1,6 @@
 package com.fitassist.backend.unit.food;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.dto.pojo.FilterCriteria;
 import com.fitassist.backend.dto.request.filter.FilterDto;
 import com.fitassist.backend.dto.request.food.CalculateFoodMacrosRequestDto;
@@ -29,8 +29,7 @@ import com.fitassist.backend.service.declaration.helpers.RepositoryHelper;
 import com.fitassist.backend.service.declaration.helpers.ValidationService;
 import com.fitassist.backend.service.declaration.recipe.RecipePopulationService;
 import com.fitassist.backend.service.implementation.food.FoodServiceImpl;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -179,7 +178,7 @@ public class FoodServiceTest {
 	}
 
 	@Test
-	void updateFood_shouldUpdate() throws JsonPatchException, JsonProcessingException {
+	void updateFood_shouldUpdate() throws JacksonException {
 		food.setId(foodId);
 		when(repositoryHelper.find(foodRepository, Food.class, foodId)).thenReturn(food);
 		when(jsonPatchService.createFromPatch(patch, FoodUpdateDto.class)).thenReturn(patchedDto);
@@ -194,7 +193,7 @@ public class FoodServiceTest {
 	}
 
 	@Test
-	void updateFood_shouldPublishEvent() throws JsonPatchException, JsonProcessingException {
+	void updateFood_shouldPublishEvent() throws JacksonException {
 		ArgumentCaptor<FoodUpdateEvent> eventCaptor = ArgumentCaptor.forClass(FoodUpdateEvent.class);
 
 		food.setId(foodId);
@@ -222,18 +221,18 @@ public class FoodServiceTest {
 	}
 
 	@Test
-	void updateFood_shouldThrowExceptionWhenPatchFails() throws JsonPatchException, JsonProcessingException {
+	void updateFood_shouldThrowExceptionWhenPatchFails() throws JacksonException {
 		when(repositoryHelper.find(foodRepository, Food.class, foodId)).thenReturn(food);
-		when(jsonPatchService.createFromPatch(patch, FoodUpdateDto.class)).thenThrow(JsonPatchException.class);
+		when(jsonPatchService.createFromPatch(patch, FoodUpdateDto.class)).thenThrow(JacksonException.class);
 
-		assertThrows(JsonPatchException.class, () -> foodService.updateFood(foodId, patch));
+		assertThrows(JacksonException.class, () -> foodService.updateFood(foodId, patch));
 
 		verifyNoInteractions(validationService, eventPublisher);
 		verify(foodRepository, never()).save(food);
 	}
 
 	@Test
-	void updateFood_shouldThrowExceptionWhenValidationFails() throws JsonPatchException, JsonProcessingException {
+	void updateFood_shouldThrowExceptionWhenValidationFails() throws JacksonException {
 		when(repositoryHelper.find(foodRepository, Food.class, foodId)).thenReturn(food);
 		when(jsonPatchService.createFromPatch(patch, FoodUpdateDto.class)).thenReturn(patchedDto);
 

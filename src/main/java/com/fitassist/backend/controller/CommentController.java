@@ -1,6 +1,6 @@
 package com.fitassist.backend.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import tools.jackson.core.JacksonException;
 import com.fitassist.backend.annotation.CommentOwnerOrAdminOrModerator;
 import com.fitassist.backend.dto.request.comment.CommentCreateDto;
 import com.fitassist.backend.dto.request.filter.FilterDto;
@@ -8,8 +8,7 @@ import com.fitassist.backend.dto.response.comment.CommentAncestryDto;
 import com.fitassist.backend.dto.response.comment.CommentResponseDto;
 import com.fitassist.backend.dto.response.comment.CommentSummaryDto;
 import com.fitassist.backend.service.declaration.comment.CommentService;
-import com.github.fge.jsonpatch.JsonPatchException;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.json.JsonMergePatch;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +39,7 @@ public class CommentController {
 	@CommentOwnerOrAdminOrModerator
 	@PatchMapping("/{commentId}")
 	public ResponseEntity<Void> updateComment(@PathVariable int commentId, @RequestBody JsonMergePatch patch)
-			throws JsonPatchException, JsonProcessingException {
+			throws JacksonException {
 		commentService.updateComment(commentId, patch);
 		return ResponseEntity.noContent().build();
 	}

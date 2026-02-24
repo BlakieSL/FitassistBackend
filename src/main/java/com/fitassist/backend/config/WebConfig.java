@@ -2,9 +2,13 @@ package com.fitassist.backend.config;
 
 import com.fitassist.backend.auth.LoggingInterceptor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.datatype.jsonp.JSONPModule;
 
 @Configuration
 @RequiredArgsConstructor
@@ -15,6 +19,11 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(loggingInterceptor);
+	}
+
+	@Bean
+	public ObjectMapper objectMapper() {
+		return JsonMapper.builder().addModule(new JSONPModule()).build();
 	}
 
 }

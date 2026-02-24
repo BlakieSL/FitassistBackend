@@ -1,6 +1,6 @@
 package com.fitassist.backend.integration.test.controller.food;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.fitassist.backend.dto.request.food.CalculateFoodMacrosRequestDto;
 import com.fitassist.backend.dto.request.food.FoodCreateDto;
 import com.fitassist.backend.dto.request.food.FoodUpdateDto;
