@@ -1,0 +1,3237 @@
+{
+  "info": {
+    "_postman_id": "f41225dd-fae2-4b0b-bb64-f2c3d3a71efd",
+    "name": "Fitassist API Collection",
+    "description": "Complete API collection for Fitassist Backend - Spring Boot REST API\n\nAuthentication: Cookie-based JWT. Login via POST /api/users/login — the server sets  and  as HTTP-only cookies automatically. Postman stores and sends these cookies on all subsequent requests with no manual configuration needed.\n\nBase URL:  — set via environment variable. Use the **Dev** environment for local development and **Prod** for production.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "34870574"
+  },
+  "item": [
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"SecurePassword123!\",\n  \"gender\": \"MALE\",\n  \"birthday\": \"1995-06-15\",\n  \"height\": 180.5,\n  \"weight\": 80.0,\n  \"activityLevel\": \"MODERATELY_ACTIVE\",\n  \"goal\": \"MUSCLE_GAIN\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "register"
+              ]
+            },
+            "description": "Register a new user.\n\n**gender** options: MALE, FEMALE, OTHER\n**activityLevel** options: SEDENTARY, LIGHTLY_ACTIVE, MODERATELY_ACTIVE, VERY_ACTIVE, EXTRA_ACTIVE\n**goal** options: WEIGHT_LOSS, MUSCLE_GAIN, MAINTENANCE"
+          },
+          "response": []
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"test@example.com\",\n  \"password\": \"SecurePassword123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "login"
+              ]
+            },
+            "description": "Authenticate via cookie-based JWT.\n\nThe `username` field accepts the user's **email address**.\n\nOn success the server sets two HTTP-only cookies:\n- `accessToken` — valid for 15 minutes\n- `refreshToken` — valid for 7 days\n\nPostman automatically stores and re-sends these cookies. No manual token handling required."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "logout"
+              ]
+            },
+            "description": "Invalidate the current session / refresh token cookie."
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users/refresh-token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "refresh-token"
+              ]
+            },
+            "description": "Obtain a new access token using the refresh token stored in an HTTP-only cookie (set automatically on login)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User (Me)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "me"
+              ]
+            },
+            "description": "Get the authenticated user's own profile. Requires a valid session cookie (set automatically on login)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get a user's full profile by ID. Requires account owner or admin role."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Public User Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users/public/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "public",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get the public author profile of a user (limited fields, visible to all authenticated users)."
+          },
+          "response": []
+        },
+        {
+          "name": "Update User (Put)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"updateduser\",\n  \"email\": \"updated@example.com\",\n  \"password\": \"NewPassword123!\",\n  \"oldPassword\": \"SecurePassword123!\",\n  \"gender\": \"MALE\",\n  \"birthday\": \"1995-06-15\",\n  \"height\": 182.0,\n  \"weight\": 78.5,\n  \"activityLevel\": \"VERY_ACTIVE\",\n  \"goal\": \"MAINTENANCE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Full update of a user profile. Requires account owner or admin.\n\nProvide `oldPassword` when changing the password."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Delete a user account. Requires account owner or admin."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Password Reset",
+      "item": [
+        {
+          "name": "Request Password Reset",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/password-reset/request",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "password-reset",
+                "request"
+              ]
+            },
+            "description": "Sends a password reset email with a one-time token."
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"reset-token-from-email\",\n  \"newPassword\": \"NewSecurePassword123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/password-reset/reset",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "password-reset",
+                "reset"
+              ]
+            },
+            "description": "Submit the reset token from the email along with the new password."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Food Management",
+      "item": [
+        {
+          "name": "Create Food (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Chicken Breast\",\n  \"calories\": 165,\n  \"protein\": 31.0,\n  \"fat\": 3.6,\n  \"carbohydrates\": 0.0,\n  \"categoryId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/foods",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "foods"
+              ]
+            },
+            "description": "Create a new food item. **Admin only.**\n\nAll macros are per 100 g by default."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Food by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/foods/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "foods",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Filtered Foods",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filterCriteria\": [\n    { \"field\": \"name\", \"value\": \"chicken\", \"operation\": \"CONTAINS\" }\n  ],\n  \"dataOption\": \"ALL\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/foods/filter",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "foods",
+                "filter"
+              ]
+            },
+            "description": "Filter foods using criteria.\n\n**dataOption** options: ALL, ANY\n**operation** options: EQUALS, CONTAINS, GREATER_THAN, LESS_THAN, etc."
+          },
+          "response": []
+        },
+        {
+          "name": "Calculate Food Macros",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 150.0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/foods/:id/calculate-macros",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "foods",
+                ":id",
+                "calculate-macros"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Calculate macros for a given quantity (in grams) of a food."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Food (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/merge-patch+json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Grilled Chicken Breast\",\n  \"calories\": 170\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/foods/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "foods",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Partial update of a food item. **Admin only.**"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Food (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/foods/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "foods",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Delete a food item. **Admin only.**"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Exercise Management",
+      "item": [
+        {
+          "name": "Create Exercise (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bench Press\",\n  \"description\": \"Compound chest exercise performed on a flat bench.\",\n  \"expertiseLevelId\": 2,\n  \"equipmentId\": 1,\n  \"mechanicsTypeId\": 1,\n  \"forceTypeId\": 1,\n  \"targetMuscleIds\": [1, 2],\n  \"instructions\": [\n    { \"content\": \"Lie flat on the bench.\", \"orderIndex\": 1 },\n    { \"content\": \"Grip the bar slightly wider than shoulder-width.\", \"orderIndex\": 2 }\n  ],\n  \"tips\": [\n    { \"content\": \"Keep your feet flat on the floor.\", \"orderIndex\": 1 }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/exercises",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "exercises"
+              ]
+            },
+            "description": "Create a new exercise. **Admin only.**\n\n- `expertiseLevelId` — references an expertise level category\n- `equipmentId` — optional, references equipment category\n- `mechanicsTypeId` — optional, references mechanics type\n- `forceTypeId` — optional, references force type\n- `targetMuscleIds` — list of muscle category IDs\n- `instructions` / `tips` — ordered text steps"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Exercise by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/exercises/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "exercises",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Exercise Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/exercises/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "exercises",
+                "categories"
+              ]
+            },
+            "description": "Returns all category groupings relevant to exercises (muscle groups, equipment, mechanics, force types, expertise levels)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Filtered Exercises",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filterCriteria\": [\n    { \"field\": \"name\", \"value\": \"press\", \"operation\": \"CONTAINS\" }\n  ],\n  \"dataOption\": \"ALL\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/exercises/filter",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "exercises",
+                "filter"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Exercise (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/merge-patch+json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated description for bench press.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/exercises/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "exercises",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Partial update of an exercise. **Admin only.**"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Exercise (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/exercises/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "exercises",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Delete an exercise. **Admin only.**"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Activity Management",
+      "item": [
+        {
+          "name": "Create Activity (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Running\",\n  \"met\": 9.8,\n  \"categoryId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/activities",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "activities"
+              ]
+            },
+            "description": "Create a new activity. **Admin only.**\n\n- `met` — Metabolic Equivalent of Task value\n- `categoryId` — activity category ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Activity by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/activities/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "activities",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Filtered Activities",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filterCriteria\": [\n    { \"field\": \"name\", \"value\": \"run\", \"operation\": \"CONTAINS\" }\n  ],\n  \"dataOption\": \"ALL\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/activities/filter",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "activities",
+                "filter"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Calculate Activity Calories",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"time\": 30,\n  \"weight\": 70.0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/activities/:id/calculate-calories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "activities",
+                ":id",
+                "calculate-calories"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Calculate calories burned for an activity.\n\n- `time` — duration in minutes (Short)\n- `weight` — body weight in kg"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Activity (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/merge-patch+json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"met\": 10.5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/activities/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "activities",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Partial update of an activity. **Admin only.**"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Activity (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/activities/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "activities",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Delete an activity. **Admin only.**"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Category Management",
+      "item": [
+        {
+          "name": "Get All Categories by Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categories/:categoryType",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                ":categoryType"
+              ],
+              "variable": [
+                {
+                  "key": "categoryType",
+                  "value": "EXERCISE"
+                }
+              ]
+            },
+            "description": "Get all categories of a given type.\n\n**categoryType** enum values: EXERCISE, FOOD, FORUM_THREAD"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category by Type and ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categories/:categoryType/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                ":categoryType",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "categoryType",
+                  "value": "EXERCISE"
+                },
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Chest\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/categories/:categoryType",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                ":categoryType"
+              ],
+              "variable": [
+                {
+                  "key": "categoryType",
+                  "value": "EXERCISE"
+                }
+              ]
+            },
+            "description": "Create a new category of the specified type. **Admin only.**"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/merge-patch+json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Upper Chest\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/categories/:categoryType/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                ":categoryType",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "categoryType",
+                  "value": "EXERCISE"
+                },
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Partial update of a category. **Admin only.**"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categories/:categoryType/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                ":categoryType",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "categoryType",
+                  "value": "EXERCISE"
+                },
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Delete a category. **Admin only.**"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Plan Management",
+      "item": [
+        {
+          "name": "Create Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Beginner Full Body Workout\",\n  \"description\": \"3-day full body program for beginners.\",\n  \"isPublic\": true,\n  \"planStructureType\": \"WEEKLY\",\n  \"categoryIds\": [1, 2],\n  \"instructions\": [\n    { \"content\": \"Warm up for 5 minutes before each session.\", \"orderIndex\": 1 }\n  ],\n  \"workouts\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/plans",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "plans"
+              ]
+            },
+            "description": "Create a new workout plan.\n\n- `isPublic` — true = visible to all users\n- `planStructureType` options: WEEKLY, DAILY, CUSTOM\n- `categoryIds` — list of category IDs to tag the plan\n- `instructions` — ordered instruction steps\n- `workouts` — optional nested workout objects"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Plan by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/plans/:planId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "plans",
+                ":planId"
+              ],
+              "variable": [
+                {
+                  "key": "planId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get a plan by ID. Public plans are accessible to all. Private plans require owner or admin."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Plan Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/plans/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "plans",
+                "categories"
+              ]
+            },
+            "description": "Returns all category groupings available for plans."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Filtered Plans",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filterCriteria\": [\n    { \"field\": \"isPublic\", \"value\": \"true\", \"operation\": \"EQUALS\" }\n  ],\n  \"dataOption\": \"ALL\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/plans/filter",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "plans",
+                "filter"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Plan",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/merge-patch+json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated description for the plan.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/plans/:planId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "plans",
+                ":planId"
+              ],
+              "variable": [
+                {
+                  "key": "planId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Partial update of a plan. Requires plan owner, admin, or moderator."
+          },
+          "response": []
+        },
+        {
+          "name": "Increment Plan Views",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/plans/:planId/view",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "plans",
+                ":planId",
+                "view"
+              ],
+              "variable": [
+                {
+                  "key": "planId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Increment the view counter of a plan."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Plan",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/plans/:planId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "plans",
+                ":planId"
+              ],
+              "variable": [
+                {
+                  "key": "planId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Delete a plan. Requires plan owner, admin, or moderator."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Recipe Management",
+      "item": [
+        {
+          "name": "Create Recipe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"High Protein Smoothie\",\n  \"description\": \"Quick post-workout meal.\",\n  \"minutesToPrepare\": 5,\n  \"isPublic\": true,\n  \"categoryIds\": [1],\n  \"instructions\": [\n    { \"content\": \"Add all ingredients to a blender.\", \"orderIndex\": 1 },\n    { \"content\": \"Blend for 30 seconds.\", \"orderIndex\": 2 }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/recipes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "recipes"
+              ]
+            },
+            "description": "Create a new recipe.\n\n- `minutesToPrepare` — total prep time in minutes\n- `isPublic` — true = visible to all users\n- `categoryIds` — list of category IDs\n- `instructions` — ordered instruction steps"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Recipe by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/recipes/:recipeId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "recipes",
+                ":recipeId"
+              ],
+              "variable": [
+                {
+                  "key": "recipeId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get a recipe by ID. Public recipes are accessible to all. Private require owner or admin."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Filtered Recipes",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filterCriteria\": [\n    { \"field\": \"minutesToPrepare\", \"value\": \"30\", \"operation\": \"LESS_THAN\" }\n  ],\n  \"dataOption\": \"ALL\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/recipes/filter",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "recipes",
+                "filter"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Recipe",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/merge-patch+json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated recipe description.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/recipes/:recipeId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "recipes",
+                ":recipeId"
+              ],
+              "variable": [
+                {
+                  "key": "recipeId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Partial update of a recipe. Requires owner, admin, or moderator."
+          },
+          "response": []
+        },
+        {
+          "name": "Increment Recipe Views",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/recipes/:recipeId/view",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "recipes",
+                ":recipeId",
+                "view"
+              ],
+              "variable": [
+                {
+                  "key": "recipeId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Increment the view counter of a recipe."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Recipe",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/recipes/:recipeId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "recipes",
+                ":recipeId"
+              ],
+              "variable": [
+                {
+                  "key": "recipeId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Delete a recipe. Requires owner, admin, or moderator."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Recipe-Food Association",
+      "item": [
+        {
+          "name": "Add Foods to Recipe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"foods\": [\n    { \"foodId\": 1, \"quantity\": 100.0 },\n    { \"foodId\": 2, \"quantity\": 50.0 }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/recipe-food/:recipeId/add",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "recipe-food",
+                ":recipeId",
+                "add"
+              ],
+              "variable": [
+                {
+                  "key": "recipeId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Add one or more foods to a recipe. Requires recipe owner, admin, or moderator.\n\n`quantity` is in grams."
+          },
+          "response": []
+        },
+        {
+          "name": "Replace All Foods in Recipe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"foods\": [\n    { \"foodId\": 3, \"quantity\": 200.0 }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/recipe-food/:recipeId/replaceAll",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "recipe-food",
+                ":recipeId",
+                "replaceAll"
+              ],
+              "variable": [
+                {
+                  "key": "recipeId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Replace all existing foods in a recipe with a new list. Requires recipe owner, admin, or moderator."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Foods in Recipe",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/recipe-food/:recipeId/foods",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "recipe-food",
+                ":recipeId",
+                "foods"
+              ],
+              "variable": [
+                {
+                  "key": "recipeId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Food in Recipe",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/merge-patch+json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 150.0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/recipe-food/:recipeId/modify/:foodId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "recipe-food",
+                ":recipeId",
+                "modify",
+                ":foodId"
+              ],
+              "variable": [
+                {
+                  "key": "recipeId",
+                  "value": "1"
+                },
+                {
+                  "key": "foodId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Update quantity of a specific food in a recipe. Requires recipe owner, admin, or moderator."
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Food from Recipe",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/recipe-food/:recipeId/remove/:foodId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "recipe-food",
+                ":recipeId",
+                "remove",
+                ":foodId"
+              ],
+              "variable": [
+                {
+                  "key": "recipeId",
+                  "value": "1"
+                },
+                {
+                  "key": "foodId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Remove a specific food from a recipe. Requires recipe owner, admin, or moderator."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Comment Management",
+      "item": [
+        {
+          "name": "Create Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Great workout plan!\",\n  \"threadId\": 1,\n  \"parentCommentId\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/comments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "comments"
+              ]
+            },
+            "description": "Create a comment on a forum thread. Set `parentCommentId` to reply to another comment."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Comment by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/comments/:commentId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "comments",
+                ":commentId"
+              ],
+              "variable": [
+                {
+                  "key": "commentId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Top Comments for Thread",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/comments/top/:threadId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "comments",
+                "top",
+                ":threadId"
+              ],
+              "variable": [
+                {
+                  "key": "threadId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get top-level (root) comments for a thread, paginated."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Replies to Comment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/comments/replies/:commentId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "comments",
+                "replies",
+                ":commentId"
+              ],
+              "variable": [
+                {
+                  "key": "commentId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get all direct replies to a specific comment."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Comment Ancestry",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/comments/ancestry/:commentId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "comments",
+                "ancestry",
+                ":commentId"
+              ],
+              "variable": [
+                {
+                  "key": "commentId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get the full ancestor chain of a comment (parent, grandparent, etc.)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Filtered Comments",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filterCriteria\": [\n    { \"field\": \"threadId\", \"value\": \"1\", \"operation\": \"EQUALS\" }\n  ],\n  \"dataOption\": \"ALL\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/comments/filter",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "comments",
+                "filter"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Comment",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/merge-patch+json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Updated comment text.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/comments/:commentId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "comments",
+                ":commentId"
+              ],
+              "variable": [
+                {
+                  "key": "commentId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Update comment text. Requires comment owner, admin, or moderator."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Comment",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/comments/:commentId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "comments",
+                ":commentId"
+              ],
+              "variable": [
+                {
+                  "key": "commentId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Delete a comment. Requires comment owner, admin, or moderator."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Forum Thread Management",
+      "item": [
+        {
+          "name": "Create Forum Thread",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Best exercises for beginners?\",\n  \"text\": \"What are the best exercises to start with as a beginner?\",\n  \"threadCategoryId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/threads",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "threads"
+              ]
+            },
+            "description": "Create a new forum thread.\n\nNote: the body field is `text` (not `content`) and the category field is `threadCategoryId`."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Forum Thread by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/threads/:forumThreadId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "threads",
+                ":forumThreadId"
+              ],
+              "variable": [
+                {
+                  "key": "forumThreadId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Filtered Forum Threads",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filterCriteria\": [\n    { \"field\": \"threadCategoryId\", \"value\": \"1\", \"operation\": \"EQUALS\" }\n  ],\n  \"dataOption\": \"ALL\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/threads/filter",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "threads",
+                "filter"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Forum Thread",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/merge-patch+json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated thread title\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/threads/:forumThreadId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "threads",
+                ":forumThreadId"
+              ],
+              "variable": [
+                {
+                  "key": "forumThreadId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Partial update of a thread. Requires thread owner, admin, or moderator."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Forum Thread",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/threads/:forumThreadId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "threads",
+                ":forumThreadId"
+              ],
+              "variable": [
+                {
+                  "key": "forumThreadId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Delete a forum thread. Requires thread owner, admin, or moderator."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Media Management",
+      "item": [
+        {
+          "name": "Upload Media (Multipart)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "/path/to/image.jpg"
+                },
+                {
+                  "key": "parentType",
+                  "value": "RECIPE",
+                  "type": "text"
+                },
+                {
+                  "key": "parentId",
+                  "value": "1",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/media",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "media"
+              ]
+            },
+            "description": "Upload a media file (image) linked to a parent entity.\n\n**IMPORTANT:** This is a `multipart/form-data` request, NOT JSON.\n\n**parentType** enum values: RECIPE, PLAN, EXERCISE, USER, FORUM_THREAD\n\nRequires owner, admin, or moderator role."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Media by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/media/:mediaId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "media",
+                ":mediaId"
+              ],
+              "variable": [
+                {
+                  "key": "mediaId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Media for Parent",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/media/all/:parentId/:parentType",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "media",
+                "all",
+                ":parentId",
+                ":parentType"
+              ],
+              "variable": [
+                {
+                  "key": "parentId",
+                  "value": "1"
+                },
+                {
+                  "key": "parentType",
+                  "value": "RECIPE"
+                }
+              ]
+            },
+            "description": "Get all media items linked to a parent entity."
+          },
+          "response": []
+        },
+        {
+          "name": "Get First Media for Parent",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/media/first/:parentId/:parentType",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "media",
+                "first",
+                ":parentId",
+                ":parentType"
+              ],
+              "variable": [
+                {
+                  "key": "parentId",
+                  "value": "1"
+                },
+                {
+                  "key": "parentType",
+                  "value": "RECIPE"
+                }
+              ]
+            },
+            "description": "Get the first (thumbnail) media item for a parent entity."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Media",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/media/:mediaId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "media",
+                ":mediaId"
+              ],
+              "variable": [
+                {
+                  "key": "mediaId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Delete a media item. Requires owner, admin, or moderator."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Saved Items",
+      "item": [
+        {
+          "name": "Get Saved Items by Type and Interaction",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user-saved/item-type/:itemType/type/:type/user/:userId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "user-saved",
+                "item-type",
+                ":itemType",
+                "type",
+                ":type",
+                "user",
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "itemType",
+                  "value": "PLAN"
+                },
+                {
+                  "key": "type",
+                  "value": "LIKE"
+                },
+                {
+                  "key": "userId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get a user's saved/liked items of a specific type and interaction.\n\n**itemType** options: PLAN, RECIPE, COMMENT, FORUM_THREAD\n**type** options: LIKE, SAVE"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Saved Items (no interaction filter)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user-saved/item-type/:itemType/user/:userId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "user-saved",
+                "item-type",
+                ":itemType",
+                "user",
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "itemType",
+                  "value": "PLAN"
+                },
+                {
+                  "key": "userId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Save/Like Item (with type)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user-saved/item-type/:itemType/:itemId/type/:type",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "user-saved",
+                "item-type",
+                ":itemType",
+                ":itemId",
+                "type",
+                ":type"
+              ],
+              "variable": [
+                {
+                  "key": "itemType",
+                  "value": "PLAN"
+                },
+                {
+                  "key": "itemId",
+                  "value": "1"
+                },
+                {
+                  "key": "type",
+                  "value": "LIKE"
+                }
+              ]
+            },
+            "description": "Like or save an item with a specific interaction type."
+          },
+          "response": []
+        },
+        {
+          "name": "Save/Like Item (no type)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user-saved/item-type/:itemType/:itemId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "user-saved",
+                "item-type",
+                ":itemType",
+                ":itemId"
+              ],
+              "variable": [
+                {
+                  "key": "itemType",
+                  "value": "PLAN"
+                },
+                {
+                  "key": "itemId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Saved Item (with type)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user-saved/item-type/:itemType/:itemId/type/:type",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "user-saved",
+                "item-type",
+                ":itemType",
+                ":itemId",
+                "type",
+                ":type"
+              ],
+              "variable": [
+                {
+                  "key": "itemType",
+                  "value": "PLAN"
+                },
+                {
+                  "key": "itemId",
+                  "value": "1"
+                },
+                {
+                  "key": "type",
+                  "value": "LIKE"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Saved Item (no type)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user-saved/item-type/:itemType/:itemId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "user-saved",
+                "item-type",
+                ":itemType",
+                ":itemId"
+              ],
+              "variable": [
+                {
+                  "key": "itemType",
+                  "value": "PLAN"
+                },
+                {
+                  "key": "itemId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Created Content",
+      "item": [
+        {
+          "name": "Get User's Created Plans",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user-created/plans/user/:userId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "user-created",
+                "plans",
+                "user",
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User's Created Recipes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user-created/recipes/user/:userId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "user-created",
+                "recipes",
+                "user",
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User's Created Comments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user-created/comments/user/:userId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "user-created",
+                "comments",
+                "user",
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User's Created Threads",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user-created/threads/user/:userId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "user-created",
+                "threads",
+                "user",
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Daily Food Cart",
+      "item": [
+        {
+          "name": "Get Foods in Daily Cart",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/cart/:date",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "cart",
+                ":date"
+              ],
+              "variable": [
+                {
+                  "key": "date",
+                  "value": "2025-01-26"
+                }
+              ]
+            },
+            "description": "Get all food entries for a specific date. Date format: YYYY-MM-DD."
+          },
+          "response": []
+        },
+        {
+          "name": "Add Food to Daily Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 100.0,\n  \"date\": \"2025-01-26\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/cart/add/:foodId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "cart",
+                "add",
+                ":foodId"
+              ],
+              "variable": [
+                {
+                  "key": "foodId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Add a food item to the daily food cart.\n\n- `quantity` — amount in grams\n- `date` — the day this food was consumed (YYYY-MM-DD)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Daily Cart Food",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/merge-patch+json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 150.0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/cart/update/:dailyCartFoodId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "cart",
+                "update",
+                ":dailyCartFoodId"
+              ],
+              "variable": [
+                {
+                  "key": "dailyCartFoodId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Update the quantity of a food in the daily cart. Requires cart owner."
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Food from Daily Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/cart/remove/:dailyCartFoodId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "cart",
+                "remove",
+                ":dailyCartFoodId"
+              ],
+              "variable": [
+                {
+                  "key": "dailyCartFoodId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Remove a food entry from the daily cart. Requires cart owner."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Daily Activities",
+      "item": [
+        {
+          "name": "Get Daily Activities",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/daily-activities/:date",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "daily-activities",
+                ":date"
+              ],
+              "variable": [
+                {
+                  "key": "date",
+                  "value": "2025-01-26"
+                }
+              ]
+            },
+            "description": "Get all activity entries for a specific date. Date format: YYYY-MM-DD."
+          },
+          "response": []
+        },
+        {
+          "name": "Add Activity to Daily Log",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"time\": 30,\n  \"weight\": 70.0,\n  \"date\": \"2025-01-26\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/daily-activities/add/:activityId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "daily-activities",
+                "add",
+                ":activityId"
+              ],
+              "variable": [
+                {
+                  "key": "activityId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Log an activity for a specific date.\n\n- `time` — duration in minutes\n- `weight` — user's weight in kg (used for calorie calculation)\n- `date` — the day of the activity (YYYY-MM-DD)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Daily Activity",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/merge-patch+json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"time\": 45\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/daily-activities/modify-activity/:dailyActivityItemId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "daily-activities",
+                "modify-activity",
+                ":dailyActivityItemId"
+              ],
+              "variable": [
+                {
+                  "key": "dailyActivityItemId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Update the duration of a logged activity. Requires cart owner."
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Activity from Daily Log",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/daily-activities/remove/:dailyActivityItemId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "daily-activities",
+                "remove",
+                ":dailyActivityItemId"
+              ],
+              "variable": [
+                {
+                  "key": "dailyActivityItemId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Remove an activity from the daily log. Requires cart owner."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Get Daily Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/reports/daily/:date",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "daily",
+                ":date"
+              ],
+              "variable": [
+                {
+                  "key": "date",
+                  "value": "2025-01-26"
+                }
+              ]
+            },
+            "description": "Get a calorie and macro summary for the authenticated user on a specific date."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Periodic Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/reports/periodic/?fromDate=2025-01-01&toDate=2025-01-31",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "periodic",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "fromDate",
+                  "value": "2025-01-01"
+                },
+                {
+                  "key": "toDate",
+                  "value": "2025-01-31"
+                }
+              ]
+            },
+            "description": "Get an aggregated report over a date range.\n\n**Query params:** `fromDate` and `toDate` (format: YYYY-MM-DD)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Activity Heatmap",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/reports/heatmap",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "heatmap"
+              ]
+            },
+            "description": "Get daily activity counts for the authenticated user, suitable for rendering a heatmap calendar."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Complaint Management",
+      "item": [
+        {
+          "name": "Create Complaint",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"INAPPROPRIATE_CONTENT\",\n  \"parentId\": 1,\n  \"subClass\": \"FORUM_THREAD\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/complaint",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "complaint"
+              ]
+            },
+            "description": "Submit a complaint against a piece of content.\n\n- `reason` — ComplaintReason enum (e.g. INAPPROPRIATE_CONTENT, SPAM, HARASSMENT)\n- `parentId` — ID of the reported content\n- `subClass` — ComplaintSubClass enum: PLAN, RECIPE, COMMENT, FORUM_THREAD, USER"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Complaints (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/complaint/all?page=0&size=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "complaint",
+                "all"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get all complaints paginated. **Admin or Moderator only.**"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Complaint by ID (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/complaint/:complaintId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "complaint",
+                ":complaintId"
+              ],
+              "variable": [
+                {
+                  "key": "complaintId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get a specific complaint by ID. **Admin or Moderator only.**"
+          },
+          "response": []
+        },
+        {
+          "name": "Resolve Complaint (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/complaint/:complaintId/resolve",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "complaint",
+                ":complaintId",
+                "resolve"
+              ],
+              "variable": [
+                {
+                  "key": "complaintId",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Mark a complaint as resolved. **Admin or Moderator only.**"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Search",
+      "item": [
+        {
+          "name": "Search (Global)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/search/?query=protein&type=food&limit=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "search",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "protein",
+                  "description": "Required. Search term."
+                },
+                {
+                  "key": "type",
+                  "value": "food",
+                  "description": "Optional. Filter by type."
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Optional. Max results (default 10)."
+                }
+              ]
+            },
+            "description": "Global search endpoint.\n\n**Query params:**\n- `query` (required) — search term\n- `type` (optional) — filter to a specific content type\n- `limit` (optional, default: 10) — max number of results"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "AWS S3",
+      "item": [
+        {
+          "name": "Get Image URL from S3",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/s3/:imageName",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "s3",
+                ":imageName"
+              ],
+              "variable": [
+                {
+                  "key": "imageName",
+                  "value": "profile-image.jpg"
+                }
+              ]
+            },
+            "description": "Get a pre-signed S3 URL for a stored image by its file name."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cache Stats",
+      "item": [
+        {
+          "name": "Get Cache Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/cache-stats",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "cache-stats"
+              ]
+            },
+            "description": "Returns Caffeine cache statistics: hit rate, miss count, eviction count, and cache size."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Virtual Threads",
+      "item": [
+        {
+          "name": "Get Virtual Thread Info",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/virtual-threads/thread-info",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "virtual-threads",
+                "thread-info"
+              ]
+            },
+            "description": "Returns info about the current thread: `id`, `isVirtual`, `name`. Useful to verify Java 21 virtual threads are active."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    }
+  ]
+}
