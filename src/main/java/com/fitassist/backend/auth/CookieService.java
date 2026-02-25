@@ -64,7 +64,8 @@ public class CookieService {
 		cookie.setSecure(cookieSecure);
 		if (cookieSecure) {
 			cookie.setAttribute("SameSite", "None");
-		} else {
+		}
+		else {
 			cookie.setAttribute("SameSite", "Lax");
 		}
 		cookie.setPath("/");
