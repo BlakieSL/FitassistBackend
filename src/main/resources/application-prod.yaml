@@ -47,6 +47,8 @@ rate-limiter:
 app:
   frontend:
     url: ${FRONTEND_URL}
+  csrf:
+    cookie-secure: true
   email:
     from: ${EMAIL_FROM}
 
