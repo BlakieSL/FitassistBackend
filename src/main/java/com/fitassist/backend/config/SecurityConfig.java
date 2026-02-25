@@ -42,6 +42,9 @@ public class SecurityConfig {
 	@Value("${app.csrf.cookie-secure}")
 	private boolean csrfCookieSecure;
 
+	@Value("${app.csrf.cookie-domain:}")
+	private String csrfCookieDomain;
+
 	public SecurityConfig(JwtService jwtService, @Lazy UserServiceImpl userServiceImpl,
 			@Lazy RateLimitingFilter rateLimitingFilter, CorsConfigurationSource corsConfigurationSource,
 			CookieService cookieService, TokenProperties tokenProperties) {
@@ -73,7 +76,12 @@ public class SecurityConfig {
 			.csrf(csrf -> {
 				CookieCsrfTokenRepository repo = CookieCsrfTokenRepository.withHttpOnlyFalse();
 				if (csrfCookieSecure) {
-					repo.setCookieCustomizer(cookie -> cookie.sameSite("None").secure(true));
+					repo.setCookieCustomizer(cookie -> {
+						cookie.sameSite("None").secure(true);
+						if (!csrfCookieDomain.isBlank()) {
+							cookie.domain(csrfCookieDomain);
+						}
+					});
 				}
 				CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
 				requestHandler.setCsrfRequestAttributeName(null);
