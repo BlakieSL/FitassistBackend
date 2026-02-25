@@ -20,6 +20,7 @@ import org.springframework.security.web.servlet.util.matcher.PathPatternRequestM
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
@@ -74,7 +75,11 @@ public class SecurityConfig {
 				if (csrfCookieSecure) {
 					repo.setCookieCustomizer(cookie -> cookie.sameSite("None").secure(true));
 				}
-				csrf.csrfTokenRepository(repo).ignoringRequestMatchers(requestMatcher);
+				CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
+				requestHandler.setCsrfRequestAttributeName(null);
+				csrf.csrfTokenRepository(repo)
+					.csrfTokenRequestHandler(requestHandler)
+					.ignoringRequestMatchers(requestMatcher);
 			})
 			.addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
