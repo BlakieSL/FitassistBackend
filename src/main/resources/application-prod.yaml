@@ -49,6 +49,7 @@ app:
     url: ${FRONTEND_URL}
   csrf:
     cookie-secure: true
+    cookie-domain: .fitassist.app
   email:
     from: ${EMAIL_FROM}
 
