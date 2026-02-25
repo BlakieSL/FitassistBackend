@@ -3,6 +3,7 @@ package com.fitassist.backend.auth;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
 
@@ -12,6 +13,9 @@ import java.util.Optional;
 public class CookieService {
 
 	private final TokenProperties tokenProperties;
+
+	@Value("${app.csrf.cookie-secure}")
+	private boolean cookieSecure;
 
 	public CookieService(TokenProperties tokenProperties) {
 		this.tokenProperties = tokenProperties;
@@ -57,8 +61,12 @@ public class CookieService {
 	private Cookie createSecureCookie(String key, String value, int maxAge) {
 		Cookie cookie = new Cookie(key, value);
 		cookie.setHttpOnly(true);
-		cookie.setSecure(true);
-		cookie.setAttribute("SameSite", "None");
+		cookie.setSecure(cookieSecure);
+		if (cookieSecure) {
+			cookie.setAttribute("SameSite", "None");
+		} else {
+			cookie.setAttribute("SameSite", "Lax");
+		}
 		cookie.setPath("/");
 		cookie.setMaxAge(maxAge);
 		return cookie;
