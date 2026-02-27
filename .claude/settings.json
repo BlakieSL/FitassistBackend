@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "CLAUDE_CODE_SUBAGENT_MODEL": "haiku",
+    "CLAUDE_CODE_AUTOCOMPACT_PCT_OVERRIDE": "70",
+    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew *)",
+      "Bash(docker compose *)",
+      "Bash(docker ps*)",
+      "Bash(docker logs*)",
+      "Bash(curl http://localhost:8000/*)",
+      "Bash(git *)"
+    ],
+    "deny": [
+      "Read(.env.properties)",
+      "Bash(./gradlew jib*)",
+      "Bash(git push *)"
+    ],
+    "defaultMode": "acceptEdits"
+  },
+  "model": "sonnet",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && echo '--- Branch ---' && git branch --show-current && echo '--- Uncommitted changes ---' && git status --short",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && ./gradlew format 2>&1",
+            "timeout": 60
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '=== STATE SNAPSHOT ===' && echo '--- Branch ---' && git -C \"$CLAUDE_PROJECT_DIR\" branch --show-current && echo '--- Modified files ---' && git -C \"$CLAUDE_PROJECT_DIR\" diff --name-only && git -C \"$CLAUDE_PROJECT_DIR\" diff --cached --name-only && git -C \"$CLAUDE_PROJECT_DIR\" ls-files --others --exclude-standard && echo '--- Last 5 commits ---' && git -C \"$CLAUDE_PROJECT_DIR\" log --oneline -5",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "chrome-devtools-mcp@chrome-devtools-plugins": true
+  },
+  "enabledMcpjsonServers": [
+    "github"
+  ],
+  "enableAllProjectMcpServers": true
+}

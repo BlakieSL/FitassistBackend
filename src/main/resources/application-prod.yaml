@@ -53,6 +53,12 @@ app:
   email:
     from: ${EMAIL_FROM}
 
+cors:
+  allowed-origins:
+    - https://master.d2li7hc8a6datu.amplifyapp.com
+    - https://fitassist.app
+    - https://www.fitassist.app
+
 logging:
   structured:
     format:
