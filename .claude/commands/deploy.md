@@ -3,7 +3,7 @@ Execute the full deploy workflow:
 1. Run `./gradlew format`
 2. Stage all changes, commit if needed, push current branch to `dev`
 3. Use GitHub MCP to create a PR from `dev` → `master` with a description based on the commits included — no test plan checklist,
-no "Generated with Claude Code" footer. If a PR already exists (422 error), find it with `list_pull_requests` and update its description with `update_pull_request` instead.
+no "Generated with Claude Code" footer. When committing, do NOT include a `Co-Authored-By: Claude` trailer. If a PR already exists (422 error), find it with `list_pull_requests` and update its description with `update_pull_request` instead.
 4. Poll every 2 minutes (up to 15 polls / 30 min total): `pull_request_read` with `get` and check `mergeable_state`.
 The only terminal states are `clean` (proceed to step 6) or `blocked` (proceed to step 5).
 Any other state (`unstable`, `unknown`, `behind`, or no checks yet) means CI is still running — do nothing,

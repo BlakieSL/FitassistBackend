@@ -58,6 +58,8 @@ JUnit 5 + Testcontainers. Integration tests under `src/test/java/com/fitassist/b
 
 Preserve: modified files + state, current branch, uncommitted work, test pass/fail state, active TODOs and implementation plan.
 
-## API Reference
+## Postman
 
-https://documenter.getpostman.com/view/34870574/2sBXcGEf3L
+- Workspace ID: `b40c90f9-4bd1-449a-bf90-528766e88c50`
+- Collection ID: `34870574-f41225dd-fae2-4b0b-bb64-f2c3d3a71efd`
+- Public docs: https://documenter.getpostman.com/view/34870574/2sBXcGEf3L

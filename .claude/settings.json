@@ -12,7 +12,9 @@
       "Bash(docker ps*)",
       "Bash(docker logs*)",
       "Bash(curl http://localhost:8000/*)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "mcp__mysql-local__*",
+      "mcp__mysql-rds__*"
     ],
     "deny": [
       "Read(.env.properties)",
@@ -61,8 +63,5 @@
   "enabledPlugins": {
     "chrome-devtools-mcp@chrome-devtools-plugins": true
   },
-  "enabledMcpjsonServers": [
-    "github"
-  ],
   "enableAllProjectMcpServers": true
 }
