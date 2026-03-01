@@ -42,3 +42,7 @@ out/
 /.env.properties
 /.mcp.json
 /.mcp-inactive.json
+/.mcp-coding.json
+/.mcp-deploy.json
+/.mcp-db.json
+/.mcp-debug.json

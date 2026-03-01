@@ -3,10 +3,16 @@
   "env": {
     "CLAUDE_CODE_SUBAGENT_MODEL": "haiku",
     "CLAUDE_CODE_AUTOCOMPACT_PCT_OVERRIDE": "70",
-    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1"
+    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
+    "MAX_MCP_OUTPUT_TOKENS": "50000",
+    "MCP_TIMEOUT": "10000",
+    "CLAUDE_CODE_EFFORT_LEVEL": "medium",
+    "CLAUDE_CODE_EPERIMENTAL_AGENT_TEAMS": "1"
   },
   "permissions": {
     "allow": [
+      "WebFetch",
+      "WebSearch",
       "Bash(./gradlew *)",
       "Bash(docker compose *)",
       "Bash(docker ps*)",
@@ -14,7 +20,10 @@
       "Bash(curl http://localhost:8000/*)",
       "Bash(git *)",
       "mcp__mysql-local__*",
-      "mcp__mysql-rds__*"
+      "mcp__mysql-rds__*",
+      "mcp__gradle__*",
+      "mcp__github__*",
+      "mcp__awslabs-aws-api-mcp-server__call_aws"
     ],
     "deny": [
       "Read(.env.properties)",
@@ -23,7 +32,13 @@
     ],
     "defaultMode": "acceptEdits"
   },
-  "model": "sonnet",
+  "model": "claude-sonnet-4-6",
+  "availableModels": [
+    "sonnet",
+    "haiku",
+    "opus"
+  ],
+  "enableAllProjectMcpServers": true,
   "hooks": {
     "SessionStart": [
       {
@@ -61,7 +76,7 @@
     ]
   },
   "enabledPlugins": {
-    "chrome-devtools-mcp@chrome-devtools-plugins": false
-  },
-  "enableAllProjectMcpServers": true
+    "chrome-devtools-mcp@chrome-devtools-plugins": false,
+    "superpowers@claude-plugins-official": true
+  }
 }
