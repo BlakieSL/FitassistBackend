@@ -17,51 +17,27 @@
       "essential": true,
       "environment": [
         {
-          "name": "REDIS_HOST",
-          "value": "fitassist-redis.ui7e5f.ng.0001.euc1.cache.amazonaws.com"
-        },
-        {
           "name": "SPRING_PROFILES_ACTIVE",
           "value": "prod"
-        },
-        {
-          "name": "RATE_LIMITER_KEY_INTERVAL",
-          "value": "5"
-        },
-        {
-          "name": "S3_BUCKET_NAME",
-          "value": "fitassist-images"
-        },
-        {
-          "name": "RATE_LIMITER_USER_RATE",
-          "value": "100"
-        },
-        {
-          "name": "EMAIL_FROM",
-          "value": "EMAIL_FROM_PLACEHOLDER"
-        },
-        {
-          "name": "FRONTEND_URL",
-          "value": "https://fitassist.app"
         },
         {
           "name": "REDIS_PORT",
           "value": "6379"
         },
         {
-          "name": "RDS_URL",
-          "value": "jdbc:mysql://fitassist-db.c7sec6yu4470.eu-central-1.rds.amazonaws.com:3306/fitassist"
+          "name": "RATE_LIMITER_USER_RATE",
+          "value": "100"
+        },
+        {
+          "name": "RATE_LIMITER_USER_INTERVAL",
+          "value": "5"
         },
         {
           "name": "RATE_LIMITER_KEY_RATE",
           "value": "50"
         },
         {
-          "name": "RDS_USERNAME",
-          "value": "admin"
-        },
-        {
-          "name": "RATE_LIMITER_USER_INTERVAL",
+          "name": "RATE_LIMITER_KEY_INTERVAL",
           "value": "5"
         },
         {
@@ -81,6 +57,30 @@
         {
           "name": "JWT_SECRET_KEY",
           "valueFrom": "arn:aws:ssm:eu-central-1:940922024669:parameter/fitassist/jwt-secret"
+        },
+        {
+          "name": "REDIS_HOST",
+          "valueFrom": "arn:aws:ssm:eu-central-1:940922024669:parameter/fitassist/redis-host"
+        },
+        {
+          "name": "RDS_URL",
+          "valueFrom": "arn:aws:ssm:eu-central-1:940922024669:parameter/fitassist/rds-url"
+        },
+        {
+          "name": "RDS_USERNAME",
+          "valueFrom": "arn:aws:ssm:eu-central-1:940922024669:parameter/fitassist/rds-username"
+        },
+        {
+          "name": "EMAIL_FROM",
+          "valueFrom": "arn:aws:ssm:eu-central-1:940922024669:parameter/fitassist/email-from"
+        },
+        {
+          "name": "S3_BUCKET_NAME",
+          "valueFrom": "arn:aws:ssm:eu-central-1:940922024669:parameter/fitassist/s3-bucket-name"
+        },
+        {
+          "name": "FRONTEND_URL",
+          "valueFrom": "arn:aws:ssm:eu-central-1:940922024669:parameter/fitassist/frontend-url"
         }
       ],
       "environmentFiles": [],
