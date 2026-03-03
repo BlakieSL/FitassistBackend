@@ -8,6 +8,7 @@
 - NEVER add a new service without interface under `service/declaration/` AND implementation under `service/implementation/`
 - NEVER use custom JPQL for filtered list endpoints — use JPA Specifications (`specification/` package)
 - NEVER read or modify `.env.properties`
+- NEVER include CLAUDE as contributor in commits (
 - Run `./gradlew format` before every commit — enforced in CI, will fail PRs
 
 ## Architecture

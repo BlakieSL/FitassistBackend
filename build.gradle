@@ -5,6 +5,7 @@ plugins {
     id 'jacoco'
     id 'io.spring.javaformat' version '0.0.47'
     id 'com.google.cloud.tools.jib' version '3.5.2'
+    id 'io.gatling.gradle' version '3.15.0'
 }
 
 group = 'com.fitassist'
@@ -78,6 +79,14 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('compileGatlingJava') {
+    options.release = 21
+}
+
+tasks.named('gatlingRun') {
+    runAllSimulations = true
 }
 
 tasks.named('test') {
