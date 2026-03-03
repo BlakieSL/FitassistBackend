@@ -63,6 +63,31 @@ jobs:
           path: build/reports/gatling/
           retention-days: 30
 
+      - name: Generate index page
+        if: always()
+        run: |
+          mkdir -p build/reports/gatling
+          LINKS=""
+          for dir in build/reports/gatling/*/; do
+            name=$(basename "$dir")
+            LINKS="$LINKS<li><a href=\"performance/$name/\">$name</a></li>"
+          done
+          cat > build/reports/gatling/index.html <<EOF
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Gatling Reports</title>
+            <style>body{font-family:sans-serif;padding:2rem}li{margin:.5rem 0}a{font-size:1.1rem}</style>
+          </head>
+          <body>
+            <h1>Gatling Performance Reports</h1>
+            <p>Latest run: $(date -u '+%Y-%m-%d %H:%M UTC')</p>
+            <ul>$LINKS</ul>
+          </body>
+          </html>
+          EOF
+
       - name: Deploy report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v4
@@ -70,3 +95,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: build/reports/gatling
           destination_dir: performance
+          keep_files: false
