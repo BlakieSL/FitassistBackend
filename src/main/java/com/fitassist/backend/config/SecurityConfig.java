@@ -130,7 +130,8 @@ public class SecurityConfig {
 				matcher.matcher(HttpMethod.GET, "/api/media/all/{parentId}/{parentType}"),
 				matcher.matcher(HttpMethod.GET, "/api/media/first/{parentId}/{parentType}"),
 				matcher.matcher(HttpMethod.GET, "/api/media/{mediaId}"),
-				matcher.matcher(HttpMethod.GET, "/api/users/public/{id}"));
+				matcher.matcher(HttpMethod.GET, "/api/users/public/{id}"),
+				matcher.matcher(HttpMethod.GET, "/api/virtual-threads/thread-info"));
 	}
 
 }
